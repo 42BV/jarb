@@ -13,9 +13,9 @@
 	</parent>
 	
 	<groupId>org.jarb</groupId>
-	<artifactId>jarb-migrations</artifactId>
+	<artifactId>jarb-populator</artifactId>
 	<packaging>jar</packaging>
-	<name>Database migration support</name>
+	<name>Database population support</name>
 
 	<dependencies>
 		<!-- TODO -->

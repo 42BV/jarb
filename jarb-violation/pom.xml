@@ -13,9 +13,9 @@
 	</parent>
 	
 	<groupId>org.jarb</groupId>
-	<artifactId>jarb-migrations</artifactId>
+	<artifactId>jarb-violation</artifactId>
 	<packaging>jar</packaging>
-	<name>Database migration support</name>
+	<name>Translates constraint violation exceptions</name>
 
 	<dependencies>
 		<!-- TODO -->

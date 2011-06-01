@@ -13,9 +13,9 @@
 	</parent>
 	
 	<groupId>org.jarb</groupId>
-	<artifactId>jarb-migrations</artifactId>
+	<artifactId>jarb-utils</artifactId>
 	<packaging>jar</packaging>
-	<name>Database migration support</name>
+	<name>Utilities library</name>
 
 	<dependencies>
 		<!-- TODO -->
