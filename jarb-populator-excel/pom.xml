@@ -15,7 +15,7 @@
 	<groupId>org.jarb</groupId>
 	<artifactId>jarb-populator-excel</artifactId>
 	<packaging>jar</packaging>
-	<name>Database population with Excel</name>
+	<description>Database population with Excel</description>
 
 	<dependencies>
 		<!-- TODO -->

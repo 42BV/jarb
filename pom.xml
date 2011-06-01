@@ -23,12 +23,12 @@
 
 	<modules>
 		<module>jarb-constraint-metadata</module>
+		<module>jarb-constraint-validation</module>
+		<module>jarb-constraint-violation</module>
 		<module>jarb-migrations</module>
 		<module>jarb-populator</module>
 		<module>jarb-populator-excel</module>
 		<module>jarb-utils</module>
-		<module>jarb-validation</module>
-		<module>jarb-violation</module>
 	</modules>
 
 	<developers>

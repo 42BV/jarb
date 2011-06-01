@@ -15,7 +15,7 @@
 	<groupId>org.jarb</groupId>
 	<artifactId>jarb-utils</artifactId>
 	<packaging>jar</packaging>
-	<name>Utilities library</name>
+	<description>Provides common utilities</description>
 
 	<dependencies>
 		<!-- TODO -->

@@ -15,7 +15,7 @@
 	<groupId>org.jarb</groupId>
 	<artifactId>jarb-populator</artifactId>
 	<packaging>jar</packaging>
-	<name>Database population support</name>
+	<description>Database population support</description>
 
 	<dependencies>
 		<dependency>

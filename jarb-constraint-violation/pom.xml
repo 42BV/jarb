@@ -13,9 +13,9 @@
 	</parent>
 	
 	<groupId>org.jarb</groupId>
-	<artifactId>jarb-violation</artifactId>
+	<artifactId>jarb-constraint-violation</artifactId>
 	<packaging>jar</packaging>
-	<name>Translates constraint violation exceptions</name>
+	<description>Translates constraint violation exceptions</description>
 
 	<dependencies>
 		<dependency>

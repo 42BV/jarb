@@ -15,7 +15,7 @@
 	<groupId>org.jarb</groupId>
 	<artifactId>jarb-migrations</artifactId>
 	<packaging>jar</packaging>
-	<name>Database migration support</name>
+	<description>Database migration support</description>
 
 	<dependencies>
 		<!-- Internal components -->

@@ -13,9 +13,9 @@
 	</parent>
 	
 	<groupId>org.jarb</groupId>
-	<artifactId>jarb-validation</artifactId>
+	<artifactId>jarb-constraint-validation</artifactId>
 	<packaging>jar</packaging>
-	<name>Database constraint validator</name>
+	<description>Database constraint validator</description>
 
 	<dependencies>
 		<!-- TODO -->
