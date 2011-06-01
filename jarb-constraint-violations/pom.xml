@@ -13,7 +13,7 @@
 	</parent>
 	
 	<groupId>org.jarb</groupId>
-	<artifactId>jarb-constraint-violation</artifactId>
+	<artifactId>jarb-constraint-violations</artifactId>
 	<packaging>jar</packaging>
 	<description>Translates constraint violation exceptions</description>
 

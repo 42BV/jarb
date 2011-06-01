@@ -24,7 +24,7 @@
 	<modules>
 		<module>jarb-constraint-metadata</module>
 		<module>jarb-constraint-validation</module>
-		<module>jarb-constraint-violation</module>
+		<module>jarb-constraint-violations</module>
 		<module>jarb-migrations</module>
 		<module>jarb-populator</module>
 		<module>jarb-populator-excel</module>
