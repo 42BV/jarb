@@ -32,21 +32,20 @@
             <artifactId>liquibase-core</artifactId>
             <version>2.0.1</version>
         </dependency>
-
-		<!-- Test case -->
-		<dependency>
-            <!-- Migration change sets are described in groovy -->
+        <dependency>
+            <!-- Include groovy support by default -->
             <groupId>org.liquibase</groupId>
             <artifactId>liquibase-ext-groovy</artifactId>
             <version>1.0</version>
-            <scope>test</scope>
             <exclusions>
                 <exclusion>
+                	<!-- Gossip clashes with other logging -->
                     <groupId>org.sonatype.gossip</groupId>
                     <artifactId>gossip</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
+        
 		<dependency>
             <!-- Used to insert a record into our newly migrated schema -->
             <groupId>org.springframework</groupId>

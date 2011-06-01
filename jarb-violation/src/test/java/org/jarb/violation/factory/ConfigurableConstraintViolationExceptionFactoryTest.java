@@ -1,0 +1,44 @@
+package org.jarb.violation.factory;
+
+import static org.junit.Assert.assertTrue;
+
+import org.jarb.violation.ConstraintViolation;
+import org.jarb.violation.ConstraintViolationType;
+import org.jarb.violation.UniqueKeyViolationException;
+import org.jarb.violation.domain.LicenseNumberAlreadyExistsException;
+import org.junit.Before;
+import org.junit.Test;
+
+public class ConfigurableConstraintViolationExceptionFactoryTest {
+    private ConfigurableConstraintViolationExceptionFactory factory;
+
+    @Before
+    public void setUp() {
+        factory = new ConfigurableConstraintViolationExceptionFactory();
+    }
+
+    /**
+     * Assert that we provide default exception factory behaviour, whenever no
+     * custom exception factory was registered for that violation.
+     */
+    @Test
+    public void testDefaultException() {
+        ConstraintViolation violation = new ConstraintViolation(ConstraintViolationType.UNIQUE_VIOLATION);
+        violation.setConstraintName("uk_some_table_some_column");
+        Throwable exception = factory.createException(violation);
+        assertTrue(exception instanceof UniqueKeyViolationException);
+    }
+
+    /**
+     * Assert that custom exceptions can be provided, whenever registered.
+     */
+    @Test
+    public void testCustomException() {
+        factory.registerException("uk_cars_license", LicenseNumberAlreadyExistsException.class);
+        ConstraintViolation violation = new ConstraintViolation(ConstraintViolationType.UNIQUE_VIOLATION);
+        violation.setConstraintName("uk_cars_license");
+        Throwable exception = factory.createException(violation);
+        assertTrue(exception instanceof LicenseNumberAlreadyExistsException);
+    }
+
+}
