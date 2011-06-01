@@ -1,6 +1,5 @@
 package org.jarb.violation.resolver.database;
 
-import org.jarb.violation.resolver.Database;
 
 /**
  * Resolves the type of database that we are working with.

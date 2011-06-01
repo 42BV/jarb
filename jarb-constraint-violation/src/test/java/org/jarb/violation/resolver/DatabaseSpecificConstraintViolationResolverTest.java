@@ -8,6 +8,7 @@ import java.sql.SQLException;
 
 import org.jarb.violation.ConstraintViolation;
 import org.jarb.violation.ConstraintViolationType;
+import org.jarb.violation.resolver.database.Database;
 import org.jarb.violation.resolver.database.DatabaseResolver;
 import org.jarb.violation.resolver.database.DatabaseSpecificConstraintViolationResolver;
 import org.jarb.violation.resolver.vendor.MysqlConstraintViolationResolver;

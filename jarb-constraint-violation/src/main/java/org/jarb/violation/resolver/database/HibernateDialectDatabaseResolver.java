@@ -3,7 +3,6 @@ package org.jarb.violation.resolver.database;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.jarb.violation.resolver.Database;
 
 /**
  * Resolves the database, using a hibernate dialect value.

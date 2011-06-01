@@ -5,7 +5,6 @@ import java.util.Map;
 
 import org.jarb.violation.ConstraintViolation;
 import org.jarb.violation.resolver.ConstraintViolationResolver;
-import org.jarb.violation.resolver.Database;
 
 /**
  * Constraint violation resolver which delegates to database

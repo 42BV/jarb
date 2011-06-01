@@ -4,7 +4,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 
 import org.hibernate.cfg.Environment;
-import org.jarb.violation.resolver.Database;
 
 /**
  * Hibernate entity manager based database resolver implementation.

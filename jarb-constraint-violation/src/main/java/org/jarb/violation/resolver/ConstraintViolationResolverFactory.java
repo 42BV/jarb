@@ -1,5 +1,6 @@
 package org.jarb.violation.resolver;
 
+import org.jarb.violation.resolver.database.Database;
 import org.jarb.violation.resolver.database.DatabaseResolver;
 import org.jarb.violation.resolver.database.DatabaseSpecificConstraintViolationResolver;
 import org.jarb.violation.resolver.vendor.HsqlConstraintViolationResolver;
@@ -8,7 +9,7 @@ import org.jarb.violation.resolver.vendor.OracleConstraintViolationResolver;
 import org.jarb.violation.resolver.vendor.PostgresConstraintViolationResolver;
 
 /**
- * Builds a default constraint violation resolver.
+ * Capable of building a default constraint violation resolver.
  * 
  * @author Jeroen van Schagen
  * @since 16-05-2011
