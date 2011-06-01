@@ -18,7 +18,20 @@
 	<name>Database population support</name>
 
 	<dependencies>
-		<!-- TODO -->
+		<dependency>
+            <!-- Resource database populator -->
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-jdbc</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+        
+		<dependency>
+			<!-- JDBC utilities -->
+			<groupId>org.jarb</groupId>
+			<artifactId>jarb-utils</artifactId>
+			<version>${project.version}</version>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 
 </project>

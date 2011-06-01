@@ -54,13 +54,6 @@
             <version>${spring.version}</version>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <!-- Tests are run on a HSQLDB -->
-            <groupId>org.hsqldb</groupId>
-            <artifactId>hsqldb</artifactId>
-            <version>2.1.0</version>
-            <scope>test</scope>
-        </dependency>
 	</dependencies>
 
 </project>
