@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+    xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+    
+    <bean id="migrator" class="org.jarb.migrations.liquibase.LiquibaseMigrator">
+	    <constructor-arg value="src/test/resources/changelog.groovy"/>
+		<property name="dropFirst" value="true"/>
+	</bean>
+	
+	<import resource="application-context.xml"/>
+    
+</beans>

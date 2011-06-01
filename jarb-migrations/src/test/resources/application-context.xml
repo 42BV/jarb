@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+    xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+    
+	<bean id="migratingDataSource" class="org.jarb.migrations.MigratingDataSource">
+	    <property name="delegate">
+			<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+			    <property name="driverClassName" value="org.hsqldb.jdbcDriver"/>
+			    <property name="url" value="jdbc:hsqldb:mem:migrator"/>
+			    <property name="username" value="sa"/>
+			    <property name="password" value=""/>
+			</bean>
+		</property>
+	    <property name="migrator" ref="migrator"/>
+	</bean>
+
+</beans>
