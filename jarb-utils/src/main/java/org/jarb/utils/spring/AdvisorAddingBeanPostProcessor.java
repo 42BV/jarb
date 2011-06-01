@@ -40,7 +40,7 @@ public abstract class AdvisorAddingBeanPostProcessor extends ProxyConfig impleme
      */
     @Override
     public Object postProcessBeforeInitialization(Object bean, String beanName) {
-        return bean; // Do nothing
+        return bean;
     }
 
     /**
@@ -48,26 +48,22 @@ public abstract class AdvisorAddingBeanPostProcessor extends ProxyConfig impleme
      */
     @Override
     public Object postProcessAfterInitialization(Object bean, String beanName) {
-        if (bean instanceof AopInfrastructureBean) {
-            // Ignore AOP infrastructure such as scoped proxies.
-            return bean;
-        }
-        final Advisor advisor = getAdvisor();
-        if (AopUtils.canApply(advisor, AopUtils.getTargetClass(bean))) {
-            if (bean instanceof Advised) {
-                ((Advised) bean).addAdvisor(advisor);
-                return bean;
-            } else {
-                ProxyFactory proxyFactory = new ProxyFactory(bean);
-                // Copy our properties (proxyTargetClass etc) inherited from ProxyConfig.
-                proxyFactory.copyFrom(this);
-                proxyFactory.addAdvisor(advisor);
-                return proxyFactory.getProxy(this.beanClassLoader);
+        Object result = bean;
+        if (!(bean instanceof AopInfrastructureBean)) { // Ignore infastructure
+            final Advisor advisor = getAdvisor();
+            if (AopUtils.canApply(advisor, AopUtils.getTargetClass(bean))) {
+                if (bean instanceof Advised) {
+                    ((Advised) bean).addAdvisor(advisor);
+                } else {
+                    // Convert bean into a proxy with advisor logic
+                    ProxyFactory proxyFactory = new ProxyFactory(bean);
+                    proxyFactory.copyFrom(this);
+                    proxyFactory.addAdvisor(advisor);
+                    result = proxyFactory.getProxy(this.beanClassLoader);
+                }
             }
-        } else {
-            // This is not a repository.
-            return bean;
         }
+        return result;
     }
 
 }
