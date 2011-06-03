@@ -17,8 +17,42 @@
 	<packaging>jar</packaging>
 	<description>Constraint metadata access</description>
 
-	<dependencies>
-		<!-- TODO -->
-	</dependencies>
+    <dependencies>
+		<dependency>
+		    <groupId>org.jarb</groupId>
+		    <artifactId>jarb-utils</artifactId>
+		    <version>${project.version}</version>
+		</dependency>
+	
+		<dependency>
+		    <!-- JPA integrating table mapper -->
+		    <groupId>org.hibernate.javax.persistence</groupId>
+		    <artifactId>hibernate-jpa-2.0-api</artifactId>
+		    <version>1.0.0.Final</version>
+		    <scope>provided</scope>
+		</dependency>
+		<dependency>
+		    <!-- Length annotation -->
+		    <groupId>org.hibernate</groupId>
+		    <artifactId>hibernate-validator</artifactId>
+		    <version>4.1.0.Final</version>
+		    <scope>provided</scope>
+		</dependency>
+		
+		<dependency>
+            <!-- Provides database access -->
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-jdbc</artifactId>
+            <version>${spring.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <!-- Database schema setup -->
+            <groupId>org.jarb</groupId>
+            <artifactId>jarb-migrations</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
 
 </project>
