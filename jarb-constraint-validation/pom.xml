@@ -18,7 +18,49 @@
 	<description>Database constraint validator</description>
 
 	<dependencies>
-		<!-- TODO -->
-	</dependencies>
+        <dependency>
+            <!-- Validation integration -->
+            <groupId>javax.validation</groupId>
+            <artifactId>validation-api</artifactId>
+            <version>1.0.0.GA</version>
+        </dependency>
+		<dependency>
+			<!-- Provides access to column metadata -->
+			<groupId>org.jarb</groupId>
+			<artifactId>jarb-constraint-metadata</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		
+		<!-- Testing -->
+		
+        <dependency>
+            <!-- Used to validate our entities -->
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-validator</artifactId>
+            <version>4.1.0.Final</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <!-- Provides database access -->
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-jdbc</artifactId>
+            <version>${spring.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <!-- Database schema setup -->
+            <groupId>org.jarb</groupId>
+            <artifactId>jarb-migrations</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <!-- Annotate test entities with mapping information -->
+            <groupId>org.hibernate.javax.persistence</groupId>
+            <artifactId>hibernate-jpa-2.0-api</artifactId>
+            <version>1.0.0.Final</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
 
 </project>
