@@ -1,5 +1,7 @@
 package org.jarb.constraint.database.column;
 
+import org.springframework.util.Assert;
+
 /**
  * Repository that loads all constraint metadata in memory, minimizing database
  * connectivity. With a caching constraint repository, the retrieval of constraint
@@ -21,6 +23,7 @@ public class CachingColumnMetadataRepository implements ColumnMetadataRepository
      * @param constraintsProvider provides column medata for our cache
      */
     public CachingColumnMetadataRepository(ColumnMetadataProvider constraintsProvider) {
+        Assert.notNull(constraintsProvider, "Property 'constraints provider' cannot be null");
         this.columnMetadataProvider = constraintsProvider;
     }
 

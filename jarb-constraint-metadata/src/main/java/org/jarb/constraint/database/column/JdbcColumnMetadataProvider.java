@@ -10,6 +10,7 @@ import java.util.List;
 import javax.sql.DataSource;
 
 import org.apache.commons.lang.StringUtils;
+import org.springframework.util.Assert;
 
 /**
  * Retrieves column meta data using JDBC.
@@ -25,6 +26,7 @@ public class JdbcColumnMetadataProvider implements ColumnMetadataProvider {
      * @param dataSource data source reference
      */
     public JdbcColumnMetadataProvider(DataSource dataSource) {
+        Assert.notNull(dataSource, "Property 'data source' cannot be null.");
         this.dataSource = dataSource;
     }
 
@@ -74,18 +76,14 @@ public class JdbcColumnMetadataProvider implements ColumnMetadataProvider {
      */
     private ColumnMetadata mapToColumnMetadata(ResultSet resultSet) throws SQLException {
         String schemaName = resultSet.getString("TABLE_SCHEM");
-        if (schemaName == null) {
-            // Some databses provide a catalog name, rather than a schema name, use this name
-            schemaName = resultSet.getString("TABLE_CAT");
-        }
         String tableName = resultSet.getString("TABLE_NAME");
         String columnName = resultSet.getString("COLUMN_NAME");
         ColumnReference columnReference = new ColumnReference(schemaName, tableName, columnName);
         ColumnMetadata columnMetadata = new ColumnMetadata(columnReference);
         columnMetadata.setDefaultValue(resultSet.getString("COLUMN_DEF"));
-        columnMetadata.setMaximumLength(asInteger(resultSet, "COLUMN_SIZE"));
-        columnMetadata.setFractionLength(asInteger(resultSet, "DECIMAL_DIGITS"));
-        columnMetadata.setRadix(asInteger(resultSet, "NUM_PREC_RADIX"));
+        columnMetadata.setMaximumLength(getValueAsInteger(resultSet, "COLUMN_SIZE"));
+        columnMetadata.setFractionLength(getValueAsInteger(resultSet, "DECIMAL_DIGITS"));
+        columnMetadata.setRadix(getValueAsInteger(resultSet, "NUM_PREC_RADIX"));
         columnMetadata.setRequired(resultSet.getString("IS_NULLABLE").equals("NO"));
         columnMetadata.setAutoIncrement((resultSet.getString("IS_AUTOINCREMENT").equals("YES")));
         return columnMetadata;
@@ -99,7 +97,7 @@ public class JdbcColumnMetadataProvider implements ColumnMetadataProvider {
      * @return column value as integer
      * @throws SQLException if any exception occurs
      */
-    public Integer asInteger(ResultSet resultSet, String columnName) throws SQLException {
+    public Integer getValueAsInteger(ResultSet resultSet, String columnName) throws SQLException {
         String numberAsString = resultSet.getString(columnName);
         if (StringUtils.isBlank(numberAsString)) {
             return null;

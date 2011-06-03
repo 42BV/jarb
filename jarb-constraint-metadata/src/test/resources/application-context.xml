@@ -24,8 +24,8 @@
     </bean>
     
     <!-- Provides access to column meta-data, using entity and property names -->
-    <bean class="org.jarb.constraint.database.column.EntityAwareColumnMetadataRepositoryFactoryBean">
-        <property name="dataSource" ref="dataSource" />
+    <bean class="org.jarb.constraint.database.column.EntityAwareColumnMetadataRepository">
+        <constructor-arg ref="dataSource" />
     </bean>
     
 </beans>

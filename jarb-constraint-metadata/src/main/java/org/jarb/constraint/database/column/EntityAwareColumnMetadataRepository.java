@@ -1,5 +1,8 @@
 package org.jarb.constraint.database.column;
 
+import javax.sql.DataSource;
+
+import org.springframework.util.Assert;
 
 /**
  * Retrieves the database constraints for a specific entity.
@@ -15,9 +18,18 @@ public class EntityAwareColumnMetadataRepository {
 
     /**
      * Construct a new {@link EntityAwareColumnMetadataRepository}.
-     * @param columnMetadataRepository provides the database constraints for a specific column
+     * @param dataSource describes how to connect to the database
+     */
+    public EntityAwareColumnMetadataRepository(DataSource dataSource) {
+        this(new CachingColumnMetadataRepository(new JdbcColumnMetadataProvider(dataSource)));
+    }
+
+    /**
+     * Construct a new {@link EntityAwareColumnMetadataRepository}.
+     * @param columnMetadataRepository provided metadata for a specific column
      */
     public EntityAwareColumnMetadataRepository(ColumnMetadataRepository columnMetadataRepository) {
+        Assert.notNull(columnMetadataRepository, "Delegate column metadata repository is required.");
         this.columnMetadataRepository = columnMetadataRepository;
     }
 

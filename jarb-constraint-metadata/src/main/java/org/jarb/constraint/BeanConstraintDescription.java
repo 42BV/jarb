@@ -16,10 +16,8 @@ import org.apache.commons.lang.builder.ToStringStyle;
  * @param <T> type of bean being described
  */
 public class BeanConstraintDescription<T> {
-    /** Collection of each bean property being described **/
-    private final Map<String, PropertyConstraintDescription<?>> propertyDescriptionMap;
-    /** Type of bean being described **/
     private final Class<T> beanClass;
+    private Map<String, PropertyConstraintDescription<?>> propertyDescriptions;
 
     /**
      * Construct a new {@link BeanConstraintDescription}.
@@ -27,7 +25,7 @@ public class BeanConstraintDescription<T> {
      */
     public BeanConstraintDescription(Class<T> beanClass) {
         this.beanClass = beanClass;
-        propertyDescriptionMap = new HashMap<String, PropertyConstraintDescription<?>>();
+        propertyDescriptions = new HashMap<String, PropertyConstraintDescription<?>>();
     }
 
     /**
@@ -39,21 +37,13 @@ public class BeanConstraintDescription<T> {
     }
 
     /**
-     * Include a property description in our global bean description.
-     * @param propertyDescription description of the property
-     */
-    public void addPropertyDescription(PropertyConstraintDescription<?> propertyDescription) {
-        propertyDescriptionMap.put(propertyDescription.getPropertyName(), propertyDescription);
-    }
-
-    /**
      * Retrieve the description of a specific bean property.
      * @param propertyName name of the property
      * @return property description, or {@code null} if the property
      * describes is not present
      */
     public PropertyConstraintDescription<?> getPropertyDescription(String propertyName) {
-        return propertyDescriptionMap.get(propertyName);
+        return propertyDescriptions.get(propertyName);
     }
 
     /**
@@ -66,7 +56,7 @@ public class BeanConstraintDescription<T> {
      */
     @SuppressWarnings("unchecked")
     public <X> PropertyConstraintDescription<X> getPropertyDescription(String propertyName, Class<X> propertyClass) {
-        return (PropertyConstraintDescription<X>) propertyDescriptionMap.get(propertyName);
+        return (PropertyConstraintDescription<X>) propertyDescriptions.get(propertyName);
     }
 
     /**
@@ -74,7 +64,15 @@ public class BeanConstraintDescription<T> {
      * @return property descriptions
      */
     public Collection<PropertyConstraintDescription<?>> getPropertyDescriptions() {
-        return propertyDescriptionMap.values();
+        return propertyDescriptions.values();
+    }
+
+    /**
+     * Attach the description of a property to this bean description.
+     * @param propertyDescription description of the property
+     */
+    public void addPropertyDescription(PropertyConstraintDescription<?> propertyDescription) {
+        propertyDescriptions.put(propertyDescription.getPropertyName(), propertyDescription);
     }
 
     /**
