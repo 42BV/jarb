@@ -1,0 +1,41 @@
+10
+
+dir
+31424
+https://subversion.42.nl/source/projects/42/excel-testdata-importer/trunk/src/test/resources/excel
+https://subversion.42.nl/source
+
+
+
+2011-05-12T10:47:14.367591Z
+31080
+Jeroen
+
+
+svn:special svn:externals svn:needs-lock
+
+
+
+
+
+
+
+
+
+
+
+c5515583-f93b-0410-807f-92effd9c8a0a
+
+
+
+
+
+
+0
+
+generated
+dir
+
+parser
+dir
+

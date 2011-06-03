@@ -1,0 +1,84 @@
+package org.jarb.populator.excel.mapping.importer;
+
+import nl.mad.hactar.common.ReflectionUtil;
+
+import org.jarb.populator.excel.mapping.CouldNotConvertException;
+import org.jarb.populator.excel.mapping.ValueConversionService;
+import org.jarb.populator.excel.mapping.excelrow.ExcelRow;
+import org.jarb.populator.excel.metamodel.ClassDefinition;
+import org.jarb.populator.excel.metamodel.PropertyDefinition;
+import org.jarb.populator.excel.workbook.Sheet;
+import org.jarb.populator.excel.workbook.Workbook;
+import org.jarb.populator.excel.workbook.validator.FieldValidator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+/**
+ * Stores the value of a regular Excel column.
+ * @author Sander Benschop
+ * @author Willem Eppen
+ *
+ */
+public final class StoreColumn {
+    private static final Logger logger = LoggerFactory.getLogger(StoreColumn.class);
+
+    /** Private constructor. */
+    private StoreColumn() {
+    }
+
+    /**
+     * Stores a Column in ExcelRow.
+     * @param excel Representation of excel file
+     * @param classDefinition ClassDefinition used to determine columnPosition
+     * @param columnDefinition ColumnDefinition is the superclass of Column, JoinColumn and JoinTable.
+     * @param rowPosition Vertical position number of the excelRecord
+     * @param excelRow ExcelRow to save to.
+     * @throws NoSuchFieldException Thrown when a field is not available
+     */
+    public static void storeValue(Workbook excel, ClassDefinition classDefinition, PropertyDefinition columnDefinition, Integer rowPosition, ExcelRow excelRow)
+            throws NoSuchFieldException {
+        Integer columnPosition = classDefinition.getWorksheetDefinition().getColumnPosition(columnDefinition.getColumnName());
+
+        Sheet sheet = excel.getSheet(classDefinition.getTableName());
+        Object cellValue = getCellValue(sheet, rowPosition, columnPosition);
+        logger.debug("field: " + columnDefinition.getFieldName() + " column: " + columnDefinition.getColumnName() + " value:[" + cellValue + "]");
+
+        if (FieldValidator.isExistingField(columnDefinition.getFieldName(), excelRow.getCreatedInstance().getClass())) {
+            setExcelRowFieldValue(excelRow.getCreatedInstance(), columnDefinition.getFieldName(), cellValue);
+        } else if (FieldValidator.isExistingField(columnDefinition.getEmbeddedObjectName(), excelRow.getCreatedInstance().getClass())) {
+            Object embeddedField = ReflectionUtil.getFieldValue(excelRow.getCreatedInstance(), columnDefinition.getEmbeddedObjectName());
+            setExcelRowFieldValue(embeddedField, columnDefinition.getFieldName(), cellValue);
+        }
+    }
+
+    /**
+     * Sets an Excelrow's field value via reflection. Works for regular fields, embedded fields and Enumerations.
+     * @param excelRow Excelrow to add the field value to
+     * @param fieldName Name of field which value is to be set
+     * @param cellValue Value of the field that is to be saved
+     */
+    private static void setExcelRowFieldValue(Object excelRow, String fieldName, Object cellValue) {
+        final Class<?> fieldType = ReflectionUtil.getFieldType(excelRow, fieldName);
+        try {
+            Object fieldValue = ValueConversionService.INSTANCE.convert(cellValue, fieldType);
+            ReflectionUtil.setFieldValue(excelRow, fieldName, fieldValue);
+        } catch (CouldNotConvertException e) {
+            logger.warn("Could not convert '{}' into a {}, thus '{}' will remain unchanged.", new Object[] { cellValue, fieldType, fieldName });
+        }
+    }
+
+    /**
+     * Returns the cellValue from the excel file.
+     * @param excel Excel file to get cellValue from
+     * @param rowPosition Rowposition of the cell
+     * @param columnPosition ColumnPosition of the cell
+     * @return CellValue from the specified location
+     */
+    private static Object getCellValue(Sheet sheet, Integer rowPosition, Integer columnPosition) {
+        Object cellValue = null;
+        if (columnPosition != null) {
+            cellValue = sheet.getCellValueAt(rowPosition, columnPosition);
+        }
+        return cellValue;
+    }
+}
