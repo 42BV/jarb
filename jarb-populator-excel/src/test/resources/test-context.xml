@@ -48,7 +48,7 @@
 		</property>
 	</bean>
 	
-	<bean id="excelTestDataFactory" class="nl.mad.exceltestdata.ExcelTestDataFactory">
+	<bean id="excelTestDataFactory" class="org.jarb.populator.excel.ExcelTestDataFactory">
 	   <property name="entityManagerFactory" ref="entityManagerFactory"/>
 	</bean>
 	
