@@ -51,38 +51,37 @@ public class HsqlConstraintViolationResolver extends RootCauseMessageConstraintV
     }
 
     private ConstraintViolation resolveNotNullViolation(String message) {
-        ConstraintViolation violation = new ConstraintViolation(ConstraintViolationType.CANNOT_BE_NULL);
+        ConstraintViolation.Builder violationBuilder = new ConstraintViolation.Builder(ConstraintViolationType.CANNOT_BE_NULL);
         Matcher matcher = Pattern.compile(CANNOT_BE_NULL_PATTERN).matcher(message);
         Assert.isTrue(matcher.matches()); // Retrieve group information
-        violation.setConstraintName(matcher.group(1));
-        violation.setTableName(matcher.group(2));
-        violation.setColumnName(matcher.group(3));
-        return violation;
+        violationBuilder.setConstraintName(matcher.group(1));
+        violationBuilder.setTableName(matcher.group(2)).setColumnName(matcher.group(3));
+        return violationBuilder.build();
     }
 
     private ConstraintViolation resolveUniqueViolation(String message) {
-        ConstraintViolation violation = new ConstraintViolation(ConstraintViolationType.UNIQUE_VIOLATION);
+        ConstraintViolation.Builder violationBuilder = new ConstraintViolation.Builder(ConstraintViolationType.UNIQUE_VIOLATION);
         Matcher matcher = Pattern.compile(UNIQUE_VIOLATION_PATTERN).matcher(message);
         Assert.isTrue(matcher.matches()); // Retrieve group information
-        violation.setConstraintName(matcher.group(1));
-        violation.setTableName(matcher.group(2));
-        return violation;
+        violationBuilder.setConstraintName(matcher.group(1));
+        violationBuilder.setTableName(matcher.group(2));
+        return violationBuilder.build();
     }
 
     private ConstraintViolation resolveLengthViolation(String message) {
-        ConstraintViolation violation = new ConstraintViolation(ConstraintViolationType.LENGTH_EXCEEDED);
+        ConstraintViolation.Builder violationBuilder = new ConstraintViolation.Builder(ConstraintViolationType.LENGTH_EXCEEDED);
         Matcher matcher = Pattern.compile(LENGTH_EXCEEDED_PATTERN).matcher(message);
         Assert.isTrue(matcher.matches()); // Retrieve group information
-        violation.setValueType(matcher.group(1));
-        return violation;
+        violationBuilder.setValueType(matcher.group(1));
+        return violationBuilder.build();
     }
 
     private ConstraintViolation resolveTypeViolation(String message) {
-        ConstraintViolation violation = new ConstraintViolation(ConstraintViolationType.INVALID_TYPE);
+        ConstraintViolation.Builder violationBuilder = new ConstraintViolation.Builder(ConstraintViolationType.INVALID_TYPE);
         Matcher matcher = Pattern.compile(INVALID_TYPE_PATTERN).matcher(message);
         Assert.isTrue(matcher.matches()); // Retrieve group information
-        violation.setValueType(matcher.group(1));
-        return violation;
+        violationBuilder.setValueType(matcher.group(1));
+        return violationBuilder.build();
     }
 
 }

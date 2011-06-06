@@ -25,13 +25,13 @@ public class ConstraintViolationResolverFactory {
      * @return new "default" constraint violation resolver
      */
     public static ConstraintViolationResolver build(DatabaseResolver databaseResolver) {
-        DatabaseSpecificConstraintViolationResolver sqlResolver = new DatabaseSpecificConstraintViolationResolver();
-        sqlResolver.register(Database.HSQL, new HsqlConstraintViolationResolver());
-        sqlResolver.register(Database.MYSQL, new MysqlConstraintViolationResolver());
-        sqlResolver.register(Database.ORACLE, new OracleConstraintViolationResolver());
-        sqlResolver.register(Database.POSTGRESQL, new PostgresConstraintViolationResolver());
-        sqlResolver.setDatabaseResolver(databaseResolver);
-        return sqlResolver;
+        DatabaseSpecificConstraintViolationResolver violationResolver = new DatabaseSpecificConstraintViolationResolver();
+        violationResolver.register(Database.HSQL, new HsqlConstraintViolationResolver());
+        violationResolver.register(Database.MYSQL, new MysqlConstraintViolationResolver());
+        violationResolver.register(Database.ORACLE, new OracleConstraintViolationResolver());
+        violationResolver.register(Database.POSTGRESQL, new PostgresConstraintViolationResolver());
+        violationResolver.setDatabaseResolver(databaseResolver);
+        return violationResolver;
     }
 
 }

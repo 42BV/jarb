@@ -57,49 +57,49 @@ public class OracleConstraintViolationResolver extends RootCauseMessageConstrain
     }
 
     private ConstraintViolation resolveCheckViolation(String message) {
-        ConstraintViolation violation = new ConstraintViolation(ConstraintViolationType.CHECK_FAILED);
+        ConstraintViolation.Builder violationBuilder = new ConstraintViolation.Builder(ConstraintViolationType.CHECK_FAILED);
         Matcher matcher = Pattern.compile(CHECK_FAILED_PATTERN).matcher(message);
         Assert.isTrue(matcher.matches()); // Retrieve group information
-        violation.setConstraintName(matcher.group(2).split("\\.")[1]);
-        return violation;
+        violationBuilder.setConstraintName(matcher.group(2).split("\\.")[1]);
+        return violationBuilder.build();
     }
 
     private ConstraintViolation resolveNotNullViolation(String message) {
-        ConstraintViolation violation = new ConstraintViolation(ConstraintViolationType.CANNOT_BE_NULL);
+        ConstraintViolation.Builder violationBuilder = new ConstraintViolation.Builder(ConstraintViolationType.CANNOT_BE_NULL);
         Matcher matcher = Pattern.compile(CANNOT_BE_NULL_PATTERN).matcher(message);
         Assert.isTrue(matcher.matches()); // Retrieve group information
-        // Column address example: ["hibernate","persons","name"]
+        // Retrieved output: "schema"."table"."column"
         final String[] columnAddress = matcher.group(2).replace("\"", "").split("\\.");
-        violation.setTableName(columnAddress[1]);
-        violation.setColumnName(columnAddress[2]);
-        return violation;
+        violationBuilder.setTableName(columnAddress[1]);
+        violationBuilder.setColumnName(columnAddress[2]);
+        return violationBuilder.build();
     }
 
     private ConstraintViolation resolveUniqueKeyViolation(String message) {
-        ConstraintViolation violation = new ConstraintViolation(ConstraintViolationType.UNIQUE_VIOLATION);
+        ConstraintViolation.Builder violationBuilder = new ConstraintViolation.Builder(ConstraintViolationType.UNIQUE_VIOLATION);
         Matcher matcher = Pattern.compile(UNIQUE_VIOLATION_PATTERN).matcher(message);
         Assert.isTrue(matcher.matches()); // Retrieve group information
-        violation.setConstraintName(matcher.group(2).split("\\.")[1]);
-        return violation;
+        violationBuilder.setConstraintName(matcher.group(2).split("\\.")[1]);
+        return violationBuilder.build();
     }
 
     private ConstraintViolation resolveLengthViolation(String message) {
-        ConstraintViolation violation = new ConstraintViolation(ConstraintViolationType.LENGTH_EXCEEDED);
+        ConstraintViolation.Builder violationBuilder = new ConstraintViolation.Builder(ConstraintViolationType.LENGTH_EXCEEDED);
         Matcher matcher = Pattern.compile(LENGTH_EXCEEDED_PATTERN).matcher(message);
         Assert.isTrue(matcher.matches()); // Retrieve group information
         // Column address example: ["hibernate","persons","name"]
         final String[] columnAddress = matcher.group(2).replace("\"", "").split("\\.");
-        violation.setTableName(columnAddress[1]);
-        violation.setColumnName(columnAddress[2]);
-        violation.setMaximumLength(Long.valueOf(matcher.group(4)));
-        return violation;
+        violationBuilder.setTableName(columnAddress[1]);
+        violationBuilder.setColumnName(columnAddress[2]);
+        violationBuilder.setMaximumLength(Long.valueOf(matcher.group(4)));
+        return violationBuilder.build();
     }
 
     private ConstraintViolation resolveTypeViolation(String message) {
-        ConstraintViolation violation = new ConstraintViolation(ConstraintViolationType.INVALID_TYPE);
+        ConstraintViolation.Builder violationBuilder = new ConstraintViolation.Builder(ConstraintViolationType.INVALID_TYPE);
         Matcher matcher = Pattern.compile(INVALID_TYPE_PATTERN).matcher(message);
         Assert.isTrue(matcher.matches()); // Retrieve group information
-        violation.setExpectedType(matcher.group(2));
-        return violation;
+        violationBuilder.setExpectedType(matcher.group(2));
+        return violationBuilder.build();
     }
 }

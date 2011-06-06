@@ -12,8 +12,9 @@ public class ConstraintViolationTest {
      */
     @Test
     public void testToString() {
-        ConstraintViolation violation = new ConstraintViolation(ConstraintViolationType.CHECK_FAILED);
-        violation.setConstraintName("ck_name_cannot_be_henk");
+        ConstraintViolation.Builder violationBuilder = new ConstraintViolation.Builder(ConstraintViolationType.CHECK_FAILED);
+        violationBuilder.setConstraintName("ck_name_cannot_be_henk");
+        ConstraintViolation violation = violationBuilder.build();
         final String toString = violation.toString();
         assertNotNull(toString);
         assertTrue(toString.contains("CHECK_FAILED"));

@@ -23,9 +23,9 @@ public class ConfigurableConstraintViolationExceptionFactoryTest {
      */
     @Test
     public void testDefaultException() {
-        ConstraintViolation violation = new ConstraintViolation(ConstraintViolationType.UNIQUE_VIOLATION);
-        violation.setConstraintName("uk_some_table_some_column");
-        Throwable exception = factory.createException(violation);
+        ConstraintViolation.Builder violationBuilder = new ConstraintViolation.Builder(ConstraintViolationType.UNIQUE_VIOLATION);
+        violationBuilder.setConstraintName("uk_some_table_some_column");
+        Throwable exception = factory.createException(violationBuilder.build());
         assertTrue(exception instanceof UniqueKeyViolationException);
     }
 
@@ -35,9 +35,9 @@ public class ConfigurableConstraintViolationExceptionFactoryTest {
     @Test
     public void testCustomException() {
         factory.registerException("uk_cars_license", LicenseNumberAlreadyExistsException.class);
-        ConstraintViolation violation = new ConstraintViolation(ConstraintViolationType.UNIQUE_VIOLATION);
-        violation.setConstraintName("uk_cars_license");
-        Throwable exception = factory.createException(violation);
+        ConstraintViolation.Builder violationBuilder = new ConstraintViolation.Builder(ConstraintViolationType.UNIQUE_VIOLATION);
+        violationBuilder.setConstraintName("uk_cars_license");
+        Throwable exception = factory.createException(violationBuilder.build());
         assertTrue(exception instanceof LicenseNumberAlreadyExistsException);
     }
 

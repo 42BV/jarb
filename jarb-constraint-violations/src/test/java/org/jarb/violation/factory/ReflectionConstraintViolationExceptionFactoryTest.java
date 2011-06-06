@@ -15,8 +15,8 @@ public class ReflectionConstraintViolationExceptionFactoryTest {
     @Test
     public void testInstantiateException() {
         ConstraintViolationExceptionFactory factory = ReflectionConstraintViolationExceptionFactory.forClass(LicenseNumberAlreadyExistsException.class);
-        ConstraintViolation violation = new ConstraintViolation(ConstraintViolationType.UNIQUE_VIOLATION);
-        Throwable exception = factory.createException(violation);
+        ConstraintViolation.Builder violationBuilder = new ConstraintViolation.Builder(ConstraintViolationType.UNIQUE_VIOLATION);
+        Throwable exception = factory.createException(violationBuilder.build());
         assertTrue(exception instanceof LicenseNumberAlreadyExistsException);
     }
 
@@ -26,8 +26,8 @@ public class ReflectionConstraintViolationExceptionFactoryTest {
     @Test(expected = RuntimeException.class)
     public void testNoMatchingConstructor() {
         ConstraintViolationExceptionFactory factory = ReflectionConstraintViolationExceptionFactory.forClass(IllegalArgumentException.class);
-        ConstraintViolation violation = new ConstraintViolation(ConstraintViolationType.UNIQUE_VIOLATION);
-        factory.createException(violation);
+        ConstraintViolation.Builder violationBuilder = new ConstraintViolation.Builder(ConstraintViolationType.UNIQUE_VIOLATION);
+        factory.createException(violationBuilder.build());
     }
 
 }

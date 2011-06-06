@@ -20,7 +20,7 @@ public class ConstraintViolation {
     private String expectedType;
     private Long maximumLength;
 
-    public ConstraintViolation(ConstraintViolationType type) {
+    private ConstraintViolation(ConstraintViolationType type) {
         this.type = type;
     }
 
@@ -32,56 +32,91 @@ public class ConstraintViolation {
         return constraintName;
     }
 
-    public void setConstraintName(String constraintName) {
-        this.constraintName = constraintName;
-    }
-
     public String getTableName() {
         return tableName;
-    }
-
-    public void setTableName(String tableName) {
-        this.tableName = tableName;
     }
 
     public String getColumnName() {
         return columnName;
     }
 
-    public void setColumnName(String columnName) {
-        this.columnName = columnName;
-    }
-
     public Object getValue() {
         return value;
-    }
-
-    public void setValue(Object value) {
-        this.value = value;
     }
 
     public String getValueType() {
         return valueType;
     }
 
-    public void setValueType(String valueType) {
-        this.valueType = valueType;
-    }
-
     public String getExpectedType() {
         return expectedType;
-    }
-
-    public void setExpectedType(String expectedType) {
-        this.expectedType = expectedType;
     }
 
     public Long getMaximumLength() {
         return maximumLength;
     }
 
-    public void setMaximumLength(Long maximumLength) {
-        this.maximumLength = maximumLength;
+    public static class Builder {
+        private final ConstraintViolationType type;
+        private String constraintName;
+        private String tableName;
+        private String columnName;
+
+        private Object value;
+        private String valueType;
+        private String expectedType;
+        private Long maximumLength;
+
+        public Builder(ConstraintViolationType type) {
+            this.type = type;
+        }
+
+        public Builder setConstraintName(String constraintName) {
+            this.constraintName = constraintName;
+            return this;
+        }
+
+        public Builder setTableName(String tableName) {
+            this.tableName = tableName;
+            return this;
+        }
+
+        public Builder setColumnName(String columnName) {
+            this.columnName = columnName;
+            return this;
+        }
+
+        public Builder setValue(Object value) {
+            this.value = value;
+            return this;
+        }
+
+        public Builder setValueType(String valueType) {
+            this.valueType = valueType;
+            return this;
+        }
+
+        public Builder setExpectedType(String expectedType) {
+            this.expectedType = expectedType;
+            return this;
+        }
+
+        public Builder setMaximumLength(Long maximumLength) {
+            this.maximumLength = maximumLength;
+            return this;
+        }
+
+        public ConstraintViolation build() {
+            ConstraintViolation violation = new ConstraintViolation(type);
+            violation.constraintName = constraintName;
+            violation.tableName = tableName;
+            violation.columnName = columnName;
+            violation.value = value;
+            violation.valueType = valueType;
+            violation.expectedType = expectedType;
+            violation.maximumLength = maximumLength;
+            return violation;
+        }
     }
 
     /**
