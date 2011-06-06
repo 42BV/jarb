@@ -40,6 +40,10 @@ public class Release implements Serializable {
     public Release() {
     }
 
+    public Integer getId() {
+        return id;
+    }
+
     /**
      * Returns the release number.
      * @return Release number
