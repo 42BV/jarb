@@ -70,7 +70,7 @@ public class ConfigurableConstraintViolationExceptionFactory implements Constrai
      * @param exceptionClass class of the exception to generate
      */
     public void registerException(String constraintName, Class<? extends Throwable> exceptionClass) {
-        registerFactory(constraintName, ReflectionConstraintViolationExceptionFactory.forClass(exceptionClass));
+        registerFactory(constraintName, new ReflectionConstraintViolationExceptionFactory(exceptionClass));
     }
 
     /**

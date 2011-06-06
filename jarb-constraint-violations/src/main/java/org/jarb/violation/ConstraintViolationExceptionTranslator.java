@@ -13,8 +13,10 @@ import org.springframework.util.Assert;
  * @since 17-05-2011
  */
 public class ConstraintViolationExceptionTranslator {
-    private ConstraintViolationResolver violationResolver;
-    private ConstraintViolationExceptionFactory exceptionFactory;
+    /** Resolves the constraint violation from an exception. **/
+    private final ConstraintViolationResolver violationResolver;
+    /** Creates an exception for some constraint violation. **/
+    private final ConstraintViolationExceptionFactory exceptionFactory;
 
     /**
      * Construct a new {@link ConstraintViolationExceptionTranslator}.

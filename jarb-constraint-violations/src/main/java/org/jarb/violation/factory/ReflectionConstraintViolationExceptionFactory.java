@@ -1,9 +1,8 @@
 package org.jarb.violation.factory;
 
-import java.lang.reflect.Constructor;
+import static org.springframework.beans.BeanUtils.instantiateClass;
 
 import org.jarb.violation.ConstraintViolation;
-import org.springframework.beans.BeanUtils;
 
 /**
  * Creates constraint violation exceptions based on an exception class. Note
@@ -14,21 +13,14 @@ import org.springframework.beans.BeanUtils;
  * @since 18-05-2011
  */
 public class ReflectionConstraintViolationExceptionFactory implements ConstraintViolationExceptionFactory {
-    private Class<? extends Throwable> exceptionClass;
-
-    public void setExceptionClass(Class<? extends Throwable> exceptionClass) {
-        this.exceptionClass = exceptionClass;
-    }
+    private final Class<? extends Throwable> exceptionClass;
 
     /**
-     * Create a new {@link ReflectionConstraintViolationExceptionFactory} for a specific exception class.
-     * @param exceptionClass class of the exception to generate
-     * @return new factory instance that generates the exception
+     * Construct a new {@link ReflectionConstraintViolationExceptionFactory}.
+     * @param exceptionClass class of the exception that should be created
      */
-    public static ReflectionConstraintViolationExceptionFactory forClass(Class<? extends Throwable> exceptionClass) {
-        ReflectionConstraintViolationExceptionFactory factory = new ReflectionConstraintViolationExceptionFactory();
-        factory.setExceptionClass(exceptionClass);
-        return factory;
+    public ReflectionConstraintViolationExceptionFactory(Class<? extends Throwable> exceptionClass) {
+        this.exceptionClass = exceptionClass;
     }
 
     /**
@@ -36,13 +28,17 @@ public class ReflectionConstraintViolationExceptionFactory implements Constraint
      */
     @Override
     public Throwable createException(ConstraintViolation violation) {
-        Constructor<? extends Throwable> constructor;
+        Throwable exception = null;
         try {
-            constructor = exceptionClass.getConstructor(ConstraintViolation.class);
-        } catch (NoSuchMethodException e) {
-            throw new RuntimeException("Could not find a constraint violation constructor for " + exceptionClass.getName(), e);
+            exception = instantiateClass(exceptionClass.getConstructor(ConstraintViolation.class), violation);
+        } catch (NoSuchMethodException noViolationConstructor) {
+            try {
+                exception = instantiateClass(exceptionClass.getConstructor());
+            } catch (NoSuchMethodException noNullaryConstructor) {
+                throw new IllegalStateException("Could not find a nullary or constraint violation constructor for " + exceptionClass.getName());
+            }
         }
-        return BeanUtils.instantiateClass(constructor, violation);
+        return exception;
     }
 
 }
