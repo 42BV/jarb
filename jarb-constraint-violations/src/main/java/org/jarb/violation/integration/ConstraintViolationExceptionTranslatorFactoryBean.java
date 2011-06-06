@@ -9,7 +9,6 @@ import org.jarb.violation.factory.ConstraintViolationExceptionFactory;
 import org.jarb.violation.resolver.ConstraintViolationResolver;
 import org.jarb.violation.resolver.ConstraintViolationResolverFactory;
 import org.jarb.violation.resolver.database.DatabaseResolver;
-import org.springframework.util.Assert;
 
 /**
  * Factory bean for {@link ConstraintViolationExceptionTranslator}. Using this factory
@@ -31,11 +30,7 @@ public class ConstraintViolationExceptionTranslatorFactoryBean extends Singleton
      */
     @Override
     protected ConstraintViolationExceptionTranslator createObject() throws Exception {
-        ConstraintViolationExceptionTranslator instance = new ConstraintViolationExceptionTranslator();
-        Assert.notNull(violationResolver, "Property 'violation resolver' is required.");
-        instance.setViolationResolver(violationResolver);
-        instance.setExceptionFactory(createCustomExceptionFactory());
-        return instance;
+        return new ConstraintViolationExceptionTranslator(violationResolver, createCustomExceptionFactory());
     }
 
     /**
@@ -73,6 +68,7 @@ public class ConstraintViolationExceptionTranslatorFactoryBean extends Singleton
     /**
      * Configure a default violation resolver that uses the provided database resolver.
      * @param databaseResolver determines the database for our violation resolver
+     * @see #setViolationResolver(ConstraintViolationResolver)
      */
     public void setDatabaseResolver(DatabaseResolver databaseResolver) {
         setViolationResolver(ConstraintViolationResolverFactory.build(databaseResolver));

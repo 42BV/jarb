@@ -10,7 +10,6 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceException;
 
 import org.jarb.violation.domain.Car;
-import org.jarb.violation.factory.SimpleConstraintViolationExceptionFactory;
 import org.jarb.violation.resolver.ConstraintViolationResolver;
 import org.jarb.violation.resolver.ConstraintViolationResolverFactory;
 import org.jarb.violation.resolver.database.DatabaseResolver;
@@ -39,11 +38,9 @@ public class ConstraintViolationExceptionTranslatorTest {
 
     @Before
     public void setUpResolver() {
-        translator = new ConstraintViolationExceptionTranslator();
         DatabaseResolver databaseResolver = HibernateJpaDatabaseResolver.forEntityManager(entityManager);
         ConstraintViolationResolver violationResolver = ConstraintViolationResolverFactory.build(databaseResolver);
-        translator.setViolationResolver(violationResolver);
-        translator.setExceptionFactory(new SimpleConstraintViolationExceptionFactory());
+        translator = new ConstraintViolationExceptionTranslator(violationResolver);
     }
 
     /**
