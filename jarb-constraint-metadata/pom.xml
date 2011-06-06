@@ -38,14 +38,14 @@
 		    <version>4.1.0.Final</version>
             <optional>true</optional>
 		</dependency>
-		
 		<dependency>
-            <!-- Provides database access -->
+            <!-- Query constraint metadata from table -->
             <groupId>org.springframework</groupId>
             <artifactId>spring-jdbc</artifactId>
             <version>${spring.version}</version>
-            <scope>test</scope>
+            <optional>true</optional>
         </dependency>
+        
         <dependency>
             <!-- Database schema setup -->
             <groupId>org.jarb</groupId>
