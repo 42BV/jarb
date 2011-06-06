@@ -13,8 +13,8 @@ import javax.validation.Payload;
 @Documented
 @Target(TYPE)
 @Retention(RUNTIME)
-@Constraint(validatedBy = DatabaseConstraintValidator.class)
-public @interface DatabaseConstraint {
+@Constraint(validatedBy = DatabaseConstrainedValidator.class)
+public @interface DatabaseConstrained {
     /**
      * Identifier of the constraint repository that should be used.
      * Whenever left empty, we assume that there is only one constraint

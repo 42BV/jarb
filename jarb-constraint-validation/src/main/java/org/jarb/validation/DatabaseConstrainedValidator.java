@@ -45,8 +45,8 @@ import org.springframework.util.Assert;
  * @author Jeroen van Schagen
  * @since 23-05-2011
  */
-public class DatabaseConstraintValidator implements ConstraintValidator<DatabaseConstraint, Object>, ApplicationContextAware {
-    private static final Logger LOGGER = LoggerFactory.getLogger(DatabaseConstraintValidator.class);
+public class DatabaseConstrainedValidator implements ConstraintValidator<DatabaseConstrained, Object>, ApplicationContextAware {
+    private static final Logger LOGGER = LoggerFactory.getLogger(DatabaseConstrainedValidator.class);
 
     // Violation message templates
     private static final String NOT_NULL_TEMPLATE = "{javax.validation.constraints.NotNull.message}";
@@ -200,7 +200,7 @@ public class DatabaseConstraintValidator implements ConstraintValidator<Database
      * Asserts that every required dependency has been injected correctly.
      */
     @Override
-    public void initialize(DatabaseConstraint annotation) {
+    public void initialize(DatabaseConstrained annotation) {
         if (columnMetadataRepository == null) {
             columnMetadataRepository = getMetadataRepositoryFromContext(annotation);
         }
@@ -211,7 +211,7 @@ public class DatabaseConstraintValidator implements ConstraintValidator<Database
      * @param annotation constraint annotation
      * @return column metadata repository
      */
-    private EntityAwareColumnMetadataRepository getMetadataRepositoryFromContext(DatabaseConstraint annotation) {
+    private EntityAwareColumnMetadataRepository getMetadataRepositoryFromContext(DatabaseConstrained annotation) {
         Assert.notNull(applicationContext, "Cannot retrieve column constraint repository without application context.");
         if (StringUtils.isNotBlank(annotation.constraintRepository())) {
             return applicationContext.getBean(annotation.constraintRepository(), EntityAwareColumnMetadataRepository.class);

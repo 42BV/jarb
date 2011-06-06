@@ -5,7 +5,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import java.util.List;
+import java.util.Set;
 
 import javax.sql.DataSource;
 
@@ -19,20 +19,20 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "classpath:application-context.xml" })
 public class JdbcColumnMetadataProviderTest {
-    private JdbcColumnMetadataProvider constraintsProvider;
+    private Set<ColumnMetadata> columnMetadataSet;
 
     @Autowired
     private DataSource dataSource;
 
     @Before
     public void setUp() {
-        constraintsProvider = new JdbcColumnMetadataProvider(dataSource);
+        JdbcColumnMetadataProvider constraintsProvider = new JdbcColumnMetadataProvider(dataSource);
+        columnMetadataSet = constraintsProvider.all();
     }
 
     @Test
     public void testGetColumnConstraints() {
-        List<ColumnMetadata> columnConstraints = constraintsProvider.all();
-        ColumnMetadata licenseNumberConstraint = findColumnMetadata("CARS", "LICENSE_NUMBER", columnConstraints);
+        ColumnMetadata licenseNumberConstraint = findColumnMetadata("CARS", "LICENSE_NUMBER");
         assertEquals("PUBLIC", licenseNumberConstraint.getSchemaName());
         assertEquals("CARS", licenseNumberConstraint.getTableName());
         assertEquals("LICENSE_NUMBER", licenseNumberConstraint.getColumnName());
@@ -49,8 +49,8 @@ public class JdbcColumnMetadataProviderTest {
      * @param constraints all database column metadata
      * @return metadata for only the provided column
      */
-    private ColumnMetadata findColumnMetadata(String tableName, String columnName, List<ColumnMetadata> constraints) {
-        for (ColumnMetadata constraint : constraints) {
+    private ColumnMetadata findColumnMetadata(String tableName, String columnName) {
+        for (ColumnMetadata constraint : columnMetadataSet) {
             if (constraint.getTableName().equals(tableName) && constraint.getColumnName().equals(columnName)) {
                 return constraint;
             }

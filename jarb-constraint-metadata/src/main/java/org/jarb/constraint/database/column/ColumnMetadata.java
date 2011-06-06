@@ -169,6 +169,26 @@ public class ColumnMetadata {
      * {@inheritDoc}
      */
     @Override
+    public boolean equals(Object obj) {
+        boolean equals = false;
+        if (obj instanceof ColumnMetadata) {
+            equals = columnReference.equals(((ColumnMetadata) obj).getColumnReference());
+        }
+        return equals;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int hashCode() {
+        return columnReference.hashCode();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public String toString() {
         return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
     }

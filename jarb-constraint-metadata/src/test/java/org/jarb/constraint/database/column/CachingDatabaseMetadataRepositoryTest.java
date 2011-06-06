@@ -2,8 +2,8 @@ package org.jarb.constraint.database.column;
 
 import static org.junit.Assert.assertNull;
 
-import java.util.Arrays;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.easymock.EasyMock;
 import org.junit.Assert;
@@ -33,8 +33,9 @@ public class CachingDatabaseMetadataRepositoryTest {
     public void testCache() {
         ColumnReference columnReference = new ColumnReference("my_schema", "my_table", "my_column");
         ColumnMetadata columnConstraint = new ColumnMetadata(columnReference);
-        List<ColumnMetadata> columnConstraintList = Arrays.asList(columnConstraint);
-        EasyMock.expect(constraintsProviderMock.all()).andReturn(columnConstraintList).times(2);
+        Set<ColumnMetadata> columnConstraintSet = new HashSet<ColumnMetadata>();
+        columnConstraintSet.add(columnConstraint);
+        EasyMock.expect(constraintsProviderMock.all()).andReturn(columnConstraintSet).times(2);
         EasyMock.replay(constraintsProviderMock);
 
         for (int i = 0; i < 10; i++) {
@@ -54,8 +55,9 @@ public class CachingDatabaseMetadataRepositoryTest {
     @Test
     public void testGetColumnConstraintsByUnknownTable() {
         ColumnReference columnReference = new ColumnReference("my_schema", "my_table", "my_column");
-        List<ColumnMetadata> columnConstraintList = Arrays.asList(new ColumnMetadata(columnReference));
-        EasyMock.expect(constraintsProviderMock.all()).andReturn(columnConstraintList);
+        Set<ColumnMetadata> columnConstraintSet = new HashSet<ColumnMetadata>();
+        columnConstraintSet.add(new ColumnMetadata(columnReference));
+        EasyMock.expect(constraintsProviderMock.all()).andReturn(columnConstraintSet);
         EasyMock.replay(constraintsProviderMock);
 
         assertNull(columnConstraints.getColumnMetadata("unknown_table", "my_column"));
@@ -69,8 +71,9 @@ public class CachingDatabaseMetadataRepositoryTest {
     @Test
     public void testGetColumnConstraintsByUnknownColumn() {
         ColumnReference columnReference = new ColumnReference("my_schema", "my_table", "my_column");
-        List<ColumnMetadata> columnConstraintList = Arrays.asList(new ColumnMetadata(columnReference));
-        EasyMock.expect(constraintsProviderMock.all()).andReturn(columnConstraintList);
+        Set<ColumnMetadata> columnConstraintSet = new HashSet<ColumnMetadata>();
+        columnConstraintSet.add(new ColumnMetadata(columnReference));
+        EasyMock.expect(constraintsProviderMock.all()).andReturn(columnConstraintSet);
         EasyMock.replay(constraintsProviderMock);
 
         assertNull(columnConstraints.getColumnMetadata("my_table", "unknown_column"));

@@ -4,12 +4,13 @@ import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.sql.DataSource;
 
 import org.apache.commons.lang.StringUtils;
+import org.jarb.utils.JdbcUtils;
 import org.springframework.util.Assert;
 
 /**
@@ -34,23 +35,17 @@ public class JdbcColumnMetadataProvider implements ColumnMetadataProvider {
      * {@inheritDoc}
      */
     @Override
-    public List<ColumnMetadata> all() {
+    public Set<ColumnMetadata> all() {
         Connection connection = null;
         try {
             connection = dataSource.getConnection();
-            DatabaseMetaData metaData = connection.getMetaData();
-            ResultSet columnResultSet = metaData.getColumns(null, null, null, null);
+            DatabaseMetaData metadata = connection.getMetaData();
+            ResultSet columnResultSet = metadata.getColumns(null, null, null, null);
             return extractColumnInfo(columnResultSet);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         } finally {
-            try {
-                if (connection != null) {
-                    connection.close();
-                }
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            }
+            JdbcUtils.closeQuietly(connection);
         }
     }
 
@@ -60,8 +55,8 @@ public class JdbcColumnMetadataProvider implements ColumnMetadataProvider {
      * @return list of meta data extracted from the result set
      * @throws SQLException if any exception occurs
      */
-    private List<ColumnMetadata> extractColumnInfo(ResultSet resultSet) throws SQLException {
-        List<ColumnMetadata> columnMetaData = new ArrayList<ColumnMetadata>();
+    private Set<ColumnMetadata> extractColumnInfo(ResultSet resultSet) throws SQLException {
+        Set<ColumnMetadata> columnMetaData = new HashSet<ColumnMetadata>();
         while (resultSet.next()) {
             columnMetaData.add(mapToColumnMetadata(resultSet));
         }

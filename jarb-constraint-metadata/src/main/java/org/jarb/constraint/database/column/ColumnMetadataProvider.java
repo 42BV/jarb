@@ -1,10 +1,9 @@
 package org.jarb.constraint.database.column;
 
-import java.util.List;
-
+import java.util.Set;
 
 /**
- * Capable of retrieving all column constraint metadata.
+ * Capable of retrieving all column metadata.
  * 
  * @author Jeroen van Schagen
  * @since 30-05-2011
@@ -12,9 +11,9 @@ import java.util.List;
 public interface ColumnMetadataProvider {
 
     /**
-     * Retrieve all column constraint metadata.
-     * @return all column constraint metadata
+     * Retrieve the metadata for all columns inside our database.
+     * @return all column metadata
      */
-    List<ColumnMetadata> all();
+    Set<ColumnMetadata> all();
 
 }
