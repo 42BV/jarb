@@ -21,7 +21,6 @@ public class NamedConstraintMetadata {
      */
     public NamedConstraintMetadata(String name, NamedConstraintType type) {
         Assert.hasText(name);
-        Assert.notNull(type);
         this.name = name;
         this.type = type;
     }

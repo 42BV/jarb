@@ -31,4 +31,19 @@ databaseChangeLog() {
 		}
 	}
 	
+	changeSet(author: "jeroen@42.nl", id: "2") {
+		comment("UPGRADE: Create database constraint tables.")
+		
+		createTable(tableName: "named_constraint_metadata") {
+			column(name: "name", type: "varchar(255)") {
+				constraints(
+					nullable: false,
+					primaryKey: true,
+					primaryKeyName: "pk_named_constraint_name"
+				)
+			}
+			column(name: "type", type: "varchar(255)") { constraints(nullable: false) }
+		}
+	}
+	
 }
