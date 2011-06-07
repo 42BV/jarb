@@ -28,6 +28,7 @@
 		<module>jarb-migrations</module>
 		<module>jarb-populator</module>
 		<module>jarb-populator-excel</module>
+		<module>jarb-sample</module>
 		<module>jarb-utils</module>
 	</modules>
 
@@ -40,7 +41,7 @@
 
 	<scm>
 		<connection>scm:git:https://github.com/42BV/jarb.git</connection>
-		<url>https://github.com/42BV/jarb.gitk</url>
+		<url>https://github.com/42BV/jarb.git</url>
 		<developerConnection>scm:git:https://github.com/42BV/jarb.git</developerConnection>
 	</scm>
 	

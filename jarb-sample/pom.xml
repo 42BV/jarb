@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project
+	xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>org.jarb</groupId>
+		<artifactId>jarb-parent</artifactId>
+		<version>0.1-SNAPSHOT</version>
+	</parent>
+	
+	<groupId>org.jarb</groupId>
+	<artifactId>jarb-sample</artifactId>
+	<packaging>jar</packaging>
+	<description>Sample application that demonstrates all modules.</description>
+
+	<dependencies>   
+        <dependency>
+            <!-- Automatic database migrations -->
+            <groupId>org.jarb</groupId>
+            <artifactId>jarb-migrations</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <!-- Database popupation by excel -->
+            <groupId>org.jarb</groupId>
+            <artifactId>jarb-populator-excel</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <!-- @DatabaseConstrained constraint annotation -->
+            <groupId>org.jarb</groupId>
+            <artifactId>jarb-constraint-validation</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <!-- Database exception translation -->
+            <groupId>org.jarb</groupId>
+            <artifactId>jarb-constraint-violations</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        	 
+        <!-- Web application -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-web</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+
+        <!-- Data access -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-jdbc</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-orm</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-entitymanager</artifactId>
+            <version>3.5.5-Final</version>
+        </dependency>
+        <dependency>
+            <groupId>javassist</groupId>
+            <artifactId>javassist</artifactId>
+            <version>3.9.0.GA</version>
+            <scope>runtime</scope>
+        </dependency>
+        
+        <!-- Validation -->
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-validator</artifactId>
+            <version>4.1.0.Final</version>
+       </dependency>
+	</dependencies>
+
+</project>
