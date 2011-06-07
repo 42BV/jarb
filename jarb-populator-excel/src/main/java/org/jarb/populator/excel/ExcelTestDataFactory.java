@@ -31,10 +31,6 @@ public class ExcelTestDataFactory {
         this.entityManagerFactory = entityManagerFactory;
     }
 
-    //
-    // Facade construction
-    //
-
     /**
      * Build a new {@link ExcelTestData} instance.
      * @return fresh instance of excel test data
@@ -64,10 +60,6 @@ public class ExcelTestDataFactory {
         factory.setEntityManagerFactory(entityManagerFactory);
         return factory.build();
     }
-
-    //
-    // Subcomponent construction
-    //
 
     public ExcelParser buildExcelParser() {
         return new PoiExcelParser();

@@ -15,6 +15,8 @@ import javax.persistence.PersistenceUnitUtil;
 
 import org.jarb.populator.excel.mapping.excelrow.ExcelRow;
 import org.jarb.populator.excel.util.ObjectClassInstantationComparator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Prepares data for writing to a database and also saves the prepared data.
@@ -22,6 +24,7 @@ import org.jarb.populator.excel.util.ObjectClassInstantationComparator;
  * @author Sander Benschop
  */
 public final class DataWriter {
+    private static final Logger LOGGER = LoggerFactory.getLogger(DataWriter.class);
 
     /**
      * Private constructor.
@@ -42,9 +45,9 @@ public final class DataWriter {
         List<Object> instances = new ArrayList<Object>();
 
         for (Entry<Class<?>, Map<Integer, ExcelRow>> classRecord : objectModel.entrySet()) {
-            System.out.println(classRecord.getKey().getName());
+            LOGGER.info(classRecord.getKey().getName());
             for (Entry<Integer, ExcelRow> classValues : classRecord.getValue().entrySet()) {
-                System.out.println(classValues.getKey());
+                LOGGER.info("" + classValues.getKey());
                 ExcelRow excelRow = classValues.getValue();
                 // Relations are now made inside the importer, allowing clean conversion
                 // ForeignRelationsMapper.makeForeignRelations(excelRow, objectModel);
@@ -72,7 +75,7 @@ public final class DataWriter {
         for (Object saveableInstance : saveableInstances) {
             cascadedObjectsInThisInteration.clear();
             cascadedObjectsInThisInteration.add(saveableInstance);
-            System.out.println("Persisting Excelrow of class: " + saveableInstance.getClass());
+            LOGGER.info("Persisting Excelrow of class: " + saveableInstance.getClass());
             saveableInstance = ReferentialPreparement.prepareEntityReferences(saveableInstance, entityManager, cascadedObjectsInThisInteration);
 
             //Simply checking if the identifier is null is not good enough, since the ID could be preloaded. We must check the persistence context.

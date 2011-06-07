@@ -8,7 +8,8 @@ import java.util.Map;
 import java.util.TreeMap;
 
 /**
- * Provides each stored entity.
+ * In-memory representation of a database table. Contains all
+ * entities of a specific type, allowing them to be retrieved.
  * 
  * @author Jeroen van Schagen
  * @since 09-05-2011

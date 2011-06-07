@@ -117,7 +117,7 @@ public class EntityRegistry {
      * @return holder of our entities
      */
     @SuppressWarnings("unchecked")
-    protected <T> EntityTable<T> entityTable(Class<T> entityClass) {
+    private <T> EntityTable<T> entityTable(Class<T> entityClass) {
         EntityTable<T> entities = (EntityTable<T>) entityTables.get(entityClass);
         if (entities == null) {
             entities = new EntityTable<T>();
@@ -133,5 +133,4 @@ public class EntityRegistry {
     public String toString() {
         return entityTables.toString();
     }
-
 }

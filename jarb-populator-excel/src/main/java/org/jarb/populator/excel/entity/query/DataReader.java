@@ -6,12 +6,16 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.metamodel.EntityType;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * Used to retrieve data from the Database.
  * @author Sander Benschop
  *
  */
 public final class DataReader {
+    private static final Logger LOGGER = LoggerFactory.getLogger(DataReader.class);
 
     /** Private constructor. */
     private DataReader() {
@@ -28,7 +32,7 @@ public final class DataReader {
         EntityManager entityManager = entityManagerFactory.createEntityManager(entityManagerFactory.getProperties());
         Class<?> foundClass = Class.forName(entity.getName());
         List<?> result = entityManager.createQuery("from " + foundClass.getName()).getResultList();
-        System.out.printf("Found %d entities: %s for class %s \n", result.size(), result, entity.getName());
+        LOGGER.info("Found {} entities for class {}", new Object[] { result.size(), entity.getName() });
         return result;
     }
 

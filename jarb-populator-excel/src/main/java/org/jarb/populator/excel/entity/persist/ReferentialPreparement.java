@@ -17,6 +17,8 @@ import javax.persistence.metamodel.Attribute.PersistentAttributeType;
 import nl.mad.hactar.common.ReflectionUtil;
 
 import org.jarb.populator.excel.metamodel.generator.SuperclassRetriever;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * ReferentialPreparement class can prepare classes for persistence by persisting needed referenced objects first.
@@ -26,6 +28,7 @@ import org.jarb.populator.excel.metamodel.generator.SuperclassRetriever;
  *
  */
 public final class ReferentialPreparement {
+    private static final Logger LOGGER = LoggerFactory.getLogger(ReferentialPreparement.class);
 
     /** Static class, do not instantiate. */
     private ReferentialPreparement() {
@@ -128,7 +131,7 @@ public final class ReferentialPreparement {
         @SuppressWarnings("unchecked")
         HashSet<Object> referencedObjectSet = (HashSet<Object>) referencedObject;
         for (Object referencedObjectFromSet : referencedObjectSet) {
-            System.out.println("Cascading Excelrow of class: " + referencedObjectFromSet.getClass());
+            LOGGER.info("Cascading Excelrow of class: {}", referencedObjectFromSet.getClass());
             entityManager.merge(prepareEntityReferences(referencedObjectFromSet, entityManager, cascadedObjectsInThisInteration));
         }
     }
@@ -186,7 +189,7 @@ public final class ReferentialPreparement {
 
         if (!cascadingHasLooped(referencedObject, cascadedObjectsInThisInteration)) {
             referencedObject = prepareEntityReferences(referencedObject, entityManager, cascadedObjectsInThisInteration);
-            System.out.println("Cascading Excelrow of class: " + referencedObject.getClass());
+            LOGGER.info("Cascading Excelrow of class: " + referencedObject.getClass());
             ReflectionUtil.setFieldValue(entity, attributeName, entityManager.merge(referencedObject));
         } else {
             resolveCircularReferencing(entity, entityManager, referencedObject, cascadedObjectsInThisInteration);
@@ -239,7 +242,7 @@ public final class ReferentialPreparement {
         Object temporaryObject = createTemporaryObject(entity, metamodel, refName);
 
         if (!cascadedObjectsInThisInteration.contains(entity)) {
-            System.out.println("Cascading Excelrow of class: " + referencedObject.getClass());
+            LOGGER.info("Cascading Excelrow of class: " + referencedObject.getClass());
             referencedObject = prepareEntityReferences(referencedObject, entityManager, cascadedObjectsInThisInteration);
             ReflectionUtil.setFieldValue(entity, refName, entityManager.merge(referencedObject));
             cascadedObjectsInThisInteration.add(entity);
