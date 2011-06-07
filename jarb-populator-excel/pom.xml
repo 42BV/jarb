@@ -40,6 +40,12 @@
     </build>
 
 	<dependencies>
+	   <dependency>
+	       <groupId>org.jarb</groupId>
+	       <artifactId>jarb-utils</artifactId>
+	       <version>${project.version}</version>
+	   </dependency>
+	
         <dependency>
             <groupId>commons-dbcp</groupId>
             <artifactId>commons-dbcp</artifactId>

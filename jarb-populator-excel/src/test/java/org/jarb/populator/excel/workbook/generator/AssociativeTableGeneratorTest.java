@@ -18,7 +18,7 @@ import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.jarb.populator.excel.DefaultExcelTestDataCase;
-import org.jarb.populator.excel.ExcelTestData;
+import org.jarb.populator.excel.ExcelDataManager;
 import org.jarb.populator.excel.entity.query.DataReader;
 import org.jarb.populator.excel.metamodel.AnnotationType;
 import org.jarb.populator.excel.metamodel.ClassDefinition;
@@ -29,12 +29,12 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class AssociativeTableGeneratorTest extends DefaultExcelTestDataCase {
-    private ExcelTestData excelTestData;
+    private ExcelDataManager excelTestData;
 
     @Before
     public void setupAssociativeTableGeneratorTest() throws SecurityException, NoSuchMethodException, IllegalArgumentException, InstantiationException,
             IllegalAccessException, InvocationTargetException {
-        excelTestData = getExcelTestDataFactory().build();
+        excelTestData = getExcelDataManagerFactory().build();
 
         //For code coverage purposes:
         Constructor<AssociativeTableGenerator> constructor = AssociativeTableGenerator.class.getDeclaredConstructor();
@@ -45,7 +45,7 @@ public class AssociativeTableGeneratorTest extends DefaultExcelTestDataCase {
     @Test
     public void testCreateAssociativeTables() throws InstantiationException, ClassNotFoundException, IllegalAccessException, InvalidFormatException,
             IOException, NoSuchFieldException {
-        excelTestData.persistData("src/test/resources/Excel.xls");
+        excelTestData.persistWorkbook("src/test/resources/Excel.xls");
 
         HSSFWorkbook workbook = new HSSFWorkbook();
         PersistenceUnitUtil puUtil = getEntityManagerFactory().getPersistenceUnitUtil();

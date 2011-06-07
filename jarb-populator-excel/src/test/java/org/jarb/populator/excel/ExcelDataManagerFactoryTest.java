@@ -4,7 +4,7 @@ import static org.junit.Assert.assertNotNull;
 
 import org.junit.Test;
 
-public class ExcelTestDataFactoryTest extends DefaultExcelTestDataCase {
+public class ExcelDataManagerFactoryTest extends DefaultExcelTestDataCase {
 
     /**
      * Build a new test data component, using our factory. Ensure
@@ -12,8 +12,7 @@ public class ExcelTestDataFactoryTest extends DefaultExcelTestDataCase {
      */
     @Test
     public void testBuild() {
-        ExcelTestData etd = ExcelTestDataFactory.build(getEntityManagerFactory());
-        assertNotNull(etd);
+        assertNotNull(new ExcelDataManagerFactory(getEntityManagerFactory()).build());
     }
 
 }

@@ -42,7 +42,7 @@ public class NewExcelFileGeneratorTest extends DefaultExcelTestDataCase {
     @Test
     public void testCreateXLSAndSubfunctions() throws InstantiationException, IllegalAccessException, IOException, ClassNotFoundException,
             InvalidFormatException, SecurityException, NoSuchFieldException {
-        NewExcelFileGenerator.createEmptyXLS("src/test/resources/excel/generated/ExcelEmpty.xls", getEntityManagerFactory());
+        NewExcelFileGenerator.createEmptyXLS("src/test/resources/excel/generated/ExcelEmpty.xls", generateMetamodel());
         excelEmpty = new PoiExcelParser().parse(new FileInputStream("src/test/resources/excel/generated/ExcelEmpty.xls"));
         excelRegular = new PoiExcelParser().parse(new FileInputStream("src/test/resources/Excel.xls"));
 

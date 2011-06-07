@@ -20,23 +20,23 @@ import org.jarb.populator.excel.workbook.writer.ExcelWriter;
 import org.jarb.populator.excel.workbook.writer.PoiExcelWriter;
 
 /**
- * Factory that is capable of building {@link ExcelTestData} instances.
+ * Factory that is capable of building {@link ExcelDataManager} instances.
  * @author Jeroen van Schagen
  * @since 10-05-2011
  */
-public class ExcelTestDataFactory {
-    private EntityManagerFactory entityManagerFactory;
+public class ExcelDataManagerFactory {
+    private final EntityManagerFactory entityManagerFactory;
 
-    public void setEntityManagerFactory(EntityManagerFactory entityManagerFactory) {
+    public ExcelDataManagerFactory(EntityManagerFactory entityManagerFactory) {
         this.entityManagerFactory = entityManagerFactory;
     }
 
     /**
-     * Build a new {@link ExcelTestData} instance.
+     * Build a new {@link ExcelDataManager} instance.
      * @return fresh instance of excel test data
      */
-    public ExcelTestData build() {
-        ExcelTestData etd = new ExcelTestData();
+    public ExcelDataManager build() {
+        ExcelDataManager etd = new ExcelDataManager();
         etd.setExcelParser(buildExcelParser());
         etd.setExcelWriter(buildExcelWriter());
         etd.setEntityImporter(buildEntityImporter());
@@ -48,17 +48,6 @@ public class ExcelTestDataFactory {
         // TODO: Remove entity manager factory reference from ETD
         etd.setEntityManagerFactory(entityManagerFactory);
         return etd;
-    }
-
-    /**
-     * Build a new {@link ExcelTestData} instance.
-     * @param entityManagerFactory entity manager factory instance
-     * @return fresh instance of excel test data
-     */
-    public static ExcelTestData build(EntityManagerFactory entityManagerFactory) {
-        ExcelTestDataFactory factory = new ExcelTestDataFactory();
-        factory.setEntityManagerFactory(entityManagerFactory);
-        return factory.build();
     }
 
     public ExcelParser buildExcelParser() {

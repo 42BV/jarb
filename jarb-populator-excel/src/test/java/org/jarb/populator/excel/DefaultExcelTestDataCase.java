@@ -17,6 +17,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Test case which provides working instances of each major component.
@@ -25,6 +26,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
  * @author Jeroen van Schagen
  * @since 10-05-2011
  */
+@Transactional
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "classpath:test-context.xml")
 public abstract class DefaultExcelTestDataCase {
@@ -34,13 +36,13 @@ public abstract class DefaultExcelTestDataCase {
     private EntityManagerFactory entityManagerFactory;
 
     @Autowired
-    private ExcelTestDataFactory excelTestDataFactory;
+    private ExcelDataManagerFactory excelDataManagerFactory;
 
-    private ExcelTestData excelTestData;
+    private ExcelDataManager excelDataManager;
 
     @Before
     public void setUpExcelTestData() {
-        excelTestData = excelTestDataFactory.build();
+        excelDataManager = excelDataManagerFactory.build();
     }
 
     // Utilities
@@ -69,7 +71,7 @@ public abstract class DefaultExcelTestDataCase {
     public Workbook readGeneratedFile() {
         try {
             InputStream is = new FileInputStream(GENERATED_FILE_PATH);
-            return excelTestDataFactory.buildExcelParser().parse(is);
+            return excelDataManagerFactory.buildExcelParser().parse(is);
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
         }
@@ -81,21 +83,21 @@ public abstract class DefaultExcelTestDataCase {
      * @return new "full" meta model
      */
     public MetaModel generateMetamodel() {
-        return excelTestDataFactory.buildMetamodelGenerator().generate();
+        return excelDataManagerFactory.buildMetamodelGenerator().generate();
     }
 
     // Accessors
 
-    public ExcelTestData getExcelTestData() {
-        return excelTestData;
+    public ExcelDataManager getExcelDataManager() {
+        return excelDataManager;
     }
 
     public EntityManagerFactory getEntityManagerFactory() {
         return entityManagerFactory;
     }
 
-    public ExcelTestDataFactory getExcelTestDataFactory() {
-        return excelTestDataFactory;
+    public ExcelDataManagerFactory getExcelDataManagerFactory() {
+        return excelDataManagerFactory;
     }
 
 }

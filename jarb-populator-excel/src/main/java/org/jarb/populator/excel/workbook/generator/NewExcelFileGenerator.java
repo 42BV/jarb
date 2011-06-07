@@ -3,14 +3,13 @@ package org.jarb.populator.excel.workbook.generator;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import javax.persistence.EntityManagerFactory;
-
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.jarb.populator.excel.metamodel.ClassDefinition;
-import org.jarb.populator.excel.metamodel.generator.ClassDefinitionsGenerator;
+import org.jarb.populator.excel.metamodel.MetaModel;
 import org.jarb.populator.excel.util.ClassDefinitionNameComparator;
 
 /**
@@ -34,9 +33,9 @@ public final class NewExcelFileGenerator {
      * @throws ClassNotFoundException Throws if a class cannot be found or if domain name is incorrect
      * @throws NoSuchFieldException Thrown if a field cannot be found
      */
-    public static void createEmptyXLS(String excelFileDestination, EntityManagerFactory entityManagerFactory) throws InstantiationException,
-            IllegalAccessException, IOException, ClassNotFoundException, NoSuchFieldException {
-        createEmptyXLS(new FileOutputStream(excelFileDestination), entityManagerFactory);
+    public static void createEmptyXLS(String excelFileDestination, MetaModel metamodel) throws InstantiationException, IllegalAccessException, IOException,
+            ClassNotFoundException, NoSuchFieldException {
+        createEmptyXLS(new FileOutputStream(excelFileDestination), metamodel);
     }
 
     /**
@@ -49,11 +48,11 @@ public final class NewExcelFileGenerator {
      * @throws ClassNotFoundException Throws if a class cannot be found or if domain name is incorrect
      * @throws NoSuchFieldException Thrown if a field cannot be found
      */
-    public static void createEmptyXLS(OutputStream outputStream, EntityManagerFactory entityManagerFactory) throws InstantiationException,
-            IllegalAccessException, IOException, ClassNotFoundException, NoSuchFieldException {
+    public static void createEmptyXLS(OutputStream outputStream, MetaModel metamodel) throws InstantiationException, IllegalAccessException, IOException,
+            ClassNotFoundException, NoSuchFieldException {
         HSSFWorkbook workbook = new HSSFWorkbook();
 
-        List<ClassDefinition> classDefinitions = ClassDefinitionsGenerator.createClassDefinitionsFromMetamodel(entityManagerFactory);
+        List<ClassDefinition> classDefinitions = new ArrayList<ClassDefinition>(metamodel.getClassDefinitions());
         Collections.sort(classDefinitions, new ClassDefinitionNameComparator());
 
         for (ClassDefinition classDefinition : classDefinitions) {

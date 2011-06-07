@@ -19,7 +19,7 @@ public class DefaultEntityExporterTest extends DefaultExcelTestDataCase {
     @Before
     public void setUpExporter() {
         entityExporter = new DefaultEntityExporter();
-        metamodel = getExcelTestDataFactory().buildMetamodelGenerator().generateFor(Release.class);
+        metamodel = getExcelDataManagerFactory().buildMetamodelGenerator().generateFor(Release.class);
     }
 
     @Test

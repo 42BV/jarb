@@ -30,7 +30,7 @@ import org.jarb.populator.excel.workbook.writer.ExcelWriter;
  * @author Sander Benschop
  */
 @SuppressWarnings("unused")
-public class ExcelTestData {
+public class ExcelDataManager {
     private ExcelParser excelParser;
     private ExcelWriter excelWriter;
     private EntityImporter entityImporter;
@@ -41,23 +41,13 @@ public class ExcelTestData {
     private MetaModelGenerator metamodelGenerator;
 
     // TODO: Remove entity manager factory, and delegate all to the above components
-
-    /** 
-     * EntityManagerFactory is used to retrieve data from the Metamodel later on.
-     * EntityManagerFactory need to be set first, this is to lower the number of
-     * arguments that need to be passed.
-     */
     private EntityManagerFactory entityManagerFactory;
-
-    public void setEntityManagerFactory(EntityManagerFactory entityManagerFactory) {
-        this.entityManagerFactory = entityManagerFactory;
-    }
 
     /**
      * The main functionality of the component: read data from the specified Excel file and persist this.
      * @param is Stream of the Excel file which is to be persisted
      */
-    public void persistData(InputStream is) {
+    public void persistWorkbook(InputStream is) {
         try {
             Workbook workbook = excelParser.parse(is);
             MetaModel metamodel = metamodelGenerator.generate();
@@ -74,15 +64,15 @@ public class ExcelTestData {
      * The main functionality of the component: read data from the specified Excel file and persist this.
      * @param excelFile The Excel file which is to be persisted
      */
-    public void persistData(String excelFile) throws FileNotFoundException {
-        this.persistData(new FileInputStream(excelFile));
+    public void persistWorkbook(String excelFile) throws FileNotFoundException {
+        persistWorkbook(new FileInputStream(excelFile));
     }
 
     /**
      * Sheet validator: tests the specified Excel file against the current mapping and checks for differences.
      * @param is stream to the excel file being tested
      */
-    public ValidationResult validateSheet(InputStream is) {
+    public ValidationResult validateWorkbook(InputStream is) {
         Workbook workbook = excelParser.parse(is);
         MetaModel metamodel = metamodelGenerator.generate();
         return excelValidator.validate(workbook, metamodel);
@@ -93,17 +83,18 @@ public class ExcelTestData {
      * @param excelFile path to the excel file being tested
      * @throws FileNotFoundException when the file cannot be found
      */
-    public ValidationResult validateSheet(String excelFile) throws FileNotFoundException {
-        return this.validateSheet(new FileInputStream(excelFile));
+    public ValidationResult validateWorkbook(String excelFile) throws FileNotFoundException {
+        return validateWorkbook(new FileInputStream(excelFile));
     }
 
     /**
      * New sheet generator: generates a new Excel file at the specified destination based on the current mapping.
      * @param os Stream to the Excel file that is to be created
      */
-    public void newSheet(OutputStream os) {
+    public void createEmptyWorkbook(OutputStream os) {
         try {
-            NewExcelFileGenerator.createEmptyXLS(os, entityManagerFactory);
+            MetaModel metamodel = metamodelGenerator.generate();
+            NewExcelFileGenerator.createEmptyXLS(os, metamodel);
         } catch (Exception e) {
             throw new RuntimeException(e);
         } finally {
@@ -115,15 +106,15 @@ public class ExcelTestData {
      * New sheet generator: generates a new Excel file at the specified destination based on the current mapping.
      * @param fileDestination The path to the Excel file that is to be created
      */
-    public void newSheet(String fileDestination) throws FileNotFoundException {
-        this.newSheet(new FileOutputStream(fileDestination));
+    public void createEmptyWorkbook(String fileDestination) throws FileNotFoundException {
+        createEmptyWorkbook(new FileOutputStream(fileDestination));
     }
 
     /**
      * Filled sheet generator: generates a new Excel file at the specified destination based on the current mapping and fills this with data from the Database.
      * @param os Stream to the Excel file that is to be created
      */
-    public void newSheetFilledWithDatabaseData(OutputStream os) {
+    public void createWorkbookWithDatabaseData(OutputStream os) {
         try {
             FilledExcelFileGenerator.createFilledExcelFile(os, entityManagerFactory);
         } catch (Exception e) {
@@ -137,11 +128,9 @@ public class ExcelTestData {
      * Filled sheet generator: generates a new Excel file at the specified destination based on the current mapping and fills this with data from the Database.
      * @param fileDestination The path to the Excel file that is to be created
      */
-    public void newSheetFilledWithDatabaseData(String fileDestination) throws FileNotFoundException {
-        this.newSheetFilledWithDatabaseData(new FileOutputStream(fileDestination));
+    public void createWorkbookWithDatabaseData(String fileDestination) throws FileNotFoundException {
+        createWorkbookWithDatabaseData(new FileOutputStream(fileDestination));
     }
-
-    // Attribute modifiers
 
     public void setExcelParser(ExcelParser excelParser) {
         this.excelParser = excelParser;
@@ -173,6 +162,10 @@ public class ExcelTestData {
 
     public void setMetamodelGenerator(MetaModelGenerator metaModelGenerator) {
         this.metamodelGenerator = metaModelGenerator;
+    }
+
+    public void setEntityManagerFactory(EntityManagerFactory entityManagerFactory) {
+        this.entityManagerFactory = entityManagerFactory;
     }
 
 }

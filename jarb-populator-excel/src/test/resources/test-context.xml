@@ -48,8 +48,8 @@
 		</property>
 	</bean>
 	
-	<bean id="excelTestDataFactory" class="org.jarb.populator.excel.ExcelTestDataFactory">
-	   <property name="entityManagerFactory" ref="entityManagerFactory"/>
+	<bean id="excelTestDataFactory" class="org.jarb.populator.excel.ExcelDataManagerFactory">
+	   <constructor-arg ref="entityManagerFactory"/>
 	</bean>
 	
 </beans>

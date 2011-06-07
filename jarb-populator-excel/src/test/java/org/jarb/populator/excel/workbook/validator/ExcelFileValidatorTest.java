@@ -44,8 +44,8 @@ public class ExcelFileValidatorTest extends DefaultExcelTestDataCase {
         Constructor<DefaultExcelValidator> constructor = DefaultExcelValidator.class.getDeclaredConstructor();
         constructor.setAccessible(true);
         constructor.newInstance();
-        validator = getExcelTestDataFactory().buildExcelValidator();
-        metamodel = getExcelTestDataFactory().buildMetamodelGenerator().generate();
+        validator = getExcelDataManagerFactory().buildExcelValidator();
+        metamodel = getExcelDataManagerFactory().buildMetamodelGenerator().generate();
     }
 
     @Test
