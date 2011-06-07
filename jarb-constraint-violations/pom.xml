@@ -18,7 +18,13 @@
 	<description>Translates constraint violation exceptions</description>
 
 	<dependencies>
-		<dependency>
+        <dependency>
+            <!-- Retrieve named constraint metadata -->
+            <groupId>org.jarb</groupId>
+            <artifactId>jarb-constraint-metadata</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
 			<!-- Spring support (post processor, factory) -->
 			<groupId>org.jarb</groupId>
 			<artifactId>jarb-utils</artifactId>
