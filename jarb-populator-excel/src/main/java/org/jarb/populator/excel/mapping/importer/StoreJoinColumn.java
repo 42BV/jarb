@@ -8,6 +8,8 @@ import org.jarb.populator.excel.metamodel.JoinColumn;
 import org.jarb.populator.excel.metamodel.PropertyDefinition;
 import org.jarb.populator.excel.workbook.Sheet;
 import org.jarb.populator.excel.workbook.Workbook;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Stores the value of a JoinColumn.
@@ -16,6 +18,7 @@ import org.jarb.populator.excel.workbook.Workbook;
  *
  */
 public final class StoreJoinColumn {
+    private static final Logger LOGGER = LoggerFactory.getLogger(StoreJoinColumn.class);
 
     /** Private constructor. */
     private StoreJoinColumn() {
@@ -35,7 +38,7 @@ public final class StoreJoinColumn {
             JoinColumn joinColumn = (JoinColumn) columnDefinition;
             Sheet sheet = excel.getSheet(classDefinition.getTableName());
             Double cellValue = (Double) sheet.getCellValueAt(rowPosition, joinColumn.getColumnName());
-            System.out.println("field: " + joinColumn.getFieldName() + " column: " + joinColumn.getColumnName() + " value:[" + cellValue + "]");
+            LOGGER.debug("field: " + joinColumn.getFieldName() + " column: " + joinColumn.getColumnName() + " value:[" + cellValue + "]");
             if (cellValue != null) {
                 // Sets the Key
                 Key keyValue = new JoinColumnKey();

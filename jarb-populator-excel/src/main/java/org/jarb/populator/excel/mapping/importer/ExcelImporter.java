@@ -12,6 +12,8 @@ import org.jarb.populator.excel.metamodel.ClassDefinition;
 import org.jarb.populator.excel.metamodel.PropertyDefinition;
 import org.jarb.populator.excel.workbook.Sheet;
 import org.jarb.populator.excel.workbook.Workbook;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Parses through Excel data. Can create a set of columnDefinitions and add to a columnDefinition.
@@ -20,6 +22,7 @@ import org.jarb.populator.excel.workbook.Workbook;
  *
  */
 public final class ExcelImporter {
+    private static final Logger LOGGER = LoggerFactory.getLogger(ExcelImporter.class);
 
     /** Private constructor. */
     private ExcelImporter() {
@@ -42,7 +45,7 @@ public final class ExcelImporter {
         Map<ClassDefinition, Map<Integer, ExcelRow>> objectModel = new HashMap<ClassDefinition, Map<Integer, ExcelRow>>();
 
         for (ClassDefinition classDefinition : classDefinitions) {
-            System.out.println(classDefinition.getTableName());
+            LOGGER.debug("Importing " + classDefinition.getTableName());
             objectModel.put(classDefinition, parseWorksheet(excel, classDefinition));
         }
 
@@ -144,7 +147,7 @@ public final class ExcelImporter {
                 createdInstances.put(idNumber, excelRow);
             } else {
                 //Primary key is not unique
-                System.out.println("[ERROR] IDCOLUMNNAME value '" + idNumber + "' in table " + classDefinition.getTableName() + " is not unique.");
+                LOGGER.error("IDCOLUMNNAME value '" + idNumber + "' in table " + classDefinition.getTableName() + " is not unique.");
             }
         } else {
             //If this is not because of the fact that it's a composite id, an id field is missing and foreign key constraints might fail.

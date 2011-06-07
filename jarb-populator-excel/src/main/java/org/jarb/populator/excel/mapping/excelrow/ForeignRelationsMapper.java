@@ -34,9 +34,6 @@ public final class ForeignRelationsMapper {
         for (Entry<PropertyDefinition, Key> entry : excelRow.getValueMap().entrySet()) {
             Key key = entry.getValue();
 
-            //Get foreign Entity or Entities depending on Key Type
-            System.out.println(key.getForeignClass().toString());
-
             ClassDefinition classDefinition = ClassDefinitionFinder.findClassDefinitionByPersistentClass(objectModel.keySet(), key.getForeignClass());
             if (classDefinition == null) {
                 Set<Class<?>> superClasses = SuperclassRetriever.getListOfSuperClasses(key.getForeignClass());

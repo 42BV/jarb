@@ -4,6 +4,9 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * Used to return records from the objectmodel by relationships.
  * @author Willem Eppen
@@ -11,6 +14,7 @@ import java.util.Set;
  *
  */
 public final class ForeignExcelRowGrabber {
+    private static final Logger LOGGER = LoggerFactory.getLogger(ForeignExcelRowGrabber.class);
 
     /** Private constructor. */
     private ForeignExcelRowGrabber() {
@@ -29,7 +33,7 @@ public final class ForeignExcelRowGrabber {
             Integer foreignKey = ((JoinColumnKey) key).getKeyValue();
             returnValue = getInstanceByJoinColumnKey(foreignKey, map);
         } else {
-            System.out.println("Not an instance of JoinTableKey or JoinColumnKey. Cannot retrieve data.");
+            LOGGER.warn("Not an instance of JoinTableKey or JoinColumnKey. Cannot retrieve data.");
             returnValue = null;
         }
         return returnValue;
@@ -46,7 +50,7 @@ public final class ForeignExcelRowGrabber {
         if (map != null && map.containsKey(foreignKey)) {
             returnValue = map.get(foreignKey).getCreatedInstance();
         } else {
-            System.out.println("Foreign record was not found. Ommiting value from field.");
+            LOGGER.warn("Foreign record was not found. Ommiting value from field.");
         }
         return returnValue;
     }
@@ -64,7 +68,7 @@ public final class ForeignExcelRowGrabber {
             if (map.containsKey(foreignKey)) {
                 instances.add(map.get(foreignKey).getCreatedInstance());
             } else {
-                System.out.println("Foreign record was not found. Ommiting record from associative table.");
+                LOGGER.warn("Foreign record was not found. Ommiting record from associative table.");
             }
         }
         return instances;

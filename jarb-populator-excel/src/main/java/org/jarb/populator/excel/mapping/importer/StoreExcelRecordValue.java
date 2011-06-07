@@ -7,6 +7,8 @@ import org.jarb.populator.excel.metamodel.JoinColumn;
 import org.jarb.populator.excel.metamodel.JoinTable;
 import org.jarb.populator.excel.metamodel.PropertyDefinition;
 import org.jarb.populator.excel.workbook.Workbook;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Function which is responsible for saving values to ExcelRecords, put here because the ExcelRow class was getting quite large.
@@ -15,6 +17,7 @@ import org.jarb.populator.excel.workbook.Workbook;
  *
  */
 public final class StoreExcelRecordValue {
+    private static final Logger LOGGER = LoggerFactory.getLogger(StoreExcelRecordValue.class);
 
     /** Private constructor. */
     private StoreExcelRecordValue() {
@@ -39,7 +42,7 @@ public final class StoreExcelRecordValue {
         } else if (columnDefinition instanceof JoinColumn) {
             StoreJoinColumn.storeValue(excel, classDefinition, columnDefinition, rowPosition, excelRow);
         } else {
-            System.out.println("ColumnDefinition is not an instance of Column, JoinTable or JoinColumn. Cannot store data.");
+            LOGGER.warn("ColumnDefinition is not an instance of Column, JoinTable or JoinColumn. Cannot store data.");
         }
     }
 }
