@@ -20,11 +20,11 @@ public class CachingColumnMetadataRepository implements ColumnMetadataRepository
 
     /**
      * Construct a new {@link CachingColumnMetadataRepository}.
-     * @param constraintsProvider provides column medata for our cache
+     * @param columnMetadataProvider provides column medata for our cache
      */
-    public CachingColumnMetadataRepository(ColumnMetadataProvider constraintsProvider) {
-        Assert.notNull(constraintsProvider, "Property 'constraints provider' cannot be null");
-        this.columnMetadataProvider = constraintsProvider;
+    public CachingColumnMetadataRepository(ColumnMetadataProvider columnMetadataProvider) {
+        Assert.notNull(columnMetadataProvider, "Property 'column metadata provider' cannot be null");
+        this.columnMetadataProvider = columnMetadataProvider;
     }
 
     /**

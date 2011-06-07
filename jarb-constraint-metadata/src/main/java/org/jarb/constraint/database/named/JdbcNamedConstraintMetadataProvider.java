@@ -17,8 +17,6 @@ import org.springframework.jdbc.core.RowMapper;
  * @since 6-6-2011
  */
 public class JdbcNamedConstraintMetadataProvider implements NamedConstraintMetadataProvider {
-    /** Maps result set instances to named constraint metadata **/
-    private static final RowMapper<NamedConstraintMetadata> ROW_MAPPER = new NamedConstraintMetadataRowMapper();
     /** Allows us to query the database. **/
     private final JdbcTemplate jdbcTemplate;
 
@@ -35,13 +33,13 @@ public class JdbcNamedConstraintMetadataProvider implements NamedConstraintMetad
      */
     @Override
     public Set<NamedConstraintMetadata> all() {
-        return new HashSet<NamedConstraintMetadata>(jdbcTemplate.query("SELECT * FROM named_constraint_metadata", ROW_MAPPER));
+        return new HashSet<NamedConstraintMetadata>(jdbcTemplate.query("SELECT * FROM named_constraint_metadata", new NamedConstraintMetadataRowMapper()));
     }
 
     /**
      * Row mapper for named constraint metadata.
      */
-    private static class NamedConstraintMetadataRowMapper implements RowMapper<NamedConstraintMetadata> {
+    public static class NamedConstraintMetadataRowMapper implements RowMapper<NamedConstraintMetadata> {
 
         /**
          * {@inheritDoc}
