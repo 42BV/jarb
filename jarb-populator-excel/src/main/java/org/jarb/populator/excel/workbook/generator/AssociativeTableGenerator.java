@@ -13,6 +13,8 @@ import org.apache.poi.ss.usermodel.CellStyle;
 import org.jarb.populator.excel.metamodel.JoinTable;
 import org.jarb.populator.excel.metamodel.PropertyDefinition;
 import org.jarb.populator.excel.workbook.validator.FieldValidator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Handles all associative columnDefinitions to create new Excelsheets with associative table data from the database in it.
@@ -20,6 +22,7 @@ import org.jarb.populator.excel.workbook.validator.FieldValidator;
  *
  */
 public final class AssociativeTableGenerator {
+    private static final Logger LOGGER = LoggerFactory.getLogger(AssociativeTableGenerator.class);
 
     /** Private constructor. */
     private AssociativeTableGenerator() {
@@ -124,7 +127,7 @@ public final class AssociativeTableGenerator {
         } else if (columnName.equals(joinTable.getInverseJoinColumnName())) {
             createAssociativeIdCell(puUtil, collectionItem, row, dateFormatStyle, columnNumber);
         } else {
-            System.out.println("Columnname [" + columnName + "] is neither the JoinColumnName or InverseJoinColumnName.");
+            LOGGER.warn("Columnname [" + columnName + "] is neither the JoinColumnName or InverseJoinColumnName.");
         }
     }
 

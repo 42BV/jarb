@@ -36,4 +36,5 @@ public class SimpleValidationResultExporter {
             IOUtils.closeQuietly(writer);
         }
     }
+
 }

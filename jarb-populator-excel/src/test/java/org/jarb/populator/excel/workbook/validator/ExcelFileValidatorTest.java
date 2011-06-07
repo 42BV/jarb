@@ -225,9 +225,6 @@ public class ExcelFileValidatorTest extends DefaultExcelTestDataCase {
 
         Workbook excel = new PoiExcelParser().parse(new FileInputStream("src/test/resources/ExcelVerification/Testcase7.xls"));
         assertEquals(messages, validator.validate(excel, metamodel).getMessages());
-        for (String message : messages) {
-            System.out.println(message);
-        }
     }
 
     @Test

@@ -4,6 +4,8 @@ import java.util.Date;
 
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.ss.usermodel.CellStyle;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Sets a certain value to an Excel cell. The way it saves this depends on the object's type.
@@ -11,6 +13,7 @@ import org.apache.poi.ss.usermodel.CellStyle;
  *
  */
 public final class CellValueSetter {
+    private static final Logger LOGGER = LoggerFactory.getLogger(CellValueSetter.class);
 
     /** Private constructor. */
     private CellValueSetter() {
@@ -41,7 +44,7 @@ public final class CellValueSetter {
         } else if ((type == java.util.Date.class) || (type == java.sql.Timestamp.class) || (type == java.sql.Date.class)) {
             setDateCellValue(row, columnNumber, cellValue, dateFormatStyle);
         } else {
-            System.out.println("Object " + cellValue + " is not of a suitable type to be saved to an Excel file.");
+            LOGGER.warn("Object " + cellValue + " is not of a suitable type to be saved to an Excel file.");
         }
     }
 

@@ -24,7 +24,6 @@ public final class FieldRetriever {
         try {
             field = classToCheck.getDeclaredField(fieldname);
         } catch (NoSuchFieldException e) {
-            System.out.print("");
         }
         return field;
     }

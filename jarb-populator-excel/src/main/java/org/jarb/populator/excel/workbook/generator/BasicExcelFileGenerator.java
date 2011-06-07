@@ -9,6 +9,8 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.jarb.populator.excel.metamodel.ClassDefinition;
 import org.jarb.populator.excel.metamodel.JoinTable;
 import org.jarb.populator.excel.metamodel.PropertyDefinition;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Has basic functions to create Excel sheets used by both the FilledExcelFileGenerator and the NewExcelFileGenerator.
@@ -18,6 +20,7 @@ import org.jarb.populator.excel.metamodel.PropertyDefinition;
  *
  */
 public final class BasicExcelFileGenerator {
+    private static final Logger LOGGER = LoggerFactory.getLogger(BasicExcelFileGenerator.class);
 
     /** Identification number of row in Excel file. */
     private static final String IDCOLUMNNAME = "id";
@@ -71,7 +74,7 @@ public final class BasicExcelFileGenerator {
             excelRow.createCell(0).setCellValue(joinTable.getJoinColumnName());
             excelRow.createCell(1).setCellValue(joinTable.getInverseJoinColumnName());
         } else {
-            System.out.println("Failed to cast [" + columnDefinition.getColumnName() + "] as JoinTable");
+            LOGGER.warn("Failed to cast [" + columnDefinition.getColumnName() + "] as JoinTable");
         }
     }
 

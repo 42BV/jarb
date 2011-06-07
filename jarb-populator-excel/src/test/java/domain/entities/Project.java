@@ -35,7 +35,7 @@ public final class Project {
              */
             @Override
             public void test() {
-                System.out.println("");
+                // Do nothing
             }
         },
 
@@ -49,7 +49,7 @@ public final class Project {
          * Just for testing too.
          */
         public void test() {
-            //Just for testing!
+            // Just for testing!
         }
     };
 

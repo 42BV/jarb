@@ -115,7 +115,6 @@ public class ClassDefinitionsGeneratorTest extends DefaultExcelTestDataCase {
             assertTrue(classDefinition.getWorksheetDefinition() == null);
 
             for (PropertyDefinition columnDefinition : classDefinition.getColumnDefinitions()) {
-                System.out.println("Column name: " + columnDefinition.getColumnName());
                 if (columnDefinition.getField() != null) {
                     //Is a regular column, we should be able to get the data from the persistentclass
 
@@ -145,7 +144,6 @@ public class ClassDefinitionsGeneratorTest extends DefaultExcelTestDataCase {
 
                     //Check if field is valid
                     if (field != null) {
-                        System.out.println("Field name: " + field.getName());
                         assertEquals(field.getName(), columnDefinition.getFieldName());
                         assertFalse(columnDefinition.getColumnName() == null);
                     }
