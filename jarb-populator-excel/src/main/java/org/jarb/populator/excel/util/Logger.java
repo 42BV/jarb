@@ -13,6 +13,7 @@ import org.jarb.populator.excel.metamodel.ClassDefinition;
  *
  */
 public class Logger {
+    private static final org.slf4j.Logger LOGGER = org.slf4j.LoggerFactory.getLogger(Logger.class);
 
     /**
      * Logs table names, row keys and values to console.
@@ -29,9 +30,9 @@ public class Logger {
      * @param tableRecords Map with Keys and ExcelRecords
      */
     private void printTableRecords(Entry<ClassDefinition, Map<Integer, ExcelRow>> tableRecords) {
-        System.out.println(tableRecords.getKey().getTableName());
+        LOGGER.info(tableRecords.getKey().getTableName());
         for (Entry<Integer, ExcelRow> rowRecords : tableRecords.getValue().entrySet()) {
-            System.out.println(rowRecords.getKey() + ": " + tableRecords.getValue().get(rowRecords.getKey()).toString());
+            LOGGER.info(rowRecords.getKey() + ": " + tableRecords.getValue().get(rowRecords.getKey()).toString());
         }
     }
 }

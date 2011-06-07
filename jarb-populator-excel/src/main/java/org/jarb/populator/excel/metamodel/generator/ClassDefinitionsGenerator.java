@@ -16,6 +16,8 @@ import javax.persistence.metamodel.Metamodel;
 import org.jarb.populator.excel.metamodel.ClassDefinition;
 import org.jarb.populator.excel.metamodel.WorksheetDefinition;
 import org.jarb.populator.excel.workbook.Workbook;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Class which is responsible for generating a list of ready-to-be-used ClassDefinitions containing columns, a persistent class, etc.
@@ -24,6 +26,7 @@ import org.jarb.populator.excel.workbook.Workbook;
  *
  */
 public final class ClassDefinitionsGenerator {
+    private static final Logger LOGGER = LoggerFactory.getLogger(ClassDefinitionsGenerator.class);
 
     /** Private constructor. */
     private ClassDefinitionsGenerator() {
@@ -165,7 +168,7 @@ public final class ClassDefinitionsGenerator {
         try {
             entity = metamodel.entity(persistentClass);
         } catch (IllegalArgumentException e) {
-            System.out.println("Class " + persistentClass.getName() + " is not in JPA's metamodel, check if it's annotated as @Entity.");
+            LOGGER.warn("Class " + persistentClass.getName() + " is not in JPA's metamodel, check if it's annotated as @Entity.");
         }
         return entity;
     }

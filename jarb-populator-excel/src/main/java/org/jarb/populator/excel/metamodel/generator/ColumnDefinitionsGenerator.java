@@ -9,6 +9,8 @@ import javax.persistence.metamodel.Attribute;
 import javax.persistence.metamodel.EntityType;
 
 import org.jarb.populator.excel.metamodel.PropertyDefinition;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Generates a list of ColumnDefinitions belonging to a ClassDefinition.
@@ -16,6 +18,7 @@ import org.jarb.populator.excel.metamodel.PropertyDefinition;
  *
  */
 public final class ColumnDefinitionsGenerator {
+    private static final Logger LOGGER = LoggerFactory.getLogger(ColumnDefinitionsGenerator.class);
 
     /** Private constructor. */
     private ColumnDefinitionsGenerator() {
@@ -87,8 +90,8 @@ public final class ColumnDefinitionsGenerator {
         if (columnNameUnique(columnDefinitions, columnDefinition)) {
             columnDefinitions.add(columnDefinition);
         } else {
-            System.out.println("Duplicate column name '" + columnDefinition.getColumnName() + "' in entity '" + entity.getName() + "' was ommited.");
-            System.out.println("Possibly the column name is defined in several subclasses. Since these are merged into one the column names must be unique.");
+            LOGGER.warn("Duplicate column name '" + columnDefinition.getColumnName() + "' in entity '" + entity.getName() + "' was ommited.");
+            LOGGER.warn("Possibly the column name is defined in several subclasses. Since these are merged into one the column names must be unique.");
         }
     }
 

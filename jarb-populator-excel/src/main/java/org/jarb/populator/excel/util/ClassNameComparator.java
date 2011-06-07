@@ -15,13 +15,13 @@ public final class ClassNameComparator implements Comparator<Class<?>>, Serializ
 
     /**
      * Compares two classes by name.
-     * @param class1 The first class necessary for comparison
-     * @param class2 The other necessary class
+     * @param left The first class necessary for comparison
+     * @param right The other necessary class
      * @return Negative integer if class2 > class1, positive integer if class1 > class2 and 0 if equal
      */
     @Override
-    public int compare(Class<?> class1, Class<?> class2) {
-        return class1.getName().compareTo(class2.getName());
+    public int compare(Class<?> left, Class<?> right) {
+        return left.getName().compareTo(right.getName());
     }
 
 }

@@ -16,13 +16,13 @@ public final class ObjectClassInstantationComparator implements Comparator<Objec
 
     /**
      * Compares two classes by name.
-     * @param class1 The first class necessary for comparison
-     * @param class2 The other necessary class
+     * @param left The first class necessary for comparison
+     * @param right The other necessary class
      * @return Negative integer if class2 > class1, positive integer if class1 > class2 and 0 if equal
      */
     @Override
-    public int compare(Object class1, Object class2) {
-        return class1.getClass().getName().compareTo(class2.getClass().getName());
+    public int compare(Object left, Object right) {
+        return left.getClass().getName().compareTo(right.getClass().getName());
     }
 
 }

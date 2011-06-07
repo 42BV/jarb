@@ -15,7 +15,7 @@ import org.slf4j.LoggerFactory;
  *
  */
 public class WorksheetDefinition {
-    private static final Logger logger = LoggerFactory.getLogger(WorksheetDefinition.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(WorksheetDefinition.class);
 
     /** Identification number of row in Excel file. */
     private static final String ID_COLUMN_NAME = "id";
@@ -31,18 +31,18 @@ public class WorksheetDefinition {
      */
     public static WorksheetDefinition analyzeWorksheet(final ClassDefinition classDefinition, final Workbook excel) {
         WorksheetDefinition worksheetDefinition = new WorksheetDefinition();
-        logger.info("Analyzing worksheet: [" + classDefinition.getTableName() + "]");
+        LOGGER.info("Analyzing worksheet: [" + classDefinition.getTableName() + "]");
         Sheet sheet = excel.getSheet(classDefinition.getTableName());
         // TODO FIX: crashes here if id sheet is missing from Excel file.
         worksheetDefinition.addColumnPosition(ID_COLUMN_NAME, classDefinition.getTableName(), sheet.indexOfColumn(ID_COLUMN_NAME));
 
         for (PropertyDefinition columnDefinition : classDefinition.getColumnDefinitions()) {
             final String columnName = columnDefinition.getColumnName();
-            logger.info("  field name: [" + columnDefinition.getFieldName() + "], column name: [" + columnName + "]");
+            LOGGER.info("  field name: [" + columnDefinition.getFieldName() + "], column name: [" + columnName + "]");
             if (sheet.containsColumn(columnName)) {
                 worksheetDefinition.addColumnPosition(columnName, classDefinition.getTableName(), sheet.indexOfColumn(columnName));
             } else {
-                logger.info("Column name " + columnDefinition.getColumnName() + " was not present in the Worksheet.");
+                LOGGER.info("Column name " + columnDefinition.getColumnName() + " was not present in the Worksheet.");
             }
         }
         return worksheetDefinition;
@@ -58,7 +58,7 @@ public class WorksheetDefinition {
         if (columnPosition != null && columnPosition >= 0) {
             columnPositions.put(columnName, columnPosition);
         } else {
-            logger.info("Could not find column \"" + columnName + "\" in worksheet \"" + worksheetName + "\"");
+            LOGGER.info("Could not find column \"" + columnName + "\" in worksheet \"" + worksheetName + "\"");
         }
     }
 

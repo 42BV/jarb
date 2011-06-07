@@ -5,9 +5,7 @@ package org.jarb.populator.excel.metamodel;
  * 
  * @author Willem Eppen
  * @author Sander Benschop
- * 
  */
-
 public enum AnnotationType {
     /**
      * Regular column.

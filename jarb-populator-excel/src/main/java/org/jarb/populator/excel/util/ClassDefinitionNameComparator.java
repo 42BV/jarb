@@ -17,12 +17,12 @@ public final class ClassDefinitionNameComparator implements Comparator<ClassDefi
 
     /**
      * Compares two classDefinitions by name.
-     * @param classDefinition1 The first classDefinition necessary for comparison
-     * @param classDefinition2 The other necessary classDefinition
+     * @param left The first classDefinition necessary for comparison
+     * @param right The other necessary classDefinition
      * @return Negative integer if classDefinition2 > classDefinition1, positive integer if classDefinition1 > classDefinition2 and 0 if equal
      */
     @Override
-    public int compare(ClassDefinition classDefinition1, ClassDefinition classDefinition2) {
-        return classDefinition1.getTableName().compareTo(classDefinition2.getTableName());
+    public int compare(ClassDefinition left, ClassDefinition right) {
+        return left.getTableName().compareTo(right.getTableName());
     }
 }
