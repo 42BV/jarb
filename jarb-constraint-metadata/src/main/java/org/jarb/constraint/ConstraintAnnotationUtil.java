@@ -6,6 +6,7 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.util.ReflectionUtils;
 
 /**
@@ -25,8 +26,9 @@ public final class ConstraintAnnotationUtil {
      * @param annotationClass type of annotation we are fetching
      * @return annotations of the specified type, on the bean property
      */
-    public static <T extends Annotation> List<T> getPropertyAnnotations(Class<?> beanClass, PropertyDescriptor propertyDescriptor, Class<T> annotationClass) {
+    public static <T extends Annotation> List<T> getPropertyAnnotations(Class<?> beanClass, String propertyName, Class<T> annotationClass) {
         List<T> annotationList = new ArrayList<T>();
+        final PropertyDescriptor propertyDescriptor = BeanUtils.getPropertyDescriptor(beanClass, propertyName);
         if (propertyDescriptor.getReadMethod() != null) { // Hidden properties have no getter method
             T getterAnnotation = propertyDescriptor.getReadMethod().getAnnotation(annotationClass);
             if (getterAnnotation != null) {
@@ -41,6 +43,10 @@ public final class ConstraintAnnotationUtil {
             }
         }
         return annotationList;
+    }
+    
+    public static boolean hasPropertyAnnotations(Class<?> beanClass, String propertyName, Class<? extends Annotation> annotationClass) {
+        return !getPropertyAnnotations(beanClass, propertyName, annotationClass).isEmpty();
     }
 
     private ConstraintAnnotationUtil() {

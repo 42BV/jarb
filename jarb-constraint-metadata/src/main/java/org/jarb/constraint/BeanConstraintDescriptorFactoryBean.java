@@ -23,8 +23,10 @@ public class BeanConstraintDescriptorFactoryBean extends SingletonFactoryBean<Be
     protected BeanConstraintDescriptor createObject() throws Exception {
         DefaultBeanConstraintDescriptor descriptor = new DefaultBeanConstraintDescriptor();
         List<PropertyConstraintDescriptionEnhancer> propertyDescriptionEnhancers = new ArrayList<PropertyConstraintDescriptionEnhancer>();
+        propertyDescriptionEnhancers.add(new NotNullPropertyConstraintDescriptionEnhancer());
         propertyDescriptionEnhancers.add(new DatabasePropertyConstraintDescriptionEnhancer(columnMetadataRepository));
         propertyDescriptionEnhancers.add(new LengthPropertyConstraintDescriptionEnhancer());
+        propertyDescriptionEnhancers.add(new DigitsPropertyConstraintDescriptionEnhancer());
         descriptor.setPropertyDescriptionEnhancers(propertyDescriptionEnhancers);
         return descriptor;
     }

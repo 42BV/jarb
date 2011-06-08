@@ -1,13 +1,11 @@
 package org.jarb.constraint;
 
-import java.beans.PropertyDescriptor;
 import java.util.List;
 
 import org.hibernate.validator.constraints.Length;
-import org.springframework.beans.BeanUtils;
 
 /**
- * Enhance the property constraint descriptor with all @Length content.
+ * Enhance the property constraint descriptor with @Length information.
  * 
  * @author Jeroen van Schagen
  * @since 31-05-2011
@@ -19,8 +17,7 @@ public class LengthPropertyConstraintDescriptionEnhancer implements PropertyCons
      */
     @Override
     public <T> MutablePropertyConstraintDescription<T> enhance(MutablePropertyConstraintDescription<T> propertyDescription, Class<?> beanClass) {
-        PropertyDescriptor propertyDescriptor = BeanUtils.getPropertyDescriptor(beanClass, propertyDescription.getPropertyName());
-        List<Length> lengthAnnotations = ConstraintAnnotationUtil.getPropertyAnnotations(beanClass, propertyDescriptor, Length.class);
+        List<Length> lengthAnnotations = ConstraintAnnotationUtil.getPropertyAnnotations(beanClass, propertyDescription.getPropertyName(), Length.class);
         Integer minimumLength = propertyDescription.getMinimumLength();
         Integer maximumLength = propertyDescription.getMaximumLength();
         for (Length lengthAnnotation : lengthAnnotations) {
