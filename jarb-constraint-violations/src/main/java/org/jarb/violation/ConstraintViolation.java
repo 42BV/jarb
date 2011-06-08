@@ -9,7 +9,7 @@ import org.apache.commons.lang.builder.ToStringStyle;
  * @author Jeroen van Schagen
  * @since 16-05-2011
  */
-public class ConstraintViolation {
+public final class ConstraintViolation {
     private final ConstraintViolationType type;
     private String constraintName;
     private String tableName;

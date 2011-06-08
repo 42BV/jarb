@@ -12,8 +12,9 @@ public interface ConstraintViolationExceptionFactory {
     /**
      * Build the exception for some constraint violation.
      * @param violation reference to our constraint violation
+     * @param cause origional exception that triggered our violation
      * @return exception that describes our violation
      */
-    Throwable createException(ConstraintViolation violation);
+    Throwable createException(ConstraintViolation violation, Throwable cause);
 
 }

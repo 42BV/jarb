@@ -46,7 +46,7 @@ public class ConstraintViolationExceptionTranslator {
         Throwable result = null;
         ConstraintViolation violation = violationResolver.resolve(throwable);
         if (violation != null) {
-            result = exceptionFactory.createException(violation);
+            result = exceptionFactory.createException(violation, throwable);
         }
         return result;
     }

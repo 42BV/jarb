@@ -20,7 +20,7 @@ public class SimpleConstraintViolationExceptionFactory implements ConstraintViol
      * {@inheritDoc}
      */
     @Override
-    public ConstraintViolationException createException(ConstraintViolation violation) {
+    public ConstraintViolationException createException(ConstraintViolation violation, Throwable cause) {
         ConstraintViolationException exception = null;
         switch (violation.getType()) {
         case CANNOT_BE_NULL:

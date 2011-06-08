@@ -13,7 +13,7 @@ public class LicenseNumberAlreadyExistsExceptionFactory implements ConstraintVio
 
     /** {@inheritDoc} **/
     @Override
-    public ConstraintViolationException createException(ConstraintViolation violation) {
+    public ConstraintViolationException createException(ConstraintViolation violation, Throwable cause) {
         return new LicenseNumberAlreadyExistsException(violation, this); // Provide factory reference
     }
 

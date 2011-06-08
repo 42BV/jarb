@@ -9,7 +9,6 @@ public class PropertyConstraintDescription<T> {
 
     // Global requirements
     private boolean required;
-    private T defaultValue;
     private Integer minimumLength;
     private Integer maximumLength;
 
@@ -36,14 +35,6 @@ public class PropertyConstraintDescription<T> {
 
     public void setRequired(boolean required) {
         this.required = required;
-    }
-
-    public T getDefaultValue() {
-        return defaultValue;
-    }
-
-    public void setDefaultValue(T defaultValue) {
-        this.defaultValue = defaultValue;
     }
 
     public Integer getMinimumLength() {

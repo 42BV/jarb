@@ -16,7 +16,7 @@ public class ReflectionConstraintViolationExceptionFactoryTest {
     public void testInstantiateWithViolation() {
         ConstraintViolationExceptionFactory factory = new ReflectionConstraintViolationExceptionFactory(LicenseNumberAlreadyExistsException.class);
         ConstraintViolation violation = new ConstraintViolation.Builder(ConstraintViolationType.UNIQUE_VIOLATION).build();
-        Throwable exception = factory.createException(violation);
+        Throwable exception = factory.createException(violation, null);
         assertTrue(exception instanceof LicenseNumberAlreadyExistsException);
     }
 
@@ -27,7 +27,7 @@ public class ReflectionConstraintViolationExceptionFactoryTest {
     public void testInstantiateNullary() {
         ConstraintViolationExceptionFactory factory = new ReflectionConstraintViolationExceptionFactory(IllegalArgumentException.class);
         ConstraintViolation violation = new ConstraintViolation.Builder(ConstraintViolationType.UNIQUE_VIOLATION).build();
-        Throwable exception = factory.createException(violation);
+        Throwable exception = factory.createException(violation, null);
         assertTrue(exception instanceof IllegalArgumentException);
     }
 
@@ -38,7 +38,7 @@ public class ReflectionConstraintViolationExceptionFactoryTest {
     public void testNoMatchingConstructor() {
         ConstraintViolationExceptionFactory factory = new ReflectionConstraintViolationExceptionFactory(ExceptionWithUnsupportedConstructor.class);
         ConstraintViolation violation = new ConstraintViolation.Builder(ConstraintViolationType.UNIQUE_VIOLATION).build();
-        factory.createException(violation);
+        factory.createException(violation, null);
     }
 
     // Exception with a non-default constructor, used only for testing

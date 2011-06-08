@@ -27,7 +27,7 @@ public class ReflectionConstraintViolationExceptionFactory implements Constraint
      * {@inheritDoc}
      */
     @Override
-    public Throwable createException(ConstraintViolation violation) {
+    public Throwable createException(ConstraintViolation violation, Throwable cause) {
         Throwable exception = null;
         try {
             exception = instantiateClass(exceptionClass.getConstructor(ConstraintViolation.class), violation);

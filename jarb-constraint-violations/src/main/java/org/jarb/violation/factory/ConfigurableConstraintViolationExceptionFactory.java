@@ -33,8 +33,8 @@ public class ConfigurableConstraintViolationExceptionFactory implements Constrai
      * {@inheritDoc}
      */
     @Override
-    public Throwable createException(ConstraintViolation violation) {
-        return findFactoryFor(violation).createException(violation);
+    public Throwable createException(ConstraintViolation violation, Throwable cause) {
+        return findFactoryFor(violation).createException(violation, cause);
     }
 
     /**
