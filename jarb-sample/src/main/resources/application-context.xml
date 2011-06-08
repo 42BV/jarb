@@ -26,11 +26,11 @@
 	</bean>
 
     <!-- Persistence -->
-    <context:property-placeholder location="classpath:persistence.properties" ignore-unresolvable="true"/>
     <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
         <property name="jpaPropertyMap">
             <map>
-                <entry key="hibernate.dialect" value="org.hibernate.dialect.HSQLDialect"/>
+				<entry key="javax.persistence.validation.factory" value-ref="validator" />               
+				<entry key="hibernate.dialect" value="org.hibernate.dialect.HSQLDialect"/>
                 <entry key="hibernate.hbm2ddl.auto" value="validate"/>
             </map>
         </property>

@@ -1,7 +1,5 @@
 <persistence xmlns="http://java.sun.com/xml/ns/persistence" version="1.0">
 	<persistence-unit name="jarbSample" transaction-type="RESOURCE_LOCAL">
-		<properties>
-			<!-- Persistence specific properties go here -->
-		</properties>
+		<provider>org.hibernate.ejb.HibernatePersistence</provider>
 	</persistence-unit>
 </persistence>
