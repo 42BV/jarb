@@ -24,19 +24,19 @@ public class SimpleConstraintViolationExceptionFactory implements ConstraintViol
         ConstraintViolationException exception = null;
         switch (violation.getType()) {
         case CANNOT_BE_NULL:
-            exception = new NotNullViolationException(violation);
+            exception = new NotNullViolationException(violation, cause);
             break;
         case CHECK_FAILED:
-            exception = new CheckFailedException(violation);
+            exception = new CheckFailedException(violation, cause);
             break;
         case INVALID_TYPE:
-            exception = new InvalidTypeException(violation);
+            exception = new InvalidTypeException(violation, cause);
             break;
         case LENGTH_EXCEEDED:
-            exception = new LengthExceededException(violation);
+            exception = new LengthExceededException(violation, cause);
             break;
         case UNIQUE_VIOLATION:
-            exception = new UniqueKeyViolationException(violation);
+            exception = new UniqueKeyViolationException(violation, cause);
             break;
         }
         return exception;

@@ -14,16 +14,37 @@ public class LengthExceededException extends ConstraintViolationException {
      * @param violation constraint violation that triggered this exception
      */
     public LengthExceededException(ConstraintViolation violation) {
-        this(violation, "Column maximum length was exceeded.");
+        this(violation, (Throwable) null);
     }
-
+    
     /**
      * Construct a new {@link LengthExceededException}.
      * @param violation constraint violation that triggered this exception
      * @param message exception message that should be shown
      */
     public LengthExceededException(ConstraintViolation violation, String message) {
-        super(violation, message);
+        this(violation, message, null);
     }
-
+    
+    /**
+     * Construct a new {@link LengthExceededException}.
+     * @param violation constraint violation that triggered this exception
+     * @param cause the cause of this constraint violation exception, can be {@code null}
+     */
+    public LengthExceededException(ConstraintViolation violation, Throwable cause) {
+        this(violation, "Column maximum length was exceeded.", cause);
+    }
+ 
+    /**
+     * Construct a new {@link LengthExceededException}.
+     * @param violation constraint violation that triggered this exception
+     * @param message exception message that should be shown
+     * @param cause the cause of this constraint violation exception, can be {@code null}
+     */
+    public LengthExceededException(ConstraintViolation violation, String message, Throwable cause) {
+        super(violation, message, cause);
+        if(violation.getType() != ConstraintViolationType.LENGTH_EXCEEDED) {
+            throw new IllegalArgumentException("Length exceeded exceptions can only be used for length exceeded violations.");
+        }
+    }
 }

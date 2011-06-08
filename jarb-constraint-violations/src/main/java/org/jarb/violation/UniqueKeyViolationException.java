@@ -14,16 +14,37 @@ public class UniqueKeyViolationException extends ConstraintViolationException {
      * @param violation constraint violation that triggered this exception
      */
     public UniqueKeyViolationException(ConstraintViolation violation) {
-        this(violation, "Unique key '" + violation.getConstraintName() + "' was violated.");
+        this(violation, (Throwable) null);
     }
-
+    
     /**
      * Construct a new {@link UniqueKeyViolationException}.
      * @param violation constraint violation that triggered this exception
      * @param message exception message that should be shown
      */
     public UniqueKeyViolationException(ConstraintViolation violation, String message) {
-        super(violation, message);
+        this(violation, message, null);
     }
 
+    /**
+     * Construct a new {@link UniqueKeyViolationException}.
+     * @param violation constraint violation that triggered this exception
+     * @param cause the cause of this constraint violation exception, can be {@code null}
+     */
+    public UniqueKeyViolationException(ConstraintViolation violation, Throwable cause) {
+        this(violation, "Unique key '" + violation.getConstraintName() + "' was violated.", cause);
+    }
+ 
+    /**
+     * Construct a new {@link UniqueKeyViolationException}.
+     * @param violation constraint violation that triggered this exception
+     * @param message exception message that should be shown
+     * @param cause the cause of this constraint violation exception, can be {@code null}
+     */
+    public UniqueKeyViolationException(ConstraintViolation violation, String message, Throwable cause) {
+        super(violation, message, cause);
+        if(violation.getType() != ConstraintViolationType.UNIQUE_VIOLATION) {
+            throw new IllegalArgumentException("Unique key violation exceptions can only be used for unique key violations.");
+        }
+    }
 }

@@ -14,16 +14,37 @@ public class NotNullViolationException extends ConstraintViolationException {
      * @param violation constraint violation that triggered this exception
      */
     public NotNullViolationException(ConstraintViolation violation) {
-        this(violation, "Column '" + violation.getColumnName() + "' cannot be null.");
+        this(violation, (Throwable) null);
     }
-
+    
     /**
      * Construct a new {@link NotNullViolationException}.
      * @param violation constraint violation that triggered this exception
      * @param message exception message that should be shown
      */
     public NotNullViolationException(ConstraintViolation violation, String message) {
-        super(violation, message);
+        this(violation, message, null);
     }
 
+    /**
+     * Construct a new {@link NotNullViolationException}.
+     * @param violation constraint violation that triggered this exception
+     * @param cause the cause of this constraint violation exception, can be {@code null}
+     */
+    public NotNullViolationException(ConstraintViolation violation, Throwable cause) {
+        this(violation, "Column '" + violation.getColumnName() + "' cannot be null.", cause);
+    }
+ 
+    /**
+     * Construct a new {@link NotNullViolationException}.
+     * @param violation constraint violation that triggered this exception
+     * @param message exception message that should be shown
+     * @param cause the cause of this constraint violation exception, can be {@code null}
+     */
+    public NotNullViolationException(ConstraintViolation violation, String message, Throwable cause) {
+        super(violation, message, cause);
+        if(violation.getType() != ConstraintViolationType.CANNOT_BE_NULL) {
+            throw new IllegalArgumentException("Not null violation exceptions can only be used for not null violations.");
+        }
+    }
 }

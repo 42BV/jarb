@@ -23,6 +23,27 @@ public abstract class ConstraintViolationException extends RuntimeException {
         super(message);
         this.violation = violation;
     }
+    
+    /**
+     * Construct a new {@link ConstraintViolationException}.
+     * @param violation constraint violation that triggered this exception
+     * @param cause the cause of this constraint violation exception, can be {@code null}
+     */
+    public ConstraintViolationException(ConstraintViolation violation, Throwable cause) {
+        super(cause);
+        this.violation = violation;
+    }
+    
+    /**
+     * Construct a new {@link ConstraintViolationException}.
+     * @param violation constraint violation that triggered this exception
+     * @param message exception message that should be shown
+     * @param cause the cause of this constraint violation exception, can be {@code null}
+     */
+    public ConstraintViolationException(ConstraintViolation violation, String message, Throwable cause) {
+        super(message, cause);
+        this.violation = violation;
+    }
 
     /**
      * Retrieve the constraint violation that triggered this exception.

@@ -14,16 +14,37 @@ public class CheckFailedException extends ConstraintViolationException {
      * @param violation constraint violation that triggered this exception
      */
     public CheckFailedException(ConstraintViolation violation) {
-        this(violation, "Check '" + violation.getConstraintName() + "' failed.");
+        this(violation, (Throwable) null);
     }
-
+    
     /**
      * Construct a new {@link CheckFailedException}.
      * @param violation constraint violation that triggered this exception
      * @param message exception message that should be shown
      */
     public CheckFailedException(ConstraintViolation violation, String message) {
-        super(violation, message);
+        this(violation, message, null);
     }
 
+    /**
+     * Construct a new {@link CheckFailedException}.
+     * @param violation constraint violation that triggered this exception
+     * @param cause the cause of this constraint violation exception, can be {@code null}
+     */
+    public CheckFailedException(ConstraintViolation violation, Throwable cause) {
+        this(violation, "Check '" + violation.getConstraintName() + "' failed.", cause);
+    }
+ 
+    /**
+     * Construct a new {@link CheckFailedException}.
+     * @param violation constraint violation that triggered this exception
+     * @param message exception message that should be shown
+     * @param cause the cause of this constraint violation exception, can be {@code null}
+     */
+    public CheckFailedException(ConstraintViolation violation, String message, Throwable cause) {
+        super(violation, message, cause);
+        if(violation.getType() != ConstraintViolationType.CHECK_FAILED) {
+            throw new IllegalArgumentException("Check failed exceptions can only be used for check failed violations.");
+        }
+    }
 }
