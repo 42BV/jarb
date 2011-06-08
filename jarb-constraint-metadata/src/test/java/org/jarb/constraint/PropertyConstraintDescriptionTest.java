@@ -11,11 +11,11 @@ import org.junit.Test;
  * @since 03-06-2011
  */
 public class PropertyConstraintDescriptionTest {
-    private PropertyConstraintDescription<String> description;
+    private MutablePropertyConstraintDescription<String> description;
 
     @Before
     public void setUp() {
-        description = new PropertyConstraintDescription<String>("name", String.class);
+        description = new MutablePropertyConstraintDescription<String>("name", String.class);
     }
 
     @Test

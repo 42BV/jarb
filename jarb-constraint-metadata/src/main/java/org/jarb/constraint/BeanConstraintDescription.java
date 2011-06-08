@@ -1,85 +1,43 @@
 package org.jarb.constraint;
 
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-
-import org.apache.commons.lang.builder.ToStringBuilder;
-import org.apache.commons.lang.builder.ToStringStyle;
 
 /**
- * Describe the constraints of a specific bean.
+ * Describes the constraints of a bean.
  * 
  * @author Jeroen van Schagen
- * @since 31-05-2011
+ * @since 8-6-2011
  *
- * @param <T> type of bean being described
+ * @param <T> type of bean
  */
-public class BeanConstraintDescription<T> {
-    private final Class<T> beanClass;
-    private Map<String, PropertyConstraintDescription<?>> propertyDescriptions;
+public interface BeanConstraintDescription<T> {
 
     /**
-     * Construct a new {@link BeanConstraintDescription}.
-     * @param beanClass class of the bean being described
+     * Retrieve the bean type.
+     * @return bean type
      */
-    public BeanConstraintDescription(Class<T> beanClass) {
-        this.beanClass = beanClass;
-        propertyDescriptions = new HashMap<String, PropertyConstraintDescription<?>>();
-    }
-
+    Class<T> getBeanType();
+    
     /**
-     * Retrieve the class of our bean.
-     * @return bean class
+     * Retrieve the description of a property.
+     * @param propertyName property name
+     * @return property description
      */
-    public Class<T> getBeanClass() {
-        return beanClass;
-    }
-
+    PropertyConstraintDescription<?> getPropertyDescription(String propertyName);
+    
     /**
-     * Retrieve the description of a specific bean property.
-     * @param propertyName name of the property
-     * @return property description, or {@code null} if the property
-     * describes is not present
-     */
-    public PropertyConstraintDescription<?> getPropertyDescription(String propertyName) {
-        return propertyDescriptions.get(propertyName);
-    }
-
-    /**
-     * Retrieve the type-safe description of a specific bean property.
-     * @param <X> property type
-     * @param propertyName name of the property
+     * Retrieve the description of a property.
+     * @param <X> type of property
+     * @param propertyName property name
      * @param propertyClass class of the property
-     * @return property description, or {@code null} if the property
-     * describes is not present
+     * @return type safe property description
      */
-    @SuppressWarnings("unchecked")
-    public <X> PropertyConstraintDescription<X> getPropertyDescription(String propertyName, Class<X> propertyClass) {
-        return (PropertyConstraintDescription<X>) propertyDescriptions.get(propertyName);
-    }
-
+    <X> PropertyConstraintDescription<X> getPropertyDescription(String propertyName, Class<X> propertyClass);
+        
     /**
-     * Retrieve all available property descriptions of our bean.
-     * @return property descriptions
+     * Retrieve all property descriptions.
+     * @return immutable collection of all property descriptions
      */
-    public Collection<PropertyConstraintDescription<?>> getPropertyDescriptions() {
-        return propertyDescriptions.values();
-    }
-
-    /**
-     * Attach the description of a property to this bean description.
-     * @param propertyDescription description of the property
-     */
-    public void addPropertyDescription(PropertyConstraintDescription<?> propertyDescription) {
-        propertyDescriptions.put(propertyDescription.getPropertyName(), propertyDescription);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public String toString() {
-        return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
-    }
+    Collection<PropertyConstraintDescription<?>> getPropertyDescriptions();
+    
 }

@@ -5,7 +5,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import org.jarb.constraint.PropertyConstraintDescription;
+import org.jarb.constraint.MutablePropertyConstraintDescription;
 import org.jarb.constraint.database.column.EntityAwareColumnMetadataRepository;
 import org.jarb.constraint.domain.Car;
 import org.junit.Before;
@@ -33,7 +33,7 @@ public class DatabasePropertyConstraintDescriptionEnhancerTest {
      */
     @Test
     public void testEnhance() {
-        PropertyConstraintDescription<String> licenseNumberDescription = new PropertyConstraintDescription<String>("licenseNumber", String.class);
+        MutablePropertyConstraintDescription<String> licenseNumberDescription = new MutablePropertyConstraintDescription<String>("licenseNumber", String.class);
         licenseNumberDescription = enhancer.enhance(licenseNumberDescription, Car.class);
         assertTrue(licenseNumberDescription.isRequired());
         assertEquals(Integer.valueOf(6), licenseNumberDescription.getMaximumLength());
@@ -46,9 +46,32 @@ public class DatabasePropertyConstraintDescriptionEnhancerTest {
      */
     @Test
     public void testNotRequiredIfGeneratable() {
-        PropertyConstraintDescription<Long> idDescription = new PropertyConstraintDescription<Long>("id", Long.class);
+        MutablePropertyConstraintDescription<Long> idDescription = new MutablePropertyConstraintDescription<Long>("id", Long.class);
         idDescription = enhancer.enhance(idDescription, Car.class);
         assertFalse(idDescription.isRequired());
+    }
+    
+    /**
+     * Properties without column metadata should be skipped.
+     * Our property has no metadata because it only exists in the mapping,
+     * not in the actual database.
+     */
+    @Test
+    public void testSkipPropertyWithoutMetadata() {
+        MutablePropertyConstraintDescription<String> unmappedPropertyDescription = new MutablePropertyConstraintDescription<String>("unmappedProperty", String.class);
+        unmappedPropertyDescription = enhancer.enhance(unmappedPropertyDescription, Car.class);
+        assertNull(unmappedPropertyDescription.getMaximumLength());
+    }
+    
+    /**
+     * Properties that cannot be mapped to a column should be skipped.
+     * Unknown properties can never be mapped to a column.
+     */
+    @Test
+    public void testSkipUnmappedProperty() {
+        MutablePropertyConstraintDescription<String> unknownPropertyDescription = new MutablePropertyConstraintDescription<String>("unknownProperty", String.class);
+        unknownPropertyDescription = enhancer.enhance(unknownPropertyDescription, Car.class);
+        assertNull(unknownPropertyDescription.getMaximumLength());
     }
 
     /**
@@ -57,32 +80,9 @@ public class DatabasePropertyConstraintDescriptionEnhancerTest {
      */
     @Test
     public void testSkipUnmappedBeans() {
-        PropertyConstraintDescription<String> nameDescription = new PropertyConstraintDescription<String>("name", String.class);
+        MutablePropertyConstraintDescription<String> nameDescription = new MutablePropertyConstraintDescription<String>("name", String.class);
         nameDescription = enhancer.enhance(nameDescription, NotAnEntity.class);
         assertNull(nameDescription.getMaximumLength());
-    }
-
-    /**
-     * Properties that cannot be mapped to a column should be skipped.
-     * Unknown properties can never be mapped to a column.
-     */
-    @Test
-    public void testSkipUnmappedProperty() {
-        PropertyConstraintDescription<String> unknownPropertyDescription = new PropertyConstraintDescription<String>("unknownProperty", String.class);
-        unknownPropertyDescription = enhancer.enhance(unknownPropertyDescription, NotAnEntity.class);
-        assertNull(unknownPropertyDescription.getMaximumLength());
-    }
-
-    /**
-     * Properties without column metadata should be skipped.
-     * Our property has no metadata because it only exists in the mapping,
-     * not in the actual database.
-     */
-    @Test
-    public void testSkipPropertyWithoutMetadata() {
-        PropertyConstraintDescription<String> unmappedPropertyDescription = new PropertyConstraintDescription<String>("unmappedProperty", String.class);
-        unmappedPropertyDescription = enhancer.enhance(unmappedPropertyDescription, Car.class);
-        assertNull(unmappedPropertyDescription.getMaximumLength());
     }
 
     // Testing class, represents a simple bean without JPA mapping

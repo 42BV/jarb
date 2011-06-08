@@ -70,6 +70,7 @@ public class ReflectionConstraintViolationExceptionFactory implements Constraint
         for(Constructor<?> constructor : exceptionClass.getDeclaredConstructors()) {
             if(supportsConstructor(constructor)) {
                 // Store only the "best" constructor, meaning it has the most supported parameter types
+                // TODO: Create a comparator to place the best constructors first, and then return the first supported
                 if(result == null || constructor.getParameterTypes().length > result.getParameterTypes().length) {
                     result = (Constructor<? extends Throwable>) constructor;
                 }

@@ -28,7 +28,7 @@ public class DefaultBeanConstraintDescriptor implements BeanConstraintDescriptor
      */
     @Override
     public <T> BeanConstraintDescription<T> describe(Class<T> beanClass) {
-        BeanConstraintDescription<T> entityDescription = new BeanConstraintDescription<T>(beanClass);
+        MutableBeanConstraintDescription<T> entityDescription = new MutableBeanConstraintDescription<T>(beanClass);
         for (PropertyDescriptor property : BeanUtils.getPropertyDescriptors(beanClass)) {
             entityDescription.addPropertyDescription(describeProperty(property, beanClass));
         }
@@ -41,7 +41,7 @@ public class DefaultBeanConstraintDescriptor implements BeanConstraintDescriptor
      * @return property constraint description
      */
     private PropertyConstraintDescription<?> describeProperty(PropertyDescriptor property, Class<?> beanClass) {
-        PropertyConstraintDescription<?> propertyDescription = createPropertyDescription(property.getName(), property.getPropertyType());
+        MutablePropertyConstraintDescription<?> propertyDescription = createPropertyDescription(property.getName(), property.getPropertyType());
         for (PropertyConstraintDescriptionEnhancer propertyDescriptionEnhancer : propertyDescriptionEnhancers) {
             propertyDescription = propertyDescriptionEnhancer.enhance(propertyDescription, beanClass);
         }
@@ -49,14 +49,14 @@ public class DefaultBeanConstraintDescriptor implements BeanConstraintDescriptor
     }
 
     /**
-     * Construct a new {@link PropertyConstraintDescription} for some property.
+     * Construct a new {@link MutablePropertyConstraintDescription} for some property.
      * @param <T> type of property being described
      * @param propertyName name of the property being described
      * @param propertyClass class of the property being described
      * @return new plain property description
      */
-    private <T> PropertyConstraintDescription<T> createPropertyDescription(String propertyName, Class<T> propertyClass) {
-        return new PropertyConstraintDescription<T>(propertyName, propertyClass);
+    private <T> MutablePropertyConstraintDescription<T> createPropertyDescription(String propertyName, Class<T> propertyClass) {
+        return new MutablePropertyConstraintDescription<T>(propertyName, propertyClass);
     }
 
 }

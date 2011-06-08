@@ -24,7 +24,6 @@ public class BeanConstraintDescriptorFactoryBeanTest {
     public void setUp() throws Exception {
         factoryBean = new BeanConstraintDescriptorFactoryBean();
         factoryBean.setColumnMetadataRepository(columnMetadataRepository);
-        factoryBean.afterPropertiesSet();
     }
 
     /**
@@ -35,7 +34,7 @@ public class BeanConstraintDescriptorFactoryBeanTest {
         BeanConstraintDescriptor descriptor = factoryBean.getObject();
         BeanConstraintDescription<Car> carDescription = descriptor.describe(Car.class);
         PropertyConstraintDescription<String> licenseDescription = carDescription.getPropertyDescription("licenseNumber", String.class);
-        assertEquals(String.class, licenseDescription.getPropertyClass()); // Retrieved by introspection
+        assertEquals(String.class, licenseDescription.getPropertyType()); // Retrieved by introspection
         assertTrue(licenseDescription.isRequired()); // Retrieved from database
         assertEquals(Integer.valueOf(6), licenseDescription.getMinimumLength()); // Retrieved from @Length
         assertEquals(Integer.valueOf(6), licenseDescription.getMaximumLength()); // Merged @Length and database

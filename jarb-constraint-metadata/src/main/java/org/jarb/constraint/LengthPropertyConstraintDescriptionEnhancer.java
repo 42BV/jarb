@@ -18,7 +18,7 @@ public class LengthPropertyConstraintDescriptionEnhancer implements PropertyCons
      * {@inheritDoc}
      */
     @Override
-    public <T> PropertyConstraintDescription<T> enhance(PropertyConstraintDescription<T> propertyDescription, Class<?> beanClass) {
+    public <T> MutablePropertyConstraintDescription<T> enhance(MutablePropertyConstraintDescription<T> propertyDescription, Class<?> beanClass) {
         PropertyDescriptor propertyDescriptor = BeanUtils.getPropertyDescriptor(beanClass, propertyDescription.getPropertyName());
         List<Length> lengthAnnotations = ConstraintAnnotationUtil.getPropertyAnnotations(beanClass, propertyDescriptor, Length.class);
         Integer minimumLength = propertyDescription.getMinimumLength();

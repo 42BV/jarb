@@ -1,6 +1,6 @@
 package org.jarb.constraint.database;
 
-import org.jarb.constraint.PropertyConstraintDescription;
+import org.jarb.constraint.MutablePropertyConstraintDescription;
 import org.jarb.constraint.PropertyConstraintDescriptionEnhancer;
 import org.jarb.constraint.database.column.ColumnMetadata;
 import org.jarb.constraint.database.column.EntityAwareColumnMetadataRepository;
@@ -28,7 +28,7 @@ public class DatabasePropertyConstraintDescriptionEnhancer implements PropertyCo
      * {@inheritDoc}
      */
     @Override
-    public <T> PropertyConstraintDescription<T> enhance(PropertyConstraintDescription<T> propertyDescription, Class<?> beanClass) {
+    public <T> MutablePropertyConstraintDescription<T> enhance(MutablePropertyConstraintDescription<T> propertyDescription, Class<?> beanClass) {
         final String propertyName = propertyDescription.getPropertyName();
         try {
             ColumnMetadata columnMetadata = columnMetadataRepository.getColumnMetadata(beanClass, propertyName);
