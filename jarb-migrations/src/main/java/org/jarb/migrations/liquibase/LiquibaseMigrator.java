@@ -21,25 +21,16 @@ import org.slf4j.LoggerFactory;
  */
 public class LiquibaseMigrator implements DatabaseMigrator {
     private static final Logger LOGGER = LoggerFactory.getLogger(LiquibaseMigrator.class);
-    /** Used to create a new liquibase migration facade **/
-    private LiquibaseFactory liquibaseFactory = new LiquibaseFactoryImpl();
 
-    // Describes our migration
-    private final String changeLogPath;
+    // Required liquibase information
+    private LiquibaseFactory liquibaseFactory = new LiquibaseFactoryImpl();
+    private String changeLogPath = "src/main/db/changelog.groovy";
+
+    // Optional migration details
     private boolean dropFirst = false;
     private int changesToApply = 0;
     private String contexts = "";
-
-    /** Optional output file path **/
     private String outputFilePath;
-
-    /**
-     * Construct a new {@link LiquibaseMigrator}.
-     * @param changeLogPath path to the change log file
-     */
-    public LiquibaseMigrator(String changeLogPath) {
-        this.changeLogPath = changeLogPath;
-    }
 
     /**
      * {@inheritDoc}
@@ -115,6 +106,10 @@ public class LiquibaseMigrator implements DatabaseMigrator {
         } else {
             liquibase.update(contexts, writer);
         }
+    }
+
+    public void setChangeLogPath(String changeLogPath) {
+        this.changeLogPath = changeLogPath;
     }
 
     public void setLiquibaseFactory(LiquibaseFactory liquibaseFactory) {

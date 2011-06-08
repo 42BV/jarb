@@ -2,8 +2,8 @@ package org.jarb.sample.service;
 
 import java.util.List;
 
-import org.jarb.sample.dao.PostRepository;
 import org.jarb.sample.domain.Post;
+import org.jarb.sample.repository.PostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

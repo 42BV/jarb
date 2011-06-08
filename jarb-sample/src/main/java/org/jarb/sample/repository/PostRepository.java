@@ -1,4 +1,4 @@
-package org.jarb.sample.dao;
+package org.jarb.sample.repository;
 
 import java.util.List;
 
