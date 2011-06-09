@@ -1,4 +1,5 @@
 $.getJSON('http://localhost:8080/jarb-sample/posts/structure.json', function(json) {
+	
   /*
    * TODO: Use constraint information to enhance HTML form with validation and length attribute
    * 
@@ -16,18 +17,9 @@ $.getJSON('http://localhost:8080/jarb-sample/posts/structure.json', function(jso
    * 	}
    * }
    */
-  
-  // Show the bean type
-  $('body').append('<p>' + json.beanConstraintMetadata.beanType + '</p>')
-  
-  // Show all property names
-  var items = [];
-  $.each(json.beanConstraintMetadata.propertiesMetadata, function(index, propertyMetadata) {
-    items.push('<li>' + propertyMetadata.propertyName + '</li>');
-  });
-  $('<ul/>', {
-    'class': 'properties',
-    html: items.join('')
-  }).appendTo('body');
-  
+	
+	$.each(json.beanConstraintMetadata.propertiesMetadata, function(index, propertyMetadata) {
+		$('input[name=' + propertyMetadata.propertyName + ']').attr('length', propertyMetadata.maximumLength);
+	});
+
 });
