@@ -15,14 +15,14 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "classpath:application-context.xml" })
 public class BeanConstraintDescriptorFactoryBeanTest {
-    private BeanConstraintDescriptorFactoryBean factoryBean;
+    private BeanConstraintMetadataGeneratorFactoryBean factoryBean;
 
     @Autowired
     private EntityAwareColumnMetadataRepository columnMetadataRepository;
 
     @Before
     public void setUp() throws Exception {
-        factoryBean = new BeanConstraintDescriptorFactoryBean();
+        factoryBean = new BeanConstraintMetadataGeneratorFactoryBean();
         factoryBean.setColumnMetadataRepository(columnMetadataRepository);
     }
 
@@ -31,9 +31,9 @@ public class BeanConstraintDescriptorFactoryBeanTest {
      */
     @Test
     public void testGeneratedObject() throws Exception {
-        BeanConstraintDescriptor descriptor = factoryBean.getObject();
-        BeanConstraintDescription<Car> carDescription = descriptor.describe(Car.class);
-        PropertyConstraintDescription<String> licenseDescription = carDescription.getPropertyDescription("licenseNumber", String.class);
+        BeanConstraintMetadataGenerator descriptor = factoryBean.getObject();
+        BeanConstraintMetadata<Car> carDescription = descriptor.describe(Car.class);
+        PropertyConstraintMetadata<String> licenseDescription = carDescription.getPropertyMetadata("licenseNumber", String.class);
         assertEquals(String.class, licenseDescription.getPropertyType()); // Retrieved by introspection
         assertTrue(licenseDescription.isRequired()); // Retrieved from database
         assertEquals(Integer.valueOf(6), licenseDescription.getMinimumLength()); // Retrieved from @Length

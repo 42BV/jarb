@@ -8,13 +8,13 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class LengthPropertyConstraintDescriptionEnhancerTest {
-    private LengthPropertyConstraintDescriptionEnhancer enhancer;
-    private MutablePropertyConstraintDescription<String> propertyDescription;
+    private LengthPropertyConstraintMetadataEnhancer enhancer;
+    private MutablePropertyConstraintMetadata<String> propertyDescription;
 
     @Before
     public void setUp() {
-        enhancer = new LengthPropertyConstraintDescriptionEnhancer();
-        propertyDescription = new MutablePropertyConstraintDescription<String>("licenseNumber", String.class);
+        enhancer = new LengthPropertyConstraintMetadataEnhancer();
+        propertyDescription = new MutablePropertyConstraintMetadata<String>("licenseNumber", String.class);
     }
 
     /**
@@ -49,7 +49,7 @@ public class LengthPropertyConstraintDescriptionEnhancerTest {
      */
     @Test
     public void testNoLength() {
-        MutablePropertyConstraintDescription<Double> priceDescription = new MutablePropertyConstraintDescription<Double>("price", Double.class);
+        MutablePropertyConstraintMetadata<Double> priceDescription = new MutablePropertyConstraintMetadata<Double>("price", Double.class);
         priceDescription.setMaximumLength(9);
         enhancer.enhance(priceDescription, Car.class);
         // No minimum length is specified, so it should remain null

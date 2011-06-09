@@ -1,7 +1,7 @@
 package org.jarb.constraint.database;
 
-import org.jarb.constraint.MutablePropertyConstraintDescription;
-import org.jarb.constraint.PropertyConstraintDescriptionEnhancer;
+import org.jarb.constraint.MutablePropertyConstraintMetadata;
+import org.jarb.constraint.PropertyConstraintMetadataEnhancer;
 import org.jarb.constraint.database.column.ColumnMetadata;
 import org.jarb.constraint.database.column.EntityAwareColumnMetadataRepository;
 import org.jarb.constraint.database.column.UnknownColumnException;
@@ -15,7 +15,7 @@ import org.slf4j.LoggerFactory;
  * @author Jeroen van Schagen
  * @since 31-05-2011
  */
-public class DatabasePropertyConstraintDescriptionEnhancer implements PropertyConstraintDescriptionEnhancer {
+public class DatabasePropertyConstraintDescriptionEnhancer implements PropertyConstraintMetadataEnhancer {
     private static final Logger LOGGER = LoggerFactory.getLogger(DatabasePropertyConstraintDescriptionEnhancer.class);
     /** Repository used to access column metadata. **/
     private final EntityAwareColumnMetadataRepository columnMetadataRepository;
@@ -28,7 +28,7 @@ public class DatabasePropertyConstraintDescriptionEnhancer implements PropertyCo
      * {@inheritDoc}
      */
     @Override
-    public <T> MutablePropertyConstraintDescription<T> enhance(MutablePropertyConstraintDescription<T> propertyDescription, Class<?> beanClass) {
+    public <T> MutablePropertyConstraintMetadata<T> enhance(MutablePropertyConstraintMetadata<T> propertyDescription, Class<?> beanClass) {
         final String propertyName = propertyDescription.getPropertyName();
         try {
             ColumnMetadata columnMetadata = columnMetadataRepository.getColumnMetadata(beanClass, propertyName);

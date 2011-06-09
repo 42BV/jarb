@@ -91,7 +91,7 @@
     </bean>
     
     <!-- Provides a bean constraint metadata, required for front-end -->
-    <bean id="constraintDescriptor" class="org.jarb.constraint.BeanConstraintDescriptorFactoryBean">
+    <bean id="constraintMetadataGenerator" class="org.jarb.constraint.BeanConstraintMetadataGeneratorFactoryBean">
     	<property name="columnMetadataRepository" ref="columnMetadataRepository"/>
     </bean>
     

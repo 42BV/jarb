@@ -10,11 +10,11 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class DefaultBeanConstraintDescriptorTest {
-    private DefaultBeanConstraintDescriptor beanDescriptor;
+    private DefaultBeanConstraintMetadataGenerator beanDescriptor;
 
     @Before
     public void setUp() {
-        beanDescriptor = new DefaultBeanConstraintDescriptor();
+        beanDescriptor = new DefaultBeanConstraintMetadataGenerator();
     }
 
     /**
@@ -22,12 +22,12 @@ public class DefaultBeanConstraintDescriptorTest {
      */
     @Test
     public void testPropertiesAreDescribed() {
-        BeanConstraintDescription<Car> carDescription = beanDescriptor.describe(Car.class);
-        assertEquals(Long.class, carDescription.getPropertyDescription("id").getPropertyType());
-        assertEquals(String.class, carDescription.getPropertyDescription("licenseNumber").getPropertyType());
-        assertEquals(Double.class, carDescription.getPropertyDescription("price").getPropertyType());
-        assertEquals(Person.class, carDescription.getPropertyDescription("owner").getPropertyType());
-        assertEquals(Class.class, carDescription.getPropertyDescription("class").getPropertyType());
+        BeanConstraintMetadata<Car> carDescription = beanDescriptor.describe(Car.class);
+        assertEquals(Long.class, carDescription.getPropertyMetadata("id").getPropertyType());
+        assertEquals(String.class, carDescription.getPropertyMetadata("licenseNumber").getPropertyType());
+        assertEquals(Double.class, carDescription.getPropertyMetadata("price").getPropertyType());
+        assertEquals(Person.class, carDescription.getPropertyMetadata("owner").getPropertyType());
+        assertEquals(Class.class, carDescription.getPropertyMetadata("class").getPropertyType());
     }
 
     /**
@@ -35,10 +35,10 @@ public class DefaultBeanConstraintDescriptorTest {
      */
     @Test
     public void testPropertyDescriptionEnhancers() {
-        PropertyConstraintDescriptionEnhancer lengthAnnotationEnhancer = new LengthPropertyConstraintDescriptionEnhancer();
-        beanDescriptor.setPropertyDescriptionEnhancers(Arrays.asList(lengthAnnotationEnhancer));
-        BeanConstraintDescription<Car> carDescription = beanDescriptor.describe(Car.class);
-        PropertyConstraintDescription<String> licenseDescription = carDescription.getPropertyDescription("licenseNumber", String.class);
+        PropertyConstraintMetadataEnhancer lengthAnnotationEnhancer = new LengthPropertyConstraintMetadataEnhancer();
+        beanDescriptor.setPropertyMetadataEnhancers(Arrays.asList(lengthAnnotationEnhancer));
+        BeanConstraintMetadata<Car> carDescription = beanDescriptor.describe(Car.class);
+        PropertyConstraintMetadata<String> licenseDescription = carDescription.getPropertyMetadata("licenseNumber", String.class);
         // Length description enhancer reads the annotations to determine minimum- and maximum length
         assertEquals(Integer.valueOf(6), licenseDescription.getMinimumLength());
     }

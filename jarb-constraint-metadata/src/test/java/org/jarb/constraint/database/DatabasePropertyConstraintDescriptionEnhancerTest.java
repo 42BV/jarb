@@ -5,7 +5,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import org.jarb.constraint.MutablePropertyConstraintDescription;
+import org.jarb.constraint.MutablePropertyConstraintMetadata;
 import org.jarb.constraint.database.column.EntityAwareColumnMetadataRepository;
 import org.jarb.constraint.domain.Car;
 import org.junit.Before;
@@ -33,7 +33,7 @@ public class DatabasePropertyConstraintDescriptionEnhancerTest {
      */
     @Test
     public void testEnhance() {
-        MutablePropertyConstraintDescription<String> licenseNumberDescription = new MutablePropertyConstraintDescription<String>("licenseNumber", String.class);
+        MutablePropertyConstraintMetadata<String> licenseNumberDescription = new MutablePropertyConstraintMetadata<String>("licenseNumber", String.class);
         licenseNumberDescription = enhancer.enhance(licenseNumberDescription, Car.class);
         assertTrue(licenseNumberDescription.isRequired());
         assertEquals(Integer.valueOf(6), licenseNumberDescription.getMaximumLength());
@@ -46,7 +46,7 @@ public class DatabasePropertyConstraintDescriptionEnhancerTest {
      */
     @Test
     public void testNotRequiredIfGeneratable() {
-        MutablePropertyConstraintDescription<Long> idDescription = new MutablePropertyConstraintDescription<Long>("id", Long.class);
+        MutablePropertyConstraintMetadata<Long> idDescription = new MutablePropertyConstraintMetadata<Long>("id", Long.class);
         idDescription = enhancer.enhance(idDescription, Car.class);
         assertFalse(idDescription.isRequired());
     }
@@ -58,7 +58,7 @@ public class DatabasePropertyConstraintDescriptionEnhancerTest {
      */
     @Test
     public void testSkipPropertyWithoutMetadata() {
-        MutablePropertyConstraintDescription<String> unmappedPropertyDescription = new MutablePropertyConstraintDescription<String>("unmappedProperty", String.class);
+        MutablePropertyConstraintMetadata<String> unmappedPropertyDescription = new MutablePropertyConstraintMetadata<String>("unmappedProperty", String.class);
         unmappedPropertyDescription = enhancer.enhance(unmappedPropertyDescription, Car.class);
         assertNull(unmappedPropertyDescription.getMaximumLength());
     }
@@ -69,7 +69,7 @@ public class DatabasePropertyConstraintDescriptionEnhancerTest {
      */
     @Test
     public void testSkipUnmappedProperty() {
-        MutablePropertyConstraintDescription<String> unknownPropertyDescription = new MutablePropertyConstraintDescription<String>("unknownProperty", String.class);
+        MutablePropertyConstraintMetadata<String> unknownPropertyDescription = new MutablePropertyConstraintMetadata<String>("unknownProperty", String.class);
         unknownPropertyDescription = enhancer.enhance(unknownPropertyDescription, Car.class);
         assertNull(unknownPropertyDescription.getMaximumLength());
     }
@@ -80,7 +80,7 @@ public class DatabasePropertyConstraintDescriptionEnhancerTest {
      */
     @Test
     public void testSkipUnmappedBeans() {
-        MutablePropertyConstraintDescription<String> nameDescription = new MutablePropertyConstraintDescription<String>("name", String.class);
+        MutablePropertyConstraintMetadata<String> nameDescription = new MutablePropertyConstraintMetadata<String>("name", String.class);
         nameDescription = enhancer.enhance(nameDescription, NotAnEntity.class);
         assertNull(nameDescription.getMaximumLength());
     }
