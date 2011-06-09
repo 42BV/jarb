@@ -1,16 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<beans
+		xmlns="http://www.springframework.org/schema/beans"
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xmlns:context="http://www.springframework.org/schema/context"
-        xmlns:tx="http://www.springframework.org/schema/tx" xmlns:jee="http://www.springframework.org/schema/jee"
+        xmlns:tx="http://www.springframework.org/schema/tx"
+        xmlns:jee="http://www.springframework.org/schema/jee"
         xsi:schemaLocation="
-        http://www.springframework.org/schema/beans	http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
-        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.1.xsd
-        http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.1.xsd
-        http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-3.1.xsd">
+	        http://www.springframework.org/schema/beans	http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+	        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.1.xsd
+	        http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.1.xsd
+	        http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-3.1.xsd">
 
     <!-- Scans the classpath of this application for @Components to deploy as beans -->
     <context:component-scan base-package="org.jarb.sample"/>
 
+	<!-- Create a connection to our in-memory database and upgrade it to the latest version -->
 	<bean id="dataSource" class="org.jarb.migrations.MigratingDataSource">
 	    <property name="delegate">
 			<bean class="org.springframework.jdbc.datasource.DriverManagerDataSource">
@@ -24,19 +28,48 @@
 	    	<bean class="org.jarb.migrations.liquibase.LiquibaseMigrator"/>
 	    </property>
 	</bean>
+	
+	<!-- Insert content into our database -->
+	<bean class="org.springframework.jdbc.datasource.init.DataSourceInitializer">
+    	<property name="dataSource" ref="dataSource"/>
+    	<property name="databasePopulator">
+    		<bean class="org.jarb.populator.CompoundDatabasePopulator">
+    			<constructor-arg>
+    				<list>
+    					<!-- Using SQL statements -->
+    					<bean class="org.jarb.populator.SkipableSqlResourceDatabasePopulator">
+    						<constructor-arg value="classpath:import.sql"/>
+    					</bean>
+    					<!-- And an Excel workbook -->
+    					<bean class="org.jarb.populator.excel.ExcelDatabasePopulator">
+    						<property name="excelResource" value="classpath:import.xls"/>
+    						<property name="excelDataManager">
+    							<bean class="org.jarb.populator.excel.ExcelDataManagerFactoryBean">
+    								<property name="entityManagerFactory" ref="entityManagerFactory"/>
+    							</bean>
+    						</property>
+    					</bean>
+    				</list>
+    			</constructor-arg>
+    		</bean>
+    	</property>
+    </bean>
 
-    <!-- Persistence -->
+    <!-- Object relational mapping using Hibernate and Spring -->
     <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
         <property name="jpaPropertyMap">
             <map>
+            	<!-- Ensure the spring aware validation factory is used -->
 				<entry key="javax.persistence.validation.factory" value-ref="validator" />               
 				<entry key="hibernate.dialect" value="org.hibernate.dialect.HSQLDialect"/>
+				<!-- Schema creation is done by migration, but we still validate the result -->
                 <entry key="hibernate.hbm2ddl.auto" value="validate"/>
             </map>
         </property>
         <property name="dataSource" ref="dataSource"/>
     </bean>
 
+	<!-- Transaction support -->
     <tx:annotation-driven transaction-manager="transactionManager"/>
     <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
         <property name="entityManagerFactory" ref="entityManagerFactory"/>
@@ -52,11 +85,12 @@
         <property name="validationMessageSource" ref="messageSource"/>
     </bean>
     
-	<!-- Provides column metadata -->
+	<!-- Provides column metadata, used during validation and provided to front-end -->
 	<bean class="org.jarb.constraint.database.column.EntityAwareColumnMetadataRepository">
         <constructor-arg ref="dataSource" />
     </bean>
     
+    <!-- Translate JDBC driver exceptions into Java exceptions -->
 	<bean class="org.jarb.violation.integration.ConstraintViolationExceptionTranslatingBeanPostProcessor">
         <property name="translator">
             <bean class="org.jarb.violation.integration.JpaConstraintViolationExceptionTranslatorFactoryBean">
@@ -69,29 +103,6 @@
                 </property>
             </bean>
         </property>
-    </bean>
-    
-    <bean class="org.springframework.jdbc.datasource.init.DataSourceInitializer" depends-on="validator">
-    	<property name="dataSource" ref="dataSource"/>
-    	<property name="databasePopulator">
-    		<bean class="org.jarb.populator.CompoundDatabasePopulator">
-    			<constructor-arg>
-    				<list>
-    					<bean class="org.jarb.populator.SkipableSqlResourceDatabasePopulator">
-    						<constructor-arg value="classpath:import.sql"/>
-    					</bean>
-    					<bean class="org.jarb.populator.excel.ExcelDatabasePopulator">
-    						<property name="excelResource" value="classpath:import.xls"/>
-    						<property name="excelDataManager">
-    							<bean class="org.jarb.populator.excel.ExcelDataManagerFactoryBean">
-    								<property name="entityManagerFactory" ref="entityManagerFactory"/>
-    							</bean>
-    						</property>
-    					</bean>
-    				</list>
-    			</constructor-arg>
-    		</bean>
-    	</property>
     </bean>
     
     <import resource="mvc-context.xml"/>
