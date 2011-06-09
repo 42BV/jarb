@@ -24,10 +24,21 @@
 			</c:forEach>
 		</ul>
 		
-		<form action="post">
-			<input name="author"/>
-			<input name="title"/>
-			<input name="message"/>
+		<form action="">
+			<p>Create a new post</p>
+			<fieldset>
+				<label for="author">Author</label>
+				<input name="author"/>
+			</fieldset>
+			<fieldset>
+				<label for="title">Title</label>
+				<input name="title"/>
+			</fieldset>
+			<fieldset>
+				<label for="message">Message</label>
+				<input name="message"/>
+			</fieldset>
+			<button type="submit">Submit</button>
 		</form>
 		
 		<a href="${pageContext.request.contextPath}/">Home</a>
