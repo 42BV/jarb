@@ -7,20 +7,23 @@ import org.jarb.violation.ConstraintViolation;
 import org.jarb.violation.resolver.ConstraintViolationResolver;
 
 /**
- * Constraint violation resolver which delegates to database
- * specific resolvers.
+ * Constraint violation resolver that delegates to database specific resolvers.
  * 
  * @author Jeroen van Schagen
  * @since 16-05-2011
  */
 public class DatabaseSpecificConstraintViolationResolver implements ConstraintViolationResolver {
+    /** Delegating resolvers for each type of database **/
     private final Map<Database, ConstraintViolationResolver> violationResolvers;
-    private DatabaseResolver databaseResolver;
+    /** Used to resolve the type of database **/
+    private final DatabaseResolver databaseResolver;
 
     /**
      * Construct a new {@link DatabaseSpecificConstraintViolationResolver}.
+     * @param databaseResolver resolves the type of database
      */
-    public DatabaseSpecificConstraintViolationResolver() {
+    public DatabaseSpecificConstraintViolationResolver(DatabaseResolver databaseResolver) {
+        this.databaseResolver = databaseResolver;
         violationResolvers = new HashMap<Database, ConstraintViolationResolver>();
     }
 
@@ -41,12 +44,10 @@ public class DatabaseSpecificConstraintViolationResolver implements ConstraintVi
      * Register a database specific constraint violation resolver.
      * @param database type of database that the resolver works on
      * @param violationResolver reference to the violation resolver
+     * @return this instance to enable method chaining
      */
-    public void register(Database database, ConstraintViolationResolver violationResolver) {
+    public DatabaseSpecificConstraintViolationResolver register(Database database, ConstraintViolationResolver violationResolver) {
         violationResolvers.put(database, violationResolver);
-    }
-
-    public void setDatabaseResolver(DatabaseResolver databaseResolver) {
-        this.databaseResolver = databaseResolver;
+        return this;
     }
 }

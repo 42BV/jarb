@@ -20,9 +20,7 @@ public class JpaConstraintViolationExceptionTranslatorFactoryBean extends Constr
      * @see #setViolationResolver(org.jarb.violation.resolver.ConstraintViolationResolver)
      */
     public void setEntityManagerFactory(EntityManagerFactory entityManagerFactory) {
-        HibernateJpaDatabaseResolver databaseResolver = new HibernateJpaDatabaseResolver();
-        databaseResolver.setEntityManagerFactory(entityManagerFactory);
-        setDatabaseResolver(databaseResolver);
+        setDatabaseResolver(new HibernateJpaDatabaseResolver(entityManagerFactory));
     }
 
 }

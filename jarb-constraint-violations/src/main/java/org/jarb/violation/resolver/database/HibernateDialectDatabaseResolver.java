@@ -3,6 +3,8 @@ package org.jarb.violation.resolver.database;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.springframework.util.Assert;
+
 
 /**
  * Resolves the database, using a hibernate dialect value.
@@ -26,9 +28,14 @@ public class HibernateDialectDatabaseResolver implements DatabaseResolver {
     /**
      * Hibernate dialect that should be used for database resolving.
      */
-    private String hibernateDialect;
+    private final String hibernateDialect;
 
-    public void setHibernateDialect(String hibernateDialect) {
+    /**
+     * Construct a new {@link HibernateDialectDatabaseResolver}.
+     * @param hibernateDialect hibernate dialect being used
+     */
+    public HibernateDialectDatabaseResolver(String hibernateDialect) {
+        Assert.hasText(hibernateDialect, "Dialect cannot be empty.");
         this.hibernateDialect = hibernateDialect;
     }
 
@@ -38,9 +45,7 @@ public class HibernateDialectDatabaseResolver implements DatabaseResolver {
      * @return database matching the provided dialect, if any
      */
     public static Database resolveByDialect(String hibernateDialect) {
-        HibernateDialectDatabaseResolver databaseResolver = new HibernateDialectDatabaseResolver();
-        databaseResolver.setHibernateDialect(hibernateDialect);
-        return databaseResolver.resolve();
+        return new HibernateDialectDatabaseResolver(hibernateDialect).resolve();
     }
 
     /**
@@ -48,6 +53,10 @@ public class HibernateDialectDatabaseResolver implements DatabaseResolver {
      */
     @Override
     public Database resolve() {
-        return DIALECT_MAPPING.get(hibernateDialect);
+        Database database = DIALECT_MAPPING.get(hibernateDialect);
+        if(database == null) {
+            throw new UnsupportedOperationException("Could not resolve database for dialect '" + hibernateDialect + "'");
+        }
+        return database;
     }
 }

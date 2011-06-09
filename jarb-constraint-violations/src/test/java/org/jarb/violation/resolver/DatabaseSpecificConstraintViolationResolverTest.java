@@ -15,25 +15,20 @@ import org.jarb.violation.resolver.vendor.MysqlConstraintViolationResolver;
 import org.junit.Before;
 import org.junit.Test;
 
-/**
- * Unit test for {@link DatabaseSpecificConstraintViolationResolver}.
- * @author Jeroen van Schagen
- * @since 17-05-2011
- */
 public class DatabaseSpecificConstraintViolationResolverTest {
     private DatabaseSpecificConstraintViolationResolver resolver;
 
     @Before
     public void setUp() {
-        resolver = new DatabaseSpecificConstraintViolationResolver();
-        resolver.setDatabaseResolver(new DatabaseResolver() {
+        DatabaseResolver mysqlDatabaseResolver = new DatabaseResolver() {
 
             @Override
             public Database resolve() {
                 return Database.MYSQL;
             }
 
-        });
+        };
+        resolver = new DatabaseSpecificConstraintViolationResolver(mysqlDatabaseResolver);
     }
 
     /**
@@ -54,6 +49,7 @@ public class DatabaseSpecificConstraintViolationResolverTest {
      */
     @Test
     public void testUnknownDatabase() {
+        // Note that we did not register a mysql specific violation resolver
         Throwable mysqlException = new SQLException("Column 'name' cannot be null");
         try {
             resolver.resolve(mysqlException);

@@ -18,14 +18,12 @@ public class LicenseNumberAlreadyExistsException extends UniqueKeyViolationExcep
         super(violation);
     }
 
-    // Invoked by reflection based factory as all parameters are supported
     public LicenseNumberAlreadyExistsException(ConstraintViolation violation, Throwable cause) {
         super(violation, cause);
     }
 
-    // Only invoked by custom exception factory
-    public LicenseNumberAlreadyExistsException(ConstraintViolation violation, ConstraintViolationExceptionFactory factory) {
-        super(violation);
+    public LicenseNumberAlreadyExistsException(ConstraintViolation violation, Throwable cause, ConstraintViolationExceptionFactory factory) {
+        super(violation, cause);
         this.factory = factory;
     }
 

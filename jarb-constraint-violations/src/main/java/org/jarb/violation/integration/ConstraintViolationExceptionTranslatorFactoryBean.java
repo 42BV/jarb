@@ -9,6 +9,7 @@ import org.jarb.violation.factory.ConstraintViolationExceptionFactory;
 import org.jarb.violation.resolver.ConstraintViolationResolver;
 import org.jarb.violation.resolver.ConstraintViolationResolverFactory;
 import org.jarb.violation.resolver.database.DatabaseResolver;
+import org.springframework.util.Assert;
 
 /**
  * Factory bean for {@link ConstraintViolationExceptionTranslator}. Using this factory
@@ -71,6 +72,7 @@ public class ConstraintViolationExceptionTranslatorFactoryBean extends Singleton
      * @see #setViolationResolver(ConstraintViolationResolver)
      */
     public void setDatabaseResolver(DatabaseResolver databaseResolver) {
+        Assert.notNull(databaseResolver, "Database resolver cannot be null.");
         setViolationResolver(ConstraintViolationResolverFactory.build(databaseResolver));
     }
 

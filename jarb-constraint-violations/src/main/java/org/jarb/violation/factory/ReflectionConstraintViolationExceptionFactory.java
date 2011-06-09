@@ -1,15 +1,19 @@
 package org.jarb.violation.factory;
 
 import java.lang.reflect.Constructor;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 import org.jarb.violation.ConstraintViolation;
 import org.springframework.beans.BeanUtils;
 import org.springframework.util.Assert;
 
 /**
- * Creates constraint violation exceptions using reflection. Note that we only
- * support constructors with supported parameter types (violation, throwable).
- * Whenever no matching constructor could be found, we throw a runtime exception.
+ * Creates constraint violation exceptions using reflection. Whenever no
+ * supported constructor could be found, we throw a runtime exception.
  * 
  * @author Jeroen van Schagen
  * @since 18-05-2011
@@ -24,7 +28,7 @@ public class ReflectionConstraintViolationExceptionFactory implements Constraint
     public ReflectionConstraintViolationExceptionFactory(Constructor<? extends Throwable> exceptionConstructor) {
         Assert.notNull(exceptionConstructor, "Exception constructor cannot be null");
         if(!supportsConstructor(exceptionConstructor)) {
-            throw new IllegalArgumentException("Constructor contains unsupported parameter types, can only be a violation or throwable.");
+            throw new IllegalArgumentException("Constructor contains unsupported parameter types");
         }
         this.exceptionConstructor = exceptionConstructor;
     }
@@ -46,16 +50,18 @@ public class ReflectionConstraintViolationExceptionFactory implements Constraint
     public Throwable createException(ConstraintViolation violation, Throwable cause) {
         // Build an array of construction arguments
         final Class<?>[] parameterTypes = exceptionConstructor.getParameterTypes();
-        Object[] parameterValues = new Object[parameterTypes.length];
+        Object[] arguments = new Object[parameterTypes.length];
         for(int parameterIndex = 0; parameterIndex < parameterTypes.length; parameterIndex++) {
-            if(ConstraintViolation.class.isAssignableFrom(parameterTypes[parameterIndex])) {
-                parameterValues[parameterIndex] = violation;
+            if(ConstraintViolation.class.equals(parameterTypes[parameterIndex])) {
+                arguments[parameterIndex] = violation;
             } else if(Throwable.class.isAssignableFrom(parameterTypes[parameterIndex])) {
-                parameterValues[parameterIndex] = cause;
+                arguments[parameterIndex] = cause;
+            } else if(parameterTypes[parameterIndex].isAssignableFrom(ReflectionConstraintViolationExceptionFactory.class)) {
+                arguments[parameterIndex] = this;
             }
         }
         // Return the created exception
-        return BeanUtils.instantiateClass(exceptionConstructor, parameterValues);
+        return BeanUtils.instantiateClass(exceptionConstructor, arguments);
     }
     
     /**
@@ -66,21 +72,18 @@ public class ReflectionConstraintViolationExceptionFactory implements Constraint
      */
     @SuppressWarnings("unchecked")
     private static Constructor<? extends Throwable> findBestSupportedConstructor(Class<? extends Throwable> exceptionClass) {
-        Constructor<? extends Throwable> result = null;
-        for(Constructor<?> constructor : exceptionClass.getDeclaredConstructors()) {
+        // Retrieve a list of all constructors, sorted on the amount of parameters it recieves
+        List<Constructor<?>> declaredConstructors = new ArrayList<Constructor<?>>();
+        declaredConstructors.addAll(Arrays.asList(exceptionClass.getDeclaredConstructors()));
+        Collections.sort(declaredConstructors, ConstructorParameterTypeLengthComparator.INSTANCE);
+        for(Constructor<?> constructor : declaredConstructors) {
+            // Return the first supported constructor, as this will automatically be the "best"
             if(supportsConstructor(constructor)) {
-                // Store only the "best" constructor, meaning it has the most supported parameter types
-                // TODO: Create a comparator to place the best constructors first, and then return the first supported
-                if(result == null || constructor.getParameterTypes().length > result.getParameterTypes().length) {
-                    result = (Constructor<? extends Throwable>) constructor;
-                }
+                return (Constructor<? extends Throwable>) constructor;
             }
         }
-        if(result == null) {
-            // We expect a matching constructor be found
-            throw new IllegalStateException("Could not find a supported constructor in '" + exceptionClass.getSimpleName() + "'.");
-        }
-        return result;
+        // We expect a matching constructor be found
+        throw new IllegalStateException("Could not find a supported constructor in '" + exceptionClass.getSimpleName() + "'.");
     }
     
     /**
@@ -102,13 +105,44 @@ public class ReflectionConstraintViolationExceptionFactory implements Constraint
     }
     
     /**
-     * Determine if a parameter type is supported. We only support constraint
-     * violation and throwable (cause) parameters.
+     * Determine if a parameter type is supported.
      * @param parameterType class of the parameter
      * @return {@code true} if the parameter type is supported, else {@code false}
      */
     private static boolean supportsParameterType(Class<?> parameterType) {
-        return ConstraintViolation.class.isAssignableFrom(parameterType) || Throwable.class.isAssignableFrom(parameterType);
+        return
+            // We support a constraint violation argument
+            ConstraintViolation.class.equals(parameterType) ||
+            // Throwable (subclass) argument
+            Throwable.class.isAssignableFrom(parameterType) ||
+            // (Reflection) constraint violation exception factory argument
+            parameterType.isAssignableFrom(ReflectionConstraintViolationExceptionFactory.class);
+    }
+    
+    /**
+     * Compares two constructors based on the amount of parameters they declare.
+     * The constructor with the most number of parameter is placed first.
+     */
+    private enum ConstructorParameterTypeLengthComparator implements Comparator<Constructor<?>> {
+        INSTANCE;
+        
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public int compare(Constructor<?> left, Constructor<?> right) {
+            return numberOfParameterTypes(right).compareTo(numberOfParameterTypes(left));
+        }
+        
+        /**
+         * Count the number of parameter types inside a constructor.
+         * @param constructor the constructor that declares the parameter types
+         * @return number of parameter types inside the constructor
+         */
+        private Integer numberOfParameterTypes(Constructor<?> constructor) {
+            return Integer.valueOf(constructor.getParameterTypes().length);
+        }
+        
     }
 
 }

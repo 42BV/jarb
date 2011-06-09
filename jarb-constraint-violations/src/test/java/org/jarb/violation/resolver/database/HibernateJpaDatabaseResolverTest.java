@@ -19,9 +19,7 @@ public class HibernateJpaDatabaseResolverTest {
 
     @Test
     public void testResolveDatabase() {
-        HibernateJpaDatabaseResolver databaseResolver = new HibernateJpaDatabaseResolver();
-        databaseResolver.setEntityManagerFactory(entityManagerFactory);
-        assertEquals(Database.HSQL, databaseResolver.resolve());
+        assertEquals(Database.HSQL, new HibernateJpaDatabaseResolver(entityManagerFactory).resolve());
     }
 
 }

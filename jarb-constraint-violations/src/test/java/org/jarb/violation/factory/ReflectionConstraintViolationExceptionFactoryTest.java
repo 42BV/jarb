@@ -30,6 +30,7 @@ public class ReflectionConstraintViolationExceptionFactoryTest {
         // Ensure the correct constructor was invoked (violation + cause)
         assertEquals("Unique key 'uk_cars_license_number' was violated.", exception.getMessage());
         assertEquals(cause, exception.getCause());
+        assertEquals(factory, ((LicenseNumberAlreadyExistsException) exception).getExceptionFactory());
     }
     
     /**
@@ -81,7 +82,7 @@ public class ReflectionConstraintViolationExceptionFactoryTest {
             new ReflectionConstraintViolationExceptionFactory(unsupportedConstructor);
             fail("Expected an illegal argument exception, as an unsupported constructor was provided!");
         } catch(IllegalArgumentException e) {
-            assertEquals("Constructor contains unsupported parameter types, can only be a violation or throwable.", e.getMessage());
+            assertEquals("Constructor contains unsupported parameter types", e.getMessage());
         }
     }
 

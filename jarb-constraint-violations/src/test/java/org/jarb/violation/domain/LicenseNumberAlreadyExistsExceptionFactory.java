@@ -11,10 +11,12 @@ import org.jarb.violation.factory.ConstraintViolationExceptionFactory;
  */
 public class LicenseNumberAlreadyExistsExceptionFactory implements ConstraintViolationExceptionFactory {
 
-    /** {@inheritDoc} **/
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public ConstraintViolationException createException(ConstraintViolation violation, Throwable cause) {
-        return new LicenseNumberAlreadyExistsException(violation, this); // Provide factory reference
+        return new LicenseNumberAlreadyExistsException(violation, cause, this);
     }
 
 }
