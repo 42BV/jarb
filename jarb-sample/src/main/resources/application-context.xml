@@ -85,9 +85,14 @@
         <property name="validationMessageSource" ref="messageSource"/>
     </bean>
     
-	<!-- Provides column metadata, used during validation and provided to front-end -->
-	<bean class="org.jarb.constraint.database.column.EntityAwareColumnMetadataRepository">
+	<!-- Provides column metadata, required for validation and bean description -->
+	<bean id="columnMetadataRepository" class="org.jarb.constraint.database.column.EntityAwareColumnMetadataRepository">
         <constructor-arg ref="dataSource" />
+    </bean>
+    
+    <!-- Provides a bean constraint metadata, required for front-end -->
+    <bean id="constraintDescriptor" class="org.jarb.constraint.BeanConstraintDescriptorFactoryBean">
+    	<property name="columnMetadataRepository" ref="columnMetadataRepository"/>
     </bean>
     
     <!-- Translate JDBC driver exceptions into Java exceptions -->

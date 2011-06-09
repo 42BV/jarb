@@ -1,5 +1,7 @@
 package org.jarb.sample.controller;
 
+import org.jarb.constraint.BeanConstraintDescription;
+import org.jarb.constraint.BeanConstraintDescriptor;
 import org.jarb.sample.domain.Post;
 import org.jarb.sample.service.PostingService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +18,9 @@ public class PostingController {
 
     @Autowired
     private PostingService postingService;
+    
+    @Autowired
+    private BeanConstraintDescriptor constraintDescriptor;
 
     @RequestMapping(method = RequestMethod.GET)
     public ModelAndView index() {
@@ -28,6 +33,11 @@ public class PostingController {
     public @ResponseBody Post post(@RequestParam("post") Post post) {
         postingService.createPost(post);
         return post;
+    }
+    
+    @RequestMapping(value = "structure", method = RequestMethod.GET)
+    public BeanConstraintDescription<Post> structure() {
+        return constraintDescriptor.describe(Post.class);
     }
 
 }

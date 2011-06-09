@@ -60,5 +60,28 @@ public class Post {
     public Date getPostedOn() {
         return postedOn;
     }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if(obj == this) {
+            return true;
+        }
+        boolean equals = false;
+        if(obj instanceof Post) {
+            equals = title.equals(((Post) obj).title);
+        }
+        return equals;
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int hashCode() {
+        return title.hashCode();
+    }
 
 }
