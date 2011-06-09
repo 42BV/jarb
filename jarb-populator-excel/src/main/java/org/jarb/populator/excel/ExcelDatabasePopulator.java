@@ -40,8 +40,4 @@ public class ExcelDatabasePopulator implements DatabasePopulator {
     public void setExcelDataManager(ExcelDataManager excelDataManager) {
         this.excelDataManager = excelDataManager;
     }
-
-    public void setExcelDataManagerFactory(ExcelDataManagerFactory excelDataManagerFactory) {
-        setExcelDataManager(excelDataManagerFactory.build());
-    }
 }

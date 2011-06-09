@@ -5,7 +5,6 @@ import java.math.BigDecimal;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
-import javax.validation.MessageInterpolator;
 import javax.validation.ValidatorFactory;
 
 import org.apache.commons.lang.StringUtils;
@@ -17,7 +16,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.util.Assert;
@@ -201,22 +199,25 @@ public class DatabaseConstrainedValidator implements ConstraintValidator<Databas
      */
     @Override
     public void initialize(DatabaseConstrained annotation) {
+        Assert.notNull(applicationContext, "Application context cannot be null.");
         if (columnMetadataRepository == null) {
-            columnMetadataRepository = getMetadataRepositoryFromContext(annotation);
+            columnMetadataRepository = getBeanFromContext(annotation.columnMetadataRepository(), EntityAwareColumnMetadataRepository.class);
+            messageBuilder = new ViolationMessageBuilder(getBeanFromContext(annotation.factory(), ValidatorFactory.class));
         }
     }
 
     /**
-     * Retrieve the column metadata repository from our application context.
-     * @param annotation constraint annotation
-     * @return column metadata repository
+     * Retrieve bean from application context, based on an optional identifier and bean class.
+     * @param <T> type of bean
+     * @param identifier identifier of the bean, when left empty there should only be one bean of that type
+     * @param beanClass class of the bean type
+     * @return bean matching our specification, or a runtime exception if nothing could be found
      */
-    private EntityAwareColumnMetadataRepository getMetadataRepositoryFromContext(DatabaseConstrained annotation) {
-        Assert.notNull(applicationContext, "Cannot retrieve column constraint repository without application context.");
-        if (StringUtils.isNotBlank(annotation.constraintRepository())) {
-            return applicationContext.getBean(annotation.constraintRepository(), EntityAwareColumnMetadataRepository.class);
+    private <T> T getBeanFromContext(String identifier, Class<T> beanClass) {
+        if (StringUtils.isNotBlank(identifier)) {
+            return applicationContext.getBean(identifier, beanClass);
         } else {
-            return applicationContext.getBean(EntityAwareColumnMetadataRepository.class);
+            return applicationContext.getBean(beanClass);
         }
     }
 
@@ -228,9 +229,4 @@ public class DatabaseConstrainedValidator implements ConstraintValidator<Databas
         this.applicationContext = applicationContext;
     }
 
-    @Autowired
-    public void setValidatorFactory(ValidatorFactory validatorFactory) {
-        MessageInterpolator messageInterpolator = validatorFactory.getMessageInterpolator();
-        messageBuilder = new ViolationMessageBuilder(messageInterpolator);
-    }
 }

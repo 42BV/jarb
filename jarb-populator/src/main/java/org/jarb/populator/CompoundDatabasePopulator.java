@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.datasource.init.DatabasePopulator;
 
 /**
@@ -15,6 +17,7 @@ import org.springframework.jdbc.datasource.init.DatabasePopulator;
  * @since 01-06-2011
  */
 public class CompoundDatabasePopulator implements DatabasePopulator {
+    private static final Logger LOGGER = LoggerFactory.getLogger(CompoundDatabasePopulator.class);
     private final List<DatabasePopulator> populators;
 
     /**
@@ -47,6 +50,7 @@ public class CompoundDatabasePopulator implements DatabasePopulator {
      */
     @Override
     public void populate(Connection connection) throws SQLException {
+        LOGGER.info("Executing {} database populators.", populators.size());
         for (DatabasePopulator populator : populators) {
             populator.populate(connection);
         }

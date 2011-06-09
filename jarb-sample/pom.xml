@@ -25,6 +25,12 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
+            <!-- Database popupation -->
+            <groupId>org.jarb</groupId>
+            <artifactId>jarb-populator</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
             <!-- Database popupation by excel -->
             <groupId>org.jarb</groupId>
             <artifactId>jarb-populator-excel</artifactId>

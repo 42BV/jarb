@@ -10,6 +10,7 @@ import java.util.Set;
 import javax.validation.ConstraintValidator;
 import javax.validation.MessageInterpolator;
 import javax.validation.Payload;
+import javax.validation.ValidatorFactory;
 import javax.validation.metadata.ConstraintDescriptor;
 
 /**
@@ -30,6 +31,14 @@ public class ViolationMessageBuilder {
      */
     public ViolationMessageBuilder(MessageInterpolator messageInterpolator) {
         this.messageInterpolator = messageInterpolator;
+    }
+    
+    /**
+     * Construct a new {@link ViolationMessageBuilder}.
+     * @param violationFactory provides the message interpolator
+     */
+    public ViolationMessageBuilder(ValidatorFactory violationFactory) {
+        this(violationFactory.getMessageInterpolator());
     }
 
     /**

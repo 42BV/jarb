@@ -71,6 +71,29 @@
         </property>
     </bean>
     
+    <bean class="org.springframework.jdbc.datasource.init.DataSourceInitializer" depends-on="validator">
+    	<property name="dataSource" ref="dataSource"/>
+    	<property name="databasePopulator">
+    		<bean class="org.jarb.populator.CompoundDatabasePopulator">
+    			<constructor-arg>
+    				<list>
+    					<bean class="org.jarb.populator.SkipableSqlResourceDatabasePopulator">
+    						<constructor-arg value="classpath:import.sql"/>
+    					</bean>
+    					<bean class="org.jarb.populator.excel.ExcelDatabasePopulator">
+    						<property name="excelResource" value="classpath:import.xls"/>
+    						<property name="excelDataManager">
+    							<bean class="org.jarb.populator.excel.ExcelDataManagerFactoryBean">
+    								<property name="entityManagerFactory" ref="entityManagerFactory"/>
+    							</bean>
+    						</property>
+    					</bean>
+    				</list>
+    			</constructor-arg>
+    		</bean>
+    	</property>
+    </bean>
+    
     <import resource="mvc-context.xml"/>
 
 </beans>

@@ -23,7 +23,7 @@ public class ExcelDatabasePopulatorTest extends DefaultExcelTestDataCase {
     public void setUp() {
         populator = new ExcelDatabasePopulator();
         populator.setExcelResource(new ClassPathResource("Excel.xls"));
-        populator.setExcelDataManagerFactory(getExcelDataManagerFactory());
+        populator.setExcelDataManager(getExcelDataManagerFactory().build());
     }
 
     /**

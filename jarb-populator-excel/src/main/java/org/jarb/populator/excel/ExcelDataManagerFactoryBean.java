@@ -19,7 +19,7 @@ public class ExcelDataManagerFactoryBean extends SingletonFactoryBean<ExcelDataM
      */
     @Override
     protected ExcelDataManager createObject() throws Exception {
-        Assert.notNull(excelDataManagerFactory, "Excel data manager factory is required.");
+        Assert.state(excelDataManagerFactory != null, "Excel data manager factory is required.");
         return excelDataManagerFactory.build();
     }
 
@@ -38,5 +38,4 @@ public class ExcelDataManagerFactoryBean extends SingletonFactoryBean<ExcelDataM
     public void setEntityManagerFactory(EntityManagerFactory entityManagerFactory) {
         setExcelDataManagerFactory(new ExcelDataManagerFactory(entityManagerFactory));
     }
-
 }
