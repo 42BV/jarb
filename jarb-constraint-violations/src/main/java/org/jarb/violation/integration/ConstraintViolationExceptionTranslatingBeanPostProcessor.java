@@ -6,7 +6,6 @@ import org.springframework.aop.Advisor;
 import org.springframework.aop.Pointcut;
 import org.springframework.aop.support.annotation.AnnotationMatchingPointcut;
 import org.springframework.beans.factory.InitializingBean;
-import org.springframework.beans.factory.annotation.Required;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.Assert;
 
@@ -68,6 +67,8 @@ public class ConstraintViolationExceptionTranslatingBeanPostProcessor extends Ad
      */
     @Override
     public void afterPropertiesSet() throws Exception {
+        Assert.state(translator != null, "Exception translator cannot be null");
+        Assert.state(pointcut != null, "Pointcut cannot be null");
         translationAdvisor = new ConstraintViolationExceptionTranslationAdvisor(translator, pointcut);
     }
 
@@ -83,9 +84,7 @@ public class ConstraintViolationExceptionTranslatingBeanPostProcessor extends Ad
      * Configure the exception translator instance. Exceptions will be translated with this instance.
      * @param translator the translator that will translate our instances
      */
-    @Required
     public void setTranslator(ConstraintViolationExceptionTranslator translator) {
-        Assert.notNull(translator, "Exception translator instance cannot be null.");
         this.translator = translator;
     }
 

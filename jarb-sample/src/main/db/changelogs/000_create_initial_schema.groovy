@@ -10,5 +10,6 @@ databaseChangeLog() {
             column(name: "title", type: "VARCHAR(255)") { constraints(nullable: false) }
             column(name: "message", type: "TEXT")
         }
+		addUniqueConstraint(tableName: "posts", columnNames: "title", constraintName: "uk_posts_title")
 	}
 }

@@ -1,9 +1,21 @@
 package org.jarb.sample.domain;
 
-public class PostTitleAlreadyExistsException extends RuntimeException {
+import org.jarb.violation.ConstraintViolation;
+import org.jarb.violation.UniqueKeyViolationException;
+
+/**
+ * Thrown whenever a post is being inserted with a title that already exists.
+ * @author Jeroen van Schagen
+ * @since 8-6-2011
+ */
+public class PostTitleAlreadyExistsException extends UniqueKeyViolationException {
     private static final long serialVersionUID = -7112473482705797922L;
 
-    public PostTitleAlreadyExistsException() {
-        super("Post title already exists.");
+    /**
+     * Construct a new {@link PostTitleAlreadyExistsException}.
+     * @param violation constraint violation reference
+     */
+    public PostTitleAlreadyExistsException(ConstraintViolation violation) {
+        super(violation);
     }
 }

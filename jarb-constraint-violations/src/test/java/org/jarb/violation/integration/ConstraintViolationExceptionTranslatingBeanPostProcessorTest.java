@@ -88,11 +88,4 @@ public class ConstraintViolationExceptionTranslatingBeanPostProcessorTest {
         cars.throwUnsupportedOperationException();
     }
 
-    /**
-     * Cannot configure a null pointer translator.
-     */
-    @Test(expected = IllegalArgumentException.class)
-    public void testSetExceptionTranslatorCannotBeNull() {
-        new ConstraintViolationExceptionTranslatingBeanPostProcessor().setTranslator(null);
-    }
 }

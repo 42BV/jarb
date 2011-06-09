@@ -9,14 +9,19 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import org.hibernate.validator.constraints.Email;
+import org.jarb.validation.DatabaseConstrained;
+
 @Entity
 @Table(name = "posts")
+@DatabaseConstrained
 public class Post {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Email
     private String author;
     private String title;
     private String message;

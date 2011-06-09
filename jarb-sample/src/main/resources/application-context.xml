@@ -52,6 +52,25 @@
         <property name="validationMessageSource" ref="messageSource"/>
     </bean>
     
+	<!-- Provides column metadata -->
+	<bean class="org.jarb.constraint.database.column.EntityAwareColumnMetadataRepository">
+        <constructor-arg ref="dataSource" />
+    </bean>
+    
+	<bean class="org.jarb.violation.integration.ConstraintViolationExceptionTranslatingBeanPostProcessor">
+        <property name="translator">
+            <bean class="org.jarb.violation.integration.JpaConstraintViolationExceptionTranslatorFactoryBean">
+                <property name="entityManagerFactory" ref="entityManagerFactory"/>
+                <!-- Custom exception classes, these are optional -->
+                <property name="exceptionClasses">
+                    <map>
+                        <entry key="uk_posts_title" value="org.jarb.sample.domain.PostTitleAlreadyExistsException"/>
+                    </map>
+                </property>
+            </bean>
+        </property>
+    </bean>
+    
     <import resource="mvc-context.xml"/>
 
 </beans>
