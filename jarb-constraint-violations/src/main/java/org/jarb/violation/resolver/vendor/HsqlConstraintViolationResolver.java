@@ -54,8 +54,9 @@ public class HsqlConstraintViolationResolver extends RootCauseMessageConstraintV
         ConstraintViolation.Builder violationBuilder = new ConstraintViolation.Builder(ConstraintViolationType.CANNOT_BE_NULL);
         Matcher matcher = Pattern.compile(CANNOT_BE_NULL_PATTERN).matcher(message);
         Assert.isTrue(matcher.matches()); // Retrieve group information
-        violationBuilder.setConstraintName(matcher.group(1));
-        violationBuilder.setTableName(matcher.group(2)).setColumnName(matcher.group(3));
+        violationBuilder.setConstraintName(matcher.group(1).toLowerCase());
+        violationBuilder.setTableName(matcher.group(2).toLowerCase());
+        violationBuilder.setColumnName(matcher.group(3).toLowerCase());
         return violationBuilder.build();
     }
 
@@ -63,8 +64,8 @@ public class HsqlConstraintViolationResolver extends RootCauseMessageConstraintV
         ConstraintViolation.Builder violationBuilder = new ConstraintViolation.Builder(ConstraintViolationType.UNIQUE_VIOLATION);
         Matcher matcher = Pattern.compile(UNIQUE_VIOLATION_PATTERN).matcher(message);
         Assert.isTrue(matcher.matches()); // Retrieve group information
-        violationBuilder.setConstraintName(matcher.group(1));
-        violationBuilder.setTableName(matcher.group(2));
+        violationBuilder.setConstraintName(matcher.group(1).toLowerCase());
+        violationBuilder.setTableName(matcher.group(2).toLowerCase());
         return violationBuilder.build();
     }
 
@@ -72,7 +73,7 @@ public class HsqlConstraintViolationResolver extends RootCauseMessageConstraintV
         ConstraintViolation.Builder violationBuilder = new ConstraintViolation.Builder(ConstraintViolationType.LENGTH_EXCEEDED);
         Matcher matcher = Pattern.compile(LENGTH_EXCEEDED_PATTERN).matcher(message);
         Assert.isTrue(matcher.matches()); // Retrieve group information
-        violationBuilder.setValueType(matcher.group(1));
+        violationBuilder.setValueType(matcher.group(1).toLowerCase());
         return violationBuilder.build();
     }
 
@@ -80,7 +81,7 @@ public class HsqlConstraintViolationResolver extends RootCauseMessageConstraintV
         ConstraintViolation.Builder violationBuilder = new ConstraintViolation.Builder(ConstraintViolationType.INVALID_TYPE);
         Matcher matcher = Pattern.compile(INVALID_TYPE_PATTERN).matcher(message);
         Assert.isTrue(matcher.matches()); // Retrieve group information
-        violationBuilder.setValueType(matcher.group(1));
+        violationBuilder.setValueType(matcher.group(1).toLowerCase());
         return violationBuilder.build();
     }
 

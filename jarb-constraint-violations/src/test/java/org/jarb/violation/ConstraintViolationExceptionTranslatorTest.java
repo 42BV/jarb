@@ -56,7 +56,7 @@ public class ConstraintViolationExceptionTranslatorTest {
         } catch (final PersistenceException exception) {
             Throwable violationException = translator.translateExceptionIfPossible(exception);
             assertTrue(violationException instanceof NotNullViolationException);
-            assertEquals("Column 'LICENSE_NUMBER' cannot be null.", violationException.getMessage());
+            assertEquals("Column 'license_number' cannot be null.", violationException.getMessage());
         }
     }
 

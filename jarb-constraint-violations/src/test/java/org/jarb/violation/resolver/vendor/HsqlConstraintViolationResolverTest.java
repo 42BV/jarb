@@ -21,9 +21,9 @@ public class HsqlConstraintViolationResolverTest {
         ConstraintViolation violation = resolver
                 .resolveByMessage("integrity constraint violation: NOT NULL check constraint; SYS_CT_10041 table: CARS column: NAME");
         assertEquals(ConstraintViolationType.CANNOT_BE_NULL, violation.getType());
-        assertEquals("SYS_CT_10041", violation.getConstraintName());
-        assertEquals("CARS", violation.getTableName());
-        assertEquals("NAME", violation.getColumnName());
+        assertEquals("sys_ct_10041", violation.getConstraintName());
+        assertEquals("cars", violation.getTableName());
+        assertEquals("name", violation.getColumnName());
     }
 
     @Test
@@ -31,8 +31,8 @@ public class HsqlConstraintViolationResolverTest {
         ConstraintViolation violation = resolver
                 .resolveByMessage("integrity constraint violation: unique constraint or index violation; SYS_CT_10042 table: CARS");
         assertEquals(ConstraintViolationType.UNIQUE_VIOLATION, violation.getType());
-        assertEquals("SYS_CT_10042", violation.getConstraintName());
-        assertEquals("CARS", violation.getTableName());
+        assertEquals("sys_ct_10042", violation.getConstraintName());
+        assertEquals("cars", violation.getTableName());
     }
 
     @Test

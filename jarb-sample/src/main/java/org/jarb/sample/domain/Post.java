@@ -28,7 +28,7 @@ public class Post {
 
     @Column(name = "posted_datetime")
     private Date postedOn = new Date();
-
+    
     public Long getId() {
         return id;
     }

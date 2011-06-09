@@ -49,7 +49,7 @@ public class ConstraintViolationExceptionTranslatingBeanPostProcessorTest {
         } catch (LicenseNumberAlreadyExistsException e) {
             ConstraintViolation violation = e.getViolation();
             assertEquals(ConstraintViolationType.UNIQUE_VIOLATION, violation.getType());
-            assertEquals("UK_CARS_LICENSE_NUMBER", violation.getConstraintName());
+            assertEquals("uk_cars_license_number", violation.getConstraintName());
         }
     }
 
@@ -64,10 +64,10 @@ public class ConstraintViolationExceptionTranslatingBeanPostProcessorTest {
             cars.add(carWithoutLicenseNumber);
             fail("Expected a not null exception");
         } catch (NotNullViolationException e) {
-            assertEquals("Column 'LICENSE_NUMBER' cannot be null.", e.getMessage());
+            assertEquals("Column 'license_number' cannot be null.", e.getMessage());
             ConstraintViolation violation = e.getViolation();
             assertEquals(ConstraintViolationType.CANNOT_BE_NULL, violation.getType());
-            assertEquals("LICENSE_NUMBER", violation.getColumnName());
+            assertEquals("license_number", violation.getColumnName());
         }
     }
 

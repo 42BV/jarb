@@ -55,9 +55,9 @@ public class ConstraintViolationResolverFactoryTest {
         } catch (RuntimeException e) {
             ConstraintViolation violation = resolver.resolve(e);
             assertEquals(ConstraintViolationType.CANNOT_BE_NULL, violation.getType());
-            assertTrue(violation.getConstraintName().startsWith("SYS_CT_"));
-            assertEquals("CARS", violation.getTableName());
-            assertEquals("LICENSE_NUMBER", violation.getColumnName());
+            assertTrue(violation.getConstraintName().startsWith("sys_ct_"));
+            assertEquals("cars", violation.getTableName());
+            assertEquals("license_number", violation.getColumnName());
         }
     }
 
@@ -77,8 +77,8 @@ public class ConstraintViolationResolverFactoryTest {
         } catch (RuntimeException e) {
             ConstraintViolation violation = resolver.resolve(e);
             assertEquals(ConstraintViolationType.UNIQUE_VIOLATION, violation.getType());
-            assertEquals("UK_CARS_LICENSE_NUMBER", violation.getConstraintName());
-            assertEquals("CARS", violation.getTableName());
+            assertEquals("uk_cars_license_number", violation.getConstraintName());
+            assertEquals("cars", violation.getTableName());
         }
     }
 
