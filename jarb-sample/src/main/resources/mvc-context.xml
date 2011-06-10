@@ -23,7 +23,18 @@
 	    </property>
 	    <property name="defaultContentType" value="text/html"/>
 	    <property name="defaultViews">
-			<bean class="org.springframework.web.servlet.view.json.MappingJacksonJsonView" />
+			<bean class="org.springframework.web.servlet.view.json.MappingJacksonJsonView">
+				<property name="objectMapper">
+					<bean class="org.codehaus.jackson.map.ObjectMapper">
+						<!-- (De)serialize date in string format, rather than numeric -->
+						<property name="dateFormat">
+							<bean class="java.text.SimpleDateFormat">
+								<constructor-arg value="MM-dd-yyyy"/>
+							</bean>
+						</property>
+					</bean>
+				</property>
+			</bean>
 	    </property>
 	    <property name="viewResolvers">
 		    <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
