@@ -58,7 +58,7 @@ public class PostingServiceTest {
             assertEquals(1, e.getConstraintViolations().size());
             javax.validation.ConstraintViolation<?> violation = e.getConstraintViolations().iterator().next();
             assertEquals("author", violation.getPropertyPath().toString());
-            assertEquals("cannot be empty", violation.getMessage());
+            assertEquals("cannot be null", violation.getMessage());
         }
     }
     
