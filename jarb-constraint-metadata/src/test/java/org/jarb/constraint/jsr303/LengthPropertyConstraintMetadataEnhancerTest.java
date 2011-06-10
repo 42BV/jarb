@@ -1,13 +1,15 @@
-package org.jarb.constraint;
+package org.jarb.constraint.jsr303;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
+import org.jarb.constraint.MutablePropertyConstraintMetadata;
 import org.jarb.constraint.domain.Car;
+import org.jarb.constraint.jsr303.LengthPropertyConstraintMetadataEnhancer;
 import org.junit.Before;
 import org.junit.Test;
 
-public class LengthPropertyConstraintDescriptionEnhancerTest {
+public class LengthPropertyConstraintMetadataEnhancerTest {
     private LengthPropertyConstraintMetadataEnhancer enhancer;
     private MutablePropertyConstraintMetadata<String> propertyDescription;
 

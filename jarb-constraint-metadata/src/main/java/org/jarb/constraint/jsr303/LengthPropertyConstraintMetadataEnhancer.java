@@ -1,8 +1,10 @@
-package org.jarb.constraint;
+package org.jarb.constraint.jsr303;
 
 import java.util.List;
 
 import org.hibernate.validator.constraints.Length;
+import org.jarb.constraint.MutablePropertyConstraintMetadata;
+import org.jarb.constraint.PropertyConstraintMetadataEnhancer;
 
 /**
  * Enhance the property constraint descriptor with @Length information.
@@ -17,7 +19,7 @@ public class LengthPropertyConstraintMetadataEnhancer implements PropertyConstra
      */
     @Override
     public <T> MutablePropertyConstraintMetadata<T> enhance(MutablePropertyConstraintMetadata<T> propertyDescription, Class<?> beanClass) {
-        List<Length> lengthAnnotations = ConstraintAnnotationUtil.getPropertyAnnotations(beanClass, propertyDescription.getPropertyName(), Length.class);
+        List<Length> lengthAnnotations = ConstraintAnnotationScanner.getPropertyAnnotations(beanClass, propertyDescription.getPropertyName(), Length.class);
         Integer minimumLength = propertyDescription.getMinimumLength();
         Integer maximumLength = propertyDescription.getMaximumLength();
         for (Length lengthAnnotation : lengthAnnotations) {

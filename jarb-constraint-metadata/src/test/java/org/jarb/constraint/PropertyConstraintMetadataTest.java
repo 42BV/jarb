@@ -10,7 +10,7 @@ import org.junit.Test;
  * @author Jeroen van Schagen
  * @since 03-06-2011
  */
-public class PropertyConstraintDescriptionTest {
+public class PropertyConstraintMetadataTest {
     private MutablePropertyConstraintMetadata<String> description;
 
     @Before

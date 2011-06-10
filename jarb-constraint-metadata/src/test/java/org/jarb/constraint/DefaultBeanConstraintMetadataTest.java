@@ -6,10 +6,11 @@ import java.util.Arrays;
 
 import org.jarb.constraint.domain.Car;
 import org.jarb.constraint.domain.Person;
+import org.jarb.constraint.jsr303.LengthPropertyConstraintMetadataEnhancer;
 import org.junit.Before;
 import org.junit.Test;
 
-public class DefaultBeanConstraintDescriptorTest {
+public class DefaultBeanConstraintMetadataTest {
     private DefaultBeanConstraintMetadataGenerator beanDescriptor;
 
     @Before

@@ -1,4 +1,4 @@
-package org.jarb.constraint;
+package org.jarb.constraint.jsr303;
 
 import java.beans.PropertyDescriptor;
 import java.lang.annotation.Annotation;
@@ -15,7 +15,7 @@ import org.springframework.util.ReflectionUtils;
  * @author Jeroen van Schagen
  * @since 1-06-2011
  */
-public final class ConstraintAnnotationUtil {
+public final class ConstraintAnnotationScanner {
 
     /**
      * Retrieve all bean property constraint annotations. During retrieval
@@ -45,11 +45,18 @@ public final class ConstraintAnnotationUtil {
         return annotationList;
     }
     
-    public static boolean hasPropertyAnnotations(Class<?> beanClass, String propertyName, Class<? extends Annotation> annotationClass) {
+    /**
+     * Determine if a property has a specific constraint annotation.
+     * @param beanClass class of the bean containing our property
+     * @param propertyDescriptor description of the property
+     * @param annotationClass type of annotation we are fetching
+     * @return {@code true} if the annotation could be found, else {@code false}
+     */
+    public static boolean isPropertyAnnotated(Class<?> beanClass, String propertyName, Class<? extends Annotation> annotationClass) {
         return !getPropertyAnnotations(beanClass, propertyName, annotationClass).isEmpty();
     }
 
-    private ConstraintAnnotationUtil() {
+    private ConstraintAnnotationScanner() {
         // Prevent initialization
     }
 

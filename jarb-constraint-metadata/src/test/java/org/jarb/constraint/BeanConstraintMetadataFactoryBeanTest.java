@@ -14,7 +14,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "classpath:application-context.xml" })
-public class BeanConstraintDescriptorFactoryBeanTest {
+public class BeanConstraintMetadataFactoryBeanTest {
     private BeanConstraintMetadataGeneratorFactoryBean factoryBean;
 
     @Autowired

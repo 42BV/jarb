@@ -1,8 +1,11 @@
-package org.jarb.constraint;
+package org.jarb.constraint.jsr303;
 
 import java.util.List;
 
 import javax.validation.constraints.Digits;
+
+import org.jarb.constraint.MutablePropertyConstraintMetadata;
+import org.jarb.constraint.PropertyConstraintMetadataEnhancer;
 
 /**
  * Enhance the property constraint descriptor with @Digits information.
@@ -17,7 +20,7 @@ public class DigitsPropertyConstraintMetadataEnhancer implements PropertyConstra
      */
     @Override
     public <T> MutablePropertyConstraintMetadata<T> enhance(MutablePropertyConstraintMetadata<T> propertyDescription, Class<?> beanClass) {
-        List<Digits> digitsAnnotations = ConstraintAnnotationUtil.getPropertyAnnotations(beanClass, propertyDescription.getPropertyName(), Digits.class);
+        List<Digits> digitsAnnotations = ConstraintAnnotationScanner.getPropertyAnnotations(beanClass, propertyDescription.getPropertyName(), Digits.class);
         Integer maximumLength = propertyDescription.getMaximumLength();
         Integer fractionLength = propertyDescription.getFractionLength();
         for(Digits digitsAnnotation : digitsAnnotations) {

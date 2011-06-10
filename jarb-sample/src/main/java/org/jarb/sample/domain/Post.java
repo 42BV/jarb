@@ -10,6 +10,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 import org.hibernate.validator.constraints.Email;
+import org.hibernate.validator.constraints.NotEmpty;
 import org.jarb.validation.DatabaseConstrained;
 
 @Entity
@@ -23,7 +24,10 @@ public class Post {
 
     @Email
     private String author;
+    
+    @NotEmpty
     private String title;
+    
     private String message;
 
     @Column(name = "posted_datetime")
