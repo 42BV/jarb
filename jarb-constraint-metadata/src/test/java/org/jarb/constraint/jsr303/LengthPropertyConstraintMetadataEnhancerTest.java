@@ -11,12 +11,12 @@ import org.junit.Test;
 
 public class LengthPropertyConstraintMetadataEnhancerTest {
     private LengthPropertyConstraintMetadataEnhancer enhancer;
-    private MutablePropertyConstraintMetadata<String> propertyDescription;
+    private MutablePropertyConstraintMetadata<String> licenseMetadata;
 
     @Before
     public void setUp() {
         enhancer = new LengthPropertyConstraintMetadataEnhancer();
-        propertyDescription = new MutablePropertyConstraintMetadata<String>("licenseNumber", String.class);
+        licenseMetadata = new MutablePropertyConstraintMetadata<String>("licenseNumber", String.class);
     }
 
     /**
@@ -26,12 +26,12 @@ public class LengthPropertyConstraintMetadataEnhancerTest {
      */
     @Test
     public void testEnhance() {
-        propertyDescription.setMaximumLength(6); // Database column length is '6'
-        propertyDescription = enhancer.enhance(propertyDescription, Car.class);
+        licenseMetadata.setMaximumLength(6); // Database column length is '6'
+        licenseMetadata = enhancer.enhance(licenseMetadata, Car.class);
         // Minimum length is retrieved from the @Length.min attribute
-        assertEquals(Integer.valueOf(6), propertyDescription.getMinimumLength());
+        assertEquals(Integer.valueOf(6), licenseMetadata.getMinimumLength());
         // Database maximum length is lower than all @Length.max attributes (Integer.MAX_VALUE)
-        assertEquals(Integer.valueOf(6), propertyDescription.getMaximumLength());
+        assertEquals(Integer.valueOf(6), licenseMetadata.getMaximumLength());
     }
 
     /**
@@ -41,8 +41,8 @@ public class LengthPropertyConstraintMetadataEnhancerTest {
      */
     @Test(expected = IllegalStateException.class)
     public void testMergeConflict() {
-        propertyDescription.setMaximumLength(2);
-        enhancer.enhance(propertyDescription, Car.class);
+        licenseMetadata.setMaximumLength(2);
+        enhancer.enhance(licenseMetadata, Car.class);
     }
 
     /**
@@ -51,13 +51,13 @@ public class LengthPropertyConstraintMetadataEnhancerTest {
      */
     @Test
     public void testNoLength() {
-        MutablePropertyConstraintMetadata<Double> priceDescription = new MutablePropertyConstraintMetadata<Double>("price", Double.class);
-        priceDescription.setMaximumLength(9);
-        enhancer.enhance(priceDescription, Car.class);
+        MutablePropertyConstraintMetadata<Double> priceMetadata = new MutablePropertyConstraintMetadata<Double>("price", Double.class);
+        priceMetadata.setMaximumLength(9);
+        enhancer.enhance(priceMetadata, Car.class);
         // No minimum length is specified, so it should remain null
-        assertNull(priceDescription.getMinimumLength());
+        assertNull(priceMetadata.getMinimumLength());
         // Initially specified maximum length should remain
-        assertEquals(Integer.valueOf(9), priceDescription.getMaximumLength());
+        assertEquals(Integer.valueOf(9), priceMetadata.getMaximumLength());
     }
 
 }

@@ -16,15 +16,15 @@ public class NotEmptyPropertyConstraintMetadataEnhancer implements PropertyConst
      * {@inheritDoc}
      */
     @Override
-    public <T> MutablePropertyConstraintMetadata<T> enhance(MutablePropertyConstraintMetadata<T> propertyDescription, Class<?> beanClass) {
-        if(ConstraintAnnotationScanner.isPropertyAnnotated(beanClass, propertyDescription.getPropertyName(), NotEmpty.class)) {
+    public <T> MutablePropertyConstraintMetadata<T> enhance(MutablePropertyConstraintMetadata<T> propertyMetadata, Class<?> beanClass) {
+        if(ConstraintAnnotationScanner.isPropertyAnnotated(beanClass, propertyMetadata.getPropertyName(), NotEmpty.class)) {
             // When a property cannot be empty, it has a minimum length of atleast 1
             // If our description already has a greater minimum length, do nothing
-            if(propertyDescription.getMinimumLength() == null || propertyDescription.getMinimumLength() == 0) {
-                propertyDescription.setMinimumLength(1);
+            if(propertyMetadata.getMinimumLength() == null || propertyMetadata.getMinimumLength() == 0) {
+                propertyMetadata.setMinimumLength(1);
             }
         }
-        return propertyDescription;
+        return propertyMetadata;
     }
 
 }

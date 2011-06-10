@@ -19,17 +19,16 @@ public class DigitsPropertyConstraintMetadataEnhancer implements PropertyConstra
      * {@inheritDoc}
      */
     @Override
-    public <T> MutablePropertyConstraintMetadata<T> enhance(MutablePropertyConstraintMetadata<T> propertyDescription, Class<?> beanClass) {
-        List<Digits> digitsAnnotations = ConstraintAnnotationScanner.getPropertyAnnotations(beanClass, propertyDescription.getPropertyName(), Digits.class);
-        Integer maximumLength = propertyDescription.getMaximumLength();
-        Integer fractionLength = propertyDescription.getFractionLength();
+    public <T> MutablePropertyConstraintMetadata<T> enhance(MutablePropertyConstraintMetadata<T> propertyMetadata, Class<?> beanClass) {
+        List<Digits> digitsAnnotations = ConstraintAnnotationScanner.getPropertyAnnotations(beanClass, propertyMetadata.getPropertyName(), Digits.class);
+        Integer maximumLength = propertyMetadata.getMaximumLength();
+        Integer fractionLength = propertyMetadata.getFractionLength();
         for(Digits digitsAnnotation : digitsAnnotations) {
-            int precision = digitsAnnotation.integer() + digitsAnnotation.fraction();
             if (maximumLength != null) {
                 // Store the lowest maximum length, as this will cause both lenght restrictions to pass
-                maximumLength = Math.min(maximumLength, precision);
+                maximumLength = Math.min(maximumLength, digitsAnnotation.integer());
             } else {
-                maximumLength = precision;
+                maximumLength = digitsAnnotation.integer();
             }
             if (fractionLength != null) {
                 // Store the lowest fraction length, as this will cause both lenght restrictions to pass
@@ -38,9 +37,9 @@ public class DigitsPropertyConstraintMetadataEnhancer implements PropertyConstra
                 fractionLength = digitsAnnotation.fraction();
             }
         }
-        propertyDescription.setMaximumLength(maximumLength);
-        propertyDescription.setFractionLength(fractionLength);
-        return propertyDescription;
+        propertyMetadata.setMaximumLength(maximumLength);
+        propertyMetadata.setFractionLength(fractionLength);
+        return propertyMetadata;
     }
 
 }

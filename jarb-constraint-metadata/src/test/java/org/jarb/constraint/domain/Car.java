@@ -7,8 +7,10 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.Digits;
 
 import org.hibernate.validator.constraints.Length;
+import org.hibernate.validator.constraints.NotEmpty;
 
 @Entity
 @Table(name = "cars")
@@ -18,11 +20,13 @@ public class Car {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotEmpty
     @Length(min = 6)
     @Column(name = "license_number")
     private String licenseNumber;
 
     @Column
+    @Digits(integer = 5, fraction = 2)
     private Double price;
 
     @ManyToOne
@@ -47,6 +51,7 @@ public class Car {
         this.licenseNumber = licenseNumber;
     }
 
+    @Digits(integer = 6, fraction = 1)
     public Double getPrice() {
         return price;
     }

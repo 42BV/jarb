@@ -28,16 +28,16 @@ public class DatabasePropertyConstraintDescriptionEnhancer implements PropertyCo
      * {@inheritDoc}
      */
     @Override
-    public <T> MutablePropertyConstraintMetadata<T> enhance(MutablePropertyConstraintMetadata<T> propertyDescription, Class<?> beanClass) {
-        final String propertyName = propertyDescription.getPropertyName();
+    public <T> MutablePropertyConstraintMetadata<T> enhance(MutablePropertyConstraintMetadata<T> propertyMetadata, Class<?> beanClass) {
+        final String propertyName = propertyMetadata.getPropertyName();
         try {
             ColumnMetadata columnMetadata = columnMetadataRepository.getColumnMetadata(beanClass, propertyName);
             if (columnMetadata != null) {
                 // Properties are required if they cannot be null, and the database cannot generate their value
-                propertyDescription.setRequired(columnMetadata.isRequired() && !columnMetadata.isGeneratable());
-                propertyDescription.setMaximumLength(columnMetadata.getMaximumLength());
-                propertyDescription.setFractionLength(columnMetadata.getFractionLength());
-                propertyDescription.setRadix(columnMetadata.getRadix());
+                propertyMetadata.setRequired(columnMetadata.isRequired() && !columnMetadata.isGeneratable());
+                propertyMetadata.setMaximumLength(columnMetadata.getMaximumLength());
+                propertyMetadata.setFractionLength(columnMetadata.getFractionLength());
+                propertyMetadata.setRadix(columnMetadata.getRadix());
             } else {
                 // Could not resolve column meta information
                 LOGGER.debug("Could not resolve column metadata {} ({}).", new Object[] { propertyName, beanClass.getSimpleName() });
@@ -49,7 +49,7 @@ public class DatabasePropertyConstraintDescriptionEnhancer implements PropertyCo
             // Property has no corresponding column, skip this step
             LOGGER.debug("Could not enhance property description with column metadata, because {} has no column", propertyName);
         }
-        return propertyDescription;
+        return propertyMetadata;
     }
 
 }

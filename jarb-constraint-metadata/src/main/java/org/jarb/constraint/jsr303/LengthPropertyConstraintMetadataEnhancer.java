@@ -18,10 +18,10 @@ public class LengthPropertyConstraintMetadataEnhancer implements PropertyConstra
      * {@inheritDoc}
      */
     @Override
-    public <T> MutablePropertyConstraintMetadata<T> enhance(MutablePropertyConstraintMetadata<T> propertyDescription, Class<?> beanClass) {
-        List<Length> lengthAnnotations = ConstraintAnnotationScanner.getPropertyAnnotations(beanClass, propertyDescription.getPropertyName(), Length.class);
-        Integer minimumLength = propertyDescription.getMinimumLength();
-        Integer maximumLength = propertyDescription.getMaximumLength();
+    public <T> MutablePropertyConstraintMetadata<T> enhance(MutablePropertyConstraintMetadata<T> propertyMetadata, Class<?> beanClass) {
+        List<Length> lengthAnnotations = ConstraintAnnotationScanner.getPropertyAnnotations(beanClass, propertyMetadata.getPropertyName(), Length.class);
+        Integer minimumLength = propertyMetadata.getMinimumLength();
+        Integer maximumLength = propertyMetadata.getMaximumLength();
         for (Length lengthAnnotation : lengthAnnotations) {
             if (minimumLength != null) {
                 // Store the highest minimum length, as this will cause both lenght restrictions to pass
@@ -36,9 +36,9 @@ public class LengthPropertyConstraintMetadataEnhancer implements PropertyConstra
                 maximumLength = lengthAnnotation.max();
             }
         }
-        propertyDescription.setMinimumLength(minimumLength);
-        propertyDescription.setMaximumLength(maximumLength);
-        return propertyDescription;
+        propertyMetadata.setMinimumLength(minimumLength);
+        propertyMetadata.setMaximumLength(maximumLength);
+        return propertyMetadata;
     }
 
 }
