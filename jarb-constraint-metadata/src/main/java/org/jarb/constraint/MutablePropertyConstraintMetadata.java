@@ -1,7 +1,13 @@
 package org.jarb.constraint;
 
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
+
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
+import org.springframework.util.Assert;
 
 /**
  * Mutable implementation of {@link PropertyConstraintMetadata}.
@@ -14,6 +20,8 @@ import org.apache.commons.lang.builder.ToStringStyle;
 public class MutablePropertyConstraintMetadata<T> implements PropertyConstraintMetadata<T> {
     private final String propertyName;
     private final Class<T> propertyClass;
+    
+    private Set<PropertyType> types;
 
     // Global requirements
     private boolean required;
@@ -24,16 +32,25 @@ public class MutablePropertyConstraintMetadata<T> implements PropertyConstraintM
     private Integer fractionLength;
     private Integer radix;
 
+    /**
+     * Construct a new {@link MutablePropertyConstraintMetadata}.
+     * @param propertyName name of the property
+     * @param propertyClass class of the property
+     */
     public MutablePropertyConstraintMetadata(String propertyName, Class<T> propertyClass) {
+        Assert.hasText(propertyName);
+        Assert.notNull(propertyClass);
         this.propertyName = propertyName;
         this.propertyClass = propertyClass;
+        types = new HashSet<PropertyType>();
+        types.add(PropertyType.forClass(propertyClass));
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public String getPropertyName() {
+    public String getName() {
         return propertyName;
     }
     
@@ -41,8 +58,21 @@ public class MutablePropertyConstraintMetadata<T> implements PropertyConstraintM
      * {@inheritDoc}
      */
     @Override
-    public Class<T> getPropertyType() {
+    public Class<T> getJavaType() {
         return propertyClass;
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Collection<PropertyType> getTypes() {
+        return Collections.unmodifiableSet(types);
+    }
+    
+    public MutablePropertyConstraintMetadata<T> addType(PropertyType type) {
+        types.add(type);
+        return this;
     }
 
     /**

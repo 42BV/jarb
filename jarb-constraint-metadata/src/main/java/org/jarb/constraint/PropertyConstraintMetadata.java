@@ -1,5 +1,8 @@
 package org.jarb.constraint;
 
+import java.util.Collection;
+
+
 /**
  * Describes the constraints of a bean property.
  * 
@@ -14,13 +17,19 @@ public interface PropertyConstraintMetadata<T> {
      * Retrieve the property name.
      * @return property name
      */
-    String getPropertyName();
+    String getName();
+    
+    /**
+     * Retrieve the property types.
+     * @return property types
+     */
+    Collection<PropertyType> getTypes();
 
     /**
-     * Retrieve the property type.
-     * @return property type
+     * Retrieve the property java type.
+     * @return property java type
      */
-    Class<T> getPropertyType();
+    Class<T> getJavaType();
 
     /**
      * Determine if a property value is required.

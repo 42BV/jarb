@@ -24,11 +24,11 @@ public class DefaultBeanConstraintMetadataTest {
     @Test
     public void testPropertiesAreDescribed() {
         BeanConstraintMetadata<Car> carDescription = beanDescriptor.describe(Car.class);
-        assertEquals(Long.class, carDescription.getPropertyMetadata("id").getPropertyType());
-        assertEquals(String.class, carDescription.getPropertyMetadata("licenseNumber").getPropertyType());
-        assertEquals(Double.class, carDescription.getPropertyMetadata("price").getPropertyType());
-        assertEquals(Person.class, carDescription.getPropertyMetadata("owner").getPropertyType());
-        assertEquals(Class.class, carDescription.getPropertyMetadata("class").getPropertyType());
+        assertEquals(Long.class, carDescription.getPropertyMetadata("id").getJavaType());
+        assertEquals(String.class, carDescription.getPropertyMetadata("licenseNumber").getJavaType());
+        assertEquals(Double.class, carDescription.getPropertyMetadata("price").getJavaType());
+        assertEquals(Person.class, carDescription.getPropertyMetadata("owner").getJavaType());
+        assertEquals(Class.class, carDescription.getPropertyMetadata("class").getJavaType());
     }
 
     /**

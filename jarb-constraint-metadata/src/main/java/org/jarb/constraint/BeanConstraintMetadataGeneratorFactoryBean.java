@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.jarb.constraint.database.DatabasePropertyConstraintDescriptionEnhancer;
 import org.jarb.constraint.database.column.EntityAwareColumnMetadataRepository;
+import org.jarb.constraint.jsr303.AnnotationPropertyConstraintMetadataTypeEnhancer;
 import org.jarb.constraint.jsr303.DigitsPropertyConstraintMetadataEnhancer;
 import org.jarb.constraint.jsr303.LengthPropertyConstraintMetadataEnhancer;
 import org.jarb.constraint.jsr303.NotEmptyPropertyConstraintMetadataEnhancer;
@@ -32,13 +33,14 @@ public class BeanConstraintMetadataGeneratorFactoryBean extends SingletonFactory
     protected BeanConstraintMetadataGenerator createObject() throws Exception {
         Assert.state(columnMetadataRepository != null, "Column metadata repository is required");
         DefaultBeanConstraintMetadataGenerator descriptor = new DefaultBeanConstraintMetadataGenerator();
-        List<PropertyConstraintMetadataEnhancer> propertyDescriptionEnhancers = new ArrayList<PropertyConstraintMetadataEnhancer>();
-        propertyDescriptionEnhancers.add(new DatabasePropertyConstraintDescriptionEnhancer(columnMetadataRepository));
-        propertyDescriptionEnhancers.add(new LengthPropertyConstraintMetadataEnhancer());
-        propertyDescriptionEnhancers.add(new DigitsPropertyConstraintMetadataEnhancer());
-        propertyDescriptionEnhancers.add(new NotNullPropertyConstraintMetadataEnhancer());
-        propertyDescriptionEnhancers.add(new NotEmptyPropertyConstraintMetadataEnhancer());
-        descriptor.setPropertyMetadataEnhancers(propertyDescriptionEnhancers);
+        List<PropertyConstraintMetadataEnhancer> propertyMetadataEnhancers = new ArrayList<PropertyConstraintMetadataEnhancer>();
+        propertyMetadataEnhancers.add(new DatabasePropertyConstraintDescriptionEnhancer(columnMetadataRepository));
+        propertyMetadataEnhancers.add(new LengthPropertyConstraintMetadataEnhancer());
+        propertyMetadataEnhancers.add(new DigitsPropertyConstraintMetadataEnhancer());
+        propertyMetadataEnhancers.add(new NotNullPropertyConstraintMetadataEnhancer());
+        propertyMetadataEnhancers.add(new NotEmptyPropertyConstraintMetadataEnhancer());
+        propertyMetadataEnhancers.add(new AnnotationPropertyConstraintMetadataTypeEnhancer());
+        descriptor.setPropertyMetadataEnhancers(propertyMetadataEnhancers);
         return descriptor;
     }
 

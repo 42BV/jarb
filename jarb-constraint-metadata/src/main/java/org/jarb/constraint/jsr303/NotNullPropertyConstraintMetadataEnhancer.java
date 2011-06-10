@@ -18,7 +18,7 @@ public class NotNullPropertyConstraintMetadataEnhancer implements PropertyConstr
      */
     @Override
     public <T> MutablePropertyConstraintMetadata<T> enhance(MutablePropertyConstraintMetadata<T> propertyMetadata, Class<?> beanClass) {
-        if(ConstraintAnnotationScanner.isPropertyAnnotated(beanClass, propertyMetadata.getPropertyName(), NotNull.class)) {
+        if(ConstraintAnnotationScanner.isPropertyAnnotated(beanClass, propertyMetadata.getName(), NotNull.class)) {
             propertyMetadata.setRequired(true);
         }
         return propertyMetadata;

@@ -29,7 +29,7 @@ public class DatabasePropertyConstraintDescriptionEnhancer implements PropertyCo
      */
     @Override
     public <T> MutablePropertyConstraintMetadata<T> enhance(MutablePropertyConstraintMetadata<T> propertyMetadata, Class<?> beanClass) {
-        final String propertyName = propertyMetadata.getPropertyName();
+        final String propertyName = propertyMetadata.getName();
         try {
             ColumnMetadata columnMetadata = columnMetadataRepository.getColumnMetadata(beanClass, propertyName);
             if (columnMetadata != null) {

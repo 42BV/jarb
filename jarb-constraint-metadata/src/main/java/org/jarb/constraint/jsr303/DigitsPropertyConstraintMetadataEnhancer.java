@@ -20,7 +20,7 @@ public class DigitsPropertyConstraintMetadataEnhancer implements PropertyConstra
      */
     @Override
     public <T> MutablePropertyConstraintMetadata<T> enhance(MutablePropertyConstraintMetadata<T> propertyMetadata, Class<?> beanClass) {
-        List<Digits> digitsAnnotations = ConstraintAnnotationScanner.getPropertyAnnotations(beanClass, propertyMetadata.getPropertyName(), Digits.class);
+        List<Digits> digitsAnnotations = ConstraintAnnotationScanner.getPropertyAnnotations(beanClass, propertyMetadata.getName(), Digits.class);
         Integer maximumLength = propertyMetadata.getMaximumLength();
         Integer fractionLength = propertyMetadata.getFractionLength();
         for(Digits digitsAnnotation : digitsAnnotations) {

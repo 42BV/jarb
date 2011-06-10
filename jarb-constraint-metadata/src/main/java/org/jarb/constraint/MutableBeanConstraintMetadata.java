@@ -66,7 +66,7 @@ public class MutableBeanConstraintMetadata<T> implements BeanConstraintMetadata<
      * @param propertyMetadata description of the property constraints
      */
     public void addPropertyMetadata(PropertyConstraintMetadata<?> propertyMetadata) {
-        propertyMetadataMap.put(propertyMetadata.getPropertyName(), propertyMetadata);
+        propertyMetadataMap.put(propertyMetadata.getName(), propertyMetadata);
     }
 
     /**
