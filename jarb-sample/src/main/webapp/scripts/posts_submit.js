@@ -29,6 +29,7 @@ $(document).ready(function() {
 						newPost += '<span class="message">' + data.post.message + '</span>'
 						newPost += '</li>'
 						$('.posts ul').append(newPost);
+						$('.posts li:last').hide();
 						$('.posts li:last').fadeIn();
 						// Clear creation form
 						$(':input', '.create')

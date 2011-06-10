@@ -1,6 +1,7 @@
 /**
- * Retrieve constraint information about posts and applies
+ * Retrieve constraint information about posts and apply
  * that information to the creation form.
+ * 
  * @author Jeroen van Schagen
  */
 
