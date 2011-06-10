@@ -10,12 +10,12 @@ import org.junit.Test;
 
 public class DigitsPropertyConstraintMetadataEnhancerTest {
     private DigitsPropertyConstraintMetadataEnhancer enhancer;
-    private MutablePropertyConstraintMetadata<String> priceMetadata;
+    private MutablePropertyConstraintMetadata<Double> priceMetadata;
 
     @Before
     public void setUp() {
         enhancer = new DigitsPropertyConstraintMetadataEnhancer();
-        priceMetadata = new MutablePropertyConstraintMetadata<String>("price", String.class);
+        priceMetadata = new MutablePropertyConstraintMetadata<Double>("price", Double.class);
     }
     
     @Test
