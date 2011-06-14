@@ -1,7 +1,7 @@
 == Java Repository Bridge (JaRB) ==
 
 == Components ==
-    * constraint-metadata (provides the bean constraint based on database metadata and constraint annotations)
+    * constraint-metadata (provides bean constraint info, based on database metadata and constraint annotations)
     * constraint-validation (@DatabaseConstrained annotation and validator)
     * constraint-violations (translates JDBC driver exceptions into constrain violation exceptions)
     * migrations (migrating datasource, providing atleast Liquibase integration)
