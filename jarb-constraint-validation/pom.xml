@@ -19,13 +19,13 @@
 
 	<dependencies>
         <dependency>
-            <!-- Validation integration -->
+            <!-- Validator interface -->
             <groupId>javax.validation</groupId>
             <artifactId>validation-api</artifactId>
             <version>1.0.0.GA</version>
         </dependency>
 		<dependency>
-			<!-- Provides access to column metadata -->
+			<!-- Column metadata access -->
 			<groupId>org.jarb</groupId>
 			<artifactId>jarb-constraint-metadata</artifactId>
 			<version>${project.version}</version>
@@ -55,7 +55,7 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <!-- Annotate test entities with mapping information -->
+            <!-- Annotations for table mapping -->
             <groupId>org.hibernate.javax.persistence</groupId>
             <artifactId>hibernate-jpa-2.0-api</artifactId>
             <version>1.0.0.Final</version>

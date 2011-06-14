@@ -17,8 +17,4 @@
 	<packaging>jar</packaging>
 	<description>Provides common utilities</description>
 
-	<dependencies>
-		<!-- TODO -->
-	</dependencies>
-
 </project>

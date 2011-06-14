@@ -25,14 +25,14 @@
 		</dependency>
 	
 		<dependency>
-		    <!-- JPA integrating table mapper -->
+		    <!-- Table mapper for JPA -->
 		    <groupId>org.hibernate.javax.persistence</groupId>
 		    <artifactId>hibernate-jpa-2.0-api</artifactId>
 		    <version>1.0.0.Final</version>
             <optional>true</optional>
 		</dependency>
 		<dependency>
-		    <!-- Length annotation -->
+		    <!-- @Length annotation -->
 		    <groupId>org.hibernate</groupId>
 		    <artifactId>hibernate-validator</artifactId>
 		    <version>4.1.0.Final</version>

@@ -3,100 +3,102 @@
 	xmlns="http://maven.apache.org/POM/4.0.0"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-
-    <modelVersion>4.0.0</modelVersion>
 	
-    <groupId>org.jarb</groupId>
-    <artifactId>jarb-parent</artifactId>
-    <packaging>pom</packaging>
-    <name>Java Repository Bridge</name>
-    <version>0.1-SNAPSHOT</version>
-    <description>Provides support for databases.</description>
-    <url>https://github.com/42BV/jarb</url>
-    <inceptionYear>2011</inceptionYear>
+	<modelVersion>4.0.0</modelVersion>
 
-    <modules>
-	<module>jarb-constraint-metadata</module>
-	<module>jarb-constraint-validation</module>
-	<module>jarb-constraint-violations</module>
-	<module>jarb-migrations</module>
-	<module>jarb-populator</module>
-	<module>jarb-populator-excel</module>
-	<module>jarb-sample</module>
-	<module>jarb-utils</module>
-    </modules>
+	<groupId>org.jarb</groupId>
+	<artifactId>jarb-parent</artifactId>
+	<packaging>pom</packaging>
+	<name>Java Repository Bridge</name>
+	<version>0.1-SNAPSHOT</version>
+	<description>Provides support for databases.</description>
+	<url>https://github.com/42BV/jarb</url>
+	<inceptionYear>2011</inceptionYear>
 
-    <developers>
-	<developer>
-            <name>Jeroen van Schagen</name>
-            <email>jeroen.van.schagen@42.nl</email>
-	</developer>
-    </developers>
+	<modules>
+		<module>jarb-constraint-metadata</module>
+		<module>jarb-constraint-validation</module>
+		<module>jarb-constraint-violations</module>
+		<module>jarb-migrations</module>
+		<module>jarb-populator</module>
+		<module>jarb-populator-excel</module>
+		<module>jarb-sample</module>
+		<module>jarb-utils</module>
+	</modules>
 
-    <scm>
-	<connection>scm:git:https://github.com/42BV/jarb.git</connection>
-	<url>https://github.com/42BV/jarb.git</url>
-	<developerConnection>scm:git:https://github.com/42BV/jarb.git</developerConnection>
-    </scm>
-	
-    <properties>
-        <spring.version>3.0.5.RELEASE</spring.version>
-        <slf4j.version>1.6.1</slf4j.version>
-    </properties>
-    
-    <dependencies>	
-	<!-- Commons -->
-	<dependency>
-            <groupId>commons-lang</groupId>
-            <artifactId>commons-lang</artifactId>
-            <version>2.5</version>
-        </dependency>
-        
-	<!-- Spring framework -->
-	<dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-context</artifactId>
-            <version>${spring.version}</version>
-	</dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-test</artifactId>
-            <version>${spring.version}</version>
-            <scope>test</scope>
-        </dependency>
-        		
-	<!-- Logging -->
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-            <version>${slf4j.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-log4j12</artifactId>
-            <version>${slf4j.version}</version>
-            <scope>provided</scope>
-        </dependency>
-        
-	<!-- Testing -->
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.8.1</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.easymock</groupId>
-            <artifactId>easymock</artifactId>
-            <version>3.0</version>
-            <scope>test</scope>
-	</dependency>
-	<dependency>
-            <groupId>org.hsqldb</groupId>
-            <artifactId>hsqldb</artifactId>
-            <version>2.1.0</version>
-            <scope>test</scope>
-        </dependency>
-    </dependencies>
+	<developers>
+		<developer>
+			<name>Jeroen van Schagen</name>
+			<email>jeroen.van.schagen@42.nl</email>
+		</developer>
+	</developers>
+
+	<scm>
+		<connection>scm:git:https://github.com/42BV/jarb.git</connection>
+		<url>https://github.com/42BV/jarb.git</url>
+		<developerConnection>scm:git:https://github.com/42BV/jarb.git</developerConnection>
+	</scm>
+
+	<properties>
+		<spring.version>3.0.5.RELEASE</spring.version>
+		<hibernate.version>3.5.5-Final</hibernate.version>
+		<hsqldb.version>2.1.0</hsqldb.version>
+		<slf4j.version>1.6.1</slf4j.version>
+	</properties>
+
+	<dependencies>
+		<!-- Commons -->
+		<dependency>
+			<groupId>commons-lang</groupId>
+			<artifactId>commons-lang</artifactId>
+			<version>2.5</version>
+		</dependency>
+
+		<!-- Spring framework -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-test</artifactId>
+			<version>${spring.version}</version>
+			<scope>test</scope>
+		</dependency>
+
+		<!-- Logging -->
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>${slf4j.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-log4j12</artifactId>
+			<version>${slf4j.version}</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<!-- Testing -->
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.8.1</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.easymock</groupId>
+			<artifactId>easymock</artifactId>
+			<version>3.0</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.hsqldb</groupId>
+			<artifactId>hsqldb</artifactId>
+			<version>${hsqldb.version}</version>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
 
 </project>
