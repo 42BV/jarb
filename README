@@ -5,6 +5,6 @@
     * constraint-validation (@DatabaseConstrained annotation and validator)
     * constraint-violations (translates JDBC driver exceptions into constrain violation exceptions)
     * migrations (migrating datasource, providing atleast Liquibase integration)
-    * populator (builds on org.springframework.jdbc.datasource.init - CompoundDatabasePopulator / FailSafeDatabasePopulator)
+    * populator (org.springframework.jdbc.datasource.init support, skipable and compound populator)
     * populator-excel (excel driven database populator - current ETD project)
     * utils (common utilities, available for any other component)
