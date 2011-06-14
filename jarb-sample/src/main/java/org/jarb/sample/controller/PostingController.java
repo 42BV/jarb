@@ -22,7 +22,7 @@ public class PostingController {
     private PostingService postingService;
     
     @Autowired
-    private BeanConstraintMetadataGenerator constraintDescriptor;
+    private BeanConstraintMetadataGenerator constraintMetadataGenerator;
 
     @RequestMapping(method = RequestMethod.GET)
     public ModelAndView index() {
@@ -69,7 +69,7 @@ public class PostingController {
     
     @RequestMapping(value = "structure", method = RequestMethod.GET)
     public BeanConstraintMetadata<Post> structure() {
-        return constraintDescriptor.describe(Post.class);
+        return constraintMetadataGenerator.describe(Post.class);
     }
 
 }
