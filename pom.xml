@@ -4,42 +4,42 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
-	<modelVersion>4.0.0</modelVersion>
+    <modelVersion>4.0.0</modelVersion>
 	
-	<groupId>org.jarb</groupId>
-	<artifactId>jarb-parent</artifactId>
-	<packaging>pom</packaging>
-	<name>Java Repository Bridge</name>
-	<version>0.1-SNAPSHOT</version>
-	<description>Provides support for databases.</description>
-	<url>https://github.com/42BV/jarb</url>
-	<inceptionYear>2011</inceptionYear>
+    <groupId>org.jarb</groupId>
+    <artifactId>jarb-parent</artifactId>
+    <packaging>pom</packaging>
+    <name>Java Repository Bridge</name>
+    <version>0.1-SNAPSHOT</version>
+    <description>Provides support for databases.</description>
+    <url>https://github.com/42BV/jarb</url>
+    <inceptionYear>2011</inceptionYear>
 
-	<modules>
-		<module>jarb-constraint-metadata</module>
-		<module>jarb-constraint-validation</module>
-		<module>jarb-constraint-violations</module>
-		<module>jarb-migrations</module>
-		<module>jarb-populator</module>
-		<module>jarb-populator-excel</module>
-		<module>jarb-sample</module>
-		<module>jarb-utils</module>
-	</modules>
+    <modules>
+	<module>jarb-constraint-metadata</module>
+	<module>jarb-constraint-validation</module>
+	<module>jarb-constraint-violations</module>
+	<module>jarb-migrations</module>
+	<module>jarb-populator</module>
+	<module>jarb-populator-excel</module>
+	<module>jarb-sample</module>
+	<module>jarb-utils</module>
+    </modules>
 
-	<developers>
-		<developer>
-			<name>Jeroen van Schagen</name>
-			<email>jeroen.van.schagen@42.nl</email>
-		</developer>
-	</developers>
+    <developers>
+	<developer>
+            <name>Jeroen van Schagen</name>
+            <email>jeroen.van.schagen@42.nl</email>
+	</developer>
+    </developers>
 
-	<scm>
-		<connection>scm:git:https://github.com/42BV/jarb.git</connection>
-		<url>https://github.com/42BV/jarb.git</url>
-		<developerConnection>scm:git:https://github.com/42BV/jarb.git</developerConnection>
-	</scm>
+    <scm>
+	<connection>scm:git:https://github.com/42BV/jarb.git</connection>
+	<url>https://github.com/42BV/jarb.git</url>
+	<developerConnection>scm:git:https://github.com/42BV/jarb.git</developerConnection>
+    </scm>
 	
-	<properties>
+    <properties>
         <spring.version>3.0.5.RELEASE</spring.version>
         <slf4j.version>1.6.1</slf4j.version>
     </properties>
