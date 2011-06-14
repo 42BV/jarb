@@ -5,8 +5,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.sql.Date;
 
-import nl.mad.hactar.common.ReflectionUtil;
-
+import org.jarb.utils.ReflectionUtils;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -26,7 +25,7 @@ public final class ProjectTest {
     @Test
     public void testGetId() {
         final Long id = 1L;
-        ReflectionUtil.setFieldValue(project, "id", id);
+        ReflectionUtils.setFieldValue(project, "id", id);
         assertEquals(id, project.getId());
     }
 

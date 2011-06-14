@@ -4,8 +4,7 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.Date;
 
-import nl.mad.hactar.common.ReflectionUtil;
-
+import org.jarb.utils.ReflectionUtils;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -25,7 +24,7 @@ public class DocumentRevisionTest {
     @Test
     public void testSetGetID() {
         Long id = new Long("1");
-        ReflectionUtil.setFieldValue(documentRevision, "id", id);
+        ReflectionUtils.setFieldValue(documentRevision, "id", id);
         assertEquals(id, documentRevision.getId());
     }
 

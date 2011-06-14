@@ -1,16 +1,15 @@
 package org.jarb.populator.excel.mapping.excelrow;
 
 import java.util.Map;
-import java.util.Set;
 import java.util.Map.Entry;
-
-import nl.mad.hactar.common.ReflectionUtil;
+import java.util.Set;
 
 import org.jarb.populator.excel.metamodel.ClassDefinition;
 import org.jarb.populator.excel.metamodel.ClassDefinitionFinder;
 import org.jarb.populator.excel.metamodel.PropertyDefinition;
 import org.jarb.populator.excel.metamodel.generator.SuperclassRetriever;
 import org.jarb.populator.excel.workbook.validator.FieldValidator;
+import org.jarb.utils.ReflectionUtils;
 
 /**
  * Used to map foreign relationships between ExcelRows.
@@ -40,10 +39,10 @@ public final class ForeignRelationsMapper {
                 classDefinition = getClassDefinitionFromParents(objectModel, superClasses);
             }
 
-            //Check if the field is really in THIS excelRow. Thus the parents set is empty.
+            // Check if the field is really in THIS excelRow. Thus the parents set is empty.
             Object foreignEntity = ForeignExcelRowGrabber.getInstanceValue(key, objectModel.get(classDefinition));
             if (FieldValidator.isExistingField(entry.getKey().getFieldName(), excelRow.getCreatedInstance().getClass())) {
-                ReflectionUtil.setFieldValue(excelRow.getCreatedInstance(), entry.getKey().getFieldName(), foreignEntity);
+                ReflectionUtils.setFieldValue(excelRow.getCreatedInstance(), entry.getKey().getFieldName(), foreignEntity);
             }
 
         }

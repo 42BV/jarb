@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import nl.mad.hactar.common.ReflectionUtil;
+import org.jarb.utils.ReflectionUtils;
 
 /**
  * ClassDefiniton contains all the tabledata which is bound to a certain persistent class from the domain package.
@@ -41,7 +41,7 @@ public class ClassDefinition {
      * @throws IllegalAccessException Thrown when function does not have access to the definition of the specified class, field, method or constructor 
      */
     public Object createInstance() throws InstantiationException, IllegalAccessException {
-        return ReflectionUtil.instantiate(persistentClass);
+        return ReflectionUtils.instantiate(persistentClass);
     }
 
     /**

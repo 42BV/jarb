@@ -5,8 +5,7 @@ import static org.junit.Assert.assertEquals;
 import java.util.HashSet;
 import java.util.Set;
 
-import nl.mad.hactar.common.ReflectionUtil;
-
+import org.jarb.utils.ReflectionUtils;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -27,7 +26,7 @@ public class CustomerTest {
     @Test
     public void testGetId() {
         final Long id = 1L;
-        ReflectionUtil.setFieldValue(customer, "id", id);
+        ReflectionUtils.setFieldValue(customer, "id", id);
         assertEquals(id, customer.getId());
     }
 

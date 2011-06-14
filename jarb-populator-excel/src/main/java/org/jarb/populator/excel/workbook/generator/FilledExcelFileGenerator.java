@@ -12,8 +12,6 @@ import javax.persistence.PersistenceUnitUtil;
 import javax.persistence.metamodel.EntityType;
 import javax.persistence.metamodel.Metamodel;
 
-import nl.mad.hactar.common.ReflectionUtil;
-
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -26,6 +24,7 @@ import org.jarb.populator.excel.metamodel.generator.ClassDefinitionsGenerator;
 import org.jarb.populator.excel.metamodel.generator.SubclassRetriever;
 import org.jarb.populator.excel.util.ClassDefinitionNameComparator;
 import org.jarb.populator.excel.workbook.validator.FieldValidator;
+import org.jarb.utils.ReflectionUtils;
 
 /**
  * This class reuses the Class- and ColumnDefinitions from the Metamodel to create a new Excel file filled with data from the database.
@@ -158,7 +157,7 @@ public final class FilledExcelFileGenerator {
      */
     private static void createRegularFieldCell(PersistenceUnitUtil puUtil, CellStyle dateFormatStyle, HSSFRow row, String fieldName, Object databaseRecord,
             int columnNumber) {
-        Object cellValue = ReflectionUtil.getFieldValue(databaseRecord, fieldName);
+        Object cellValue = ReflectionUtils.getFieldValue(databaseRecord, fieldName);
 
         if (cellValue instanceof HibernateProxy) {
             cellValue = ((HibernateProxy) cellValue).getHibernateLazyInitializer().getImplementation();
@@ -192,9 +191,9 @@ public final class FilledExcelFileGenerator {
     private static void createEmbeddedFieldCell(ClassDefinition classDefinition, CellStyle dateFormatStyle, HSSFRow row, String columnName, String fieldName,
             Object databaseRecord, int columnNumber) {
         String embeddedObjectName = classDefinition.getColumnDefinitionByColumnName(columnName).getEmbeddedObjectName();
-        Object embeddedObject = ReflectionUtil.getFieldValue(databaseRecord, embeddedObjectName);
+        Object embeddedObject = ReflectionUtils.getFieldValue(databaseRecord, embeddedObjectName);
         if (embeddedObject != null) {
-            Object cellValue = ReflectionUtil.getFieldValue(embeddedObject, fieldName);
+            Object cellValue = ReflectionUtils.getFieldValue(embeddedObject, fieldName);
             if (cellValue != null) {
                 CellValueSetter.setCellValueByProperType(row, columnNumber, cellValue, dateFormatStyle);
             }

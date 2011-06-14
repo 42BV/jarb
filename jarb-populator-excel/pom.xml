@@ -70,13 +70,6 @@
             <version>${poi.version}</version>
         </dependency>
         
-        <dependency>
-            <!-- Used for reflection utilities -->
-            <groupId>nl.mad.hactar</groupId>
-            <artifactId>hactar-common</artifactId>
-            <version>4.4.3</version>
-        </dependency>
-        
         <!-- Spring framework -->
         <dependency>
             <groupId>org.springframework</groupId>

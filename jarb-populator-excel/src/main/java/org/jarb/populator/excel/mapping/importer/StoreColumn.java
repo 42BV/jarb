@@ -1,7 +1,5 @@
 package org.jarb.populator.excel.mapping.importer;
 
-import nl.mad.hactar.common.ReflectionUtil;
-
 import org.jarb.populator.excel.mapping.CouldNotConvertException;
 import org.jarb.populator.excel.mapping.ValueConversionService;
 import org.jarb.populator.excel.mapping.excelrow.ExcelRow;
@@ -10,6 +8,7 @@ import org.jarb.populator.excel.metamodel.PropertyDefinition;
 import org.jarb.populator.excel.workbook.Sheet;
 import org.jarb.populator.excel.workbook.Workbook;
 import org.jarb.populator.excel.workbook.validator.FieldValidator;
+import org.jarb.utils.ReflectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,7 +45,7 @@ public final class StoreColumn {
         if (FieldValidator.isExistingField(columnDefinition.getFieldName(), excelRow.getCreatedInstance().getClass())) {
             setExcelRowFieldValue(excelRow.getCreatedInstance(), columnDefinition.getFieldName(), cellValue);
         } else if (FieldValidator.isExistingField(columnDefinition.getEmbeddedObjectName(), excelRow.getCreatedInstance().getClass())) {
-            Object embeddedField = ReflectionUtil.getFieldValue(excelRow.getCreatedInstance(), columnDefinition.getEmbeddedObjectName());
+            Object embeddedField = ReflectionUtils.getFieldValue(excelRow.getCreatedInstance(), columnDefinition.getEmbeddedObjectName());
             setExcelRowFieldValue(embeddedField, columnDefinition.getFieldName(), cellValue);
         }
     }
@@ -58,10 +57,10 @@ public final class StoreColumn {
      * @param cellValue Value of the field that is to be saved
      */
     private static void setExcelRowFieldValue(Object excelRow, String fieldName, Object cellValue) {
-        final Class<?> fieldType = ReflectionUtil.getFieldType(excelRow, fieldName);
+        final Class<?> fieldType = ReflectionUtils.getFieldType(excelRow, fieldName);
         try {
             Object fieldValue = ValueConversionService.INSTANCE.convert(cellValue, fieldType);
-            ReflectionUtil.setFieldValue(excelRow, fieldName, fieldValue);
+            ReflectionUtils.setFieldValue(excelRow, fieldName, fieldValue);
         } catch (CouldNotConvertException e) {
             logger.warn("Could not convert '{}' into a {}, thus '{}' will remain unchanged.", new Object[] { cellValue, fieldType, fieldName });
         }

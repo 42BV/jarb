@@ -1,8 +1,8 @@
 package domain;
 
 import static org.junit.Assert.assertEquals;
-import nl.mad.hactar.common.ReflectionUtil;
 
+import org.jarb.utils.ReflectionUtils;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -21,7 +21,7 @@ public class WorkspaceTest {
     @Test
     public void testGetId() {
         final Long id = 1L;
-        ReflectionUtil.setFieldValue(workspace, "id", id);
+        ReflectionUtils.setFieldValue(workspace, "id", id);
         assertEquals(id, workspace.getId());
     }
 

@@ -6,8 +6,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import nl.mad.hactar.common.ReflectionUtil;
-
+import org.jarb.utils.ReflectionUtils;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -27,7 +26,7 @@ public class WordFileTest {
     @Test
     public void testGetID() {
         Long id = new Long(1);
-        ReflectionUtil.setFieldValue(wordFile, "id", id);
+        ReflectionUtils.setFieldValue(wordFile, "id", id);
         assertEquals(id, wordFile.getId());
     }
 

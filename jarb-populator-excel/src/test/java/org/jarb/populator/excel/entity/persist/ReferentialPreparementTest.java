@@ -11,9 +11,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 import javax.persistence.PersistenceUnitUtil;
 
-import nl.mad.hactar.common.ReflectionUtil;
-
 import org.jarb.populator.excel.DefaultExcelTestDataCase;
+import org.jarb.utils.ReflectionUtils;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -54,7 +53,7 @@ public class ReferentialPreparementTest extends DefaultExcelTestDataCase {
 
         entityTransaction.begin();
         employeeObject = ReferentialPreparement.prepareEntityReferences(employeeObject, entityManager, new HashSet<Object>());
-        assertNotNull(pUUtil.getIdentifier(ReflectionUtil.getFieldValue(employeeObject, "vehicle")));
+        assertNotNull(pUUtil.getIdentifier(ReflectionUtils.getFieldValue(employeeObject, "vehicle")));
         entityTransaction.commit();
     }
 }

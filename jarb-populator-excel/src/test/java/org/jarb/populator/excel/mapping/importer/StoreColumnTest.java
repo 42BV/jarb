@@ -11,8 +11,6 @@ import java.lang.reflect.InvocationTargetException;
 import javax.persistence.metamodel.EntityType;
 import javax.persistence.metamodel.Metamodel;
 
-import nl.mad.hactar.common.ReflectionUtil;
-
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.jarb.populator.excel.DefaultExcelTestDataCase;
 import org.jarb.populator.excel.mapping.excelrow.ExcelRow;
@@ -24,6 +22,7 @@ import org.jarb.populator.excel.metamodel.generator.ClassDefinitionsGenerator;
 import org.jarb.populator.excel.metamodel.generator.FieldAnalyzer;
 import org.jarb.populator.excel.workbook.Workbook;
 import org.jarb.populator.excel.workbook.reader.PoiExcelParser;
+import org.jarb.utils.ReflectionUtils;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -95,7 +94,7 @@ public class StoreColumnTest extends DefaultExcelTestDataCase {
 
         rowPosition = 1;
         StoreExcelRecordValue.storeValue(excel, classDefinition, column, rowPosition, excelRow);
-        assertEquals("Customer1", ReflectionUtil.getFieldValue(excelRow.getCreatedInstance(), "name"));
+        assertEquals("Customer1", ReflectionUtils.getFieldValue(excelRow.getCreatedInstance(), "name"));
     }
 
 }

@@ -10,13 +10,12 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.PersistenceUnitUtil;
 import javax.persistence.metamodel.Attribute;
+import javax.persistence.metamodel.Attribute.PersistentAttributeType;
 import javax.persistence.metamodel.EntityType;
 import javax.persistence.metamodel.Metamodel;
-import javax.persistence.metamodel.Attribute.PersistentAttributeType;
-
-import nl.mad.hactar.common.ReflectionUtil;
 
 import org.jarb.populator.excel.metamodel.generator.SuperclassRetriever;
+import org.jarb.utils.ReflectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -73,7 +72,7 @@ public final class ReferentialPreparement {
             if (!CascadeAnnotationChecker.hasNecessaryCascadeAnnotations(annotation)) {
                 retrieveReferencesForAttribute(entity, entityManager, attribute, cascadedObjectsInThisInteration);
             } else {
-                Object referencedObject = ReflectionUtil.getFieldValue(entity, attribute.getName());
+                Object referencedObject = ReflectionUtils.getFieldValue(entity, attribute.getName());
                 if (!cascadedObjectsInThisInteration.contains(referencedObject)) {
                     cascadedObjectsInThisInteration.add(referencedObject);
                     secondaryReferenceCheck(referencedObject, entityManager, cascadedObjectsInThisInteration);
@@ -111,7 +110,7 @@ public final class ReferentialPreparement {
      */
     private static void retrieveReferencesForAttribute(Object entity, EntityManager entityManager, Attribute<?, ?> attribute,
             Set<Object> cascadedObjectsInThisInteration) {
-        Object referencedObject = ReflectionUtil.getFieldValue(entity, attribute.getName());
+        Object referencedObject = ReflectionUtils.getFieldValue(entity, attribute.getName());
         if (referencedObject instanceof Collection<?>) {
             prepareEntitiesFromSet(entityManager, referencedObject, cascadedObjectsInThisInteration);
         } else {
@@ -162,7 +161,7 @@ public final class ReferentialPreparement {
             //Identifier is null if referencedObject has not yet been persisted.
             if (persistenceUnitUtil.getIdentifier(referencedObject) != null) {
                 retrievenObject = entityManager.find(referencedObject.getClass(), persistenceUnitUtil.getIdentifier(referencedObject));
-                ReflectionUtil.setFieldValue(entity, attributeName, retrievenObject);
+                ReflectionUtils.setFieldValue(entity, attributeName, retrievenObject);
             } else {
                 cascadeReferencedObject(entity, entityManager, attributeName, referencedObject, cascadedObjectsInThisInteration);
             }
@@ -190,7 +189,7 @@ public final class ReferentialPreparement {
         if (!cascadingHasLooped(referencedObject, cascadedObjectsInThisInteration)) {
             referencedObject = prepareEntityReferences(referencedObject, entityManager, cascadedObjectsInThisInteration);
             LOGGER.info("Cascading Excelrow of class: " + referencedObject.getClass());
-            ReflectionUtil.setFieldValue(entity, attributeName, entityManager.merge(referencedObject));
+            ReflectionUtils.setFieldValue(entity, attributeName, entityManager.merge(referencedObject));
         } else {
             resolveCircularReferencing(entity, entityManager, referencedObject, cascadedObjectsInThisInteration);
         }
@@ -244,12 +243,12 @@ public final class ReferentialPreparement {
         if (!cascadedObjectsInThisInteration.contains(entity)) {
             LOGGER.info("Cascading Excelrow of class: " + referencedObject.getClass());
             referencedObject = prepareEntityReferences(referencedObject, entityManager, cascadedObjectsInThisInteration);
-            ReflectionUtil.setFieldValue(entity, refName, entityManager.merge(referencedObject));
+            ReflectionUtils.setFieldValue(entity, refName, entityManager.merge(referencedObject));
             cascadedObjectsInThisInteration.add(entity);
         }
         if (temporaryObject != null) {
             temporaryObject = prepareEntityReferences(temporaryObject, entityManager, new HashSet<Object>());
-            ReflectionUtil.setFieldValue(entity, refName, entityManager.merge(temporaryObject));
+            ReflectionUtils.setFieldValue(entity, refName, entityManager.merge(temporaryObject));
         }
     }
 
@@ -266,8 +265,8 @@ public final class ReferentialPreparement {
     private static Object createTemporaryObject(Object entity, Metamodel metamodel, String refName) {
         Object temporaryObject = null;
         if (metamodel.entity(entity.getClass()).getSingularAttribute(refName).isOptional()) {
-            temporaryObject = ReflectionUtil.getFieldValue(entity, refName);
-            ReflectionUtil.setFieldValue(entity, refName, null);
+            temporaryObject = ReflectionUtils.getFieldValue(entity, refName);
+            ReflectionUtils.setFieldValue(entity, refName, null);
         }
         return temporaryObject;
     }

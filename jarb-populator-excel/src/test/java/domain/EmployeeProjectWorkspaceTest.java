@@ -4,8 +4,7 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.Date;
 
-import nl.mad.hactar.common.ReflectionUtil;
-
+import org.jarb.utils.ReflectionUtils;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -27,7 +26,7 @@ public class EmployeeProjectWorkspaceTest {
     @Test
     public void testGetId() {
         final Long id = 1L;
-        ReflectionUtil.setFieldValue(employeeProjectWorkspace, "id", id);
+        ReflectionUtils.setFieldValue(employeeProjectWorkspace, "id", id);
         assertEquals(id, employeeProjectWorkspace.getId());
     }
 

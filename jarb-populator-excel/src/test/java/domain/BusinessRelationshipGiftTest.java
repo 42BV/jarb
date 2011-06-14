@@ -1,8 +1,8 @@
 package domain;
 
 import static org.junit.Assert.assertEquals;
-import nl.mad.hactar.common.ReflectionUtil;
 
+import org.jarb.utils.ReflectionUtils;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -20,7 +20,7 @@ public class BusinessRelationshipGiftTest {
     @Test
     public void testGetId() {
         final Long id = 1L;
-        ReflectionUtil.setFieldValue(gift, "id", id);
+        ReflectionUtils.setFieldValue(gift, "id", id);
         assertEquals(id, gift.getId());
     }
 

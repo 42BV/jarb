@@ -4,14 +4,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import nl.mad.hactar.common.ReflectionUtil;
-
 import org.jarb.populator.excel.mapping.excelrow.ExcelRow;
 import org.jarb.populator.excel.mapping.excelrow.ForeignRelationsMapper;
 import org.jarb.populator.excel.metamodel.ClassDefinition;
 import org.jarb.populator.excel.metamodel.PropertyDefinition;
 import org.jarb.populator.excel.workbook.Sheet;
 import org.jarb.populator.excel.workbook.Workbook;
+import org.jarb.utils.ReflectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -105,7 +104,7 @@ public final class ExcelImporter {
             String discriminatorValue = getDiscriminatorValueFromExcelFile(sheet, rowPosition, discriminatorPosition);
             if (discriminatorValue != null) {
                 Class<?> subClass = classDefinition.getSubClasses().get(discriminatorValue);
-                excelRow = new ExcelRow(ReflectionUtil.instantiate(subClass));
+                excelRow = new ExcelRow(ReflectionUtils.instantiate(subClass));
             } else {
                 //ClassDefinition contains a discriminator but in this case it's null, so this is the superclass. Proceed normally.
                 excelRow = new ExcelRow(classDefinition.createInstance());

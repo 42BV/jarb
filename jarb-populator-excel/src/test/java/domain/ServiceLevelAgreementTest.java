@@ -1,8 +1,8 @@
 package domain;
 
 import static org.junit.Assert.assertEquals;
-import nl.mad.hactar.common.ReflectionUtil;
 
+import org.jarb.utils.ReflectionUtils;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -20,7 +20,7 @@ public class ServiceLevelAgreementTest {
 
     @Test
     public void testGetID() {
-        ReflectionUtil.setFieldValue(sla, "id", new Long("1"));
+        ReflectionUtils.setFieldValue(sla, "id", new Long("1"));
         assertEquals(new Long("1"), sla.getId());
     }
 

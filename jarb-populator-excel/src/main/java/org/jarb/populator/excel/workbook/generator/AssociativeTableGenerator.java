@@ -4,8 +4,6 @@ import java.util.Set;
 
 import javax.persistence.PersistenceUnitUtil;
 
-import nl.mad.hactar.common.ReflectionUtil;
-
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -13,6 +11,7 @@ import org.apache.poi.ss.usermodel.CellStyle;
 import org.jarb.populator.excel.metamodel.JoinTable;
 import org.jarb.populator.excel.metamodel.PropertyDefinition;
 import org.jarb.populator.excel.workbook.validator.FieldValidator;
+import org.jarb.utils.ReflectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -82,7 +81,7 @@ public final class AssociativeTableGenerator {
     private static Set<?> getCollectionSet(Object databaseRecord, JoinTable joinTable) throws NoSuchFieldException {
         Set<?> collectionSet = null;
         if (FieldValidator.isExistingField(joinTable.getFieldName(), databaseRecord.getClass())) {
-            Object collectionObject = ReflectionUtil.getFieldValue(databaseRecord, joinTable.getFieldName());
+            Object collectionObject = ReflectionUtils.getFieldValue(databaseRecord, joinTable.getFieldName());
             collectionSet = (Set<?>) collectionObject;
         }
         return collectionSet;
