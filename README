@@ -1,10 +1,10 @@
 == Java Repository Bridge (JaRB) ==
 
 == Components ==
+	* constraint-metadata (provides the constraints of an entity, via column metadata and constraint annotation inspection)
+    * constraint-validation (@DatabaseConstraint annotation and validator)
+    * constraint-violations (translates JDBC driver exceptions into constrain violation exceptions)
     * migrations (migrating datasource)
     * populator (builds on org.springframework.jdbc.datasource.init - CompoundDatabasePopulator / FailSafeDatabasePopulator)
     * populator-excel (excel driven database populator - current ETD project)
-    * constraint-metadata (provides the constraints of an entity, via column metadata and constraint annotation inspection)
-    * validation (@DatabaseConstraint annotation and validator)
-    * violations (translates JDBC driver exceptions into constrain violation exceptions)
     * utils (common utilities, available for any other component)
