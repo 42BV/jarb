@@ -38,7 +38,7 @@ public @interface DatabaseConstrained {
      * Can only be left empty is there is one constraint repository
      * in the application context.
      */
-    String columnMetadataRepository() default "";
+    String repository() default "";
     
     @Target({ METHOD, FIELD, ANNOTATION_TYPE, CONSTRUCTOR, PARAMETER })
     @Retention(RUNTIME)

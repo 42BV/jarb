@@ -16,6 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.util.Assert;
@@ -45,6 +46,8 @@ import org.springframework.util.Assert;
  */
 public class DatabaseConstrainedValidator implements ConstraintValidator<DatabaseConstrained, Object>, ApplicationContextAware {
     private static final Logger LOGGER = LoggerFactory.getLogger(DatabaseConstrainedValidator.class);
+    
+    public static final String DEFAULT_VALIDATOR_FACTORY_ID = "validator";
 
     // Violation message templates
     private static final String NOT_NULL_TEMPLATE = "{javax.validation.constraints.NotNull.message}";
@@ -201,18 +204,24 @@ public class DatabaseConstrainedValidator implements ConstraintValidator<Databas
     public void initialize(DatabaseConstrained annotation) {
         Assert.notNull(applicationContext, "Application context cannot be null.");
         if (columnMetadataRepository == null) {
-            columnMetadataRepository = getBeanFromContext(annotation.columnMetadataRepository(), EntityAwareColumnMetadataRepository.class);
-            messageBuilder = new ViolationMessageBuilder(getBeanFromContext(annotation.factory(), ValidatorFactory.class));
+            columnMetadataRepository = getBeanFromContext(annotation.repository(), EntityAwareColumnMetadataRepository.class);
+            messageBuilder = new ViolationMessageBuilder(getValidatorFactoryFromContext(annotation.factory()));
+        }
+    }
+    
+    private ValidatorFactory getValidatorFactoryFromContext(String identifier) {
+        try {
+            return getBeanFromContext(identifier, ValidatorFactory.class);
+        } catch(NoSuchBeanDefinitionException intialException) {
+            // Whenever we find multiple validator factory, try using the convention identifier
+            try {
+                return getBeanFromContext(DEFAULT_VALIDATOR_FACTORY_ID, ValidatorFactory.class);
+            } catch(NoSuchBeanDefinitionException conventionException) {
+                throw intialException; // Change back to initial exception
+            }
         }
     }
 
-    /**
-     * Retrieve bean from application context, based on an optional identifier and bean class.
-     * @param <T> type of bean
-     * @param identifier identifier of the bean, when left empty there should only be one bean of that type
-     * @param beanClass class of the bean type
-     * @return bean matching our specification, or a runtime exception if nothing could be found
-     */
     private <T> T getBeanFromContext(String identifier, Class<T> beanClass) {
         if (StringUtils.isNotBlank(identifier)) {
             return applicationContext.getBean(identifier, beanClass);

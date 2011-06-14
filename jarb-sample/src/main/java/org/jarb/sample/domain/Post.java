@@ -15,7 +15,7 @@ import org.jarb.validation.DatabaseConstrained;
 
 @Entity
 @Table(name = "posts")
-@DatabaseConstrained(factory = "validator")
+@DatabaseConstrained
 public class Post {
 
     @Id
