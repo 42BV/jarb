@@ -13,7 +13,7 @@ public class RowTest {
 
     @Before
     public void setUp() {
-        row = new Row();
+        row = new Workbook().createSheet("test").createRow();
     }
 
     /**
@@ -21,8 +21,7 @@ public class RowTest {
      */
     @Test
     public void testSetAndGetCells() {
-        final Cell cell = Cell.text("test");
-        row.setCell(2, cell);
+        Cell cell = row.getCellAt(2).setValue("test");
         assertEquals(cell, row.getCellAt(2));
         assertTrue(row.getCells().contains(cell));
         assertEquals("test", row.getCellValueAt(2));
@@ -42,9 +41,8 @@ public class RowTest {
 
     @Test
     public void testToString() {
-        // Inserted in reverse, this is to assert ordering
-        row.setCell(2, Cell.text("third"));
-        row.setCell(0, Cell.text("first"));
+        row.getCellAt(2).setValue("third");
+        row.getCellAt(0).setValue("first");
         assertEquals("{0=first, 2=third}", row.toString());
     }
 

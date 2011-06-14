@@ -16,7 +16,7 @@ public class SheetTest {
 
     @Before
     public void setUp() {
-        sheet = new Sheet("test");
+        sheet = new Workbook().createSheet("test");
     }
 
     /**
@@ -24,16 +24,15 @@ public class SheetTest {
      */
     @Test
     public void testRows() {
-        final Row row = new Row();
-        sheet.setRow(2, row);
+        final Row row = sheet.createRow();
         // The row is directly retrievable
-        assertEquals(row, sheet.getRowAt(2));
+        assertEquals(row, sheet.getRowAt(row.getRowNo()));
         // Only existing rows are provided in collection
         Collection<Row> rows = sheet.getRows();
         assertEquals(1, rows.size());
         assertTrue(rows.contains(row));
         // The last row number is available
-        assertEquals(2, sheet.getLastRowNumber());
+        assertEquals(row.getRowNo(), sheet.getLastRowNumber());
     }
 
     /**
@@ -49,10 +48,7 @@ public class SheetTest {
      */
     @Test
     public void testGetCell() {
-        final Cell cell = Cell.text("42");
-        Row row = new Row();
-        row.setCell(0, cell);
-        sheet.setRow(0, row);
+        final Cell cell = sheet.getCellAt(0, 0).setValue("42");
         assertEquals(cell, sheet.getCellAt(0, 0));
         assertEquals("42", sheet.getCellValueAt(0, 0));
     }
@@ -62,11 +58,10 @@ public class SheetTest {
      */
     @Test
     public void testColumns() {
-        final Row columnRow = new Row();
-        columnRow.setCell(0, Cell.text("first"));
-        columnRow.setCell(2, Cell.text("third"));
-        columnRow.setCell(3, Cell.text("third"));
-        sheet.setRow(0, columnRow);
+        final Row columnRow = sheet.getRowAt(0);
+        columnRow.getCellAt(0).setValue("first");
+        columnRow.getCellAt(2).setValue("third");
+        columnRow.getCellAt(3).setValue("third");
         // Column row is directly accessable
         assertEquals(columnRow, sheet.getColumnRow());
         // Names are available, duplicates cause no problems
@@ -84,12 +79,10 @@ public class SheetTest {
      */
     @Test
     public void testGetValueByColumn() {
-        Row columnRow = new Row();
-        columnRow.setCell(0, Cell.text("first"));
-        sheet.setRow(0, columnRow);
-        Row valueRow = new Row();
-        valueRow.setCell(0, Cell.text("test"));
-        sheet.setRow(1, valueRow);
+        Row columnRow = sheet.getRowAt(0);
+        columnRow.getCellAt(0).setValue("first");
+        Row valueRow = sheet.getRowAt(1);
+        valueRow.getCellAt(0).setValue("test");
         assertEquals("test", sheet.getCellValueAt(1, "first"));
         assertNull(sheet.getCellValueAt(1, "unknown"));
     }
@@ -99,10 +92,9 @@ public class SheetTest {
      */
     @Test
     public void testToString() {
-        Row row = new Row();
-        row.setCell(0, Cell.text("first"));
-        row.setCell(1, Cell.text("second"));
-        sheet.setRow(0, row);
+        Row row = sheet.getRowAt(0);
+        row.getCellAt(0).setValue("first");
+        row.getCellAt(1).setValue("second");
         assertEquals("Sheet 'test' {0={0=first, 1=second}}", sheet.toString());
     }
 

@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.persistence.Entity;
@@ -106,15 +107,18 @@ public final class ClassDefinitionsGenerator {
      * @throws InstantiationException Thrown when function is used on a class that cannot be instantiated (abstract or interface)
      * @throws IllegalAccessException Thrown when function does not have access to the definition of the specified class, field, method or constructor 
      */
-    private static ClassDefinition<?> createClassDefinitionFromEntity(EntityType<?> entity, Set<EntityType<?>> entities, Set<EntityType<?>> subClassEntities)
+    @SuppressWarnings("unchecked")
+    private static <T> ClassDefinition<T> createClassDefinitionFromEntity(EntityType<T> entity, Set<EntityType<?>> entities, Set<EntityType<?>> subClassEntities)
             throws ClassNotFoundException, InstantiationException, IllegalAccessException {
-        ClassDefinition<?> classDefinition = null;
+        ClassDefinition<T> classDefinition = null;
         if (entity != null) {
-            Class<?> persistentClass = Class.forName(entity.getName());
+            Class<T> persistentClass = (Class<T>) Class.forName(entity.getName());
             classDefinition = createBasicClassDefinition(entities, entity, persistentClass);
             if (classDefinition != null) {
                 classDefinition.addColumnDefinitionList(ColumnDefinitionsGenerator.createColumnDefinitions(subClassEntities, entity, persistentClass));
-                classDefinition.addSubClassMap(SubclassRetriever.getSubClassMapping(subClassEntities));
+                for(Map.Entry<String, Class<?>> subClassMapping : SubclassRetriever.getSubClassMapping(subClassEntities).entrySet()) {
+                    classDefinition.addSubClass(subClassMapping.getKey(), (Class<? extends T>) subClassMapping.getValue());
+                }
             }
         }
         return classDefinition;
@@ -127,8 +131,8 @@ public final class ClassDefinitionsGenerator {
      * @param persistentClass Persistent class
      * @return ClassDefinition with a tablename and persistent class
      */
-    private static ClassDefinition<?> createBasicClassDefinition(Set<EntityType<?>> entities, EntityType<?> entity, Class<?> persistentClass) {
-        ClassDefinition<?> classDefinition = null;
+    private static <T> ClassDefinition<T> createBasicClassDefinition(Set<EntityType<?>> entities, EntityType<T> entity, Class<T> persistentClass) {
+        ClassDefinition<T> classDefinition = null;
         //See if Entity has got an @Table annotation
         if (hasTableAnnotation(persistentClass)) {
             //Create new ClassDefinition, enter table name from annotation, enter persistent class.
@@ -144,8 +148,8 @@ public final class ClassDefinitionsGenerator {
      * @param persistentClass Persistent class
      * @return String with either the @Entity(name=...) value or the SimpleClassName
      */
-    private static ClassDefinition<?> tryToGetTableNameFromEntityAnnotation(Class<?> persistentClass) {
-        ClassDefinition<?> classDefinition;
+    private static <T> ClassDefinition<T> tryToGetTableNameFromEntityAnnotation(Class<T> persistentClass) {
+        ClassDefinition<T> classDefinition;
         // ^^ Checks if Entity is subclass of another Entity in the model. If it is it will be implemented by superclass.
         //It could still have an @Entity name annotation, check this. Otherwise we'll take the simple class name.
         if (hasEntityNameAnnotation(persistentClass)) {

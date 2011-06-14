@@ -19,7 +19,7 @@ public class ClassDefinition<T> {
     private final Class<T> persistentClass;
 
     /** A set with subclasses with their discriminator values as keys. Needed for making ExcelRecords. */
-    private Map<String, Class<?>> subClasses = new HashMap<String, Class<?>>();
+    private Map<String, Class<? extends T>> subClasses = new HashMap<String, Class<? extends T>>();
 
     /** The name of the Excelsheet. */
     private String tableName;
@@ -157,17 +157,17 @@ public class ClassDefinition<T> {
      * @param discriminatorValue Discriminator value of subclass
      * @param persistentSubClass Persistent class of subclass
      */
-    public void addSubClass(String discriminatorValue, Class<?> persistentSubClass) {
-        this.subClasses.put(discriminatorValue, persistentSubClass);
+    public void addSubClass(String discriminatorValue, Class<? extends T> persistentSubClass) {
+        subClasses.put(discriminatorValue, persistentSubClass);
     }
 
     /**
      * Adds the whole subclass map.
      * @param subClassMap Map of subclasses to be added
      */
-    public void addSubClassMap(Map<String, Class<?>> subClassMap) {
-        for (Entry<String, Class<?>> subClass : subClassMap.entrySet()) {
-            this.addSubClass(subClass.getKey(), subClass.getValue());
+    public void addSubClassMap(Map<String, Class<? extends T>> subClassMap) {
+        for (Entry<String, Class<? extends T>> subClass : subClassMap.entrySet()) {
+            addSubClass(subClass.getKey(), subClass.getValue());
         }
     }
 
@@ -175,8 +175,12 @@ public class ClassDefinition<T> {
      * Return list of subclasses.
      * @return List of subclasses
      */
-    public Map<String, Class<?>> getSubClasses() {
+    public Map<String, Class<? extends T>> getSubClasses() {
         return subClasses;
+    }
+    
+    public Class<? extends T> getSubClass(String discriminatorValue) {
+        return subClasses.get(discriminatorValue);
     }
 
     /** 

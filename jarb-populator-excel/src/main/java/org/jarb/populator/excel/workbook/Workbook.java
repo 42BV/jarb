@@ -63,14 +63,14 @@ public class Workbook implements Iterable<Sheet> {
         return this;
     }
 
-    public Workbook addSheet(Sheet sheet) {
+    public Sheet createSheet(String name) {
+        Sheet sheet = new Sheet(this, name);
         sheets.add(sheet);
-        return this;
+        return sheet;
     }
 
-    public Workbook removeSheet(Sheet sheet) {
+    public void removeSheet(Sheet sheet) {
         sheets.remove(sheet);
-        return this;
     }
 
 }

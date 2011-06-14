@@ -7,12 +7,22 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
+import org.springframework.util.Assert;
+
 public class Sheet implements Iterable<Row> {
     private final TreeMap<Integer, Row> rows = new TreeMap<Integer, Row>();
+    private final Workbook workbook;
     private String name;
 
-    public Sheet(String name) {
+    Sheet(Workbook workbook, String name) {
+        Assert.notNull(workbook, "Workbook cannot be null");
+        Assert.hasText(name, "Sheet needs to have a name");
+        this.workbook = workbook;
         this.name = name;
+    }
+    
+    public Workbook getWorkbook() {
+        return workbook;
     }
 
     public String getName() {
@@ -38,19 +48,20 @@ public class Sheet implements Iterable<Row> {
     public Row getRowAt(int rowNo) {
         Row row = rows.get(rowNo);
         if (row == null) {
-            row = new Row();
+            row = createRow(rowNo);
         }
         return row;
     }
-
-    public void setRow(int rowNo, Row row) {
-        rows.put(rowNo, row);
-    }
-
-    public int addRow(Row row) {
+    
+    public Row createRow() {
         int rowNo = rows.isEmpty() ? 0 : rows.lastKey() + 1;
-        setRow(rowNo, row);
-        return rowNo;
+        return createRow(rowNo);
+    }
+    
+    private Row createRow(int rowNo) {
+        Row row = new Row(this, rowNo);
+        rows.put(rowNo, row);
+        return row;
     }
 
     public Cell getCellAt(int rowNo, int colNo) {
@@ -123,20 +134,25 @@ public class Sheet implements Iterable<Row> {
      * Retrieve the cell at a specific row index and column.
      * @param rowNo index of the row containing our cell
      * @param columnName name of the column that describes our cell
-     * @return desired cell value, never {@code null}
+     * @return desired cell, or {@code null} if no matching column could be found
      */
     public Cell getCellAt(int rowNo, String columnName) {
-        return getRowAt(rowNo).getCellAt(indexOfColumn(columnName));
+        int colNo = indexOfColumn(columnName);
+        if(colNo == -1) {
+            return null;
+        }
+        return getRowAt(rowNo).getCellAt(colNo);
     }
 
     /**
      * Retrieve the cell value at a specific row index and column.
      * @param rowNo index of the row containing our cell
      * @param columnName name of the column that describes our cell
-     * @return value of the desired cell, or {@code null} if the cell is empty
+     * @return desired cell value, or {@code null} if no matching column could be found
      */
     public Object getCellValueAt(int rowNo, String columnName) {
-        return getCellAt(rowNo, columnName).getValue();
+        Cell cell = getCellAt(rowNo, columnName);
+        return cell != null ? cell.getValue() : null;
     }
 
     /**

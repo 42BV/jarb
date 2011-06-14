@@ -11,7 +11,7 @@ public class CellTest {
 
     @Before
     public void setUp() {
-        cell = Cell.empty();
+        cell = new Workbook().createSheet("test").createRow().createCell();
     }
 
     /**

@@ -1,22 +1,44 @@
 package org.jarb.populator.excel.workbook;
 
-public class Cell {
-    private CellValue cellValue;
+import org.springframework.util.Assert;
 
-    public Cell(CellValue cellValue) {
+public class Cell {
+    private final Row row;
+    private final int colNo;
+    private CellValue cellValue;
+    
+    Cell(Row row, int colNo) {
+        this(row, colNo, new EmptyValue());
+    }
+
+    Cell(Row row, int colNo, CellValue cellValue) {
+        Assert.notNull(row, "Row cannot be null");
+        Assert.state(colNo >= 0, "Column number has to be positive");
+        Assert.notNull(cellValue, "Cell value cannot be null");
+        this.row = row;
+        this.colNo = colNo;
         this.cellValue = cellValue;
     }
 
-    public static Cell empty() {
-        return new Cell(new EmptyValue());
+    public Row getRow() {
+        return row;
     }
-
-    public static Cell text(String text) {
-        return new Cell(new StringValue(text));
+    
+    public int getColNo() {
+        return colNo;
     }
-
+    
+    public int getRowNo() {
+        return row.getRowNo();
+    }
+    
     public Object getValue() {
         return cellValue.getValue();
+    }
+    
+    public Cell setValue(String text) {
+        setCellValue(new StringValue(text));
+        return this;
     }
 
     public String getValueAsString() {

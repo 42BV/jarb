@@ -61,57 +61,41 @@ public class PoiExcelParser implements ExcelParser {
 
     /**
      * Parse an Apache POI workbook into our own {@link Workbook} instance.
-     * @param poiWorkbook POI workbook
+     * @param poiWorkbook workbook retrieved from POI
      * @return new workbook instance, containing all sheets
      */
     private Workbook parseWorkbook(org.apache.poi.ss.usermodel.Workbook poiWorkbook) {
-        Workbook excel = new Workbook();
+        Workbook workbook = new Workbook();
         for (int sheetNo = 0; sheetNo < poiWorkbook.getNumberOfSheets(); sheetNo++) {
-            excel.addSheet(parseSheet(poiWorkbook.getSheetAt(sheetNo)));
+            org.apache.poi.ss.usermodel.Sheet poiSheet = poiWorkbook.getSheetAt(sheetNo);
+            Sheet sheet = workbook.createSheet(poiSheet.getSheetName());
+            copyRows(sheet, poiSheet);
         }
-        return excel;
+        return workbook;
     }
 
     /**
      * Parse an Apache POI sheet into our own {@link Sheet} instance.
-     * @param poiSheet POI sheet
+     * @param sheet sheet model that contains all content
+     * @param poiSheet sheet retrieved from POI
      * @return new sheet instance, containing all rows
      */
-    private Sheet parseSheet(org.apache.poi.ss.usermodel.Sheet poiSheet) {
-        Sheet sheet = new Sheet(poiSheet.getSheetName());
+    private void copyRows(Sheet sheet, org.apache.poi.ss.usermodel.Sheet poiSheet) {
         for (int rowNo = 0; rowNo <= poiSheet.getLastRowNum(); rowNo++) {
-            sheet.setRow(rowNo, parseRow(poiSheet.getRow(rowNo)));
-        }
-        return sheet;
-    }
-
-    /**
-     * Parse an Apache POI row into our own {@link Row} instance.
-     * @param poiRow POI row
-     * @return new row instance, containing all cells
-     */
-    private Row parseRow(org.apache.poi.ss.usermodel.Row poiRow) {
-        Row row = new Row();
-        if (poiRow != null) { // Row can be 'null' if not a single cell has been defined
-            for (int colNo = 0; colNo < poiRow.getLastCellNum(); colNo++) {
-                row.setCell(colNo, parseCell(poiRow.getCell(colNo)));
+            org.apache.poi.ss.usermodel.Row poiRow = poiSheet.getRow(rowNo);
+            if (poiRow != null) { // Row is 'null' when not a single cell has been defined
+                Row row = sheet.getRowAt(rowNo);
+                for (int colNo = 0; colNo < poiRow.getLastCellNum(); colNo++) {
+                    Cell cell = row.getCellAt(colNo);
+                    cell.setCellValue(parseValue(poiRow.getCell(colNo)));
+                }
             }
         }
-        return row;
-    }
-
-    /**
-     * Parse an Apache POI cell into our own {@link Cell} instance.
-     * @param poiCell POI cell
-     * @return new cell instance, containing a value
-     */
-    private Cell parseCell(org.apache.poi.ss.usermodel.Cell poiCell) {
-        return new Cell(parseValue(poiCell));
     }
 
     /**
      * Parse an Apache POI cell value object, and type, into our own {@link CellValue} instance.
-     * @param poiCell POI cell
+     * @param poiCell cell, including its value, as retrieved from POI
      * @return new cell value instance, never {@code null}
      */
     private CellValue parseValue(org.apache.poi.ss.usermodel.Cell poiCell) {

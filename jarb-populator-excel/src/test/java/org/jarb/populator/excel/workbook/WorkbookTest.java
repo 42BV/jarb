@@ -10,38 +10,37 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class WorkbookTest {
-    private Workbook excel;
+    private Workbook workbook;
 
     @Before
     public void setUp() {
-        excel = new Workbook();
+        workbook = new Workbook();
     }
 
     @Test
     public void testAddAndReplaceSheet() {
-        assertEquals(0, excel.getSheetCount());
-        final Sheet sheet = new Sheet("test");
-        excel.addSheet(sheet);
-        assertEquals(1, excel.getSheetCount());
-        assertEquals(sheet, excel.getSheetAt(0));
-        List<Sheet> sheets = excel.getSheets();
+        assertEquals(0, workbook.getSheetCount());
+        final Sheet sheet = workbook.createSheet("test");
+        assertEquals(1, workbook.getSheetCount());
+        assertEquals(sheet, workbook.getSheetAt(0));
+        List<Sheet> sheets = workbook.getSheets();
         assertEquals(Arrays.asList(sheet), sheets);
-        final Sheet another = new Sheet("another");
-        excel.setSheet(0, another);
-        assertEquals(another, excel.getSheetAt(0));
-        assertEquals(1, excel.getSheetCount());
-        excel.removeSheet(another);
-        assertEquals(0, excel.getSheetCount());
+        final Sheet another = workbook.createSheet("another");
+        assertEquals(another, workbook.getSheetAt(1));
+        assertEquals(2, workbook.getSheetCount());
+        workbook.removeSheet(another);
+        assertEquals(1, workbook.getSheetCount());
+        workbook.removeSheet(sheet);
+        assertEquals(0, workbook.getSheetCount());
     }
 
     @Test
     public void testFindByName() {
-        final Sheet sheet = new Sheet("test");
-        final Sheet another = new Sheet("another");
-        excel.addSheet(sheet).addSheet(another);
-        assertEquals(sheet, excel.getSheet("test"));
-        assertEquals(another, excel.getSheet("another"));
-        assertNull(excel.getSheet("unknown"));
+        final Sheet sheet = workbook.createSheet("test");
+        final Sheet another = workbook.createSheet("another");
+        assertEquals(sheet, workbook.getSheet("test"));
+        assertEquals(another, workbook.getSheet("another"));
+        assertNull(workbook.getSheet("unknown"));
     }
 
 }

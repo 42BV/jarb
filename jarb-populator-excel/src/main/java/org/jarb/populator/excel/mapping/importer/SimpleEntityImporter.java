@@ -1,5 +1,6 @@
 package org.jarb.populator.excel.mapping.importer;
 
+import org.apache.commons.lang.StringUtils;
 import org.jarb.populator.excel.entity.EntityRegistry;
 import org.jarb.populator.excel.entity.EntityTable;
 import org.jarb.populator.excel.metamodel.ClassDefinition;
@@ -7,6 +8,7 @@ import org.jarb.populator.excel.metamodel.MetaModel;
 import org.jarb.populator.excel.workbook.Row;
 import org.jarb.populator.excel.workbook.Sheet;
 import org.jarb.populator.excel.workbook.Workbook;
+import org.jarb.utils.ReflectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,19 +27,33 @@ public class SimpleEntityImporter implements EntityImporter {
     public EntityRegistry load(Workbook workbook, MetaModel metamodel) {
         EntityRegistry registry = new EntityRegistry();
         for(ClassDefinition<?> classDefinition : metamodel.getClassDefinitions()) {
-            LOGGER.info("Importing {}...", classDefinition.getTableName());
-            registry.addAll(loadEntities(workbook, classDefinition));
+            Sheet sheet = workbook.getSheet(classDefinition.getTableName());
+            LOGGER.info("Importing from '{}'...", sheet.getName());
+            registry.addAll(loadEntities(sheet, classDefinition));
         }
         return registry;
     }
     
-    private <T> EntityTable<T> loadEntities(Workbook workbook, ClassDefinition<T> classDefinition) {
+    private <T> EntityTable<T> loadEntities(Sheet sheet, ClassDefinition<T> classDefinition) {
         EntityTable<T> entities = new EntityTable<T>(classDefinition.getPersistentClass());
-        Sheet sheet = workbook.getSheet(classDefinition.getTableName());
         for (Row row : sheet.getRows()) {
+            T entity = ReflectionUtils.instantiate(determineClass(row, classDefinition));
             // TODO: Do stuff
+            entities.add(1L, entity);
         }
         return entities;
+    }
+    
+    private <T> Class<? extends T> determineClass(Row row, ClassDefinition<T> classDefinition) {
+        Class<? extends T> entityClass = classDefinition.getPersistentClass();
+        final String discriminatorColumnName = classDefinition.getDiscriminatorColumnName();
+        if(StringUtils.isNotBlank(discriminatorColumnName)) {
+            String discriminatorValue = row.getCellAt(discriminatorColumnName).getValueAsString();
+            if(StringUtils.isNotBlank(discriminatorValue)) {
+                entityClass = classDefinition.getSubClass(discriminatorValue);
+            }
+        }
+        return entityClass;
     }
 
 }
