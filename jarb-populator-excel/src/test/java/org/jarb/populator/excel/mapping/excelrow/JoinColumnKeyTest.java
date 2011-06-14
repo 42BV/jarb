@@ -22,7 +22,7 @@ import domain.entities.Customer;
 
 public class JoinColumnKeyTest extends DefaultExcelTestDataCase {
     private Key key;
-    private ClassDefinition classDefinition;;
+    private ClassDefinition<?> classDefinition;;
     private Integer testValue;
     private Workbook excel;
     private WorksheetDefinition worksheetDefinition;

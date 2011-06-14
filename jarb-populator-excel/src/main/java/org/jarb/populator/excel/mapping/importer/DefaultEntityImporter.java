@@ -23,9 +23,9 @@ public class DefaultEntityImporter implements EntityImporter {
      */
     @Override
     public EntityRegistry load(Workbook workbook, MetaModel metamodel) {
-        List<ClassDefinition> classDefinitions = new ArrayList<ClassDefinition>(metamodel.getClassDefinitions());
+        List<ClassDefinition<?>> classDefinitions = new ArrayList<ClassDefinition<?>>(metamodel.getClassDefinitions());
         try {
-            Map<ClassDefinition, Map<Integer, ExcelRow>> objectMap = ExcelImporter.parseExcel(workbook, classDefinitions);
+            Map<ClassDefinition<?>, Map<Integer, ExcelRow>> objectMap = ExcelImporter.parseExcel(workbook, classDefinitions);
             return ExcelRowIntegration.toRegistry(objectMap);
         } catch (Exception e) {
             throw new RuntimeException(e);

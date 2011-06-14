@@ -62,24 +62,22 @@ public class EntityRegistry {
      * @param id identifier of the entity
      * @param entity reference to the entity being stored
      */
-    public <T> void save(Class<T> entityClass, Long id, T entity) {
-        entityTable(entityClass).save(id, entity);
+    public <T> void add(Class<T> entityClass, Long id, T entity) {
+        entityTable(entityClass).add(id, entity);
     }
 
     /**
      * Store a map of entities inside this registry.
      * @param <T> type of the entities being stored
-     * @param entityClass class that the entities should be registered on
-     * @param entitiesMap references to each entity that should be stored
+     * @param entities references to each entity that should be stored
      */
-    @SuppressWarnings("unchecked")
-    public <T> void saveAll(Class<T> entityClass, Map<Long, ?> entitiesMap) {
-        EntityTable<T> entities = entityTable(entityClass);
-        for (Map.Entry<Long, ?> entityEntry : entitiesMap.entrySet()) {
-            entities.save(entityEntry.getKey(), (T) entityEntry.getValue());
+    public <T> void addAll(EntityTable<T> entities) {
+        EntityTable<T> currentEntities = entityTable(entities.getEntityClass());
+        for (Map.Entry<Long, T> entityEntry : entities.map().entrySet()) {
+            currentEntities.add(entityEntry.getKey(), (T) entityEntry.getValue());
         }
     }
-
+    
     /**
      * Remove a specific entity from our registry.
      * @param <T> type of the entity being removed
@@ -87,8 +85,8 @@ public class EntityRegistry {
      * @param id identifier of the entity
      * @return the removed entity
      */
-    public <T> T delete(Class<T> entityClass, Long id) {
-        return entityTable(entityClass).delete(id);
+    public <T> T remove(Class<T> entityClass, Long id) {
+        return entityTable(entityClass).remove(id);
     }
 
     /**
@@ -98,11 +96,11 @@ public class EntityRegistry {
      * @param ids identifiers of the entities
      * @return the removed entities
      */
-    public <T> List<T> deleteAll(Class<T> entityClass, Iterable<Long> ids) {
+    public <T> List<T> removeAll(Class<T> entityClass, Iterable<Long> ids) {
         final List<T> deletedEntities = new ArrayList<T>();
         EntityTable<T> entities = entityTable(entityClass);
         for (Long id : ids) {
-            T deletedEntity = entities.delete(id);
+            T deletedEntity = entities.remove(id);
             if (deletedEntity != null) {
                 deletedEntities.add(deletedEntity);
             }
@@ -120,7 +118,7 @@ public class EntityRegistry {
     private <T> EntityTable<T> entityTable(Class<T> entityClass) {
         EntityTable<T> entities = (EntityTable<T>) entityTables.get(entityClass);
         if (entities == null) {
-            entities = new EntityTable<T>();
+            entities = new EntityTable<T>(entityClass);
             entityTables.put(entityClass, entities);
         }
         return entities;

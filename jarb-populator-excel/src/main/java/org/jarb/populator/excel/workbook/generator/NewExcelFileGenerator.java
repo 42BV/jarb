@@ -52,10 +52,10 @@ public final class NewExcelFileGenerator {
             ClassNotFoundException, NoSuchFieldException {
         HSSFWorkbook workbook = new HSSFWorkbook();
 
-        List<ClassDefinition> classDefinitions = new ArrayList<ClassDefinition>(metamodel.getClassDefinitions());
+        List<ClassDefinition<?>> classDefinitions = new ArrayList<ClassDefinition<?>>(metamodel.getClassDefinitions());
         Collections.sort(classDefinitions, new ClassDefinitionNameComparator());
 
-        for (ClassDefinition classDefinition : classDefinitions) {
+        for (ClassDefinition<?> classDefinition : classDefinitions) {
             BasicExcelFileGenerator.createTable(classDefinition, workbook);
         }
         BasicExcelFileGenerator.writeFile(workbook, outputStream);

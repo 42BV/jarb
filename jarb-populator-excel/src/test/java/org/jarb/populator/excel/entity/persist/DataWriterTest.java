@@ -37,11 +37,11 @@ public class DataWriterTest extends DefaultExcelTestDataCase {
     private List<Object> connectionInstances;
     private Set<Object> actualConnectionInstanceClassNames;
     private Set<Object> expectedConnectionInstanceClassNames;
-    private Map<ClassDefinition, Map<Integer, ExcelRow>> parseExcelMap;
+    private Map<ClassDefinition<?>, Map<Integer, ExcelRow>> parseExcelMap;
     private Workbook excel;
-    private ClassDefinition customer;
-    private ClassDefinition project;
-    private ClassDefinition sla;
+    private ClassDefinition<?> customer;
+    private ClassDefinition<?> project;
+    private ClassDefinition<?> sla;
     private Metamodel metamodel;
     private EntityType<?> customerEntity;
     private EntityType<?> projectEntity;
@@ -71,7 +71,7 @@ public class DataWriterTest extends DefaultExcelTestDataCase {
     @Test
     public void testCreateConnectionInstanceSet() throws InstantiationException, IllegalAccessException, SecurityException, NoSuchFieldException,
             ClassNotFoundException {
-        List<ClassDefinition> classDefinitionList = new ArrayList<ClassDefinition>();
+        List<ClassDefinition<?>> classDefinitionList = new ArrayList<ClassDefinition<?>>();
         customer = ClassDefinitionsGenerator.createSingleClassDefinitionFromMetamodel(getEntityManagerFactory(), customerEntity, false);
         project = ClassDefinitionsGenerator.createSingleClassDefinitionFromMetamodel(getEntityManagerFactory(), projectEntity, false);
         sla = ClassDefinitionsGenerator.createSingleClassDefinitionFromMetamodel(getEntityManagerFactory(), slaEntity, false);
@@ -96,7 +96,7 @@ public class DataWriterTest extends DefaultExcelTestDataCase {
     @Test
     public void testSaveEntity() throws InstantiationException, IllegalAccessException, SecurityException, NoSuchFieldException, ClassNotFoundException,
             InvalidFormatException, IOException {
-        List<ClassDefinition> classDefinitionList = new ArrayList<ClassDefinition>();
+        List<ClassDefinition<?>> classDefinitionList = new ArrayList<ClassDefinition<?>>();
 
         customer = ClassDefinitionsGenerator.createSingleClassDefinitionFromMetamodel(getEntityManagerFactory(), customerEntity, false);
         project = ClassDefinitionsGenerator.createSingleClassDefinitionFromMetamodel(getEntityManagerFactory(), projectEntity, false);
@@ -115,14 +115,14 @@ public class DataWriterTest extends DefaultExcelTestDataCase {
     @Test
     public void testEntityReferencing() throws InstantiationException, ClassNotFoundException, IllegalAccessException, NoSuchFieldException,
             InvalidFormatException, IOException {
-        List<ClassDefinition> classDefinitionList = new ArrayList<ClassDefinition>();
+        List<ClassDefinition<?>> classDefinitionList = new ArrayList<ClassDefinition<?>>();
         excel = new PoiExcelParser().parse(new FileInputStream("src/test/resources/ExcelEmployeesVehicles.xls"));
 
         EntityType<?> employeeEntity = ClassDefinitionsGenerator.getEntityFromMetamodel(Employee.class, metamodel);
         EntityType<?> vehicleEntity = ClassDefinitionsGenerator.getEntityFromMetamodel(CompanyVehicle.class, metamodel);
 
-        ClassDefinition employee = ClassDefinitionsGenerator.createSingleClassDefinitionFromMetamodel(getEntityManagerFactory(), employeeEntity, false);
-        ClassDefinition vehicle = ClassDefinitionsGenerator.createSingleClassDefinitionFromMetamodel(getEntityManagerFactory(), vehicleEntity, true);
+        ClassDefinition<?> employee = ClassDefinitionsGenerator.createSingleClassDefinitionFromMetamodel(getEntityManagerFactory(), employeeEntity, false);
+        ClassDefinition<?> vehicle = ClassDefinitionsGenerator.createSingleClassDefinitionFromMetamodel(getEntityManagerFactory(), vehicleEntity, true);
         //  project = ClassDefinitionsGenerator.createSingleClassDefinitionFromMetamodel(entityManagerFactory, projectEntity, true);
 
         classDefinitionList.add(employee);

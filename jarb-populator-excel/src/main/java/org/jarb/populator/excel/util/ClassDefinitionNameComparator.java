@@ -11,7 +11,7 @@ import org.jarb.populator.excel.metamodel.ClassDefinition;
  * @author Sander Benschop
  *
  */
-public final class ClassDefinitionNameComparator implements Comparator<ClassDefinition>, Serializable {
+public final class ClassDefinitionNameComparator implements Comparator<ClassDefinition<?>>, Serializable {
 
     private static final long serialVersionUID = -8304887998371258709L;
 
@@ -22,7 +22,7 @@ public final class ClassDefinitionNameComparator implements Comparator<ClassDefi
      * @return Negative integer if classDefinition2 > classDefinition1, positive integer if classDefinition1 > classDefinition2 and 0 if equal
      */
     @Override
-    public int compare(ClassDefinition left, ClassDefinition right) {
+    public int compare(ClassDefinition<?> left, ClassDefinition<?> right) {
         return left.getTableName().compareTo(right.getTableName());
     }
 }

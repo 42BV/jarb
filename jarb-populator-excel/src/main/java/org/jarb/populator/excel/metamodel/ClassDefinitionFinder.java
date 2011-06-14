@@ -20,8 +20,8 @@ public final class ClassDefinitionFinder {
      * @param toFind Persistent class to look for in classDefinitions set
      * @return Found ClassDefinition
      */
-    public static ClassDefinition findClassDefinitionByPersistentClass(Set<ClassDefinition> classDefinitions, Class<?> toFind) {
-        for (ClassDefinition classDefinition : classDefinitions) {
+    public static ClassDefinition<?> findClassDefinitionByPersistentClass(Set<ClassDefinition<?>> classDefinitions, Class<?> toFind) {
+        for (ClassDefinition<?> classDefinition : classDefinitions) {
             if (classDefinition.getPersistentClass() == toFind) {
                 return classDefinition;
             }

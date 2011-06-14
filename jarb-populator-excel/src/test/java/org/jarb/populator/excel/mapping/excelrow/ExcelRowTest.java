@@ -27,7 +27,7 @@ public class ExcelRowTest extends DefaultExcelTestDataCase {
     private Workbook excel;
     private ExcelRow excelRow;
     private Customer createdInstance;
-    private ClassDefinition classDefinition;
+    private ClassDefinition<?> classDefinition;
     private Class<?> persistentClass;
     private int retrievenKeyValue;
     private WorksheetDefinition worksheetDefinition;

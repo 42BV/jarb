@@ -41,7 +41,7 @@ public final class ClassDefinitionsGenerator {
      * @throws InstantiationException Thrown when function is used on a class that cannot be instantiated (abstract or interface)
      * @throws IllegalAccessException Thrown when function does not have access to the definition of the specified class, field, method or constructor 
      */
-    public static List<ClassDefinition> createClassDefinitionsFromMetamodel(EntityManagerFactory entityManagerFactory) throws ClassNotFoundException,
+    public static List<ClassDefinition<?>> createClassDefinitionsFromMetamodel(EntityManagerFactory entityManagerFactory) throws ClassNotFoundException,
             InstantiationException, IllegalAccessException {
         Metamodel metamodel = entityManagerFactory.getMetamodel();
         Set<EntityType<?>> entities = metamodel.getEntities();
@@ -58,11 +58,11 @@ public final class ClassDefinitionsGenerator {
      * @throws InstantiationException Thrown when function is used on a class that cannot be instantiated (abstract or interface)
      * @throws IllegalAccessException Thrown when function does not have access to the definition of the specified class, field, method or constructor 
      */
-    private static List<ClassDefinition> createClassDefinitionList(EntityManagerFactory entityManagerFactory, Set<EntityType<?>> entities)
+    private static List<ClassDefinition<?>> createClassDefinitionList(EntityManagerFactory entityManagerFactory, Set<EntityType<?>> entities)
             throws InstantiationException, ClassNotFoundException, IllegalAccessException {
-        List<ClassDefinition> classDefinitionList = new ArrayList<ClassDefinition>();
+        List<ClassDefinition<?>> classDefinitionList = new ArrayList<ClassDefinition<?>>();
         for (EntityType<?> entity : entities) {
-            ClassDefinition classDefinition = createSingleClassDefinitionFromMetamodel(entityManagerFactory, entity, true);
+            ClassDefinition<?> classDefinition = createSingleClassDefinitionFromMetamodel(entityManagerFactory, entity, true);
             if (classDefinition != null) {
                 classDefinitionList.add(classDefinition);
             }
@@ -82,7 +82,7 @@ public final class ClassDefinitionsGenerator {
      * @throws InstantiationException Thrown when function is used on a class that cannot be instantiated (abstract or interface)
      * @throws IllegalAccessException Thrown when function does not have access to the definition of the specified class, field, method or constructor 
      */
-    public static ClassDefinition createSingleClassDefinitionFromMetamodel(EntityManagerFactory entityManagerFactory, EntityType<?> entity,
+    public static ClassDefinition<?> createSingleClassDefinitionFromMetamodel(EntityManagerFactory entityManagerFactory, EntityType<?> entity,
             boolean includeSubClasses) throws InstantiationException, ClassNotFoundException, IllegalAccessException {
         Metamodel metamodel = entityManagerFactory.getMetamodel();
 
@@ -106,9 +106,9 @@ public final class ClassDefinitionsGenerator {
      * @throws InstantiationException Thrown when function is used on a class that cannot be instantiated (abstract or interface)
      * @throws IllegalAccessException Thrown when function does not have access to the definition of the specified class, field, method or constructor 
      */
-    private static ClassDefinition createClassDefinitionFromEntity(EntityType<?> entity, Set<EntityType<?>> entities, Set<EntityType<?>> subClassEntities)
+    private static ClassDefinition<?> createClassDefinitionFromEntity(EntityType<?> entity, Set<EntityType<?>> entities, Set<EntityType<?>> subClassEntities)
             throws ClassNotFoundException, InstantiationException, IllegalAccessException {
-        ClassDefinition classDefinition = null;
+        ClassDefinition<?> classDefinition = null;
         if (entity != null) {
             Class<?> persistentClass = Class.forName(entity.getName());
             classDefinition = createBasicClassDefinition(entities, entity, persistentClass);
@@ -127,8 +127,8 @@ public final class ClassDefinitionsGenerator {
      * @param persistentClass Persistent class
      * @return ClassDefinition with a tablename and persistent class
      */
-    private static ClassDefinition createBasicClassDefinition(Set<EntityType<?>> entities, EntityType<?> entity, Class<?> persistentClass) {
-        ClassDefinition classDefinition = null;
+    private static ClassDefinition<?> createBasicClassDefinition(Set<EntityType<?>> entities, EntityType<?> entity, Class<?> persistentClass) {
+        ClassDefinition<?> classDefinition = null;
         //See if Entity has got an @Table annotation
         if (hasTableAnnotation(persistentClass)) {
             //Create new ClassDefinition, enter table name from annotation, enter persistent class.
@@ -144,8 +144,8 @@ public final class ClassDefinitionsGenerator {
      * @param persistentClass Persistent class
      * @return String with either the @Entity(name=...) value or the SimpleClassName
      */
-    private static ClassDefinition tryToGetTableNameFromEntityAnnotation(Class<?> persistentClass) {
-        ClassDefinition classDefinition;
+    private static ClassDefinition<?> tryToGetTableNameFromEntityAnnotation(Class<?> persistentClass) {
+        ClassDefinition<?> classDefinition;
         // ^^ Checks if Entity is subclass of another Entity in the model. If it is it will be implemented by superclass.
         //It could still have an @Entity name annotation, check this. Otherwise we'll take the simple class name.
         if (hasEntityNameAnnotation(persistentClass)) {
@@ -179,8 +179,8 @@ public final class ClassDefinitionsGenerator {
      * @param persistentClass Persistent class
      * @return ClassDefinition with a table name and persistent class
      */
-    private static ClassDefinition newClassDefinition(String tableName, Class<?> persistentClass) {
-        ClassDefinition classDefinition = new ClassDefinition(persistentClass);
+    private static <T> ClassDefinition<T> newClassDefinition(String tableName, Class<T> persistentClass) {
+        ClassDefinition<T> classDefinition = new ClassDefinition<T>(persistentClass);
         classDefinition.setTableName(tableName);
         return classDefinition;
     }
@@ -190,8 +190,8 @@ public final class ClassDefinitionsGenerator {
      * @param classDefinitions List of ClassDefinitions
      * @param excel Excel file needed to add WorksheetDefinitions
      */
-    public static void addWorksheetDefinitionsToClassDefinitions(Collection<ClassDefinition> classDefinitions, Workbook excel) {
-        for (ClassDefinition classDefinition : classDefinitions) {
+    public static void addWorksheetDefinitionsToClassDefinitions(Collection<ClassDefinition<?>> classDefinitions, Workbook excel) {
+        for (ClassDefinition<?> classDefinition : classDefinitions) {
             addSingleWorksheetDefinitionToClassDefinition(classDefinition, excel);
         }
     }
@@ -201,7 +201,7 @@ public final class ClassDefinitionsGenerator {
      * @param classDefinition ClassDefinition to add a WorksheetDefinition to
      * @param excel Excelfile to find the columns in.
      */
-    public static void addSingleWorksheetDefinitionToClassDefinition(ClassDefinition classDefinition, Workbook excel) {
+    public static void addSingleWorksheetDefinitionToClassDefinition(ClassDefinition<?> classDefinition, Workbook excel) {
         WorksheetDefinition worksheetDefinition = WorksheetDefinition.analyzeWorksheet(classDefinition, excel);
         classDefinition.setWorksheetDefinition(worksheetDefinition);
     }

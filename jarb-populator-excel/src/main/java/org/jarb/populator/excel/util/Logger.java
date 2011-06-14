@@ -19,8 +19,8 @@ public class Logger {
      * Logs table names, row keys and values to console.
      * @param objectModel Map with ClassDefinitions, Keys and ExcelRecords.
      */
-    public void reportExportedInstances(final Map<ClassDefinition, Map<Integer, ExcelRow>> objectModel) {
-        for (Entry<ClassDefinition, Map<Integer, ExcelRow>> tableRecords : objectModel.entrySet()) {
+    public void reportExportedInstances(final Map<ClassDefinition<?>, Map<Integer, ExcelRow>> objectModel) {
+        for (Entry<ClassDefinition<?>, Map<Integer, ExcelRow>> tableRecords : objectModel.entrySet()) {
             printTableRecords(tableRecords);
         }
     }
@@ -29,7 +29,7 @@ public class Logger {
      * Logs table records.
      * @param tableRecords Map with Keys and ExcelRecords
      */
-    private void printTableRecords(Entry<ClassDefinition, Map<Integer, ExcelRow>> tableRecords) {
+    private void printTableRecords(Entry<ClassDefinition<?>, Map<Integer, ExcelRow>> tableRecords) {
         LOGGER.info(tableRecords.getKey().getTableName());
         for (Entry<Integer, ExcelRow> rowRecords : tableRecords.getValue().entrySet()) {
             LOGGER.info(rowRecords.getKey() + ": " + tableRecords.getValue().get(rowRecords.getKey()).toString());

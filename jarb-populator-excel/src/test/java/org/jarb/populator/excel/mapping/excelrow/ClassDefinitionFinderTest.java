@@ -29,11 +29,11 @@ public class ClassDefinitionFinderTest {
     private Class<?> foreignClass;
 
     private Workbook excel;
-    private Set<ClassDefinition> classDefinitionSet;
-    private Set<ClassDefinition> emptyClassDefinitionSet;
+    private Set<ClassDefinition<?>> classDefinitionSet;
+    private Set<ClassDefinition<?>> emptyClassDefinitionSet;
 
-    private ClassDefinition customer;
-    private ClassDefinition project;
+    private ClassDefinition<?> customer;
+    private ClassDefinition<?> project;
 
     private ClassPathXmlApplicationContext context;
     private EntityManagerFactory entityManagerFactory;
@@ -43,7 +43,7 @@ public class ClassDefinitionFinderTest {
             IllegalArgumentException, InvocationTargetException, SecurityException, NoSuchMethodException, ClassNotFoundException {
         excel = new PoiExcelParser().parse(new FileInputStream("src/test/resources/ExcelUnitTesting.xls"));
 
-        emptyClassDefinitionSet = new HashSet<ClassDefinition>();
+        emptyClassDefinitionSet = new HashSet<ClassDefinition<?>>();
 
         context = new ClassPathXmlApplicationContext("test-context.xml");
         entityManagerFactory = (EntityManagerFactory) context.getBean("entityManagerFactory");
@@ -54,7 +54,7 @@ public class ClassDefinitionFinderTest {
         EntityType<?> persistentEntity = ClassDefinitionsGenerator.getEntityFromMetamodel(domain.entities.Customer.class, metamodel);
         EntityType<?> foreignEntity = ClassDefinitionsGenerator.getEntityFromMetamodel(domain.entities.Project.class, metamodel);
 
-        classDefinitionSet = new HashSet<ClassDefinition>();
+        classDefinitionSet = new HashSet<ClassDefinition<?>>();
         customer = ClassDefinitionsGenerator.createSingleClassDefinitionFromMetamodel(entityManagerFactory, persistentEntity, false);
         customer.setWorksheetDefinition(WorksheetDefinition.analyzeWorksheet(customer, excel));
         project = ClassDefinitionsGenerator.createSingleClassDefinitionFromMetamodel(entityManagerFactory, foreignEntity, false);

@@ -39,18 +39,18 @@ public final class ExcelImporter {
      * @throws IllegalAccessException Thrown when function does not have access to the definition of the specified class, field, method or constructor 
      * @throws NoSuchFieldException Thrown when a field is not available
      */
-    public static Map<ClassDefinition, Map<Integer, ExcelRow>> parseExcel(Workbook excel, List<ClassDefinition> classDefinitions)
+    public static Map<ClassDefinition<?>, Map<Integer, ExcelRow>> parseExcel(Workbook excel, List<ClassDefinition<?>> classDefinitions)
             throws InstantiationException, IllegalAccessException, NoSuchFieldException {
-        Map<ClassDefinition, Map<Integer, ExcelRow>> objectModel = new HashMap<ClassDefinition, Map<Integer, ExcelRow>>();
+        Map<ClassDefinition<?>, Map<Integer, ExcelRow>> objectModel = new HashMap<ClassDefinition<?>, Map<Integer, ExcelRow>>();
 
-        for (ClassDefinition classDefinition : classDefinitions) {
+        for (ClassDefinition<?> classDefinition : classDefinitions) {
             LOGGER.debug("Importing " + classDefinition.getTableName());
             objectModel.put(classDefinition, parseWorksheet(excel, classDefinition));
         }
 
         // Create foreign key relations, resulting in a fully prepared instance
 
-        for (Map.Entry<ClassDefinition, Map<Integer, ExcelRow>> objectModelEntry : objectModel.entrySet()) {
+        for (Map.Entry<ClassDefinition<?>, Map<Integer, ExcelRow>> objectModelEntry : objectModel.entrySet()) {
             for (Map.Entry<Integer, ExcelRow> excelRowEntry : objectModelEntry.getValue().entrySet()) {
                 try {
                     ForeignRelationsMapper.makeForeignRelations(excelRowEntry.getValue(), objectModel);
@@ -72,7 +72,7 @@ public final class ExcelImporter {
      * @throws IllegalAccessException Thrown when function does not have access to the definition of the specified class, field, method or constructor 
      * @throws NoSuchFieldException Thrown when a field is not available
      */
-    public static Map<Integer, ExcelRow> parseWorksheet(final Workbook excel, final ClassDefinition classDefinition) throws InstantiationException,
+    public static Map<Integer, ExcelRow> parseWorksheet(final Workbook excel, final ClassDefinition<?> classDefinition) throws InstantiationException,
             IllegalAccessException, NoSuchFieldException {
         Map<Integer, ExcelRow> createdInstances = new HashMap<Integer, ExcelRow>();
 
@@ -96,7 +96,7 @@ public final class ExcelImporter {
      * @throws InstantiationException Thrown when function is used on a class that cannot be instantiated (abstract or interface)
      * @throws IllegalAccessException Thrown when function does not have access to the definition of the specified class, field, method or constructor 
      */
-    private static ExcelRow createFittingExcelRow(final Sheet sheet, final ClassDefinition classDefinition, String discriminatorColumnName, Integer rowPosition)
+    private static ExcelRow createFittingExcelRow(final Sheet sheet, final ClassDefinition<?> classDefinition, String discriminatorColumnName, Integer rowPosition)
             throws InstantiationException, IllegalAccessException {
         ExcelRow excelRow;
         if (discriminatorColumnName != null) {
@@ -138,7 +138,7 @@ public final class ExcelImporter {
      * @param rowPosition The rowPosition in the Excel file (0 based) 
      * @param excelRow An excelRow to store in the value map
      */
-    private static void putCreatedInstance(final Sheet sheet, final ClassDefinition classDefinition, Map<Integer, ExcelRow> createdInstances,
+    private static void putCreatedInstance(final Sheet sheet, final ClassDefinition<?> classDefinition, Map<Integer, ExcelRow> createdInstances,
             Integer rowPosition, ExcelRow excelRow) {
         if (classDefinition.getWorksheetDefinition().getColumnPosition(IDCOLUMNNAME) != null) {
             Integer idNumber = ((Double) sheet.getCellValueAt(rowPosition, IDCOLUMNNAME)).intValue();
@@ -162,7 +162,7 @@ public final class ExcelImporter {
      * @param excelRow The excelRecord to save the data to
      * @throws NoSuchFieldException Thrown if field cannot be found
      */
-    private static void storeExcelRecordByColumnDefinitions(final Workbook excel, final ClassDefinition classDefinition, Integer rowPosition, ExcelRow excelRow)
+    private static void storeExcelRecordByColumnDefinitions(final Workbook excel, final ClassDefinition<?> classDefinition, Integer rowPosition, ExcelRow excelRow)
             throws NoSuchFieldException {
         List<PropertyDefinition> columnDefinitions = classDefinition.getColumnDefinitions();
         for (PropertyDefinition columnDefinition : columnDefinitions) {

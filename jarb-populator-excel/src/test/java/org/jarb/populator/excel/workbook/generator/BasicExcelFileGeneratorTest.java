@@ -36,7 +36,7 @@ import org.junit.Test;
 
 public class BasicExcelFileGeneratorTest extends DefaultExcelTestDataCase {
 
-    private ClassDefinition classDefinition;
+    private ClassDefinition<?> classDefinition;
 
     @Before
     public void setUpEmptySheetGeneratorTest() throws InstantiationException, IllegalAccessException, IOException, ClassNotFoundException,

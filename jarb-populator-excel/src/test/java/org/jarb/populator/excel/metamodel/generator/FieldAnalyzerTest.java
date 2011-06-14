@@ -25,7 +25,7 @@ import org.junit.Test;
 public class FieldAnalyzerTest extends DefaultExcelTestDataCase {
 
     private Class<?> persistentClass;
-    private ClassDefinition classDefinition;
+    private ClassDefinition<?> classDefinition;
     private PropertyDefinition testNameColumn = new Column("name");
     private Workbook excel;
     private Field nameField;

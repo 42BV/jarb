@@ -22,7 +22,7 @@ public class DefaultEntityExporter implements EntityExporter {
     @Override
     public Workbook export(EntityRegistry registry, MetaModel metamodel) {
         Workbook workbook = new Workbook();
-        for (ClassDefinition classDefinition : metamodel.getClassDefinitions()) {
+        for (ClassDefinition<?> classDefinition : metamodel.getClassDefinitions()) {
             List<?> entities = registry.getAll(classDefinition.getPersistentClass()).list();
             workbook.addSheet(entitiesToSheet(entities, classDefinition));
         }
@@ -30,7 +30,7 @@ public class DefaultEntityExporter implements EntityExporter {
     }
 
     // TODO: Note that component is not yet finished
-    private Sheet entitiesToSheet(List<?> entities, ClassDefinition classDefinition) {
+    private Sheet entitiesToSheet(List<?> entities, ClassDefinition<?> classDefinition) {
         return new Sheet(classDefinition.getTableName());
     }
 

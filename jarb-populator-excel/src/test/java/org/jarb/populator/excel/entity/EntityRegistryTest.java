@@ -29,9 +29,9 @@ public class EntityRegistryTest {
     public void testGetAddRemove() {
         assertNull(registry.get(Employee.class, 1L));
         final Employee bas = new Employee();
-        registry.save(Employee.class, 1L, bas);
+        registry.add(Employee.class, 1L, bas);
         assertEquals(bas, registry.get(Employee.class, 1L));
-        assertEquals(bas, registry.delete(Employee.class, 1L));
+        assertEquals(bas, registry.remove(Employee.class, 1L));
         assertNull(registry.get(Employee.class, 1L));
     }
 
@@ -41,7 +41,7 @@ public class EntityRegistryTest {
     @Test
     public void testRemoveNonExisting() {
         assertNull(registry.get(Employee.class, 1L));
-        assertNull(registry.delete(Employee.class, 1L));
+        assertNull(registry.remove(Employee.class, 1L));
     }
 
     /**
@@ -51,8 +51,8 @@ public class EntityRegistryTest {
     public void testGetAllMultipleEntities() {
         final Employee bas = new Employee();
         final Employee jeroen = new Employee();
-        registry.save(Employee.class, 1L, bas);
-        registry.save(Employee.class, 2L, jeroen);
+        registry.add(Employee.class, 1L, bas);
+        registry.add(Employee.class, 2L, jeroen);
         List<Employee> employees = registry.getAll(Employee.class).list();
         assertEquals(Arrays.asList(bas, jeroen), employees);
     }
@@ -71,7 +71,7 @@ public class EntityRegistryTest {
     @Test
     public void testToString() {
         final Employee jeroen = new Employee();
-        registry.save(Employee.class, 42L, jeroen);
+        registry.add(Employee.class, 42L, jeroen);
         assertEquals("{class domain.entities.Employee={42=" + jeroen.toString() + "}}", registry.toString());
     }
 

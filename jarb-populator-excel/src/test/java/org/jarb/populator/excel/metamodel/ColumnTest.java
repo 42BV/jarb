@@ -22,7 +22,7 @@ import org.junit.Test;
 public class ColumnTest extends DefaultExcelTestDataCase {
 
     private Class<?> persistentClass;
-    private ClassDefinition classDefinition;
+    private ClassDefinition<?> classDefinition;
     private PropertyDefinition column = new Column("name");
     private Workbook excel;
     private Field nameField;

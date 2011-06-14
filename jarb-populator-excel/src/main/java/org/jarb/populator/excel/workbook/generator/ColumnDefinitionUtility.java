@@ -23,7 +23,7 @@ public final class ColumnDefinitionUtility {
      * @param classDefinition
      * @return Set of ColumnDefinitions that are associative tables (JoinTable)
      */
-    protected static Set<PropertyDefinition> gatherAssociativeColumnDefinitions(ClassDefinition classDefinition) {
+    protected static Set<PropertyDefinition> gatherAssociativeColumnDefinitions(ClassDefinition<?> classDefinition) {
         Set<PropertyDefinition> associativeColumnDefinitions = new HashSet<PropertyDefinition>();
         //Check for @JoinTables. Iterating over all columnDefinitions was also considered but this makes searching for cells problematic
         //if the cells are @JoinTables (which means they're not in this sheet.
@@ -41,7 +41,7 @@ public final class ColumnDefinitionUtility {
      * @param columnName Column name to search the fieldname with.
      * @return Fieldname
      */
-    protected static String getFieldName(ClassDefinition classDefinition, String columnName) {
+    protected static String getFieldName(ClassDefinition<?> classDefinition, String columnName) {
         String fieldName;
         if ("id".equals(columnName)) {
             fieldName = "id";

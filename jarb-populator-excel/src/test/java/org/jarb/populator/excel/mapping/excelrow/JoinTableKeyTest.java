@@ -22,7 +22,7 @@ import org.junit.Test;
 
 public class JoinTableKeyTest extends DefaultExcelTestDataCase {
 
-    private ClassDefinition classDefinition;
+    private ClassDefinition<?> classDefinition;
     private Workbook excel;
     private Key key;
     private Set<Integer> keyValueSet;

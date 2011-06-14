@@ -29,7 +29,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 public class StoreExcelRecordValueTest {
 
     private Class<?> persistentClass;
-    private ClassDefinition classDefinition;
+    private ClassDefinition<?> classDefinition;
     private Workbook excel;
     private ExcelRow excelRow;
     private Field projectsField;

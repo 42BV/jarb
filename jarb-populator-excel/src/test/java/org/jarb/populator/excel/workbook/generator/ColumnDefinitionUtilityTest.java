@@ -18,7 +18,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class ColumnDefinitionUtilityTest extends DefaultExcelTestDataCase {
-    private ClassDefinition classDefinition;
+    private ClassDefinition<?> classDefinition;
 
     @Before
     public void setupColumnDefinitionUtilityTest() throws SecurityException, NoSuchMethodException, IllegalArgumentException, InstantiationException,

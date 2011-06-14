@@ -71,10 +71,10 @@ public final class FilledExcelFileGenerator {
             InstantiationException, IllegalAccessException, IOException, NoSuchFieldException {
         HSSFWorkbook workbook = new HSSFWorkbook();
 
-        List<ClassDefinition> classDefinitions = ClassDefinitionsGenerator.createClassDefinitionsFromMetamodel(entityManagerFactory);
+        List<ClassDefinition<?>> classDefinitions = ClassDefinitionsGenerator.createClassDefinitionsFromMetamodel(entityManagerFactory);
         Collections.sort(classDefinitions, new ClassDefinitionNameComparator());
 
-        for (ClassDefinition classDefinition : classDefinitions) {
+        for (ClassDefinition<?> classDefinition : classDefinitions) {
             createWorkpage(entityManagerFactory, classDefinition, workbook);
         }
 
@@ -92,7 +92,7 @@ public final class FilledExcelFileGenerator {
      * @throws IllegalAccessException Thrown when function does not have access to the definition of the specified class, field, method or constructor 
      * @throws NoSuchFieldException Thrown when a field cannot be found
      */
-    private static void createWorkpage(EntityManagerFactory entityManagerFactory, ClassDefinition classDefinition, HSSFWorkbook workbook)
+    private static void createWorkpage(EntityManagerFactory entityManagerFactory, ClassDefinition<?> classDefinition, HSSFWorkbook workbook)
             throws InstantiationException, IllegalAccessException, ClassNotFoundException, NoSuchFieldException {
         Metamodel metamodel = entityManagerFactory.getMetamodel();
         PersistenceUnitUtil puUtil = entityManagerFactory.getPersistenceUnitUtil();
@@ -127,7 +127,7 @@ public final class FilledExcelFileGenerator {
      * @param databaseRecord The current database record that is being read
      * @throws NoSuchFieldException Thrown when a field cannot be found
      */
-    private static void createCellsForAllColumnsinSheet(ClassDefinition classDefinition, PersistenceUnitUtil puUtil, CellStyle dateFormatStyle, HSSFRow row,
+    private static void createCellsForAllColumnsinSheet(ClassDefinition<?> classDefinition, PersistenceUnitUtil puUtil, CellStyle dateFormatStyle, HSSFRow row,
             HSSFSheet sheet, Object databaseRecord) throws NoSuchFieldException {
         String columnName;
         String fieldName;
@@ -188,7 +188,7 @@ public final class FilledExcelFileGenerator {
      * @param columnNumber The column's horizontal position (0-based)
      * @param columnName The name of the column
      */
-    private static void createEmbeddedFieldCell(ClassDefinition classDefinition, CellStyle dateFormatStyle, HSSFRow row, String columnName, String fieldName,
+    private static void createEmbeddedFieldCell(ClassDefinition<?> classDefinition, CellStyle dateFormatStyle, HSSFRow row, String columnName, String fieldName,
             Object databaseRecord, int columnNumber) {
         String embeddedObjectName = classDefinition.getColumnDefinitionByColumnName(columnName).getEmbeddedObjectName();
         Object embeddedObject = ReflectionUtils.getFieldValue(databaseRecord, embeddedObjectName);

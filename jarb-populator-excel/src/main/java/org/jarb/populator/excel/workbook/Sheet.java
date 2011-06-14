@@ -65,9 +65,7 @@ public class Sheet implements Iterable<Row> {
         return getRowAt(0);
     }
 
-    //
     // Column
-    //
 
     /**
      * Retrieve the column name at a specific index.

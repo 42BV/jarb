@@ -27,24 +27,24 @@ import org.junit.Test;
 
 public class LoggerTest extends DefaultExcelTestDataCase {
 
-    private ClassDefinition customer;
+    private ClassDefinition<?> customer;
     private Logger logger;
     private Workbook excel;
-    private List<ClassDefinition> classDefinitions;
+    private List<ClassDefinition<?>> classDefinitions;
 
     @Before
     public void setUpLoggerTest() throws InvalidFormatException, IOException, InstantiationException, IllegalAccessException, ClassNotFoundException {
         logger = new Logger();
         excel = new PoiExcelParser().parse(new FileInputStream("src/test/resources/Excel.xls"));
 
-        classDefinitions = new ArrayList<ClassDefinition>();
+        classDefinitions = new ArrayList<ClassDefinition<?>>();
 
         Metamodel metamodel = getEntityManagerFactory().getMetamodel();
         EntityType<?> entity = ClassDefinitionsGenerator.getEntityFromMetamodel(domain.entities.Customer.class, metamodel);
 
         customer = ClassDefinitionsGenerator.createSingleClassDefinitionFromMetamodel(getEntityManagerFactory(), entity, false);
         customer.setWorksheetDefinition(WorksheetDefinition.analyzeWorksheet(customer, excel));
-        ClassDefinition sla = ClassDefinitionsGenerator.createSingleClassDefinitionFromMetamodel(getEntityManagerFactory(),
+        ClassDefinition<?> sla = ClassDefinitionsGenerator.createSingleClassDefinitionFromMetamodel(getEntityManagerFactory(),
                 metamodel.entity(domain.entities.ServiceLevelAgreement.class), false);
         sla.setWorksheetDefinition(WorksheetDefinition.analyzeWorksheet(sla, excel));
         classDefinitions.add(customer);
@@ -54,7 +54,7 @@ public class LoggerTest extends DefaultExcelTestDataCase {
     @Test
     public void testReportExportedInstances() throws InstantiationException, IllegalAccessException, SecurityException, NoSuchFieldException {
         //There's no way to check the output at this point, so we're just going to see if it doesnt generate an exception.
-        Map<ClassDefinition, Map<Integer, ExcelRow>> objectModel = ExcelImporter.parseExcel(excel, classDefinitions);
+        Map<ClassDefinition<?>, Map<Integer, ExcelRow>> objectModel = ExcelImporter.parseExcel(excel, classDefinitions);
         DataWriter.saveEntity(DataWriter.createConnectionInstanceSet(ExcelRowIntegration.toMap(objectModel)), getEntityManagerFactory());
         logger.reportExportedInstances(objectModel);
     }

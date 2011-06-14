@@ -27,7 +27,7 @@ import org.junit.Test;
 public class StoreJoinColumnTest extends DefaultExcelTestDataCase {
 
     private Class<?> persistentClass;
-    private ClassDefinition classDefinition;
+    private ClassDefinition<?> classDefinition;
     private Workbook excel;
     private ExcelRow excelRow;
     private Field customerField;

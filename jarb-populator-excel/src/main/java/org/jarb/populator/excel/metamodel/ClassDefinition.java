@@ -14,9 +14,9 @@ import org.jarb.utils.ReflectionUtils;
  * @author Sander Benschop
  * 
  */
-public class ClassDefinition {
+public class ClassDefinition<T> {
     /** The persistent class from the domain package belonging to a classDefinition. */
-    private final Class<?> persistentClass;
+    private final Class<T> persistentClass;
 
     /** A set with subclasses with their discriminator values as keys. Needed for making ExcelRecords. */
     private Map<String, Class<?>> subClasses = new HashMap<String, Class<?>>();
@@ -30,8 +30,12 @@ public class ClassDefinition {
     /** An instance of the WorksheetDefinition belonging to a classDefinition. */
     private WorksheetDefinition worksheetDefinition; // TODO: Not sure what the purpose of this is
 
-    public ClassDefinition(Class<?> persistentClass) {
+    public ClassDefinition(Class<T> persistentClass) {
         this.persistentClass = persistentClass;
+    }
+    
+    public static <T> ClassDefinition<T> forClass(Class<T> persistentClass) {
+        return new ClassDefinition<T>(persistentClass);
     }
 
     /**
@@ -48,7 +52,7 @@ public class ClassDefinition {
      * Returns the persistentClass belonging to classDefinition.
      * @return persistentClass instance from domain package
      */
-    public Class<?> getPersistentClass() {
+    public Class<T> getPersistentClass() {
         return persistentClass;
     }
 

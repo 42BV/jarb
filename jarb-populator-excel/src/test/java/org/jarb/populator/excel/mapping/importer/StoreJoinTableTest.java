@@ -30,7 +30,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 public class StoreJoinTableTest {
     private Class<?> persistentClass;
-    private ClassDefinition classDefinition;
+    private ClassDefinition<?> classDefinition;
     private Workbook excel;
     private ExcelRow excelRow;
     private Field projectsField;
@@ -59,7 +59,7 @@ public class StoreJoinTableTest {
 
         projectsField = persistentClass.getDeclaredField("projects");
 
-        classDefinition = new ClassDefinition(persistentClass);
+        classDefinition = ClassDefinition.forClass(persistentClass);
 
         Metamodel metamodel = entityManagerFactory.getMetamodel();
         EntityType<?> entity = ClassDefinitionsGenerator.getEntityFromMetamodel(domain.entities.Employee.class, metamodel);

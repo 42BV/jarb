@@ -18,6 +18,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
+import domain.entities.Department;
+import domain.entities.Employee;
+
 public class ColumnDefinitionsGeneratorTest {
 
     private EntityManagerFactory entityManagerFactory;
@@ -38,14 +41,14 @@ public class ColumnDefinitionsGeneratorTest {
     @Test
     public void testCreateColumnDefinitions() throws InstantiationException, IllegalAccessException, ClassNotFoundException, SecurityException,
             NoSuchFieldException {
-        Class<?> persistentClass = domain.entities.Department.class;
+        Class<Department> persistentClass = Department.class;
         Metamodel metamodel = entityManagerFactory.getMetamodel();
         EntityType<?> entity = metamodel.entity(persistentClass);
         Set<EntityType<?>> subClassEntities = new HashSet<EntityType<?>>();
         PropertyDefinition departmentName = new Column("departmentName");
         departmentName.setColumnName("department_name");
         departmentName.setField(persistentClass.getDeclaredField("departmentName"));
-        ClassDefinition classDefinition = new ClassDefinition(persistentClass);
+        ClassDefinition<Department> classDefinition = new ClassDefinition<Department>(persistentClass);
         classDefinition.addColumnDefinitionList(ColumnDefinitionsGenerator.createColumnDefinitions(subClassEntities, entity, persistentClass));
         assertEquals(departmentName.getField(), classDefinition.getColumnDefinitionByFieldName("departmentName").getField());
     }
@@ -53,14 +56,14 @@ public class ColumnDefinitionsGeneratorTest {
     @Test
     public void testCreateColumnDefinitionsWithEmbeddables() throws InstantiationException, IllegalAccessException, ClassNotFoundException, SecurityException,
             NoSuchFieldException {
-        Class<?> persistentClass = domain.entities.Employee.class;
+        Class<Employee> persistentClass = Employee.class;
         Metamodel metamodel = entityManagerFactory.getMetamodel();
         EntityType<?> entity = metamodel.entity(persistentClass);
         Set<EntityType<?>> subClassEntities = new HashSet<EntityType<?>>();
         PropertyDefinition buildingAddress = new Column("streetAndNumber");
         buildingAddress.setColumnName("streetAndNumber");
         buildingAddress.setField(domain.entities.Address.class.getDeclaredField("streetAndNumber"));
-        ClassDefinition classDefinition = new ClassDefinition(persistentClass);
+        ClassDefinition<Employee> classDefinition = new ClassDefinition<Employee>(persistentClass);
         classDefinition.addColumnDefinitionList(ColumnDefinitionsGenerator.createColumnDefinitions(subClassEntities, entity, persistentClass));
         assertEquals(buildingAddress.getField(), classDefinition.getColumnDefinitionByFieldName("streetAndNumber").getField());
     }

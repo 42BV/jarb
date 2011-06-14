@@ -17,8 +17,17 @@ import java.util.TreeMap;
  * @param <T> type of entities being maintained
  */
 public class EntityTable<T> implements Iterable<T> {
+    private final Class<T> entityClass;
     private TreeMap<Long, T> entitiesMap = new TreeMap<Long, T>();
+    
+    public EntityTable(Class<T> entityClass) {
+        this.entityClass = entityClass;
+    }
 
+    public Class<T> getEntityClass() {
+        return entityClass;
+    }
+    
     /**
      * Retrieve an entity based on its identifier.
      * @param id identifier of the entity
@@ -73,7 +82,7 @@ public class EntityTable<T> implements Iterable<T> {
      * @param id identifier of the entity
      * @param entity reference to the entity
      */
-    public void save(Long id, T entity) {
+    public void add(Long id, T entity) {
         entitiesMap.put(id, entity);
     }
 
@@ -82,7 +91,7 @@ public class EntityTable<T> implements Iterable<T> {
      * @param id identifier of the entity
      * @return removed entity
      */
-    public T delete(Long id) {
+    public T remove(Long id) {
         return entitiesMap.remove(id);
     }
 

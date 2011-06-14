@@ -52,7 +52,7 @@ public class AssociativeTableGeneratorTest extends DefaultExcelTestDataCase {
         Metamodel metamodel = getEntityManagerFactory().getMetamodel();
 
         EntityType<?> entity = metamodel.entity(domain.entities.Employee.class);
-        ClassDefinition classDefinition = ClassDefinitionsGenerator.createSingleClassDefinitionFromMetamodel(getEntityManagerFactory(), entity, false);
+        ClassDefinition<?> classDefinition = ClassDefinitionsGenerator.createSingleClassDefinitionFromMetamodel(getEntityManagerFactory(), entity, false);
 
         BasicExcelFileGenerator.createJoinTable(classDefinition.getColumnDefinitionByFieldName("projects"), workbook);
 

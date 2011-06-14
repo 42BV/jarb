@@ -26,7 +26,7 @@ import domain.entities.Customer;
 
 public class ClassDefinitionTest {
 
-    private ClassDefinition classDefinition;
+    private ClassDefinition<?> classDefinition;
     private PropertyDefinition columnDefinition;
     private List<PropertyDefinition> columnDefinitions;
     private String tableName;
@@ -39,7 +39,7 @@ public class ClassDefinitionTest {
 
     @Before
     public void setUpClassDefinition() throws InvalidFormatException, IOException {
-        classDefinition = new ClassDefinition(Customer.class);
+        classDefinition = ClassDefinition.forClass(Customer.class);
         columnDefinitions = new ArrayList<PropertyDefinition>();
         excel = new PoiExcelParser().parse(new FileInputStream("src/test/resources/ExcelUnitTesting.xls"));
 

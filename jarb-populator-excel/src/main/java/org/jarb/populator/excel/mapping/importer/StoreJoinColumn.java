@@ -32,7 +32,7 @@ public final class StoreJoinColumn {
      * @param rowPosition Vertical position number of the excelRecord
      * @param excelRow ExcelRow to save to.
      */
-    public static void storeValue(Workbook excel, ClassDefinition classDefinition, PropertyDefinition columnDefinition, //
+    public static void storeValue(Workbook excel, ClassDefinition<?> classDefinition, PropertyDefinition columnDefinition, //
             Integer rowPosition, ExcelRow excelRow) {
         if (columnDefinition instanceof JoinColumn) {
             JoinColumn joinColumn = (JoinColumn) columnDefinition;

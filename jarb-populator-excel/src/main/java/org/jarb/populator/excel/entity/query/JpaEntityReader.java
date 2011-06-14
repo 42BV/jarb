@@ -1,13 +1,12 @@
 package org.jarb.populator.excel.entity.query;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 
 import org.jarb.populator.excel.entity.EntityRegistry;
+import org.jarb.populator.excel.entity.EntityTable;
 import org.jarb.populator.excel.util.JpaUtils;
 
 /**
@@ -37,7 +36,7 @@ public class JpaEntityReader implements EntityReader {
     public EntityRegistry fetch(Iterable<Class<?>> entityClasses) {
         EntityRegistry registry = new EntityRegistry();
         for (Class<?> entityClass : entityClasses) {
-            registry.saveAll(entityClass, fetchEntitiesWithIdentifier(entityClass));
+            registry.addAll(fetchEntitiesWithIdentifier(entityClass));
         }
         return registry;
     }
@@ -47,12 +46,12 @@ public class JpaEntityReader implements EntityReader {
      * @param classDefinition describes the type of entity to retrieve
      * @return map of each retrieved entity
      */
-    private <T> Map<Long, T> fetchEntitiesWithIdentifier(Class<T> entityClass) {
-        Map<Long, T> entitiesMap = new HashMap<Long, T>();
+    private <T> EntityTable<T> fetchEntitiesWithIdentifier(Class<T> entityClass) {
+        EntityTable<T> entities = new EntityTable<T>(entityClass);
         for (T entity : fetchEntities(entityClass)) {
-            entitiesMap.put(JpaUtils.getIdentifierAsLong(entity, entityManagerFactory), entity);
+            entities.add(JpaUtils.getIdentifierAsLong(entity, entityManagerFactory), entity);
         }
-        return entitiesMap;
+        return entities;
     }
 
     /**

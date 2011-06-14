@@ -18,7 +18,7 @@ import org.junit.Test;
 
 public class WorksheetDefinitionTest extends DefaultExcelTestDataCase {
 
-    private ClassDefinition classDefinition;
+    private ClassDefinition<?> classDefinition;
     private WorksheetDefinition worksheetDefinition;
     private Workbook excel;
 

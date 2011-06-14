@@ -42,13 +42,13 @@ public final class ExcelFileValidator {
      */
     public static List<String> verify(Workbook workbook, MetaModel metamodel) throws InvalidFormatException, IOException, InstantiationException,
             IllegalAccessException, ClassNotFoundException, NoSuchFieldException {
-        List<ClassDefinition> classDefinitions = new ArrayList<ClassDefinition>(metamodel.getClassDefinitions());
+        List<ClassDefinition<?>> classDefinitions = new ArrayList<ClassDefinition<?>>(metamodel.getClassDefinitions());
         Collections.sort(classDefinitions, new ClassDefinitionNameComparator());
 
         List<String> verificationOutcomes = new ArrayList<String>();
         Set<String> excelSheets = new HashSet<String>();
 
-        for (ClassDefinition classDefinition : classDefinitions) {
+        for (ClassDefinition<?> classDefinition : classDefinitions) {
             Set<String> columnNames = new HashSet<String>();
             columnNames.addAll(determineColumnAndSheetsNames(workbook, verificationOutcomes, excelSheets, classDefinition));
             verificationOutcomes.addAll(ColumnValidator.validateColumnsInSheet(workbook, columnNames, classDefinition.getTableName()));
@@ -68,7 +68,7 @@ public final class ExcelFileValidator {
      * @return Set of columnNames
      */
     private static Set<String> determineColumnAndSheetsNames(Workbook excel, List<String> verificationOutcomes, Set<String> excelSheets,
-            ClassDefinition classDefinition) {
+            ClassDefinition<?> classDefinition) {
         Set<String> columnNames = new HashSet<String>();
         columnNames.add(IDCOLUMNNAME);
         for (PropertyDefinition columnDefinition : classDefinition.getColumnDefinitions()) {

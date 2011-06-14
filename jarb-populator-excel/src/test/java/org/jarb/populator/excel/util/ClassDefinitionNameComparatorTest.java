@@ -13,7 +13,7 @@ import org.junit.Test;
 
 public class ClassDefinitionNameComparatorTest extends DefaultExcelTestDataCase {
 
-    private List<ClassDefinition> classDefinitions;
+    private List<ClassDefinition<?>> classDefinitions;
 
     @Before
     public void setupTestCompare() throws SecurityException, ClassNotFoundException, NoSuchFieldException, InstantiationException, IllegalAccessException {

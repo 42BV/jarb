@@ -33,7 +33,7 @@ public final class StoreExcelRecordValue {
      * @param excelRow ExcelRow to save to.
      * @throws NoSuchFieldException Thrown when a field is not available
      */
-    public static void storeValue(Workbook excel, ClassDefinition classDefinition, PropertyDefinition columnDefinition, //
+    public static void storeValue(Workbook excel, ClassDefinition<?> classDefinition, PropertyDefinition columnDefinition, //
             Integer rowPosition, ExcelRow excelRow) throws NoSuchFieldException {
         if (columnDefinition instanceof Column) {
             StoreColumn.storeValue(excel, classDefinition, columnDefinition, rowPosition, excelRow);

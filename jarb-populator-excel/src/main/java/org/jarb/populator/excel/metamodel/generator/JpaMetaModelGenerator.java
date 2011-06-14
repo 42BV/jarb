@@ -81,7 +81,7 @@ public class JpaMetaModelGenerator implements MetaModelGenerator {
     protected MetaModel generateForTypes(Set<EntityType<?>> entityTypes) {
         MetaModel metamodel = new MetaModel();
         for (EntityType<?> entityType : entityTypes) {
-            ClassDefinition classDefinition = generateClassDefinition(entityType);
+            ClassDefinition<?> classDefinition = generateClassDefinition(entityType);
             if (classDefinition != null) {
                 metamodel.addClassDefinition(classDefinition);
             }
@@ -94,7 +94,7 @@ public class JpaMetaModelGenerator implements MetaModelGenerator {
      * @param entityType type of entity being inspected
      * @return definition of the class
      */
-    private ClassDefinition generateClassDefinition(EntityType<?> entityType) {
+    private ClassDefinition<?> generateClassDefinition(EntityType<?> entityType) {
         try {
             return ClassDefinitionsGenerator.createSingleClassDefinitionFromMetamodel(entityManagerFactory, entityType, true);
         } catch (Exception e) {

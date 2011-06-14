@@ -32,7 +32,7 @@ import domain.entities.Customer;
 public class ForeignExcelRowGrabberTest extends DefaultExcelTestDataCase {
 
     private Workbook excel;
-    private ClassDefinition classDefinition;
+    private ClassDefinition<?> classDefinition;
     private Class<?> persistentClass;
     private Map<Integer, ExcelRow> objectModel;
     private WorksheetDefinition worksheetDefinition;

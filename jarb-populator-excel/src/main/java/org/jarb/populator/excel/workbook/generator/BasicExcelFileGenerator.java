@@ -37,7 +37,7 @@ public final class BasicExcelFileGenerator {
      * @throws IllegalAccessException Thrown when function does not have access to the definition of the specified class, field, method or constructor 
      * @return Representation of an Excel worksheet
      */
-    public static HSSFSheet createTable(ClassDefinition classDefinition, HSSFWorkbook workbook) throws InstantiationException, IllegalAccessException {
+    public static HSSFSheet createTable(ClassDefinition<?> classDefinition, HSSFWorkbook workbook) throws InstantiationException, IllegalAccessException {
         HSSFSheet workpage = workbook.createSheet(classDefinition.getTableName());
         HSSFRow excelRow = workpage.createRow(0);
 

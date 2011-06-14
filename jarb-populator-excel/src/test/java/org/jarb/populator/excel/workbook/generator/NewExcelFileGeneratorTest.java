@@ -46,25 +46,25 @@ public class NewExcelFileGeneratorTest extends DefaultExcelTestDataCase {
         excelEmpty = new PoiExcelParser().parse(new FileInputStream("src/test/resources/excel/generated/ExcelEmpty.xls"));
         excelRegular = new PoiExcelParser().parse(new FileInputStream("src/test/resources/Excel.xls"));
 
-        List<ClassDefinition> classDefinitionsEmpty = ClassDefinitionsGenerator.createClassDefinitionsFromMetamodel(getEntityManagerFactory());
+        List<ClassDefinition<?>> classDefinitionsEmpty = ClassDefinitionsGenerator.createClassDefinitionsFromMetamodel(getEntityManagerFactory());
         ClassDefinitionsGenerator.addWorksheetDefinitionsToClassDefinitions(classDefinitionsEmpty, excelEmpty);
         Collections.sort(classDefinitionsEmpty, new ClassDefinitionNameComparator());
 
-        List<ClassDefinition> classDefinitionsRegular = ClassDefinitionsGenerator.createClassDefinitionsFromMetamodel(getEntityManagerFactory());
+        List<ClassDefinition<?>> classDefinitionsRegular = ClassDefinitionsGenerator.createClassDefinitionsFromMetamodel(getEntityManagerFactory());
         ClassDefinitionsGenerator.addWorksheetDefinitionsToClassDefinitions(classDefinitionsRegular, excelRegular);
         Collections.sort(classDefinitionsRegular, new ClassDefinitionNameComparator());
 
         for (int i = 0; i < classDefinitionsEmpty.size(); i++) {
-            ClassDefinition empty = classDefinitionsEmpty.get(i);
-            ClassDefinition regular = classDefinitionsRegular.get(i);
+            ClassDefinition<?> empty = classDefinitionsEmpty.get(i);
+            ClassDefinition<?> regular = classDefinitionsRegular.get(i);
             for (int a = 0; a < empty.getColumnDefinitions().size(); a++) {
                 assertEquals(empty.getColumnDefinitions().get(a).getColumnName(), (regular.getColumnDefinitions().get(a).getColumnName()));
             }
         }
 
         for (int i = 0; i < classDefinitionsRegular.size(); i++) {
-            ClassDefinition empty = classDefinitionsEmpty.get(i);
-            ClassDefinition regular = classDefinitionsRegular.get(i);
+            ClassDefinition<?> empty = classDefinitionsEmpty.get(i);
+            ClassDefinition<?> regular = classDefinitionsRegular.get(i);
             for (int a = 0; a < regular.getColumnDefinitions().size(); a++) {
                 assertEquals(empty.getColumnDefinitions().get(a).getColumnName(), (regular.getColumnDefinitions().get(a).getColumnName()));
             }
