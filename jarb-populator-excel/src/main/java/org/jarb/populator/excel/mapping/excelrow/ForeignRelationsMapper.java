@@ -5,7 +5,6 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import org.jarb.populator.excel.metamodel.ClassDefinition;
-import org.jarb.populator.excel.metamodel.ClassDefinitionFinder;
 import org.jarb.populator.excel.metamodel.ColumnDefinition;
 import org.jarb.populator.excel.metamodel.generator.SuperclassRetriever;
 import org.jarb.populator.excel.workbook.validator.FieldValidator;

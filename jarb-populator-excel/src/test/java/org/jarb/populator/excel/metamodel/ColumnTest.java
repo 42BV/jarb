@@ -20,6 +20,8 @@ import org.jarb.populator.excel.workbook.reader.PoiExcelParser;
 import org.junit.Before;
 import org.junit.Test;
 
+import domain.entities.Customer;
+
 public class ColumnTest extends DefaultExcelTestDataCase {
 
     private Class<?> persistentClass;
@@ -96,7 +98,8 @@ public class ColumnTest extends DefaultExcelTestDataCase {
 
     @Test
     public void testSetGetEmbeddedObjectName() {
-        column.setEmbeddedObjectName("address");
-        assertEquals("address", column.getEmbeddedObjectName());
+        final FieldPath fieldPath = FieldPath.forNames(Customer.class, "companyName");
+        column.setEmbeddableFieldPath(fieldPath);
+        assertEquals(fieldPath, column.getEmbeddableFieldPath());
     }
 }

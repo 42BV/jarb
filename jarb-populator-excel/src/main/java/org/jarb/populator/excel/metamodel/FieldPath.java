@@ -24,6 +24,12 @@ public final class FieldPath implements Iterable<FieldNode> {
         nodes = new LinkedList<FieldNode>();
     }
     
+    public static FieldPath singleField(Field field) {
+        FieldPath path = new FieldPath();
+        path.addField(field);
+        return path;
+    }
+    
     /**
      * Create a path of fields based on field names.
      * @param rootClass class of the root element
@@ -60,7 +66,7 @@ public final class FieldPath implements Iterable<FieldNode> {
      * @param object the object containing our field
      * @return field value of the provided object
      */
-    public Object getFieldValue(Object object) {
+    public Object getValueFor(Object object) {
         Object currentValue = object;
         for(FieldNode fieldNode : this) {
             Field field = fieldNode.getField();
@@ -68,6 +74,10 @@ public final class FieldPath implements Iterable<FieldNode> {
             currentValue = ReflectionUtils.getField(field, currentValue);
         }
         return currentValue;
+    }
+    
+    public boolean isEmpty() {
+        return nodes.isEmpty();
     }
     
     /**

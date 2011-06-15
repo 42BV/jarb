@@ -7,6 +7,7 @@ import java.util.List;
 import javax.persistence.AttributeOverride;
 
 import org.jarb.populator.excel.metamodel.ColumnDefinition;
+import org.jarb.populator.excel.metamodel.FieldPath;
 import org.springframework.util.ReflectionUtils;
 
 /**
@@ -27,15 +28,15 @@ public final class EmbeddedColumnGenerator {
      * @throws InstantiationException Thrown when function is used on a class that cannot be instantiated (abstract or interface)
      * @throws IllegalAccessException Thrown when function does not have access to the definition of the specified class, field, method or constructor 
      */
-    public static List<ColumnDefinition> createColumnDefinitionsForEmbeddedField(Field field) throws InstantiationException, IllegalAccessException {
+    public static List<ColumnDefinition> createColumnDefinitionsForEmbeddedField(Field embeddableField) throws InstantiationException, IllegalAccessException {
         List<ColumnDefinition> columnDefinitions = new ArrayList<ColumnDefinition>();
-        //This means there are embedded attributes available. Find all attributes in the embeddable class.
-        for (Field embeddedField : field.getType().getDeclaredFields()) {
-            if (!ReflectionUtils.isPublicStaticFinal(embeddedField)) {
-                ColumnDefinition columnDefinition = FieldAnalyzer.analyzeField(embeddedField);
-                columnDefinition.setEmbeddedObjectName(field.getName());
+        // This means there are embedded attributes available. Find all attributes in the embeddable class.
+        for (Field embeddedPropertyField : embeddableField.getType().getDeclaredFields()) {
+            if (!ReflectionUtils.isPublicStaticFinal(embeddedPropertyField)) {
+                ColumnDefinition columnDefinition = FieldAnalyzer.analyzeField(embeddedPropertyField);
+                columnDefinition.setEmbeddableFieldPath(FieldPath.singleField(embeddableField));
                 columnDefinition.setEmbeddedAttribute(true);
-                overrideAttributes(field, columnDefinition, embeddedField);
+                overrideAttributes(embeddableField, columnDefinition, embeddedPropertyField);
                 columnDefinitions.add(columnDefinition);
             }
         }

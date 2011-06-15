@@ -10,14 +10,14 @@ import java.lang.reflect.Field;
  * 
  */
 public abstract class ColumnDefinition {
+    /** The field Object belonging to the columnDefinition. */
+    private Field field;
     /** The name of the field belonging to the columnDefinition. */
     private final String fieldName;
     /** The name of the column belonging to the columnDefinition. */
     private String columnName;
-    /** The name of the Embedded object if applicable. */
-    private String embeddedObjectName;
-    /** The field Object belonging to the columnDefinition. */
-    private Field field;
+    /** Path to the embeddable that contains this column. **/
+    private FieldPath embeddableFieldPath;
     /** True if it's an Embedded attribute, in this case the data will have to be stored into an Object inside Excelrecord. */
     private boolean embeddedAttribute;
     /** True if it's a discriminator column. */
@@ -107,20 +107,12 @@ public abstract class ColumnDefinition {
         return embeddedAttribute;
     }
 
-    /**
-     * Sets the name of the embedded object.
-     * @param embeddedObjectName Name of the embedded object
-     */
-    public void setEmbeddedObjectName(String embeddedObjectName) {
-        this.embeddedObjectName = embeddedObjectName;
+    public FieldPath getEmbeddableFieldPath() {
+        return embeddableFieldPath;
     }
-
-    /**
-     * Returns the name of the embedded object.
-     * @return Name of embedded object
-     */
-    public String getEmbeddedObjectName() {
-        return embeddedObjectName;
+    
+    public void setEmbeddableFieldPath(FieldPath embeddableFieldPath) {
+        this.embeddableFieldPath = embeddableFieldPath;
     }
 
     /** Set to true if the column is a discriminator column.

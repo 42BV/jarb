@@ -8,6 +8,7 @@ import java.util.List;
 
 import org.jarb.populator.excel.metamodel.Column;
 import org.jarb.populator.excel.metamodel.ColumnDefinition;
+import org.jarb.populator.excel.metamodel.FieldPath;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -30,12 +31,12 @@ public class EmbeddedColumnGeneratorTest {
         ColumnDefinition buildingAddress = new Column("building_address");
         buildingAddress.setColumnName("building_address");
         buildingAddress.setEmbeddedAttribute(true);
-        buildingAddress.setEmbeddedObjectName("address");
+        buildingAddress.setEmbeddableFieldPath(FieldPath.forNames(persistentClass, "address"));
 
         ColumnDefinition cityName = new Column("city_name");
         cityName.setColumnName("city_name");
         cityName.setEmbeddedAttribute(true);
-        cityName.setEmbeddedObjectName("address");
+        cityName.setEmbeddableFieldPath(FieldPath.forNames(persistentClass, "address"));
 
         List<ColumnDefinition> generated = EmbeddedColumnGenerator.createColumnDefinitionsForEmbeddedField(persistentClass.getDeclaredField("address"));
 

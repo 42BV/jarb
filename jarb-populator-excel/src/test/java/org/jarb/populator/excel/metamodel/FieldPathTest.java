@@ -22,7 +22,7 @@ public class FieldPathTest {
         street.name = "Teststreet 45";
         address.street = street;
         person.address = address;
-        assertEquals("Teststreet 45", fieldPath.getFieldValue(person));
+        assertEquals("Teststreet 45", fieldPath.getValueFor(person));
     }
     
     @Test

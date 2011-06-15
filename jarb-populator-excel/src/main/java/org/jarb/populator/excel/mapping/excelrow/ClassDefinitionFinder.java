@@ -1,6 +1,8 @@
-package org.jarb.populator.excel.metamodel;
+package org.jarb.populator.excel.mapping.excelrow;
 
 import java.util.Set;
+
+import org.jarb.populator.excel.metamodel.ClassDefinition;
 
 
 /**
