@@ -3,7 +3,6 @@ package org.jarb.populator.excel.workbook.generator;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -19,9 +18,8 @@ import org.apache.poi.ss.usermodel.CellStyle;
 import org.hibernate.proxy.HibernateProxy;
 import org.jarb.populator.excel.entity.query.DataReader;
 import org.jarb.populator.excel.metamodel.ClassDefinition;
-import org.jarb.populator.excel.metamodel.ClassDefinitionNameComparator;
 import org.jarb.populator.excel.metamodel.ColumnDefinition;
-import org.jarb.populator.excel.metamodel.generator.ClassDefinitionsGenerator;
+import org.jarb.populator.excel.metamodel.MetaModel;
 import org.jarb.populator.excel.metamodel.generator.SubclassRetriever;
 import org.jarb.populator.excel.workbook.validator.FieldValidator;
 import org.jarb.utils.ReflectionUtils;
@@ -50,9 +48,9 @@ public final class FilledExcelFileGenerator {
      * @throws IOException Thrown when an I/O error occurs
      * @throws NoSuchFieldException Thrown when a field cannot be found
      */
-    public static void createFilledExcelFile(String excelFileDestination, EntityManagerFactory entityManagerFactory) throws ClassNotFoundException,
+    public static void createFilledExcelFile(String excelFileDestination, MetaModel metamodel, EntityManagerFactory entityManagerFactory) throws ClassNotFoundException,
             InstantiationException, IllegalAccessException, IOException, NoSuchFieldException {
-        createFilledExcelFile(new FileOutputStream(excelFileDestination), entityManagerFactory);
+        createFilledExcelFile(new FileOutputStream(excelFileDestination), metamodel, entityManagerFactory);
     }
 
     /**
@@ -67,17 +65,12 @@ public final class FilledExcelFileGenerator {
      * @throws IOException Thrown when an I/O error occurs
      * @throws NoSuchFieldException Thrown when a field cannot be found
      */
-    public static void createFilledExcelFile(OutputStream outputStream, EntityManagerFactory entityManagerFactory) throws ClassNotFoundException,
+    public static void createFilledExcelFile(OutputStream outputStream, MetaModel metamodel, EntityManagerFactory entityManagerFactory) throws ClassNotFoundException,
             InstantiationException, IllegalAccessException, IOException, NoSuchFieldException {
         HSSFWorkbook workbook = new HSSFWorkbook();
-
-        List<ClassDefinition<?>> classDefinitions = ClassDefinitionsGenerator.createClassDefinitionsFromMetamodel(entityManagerFactory);
-        Collections.sort(classDefinitions, new ClassDefinitionNameComparator());
-
-        for (ClassDefinition<?> classDefinition : classDefinitions) {
+        for (ClassDefinition<?> classDefinition : metamodel.getClassDefinitions()) {
             createWorkpage(entityManagerFactory, classDefinition, workbook);
         }
-
         BasicExcelFileGenerator.writeFile(workbook, outputStream);
     }
 

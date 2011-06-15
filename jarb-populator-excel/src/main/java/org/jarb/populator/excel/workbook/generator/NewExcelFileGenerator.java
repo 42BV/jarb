@@ -3,13 +3,9 @@ package org.jarb.populator.excel.workbook.generator;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.jarb.populator.excel.metamodel.ClassDefinition;
-import org.jarb.populator.excel.metamodel.ClassDefinitionNameComparator;
 import org.jarb.populator.excel.metamodel.MetaModel;
 
 /**
@@ -51,11 +47,7 @@ public final class NewExcelFileGenerator {
     public static void createEmptyXLS(OutputStream outputStream, MetaModel metamodel) throws InstantiationException, IllegalAccessException, IOException,
             ClassNotFoundException, NoSuchFieldException {
         HSSFWorkbook workbook = new HSSFWorkbook();
-
-        List<ClassDefinition<?>> classDefinitions = new ArrayList<ClassDefinition<?>>(metamodel.getClassDefinitions());
-        Collections.sort(classDefinitions, new ClassDefinitionNameComparator());
-
-        for (ClassDefinition<?> classDefinition : classDefinitions) {
+        for (ClassDefinition<?> classDefinition : metamodel.getClassDefinitions()) {
             BasicExcelFileGenerator.createTable(classDefinition, workbook);
         }
         BasicExcelFileGenerator.writeFile(workbook, outputStream);

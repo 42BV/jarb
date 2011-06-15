@@ -28,6 +28,6 @@ public class FilledExcelFileGeneratorTest extends DefaultExcelTestDataCase {
     public void testCreateFilledExcelFile() throws ClassNotFoundException, InstantiationException, IllegalAccessException, IOException, NoSuchFieldException,
             InvalidFormatException {
         excelTestData.persistWorkbook("src/test/resources/Excel.xls");
-        FilledExcelFileGenerator.createFilledExcelFile("src/test/resources/excel/generated/databaseunittest.xls", getEntityManagerFactory());
+        FilledExcelFileGenerator.createFilledExcelFile("src/test/resources/excel/generated/databaseunittest.xls", generateMetamodel(), getEntityManagerFactory());
     }
 }

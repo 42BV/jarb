@@ -2,17 +2,15 @@ package org.jarb.populator.excel.workbook.validator;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.jarb.populator.excel.metamodel.ClassDefinition;
-import org.jarb.populator.excel.metamodel.ClassDefinitionNameComparator;
+import org.jarb.populator.excel.metamodel.ColumnDefinition;
 import org.jarb.populator.excel.metamodel.JoinTable;
 import org.jarb.populator.excel.metamodel.MetaModel;
-import org.jarb.populator.excel.metamodel.ColumnDefinition;
 import org.jarb.populator.excel.workbook.Workbook;
 
 /**
@@ -42,18 +40,13 @@ public final class ExcelFileValidator {
      */
     public static List<String> verify(Workbook workbook, MetaModel metamodel) throws InvalidFormatException, IOException, InstantiationException,
             IllegalAccessException, ClassNotFoundException, NoSuchFieldException {
-        List<ClassDefinition<?>> classDefinitions = new ArrayList<ClassDefinition<?>>(metamodel.getClassDefinitions());
-        Collections.sort(classDefinitions, new ClassDefinitionNameComparator());
-
         List<String> verificationOutcomes = new ArrayList<String>();
         Set<String> excelSheets = new HashSet<String>();
-
-        for (ClassDefinition<?> classDefinition : classDefinitions) {
+        for (ClassDefinition<?> classDefinition : metamodel.getClassDefinitions()) {
             Set<String> columnNames = new HashSet<String>();
             columnNames.addAll(determineColumnAndSheetsNames(workbook, verificationOutcomes, excelSheets, classDefinition));
             verificationOutcomes.addAll(ColumnValidator.validateColumnsInSheet(workbook, columnNames, classDefinition.getTableName()));
         }
-
         verificationOutcomes.addAll(SheetValidator.checkSheetAvailability(workbook, excelSheets));
         return verificationOutcomes;
     }

@@ -3,8 +3,8 @@ package org.jarb.populator.excel.metamodel;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 /**
  * Describes the entities in our context.
@@ -12,7 +12,7 @@ import java.util.Set;
  * @since 10-05-2011
  */
 public class MetaModel {
-    private Set<ClassDefinition<?>> classDefinitions;
+    private final SortedSet<ClassDefinition<?>> classDefinitions;
     
     /**
      * Construct a new {@link MetaModel}.
@@ -27,15 +27,16 @@ public class MetaModel {
      * @param classDefinitions all class definitions
      */
     public MetaModel(Collection<ClassDefinition<?>> classDefinitions) {
-        this.classDefinitions = new HashSet<ClassDefinition<?>>(classDefinitions);
+        this.classDefinitions = new TreeSet<ClassDefinition<?>>(new ClassDefinitionNameComparator());
+        this.classDefinitions.addAll(classDefinitions);
     }
 
     /**
      * Retrieve all currently defined class definitions.
      * @return each defined class definition
      */
-    public Set<ClassDefinition<?>> getClassDefinitions() {
-        return Collections.unmodifiableSet(classDefinitions);
+    public SortedSet<ClassDefinition<?>> getClassDefinitions() {
+        return Collections.unmodifiableSortedSet(classDefinitions);
     }
 
     /**

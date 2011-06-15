@@ -113,7 +113,8 @@ public class ExcelDataManager {
      */
     public void createWorkbookWithDatabaseData(OutputStream os) {
         try {
-            FilledExcelFileGenerator.createFilledExcelFile(os, entityManagerFactory);
+            MetaModel metamodel = metamodelGenerator.generate();
+            FilledExcelFileGenerator.createFilledExcelFile(os, metamodel, entityManagerFactory);
         } catch (Exception e) {
             throw new RuntimeException(e);
         } finally {
