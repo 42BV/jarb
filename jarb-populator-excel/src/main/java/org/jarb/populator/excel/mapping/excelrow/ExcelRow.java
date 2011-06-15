@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.jarb.populator.excel.metamodel.ColumnDefinition;
+import org.jarb.utils.ReflectionUtils;
 
 /**
  * Object which represents an Excel row. Can add data to valueMap and retrieve it.
@@ -17,6 +18,10 @@ public class ExcelRow {
 
     /** ValueMap with columnDefinitions and their keys. */
     private Map<ColumnDefinition, Key> valueMap;
+    
+    public ExcelRow(Class<?> persistentClass) {
+        this(ReflectionUtils.instantiate(persistentClass));
+    }
 
     /**
      * Public constructor for ExcelRow. Creates the valueMap and sets this.createdInstance to passed ClassDefinition.

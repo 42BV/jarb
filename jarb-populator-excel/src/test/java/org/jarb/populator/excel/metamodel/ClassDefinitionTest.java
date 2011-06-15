@@ -1,7 +1,6 @@
 package org.jarb.populator.excel.metamodel;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -48,11 +47,6 @@ public class ClassDefinitionTest {
 
         metamodel = entityManagerFactory.getMetamodel();
         entity = ClassDefinitionsGenerator.getEntityFromMetamodel(domain.entities.Customer.class, metamodel);
-    }
-
-    @Test
-    public void testNewInstance() throws InstantiationException, IllegalAccessException {
-        assertTrue(classDefinition.createInstance() instanceof Customer);
     }
 
     @Test

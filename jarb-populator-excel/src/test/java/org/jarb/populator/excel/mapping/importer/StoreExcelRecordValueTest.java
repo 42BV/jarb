@@ -61,7 +61,7 @@ public class StoreExcelRecordValueTest {
 
         classDefinition = ClassDefinitionsGenerator.createSingleClassDefinitionFromMetamodel(entityManagerFactory, entity, false);
 
-        excelRow = new ExcelRow(classDefinition.createInstance());
+        excelRow = new ExcelRow(classDefinition.getPersistentClass());
 
         ColumnDefinition joinTable;
         for (Annotation annotation : projectsField.getAnnotations()) {

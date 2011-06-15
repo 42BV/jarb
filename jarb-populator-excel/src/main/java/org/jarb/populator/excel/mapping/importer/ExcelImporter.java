@@ -99,22 +99,21 @@ public final class ExcelImporter {
      */
     private static ExcelRow createFittingExcelRow(final Sheet sheet, final ClassDefinition<?> classDefinition, String discriminatorColumnName, Integer rowPosition)
             throws InstantiationException, IllegalAccessException {
-        ExcelRow excelRow;
+        Class<?> entityClass = determineEntityClass(sheet, classDefinition, discriminatorColumnName, rowPosition);
+        return new ExcelRow(ReflectionUtils.instantiate(entityClass));
+    }
+    
+    private static Class<?> determineEntityClass(final Sheet sheet, final ClassDefinition<?> classDefinition, String discriminatorColumnName, Integer rowPosition) {
+        Class<?> entityClass = classDefinition.getPersistentClass();
         if (discriminatorColumnName != null) {
             WorksheetDefinition worksheetDefinition = WorksheetDefinition.analyzeWorksheet(classDefinition, sheet.getWorkbook());
             Integer discriminatorPosition = worksheetDefinition.getColumnPosition(discriminatorColumnName);
             String discriminatorValue = getDiscriminatorValueFromExcelFile(sheet, rowPosition, discriminatorPosition);
             if (discriminatorValue != null) {
-                Class<?> subClass = classDefinition.getSubClasses().get(discriminatorValue);
-                excelRow = new ExcelRow(ReflectionUtils.instantiate(subClass));
-            } else {
-                //ClassDefinition contains a discriminator but in this case it's null, so this is the superclass. Proceed normally.
-                excelRow = new ExcelRow(classDefinition.createInstance());
+                entityClass = classDefinition.getSubClasses().get(discriminatorValue);
             }
-        } else {
-            excelRow = new ExcelRow(classDefinition.createInstance());
         }
-        return excelRow;
+        return entityClass;
     }
 
     /**

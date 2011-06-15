@@ -8,8 +8,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.jarb.utils.ReflectionUtils;
-
 /**
  * ClassDefiniton contains all the tabledata which is bound to a certain persistent class from the domain package.
  * @author Willem Eppen
@@ -31,16 +29,6 @@ public class ClassDefinition<T> {
     
     public static <T> ClassDefinition<T> forClass(Class<T> persistentClass) {
         return new ClassDefinition<T>(persistentClass);
-    }
-
-    /**
-     * Creates a new instance of a persistentClass.
-     * @return persistentClass instance of persistent class.
-     * @throws InstantiationException Thrown when function is used on a class that cannot be instantiated (abstract or interface)
-     * @throws IllegalAccessException Thrown when function does not have access to the definition of the specified class, field, method or constructor 
-     */
-    public Object createInstance() throws InstantiationException, IllegalAccessException {
-        return ReflectionUtils.instantiate(persistentClass);
     }
 
     /**
