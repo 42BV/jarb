@@ -1,8 +1,10 @@
-package org.jarb.populator.excel.metamodel;
+package org.jarb.populator.excel.mapping.importer;
 
 import java.util.HashMap;
 import java.util.Map;
 
+import org.jarb.populator.excel.metamodel.ClassDefinition;
+import org.jarb.populator.excel.metamodel.ColumnDefinition;
 import org.jarb.populator.excel.workbook.Sheet;
 import org.jarb.populator.excel.workbook.Workbook;
 import org.slf4j.Logger;
