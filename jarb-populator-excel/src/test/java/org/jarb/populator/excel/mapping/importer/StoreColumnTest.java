@@ -83,7 +83,6 @@ public class StoreColumnTest extends DefaultExcelTestDataCase {
 
         ColumnDefinition column = FieldAnalyzer.analyzeField(nameField);
         classDefinition = ClassDefinitionsGenerator.createSingleClassDefinitionFromMetamodel(getEntityManagerFactory(), entity, false);
-        classDefinition.addPropertyDefinition(column);
 
         worksheetDefinition = new WorksheetDefinition();
         worksheetDefinition = WorksheetDefinition.analyzeWorksheet(classDefinition, excel);

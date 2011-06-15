@@ -9,8 +9,8 @@ import java.util.List;
 
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.jarb.populator.excel.metamodel.ClassDefinition;
+import org.jarb.populator.excel.metamodel.ClassDefinitionNameComparator;
 import org.jarb.populator.excel.metamodel.MetaModel;
-import org.jarb.populator.excel.util.ClassDefinitionNameComparator;
 
 /**
  * Generates a new Excel file with only tablenames and columnnames in it based on the mapping in the domain package.

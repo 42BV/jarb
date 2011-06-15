@@ -58,7 +58,7 @@ public class StoreJoinTableTest {
 
         projectsField = persistentClass.getDeclaredField("projects");
 
-        classDefinition = ClassDefinition.forClass(persistentClass);
+        classDefinition = ClassDefinition.forClass(persistentClass).setTableName("projects").build();
 
         Metamodel metamodel = entityManagerFactory.getMetamodel();
         EntityType<?> entity = ClassDefinitionsGenerator.getEntityFromMetamodel(domain.entities.Employee.class, metamodel);

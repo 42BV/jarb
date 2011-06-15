@@ -1,9 +1,8 @@
-package org.jarb.populator.excel.util;
+package org.jarb.populator.excel.metamodel;
 
 import java.io.Serializable;
 import java.util.Comparator;
 
-import org.jarb.populator.excel.metamodel.ClassDefinition;
 
 /**
  * Compares two classDefinitions by name, this is used to sort lists of classDefinitions alphabetically.

@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.jarb.populator.excel.DefaultExcelTestDataCase;
 import org.jarb.populator.excel.metamodel.ClassDefinition;
+import org.jarb.populator.excel.metamodel.ClassDefinitionNameComparator;
 import org.jarb.populator.excel.metamodel.generator.ClassDefinitionsGenerator;
 import org.junit.Before;
 import org.junit.Test;

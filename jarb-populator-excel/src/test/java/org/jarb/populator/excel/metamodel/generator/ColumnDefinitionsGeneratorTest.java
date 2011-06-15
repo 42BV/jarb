@@ -48,9 +48,9 @@ public class ColumnDefinitionsGeneratorTest {
         ColumnDefinition departmentName = new Column("departmentName");
         departmentName.setColumnName("department_name");
         departmentName.setField(persistentClass.getDeclaredField("departmentName"));
-        ClassDefinition<Department> classDefinition = new ClassDefinition<Department>(persistentClass);
-        classDefinition.addPropertyDefinitionList(ColumnDefinitionsGenerator.createColumnDefinitions(subClassEntities, entity, persistentClass));
-        assertEquals(departmentName.getField(), classDefinition.getColumnDefinitionByFieldName("departmentName").getField());
+        ClassDefinition.Builder<Department> classDefinitionBuilder = ClassDefinition.forClass(Department.class).setTableName("departments");
+        classDefinitionBuilder.includeColumns(ColumnDefinitionsGenerator.createColumnDefinitions(subClassEntities, entity, persistentClass));
+        assertEquals(departmentName.getField(), classDefinitionBuilder.build().getColumnDefinitionByFieldName("departmentName").getField());
     }
 
     @Test
@@ -63,8 +63,8 @@ public class ColumnDefinitionsGeneratorTest {
         ColumnDefinition buildingAddress = new Column("streetAndNumber");
         buildingAddress.setColumnName("streetAndNumber");
         buildingAddress.setField(domain.entities.Address.class.getDeclaredField("streetAndNumber"));
-        ClassDefinition<Employee> classDefinition = new ClassDefinition<Employee>(persistentClass);
-        classDefinition.addPropertyDefinitionList(ColumnDefinitionsGenerator.createColumnDefinitions(subClassEntities, entity, persistentClass));
-        assertEquals(buildingAddress.getField(), classDefinition.getColumnDefinitionByFieldName("streetAndNumber").getField());
+        ClassDefinition.Builder<Employee> classDefinitionBuilder = ClassDefinition.forClass(Employee.class).setTableName("employees");
+        classDefinitionBuilder.includeColumns(ColumnDefinitionsGenerator.createColumnDefinitions(subClassEntities, entity, persistentClass));
+        assertEquals(buildingAddress.getField(), classDefinitionBuilder.build().getColumnDefinitionByFieldName("streetAndNumber").getField());
     }
 }

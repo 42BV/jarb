@@ -19,10 +19,10 @@ import org.apache.poi.ss.usermodel.CellStyle;
 import org.hibernate.proxy.HibernateProxy;
 import org.jarb.populator.excel.entity.query.DataReader;
 import org.jarb.populator.excel.metamodel.ClassDefinition;
+import org.jarb.populator.excel.metamodel.ClassDefinitionNameComparator;
 import org.jarb.populator.excel.metamodel.ColumnDefinition;
 import org.jarb.populator.excel.metamodel.generator.ClassDefinitionsGenerator;
 import org.jarb.populator.excel.metamodel.generator.SubclassRetriever;
-import org.jarb.populator.excel.util.ClassDefinitionNameComparator;
 import org.jarb.populator.excel.workbook.validator.FieldValidator;
 import org.jarb.utils.ReflectionUtils;
 

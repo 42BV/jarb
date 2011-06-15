@@ -110,12 +110,13 @@ public final class ClassDefinitionsGenerator {
         ClassDefinition<T> classDefinition = null;
         if (entity != null) {
             Class<T> persistentClass = (Class<T>) Class.forName(entity.getName());
-            classDefinition = createBasicClassDefinition(entities, entity, persistentClass);
-            if (classDefinition != null) {
-                classDefinition.addPropertyDefinitionList(ColumnDefinitionsGenerator.createColumnDefinitions(subClassEntities, entity, persistentClass));
+            ClassDefinition.Builder<T> classDefinitionBuilder = createBasicClassDefinition(entities, entity, persistentClass);
+            if (classDefinitionBuilder != null) {
+                classDefinitionBuilder.includeColumns(ColumnDefinitionsGenerator.createColumnDefinitions(subClassEntities, entity, persistentClass));
                 for(Map.Entry<String, Class<?>> subClassMapping : SubclassRetriever.getSubClassMapping(subClassEntities).entrySet()) {
-                    classDefinition.addSubClass(subClassMapping.getKey(), (Class<? extends T>) subClassMapping.getValue());
+                    classDefinitionBuilder.includeSubClass(subClassMapping.getKey(), (Class<? extends T>) subClassMapping.getValue());
                 }
+                classDefinition = classDefinitionBuilder.build();
             }
         }
         return classDefinition;
@@ -128,16 +129,16 @@ public final class ClassDefinitionsGenerator {
      * @param persistentClass Persistent class
      * @return ClassDefinition with a tablename and persistent class
      */
-    private static <T> ClassDefinition<T> createBasicClassDefinition(Set<EntityType<?>> entities, EntityType<T> entity, Class<T> persistentClass) {
-        ClassDefinition<T> classDefinition = null;
+    private static <T> ClassDefinition.Builder<T> createBasicClassDefinition(Set<EntityType<?>> entities, EntityType<T> entity, Class<T> persistentClass) {
+        ClassDefinition.Builder<T> classDefinitionBuilder = null;
         //See if Entity has got an @Table annotation
         if (hasTableAnnotation(persistentClass)) {
             //Create new ClassDefinition, enter table name from annotation, enter persistent class.
-            classDefinition = newClassDefinition(persistentClass.getAnnotation(Table.class).name(), persistentClass);
+            classDefinitionBuilder = newClassDefinition(persistentClass.getAnnotation(Table.class).name(), persistentClass);
         } else if (SuperclassRetriever.getSuperClassEntity(entity, entities) == null) {
-            classDefinition = tryToGetTableNameFromEntityAnnotation(persistentClass);
+            classDefinitionBuilder = tryToGetTableNameFromEntityAnnotation(persistentClass);
         }
-        return classDefinition;
+        return classDefinitionBuilder;
     }
 
     /**
@@ -145,17 +146,15 @@ public final class ClassDefinitionsGenerator {
      * @param persistentClass Persistent class
      * @return String with either the @Entity(name=...) value or the SimpleClassName
      */
-    private static <T> ClassDefinition<T> tryToGetTableNameFromEntityAnnotation(Class<T> persistentClass) {
-        ClassDefinition<T> classDefinition;
+    private static <T> ClassDefinition.Builder<T> tryToGetTableNameFromEntityAnnotation(Class<T> persistentClass) {
         // ^^ Checks if Entity is subclass of another Entity in the model. If it is it will be implemented by superclass.
         //It could still have an @Entity name annotation, check this. Otherwise we'll take the simple class name.
         if (hasEntityNameAnnotation(persistentClass)) {
-            classDefinition = newClassDefinition(persistentClass.getAnnotation(Entity.class).name(), persistentClass);
+            return newClassDefinition(persistentClass.getAnnotation(Entity.class).name(), persistentClass);
         } else {
             //Create new ClassDefinition, use persistent classname as tablename, enter persistent class.
-            classDefinition = newClassDefinition(persistentClass.getSimpleName(), persistentClass);
+            return newClassDefinition(persistentClass.getSimpleName(), persistentClass);
         }
-        return classDefinition;
     }
 
     /**
@@ -180,10 +179,10 @@ public final class ClassDefinitionsGenerator {
      * @param persistentClass Persistent class
      * @return ClassDefinition with a table name and persistent class
      */
-    private static <T> ClassDefinition<T> newClassDefinition(String tableName, Class<T> persistentClass) {
-        ClassDefinition<T> classDefinition = new ClassDefinition<T>(persistentClass);
-        classDefinition.setTableName(tableName);
-        return classDefinition;
+    private static <T> ClassDefinition.Builder<T> newClassDefinition(String tableName, Class<T> persistentClass) {
+        ClassDefinition.Builder<T> classDefinitionBuilder = ClassDefinition.forClass(persistentClass);
+        classDefinitionBuilder.setTableName(tableName);
+        return classDefinitionBuilder;
     }
 
     /**
