@@ -9,7 +9,7 @@ import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.jarb.populator.excel.metamodel.JoinTable;
-import org.jarb.populator.excel.metamodel.PropertyDefinition;
+import org.jarb.populator.excel.metamodel.ColumnDefinition;
 import org.jarb.populator.excel.workbook.validator.FieldValidator;
 import org.jarb.utils.ReflectionUtils;
 import org.slf4j.Logger;
@@ -35,10 +35,10 @@ public final class AssociativeTableGenerator {
      * @param databaseRecord Current databaserecord that is being handled
      * @throws NoSuchFieldException 
      */
-    protected static void createAssociativeTables(HSSFWorkbook workbook, PersistenceUnitUtil puUtil, Set<PropertyDefinition> associativeColumnDefinitions,
+    protected static void createAssociativeTables(HSSFWorkbook workbook, PersistenceUnitUtil puUtil, Set<ColumnDefinition> associativeColumnDefinitions,
             Object databaseRecord) throws NoSuchFieldException {
         //Process the associative tables
-        for (PropertyDefinition columnDefinition : associativeColumnDefinitions) {
+        for (ColumnDefinition columnDefinition : associativeColumnDefinitions) {
             createAssociateTableSheet(workbook, puUtil, databaseRecord, columnDefinition);
         }
     }
@@ -51,7 +51,7 @@ public final class AssociativeTableGenerator {
      * @param columnDefinition Representation of a database column
      * @throws NoSuchFieldException 
      */
-    private static void createAssociateTableSheet(HSSFWorkbook workbook, PersistenceUnitUtil puUtil, Object databaseRecord, PropertyDefinition columnDefinition)
+    private static void createAssociateTableSheet(HSSFWorkbook workbook, PersistenceUnitUtil puUtil, Object databaseRecord, ColumnDefinition columnDefinition)
             throws NoSuchFieldException {
         //The columnName is the name of the associative table. Get the proper sheet.
         HSSFSheet sheet = workbook.getSheet(columnDefinition.getColumnName());

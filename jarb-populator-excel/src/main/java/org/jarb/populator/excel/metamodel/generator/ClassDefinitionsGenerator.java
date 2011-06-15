@@ -115,7 +115,7 @@ public final class ClassDefinitionsGenerator {
             Class<T> persistentClass = (Class<T>) Class.forName(entity.getName());
             classDefinition = createBasicClassDefinition(entities, entity, persistentClass);
             if (classDefinition != null) {
-                classDefinition.addColumnDefinitionList(ColumnDefinitionsGenerator.createColumnDefinitions(subClassEntities, entity, persistentClass));
+                classDefinition.addPropertyDefinitionList(ColumnDefinitionsGenerator.createColumnDefinitions(subClassEntities, entity, persistentClass));
                 for(Map.Entry<String, Class<?>> subClassMapping : SubclassRetriever.getSubClassMapping(subClassEntities).entrySet()) {
                     classDefinition.addSubClass(subClassMapping.getKey(), (Class<? extends T>) subClassMapping.getValue());
                 }

@@ -5,7 +5,7 @@ import org.jarb.populator.excel.metamodel.ClassDefinition;
 import org.jarb.populator.excel.metamodel.Column;
 import org.jarb.populator.excel.metamodel.JoinColumn;
 import org.jarb.populator.excel.metamodel.JoinTable;
-import org.jarb.populator.excel.metamodel.PropertyDefinition;
+import org.jarb.populator.excel.metamodel.ColumnDefinition;
 import org.jarb.populator.excel.workbook.Workbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,7 +33,7 @@ public final class StoreExcelRecordValue {
      * @param excelRow ExcelRow to save to.
      * @throws NoSuchFieldException Thrown when a field is not available
      */
-    public static void storeValue(Workbook excel, ClassDefinition<?> classDefinition, PropertyDefinition columnDefinition, //
+    public static void storeValue(Workbook excel, ClassDefinition<?> classDefinition, ColumnDefinition columnDefinition, //
             Integer rowPosition, ExcelRow excelRow) throws NoSuchFieldException {
         if (columnDefinition instanceof Column) {
             StoreColumn.storeValue(excel, classDefinition, columnDefinition, rowPosition, excelRow);

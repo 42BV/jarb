@@ -1,12 +1,12 @@
 package org.jarb.populator.excel.metamodel.generator;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.metamodel.EntityType;
-import javax.persistence.metamodel.Metamodel;
 
 import org.jarb.populator.excel.metamodel.ClassDefinition;
 import org.jarb.populator.excel.metamodel.MetaModel;
@@ -19,7 +19,7 @@ import org.slf4j.LoggerFactory;
  * @since 10-05-2011
  */
 public class JpaMetaModelGenerator implements MetaModelGenerator {
-    private static final Logger logger = LoggerFactory.getLogger(JpaMetaModelGenerator.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(JpaMetaModelGenerator.class);
     private final EntityManagerFactory entityManagerFactory;
 
     public JpaMetaModelGenerator(EntityManagerFactory entityManagerFactory) {
@@ -65,10 +65,9 @@ public class JpaMetaModelGenerator implements MetaModelGenerator {
     private EntityType<?> entityType(Class<?> entityClass) {
         EntityType<?> entity = null;
         try {
-            Metamodel jpaMetamodel = entityManagerFactory.getMetamodel();
-            entity = jpaMetamodel.entity(entityClass);
+            entity = entityManagerFactory.getMetamodel().entity(entityClass);
         } catch (IllegalArgumentException e) {
-            logger.warn("Class '{}' is not in the JPA meta model, ensure it is annotated as @Entity.", entityClass.getName());
+            LOGGER.warn("Class '{}' is not in the JPA meta model, ensure it is annotated as @Entity.", entityClass.getName());
         }
         return entity;
     }
@@ -79,14 +78,14 @@ public class JpaMetaModelGenerator implements MetaModelGenerator {
      * @return meta model including a definition for each valid entity type
      */
     protected MetaModel generateForTypes(Set<EntityType<?>> entityTypes) {
-        MetaModel metamodel = new MetaModel();
+        Collection<ClassDefinition<?>> classDefinitions = new HashSet<ClassDefinition<?>>();
         for (EntityType<?> entityType : entityTypes) {
             ClassDefinition<?> classDefinition = generateClassDefinition(entityType);
             if (classDefinition != null) {
-                metamodel.addClassDefinition(classDefinition);
+                classDefinitions.add(classDefinition);
             }
         }
-        return metamodel;
+        return new MetaModel(classDefinitions);
     }
 
     /**

@@ -12,7 +12,7 @@ import org.junit.Test;
 
 public class JoinTableTest {
 
-    private PropertyDefinition joinTable = new JoinTable("projects");
+    private ColumnDefinition joinTable = new JoinTable("projects");
     private Class<?> persistentClass;
     private Field projectsField;
 

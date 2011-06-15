@@ -5,6 +5,7 @@ import org.jarb.populator.excel.entity.EntityRegistry;
 import org.jarb.populator.excel.entity.EntityTable;
 import org.jarb.populator.excel.metamodel.ClassDefinition;
 import org.jarb.populator.excel.metamodel.MetaModel;
+import org.jarb.populator.excel.metamodel.ColumnDefinition;
 import org.jarb.populator.excel.workbook.Row;
 import org.jarb.populator.excel.workbook.Sheet;
 import org.jarb.populator.excel.workbook.Workbook;
@@ -37,11 +38,17 @@ public class SimpleEntityImporter implements EntityImporter {
     private <T> EntityTable<T> loadEntities(Sheet sheet, ClassDefinition<T> classDefinition) {
         EntityTable<T> entities = new EntityTable<T>(classDefinition.getPersistentClass());
         for (Row row : sheet.getRows()) {
-            T entity = ReflectionUtils.instantiate(determineClass(row, classDefinition));
-            // TODO: Do stuff
-            entities.add(1L, entity);
+            entities.add(1L, loadEntity(row, classDefinition));
         }
         return entities;
+    }
+    
+    private <T> T loadEntity(Row row, ClassDefinition<T> classDefinition) {
+        T entity = ReflectionUtils.instantiate(determineClass(row, classDefinition));
+        for(ColumnDefinition propertyDefinition : classDefinition.getPropertyDefinitions()) {
+            
+        }
+        return entity;
     }
     
     private <T> Class<? extends T> determineClass(Row row, ClassDefinition<T> classDefinition) {

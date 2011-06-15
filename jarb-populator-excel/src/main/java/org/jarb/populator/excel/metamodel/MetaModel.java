@@ -1,5 +1,7 @@
 package org.jarb.populator.excel.metamodel;
 
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -10,7 +12,23 @@ import java.util.Set;
  * @since 10-05-2011
  */
 public class MetaModel {
-    private Set<ClassDefinition<?>> classDefinitions = new HashSet<ClassDefinition<?>>();
+    private Set<ClassDefinition<?>> classDefinitions;
+    
+    /**
+     * Construct a new {@link MetaModel}.
+     * @param classDefinitions all class definitions
+     */
+    public MetaModel(ClassDefinition<?>... classDefinitions) {
+        this(Arrays.asList(classDefinitions));
+    }
+    
+    /**
+     * Construct a new {@link MetaModel}.
+     * @param classDefinitions all class definitions
+     */
+    public MetaModel(Collection<ClassDefinition<?>> classDefinitions) {
+        this.classDefinitions = new HashSet<ClassDefinition<?>>(classDefinitions);
+    }
 
     /**
      * Retrieve all currently defined class definitions.
@@ -18,14 +36,6 @@ public class MetaModel {
      */
     public Set<ClassDefinition<?>> getClassDefinitions() {
         return Collections.unmodifiableSet(classDefinitions);
-    }
-
-    /**
-     * Include a class definition to this meta model.
-     * @param classDefinition new class definition to include
-     */
-    public void addClassDefinition(ClassDefinition<?> classDefinition) {
-        classDefinitions.add(classDefinition);
     }
 
     /**

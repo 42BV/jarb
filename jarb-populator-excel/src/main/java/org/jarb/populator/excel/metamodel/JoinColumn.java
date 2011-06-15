@@ -9,7 +9,7 @@ import java.lang.reflect.Field;
  * @author Sander Benschop
  *
  */
-public class JoinColumn extends PropertyDefinition {
+public class JoinColumn extends ColumnDefinition {
 
     public JoinColumn(String fieldName) {
         super(fieldName);

@@ -14,14 +14,14 @@ import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.jarb.populator.excel.DefaultExcelTestDataCase;
 import org.jarb.populator.excel.mapping.excelrow.ExcelRow;
 import org.jarb.populator.excel.metamodel.ClassDefinition;
-import org.jarb.populator.excel.metamodel.PropertyDefinition;
+import org.jarb.populator.excel.metamodel.ColumnDefinition;
 import org.jarb.populator.excel.metamodel.generator.ClassDefinitionsGenerator;
 import org.junit.Before;
 import org.junit.Test;
 
 public class FieldValidatorTest extends DefaultExcelTestDataCase {
 
-    private PropertyDefinition columnDefinition;
+    private ColumnDefinition columnDefinition;
     private ExcelRow excelRow;
 
     @Before
@@ -40,7 +40,7 @@ public class FieldValidatorTest extends DefaultExcelTestDataCase {
 
         ClassDefinition<?> classDefinition = ClassDefinitionsGenerator.createSingleClassDefinitionFromMetamodel(getEntityManagerFactory(), entity, true);
         excelRow = new ExcelRow(classDefinition.createInstance());
-        columnDefinition = classDefinition.getColumnDefinitionByFieldName("startDate");
+        columnDefinition = classDefinition.getPropertyDefinitionByFieldName("startDate");
         assertTrue(FieldValidator.isExistingField(columnDefinition.getFieldName(), excelRow.getCreatedInstance().getClass()));
     }
 

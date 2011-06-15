@@ -15,7 +15,7 @@ import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.jarb.populator.excel.DefaultExcelTestDataCase;
 import org.jarb.populator.excel.metamodel.ClassDefinition;
 import org.jarb.populator.excel.metamodel.Column;
-import org.jarb.populator.excel.metamodel.PropertyDefinition;
+import org.jarb.populator.excel.metamodel.ColumnDefinition;
 import org.jarb.populator.excel.metamodel.WorksheetDefinition;
 import org.jarb.populator.excel.workbook.Workbook;
 import org.jarb.populator.excel.workbook.reader.PoiExcelParser;
@@ -26,7 +26,7 @@ public class FieldAnalyzerTest extends DefaultExcelTestDataCase {
 
     private Class<?> persistentClass;
     private ClassDefinition<?> classDefinition;
-    private PropertyDefinition testNameColumn = new Column("name");
+    private ColumnDefinition testNameColumn = new Column("name");
     private Workbook excel;
     private Field nameField;
     private Field idField;

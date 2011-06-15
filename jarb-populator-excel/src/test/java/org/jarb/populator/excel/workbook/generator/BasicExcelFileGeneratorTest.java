@@ -27,7 +27,7 @@ import org.jarb.populator.excel.DefaultExcelTestDataCase;
 import org.jarb.populator.excel.metamodel.AnnotationType;
 import org.jarb.populator.excel.metamodel.ClassDefinition;
 import org.jarb.populator.excel.metamodel.JoinTable;
-import org.jarb.populator.excel.metamodel.PropertyDefinition;
+import org.jarb.populator.excel.metamodel.ColumnDefinition;
 import org.jarb.populator.excel.metamodel.generator.ClassDefinitionsGenerator;
 import org.jarb.populator.excel.workbook.Workbook;
 import org.jarb.populator.excel.workbook.reader.PoiExcelParser;
@@ -73,7 +73,7 @@ public class BasicExcelFileGeneratorTest extends DefaultExcelTestDataCase {
     @Test
     public void testCreateJoinTable() throws SecurityException, NoSuchFieldException, InstantiationException, IllegalAccessException {
         HSSFWorkbook workbook = new HSSFWorkbook();
-        PropertyDefinition joinTable = new JoinTable("projects");
+        ColumnDefinition joinTable = new JoinTable("projects");
         Class<?> persistentClass = domain.entities.Employee.class;
         Field projectsField = persistentClass.getDeclaredField("projects");
         for (Annotation annotation : projectsField.getAnnotations()) {
@@ -122,7 +122,7 @@ public class BasicExcelFileGeneratorTest extends DefaultExcelTestDataCase {
 
     @Test
     public void testFailedCastToJoinTable() {
-        for (PropertyDefinition columnDefinition : classDefinition.getColumnDefinitions()) {
+        for (ColumnDefinition columnDefinition : classDefinition.getPropertyDefinitions()) {
             if (!columnDefinition.isAssociativeTable()) {
                 HSSFWorkbook workbook = new HSSFWorkbook();
                 BasicExcelFileGenerator.createJoinTable(columnDefinition, workbook);

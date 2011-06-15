@@ -6,7 +6,7 @@ import java.util.Set;
 
 import org.jarb.populator.excel.metamodel.ClassDefinition;
 import org.jarb.populator.excel.metamodel.ClassDefinitionFinder;
-import org.jarb.populator.excel.metamodel.PropertyDefinition;
+import org.jarb.populator.excel.metamodel.ColumnDefinition;
 import org.jarb.populator.excel.metamodel.generator.SuperclassRetriever;
 import org.jarb.populator.excel.workbook.validator.FieldValidator;
 import org.jarb.utils.ReflectionUtils;
@@ -30,7 +30,7 @@ public final class ForeignRelationsMapper {
      * @throws NoSuchFieldException 
      */
     public static void makeForeignRelations(ExcelRow excelRow, Map<ClassDefinition<?>, Map<Integer, ExcelRow>> objectModel) throws NoSuchFieldException {
-        for (Entry<PropertyDefinition, Key> entry : excelRow.getValueMap().entrySet()) {
+        for (Entry<ColumnDefinition, Key> entry : excelRow.getValueMap().entrySet()) {
             Key key = entry.getValue();
 
             ClassDefinition<?> classDefinition = ClassDefinitionFinder.findClassDefinitionByPersistentClass(objectModel.keySet(), key.getForeignClass());

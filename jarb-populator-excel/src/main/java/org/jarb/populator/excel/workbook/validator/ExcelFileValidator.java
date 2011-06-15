@@ -11,7 +11,7 @@ import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.jarb.populator.excel.metamodel.ClassDefinition;
 import org.jarb.populator.excel.metamodel.JoinTable;
 import org.jarb.populator.excel.metamodel.MetaModel;
-import org.jarb.populator.excel.metamodel.PropertyDefinition;
+import org.jarb.populator.excel.metamodel.ColumnDefinition;
 import org.jarb.populator.excel.util.ClassDefinitionNameComparator;
 import org.jarb.populator.excel.workbook.Workbook;
 
@@ -71,7 +71,7 @@ public final class ExcelFileValidator {
             ClassDefinition<?> classDefinition) {
         Set<String> columnNames = new HashSet<String>();
         columnNames.add(IDCOLUMNNAME);
-        for (PropertyDefinition columnDefinition : classDefinition.getColumnDefinitions()) {
+        for (ColumnDefinition columnDefinition : classDefinition.getPropertyDefinitions()) {
             if (columnDefinition.isAssociativeTable()) {
                 Set<String> associativeColumnNames = new HashSet<String>();
                 // Check associative table

@@ -1,7 +1,7 @@
 package org.jarb.populator.excel.metamodel.generator;
 
 import org.jarb.populator.excel.metamodel.Column;
-import org.jarb.populator.excel.metamodel.PropertyDefinition;
+import org.jarb.populator.excel.metamodel.ColumnDefinition;
 
 /**
  * Creates a discriminator column. Uses default values if annotations are not present in persistent class.
@@ -19,11 +19,11 @@ public final class DiscriminatorColumnGenerator {
      * @param persistentClass Persistent class to search the discriminator values in.
      * @return ColumnDefinition with discriminator column
      */
-    public static PropertyDefinition createDiscriminatorColumnDefinition(Class<?> persistentClass) {
+    public static ColumnDefinition createDiscriminatorColumnDefinition(Class<?> persistentClass) {
         //Add a discriminator column, use the one annotated in the superclass if available.
         //Field name will be equal to column name cause this is necessary upon persisting
         String discriminatorColumnName = getDiscriminatorColumnName(persistentClass);
-        PropertyDefinition columnDefinition = new Column(discriminatorColumnName);
+        ColumnDefinition columnDefinition = new Column(discriminatorColumnName);
         columnDefinition.setColumnName(discriminatorColumnName);
         columnDefinition.setDiscriminatorColumn(true);
         return columnDefinition;

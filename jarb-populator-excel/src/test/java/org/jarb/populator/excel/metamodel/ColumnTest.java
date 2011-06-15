@@ -23,7 +23,7 @@ public class ColumnTest extends DefaultExcelTestDataCase {
 
     private Class<?> persistentClass;
     private ClassDefinition<?> classDefinition;
-    private PropertyDefinition column = new Column("name");
+    private ColumnDefinition column = new Column("name");
     private Workbook excel;
     private Field nameField;
     private String columnName;
@@ -43,7 +43,7 @@ public class ColumnTest extends DefaultExcelTestDataCase {
         EntityType<?> entity = ClassDefinitionsGenerator.getEntityFromMetamodel(domain.entities.Customer.class, metamodel);
 
         classDefinition = ClassDefinitionsGenerator.createSingleClassDefinitionFromMetamodel(getEntityManagerFactory(), entity, false);
-        classDefinition.addColumnDefinition(column);
+        classDefinition.addPropertyDefinition(column);
 
         worksheetDefinition = new WorksheetDefinition();
         worksheetDefinition = WorksheetDefinition.analyzeWorksheet(classDefinition, excel);
@@ -53,7 +53,7 @@ public class ColumnTest extends DefaultExcelTestDataCase {
 
     @Test
     public void testIsAccociativeTable() {
-        for (PropertyDefinition columnDefinition : classDefinition.getColumnDefinitions()) {
+        for (ColumnDefinition columnDefinition : classDefinition.getPropertyDefinitions()) {
             if (columnDefinition.getColumnName().equals("employees_projects")) {
                 assertEquals(true, columnDefinition.isAssociativeTable());
             } else {

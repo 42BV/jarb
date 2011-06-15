@@ -78,6 +78,6 @@ public class StoreJoinColumnTest extends DefaultExcelTestDataCase {
         classDefinition.setWorksheetDefinition(WorksheetDefinition.analyzeWorksheet(classDefinition, excel));
         excelRow = new ExcelRow(classDefinition.createInstance());
 
-        StoreJoinColumn.storeValue(excel, classDefinition, classDefinition.getColumnDefinitionByFieldName("customer"), 2, excelRow);
+        StoreJoinColumn.storeValue(excel, classDefinition, classDefinition.getPropertyDefinitionByFieldName("customer"), 2, excelRow);
     }
 }

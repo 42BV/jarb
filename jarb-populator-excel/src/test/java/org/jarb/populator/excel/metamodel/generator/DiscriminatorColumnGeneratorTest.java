@@ -6,7 +6,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
 import org.jarb.populator.excel.metamodel.Column;
-import org.jarb.populator.excel.metamodel.PropertyDefinition;
+import org.jarb.populator.excel.metamodel.ColumnDefinition;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -26,11 +26,11 @@ public class DiscriminatorColumnGeneratorTest {
     @Test
     public void testCreateDiscriminatorColumnDefinitionWithAnnotation() {
         persistentClass = domain.entities.Customer.class;
-        PropertyDefinition discriminatorColumn = new Column("type");
+        ColumnDefinition discriminatorColumn = new Column("type");
         discriminatorColumn.setDiscriminatorColumn(true);
         discriminatorColumn.setColumnName("type");
 
-        PropertyDefinition generated = DiscriminatorColumnGenerator.createDiscriminatorColumnDefinition(persistentClass);
+        ColumnDefinition generated = DiscriminatorColumnGenerator.createDiscriminatorColumnDefinition(persistentClass);
         assertEquals(discriminatorColumn.getColumnName(), generated.getColumnName());
     }
 
@@ -38,11 +38,11 @@ public class DiscriminatorColumnGeneratorTest {
     public void testCreateDiscriminatorColumnDefinitionWithoutAnnotation() {
         persistentClass = domain.entities.Workspace.class;
 
-        PropertyDefinition discriminatorColumn = new Column("dtype");
+        ColumnDefinition discriminatorColumn = new Column("dtype");
         discriminatorColumn.setDiscriminatorColumn(true);
         discriminatorColumn.setColumnName("dtype");
 
-        PropertyDefinition generated = DiscriminatorColumnGenerator.createDiscriminatorColumnDefinition(persistentClass);
+        ColumnDefinition generated = DiscriminatorColumnGenerator.createDiscriminatorColumnDefinition(persistentClass);
         assertEquals(discriminatorColumn.getColumnName(), generated.getColumnName());
     }
 

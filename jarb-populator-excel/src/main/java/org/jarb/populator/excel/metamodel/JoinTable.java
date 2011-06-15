@@ -10,7 +10,7 @@ import java.util.Arrays;
  * @author Willem Eppen
  * @author Sander Benschop
  */
-public class JoinTable extends PropertyDefinition {
+public class JoinTable extends ColumnDefinition {
 
     public JoinTable(String fieldName) {
         super(fieldName);

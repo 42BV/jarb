@@ -6,7 +6,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.jarb.populator.excel.metamodel.AnnotationType;
-import org.jarb.populator.excel.metamodel.PropertyDefinition;
+import org.jarb.populator.excel.metamodel.ColumnDefinition;
 
 /**
  * Creates a ColumnDefinition from a field.
@@ -26,7 +26,7 @@ public final class FieldAnalyzer {
      * @throws InstantiationException Thrown when function is used on a class that cannot be instantiated (abstract or interface)
      * @throws IllegalAccessException Thrown when function does not have access to the definition of the specified class, field, method or constructor 
      */
-    public static PropertyDefinition analyzeField(final Field field) throws InstantiationException, IllegalAccessException {
+    public static ColumnDefinition analyzeField(final Field field) throws InstantiationException, IllegalAccessException {
         if (field.getAnnotation(javax.persistence.GeneratedValue.class) != null) {
             return null;
         }
@@ -68,16 +68,16 @@ public final class FieldAnalyzer {
      * @throws InstantiationException Thrown when function is used on a class that cannot be instantiated (abstract or interface)
      * @throws IllegalAccessException Thrown when function does not have access to the definition of the specified class, field, method or constructor 
      */
-    private static PropertyDefinition prepareColumnDefinition(Field field, Annotation annotation, AnnotationType annotationType) {
-        PropertyDefinition columnDefinition = annotationType.createColumnDefinition(field.getName());
+    private static ColumnDefinition prepareColumnDefinition(Field field, Annotation annotation, AnnotationType annotationType) {
+        ColumnDefinition columnDefinition = annotationType.createColumnDefinition(field.getName());
         columnDefinition.storeAnnotation(field, annotation);
         columnDefinition.setField(field);
         return columnDefinition;
     }
 
-    private static PropertyDefinition prepareColumnDefinition(Field field) {
+    private static ColumnDefinition prepareColumnDefinition(Field field) {
         AnnotationType annotationType = AnnotationType.COLUMN;
-        PropertyDefinition columnDefinition = annotationType.createColumnDefinition(field.getName());
+        ColumnDefinition columnDefinition = annotationType.createColumnDefinition(field.getName());
         columnDefinition.setColumnName(field.getName());
         columnDefinition.setField(field);
         return columnDefinition;

@@ -21,7 +21,7 @@ import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.jarb.populator.excel.DefaultExcelTestDataCase;
 import org.jarb.populator.excel.mapping.excelrow.ExcelRow;
 import org.jarb.populator.excel.metamodel.ClassDefinition;
-import org.jarb.populator.excel.metamodel.PropertyDefinition;
+import org.jarb.populator.excel.metamodel.ColumnDefinition;
 import org.jarb.populator.excel.metamodel.WorksheetDefinition;
 import org.jarb.populator.excel.metamodel.generator.ClassDefinitionsGenerator;
 import org.jarb.populator.excel.workbook.Workbook;
@@ -95,7 +95,7 @@ public class DefaultExcelImporterTest extends DefaultExcelTestDataCase {
         classDefinition.setWorksheetDefinition(WorksheetDefinition.analyzeWorksheet(classDefinition, excel));
         parseWorksheetMap = ExcelImporter.parseWorksheet(excel, classDefinition);
         for (Entry<Integer, ExcelRow> entry : parseWorksheetMap.entrySet()) {
-            for (PropertyDefinition columnDefinition : entry.getValue().getValueMap().keySet()) {
+            for (ColumnDefinition columnDefinition : entry.getValue().getValueMap().keySet()) {
                 assertFalse(columnDefinition.isDiscriminatorColumn());
             }
         }

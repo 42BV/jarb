@@ -7,7 +7,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
 import org.jarb.populator.excel.metamodel.Column;
-import org.jarb.populator.excel.metamodel.PropertyDefinition;
+import org.jarb.populator.excel.metamodel.ColumnDefinition;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -27,17 +27,17 @@ public class EmbeddedColumnGeneratorTest {
     public void testCreateColumnDefinitionsForEmbeddedField() throws SecurityException, NoSuchFieldException, InstantiationException, IllegalAccessException {
         Class<?> persistentClass = domain.entities.Employee.class;
 
-        PropertyDefinition buildingAddress = new Column("building_address");
+        ColumnDefinition buildingAddress = new Column("building_address");
         buildingAddress.setColumnName("building_address");
         buildingAddress.setEmbeddedAttribute(true);
         buildingAddress.setEmbeddedObjectName("address");
 
-        PropertyDefinition cityName = new Column("city_name");
+        ColumnDefinition cityName = new Column("city_name");
         cityName.setColumnName("city_name");
         cityName.setEmbeddedAttribute(true);
         cityName.setEmbeddedObjectName("address");
 
-        List<PropertyDefinition> generated = EmbeddedColumnGenerator.createColumnDefinitionsForEmbeddedField(persistentClass.getDeclaredField("address"));
+        List<ColumnDefinition> generated = EmbeddedColumnGenerator.createColumnDefinitionsForEmbeddedField(persistentClass.getDeclaredField("address"));
 
         assertEquals(buildingAddress.getColumnName(), generated.get(0).getColumnName());
         assertEquals(cityName.getColumnName(), generated.get(1).getColumnName());

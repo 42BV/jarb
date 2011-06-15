@@ -2,7 +2,7 @@ package org.jarb.populator.excel.metamodel.generator;
 
 import java.lang.reflect.Field;
 
-import org.jarb.populator.excel.metamodel.PropertyDefinition;
+import org.jarb.populator.excel.metamodel.ColumnDefinition;
 
 /**
  * Creates columnDefinitions for regular fields.
@@ -22,8 +22,8 @@ public final class RegularColumnGenerator {
      * @throws InstantiationException Thrown when function is used on a class that cannot be instantiated (abstract or interface)
      * @throws IllegalAccessException Thrown when function does not have access to the definition of the specified class, field, method or constructor 
      */
-    public static PropertyDefinition createColumnDefinitionForRegularField(Field field) throws InstantiationException, IllegalAccessException {
-        PropertyDefinition columnDefinition = FieldAnalyzer.analyzeField(field);
+    public static ColumnDefinition createColumnDefinitionForRegularField(Field field) throws InstantiationException, IllegalAccessException {
+        ColumnDefinition columnDefinition = FieldAnalyzer.analyzeField(field);
         if (columnDefinition != null) {
             //Is only null if the field is a generated value.
             columnDefinition.setEmbeddedAttribute(false);

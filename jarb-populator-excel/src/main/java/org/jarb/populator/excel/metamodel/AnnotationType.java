@@ -49,9 +49,9 @@ public enum AnnotationType {
      * Function to return a new instance of the columnDefinition containing an annotation.
      * @return A new instance of the columnDefinition with a columnName, field and fieldName
      */
-    public PropertyDefinition createColumnDefinition(String fieldName) {
+    public ColumnDefinition createColumnDefinition(String fieldName) {
         try {
-            return (PropertyDefinition) this.columnDefinition.getConstructor(String.class).newInstance(fieldName);
+            return (ColumnDefinition) this.columnDefinition.getConstructor(String.class).newInstance(fieldName);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

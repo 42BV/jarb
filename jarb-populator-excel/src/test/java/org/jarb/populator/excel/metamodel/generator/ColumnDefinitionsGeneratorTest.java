@@ -13,7 +13,7 @@ import javax.persistence.metamodel.Metamodel;
 
 import org.jarb.populator.excel.metamodel.ClassDefinition;
 import org.jarb.populator.excel.metamodel.Column;
-import org.jarb.populator.excel.metamodel.PropertyDefinition;
+import org.jarb.populator.excel.metamodel.ColumnDefinition;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -45,12 +45,12 @@ public class ColumnDefinitionsGeneratorTest {
         Metamodel metamodel = entityManagerFactory.getMetamodel();
         EntityType<?> entity = metamodel.entity(persistentClass);
         Set<EntityType<?>> subClassEntities = new HashSet<EntityType<?>>();
-        PropertyDefinition departmentName = new Column("departmentName");
+        ColumnDefinition departmentName = new Column("departmentName");
         departmentName.setColumnName("department_name");
         departmentName.setField(persistentClass.getDeclaredField("departmentName"));
         ClassDefinition<Department> classDefinition = new ClassDefinition<Department>(persistentClass);
-        classDefinition.addColumnDefinitionList(ColumnDefinitionsGenerator.createColumnDefinitions(subClassEntities, entity, persistentClass));
-        assertEquals(departmentName.getField(), classDefinition.getColumnDefinitionByFieldName("departmentName").getField());
+        classDefinition.addPropertyDefinitionList(ColumnDefinitionsGenerator.createColumnDefinitions(subClassEntities, entity, persistentClass));
+        assertEquals(departmentName.getField(), classDefinition.getPropertyDefinitionByFieldName("departmentName").getField());
     }
 
     @Test
@@ -60,11 +60,11 @@ public class ColumnDefinitionsGeneratorTest {
         Metamodel metamodel = entityManagerFactory.getMetamodel();
         EntityType<?> entity = metamodel.entity(persistentClass);
         Set<EntityType<?>> subClassEntities = new HashSet<EntityType<?>>();
-        PropertyDefinition buildingAddress = new Column("streetAndNumber");
+        ColumnDefinition buildingAddress = new Column("streetAndNumber");
         buildingAddress.setColumnName("streetAndNumber");
         buildingAddress.setField(domain.entities.Address.class.getDeclaredField("streetAndNumber"));
         ClassDefinition<Employee> classDefinition = new ClassDefinition<Employee>(persistentClass);
-        classDefinition.addColumnDefinitionList(ColumnDefinitionsGenerator.createColumnDefinitions(subClassEntities, entity, persistentClass));
-        assertEquals(buildingAddress.getField(), classDefinition.getColumnDefinitionByFieldName("streetAndNumber").getField());
+        classDefinition.addPropertyDefinitionList(ColumnDefinitionsGenerator.createColumnDefinitions(subClassEntities, entity, persistentClass));
+        assertEquals(buildingAddress.getField(), classDefinition.getPropertyDefinitionByFieldName("streetAndNumber").getField());
     }
 }

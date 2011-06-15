@@ -1,6 +1,7 @@
 package org.jarb.populator.excel.metamodel;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,7 +26,7 @@ public class ClassDefinition<T> {
     private String tableName;
 
     /** A set of ColumnDefinitions. */
-    private List<PropertyDefinition> columnDefinitions = new ArrayList<PropertyDefinition>();
+    private List<ColumnDefinition> propertyDefinitions = new ArrayList<ColumnDefinition>();
 
     /** An instance of the WorksheetDefinition belonging to a classDefinition. */
     private WorksheetDefinition worksheetDefinition; // TODO: Not sure what the purpose of this is
@@ -58,19 +59,19 @@ public class ClassDefinition<T> {
 
     /**
      * Adds a columnDefinition to the classDefinition.
-     * @param columnDefinition instance of ColumnDefinition
+     * @param propertyDefinition instance of ColumnDefinition
      */
-    public void addColumnDefinition(final PropertyDefinition columnDefinition) {
-        this.columnDefinitions.add(columnDefinition);
+    public void addPropertyDefinition(ColumnDefinition propertyDefinition) {
+        propertyDefinitions.add(propertyDefinition);
     }
 
     /**
      * Adds a whole list of columnDefinitions at once.
-     * @param columnDefinitionList instances of ColumnDefinition
+     * @param additionalPropertyDefinitions instances of ColumnDefinition
      */
-    public void addColumnDefinitionList(final List<PropertyDefinition> columnDefinitionList) {
-        for (PropertyDefinition columnDefinition : columnDefinitionList) {
-            this.columnDefinitions.add(columnDefinition);
+    public void addPropertyDefinitionList(Collection<ColumnDefinition> additionalPropertyDefinitions) {
+        for (ColumnDefinition propertyDefinition : additionalPropertyDefinitions) {
+            addPropertyDefinition(propertyDefinition);
         }
     }
 
@@ -78,16 +79,8 @@ public class ClassDefinition<T> {
      * Returns all the columnDefinitions belonging to the classDefinition.
      * @return set of ColumnDefinitions
      */
-    public List<PropertyDefinition> getColumnDefinitions() {
-        return this.columnDefinitions;
-    }
-
-    public List<String> getColumnNames() {
-        List<String> columnNames = new ArrayList<String>();
-        for (PropertyDefinition columnDefinition : columnDefinitions) {
-            columnNames.add(columnDefinition.getColumnName());
-        }
-        return columnNames;
+    public List<ColumnDefinition> getPropertyDefinitions() {
+        return propertyDefinitions;
     }
 
     /**
@@ -95,9 +88,9 @@ public class ClassDefinition<T> {
      * @param fieldName Fieldname to search the ColumnDefinitions for
      * @return ColumnDefinition
      */
-    public PropertyDefinition getColumnDefinitionByFieldName(String fieldName) {
-        PropertyDefinition returnColumnDef = null;
-        for (PropertyDefinition columnDefinition : columnDefinitions) {
+    public ColumnDefinition getPropertyDefinitionByFieldName(String fieldName) {
+        ColumnDefinition returnColumnDef = null;
+        for (ColumnDefinition columnDefinition : propertyDefinitions) {
             if (columnDefinition.getFieldName().equals(fieldName)) {
                 returnColumnDef = columnDefinition;
             }
@@ -110,14 +103,22 @@ public class ClassDefinition<T> {
      * @param columnName Column name to search the ColumnsDefinitions for
      * @return ColumnDefinition
      */
-    public PropertyDefinition getColumnDefinitionByColumnName(String columnName) {
-        PropertyDefinition returnColumnDef = null;
-        for (PropertyDefinition columnDefinition : columnDefinitions) {
+    public ColumnDefinition getPropertyDefinitionByColumnName(String columnName) {
+        ColumnDefinition returnColumnDef = null;
+        for (ColumnDefinition columnDefinition : propertyDefinitions) {
             if (columnDefinition.getColumnName().equals(columnName)) {
                 returnColumnDef = columnDefinition;
             }
         }
         return returnColumnDef;
+    }
+    
+    public List<String> getColumnNames() {
+        List<String> columnNames = new ArrayList<String>();
+        for (ColumnDefinition columnDefinition : propertyDefinitions) {
+            columnNames.add(columnDefinition.getColumnName());
+        }
+        return columnNames;
     }
 
     /**
@@ -189,7 +190,7 @@ public class ClassDefinition<T> {
      */
     public String getDiscriminatorColumnName() {
         String returnValue = null;
-        for (PropertyDefinition columnDefinition : columnDefinitions) {
+        for (ColumnDefinition columnDefinition : propertyDefinitions) {
             if (columnDefinition.isDiscriminatorColumn()) {
                 returnValue = columnDefinition.getColumnName();
             }

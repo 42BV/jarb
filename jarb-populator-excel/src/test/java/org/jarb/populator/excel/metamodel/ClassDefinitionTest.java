@@ -27,8 +27,8 @@ import domain.entities.Customer;
 public class ClassDefinitionTest {
 
     private ClassDefinition<?> classDefinition;
-    private PropertyDefinition columnDefinition;
-    private List<PropertyDefinition> columnDefinitions;
+    private ColumnDefinition columnDefinition;
+    private List<ColumnDefinition> columnDefinitions;
     private String tableName;
     private WorksheetDefinition worksheetDefinition;
     private Workbook excel;
@@ -40,7 +40,7 @@ public class ClassDefinitionTest {
     @Before
     public void setUpClassDefinition() throws InvalidFormatException, IOException {
         classDefinition = ClassDefinition.forClass(Customer.class);
-        columnDefinitions = new ArrayList<PropertyDefinition>();
+        columnDefinitions = new ArrayList<ColumnDefinition>();
         excel = new PoiExcelParser().parse(new FileInputStream("src/test/resources/ExcelUnitTesting.xls"));
 
         context = new ClassPathXmlApplicationContext("test-context.xml");
@@ -65,11 +65,11 @@ public class ClassDefinitionTest {
         for (Field field : classDefinition.getPersistentClass().getDeclaredFields()) {
             columnDefinition = FieldAnalyzer.analyzeField(field);
             if (columnDefinition != null) {
-                classDefinition.addColumnDefinition(columnDefinition);
+                classDefinition.addPropertyDefinition(columnDefinition);
                 columnDefinitions.add(columnDefinition);
             }
         }
-        assertEquals(classDefinition.getColumnDefinitions(), columnDefinitions);
+        assertEquals(classDefinition.getPropertyDefinitions(), columnDefinitions);
     }
 
     @Test
@@ -97,7 +97,7 @@ public class ClassDefinitionTest {
     @Test
     public void testGetColumnDefinitionByColumnName() throws InstantiationException, ClassNotFoundException, IllegalAccessException {
         classDefinition = ClassDefinitionsGenerator.createSingleClassDefinitionFromMetamodel(entityManagerFactory, entity, false);
-        assertEquals("company_name", classDefinition.getColumnDefinitionByColumnName("company_name").getColumnName());
+        assertEquals("company_name", classDefinition.getPropertyDefinitionByColumnName("company_name").getColumnName());
     }
 
     @Test

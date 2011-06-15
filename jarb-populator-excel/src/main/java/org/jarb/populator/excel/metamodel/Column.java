@@ -11,7 +11,7 @@ import org.apache.commons.lang.StringUtils;
  * @author Sander Benschop
  * 
  */
-public class Column extends PropertyDefinition {
+public class Column extends ColumnDefinition {
 
     public Column(String fieldName) {
         super(fieldName);

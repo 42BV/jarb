@@ -4,7 +4,7 @@ import org.jarb.populator.excel.mapping.CouldNotConvertException;
 import org.jarb.populator.excel.mapping.ValueConversionService;
 import org.jarb.populator.excel.mapping.excelrow.ExcelRow;
 import org.jarb.populator.excel.metamodel.ClassDefinition;
-import org.jarb.populator.excel.metamodel.PropertyDefinition;
+import org.jarb.populator.excel.metamodel.ColumnDefinition;
 import org.jarb.populator.excel.workbook.Sheet;
 import org.jarb.populator.excel.workbook.Workbook;
 import org.jarb.populator.excel.workbook.validator.FieldValidator;
@@ -34,7 +34,7 @@ public final class StoreColumn {
      * @param excelRow ExcelRow to save to.
      * @throws NoSuchFieldException Thrown when a field is not available
      */
-    public static void storeValue(Workbook excel, ClassDefinition<?> classDefinition, PropertyDefinition columnDefinition, Integer rowPosition, ExcelRow excelRow)
+    public static void storeValue(Workbook excel, ClassDefinition<?> classDefinition, ColumnDefinition columnDefinition, Integer rowPosition, ExcelRow excelRow)
             throws NoSuchFieldException {
         Integer columnPosition = classDefinition.getWorksheetDefinition().getColumnPosition(columnDefinition.getColumnName());
 

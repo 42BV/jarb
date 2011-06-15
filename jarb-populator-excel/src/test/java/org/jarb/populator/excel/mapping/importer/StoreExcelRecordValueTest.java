@@ -17,7 +17,7 @@ import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.jarb.populator.excel.mapping.excelrow.ExcelRow;
 import org.jarb.populator.excel.metamodel.AnnotationType;
 import org.jarb.populator.excel.metamodel.ClassDefinition;
-import org.jarb.populator.excel.metamodel.PropertyDefinition;
+import org.jarb.populator.excel.metamodel.ColumnDefinition;
 import org.jarb.populator.excel.metamodel.WorksheetDefinition;
 import org.jarb.populator.excel.metamodel.generator.ClassDefinitionsGenerator;
 import org.jarb.populator.excel.workbook.Workbook;
@@ -65,7 +65,7 @@ public class StoreExcelRecordValueTest {
 
         excelRow = new ExcelRow(classDefinition.createInstance());
 
-        PropertyDefinition joinTable;
+        ColumnDefinition joinTable;
         for (Annotation annotation : projectsField.getAnnotations()) {
             for (AnnotationType annotationType : AnnotationType.values()) {
                 if ((annotationType.name().equals("JOIN_TABLE")) && annotationType.getAnnotationClass().isAssignableFrom(annotation.getClass())) {
@@ -75,7 +75,7 @@ public class StoreExcelRecordValueTest {
             }
         }
         rowPosition = 3;
-        PropertyDefinition columnDefinition = null;
+        ColumnDefinition columnDefinition = null;
         StoreExcelRecordValue.storeValue(excel, classDefinition, columnDefinition, rowPosition, excelRow);
         assertFalse(excelRow.getValueMap().containsKey(columnDefinition));
     }

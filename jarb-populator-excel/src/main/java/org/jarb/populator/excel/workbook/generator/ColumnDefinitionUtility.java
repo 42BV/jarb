@@ -4,7 +4,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.jarb.populator.excel.metamodel.ClassDefinition;
-import org.jarb.populator.excel.metamodel.PropertyDefinition;
+import org.jarb.populator.excel.metamodel.ColumnDefinition;
 
 /**
  * Can gather all the associative Columndefinitions (JoinTable's) from a ClassDefinition.
@@ -23,11 +23,11 @@ public final class ColumnDefinitionUtility {
      * @param classDefinition
      * @return Set of ColumnDefinitions that are associative tables (JoinTable)
      */
-    protected static Set<PropertyDefinition> gatherAssociativeColumnDefinitions(ClassDefinition<?> classDefinition) {
-        Set<PropertyDefinition> associativeColumnDefinitions = new HashSet<PropertyDefinition>();
+    protected static Set<ColumnDefinition> gatherAssociativeColumnDefinitions(ClassDefinition<?> classDefinition) {
+        Set<ColumnDefinition> associativeColumnDefinitions = new HashSet<ColumnDefinition>();
         //Check for @JoinTables. Iterating over all columnDefinitions was also considered but this makes searching for cells problematic
         //if the cells are @JoinTables (which means they're not in this sheet.
-        for (PropertyDefinition columnDefinition : classDefinition.getColumnDefinitions()) {
+        for (ColumnDefinition columnDefinition : classDefinition.getPropertyDefinitions()) {
             if (columnDefinition.isAssociativeTable()) {
                 associativeColumnDefinitions.add(columnDefinition);
             }
@@ -46,7 +46,7 @@ public final class ColumnDefinitionUtility {
         if ("id".equals(columnName)) {
             fieldName = "id";
         } else {
-            fieldName = classDefinition.getColumnDefinitionByColumnName(columnName).getFieldName();
+            fieldName = classDefinition.getPropertyDefinitionByColumnName(columnName).getFieldName();
         }
         return fieldName;
     }

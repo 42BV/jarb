@@ -9,7 +9,7 @@ import java.lang.reflect.Field;
  * @author Sander Benschop
  * 
  */
-public abstract class PropertyDefinition {
+public abstract class ColumnDefinition {
     /** The name of the field belonging to the columnDefinition. */
     private final String fieldName;
     /** The name of the column belonging to the columnDefinition. */
@@ -23,7 +23,7 @@ public abstract class PropertyDefinition {
     /** True if it's a discriminator column. */
     private boolean discriminatorColumn;
 
-    public PropertyDefinition(String fieldName) {
+    public ColumnDefinition(String fieldName) {
         this.fieldName = fieldName;
     }
 

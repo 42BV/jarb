@@ -23,7 +23,7 @@ import org.jarb.populator.excel.entity.query.DataReader;
 import org.jarb.populator.excel.metamodel.AnnotationType;
 import org.jarb.populator.excel.metamodel.ClassDefinition;
 import org.jarb.populator.excel.metamodel.JoinTable;
-import org.jarb.populator.excel.metamodel.PropertyDefinition;
+import org.jarb.populator.excel.metamodel.ColumnDefinition;
 import org.jarb.populator.excel.metamodel.generator.ClassDefinitionsGenerator;
 import org.junit.Before;
 import org.junit.Test;
@@ -54,11 +54,11 @@ public class AssociativeTableGeneratorTest extends DefaultExcelTestDataCase {
         EntityType<?> entity = metamodel.entity(domain.entities.Employee.class);
         ClassDefinition<?> classDefinition = ClassDefinitionsGenerator.createSingleClassDefinitionFromMetamodel(getEntityManagerFactory(), entity, false);
 
-        BasicExcelFileGenerator.createJoinTable(classDefinition.getColumnDefinitionByFieldName("projects"), workbook);
+        BasicExcelFileGenerator.createJoinTable(classDefinition.getPropertyDefinitionByFieldName("projects"), workbook);
 
         List<?> results = DataReader.getTableFromDatabase(getEntityManagerFactory(), entity);
         int databaseRecordRow = 0;
-        Set<PropertyDefinition> associativeColumnDefinitions = ColumnDefinitionUtility.gatherAssociativeColumnDefinitions(classDefinition);
+        Set<ColumnDefinition> associativeColumnDefinitions = ColumnDefinitionUtility.gatherAssociativeColumnDefinitions(classDefinition);
         Object databaseRecord = results.get(databaseRecordRow);
 
         AssociativeTableGenerator.createAssociativeTables(workbook, puUtil, associativeColumnDefinitions, databaseRecord);
@@ -68,7 +68,7 @@ public class AssociativeTableGeneratorTest extends DefaultExcelTestDataCase {
     @Test
     public void testAssociativeColumnNameMistyped() throws InvalidFormatException, IOException, ClassNotFoundException, InstantiationException,
             IllegalAccessException, NoSuchFieldException, IllegalArgumentException, InvocationTargetException, SecurityException, NoSuchMethodException {
-        PropertyDefinition joinTable = new JoinTable("projects");
+        ColumnDefinition joinTable = new JoinTable("projects");
         Class<?> persistentClass = domain.entities.Employee.class;
         Field projectsField = persistentClass.getDeclaredField("projects");
 

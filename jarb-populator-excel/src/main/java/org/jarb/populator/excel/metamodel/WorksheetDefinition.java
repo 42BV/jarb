@@ -36,7 +36,7 @@ public class WorksheetDefinition {
         // TODO FIX: crashes here if id sheet is missing from Excel file.
         worksheetDefinition.addColumnPosition(ID_COLUMN_NAME, classDefinition.getTableName(), sheet.indexOfColumn(ID_COLUMN_NAME));
 
-        for (PropertyDefinition columnDefinition : classDefinition.getColumnDefinitions()) {
+        for (ColumnDefinition columnDefinition : classDefinition.getPropertyDefinitions()) {
             final String columnName = columnDefinition.getColumnName();
             LOGGER.info("  field name: [" + columnDefinition.getFieldName() + "], column name: [" + columnName + "]");
             if (sheet.containsColumn(columnName)) {

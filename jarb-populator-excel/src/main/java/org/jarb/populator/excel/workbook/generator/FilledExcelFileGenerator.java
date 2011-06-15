@@ -19,7 +19,7 @@ import org.apache.poi.ss.usermodel.CellStyle;
 import org.hibernate.proxy.HibernateProxy;
 import org.jarb.populator.excel.entity.query.DataReader;
 import org.jarb.populator.excel.metamodel.ClassDefinition;
-import org.jarb.populator.excel.metamodel.PropertyDefinition;
+import org.jarb.populator.excel.metamodel.ColumnDefinition;
 import org.jarb.populator.excel.metamodel.generator.ClassDefinitionsGenerator;
 import org.jarb.populator.excel.metamodel.generator.SubclassRetriever;
 import org.jarb.populator.excel.util.ClassDefinitionNameComparator;
@@ -99,7 +99,7 @@ public final class FilledExcelFileGenerator {
         EntityType<?> entity = metamodel.entity(classDefinition.getPersistentClass());
         BasicExcelFileGenerator.createTable(classDefinition, workbook);
         CellStyle dateFormatStyle = DateFormatStyle.getDateFormatStyle(workbook);
-        Set<PropertyDefinition> associativeColumnDefinitions = ColumnDefinitionUtility.gatherAssociativeColumnDefinitions(classDefinition);
+        Set<ColumnDefinition> associativeColumnDefinitions = ColumnDefinitionUtility.gatherAssociativeColumnDefinitions(classDefinition);
 
         List<?> results = DataReader.getTableFromDatabase(entityManagerFactory, entity);
         Integer numberofRows = results.size();
@@ -138,7 +138,7 @@ public final class FilledExcelFileGenerator {
             fieldName = ColumnDefinitionUtility.getFieldName(classDefinition, columnName);
             if (FieldValidator.isExistingField(fieldName, persistentClass)) {
                 createRegularFieldCell(puUtil, dateFormatStyle, row, fieldName, databaseRecord, columnNumber);
-            } else if (classDefinition.getColumnDefinitionByFieldName(fieldName).isEmbeddedAttribute()) {
+            } else if (classDefinition.getPropertyDefinitionByFieldName(fieldName).isEmbeddedAttribute()) {
                 createEmbeddedFieldCell(classDefinition, dateFormatStyle, row, columnName, fieldName, databaseRecord, columnNumber);
             } else if (fieldName.equals(classDefinition.getDiscriminatorColumnName())) {
                 createDiscriminatorFieldCell(row, persistentClass, columnNumber);
@@ -190,7 +190,7 @@ public final class FilledExcelFileGenerator {
      */
     private static void createEmbeddedFieldCell(ClassDefinition<?> classDefinition, CellStyle dateFormatStyle, HSSFRow row, String columnName, String fieldName,
             Object databaseRecord, int columnNumber) {
-        String embeddedObjectName = classDefinition.getColumnDefinitionByColumnName(columnName).getEmbeddedObjectName();
+        String embeddedObjectName = classDefinition.getPropertyDefinitionByColumnName(columnName).getEmbeddedObjectName();
         Object embeddedObject = ReflectionUtils.getFieldValue(databaseRecord, embeddedObjectName);
         if (embeddedObject != null) {
             Object cellValue = ReflectionUtils.getFieldValue(embeddedObject, fieldName);

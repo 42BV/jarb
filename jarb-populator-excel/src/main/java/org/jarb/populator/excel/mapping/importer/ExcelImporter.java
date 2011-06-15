@@ -7,7 +7,7 @@ import java.util.Map;
 import org.jarb.populator.excel.mapping.excelrow.ExcelRow;
 import org.jarb.populator.excel.mapping.excelrow.ForeignRelationsMapper;
 import org.jarb.populator.excel.metamodel.ClassDefinition;
-import org.jarb.populator.excel.metamodel.PropertyDefinition;
+import org.jarb.populator.excel.metamodel.ColumnDefinition;
 import org.jarb.populator.excel.workbook.Sheet;
 import org.jarb.populator.excel.workbook.Workbook;
 import org.jarb.utils.ReflectionUtils;
@@ -164,8 +164,8 @@ public final class ExcelImporter {
      */
     private static void storeExcelRecordByColumnDefinitions(final Workbook excel, final ClassDefinition<?> classDefinition, Integer rowPosition, ExcelRow excelRow)
             throws NoSuchFieldException {
-        List<PropertyDefinition> columnDefinitions = classDefinition.getColumnDefinitions();
-        for (PropertyDefinition columnDefinition : columnDefinitions) {
+        List<ColumnDefinition> columnDefinitions = classDefinition.getPropertyDefinitions();
+        for (ColumnDefinition columnDefinition : columnDefinitions) {
             StoreExcelRecordValue.storeValue(excel, classDefinition, columnDefinition, rowPosition, excelRow);
         }
     }
