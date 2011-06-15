@@ -15,7 +15,6 @@ import org.jarb.populator.excel.entity.query.EntityReader;
 import org.jarb.populator.excel.mapping.exporter.EntityExporter;
 import org.jarb.populator.excel.mapping.importer.EntityImporter;
 import org.jarb.populator.excel.metamodel.MetaModel;
-import org.jarb.populator.excel.metamodel.generator.ClassDefinitionsGenerator;
 import org.jarb.populator.excel.metamodel.generator.MetaModelGenerator;
 import org.jarb.populator.excel.workbook.Workbook;
 import org.jarb.populator.excel.workbook.generator.FilledExcelFileGenerator;
@@ -51,8 +50,6 @@ public class ExcelDataManager {
         try {
             Workbook workbook = excelParser.parse(is);
             MetaModel metamodel = metamodelGenerator.generate();
-            // TODO: Figure out why this worksheet definition has to be added
-            ClassDefinitionsGenerator.addWorksheetDefinitionsToClassDefinitions(metamodel.getClassDefinitions(), workbook);
             EntityRegistry registry = entityImporter.load(workbook, metamodel);
             entityWriter.persist(registry);
         } finally {

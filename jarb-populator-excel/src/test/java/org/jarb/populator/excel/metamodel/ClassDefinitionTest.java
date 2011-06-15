@@ -69,7 +69,7 @@ public class ClassDefinitionTest {
                 columnDefinitions.add(columnDefinition);
             }
         }
-        assertEquals(classDefinition.getPropertyDefinitions(), columnDefinitions);
+        assertEquals(classDefinition.getColumnDefinitions(), columnDefinitions);
     }
 
     @Test
@@ -82,8 +82,7 @@ public class ClassDefinitionTest {
     @Test
     public void testSetGetWorksheetDefinition() throws InstantiationException, IllegalAccessException, ClassNotFoundException {
         classDefinition = ClassDefinitionsGenerator.createSingleClassDefinitionFromMetamodel(entityManagerFactory, entity, false);
-        classDefinition.setWorksheetDefinition(WorksheetDefinition.analyzeWorksheet(classDefinition, excel));
-        worksheetDefinition = classDefinition.getWorksheetDefinition();
+        worksheetDefinition = WorksheetDefinition.analyzeWorksheet(classDefinition, excel);
         Integer columnPosition = 2;
         assertEquals(columnPosition, worksheetDefinition.getColumnPosition("company_name"));
     }
@@ -97,7 +96,7 @@ public class ClassDefinitionTest {
     @Test
     public void testGetColumnDefinitionByColumnName() throws InstantiationException, ClassNotFoundException, IllegalAccessException {
         classDefinition = ClassDefinitionsGenerator.createSingleClassDefinitionFromMetamodel(entityManagerFactory, entity, false);
-        assertEquals("company_name", classDefinition.getPropertyDefinitionByColumnName("company_name").getColumnName());
+        assertEquals("company_name", classDefinition.getColumnDefinitionByColumnName("company_name").getColumnName());
     }
 
     @Test

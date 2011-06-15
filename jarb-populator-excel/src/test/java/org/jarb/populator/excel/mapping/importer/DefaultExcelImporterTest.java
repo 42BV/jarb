@@ -22,7 +22,6 @@ import org.jarb.populator.excel.DefaultExcelTestDataCase;
 import org.jarb.populator.excel.mapping.excelrow.ExcelRow;
 import org.jarb.populator.excel.metamodel.ClassDefinition;
 import org.jarb.populator.excel.metamodel.ColumnDefinition;
-import org.jarb.populator.excel.metamodel.WorksheetDefinition;
 import org.jarb.populator.excel.metamodel.generator.ClassDefinitionsGenerator;
 import org.jarb.populator.excel.workbook.Workbook;
 import org.jarb.populator.excel.workbook.reader.PoiExcelParser;
@@ -38,7 +37,6 @@ public class DefaultExcelImporterTest extends DefaultExcelTestDataCase {
     private Map<ClassDefinition<?>, Map<Integer, ExcelRow>> parseExcelMap;
     private ClassDefinition<?> classDefinition;
     private Map<Integer, ExcelRow> parseWorksheetMap;
-    private WorksheetDefinition worksheetDefinition;
 
     @Before
     public void setUpExcelImporterTest() throws InstantiationException, IllegalAccessException, InvalidFormatException, IOException, SecurityException,
@@ -55,11 +53,8 @@ public class DefaultExcelImporterTest extends DefaultExcelTestDataCase {
         project = ClassDefinitionsGenerator.createSingleClassDefinitionFromMetamodel(getEntityManagerFactory(), projectEntity, false);
         classDefinitionList.add(customer);
         classDefinitionList.add(project);
-        ClassDefinitionsGenerator.addWorksheetDefinitionsToClassDefinitions(classDefinitionList, excel);
 
         classDefinition = ClassDefinitionsGenerator.createSingleClassDefinitionFromMetamodel(getEntityManagerFactory(), customerEntity, false);
-        worksheetDefinition = WorksheetDefinition.analyzeWorksheet(classDefinition, excel);
-        classDefinition.setWorksheetDefinition(worksheetDefinition);
         parseWorksheetMap = new HashMap<Integer, ExcelRow>();
 
         //For code coverage purposes:
@@ -92,7 +87,6 @@ public class DefaultExcelImporterTest extends DefaultExcelTestDataCase {
 
         excel = new PoiExcelParser().parse(new FileInputStream("src/test/resources/DiscriminatorColumnLacking.xls"));
         classDefinition = ClassDefinitionsGenerator.createSingleClassDefinitionFromMetamodel(getEntityManagerFactory(), entity, true);
-        classDefinition.setWorksheetDefinition(WorksheetDefinition.analyzeWorksheet(classDefinition, excel));
         parseWorksheetMap = ExcelImporter.parseWorksheet(excel, classDefinition);
         for (Entry<Integer, ExcelRow> entry : parseWorksheetMap.entrySet()) {
             for (ColumnDefinition columnDefinition : entry.getValue().getValueMap().keySet()) {

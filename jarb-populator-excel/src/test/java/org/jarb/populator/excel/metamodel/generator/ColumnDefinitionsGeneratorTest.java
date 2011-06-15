@@ -50,7 +50,7 @@ public class ColumnDefinitionsGeneratorTest {
         departmentName.setField(persistentClass.getDeclaredField("departmentName"));
         ClassDefinition<Department> classDefinition = new ClassDefinition<Department>(persistentClass);
         classDefinition.addPropertyDefinitionList(ColumnDefinitionsGenerator.createColumnDefinitions(subClassEntities, entity, persistentClass));
-        assertEquals(departmentName.getField(), classDefinition.getPropertyDefinitionByFieldName("departmentName").getField());
+        assertEquals(departmentName.getField(), classDefinition.getColumnDefinitionByFieldName("departmentName").getField());
     }
 
     @Test
@@ -65,6 +65,6 @@ public class ColumnDefinitionsGeneratorTest {
         buildingAddress.setField(domain.entities.Address.class.getDeclaredField("streetAndNumber"));
         ClassDefinition<Employee> classDefinition = new ClassDefinition<Employee>(persistentClass);
         classDefinition.addPropertyDefinitionList(ColumnDefinitionsGenerator.createColumnDefinitions(subClassEntities, entity, persistentClass));
-        assertEquals(buildingAddress.getField(), classDefinition.getPropertyDefinitionByFieldName("streetAndNumber").getField());
+        assertEquals(buildingAddress.getField(), classDefinition.getColumnDefinitionByFieldName("streetAndNumber").getField());
     }
 }

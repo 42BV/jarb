@@ -2,7 +2,6 @@ package org.jarb.populator.excel.metamodel.generator;
 
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -15,8 +14,6 @@ import javax.persistence.metamodel.EntityType;
 import javax.persistence.metamodel.Metamodel;
 
 import org.jarb.populator.excel.metamodel.ClassDefinition;
-import org.jarb.populator.excel.metamodel.WorksheetDefinition;
-import org.jarb.populator.excel.workbook.Workbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -187,27 +184,6 @@ public final class ClassDefinitionsGenerator {
         ClassDefinition<T> classDefinition = new ClassDefinition<T>(persistentClass);
         classDefinition.setTableName(tableName);
         return classDefinition;
-    }
-
-    /**
-     * Adds WorksheetDefinitions to the ClassDefinitions in the list.
-     * @param classDefinitions List of ClassDefinitions
-     * @param excel Excel file needed to add WorksheetDefinitions
-     */
-    public static void addWorksheetDefinitionsToClassDefinitions(Collection<ClassDefinition<?>> classDefinitions, Workbook excel) {
-        for (ClassDefinition<?> classDefinition : classDefinitions) {
-            addSingleWorksheetDefinitionToClassDefinition(classDefinition, excel);
-        }
-    }
-
-    /**
-     * Adds a WorksheetDefinition to the ClassDefinition.
-     * @param classDefinition ClassDefinition to add a WorksheetDefinition to
-     * @param excel Excelfile to find the columns in.
-     */
-    public static void addSingleWorksheetDefinitionToClassDefinition(ClassDefinition<?> classDefinition, Workbook excel) {
-        WorksheetDefinition worksheetDefinition = WorksheetDefinition.analyzeWorksheet(classDefinition, excel);
-        classDefinition.setWorksheetDefinition(worksheetDefinition);
     }
 
     /**

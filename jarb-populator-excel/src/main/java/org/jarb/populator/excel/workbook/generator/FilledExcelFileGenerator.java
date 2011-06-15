@@ -138,7 +138,7 @@ public final class FilledExcelFileGenerator {
             fieldName = ColumnDefinitionUtility.getFieldName(classDefinition, columnName);
             if (FieldValidator.isExistingField(fieldName, persistentClass)) {
                 createRegularFieldCell(puUtil, dateFormatStyle, row, fieldName, databaseRecord, columnNumber);
-            } else if (classDefinition.getPropertyDefinitionByFieldName(fieldName).isEmbeddedAttribute()) {
+            } else if (classDefinition.getColumnDefinitionByFieldName(fieldName).isEmbeddedAttribute()) {
                 createEmbeddedFieldCell(classDefinition, dateFormatStyle, row, columnName, fieldName, databaseRecord, columnNumber);
             } else if (fieldName.equals(classDefinition.getDiscriminatorColumnName())) {
                 createDiscriminatorFieldCell(row, persistentClass, columnNumber);
@@ -190,7 +190,7 @@ public final class FilledExcelFileGenerator {
      */
     private static void createEmbeddedFieldCell(ClassDefinition<?> classDefinition, CellStyle dateFormatStyle, HSSFRow row, String columnName, String fieldName,
             Object databaseRecord, int columnNumber) {
-        String embeddedObjectName = classDefinition.getPropertyDefinitionByColumnName(columnName).getEmbeddedObjectName();
+        String embeddedObjectName = classDefinition.getColumnDefinitionByColumnName(columnName).getEmbeddedObjectName();
         Object embeddedObject = ReflectionUtils.getFieldValue(databaseRecord, embeddedObjectName);
         if (embeddedObject != null) {
             Object cellValue = ReflectionUtils.getFieldValue(embeddedObject, fieldName);

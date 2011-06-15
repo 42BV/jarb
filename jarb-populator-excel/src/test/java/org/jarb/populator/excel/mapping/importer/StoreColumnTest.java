@@ -58,7 +58,6 @@ public class StoreColumnTest extends DefaultExcelTestDataCase {
         EntityType<?> entity = ClassDefinitionsGenerator.getEntityFromMetamodel(domain.entities.Project.class, metamodel);
 
         classDefinition = ClassDefinitionsGenerator.createSingleClassDefinitionFromMetamodel(getEntityManagerFactory(), entity, false);
-        classDefinition.setWorksheetDefinition(WorksheetDefinition.analyzeWorksheet(classDefinition, excel));
 
         excelRow = new ExcelRow(classDefinition.createInstance());
         excelRecord2 = new ExcelRow(classDefinition.createInstance());
@@ -89,7 +88,6 @@ public class StoreColumnTest extends DefaultExcelTestDataCase {
         worksheetDefinition = new WorksheetDefinition();
         worksheetDefinition = WorksheetDefinition.analyzeWorksheet(classDefinition, excel);
         worksheetDefinition.addColumnPosition("address", "customers", 0);
-        classDefinition.setWorksheetDefinition(worksheetDefinition);
         excelRow = new ExcelRow(classDefinition.createInstance());
 
         rowPosition = 1;

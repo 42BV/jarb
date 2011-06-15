@@ -22,6 +22,7 @@ import org.jarb.populator.excel.DefaultExcelTestDataCase;
 import org.jarb.populator.excel.metamodel.ClassDefinition;
 import org.jarb.populator.excel.metamodel.Column;
 import org.jarb.populator.excel.metamodel.ColumnDefinition;
+import org.jarb.populator.excel.metamodel.WorksheetDefinition;
 import org.jarb.populator.excel.util.ClassDefinitionNameComparator;
 import org.jarb.populator.excel.workbook.Workbook;
 import org.jarb.populator.excel.workbook.reader.PoiExcelParser;
@@ -69,7 +70,7 @@ public class ClassDefinitionsGeneratorTest extends DefaultExcelTestDataCase {
         EntityType<?> entity = ClassDefinitionsGenerator.getEntityFromMetamodel(domain.entities.Department.class, metamodel);
 
         ClassDefinition<?> classDefinition = ClassDefinitionsGenerator.createSingleClassDefinitionFromMetamodel(getEntityManagerFactory(), entity, false);
-        ColumnDefinition generated = classDefinition.getPropertyDefinitionByFieldName("departmentName");
+        ColumnDefinition generated = classDefinition.getColumnDefinitionByFieldName("departmentName");
         ColumnDefinition departmentName = new Column("departmentName");
         departmentName.setColumnName("department_name");
         departmentName.setField(persistentClass.getDeclaredField("departmentName"));
@@ -85,7 +86,7 @@ public class ClassDefinitionsGeneratorTest extends DefaultExcelTestDataCase {
         EntityType<?> entity = ClassDefinitionsGenerator.getEntityFromMetamodel(domain.entities.Customer.class, metamodel);
 
         ClassDefinition<?> classDefinition = ClassDefinitionsGenerator.createSingleClassDefinitionFromMetamodel(getEntityManagerFactory(), entity, true);
-        ColumnDefinition generated = classDefinition.getPropertyDefinitionByFieldName("location");
+        ColumnDefinition generated = classDefinition.getColumnDefinitionByFieldName("location");
         ColumnDefinition companyLocation = new Column("location");
         companyLocation.setColumnName("company_location");
         companyLocation.setField(subClass.getDeclaredField("location"));
@@ -111,10 +112,7 @@ public class ClassDefinitionsGeneratorTest extends DefaultExcelTestDataCase {
             Class<?> persistentClass = classDefinition.getPersistentClass();
             assertTrue(persistentClass != null);
 
-            //Should not contain a WorksheetDefinition
-            assertTrue(classDefinition.getWorksheetDefinition() == null);
-
-            for (ColumnDefinition columnDefinition : classDefinition.getPropertyDefinitions()) {
+            for (ColumnDefinition columnDefinition : classDefinition.getColumnDefinitions()) {
                 if (columnDefinition.getField() != null) {
                     //Is a regular column, we should be able to get the data from the persistentclass
 
@@ -166,10 +164,9 @@ public class ClassDefinitionsGeneratorTest extends DefaultExcelTestDataCase {
         EntityType<?> entity = ClassDefinitionsGenerator.getEntityFromMetamodel(domain.entities.Department.class, metamodel);
 
         classDefinitions.add(ClassDefinitionsGenerator.createSingleClassDefinitionFromMetamodel(getEntityManagerFactory(), entity, false));
-        ClassDefinitionsGenerator.addWorksheetDefinitionsToClassDefinitions(classDefinitions, excel);
         ClassDefinition<?> classDefinition = classDefinitions.get(0);
         Integer columnPosition = 1;
-        assertEquals(columnPosition, classDefinition.getWorksheetDefinition().getColumnPosition("db_column"));
+        assertEquals(columnPosition, WorksheetDefinition.analyzeWorksheet(classDefinition, excel).getColumnPosition("db_column"));
     }
 
 }

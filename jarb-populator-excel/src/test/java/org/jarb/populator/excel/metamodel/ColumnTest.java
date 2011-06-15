@@ -48,12 +48,11 @@ public class ColumnTest extends DefaultExcelTestDataCase {
         worksheetDefinition = new WorksheetDefinition();
         worksheetDefinition = WorksheetDefinition.analyzeWorksheet(classDefinition, excel);
         worksheetDefinition.addColumnPosition("address", "customers", 0);
-        classDefinition.setWorksheetDefinition(worksheetDefinition);
     }
 
     @Test
     public void testIsAccociativeTable() {
-        for (ColumnDefinition columnDefinition : classDefinition.getPropertyDefinitions()) {
+        for (ColumnDefinition columnDefinition : classDefinition.getColumnDefinitions()) {
             if (columnDefinition.getColumnName().equals("employees_projects")) {
                 assertEquals(true, columnDefinition.isAssociativeTable());
             } else {

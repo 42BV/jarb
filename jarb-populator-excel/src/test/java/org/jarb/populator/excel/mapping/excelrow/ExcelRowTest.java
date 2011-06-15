@@ -12,11 +12,9 @@ import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.jarb.populator.excel.DefaultExcelTestDataCase;
 import org.jarb.populator.excel.metamodel.ClassDefinition;
 import org.jarb.populator.excel.metamodel.ColumnDefinition;
-import org.jarb.populator.excel.metamodel.WorksheetDefinition;
 import org.jarb.populator.excel.metamodel.generator.ClassDefinitionsGenerator;
 import org.jarb.populator.excel.metamodel.generator.FieldAnalyzer;
 import org.jarb.populator.excel.workbook.Workbook;
-import org.jarb.populator.excel.workbook.reader.PoiExcelParser;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -30,12 +28,11 @@ public class ExcelRowTest extends DefaultExcelTestDataCase {
     private ClassDefinition<?> classDefinition;
     private Class<?> persistentClass;
     private int retrievenKeyValue;
-    private WorksheetDefinition worksheetDefinition;
 
     @Before
     public void setUpExcelRecordTest() throws InstantiationException, IllegalAccessException, SecurityException, NoSuchFieldException, InvalidFormatException,
             IOException {
-        excel = new PoiExcelParser().parse(new FileInputStream("src/test/resources/ExcelUnitTesting.xls"));
+        excel = getExcelDataManagerFactory().buildExcelParser().parse(new FileInputStream("src/test/resources/ExcelUnitTesting.xls"));
     }
 
     @Test
@@ -47,8 +44,6 @@ public class ExcelRowTest extends DefaultExcelTestDataCase {
         EntityType<?> entity = ClassDefinitionsGenerator.getEntityFromMetamodel(domain.entities.Customer.class, metamodel);
 
         classDefinition = ClassDefinitionsGenerator.createSingleClassDefinitionFromMetamodel(getEntityManagerFactory(), entity, false);
-        worksheetDefinition = WorksheetDefinition.analyzeWorksheet(classDefinition, excel);
-        classDefinition.setWorksheetDefinition(worksheetDefinition);
         excelRow = new ExcelRow(classDefinition.createInstance());
 
         ColumnDefinition columnDefinition = FieldAnalyzer.analyzeField(persistentClass.getDeclaredField("id"));
@@ -69,8 +64,6 @@ public class ExcelRowTest extends DefaultExcelTestDataCase {
         EntityType<?> entity = ClassDefinitionsGenerator.getEntityFromMetamodel(domain.entities.Customer.class, metamodel);
 
         classDefinition = ClassDefinitionsGenerator.createSingleClassDefinitionFromMetamodel(getEntityManagerFactory(), entity, false);
-        worksheetDefinition = WorksheetDefinition.analyzeWorksheet(classDefinition, excel);
-        classDefinition.setWorksheetDefinition(worksheetDefinition);
         excelRow = new ExcelRow(classDefinition.createInstance());
 
         createdInstance = (Customer) excelRow.getCreatedInstance();

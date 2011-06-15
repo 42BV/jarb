@@ -45,7 +45,7 @@ public final class BasicExcelFileGenerator {
         excelRow.createCell(columnNumber).setCellValue(IDCOLUMNNAME);
         columnNumber++;
 
-        for (ColumnDefinition columnDefinition : classDefinition.getPropertyDefinitions()) {
+        for (ColumnDefinition columnDefinition : classDefinition.getColumnDefinitions()) {
             if (!columnDefinition.isAssociativeTable()) {
                 String columnName = columnDefinition.getColumnName();
                 excelRow.createCell(columnNumber).setCellValue(columnName);

@@ -43,7 +43,6 @@ public class ForeignRelationsMapperTest extends DefaultExcelTestDataCase {
         excel = new PoiExcelParser().parse(new FileInputStream("src/test/resources/Excel.xls"));
 
         List<ClassDefinition<?>> classDefinitions = ClassDefinitionsGenerator.createClassDefinitionsFromMetamodel(getEntityManagerFactory());
-        ClassDefinitionsGenerator.addWorksheetDefinitionsToClassDefinitions(classDefinitions, excel);
 
         Map<ClassDefinition<?>, Map<Integer, ExcelRow>> objectModel = ExcelImporter.parseExcel(excel, classDefinitions);
 

@@ -27,7 +27,7 @@ public final class ColumnDefinitionUtility {
         Set<ColumnDefinition> associativeColumnDefinitions = new HashSet<ColumnDefinition>();
         //Check for @JoinTables. Iterating over all columnDefinitions was also considered but this makes searching for cells problematic
         //if the cells are @JoinTables (which means they're not in this sheet.
-        for (ColumnDefinition columnDefinition : classDefinition.getPropertyDefinitions()) {
+        for (ColumnDefinition columnDefinition : classDefinition.getColumnDefinitions()) {
             if (columnDefinition.isAssociativeTable()) {
                 associativeColumnDefinitions.add(columnDefinition);
             }
@@ -46,7 +46,7 @@ public final class ColumnDefinitionUtility {
         if ("id".equals(columnName)) {
             fieldName = "id";
         } else {
-            fieldName = classDefinition.getPropertyDefinitionByColumnName(columnName).getFieldName();
+            fieldName = classDefinition.getColumnDefinitionByColumnName(columnName).getFieldName();
         }
         return fieldName;
     }

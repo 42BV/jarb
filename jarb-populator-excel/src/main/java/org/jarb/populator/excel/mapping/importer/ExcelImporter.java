@@ -8,6 +8,7 @@ import org.jarb.populator.excel.mapping.excelrow.ExcelRow;
 import org.jarb.populator.excel.mapping.excelrow.ForeignRelationsMapper;
 import org.jarb.populator.excel.metamodel.ClassDefinition;
 import org.jarb.populator.excel.metamodel.ColumnDefinition;
+import org.jarb.populator.excel.metamodel.WorksheetDefinition;
 import org.jarb.populator.excel.workbook.Sheet;
 import org.jarb.populator.excel.workbook.Workbook;
 import org.jarb.utils.ReflectionUtils;
@@ -100,7 +101,8 @@ public final class ExcelImporter {
             throws InstantiationException, IllegalAccessException {
         ExcelRow excelRow;
         if (discriminatorColumnName != null) {
-            Integer discriminatorPosition = classDefinition.getWorksheetDefinition().getColumnPosition(discriminatorColumnName);
+            WorksheetDefinition worksheetDefinition = WorksheetDefinition.analyzeWorksheet(classDefinition, sheet.getWorkbook());
+            Integer discriminatorPosition = worksheetDefinition.getColumnPosition(discriminatorColumnName);
             String discriminatorValue = getDiscriminatorValueFromExcelFile(sheet, rowPosition, discriminatorPosition);
             if (discriminatorValue != null) {
                 Class<?> subClass = classDefinition.getSubClasses().get(discriminatorValue);
@@ -140,16 +142,16 @@ public final class ExcelImporter {
      */
     private static void putCreatedInstance(final Sheet sheet, final ClassDefinition<?> classDefinition, Map<Integer, ExcelRow> createdInstances,
             Integer rowPosition, ExcelRow excelRow) {
-        if (classDefinition.getWorksheetDefinition().getColumnPosition(IDCOLUMNNAME) != null) {
+        if (sheet.containsColumn(IDCOLUMNNAME)) {
             Integer idNumber = ((Double) sheet.getCellValueAt(rowPosition, IDCOLUMNNAME)).intValue();
             if (!createdInstances.containsKey(idNumber)) {
                 createdInstances.put(idNumber, excelRow);
             } else {
-                //Primary key is not unique
+                // Primary key is not unique
                 LOGGER.error("IDCOLUMNNAME value '" + idNumber + "' in table " + classDefinition.getTableName() + " is not unique.");
             }
         } else {
-            //If this is not because of the fact that it's a composite id, an id field is missing and foreign key constraints might fail.
+            // If this is not because of the fact that it's a composite id, an id field is missing and foreign key constraints might fail.
             createdInstances.put(((Double) sheet.getCellValueAt(rowPosition, 0)).intValue(), excelRow);
         }
     }
@@ -164,7 +166,7 @@ public final class ExcelImporter {
      */
     private static void storeExcelRecordByColumnDefinitions(final Workbook excel, final ClassDefinition<?> classDefinition, Integer rowPosition, ExcelRow excelRow)
             throws NoSuchFieldException {
-        List<ColumnDefinition> columnDefinitions = classDefinition.getPropertyDefinitions();
+        List<ColumnDefinition> columnDefinitions = classDefinition.getColumnDefinitions();
         for (ColumnDefinition columnDefinition : columnDefinitions) {
             StoreExcelRecordValue.storeValue(excel, classDefinition, columnDefinition, rowPosition, excelRow);
         }

@@ -78,7 +78,6 @@ public class DataWriterTest extends DefaultExcelTestDataCase {
         classDefinitionList.add(customer);
         classDefinitionList.add(project);
         classDefinitionList.add(sla);
-        ClassDefinitionsGenerator.addWorksheetDefinitionsToClassDefinitions(classDefinitionList, excel);
 
         parseExcelMap = ExcelImporter.parseExcel(excel, classDefinitionList);
         connectionInstances = DataWriter.createConnectionInstanceSet(ExcelRowIntegration.toMap(parseExcelMap));
@@ -105,7 +104,6 @@ public class DataWriterTest extends DefaultExcelTestDataCase {
         classDefinitionList.add(customer);
         classDefinitionList.add(project);
         classDefinitionList.add(sla);
-        ClassDefinitionsGenerator.addWorksheetDefinitionsToClassDefinitions(classDefinitionList, excel);
 
         parseExcelMap = ExcelImporter.parseExcel(excel, classDefinitionList);
         connectionInstances = DataWriter.createConnectionInstanceSet(ExcelRowIntegration.toMap(parseExcelMap));
@@ -128,7 +126,6 @@ public class DataWriterTest extends DefaultExcelTestDataCase {
         classDefinitionList.add(employee);
         classDefinitionList.add(vehicle);
         //  classDefinitionList.add(project);
-        ClassDefinitionsGenerator.addWorksheetDefinitionsToClassDefinitions(classDefinitionList, excel);
 
         parseExcelMap = ExcelImporter.parseExcel(excel, classDefinitionList);
         connectionInstances = DataWriter.createConnectionInstanceSet(ExcelRowIntegration.toMap(parseExcelMap));

@@ -16,7 +16,6 @@ import org.jarb.populator.excel.DefaultExcelTestDataCase;
 import org.jarb.populator.excel.mapping.excelrow.ExcelRow;
 import org.jarb.populator.excel.metamodel.ClassDefinition;
 import org.jarb.populator.excel.metamodel.JoinColumn;
-import org.jarb.populator.excel.metamodel.WorksheetDefinition;
 import org.jarb.populator.excel.metamodel.generator.ClassDefinitionsGenerator;
 import org.jarb.populator.excel.metamodel.generator.FieldAnalyzer;
 import org.jarb.populator.excel.workbook.Workbook;
@@ -54,7 +53,6 @@ public class StoreJoinColumnTest extends DefaultExcelTestDataCase {
         EntityType<?> entity = ClassDefinitionsGenerator.getEntityFromMetamodel(domain.entities.Project.class, metamodel);
 
         classDefinition = ClassDefinitionsGenerator.createSingleClassDefinitionFromMetamodel(getEntityManagerFactory(), entity, false);
-        classDefinition.setWorksheetDefinition(WorksheetDefinition.analyzeWorksheet(classDefinition, excel));
 
         excelRow = new ExcelRow(classDefinition.createInstance());
 
@@ -75,9 +73,8 @@ public class StoreJoinColumnTest extends DefaultExcelTestDataCase {
         EntityType<?> entity = ClassDefinitionsGenerator.getEntityFromMetamodel(domain.entities.Project.class, metamodel);
 
         classDefinition = ClassDefinitionsGenerator.createSingleClassDefinitionFromMetamodel(getEntityManagerFactory(), entity, false);
-        classDefinition.setWorksheetDefinition(WorksheetDefinition.analyzeWorksheet(classDefinition, excel));
         excelRow = new ExcelRow(classDefinition.createInstance());
 
-        StoreJoinColumn.storeValue(excel, classDefinition, classDefinition.getPropertyDefinitionByFieldName("customer"), 2, excelRow);
+        StoreJoinColumn.storeValue(excel, classDefinition, classDefinition.getColumnDefinitionByFieldName("customer"), 2, excelRow);
     }
 }

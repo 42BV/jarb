@@ -2,7 +2,6 @@ package org.jarb.populator.excel.mapping.excelrow;
 
 import static org.junit.Assert.assertEquals;
 
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -16,10 +15,7 @@ import javax.persistence.metamodel.Metamodel;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.jarb.populator.excel.metamodel.ClassDefinition;
 import org.jarb.populator.excel.metamodel.ClassDefinitionFinder;
-import org.jarb.populator.excel.metamodel.WorksheetDefinition;
 import org.jarb.populator.excel.metamodel.generator.ClassDefinitionsGenerator;
-import org.jarb.populator.excel.workbook.Workbook;
-import org.jarb.populator.excel.workbook.reader.PoiExcelParser;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -28,7 +24,6 @@ public class ClassDefinitionFinderTest {
 
     private Class<?> foreignClass;
 
-    private Workbook excel;
     private Set<ClassDefinition<?>> classDefinitionSet;
     private Set<ClassDefinition<?>> emptyClassDefinitionSet;
 
@@ -41,8 +36,6 @@ public class ClassDefinitionFinderTest {
     @Before
     public void setupClassDefinitionFinder() throws InvalidFormatException, IOException, InstantiationException, IllegalAccessException,
             IllegalArgumentException, InvocationTargetException, SecurityException, NoSuchMethodException, ClassNotFoundException {
-        excel = new PoiExcelParser().parse(new FileInputStream("src/test/resources/ExcelUnitTesting.xls"));
-
         emptyClassDefinitionSet = new HashSet<ClassDefinition<?>>();
 
         context = new ClassPathXmlApplicationContext("test-context.xml");
@@ -56,9 +49,7 @@ public class ClassDefinitionFinderTest {
 
         classDefinitionSet = new HashSet<ClassDefinition<?>>();
         customer = ClassDefinitionsGenerator.createSingleClassDefinitionFromMetamodel(entityManagerFactory, persistentEntity, false);
-        customer.setWorksheetDefinition(WorksheetDefinition.analyzeWorksheet(customer, excel));
         project = ClassDefinitionsGenerator.createSingleClassDefinitionFromMetamodel(entityManagerFactory, foreignEntity, false);
-        project.setWorksheetDefinition(WorksheetDefinition.analyzeWorksheet(project, excel));
         classDefinitionSet.add(customer);
         classDefinitionSet.add(project);
 

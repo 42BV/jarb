@@ -47,7 +47,6 @@ public class FieldAnalyzerTest extends DefaultExcelTestDataCase {
         worksheetDefinition = new WorksheetDefinition();
         worksheetDefinition = WorksheetDefinition.analyzeWorksheet(classDefinition, excel);
         worksheetDefinition.addColumnPosition("address", "customers", 0);
-        classDefinition.setWorksheetDefinition(worksheetDefinition);
 
         //For code coverage purposes:
         Constructor<FieldAnalyzer> constructor = FieldAnalyzer.class.getDeclaredConstructor();

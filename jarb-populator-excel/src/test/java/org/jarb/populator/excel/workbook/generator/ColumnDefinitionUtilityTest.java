@@ -37,7 +37,7 @@ public class ColumnDefinitionUtilityTest extends DefaultExcelTestDataCase {
     @Test
     public void testGatherAssociativeColumnDefinitions() {
         Set<ColumnDefinition> manual = new HashSet<ColumnDefinition>();
-        manual.add(classDefinition.getPropertyDefinitionByFieldName("projects"));
+        manual.add(classDefinition.getColumnDefinitionByFieldName("projects"));
         assertEquals(manual, ColumnDefinitionUtility.gatherAssociativeColumnDefinitions(classDefinition));
     }
 

@@ -5,6 +5,7 @@ import org.jarb.populator.excel.mapping.ValueConversionService;
 import org.jarb.populator.excel.mapping.excelrow.ExcelRow;
 import org.jarb.populator.excel.metamodel.ClassDefinition;
 import org.jarb.populator.excel.metamodel.ColumnDefinition;
+import org.jarb.populator.excel.metamodel.WorksheetDefinition;
 import org.jarb.populator.excel.workbook.Sheet;
 import org.jarb.populator.excel.workbook.Workbook;
 import org.jarb.populator.excel.workbook.validator.FieldValidator;
@@ -36,7 +37,8 @@ public final class StoreColumn {
      */
     public static void storeValue(Workbook excel, ClassDefinition<?> classDefinition, ColumnDefinition columnDefinition, Integer rowPosition, ExcelRow excelRow)
             throws NoSuchFieldException {
-        Integer columnPosition = classDefinition.getWorksheetDefinition().getColumnPosition(columnDefinition.getColumnName());
+        WorksheetDefinition worksheetDefinition = WorksheetDefinition.analyzeWorksheet(classDefinition, excel);
+        Integer columnPosition = worksheetDefinition.getColumnPosition(columnDefinition.getColumnName());
 
         Sheet sheet = excel.getSheet(classDefinition.getTableName());
         Object cellValue = getCellValue(sheet, rowPosition, columnPosition);

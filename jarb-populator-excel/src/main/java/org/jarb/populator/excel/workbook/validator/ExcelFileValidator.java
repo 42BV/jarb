@@ -71,7 +71,7 @@ public final class ExcelFileValidator {
             ClassDefinition<?> classDefinition) {
         Set<String> columnNames = new HashSet<String>();
         columnNames.add(IDCOLUMNNAME);
-        for (ColumnDefinition columnDefinition : classDefinition.getPropertyDefinitions()) {
+        for (ColumnDefinition columnDefinition : classDefinition.getColumnDefinitions()) {
             if (columnDefinition.isAssociativeTable()) {
                 Set<String> associativeColumnNames = new HashSet<String>();
                 // Check associative table

@@ -16,7 +16,6 @@ import org.jarb.populator.excel.mapping.excelrow.ExcelRow;
 import org.jarb.populator.excel.mapping.excelrow.ExcelRowIntegration;
 import org.jarb.populator.excel.mapping.importer.ExcelImporter;
 import org.jarb.populator.excel.metamodel.ClassDefinition;
-import org.jarb.populator.excel.metamodel.WorksheetDefinition;
 import org.jarb.populator.excel.metamodel.generator.ClassDefinitionsGenerator;
 import org.jarb.populator.excel.workbook.Workbook;
 import org.jarb.populator.excel.workbook.reader.PoiExcelParser;
@@ -43,10 +42,8 @@ public class LoggerTest extends DefaultExcelTestDataCase {
         EntityType<?> entity = ClassDefinitionsGenerator.getEntityFromMetamodel(domain.entities.Customer.class, metamodel);
 
         customer = ClassDefinitionsGenerator.createSingleClassDefinitionFromMetamodel(getEntityManagerFactory(), entity, false);
-        customer.setWorksheetDefinition(WorksheetDefinition.analyzeWorksheet(customer, excel));
         ClassDefinition<?> sla = ClassDefinitionsGenerator.createSingleClassDefinitionFromMetamodel(getEntityManagerFactory(),
                 metamodel.entity(domain.entities.ServiceLevelAgreement.class), false);
-        sla.setWorksheetDefinition(WorksheetDefinition.analyzeWorksheet(sla, excel));
         classDefinitions.add(customer);
         classDefinitions.add(sla);
     }

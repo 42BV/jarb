@@ -45,7 +45,7 @@ public class SimpleEntityImporter implements EntityImporter {
     
     private <T> T loadEntity(Row row, ClassDefinition<T> classDefinition) {
         T entity = ReflectionUtils.instantiate(determineClass(row, classDefinition));
-        for(ColumnDefinition propertyDefinition : classDefinition.getPropertyDefinitions()) {
+        for(ColumnDefinition propertyDefinition : classDefinition.getColumnDefinitions()) {
             
         }
         return entity;
