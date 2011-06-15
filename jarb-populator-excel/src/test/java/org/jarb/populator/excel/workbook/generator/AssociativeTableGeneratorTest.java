@@ -1,7 +1,6 @@
 package org.jarb.populator.excel.workbook.generator;
 
 import java.io.IOException;
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -20,11 +19,10 @@ import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.jarb.populator.excel.DefaultExcelTestDataCase;
 import org.jarb.populator.excel.ExcelDataManager;
 import org.jarb.populator.excel.entity.query.DataReader;
-import org.jarb.populator.excel.metamodel.AnnotationType;
 import org.jarb.populator.excel.metamodel.ClassDefinition;
-import org.jarb.populator.excel.metamodel.JoinTable;
 import org.jarb.populator.excel.metamodel.ColumnDefinition;
 import org.jarb.populator.excel.metamodel.generator.ClassDefinitionsGenerator;
+import org.jarb.populator.excel.metamodel.generator.FieldAnalyzer;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -68,25 +66,16 @@ public class AssociativeTableGeneratorTest extends DefaultExcelTestDataCase {
     @Test
     public void testAssociativeColumnNameMistyped() throws InvalidFormatException, IOException, ClassNotFoundException, InstantiationException,
             IllegalAccessException, NoSuchFieldException, IllegalArgumentException, InvocationTargetException, SecurityException, NoSuchMethodException {
-        ColumnDefinition joinTable = new JoinTable("projects");
         Class<?> persistentClass = domain.entities.Employee.class;
         Field projectsField = persistentClass.getDeclaredField("projects");
-
-        for (Annotation annotation : projectsField.getAnnotations()) {
-            for (AnnotationType annotationType : AnnotationType.values()) {
-                if ((annotationType.name().equals("JOIN_TABLE")) && annotationType.getAnnotationClass().isAssignableFrom(annotation.getClass())) {
-                    joinTable = annotationType.createColumnDefinition("projects");
-                    joinTable.storeAnnotation(projectsField, annotation);
-                }
-            }
-        }
+        ColumnDefinition joinTable = FieldAnalyzer.analyzeField(projectsField).build();
 
         HSSFWorkbook workbook = new HSSFWorkbook();
         HSSFSheet sheet = workbook.createSheet("Test");
         HSSFRow row = sheet.createRow(0);
         row.createCell(0).setCellValue("neithers_id");
 
-        Class<?>[] paramTypes = { PersistenceUnitUtil.class, Object.class, HSSFSheet.class, HSSFRow.class, JoinTable.class, Object.class };
+        Class<?>[] paramTypes = { PersistenceUnitUtil.class, Object.class, HSSFSheet.class, HSSFRow.class, ColumnDefinition.class, Object.class };
         Object[] arguments = { null, null, sheet, null, joinTable, null };
         Method setCellValueByProperType = AssociativeTableGenerator.class.getDeclaredMethod("createAssociativeCollectionRow", paramTypes);
         setCellValueByProperType.setAccessible(true);

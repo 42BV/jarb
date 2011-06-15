@@ -5,7 +5,6 @@ import static org.junit.Assert.assertTrue;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -24,11 +23,11 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.Cell;
 import org.jarb.populator.excel.DefaultExcelTestDataCase;
-import org.jarb.populator.excel.metamodel.AnnotationType;
 import org.jarb.populator.excel.metamodel.ClassDefinition;
-import org.jarb.populator.excel.metamodel.JoinTable;
 import org.jarb.populator.excel.metamodel.ColumnDefinition;
+import org.jarb.populator.excel.metamodel.ColumnType;
 import org.jarb.populator.excel.metamodel.generator.ClassDefinitionsGenerator;
+import org.jarb.populator.excel.metamodel.generator.FieldAnalyzer;
 import org.jarb.populator.excel.workbook.Workbook;
 import org.jarb.populator.excel.workbook.reader.PoiExcelParser;
 import org.junit.Before;
@@ -66,29 +65,22 @@ public class BasicExcelFileGeneratorTest extends DefaultExcelTestDataCase {
         columnNames.add("company_vehicle_id");
         for (Iterator<Cell> it = workpage.getRow(0).cellIterator(); it.hasNext();) {
             Cell cell = it.next();
-            assertTrue(columnNames.contains(cell.getStringCellValue()));
+            assertTrue(cell.getStringCellValue() + " should not be stored.", columnNames.contains(cell.getStringCellValue()));
         }
     }
 
     @Test
     public void testCreateJoinTable() throws SecurityException, NoSuchFieldException, InstantiationException, IllegalAccessException {
         HSSFWorkbook workbook = new HSSFWorkbook();
-        ColumnDefinition joinTable = new JoinTable("projects");
         Class<?> persistentClass = domain.entities.Employee.class;
         Field projectsField = persistentClass.getDeclaredField("projects");
-        for (Annotation annotation : projectsField.getAnnotations()) {
-            for (AnnotationType annotationType : AnnotationType.values()) {
-                if ((annotationType.name().equals("JOIN_TABLE")) && annotationType.getAnnotationClass().isAssignableFrom(annotation.getClass())) {
-                    joinTable = annotationType.createColumnDefinition("projects");
-                    joinTable.storeAnnotation(projectsField, annotation);
-                }
-            }
-        }
+        ColumnDefinition projectsDefinition = FieldAnalyzer.analyzeField(projectsField).build();
+
         List<String> columns = new ArrayList<String>();
         columns.add("employee_id");
         columns.add("project_id");
 
-        BasicExcelFileGenerator.createJoinTable(joinTable, workbook);
+        BasicExcelFileGenerator.createJoinTable(projectsDefinition, workbook);
         for (Iterator<Cell> it = workbook.getSheet("employees_projects").getRow(0).cellIterator(); it.hasNext();) {
             Cell cell = it.next();
             assertTrue(columns.contains(cell.getStringCellValue()));
@@ -116,14 +108,14 @@ public class BasicExcelFileGeneratorTest extends DefaultExcelTestDataCase {
         manual.add("salary_month");
 
         for (String columnName : manual) {
-            assertTrue(columnNamesAutomated.contains(columnName));
+            assertTrue(columnName + " should have been stored.", columnNamesAutomated.contains(columnName));
         }
     }
 
     @Test
     public void testFailedCastToJoinTable() {
         for (ColumnDefinition columnDefinition : classDefinition.getColumnDefinitions()) {
-            if (!columnDefinition.isAssociativeTable()) {
+            if (columnDefinition.getType() != ColumnType.JOIN_TABLE) {
                 HSSFWorkbook workbook = new HSSFWorkbook();
                 BasicExcelFileGenerator.createJoinTable(columnDefinition, workbook);
                 break;

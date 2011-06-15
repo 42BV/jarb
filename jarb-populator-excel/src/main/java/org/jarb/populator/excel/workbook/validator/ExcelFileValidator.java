@@ -9,7 +9,7 @@ import java.util.Set;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.jarb.populator.excel.metamodel.ClassDefinition;
 import org.jarb.populator.excel.metamodel.ColumnDefinition;
-import org.jarb.populator.excel.metamodel.JoinTable;
+import org.jarb.populator.excel.metamodel.ColumnType;
 import org.jarb.populator.excel.metamodel.MetaModel;
 import org.jarb.populator.excel.workbook.Workbook;
 
@@ -64,18 +64,17 @@ public final class ExcelFileValidator {
             ClassDefinition<?> classDefinition) {
         Set<String> columnNames = new HashSet<String>();
         columnNames.add(IDCOLUMNNAME);
+        excelSheets.add(classDefinition.getTableName());
         for (ColumnDefinition columnDefinition : classDefinition.getColumnDefinitions()) {
-            if (columnDefinition.isAssociativeTable()) {
+            if (columnDefinition.getType() == ColumnType.JOIN_TABLE) {
                 Set<String> associativeColumnNames = new HashSet<String>();
                 // Check associative table
-                JoinTable joinTable = (JoinTable) columnDefinition;
-                associativeColumnNames.add(joinTable.getJoinColumnName());
-                associativeColumnNames.add(joinTable.getInverseJoinColumnName());
+                associativeColumnNames.add(columnDefinition.getJoinColumnName());
+                associativeColumnNames.add(columnDefinition.getInverseJoinColumnName());
                 verificationOutcomes.addAll(ColumnValidator.validateColumnsInSheet(excel, associativeColumnNames, columnDefinition.getColumnName()));
                 excelSheets.add(columnDefinition.getColumnName());
-            } else {
+            } else if(!columnDefinition.isGeneratedValue()) {
                 columnNames.add(columnDefinition.getColumnName());
-                excelSheets.add(classDefinition.getTableName());
             }
         }
         return columnNames;

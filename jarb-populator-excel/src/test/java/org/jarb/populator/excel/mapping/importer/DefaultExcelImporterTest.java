@@ -22,6 +22,7 @@ import org.jarb.populator.excel.DefaultExcelTestDataCase;
 import org.jarb.populator.excel.mapping.excelrow.ExcelRow;
 import org.jarb.populator.excel.metamodel.ClassDefinition;
 import org.jarb.populator.excel.metamodel.ColumnDefinition;
+import org.jarb.populator.excel.metamodel.ColumnType;
 import org.jarb.populator.excel.metamodel.generator.ClassDefinitionsGenerator;
 import org.jarb.populator.excel.workbook.Workbook;
 import org.jarb.populator.excel.workbook.reader.PoiExcelParser;
@@ -90,7 +91,7 @@ public class DefaultExcelImporterTest extends DefaultExcelTestDataCase {
         parseWorksheetMap = ExcelImporter.parseWorksheet(excel, classDefinition);
         for (Entry<Integer, ExcelRow> entry : parseWorksheetMap.entrySet()) {
             for (ColumnDefinition columnDefinition : entry.getValue().getValueMap().keySet()) {
-                assertFalse(columnDefinition.isDiscriminatorColumn());
+                assertTrue(columnDefinition.getType() != ColumnType.DISCRIMINATOR);
             }
         }
     }

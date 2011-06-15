@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.util.Assert;
 
 /**
@@ -73,7 +74,7 @@ public class ClassDefinition<T> {
     public ColumnDefinition getColumnDefinitionByFieldName(String fieldName) {
         ColumnDefinition result = null;
         for (ColumnDefinition columnDefinition : columnDefinitions) {
-            if (columnDefinition.getFieldName().equals(fieldName)) {
+            if (StringUtils.equalsIgnoreCase(fieldName, columnDefinition.getFieldName())) {
                 result = columnDefinition;
             }
         }
@@ -88,7 +89,7 @@ public class ClassDefinition<T> {
     public ColumnDefinition getColumnDefinitionByColumnName(String columnName) {
         ColumnDefinition result = null;
         for (ColumnDefinition columnDefinition : columnDefinitions) {
-            if (columnDefinition.getColumnName().equals(columnName)) {
+            if (StringUtils.equalsIgnoreCase(columnName, columnDefinition.getColumnName())) {
                 result = columnDefinition;
             }
         }
@@ -130,7 +131,7 @@ public class ClassDefinition<T> {
     public String getDiscriminatorColumnName() {
         String returnValue = null;
         for (ColumnDefinition columnDefinition : columnDefinitions) {
-            if (columnDefinition.isDiscriminatorColumn()) {
+            if (columnDefinition.getType() == ColumnType.DISCRIMINATOR) {
                 returnValue = columnDefinition.getColumnName();
             }
         }

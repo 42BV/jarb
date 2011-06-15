@@ -2,10 +2,8 @@ package org.jarb.populator.excel.mapping.importer;
 
 import org.jarb.populator.excel.mapping.excelrow.ExcelRow;
 import org.jarb.populator.excel.metamodel.ClassDefinition;
-import org.jarb.populator.excel.metamodel.Column;
-import org.jarb.populator.excel.metamodel.JoinColumn;
-import org.jarb.populator.excel.metamodel.JoinTable;
 import org.jarb.populator.excel.metamodel.ColumnDefinition;
+import org.jarb.populator.excel.metamodel.ColumnType;
 import org.jarb.populator.excel.workbook.Workbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,11 +33,11 @@ public final class StoreExcelRecordValue {
      */
     public static void storeValue(Workbook excel, ClassDefinition<?> classDefinition, ColumnDefinition columnDefinition, //
             Integer rowPosition, ExcelRow excelRow) throws NoSuchFieldException {
-        if (columnDefinition instanceof Column) {
+        if (columnDefinition.getType() == ColumnType.BASIC) {
             StoreColumn.storeValue(excel, classDefinition, columnDefinition, rowPosition, excelRow);
-        } else if (columnDefinition instanceof JoinTable) {
+        } else if (columnDefinition.getType() == ColumnType.JOIN_TABLE) {
             StoreJoinTable.storeValue(excel, classDefinition, columnDefinition, rowPosition, excelRow);
-        } else if (columnDefinition instanceof JoinColumn) {
+        } else if (columnDefinition.getType() == ColumnType.JOIN_COLUMN) {
             StoreJoinColumn.storeValue(excel, classDefinition, columnDefinition, rowPosition, excelRow);
         } else {
             LOGGER.warn("ColumnDefinition is not an instance of Column, JoinTable or JoinColumn. Cannot store data.");

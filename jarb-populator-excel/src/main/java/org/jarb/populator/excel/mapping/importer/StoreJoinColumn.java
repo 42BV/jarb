@@ -4,7 +4,6 @@ import org.jarb.populator.excel.mapping.excelrow.ExcelRow;
 import org.jarb.populator.excel.mapping.excelrow.JoinColumnKey;
 import org.jarb.populator.excel.mapping.excelrow.Key;
 import org.jarb.populator.excel.metamodel.ClassDefinition;
-import org.jarb.populator.excel.metamodel.JoinColumn;
 import org.jarb.populator.excel.metamodel.ColumnDefinition;
 import org.jarb.populator.excel.workbook.Sheet;
 import org.jarb.populator.excel.workbook.Workbook;
@@ -32,19 +31,21 @@ public final class StoreJoinColumn {
      * @param rowPosition Vertical position number of the excelRecord
      * @param excelRow ExcelRow to save to.
      */
-    public static void storeValue(Workbook excel, ClassDefinition<?> classDefinition, ColumnDefinition columnDefinition, //
-            Integer rowPosition, ExcelRow excelRow) {
-        if (columnDefinition instanceof JoinColumn) {
-            JoinColumn joinColumn = (JoinColumn) columnDefinition;
-            Sheet sheet = excel.getSheet(classDefinition.getTableName());
-            Double cellValue = (Double) sheet.getCellValueAt(rowPosition, joinColumn.getColumnName());
-            LOGGER.debug("field: " + joinColumn.getFieldName() + " column: " + joinColumn.getColumnName() + " value:[" + cellValue + "]");
+    public static void storeValue(Workbook excel, ClassDefinition<?> classDefinition, ColumnDefinition columnDefinition, Integer rowPosition, ExcelRow excelRow) {
+        Sheet sheet = excel.getSheet(classDefinition.getTableName());
+        Object cellValue = sheet.getCellValueAt(rowPosition, columnDefinition.getColumnName());
+        if(cellValue instanceof Double) {
+            LOGGER.debug("field: " + columnDefinition.getFieldName() + " column: " + columnDefinition.getColumnName() + " value:[" + cellValue + "]");
             if (cellValue != null) {
                 // Sets the Key
                 Key keyValue = new JoinColumnKey();
-                keyValue.setKeyValue(cellValue.intValue());
-                keyValue.setForeignClass(joinColumn.getField().getType());
-                excelRow.addValue(joinColumn, keyValue);
+                keyValue.setKeyValue(((Double) cellValue).intValue());
+                if(columnDefinition.getField() == null) {
+                    String columnName = columnDefinition.getColumnName();
+                    System.out.println(columnName);
+                }
+                keyValue.setForeignClass(columnDefinition.getField().getType());
+                excelRow.addValue(columnDefinition, keyValue);
             }
         }
     }

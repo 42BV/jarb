@@ -5,82 +5,75 @@ import java.lang.reflect.Field;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.jarb.populator.excel.metamodel.AnnotationType;
+import javax.persistence.Column;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+
+import org.apache.commons.lang.StringUtils;
 import org.jarb.populator.excel.metamodel.ColumnDefinition;
+import org.jarb.populator.excel.metamodel.ColumnType;
 
 /**
  * Creates a ColumnDefinition from a field.
  * @author Sander Benschop
- *
  */
-public final class FieldAnalyzer {
-
-    /** Private constructor. */
-    private FieldAnalyzer() {
-    }
-
-    /**
-     * Analyse the field's annotations and generate a ColumnDefinition from this field.
-     * @param field which contains the annotations
-     * @return columnDefinition with annotation, fieldname and field
-     * @throws InstantiationException Thrown when function is used on a class that cannot be instantiated (abstract or interface)
-     * @throws IllegalAccessException Thrown when function does not have access to the definition of the specified class, field, method or constructor 
-     */
-    public static ColumnDefinition analyzeField(final Field field) throws InstantiationException, IllegalAccessException {
-        if (field.getAnnotation(javax.persistence.GeneratedValue.class) != null) {
-            return null;
-        }
-
-        Set<Class<?>> annotationClasses = new HashSet<Class<?>>();
+public class FieldAnalyzer {
+    
+    public static ColumnDefinition.Builder analyzeField(final Field field) {
+        ColumnDefinition.Builder columnDefinitionBuilder = null;
+        final Set<Class<? extends Annotation>> annotationClasses = new HashSet<Class<? extends Annotation>>();
+        // Determine column type based on annotation
         for (Annotation annotation : field.getAnnotations()) {
-            for (AnnotationType annotationType : AnnotationType.values()) {
-                if (annotationType.getAnnotationClass().isAssignableFrom(annotation.getClass())) {
-                    return prepareColumnDefinition(field, annotation, annotationType);
-                }
+            if(Column.class.isAssignableFrom(annotation.getClass())) {
+                columnDefinitionBuilder = columnDefinition((Column) annotation, field);
+                break;
+            }
+            if(JoinColumn.class.isAssignableFrom(annotation.getClass())) {
+                columnDefinitionBuilder = joinColumnDefinition((JoinColumn) annotation, field);
+                break;
+            }
+            if(JoinTable.class.isAssignableFrom(annotation.getClass())) {
+                columnDefinitionBuilder = joinTableDefinition((JoinTable) annotation, field);
+                break;
             }
             annotationClasses.add(annotation.annotationType());
         }
-
-        if (!setContainsRelationalAnnotation(annotationClasses)) {
-            return prepareColumnDefinition(field);
+        // Whenever no annotation could be found, and the field is not relational, create a regular column
+        if (columnDefinitionBuilder == null && !containsRelationalAnnotation(annotationClasses)) {
+            columnDefinitionBuilder = ColumnDefinition.builder(field.getName(), ColumnType.BASIC);
         }
-
-        return null;
+        if(columnDefinitionBuilder != null) {
+            columnDefinitionBuilder.setField(field);
+            if (field.getAnnotation(javax.persistence.GeneratedValue.class) != null) {
+                columnDefinitionBuilder.valueIsGenerated();
+            }
+        }
+        return columnDefinitionBuilder;
+    }
+    
+    private static ColumnDefinition.Builder columnDefinition(Column annotation, Field field) {
+        String columnName = annotation.name();
+        if(StringUtils.isBlank(columnName)) {
+            columnName = field.getName();
+        }
+        return ColumnDefinition.builder(columnName, ColumnType.BASIC);
+    }
+    
+    private static ColumnDefinition.Builder joinColumnDefinition(JoinColumn annotation, Field field) {
+        return ColumnDefinition.builder(annotation.name(), ColumnType.JOIN_COLUMN);
+    }
+    
+    private static ColumnDefinition.Builder joinTableDefinition(JoinTable annotation, Field field) {
+        return ColumnDefinition.builder(annotation.name(), ColumnType.JOIN_TABLE)
+            .setJoinColumnName(annotation.joinColumns()[0].name())
+            .setInverseJoinColumnName(annotation.inverseJoinColumns()[0].name());
     }
 
-    /**
-     * Checks if a set with AnnotationTypeClasses holds a relational annotation.
-     * We're looking for either ManyToOne, ManyToMany or OneToMany.
-     * @param annotationTypeClasses Set of annotationTypeClasses
-     * @return True if any are present, false if not.
-     */
-    private static boolean setContainsRelationalAnnotation(Set<Class<?>> annotationTypeClasses) {
-        return (annotationTypeClasses.contains(javax.persistence.OneToMany.class) || (annotationTypeClasses.contains(javax.persistence.ManyToOne.class) || //
-        (annotationTypeClasses.contains(javax.persistence.ManyToMany.class))));
+    private static boolean containsRelationalAnnotation(Set<Class<? extends Annotation>> annotationTypeClasses) {
+        return
+            annotationTypeClasses.contains(javax.persistence.OneToMany.class) ||
+            annotationTypeClasses.contains(javax.persistence.ManyToOne.class) ||
+            annotationTypeClasses.contains(javax.persistence.ManyToMany.class);
     }
-
-    /**
-     * Prepares the ColumnDefinition by adding an annotation and calling the setColumnDefinitionField function.
-     * @param field Field the ColumnDefinition is made from
-     * @param annotation Annotation the ColumnDefinition is made from
-     * @param annotationType AnnotationType of the annotation
-     * @return ColumnDefinition ColumnDefinition with Annotation and Field values
-     * @throws InstantiationException Thrown when function is used on a class that cannot be instantiated (abstract or interface)
-     * @throws IllegalAccessException Thrown when function does not have access to the definition of the specified class, field, method or constructor 
-     */
-    private static ColumnDefinition prepareColumnDefinition(Field field, Annotation annotation, AnnotationType annotationType) {
-        ColumnDefinition columnDefinition = annotationType.createColumnDefinition(field.getName());
-        columnDefinition.storeAnnotation(field, annotation);
-        columnDefinition.setField(field);
-        return columnDefinition;
-    }
-
-    private static ColumnDefinition prepareColumnDefinition(Field field) {
-        AnnotationType annotationType = AnnotationType.COLUMN;
-        ColumnDefinition columnDefinition = annotationType.createColumnDefinition(field.getName());
-        columnDefinition.setColumnName(field.getName());
-        columnDefinition.setField(field);
-        return columnDefinition;
-    }
-
+    
 }

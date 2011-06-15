@@ -1,6 +1,7 @@
 package org.jarb.populator.excel.metamodel.generator;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -15,18 +16,18 @@ import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.jarb.populator.excel.DefaultExcelTestDataCase;
 import org.jarb.populator.excel.mapping.importer.WorksheetDefinition;
 import org.jarb.populator.excel.metamodel.ClassDefinition;
-import org.jarb.populator.excel.metamodel.Column;
 import org.jarb.populator.excel.metamodel.ColumnDefinition;
 import org.jarb.populator.excel.workbook.Workbook;
 import org.jarb.populator.excel.workbook.reader.PoiExcelParser;
 import org.junit.Before;
 import org.junit.Test;
 
+import domain.entities.Employee;
+
 public class FieldAnalyzerTest extends DefaultExcelTestDataCase {
 
     private Class<?> persistentClass;
     private ClassDefinition<?> classDefinition;
-    private ColumnDefinition testNameColumn = new Column("name");
     private Workbook excel;
     private Field nameField;
     private Field idField;
@@ -55,20 +56,29 @@ public class FieldAnalyzerTest extends DefaultExcelTestDataCase {
     }
 
     @Test
-    public void testAnalyzeField() throws InstantiationException, IllegalAccessException {
-        //Test a field where javax.persistence.GeneratedValue.class is not null
-        assertEquals(null, FieldAnalyzer.analyzeField(idField));
+    public void testColumn() {    
+        ColumnDefinition testNameColumn = FieldAnalyzer.analyzeField(nameField).build();
+        assertEquals("first_name", testNameColumn.getColumnName());
+        assertEquals("name", testNameColumn.getFieldName());
+    }
+    
 
-        //Test a field which has annotations but where javax.persistence.GeneratedValue.class is null        
-        testNameColumn.setField(nameField);
-        testNameColumn.setColumnName("first_name");
-        assertEquals(testNameColumn.getColumnName(), FieldAnalyzer.analyzeField(nameField).getColumnName());
-        assertEquals(testNameColumn.getFieldName(), FieldAnalyzer.analyzeField(nameField).getFieldName());
+    @Test
+    public void testJoinTable() throws SecurityException, NoSuchFieldException {
+        ColumnDefinition definition = FieldAnalyzer.analyzeField(Employee.class.getDeclaredField("projects")).build();
+        assertEquals("project_id", definition.getInverseJoinColumnName());
+        assertEquals("employee_id", definition.getJoinColumnName());
+    }
+    
+    @Test
+    public void testGeneratedValue() {
+        assertTrue(FieldAnalyzer.analyzeField(idField).build().isGeneratedValue());
     }
 
     @Test
     public void testAnalyzeFieldNull() throws InstantiationException, IllegalAccessException, SecurityException, NoSuchFieldException {
         assertEquals(null, FieldAnalyzer.analyzeField(domain.entities.Document.class.getDeclaredField("documentRevisions")));
     }
+    
 
 }

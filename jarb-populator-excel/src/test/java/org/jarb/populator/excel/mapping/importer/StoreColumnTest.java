@@ -15,7 +15,6 @@ import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.jarb.populator.excel.DefaultExcelTestDataCase;
 import org.jarb.populator.excel.mapping.excelrow.ExcelRow;
 import org.jarb.populator.excel.metamodel.ClassDefinition;
-import org.jarb.populator.excel.metamodel.Column;
 import org.jarb.populator.excel.metamodel.ColumnDefinition;
 import org.jarb.populator.excel.metamodel.generator.ClassDefinitionsGenerator;
 import org.jarb.populator.excel.metamodel.generator.FieldAnalyzer;
@@ -62,10 +61,8 @@ public class StoreColumnTest extends DefaultExcelTestDataCase {
         excelRecord2 = new ExcelRow(classDefinition.getPersistentClass());
 
         rowPosition = 1;
-        Column column = (Column) FieldAnalyzer.analyzeField(nameField);
-        column.setField(nameField);
-        column.setColumnName("name");
-
+        ColumnDefinition column = FieldAnalyzer.analyzeField(nameField).build();
+        
         //StoreExcelRecordValue.storeValue(excel, classDefinition, column, rowPosition, excelRow);
         StoreJoinColumn.storeValue(excel, classDefinition, column, rowPosition, excelRow);
         StoreJoinTable.storeValue(excel, classDefinition, column, rowPosition, excelRecord2);
@@ -80,7 +77,7 @@ public class StoreColumnTest extends DefaultExcelTestDataCase {
         Metamodel metamodel = getEntityManagerFactory().getMetamodel();
         EntityType<?> entity = ClassDefinitionsGenerator.getEntityFromMetamodel(domain.entities.Customer.class, metamodel);
 
-        ColumnDefinition column = FieldAnalyzer.analyzeField(nameField);
+        ColumnDefinition column = FieldAnalyzer.analyzeField(nameField).build();
         classDefinition = ClassDefinitionsGenerator.createSingleClassDefinitionFromMetamodel(getEntityManagerFactory(), entity, false);
 
         worksheetDefinition = new WorksheetDefinition();

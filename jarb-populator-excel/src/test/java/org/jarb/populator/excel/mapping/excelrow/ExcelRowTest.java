@@ -46,7 +46,7 @@ public class ExcelRowTest extends DefaultExcelTestDataCase {
         classDefinition = ClassDefinitionsGenerator.createSingleClassDefinitionFromMetamodel(getEntityManagerFactory(), entity, false);
         excelRow = new ExcelRow(classDefinition.getPersistentClass());
 
-        ColumnDefinition columnDefinition = FieldAnalyzer.analyzeField(persistentClass.getDeclaredField("id"));
+        ColumnDefinition columnDefinition = FieldAnalyzer.analyzeField(persistentClass.getDeclaredField("id")).build();
 
         Double cellValue = (Double) excel.getSheet(classDefinition.getTableName()).getCellValueAt(2, 0);
         Key keyValue = new JoinColumnKey();

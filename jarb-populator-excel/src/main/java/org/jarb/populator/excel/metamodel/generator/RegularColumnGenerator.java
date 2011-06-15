@@ -23,13 +23,8 @@ public final class RegularColumnGenerator {
      * @throws IllegalAccessException Thrown when function does not have access to the definition of the specified class, field, method or constructor 
      */
     public static ColumnDefinition createColumnDefinitionForRegularField(Field field) throws InstantiationException, IllegalAccessException {
-        ColumnDefinition columnDefinition = FieldAnalyzer.analyzeField(field);
-        if (columnDefinition != null) {
-            //Is only null if the field is a generated value.
-            columnDefinition.setEmbeddedAttribute(false);
-            //classDefinition.addColumnDefinition(columnDefinition);
-        }
-        return columnDefinition;
+        ColumnDefinition.Builder columnDefinitionBuilder = FieldAnalyzer.analyzeField(field);
+        return columnDefinitionBuilder != null ? columnDefinitionBuilder.build() : null;
     }
 
 }

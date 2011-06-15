@@ -1,48 +1,38 @@
 package org.jarb.populator.excel.mapping.importer;
 
-import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 
-import javax.persistence.EntityManagerFactory;
 import javax.persistence.metamodel.EntityType;
 import javax.persistence.metamodel.Metamodel;
 
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+import org.jarb.populator.excel.DefaultExcelTestDataCase;
 import org.jarb.populator.excel.mapping.excelrow.ExcelRow;
-import org.jarb.populator.excel.metamodel.AnnotationType;
 import org.jarb.populator.excel.metamodel.ClassDefinition;
 import org.jarb.populator.excel.metamodel.ColumnDefinition;
 import org.jarb.populator.excel.metamodel.generator.ClassDefinitionsGenerator;
+import org.jarb.populator.excel.metamodel.generator.FieldAnalyzer;
 import org.jarb.populator.excel.workbook.Workbook;
 import org.jarb.populator.excel.workbook.reader.PoiExcelParser;
 import org.junit.Before;
 import org.junit.Test;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-public class StoreExcelRecordValueTest {
+import domain.entities.Employee;
 
-    private Class<?> persistentClass;
-    private ClassDefinition<?> classDefinition;
+public class StoreExcelRecordValueTest extends DefaultExcelTestDataCase {
     private Workbook excel;
     private ExcelRow excelRow;
-    private Field projectsField;
     private Integer rowPosition;
-    private ClassPathXmlApplicationContext context;
-    private EntityManagerFactory entityManagerFactory;
 
     @Before
     public void setupTestStoreExcelRecordValue() throws InvalidFormatException, IOException, SecurityException, NoSuchMethodException,
             IllegalArgumentException, InstantiationException, IllegalAccessException, InvocationTargetException {
         excel = new PoiExcelParser().parse(new FileInputStream("src/test/resources/ExcelUnitTesting.xls"));
-
-        context = new ClassPathXmlApplicationContext("test-context.xml");
-        entityManagerFactory = (EntityManagerFactory) context.getBean("entityManagerFactory");
 
         //For code coverage purposes:
         Constructor<StoreExcelRecordValue> constructor = StoreExcelRecordValue.class.getDeclaredConstructor();
@@ -51,31 +41,16 @@ public class StoreExcelRecordValueTest {
     }
 
     @Test
-    public void testStoreNullClass() throws SecurityException, NoSuchFieldException, InstantiationException, IllegalAccessException, ClassNotFoundException {
-        persistentClass = domain.entities.Employee.class;
-
-        projectsField = persistentClass.getDeclaredField("projects");
-
-        Metamodel metamodel = entityManagerFactory.getMetamodel();
-        EntityType<?> entity = ClassDefinitionsGenerator.getEntityFromMetamodel(domain.entities.Employee.class, metamodel);
-
-        classDefinition = ClassDefinitionsGenerator.createSingleClassDefinitionFromMetamodel(entityManagerFactory, entity, false);
-
-        excelRow = new ExcelRow(classDefinition.getPersistentClass());
-
-        ColumnDefinition joinTable;
-        for (Annotation annotation : projectsField.getAnnotations()) {
-            for (AnnotationType annotationType : AnnotationType.values()) {
-                if ((annotationType.name().equals("JOIN_TABLE")) && annotationType.getAnnotationClass().isAssignableFrom(annotation.getClass())) {
-                    joinTable = annotationType.createColumnDefinition("projects");
-                    joinTable.storeAnnotation(projectsField, annotation);
-                }
-            }
-        }
+    public void testStoreNullClass() throws SecurityException, NoSuchFieldException, InstantiationException, IllegalAccessException, ClassNotFoundException {       
+        Metamodel metamodel = getEntityManagerFactory().getMetamodel();
+        EntityType<?> entity = ClassDefinitionsGenerator.getEntityFromMetamodel(Employee.class, metamodel);
+        ClassDefinition<?> classDefinition = ClassDefinitionsGenerator.createSingleClassDefinitionFromMetamodel(getEntityManagerFactory(), entity, false);
+        
         rowPosition = 3;
-        ColumnDefinition columnDefinition = null;
+        ColumnDefinition columnDefinition = FieldAnalyzer.analyzeField(Employee.class.getDeclaredField("projects")).build();
+        excelRow = new ExcelRow(Employee.class);
         StoreExcelRecordValue.storeValue(excel, classDefinition, columnDefinition, rowPosition, excelRow);
-        assertFalse(excelRow.getValueMap().containsKey(columnDefinition));
+        assertTrue(excelRow.getValueMap().containsKey(columnDefinition));
     }
 
 }

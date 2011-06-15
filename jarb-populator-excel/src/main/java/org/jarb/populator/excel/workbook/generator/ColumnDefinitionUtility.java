@@ -5,6 +5,7 @@ import java.util.Set;
 
 import org.jarb.populator.excel.metamodel.ClassDefinition;
 import org.jarb.populator.excel.metamodel.ColumnDefinition;
+import org.jarb.populator.excel.metamodel.ColumnType;
 
 /**
  * Can gather all the associative Columndefinitions (JoinTable's) from a ClassDefinition.
@@ -28,7 +29,7 @@ public final class ColumnDefinitionUtility {
         //Check for @JoinTables. Iterating over all columnDefinitions was also considered but this makes searching for cells problematic
         //if the cells are @JoinTables (which means they're not in this sheet.
         for (ColumnDefinition columnDefinition : classDefinition.getColumnDefinitions()) {
-            if (columnDefinition.isAssociativeTable()) {
+            if (columnDefinition.getType() == ColumnType.JOIN_TABLE) {
                 associativeColumnDefinitions.add(columnDefinition);
             }
         }

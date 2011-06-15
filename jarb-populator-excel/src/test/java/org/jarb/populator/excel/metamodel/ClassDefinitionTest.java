@@ -37,10 +37,7 @@ public class ClassDefinitionTest extends DefaultExcelTestDataCase {
     public void testAddGetColumnDefinitions() throws InstantiationException, IllegalAccessException {
         List<ColumnDefinition> columnDefinitions = new ArrayList<ColumnDefinition>();
         for (Field field : Customer.class.getDeclaredFields()) {
-            ColumnDefinition columnDefinition = FieldAnalyzer.analyzeField(field);
-            if (columnDefinition != null) {
-                columnDefinitions.add(columnDefinition);
-            }
+            columnDefinitions.add(FieldAnalyzer.analyzeField(field).build());
         }
         classDefinitionBuilder.includeColumns(columnDefinitions);
         List<ColumnDefinition> resultColumnDefinitions = classDefinitionBuilder.build().getColumnDefinitions();

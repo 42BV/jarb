@@ -1,7 +1,8 @@
 package org.jarb.populator.excel.metamodel;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
+
+import org.springframework.util.Assert;
 
 /**
  * Abstract class containing a columnName, fieldName and a field.
@@ -9,132 +10,136 @@ import java.lang.reflect.Field;
  * @author Sander Benschop
  * 
  */
-public abstract class ColumnDefinition {
-    /** The field Object belonging to the columnDefinition. */
+public class ColumnDefinition {
+    private final ColumnType type;
+    private final String columnName;
     private Field field;
-    /** The name of the field belonging to the columnDefinition. */
-    private final String fieldName;
-    /** The name of the column belonging to the columnDefinition. */
-    private String columnName;
-    /** Path to the embeddable that contains this column. **/
-    private FieldPath embeddableFieldPath;
-    /** True if it's an Embedded attribute, in this case the data will have to be stored into an Object inside Excelrecord. */
-    private boolean embeddedAttribute;
-    /** True if it's a discriminator column. */
-    private boolean discriminatorColumn;
+    private FieldPath embeddablePath;
+    private String joinColumnName;
+    private String inverseJoinColumnName;
+    private boolean generatedValue;
 
-    public ColumnDefinition(String fieldName) {
-        this.fieldName = fieldName;
-    }
-
-    /** Abstract void to store an annotation.
-     * @param annotation annotation
-     */
-    public abstract void storeAnnotation(final Field field, final Annotation annotation);
-
-    /**
-     * Used to determine if a certain columnDefinitions is an associative table.
-     * For example: if a many-to-many relation between employees and projects is present,
-     * the associative table might be employees_projects. This is seen by checking the annotationTypes.
-     * @return True if ColumnDefinition is of annotationType ManyToMany or JoinTable, if not it returns as false.
-     */
-    public boolean isAssociativeTable() {
-        boolean returnValue = false;
-        if (!isDiscriminatorColumn()) {
-            for (Annotation annotation : this.getField().getAnnotations()) {
-                if (("javax.persistence.ManyToMany").equals(annotation.annotationType().getName())
-                        || ("javax.persistence.JoinTable".equals(annotation.annotationType().getName()))) {
-                    returnValue = true;
-                }
-            }
-        }
-        return returnValue;
-    }
-
-    /**
-     * Sets the field belonging to the columnDefinition.
-     * @param field Object
-     */
-    public void setField(final Field field) {
-        this.field = field;
-    }
-
-    /**
-     * Returns the field object belonging to the columnDefinition.
-     * @return field Object
-     */
-    public Field getField() {
-        return this.field;
-    }
-
-    /**
-     * Sets the columnName belonging to the columnDefinition.
-     * @param columnName String
-     */
-    public void setColumnName(final String columnName) {
+    private ColumnDefinition(String columnName, ColumnType type) {
+        Assert.hasText(columnName, "Column name cannot be empty");
+        Assert.notNull(type, "Column type cannot be null");
         this.columnName = columnName;
-    }
-
-    /**
-     * Returns the columnName belonging to the columnDefinition.
-     * @return name of column
-     */
-    public String getColumnName() {
-        return this.columnName;
-    }
-
-    /**
-     * Returns the fieldName belonging to the columnDefinition.
-     * @return fieldName String
-     */
-    public String getFieldName() {
-        return this.fieldName;
-    }
-
-    /**
-     * Sets embeddedAttribute to true, this is necessary when adding data to an Excelrecord with an embedded attribute object.
-     * @param embeddedAttribute Set to true if ColumnDefinition holds an Embedded attribute
-     */
-    public void setEmbeddedAttribute(boolean embeddedAttribute) {
-        this.embeddedAttribute = embeddedAttribute;
-    }
-
-    /**
-     * Returns true if ColumnDefinition holds an embedded attribute. This is necessary when adding data to an Excelrecord.
-     * @return True if ColumnDeftinition hold an embedded attribute.
-     */
-    public boolean isEmbeddedAttribute() {
-        return embeddedAttribute;
-    }
-
-    public FieldPath getEmbeddableFieldPath() {
-        return embeddableFieldPath;
+        this.type = type;
     }
     
-    public void setEmbeddableFieldPath(FieldPath embeddableFieldPath) {
-        this.embeddableFieldPath = embeddableFieldPath;
+    public static ColumnDefinition.Builder builder(String columnName) {
+        return builder(columnName, ColumnType.BASIC);
+    }
+    
+    public static ColumnDefinition.Builder builder(String columnName, ColumnType type) {
+        return new ColumnDefinition.Builder(type).setColumnName(columnName);
+    }
+    
+    public static ColumnDefinition discriminator(String columnName) {
+        return new ColumnDefinition(columnName, ColumnType.DISCRIMINATOR);
+    }
+    
+    public ColumnType getType() {
+        return type;
+    }
+    
+    public boolean hasField() {
+        return field != null;
     }
 
-    /** Set to true if the column is a discriminator column.
-     * @param discriminatorColumn Whether or not it's a discriminator column
-     */
-    public void setDiscriminatorColumn(boolean discriminatorColumn) {
-        this.discriminatorColumn = discriminatorColumn;
+    public Field getField() {
+        return field;
+    }
+    
+    public String getFieldName() {
+        return field != null ? field.getName() : null;
     }
 
-    /** Returns true if the column is a discriminator column.
-     * @return True or false, depending on if it's a discriminator column or not
-     */
-    public boolean isDiscriminatorColumn() {
-        return discriminatorColumn;
+    public String getColumnName() {
+        return columnName;
     }
 
+    public boolean isEmbeddedAttribute() {
+        return embeddablePath != null && !embeddablePath.isEmpty();
+    }
+
+    public FieldPath getEmbeddablePath() {
+        return embeddablePath;
+    }
+    
+    public String getJoinColumnName() {
+        return joinColumnName;
+    }
+    
+    public String getInverseJoinColumnName() {
+        return inverseJoinColumnName;
+    }
+    
+    public boolean isGeneratedValue() {
+        return generatedValue;
+    }
+    
+    public static class Builder {
+        private final ColumnType type;
+        private String columnName;
+        private Field field;
+        private FieldPath embeddablePath;
+        private String joinColumnName;
+        private String inverseJoinColumnName;
+        private boolean generatedValue = false;
+        
+        public Builder(ColumnType type) {
+            this.type = type;
+        }
+        
+        public Builder setColumnName(String columnName) {
+            this.columnName = columnName;
+            return this;
+        }
+        
+        public Builder valueIsGenerated() {
+            generatedValue = true;
+            return this;
+        }
+        
+        public Builder setField(Field field) {
+            this.field = field;
+            return this;
+        }
+        
+        public Builder setEmbeddablePath(FieldPath embeddablePath) {
+            this.embeddablePath = embeddablePath;
+            return this;
+        }
+        
+        public Builder setJoinColumnName(String joinColumnName) {
+            Assert.state(type == ColumnType.JOIN_TABLE, "Can only configure a join column name on a join table column.");
+            this.joinColumnName = joinColumnName;
+            return this;
+        }
+        
+        public Builder setInverseJoinColumnName(String inverseJoinColumnName) {
+            Assert.state(type == ColumnType.JOIN_TABLE, "Can only configure an inverse join column name on a join table column.");
+            this.inverseJoinColumnName = inverseJoinColumnName;
+            return this;
+        }
+        
+        public ColumnDefinition build() {
+            ColumnDefinition definition = new ColumnDefinition(columnName, type);
+            definition.field = field;
+            definition.embeddablePath = embeddablePath;
+            definition.joinColumnName = joinColumnName;
+            definition.inverseJoinColumnName = inverseJoinColumnName;
+            definition.generatedValue = generatedValue;
+            return definition;
+        }
+    }
+    
     /**
      * {@inheritDoc}
      */
     @Override
     public String toString() {
-        return fieldName;
+        return String.format("Column: %s (%s)", columnName, getFieldName());
     }
 
 }

@@ -1,6 +1,5 @@
 package org.jarb.populator.excel.metamodel.generator;
 
-import org.jarb.populator.excel.metamodel.Column;
 import org.jarb.populator.excel.metamodel.ColumnDefinition;
 
 /**
@@ -23,10 +22,7 @@ public final class DiscriminatorColumnGenerator {
         //Add a discriminator column, use the one annotated in the superclass if available.
         //Field name will be equal to column name cause this is necessary upon persisting
         String discriminatorColumnName = getDiscriminatorColumnName(persistentClass);
-        ColumnDefinition columnDefinition = new Column(discriminatorColumnName);
-        columnDefinition.setColumnName(discriminatorColumnName);
-        columnDefinition.setDiscriminatorColumn(true);
-        return columnDefinition;
+        return ColumnDefinition.discriminator(discriminatorColumnName);
     }
 
     /**

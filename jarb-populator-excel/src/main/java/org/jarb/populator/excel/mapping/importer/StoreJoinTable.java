@@ -9,10 +9,11 @@ import org.jarb.populator.excel.mapping.excelrow.ExcelRow;
 import org.jarb.populator.excel.mapping.excelrow.JoinTableKey;
 import org.jarb.populator.excel.mapping.excelrow.Key;
 import org.jarb.populator.excel.metamodel.ClassDefinition;
-import org.jarb.populator.excel.metamodel.JoinTable;
 import org.jarb.populator.excel.metamodel.ColumnDefinition;
 import org.jarb.populator.excel.workbook.Sheet;
 import org.jarb.populator.excel.workbook.Workbook;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Stores the value of a JoinTable (associative table).
@@ -21,6 +22,7 @@ import org.jarb.populator.excel.workbook.Workbook;
  *
  */
 public final class StoreJoinTable {
+    private static final Logger LOGGER = LoggerFactory.getLogger(StoreJoinTable.class);
 
     /** Private constructor. */
     private StoreJoinTable() {
@@ -37,21 +39,15 @@ public final class StoreJoinTable {
      * @param rowPosition Vertical position number of the excelRecord
      * @param excelRow ExcelRow to save to.
      */
-    public static void storeValue(Workbook excel, ClassDefinition<?> classDefinition, ColumnDefinition columnDefinition, //
-            Integer rowPosition, ExcelRow excelRow) {
+    public static void storeValue(Workbook excel, ClassDefinition<?> classDefinition, ColumnDefinition columnDefinition, Integer rowPosition, ExcelRow excelRow) {
+        Sheet mainSheet = excel.getSheet(classDefinition.getTableName());
+        Double code = (Double) mainSheet.getCellValueAt(rowPosition, IDCOLUMNNAME);
+        Sheet joinSheet = excel.getSheet(columnDefinition.getColumnName());
 
-        if (columnDefinition instanceof JoinTable) {
-            JoinTable joinTable = (JoinTable) columnDefinition;
-
-            Sheet mainSheet = excel.getSheet(classDefinition.getTableName());
-            Double code = (Double) mainSheet.getCellValueAt(rowPosition, mainSheet.indexOfColumn(IDCOLUMNNAME));
-            Sheet joinSheet = excel.getSheet(joinTable.getColumnName());
-
-            if (joinSheet != null) {
-                Set<Integer> foreignKeyList = createForeignKeyList(joinSheet, joinTable, code);
-                Key keyList = createJoinTableKey(joinTable, foreignKeyList);
-                excelRow.addValue(joinTable, keyList);
-            }
+        if (joinSheet != null) {
+            Set<Integer> foreignKeyList = createForeignKeyList(joinSheet, columnDefinition, code);
+            Key keyList = createJoinTableKey(columnDefinition, foreignKeyList);
+            excelRow.addValue(columnDefinition, keyList);
         }
     }
 
@@ -61,7 +57,7 @@ public final class StoreJoinTable {
      * @param foreignKeyList List of foreign keys
      * @return JoinTable key instance
      */
-    private static Key createJoinTableKey(JoinTable joinTable, Set<Integer> foreignKeyList) {
+    private static Key createJoinTableKey(ColumnDefinition joinTable, Set<Integer> foreignKeyList) {
         Key keyList = new JoinTableKey();
         keyList.setKeyValue(foreignKeyList);
         Type[] types = ((ParameterizedType) joinTable.getField().getGenericType()).getActualTypeArguments();
@@ -76,12 +72,17 @@ public final class StoreJoinTable {
      * @param code Id number
      * @return Set of foreign keys
      */
-    private static Set<Integer> createForeignKeyList(Sheet sheet, JoinTable joinTable, Double code) {
+    private static Set<Integer> createForeignKeyList(Sheet sheet, ColumnDefinition joinTable, Double code) {
         Set<Integer> foreignKeyList = new HashSet<Integer>();
         for (Integer newRowPosition = 1; newRowPosition <= sheet.getLastRowNumber(); newRowPosition++) {
-            if (((Double) sheet.getCellValueAt(newRowPosition, joinTable.getJoinColumnName())).equals(code)) {
-                Integer foreignKey = ((Double) sheet.getCellValueAt(newRowPosition, joinTable.getInverseJoinColumnName())).intValue();
-                foreignKeyList.add(foreignKey);
+            Object joinColumnValue = sheet.getCellValueAt(newRowPosition, joinTable.getJoinColumnName());
+            if(joinColumnValue instanceof Double && joinColumnValue.equals(code)) {
+                Object inverseJoinColumnValue = sheet.getCellValueAt(newRowPosition, joinTable.getInverseJoinColumnName());
+                if(inverseJoinColumnValue instanceof Number) {
+                    foreignKeyList.add(((Number) inverseJoinColumnValue).intValue());
+                } else {
+                    LOGGER.warn("Could not convert {} foreign key value to number.", inverseJoinColumnValue);
+                }
             }
         }
         return foreignKeyList;

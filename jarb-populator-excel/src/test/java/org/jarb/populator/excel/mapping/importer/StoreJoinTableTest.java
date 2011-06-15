@@ -5,7 +5,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -16,7 +15,6 @@ import javax.persistence.metamodel.Metamodel;
 
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.jarb.populator.excel.mapping.excelrow.ExcelRow;
-import org.jarb.populator.excel.metamodel.AnnotationType;
 import org.jarb.populator.excel.metamodel.ClassDefinition;
 import org.jarb.populator.excel.metamodel.ColumnDefinition;
 import org.jarb.populator.excel.metamodel.generator.ClassDefinitionsGenerator;
@@ -67,18 +65,8 @@ public class StoreJoinTableTest {
 
         excelRow = new ExcelRow(classDefinition.getPersistentClass());
 
-        ColumnDefinition joinTable;
-        for (Annotation annotation : projectsField.getAnnotations()) {
-            for (AnnotationType annotationType : AnnotationType.values()) {
-                if ((annotationType.name().equals("JOIN_TABLE")) && annotationType.getAnnotationClass().isAssignableFrom(annotation.getClass())) {
-                    joinTable = annotationType.createColumnDefinition("projects");
-                    joinTable.storeAnnotation(projectsField, annotation);
-                }
-            }
-        }
-        joinTable = FieldAnalyzer.analyzeField(projectsField);
-        joinTable.setField(projectsField);
-        joinTable.setColumnName("TestSheet4");
+        ColumnDefinition joinTable = FieldAnalyzer.analyzeField(projectsField).build();
+
         rowPosition = 3;
         assertFalse(excelRow.getValueMap().containsKey(joinTable));
         StoreExcelRecordValue.storeValue(excel, classDefinition, joinTable, rowPosition, excelRow);

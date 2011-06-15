@@ -7,8 +7,8 @@ import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.jarb.populator.excel.metamodel.ClassDefinition;
-import org.jarb.populator.excel.metamodel.JoinTable;
 import org.jarb.populator.excel.metamodel.ColumnDefinition;
+import org.jarb.populator.excel.metamodel.ColumnType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,12 +46,12 @@ public final class BasicExcelFileGenerator {
         columnNumber++;
 
         for (ColumnDefinition columnDefinition : classDefinition.getColumnDefinitions()) {
-            if (!columnDefinition.isAssociativeTable()) {
+            if (columnDefinition.getType() == ColumnType.JOIN_TABLE) {
+                createJoinTable(columnDefinition, workbook);
+            } else if(!columnDefinition.isGeneratedValue()) {
                 String columnName = columnDefinition.getColumnName();
                 excelRow.createCell(columnNumber).setCellValue(columnName);
                 columnNumber++;
-            } else {
-                createJoinTable(columnDefinition, workbook);
             }
         }
         return workpage;
@@ -62,17 +62,15 @@ public final class BasicExcelFileGenerator {
      * @param columnDefinition to be turned into an associative table.
      */
     protected static void createJoinTable(ColumnDefinition columnDefinition, HSSFWorkbook workbook) {
-        if (columnDefinition instanceof JoinTable) {
-            JoinTable joinTable = (JoinTable) columnDefinition;
-
+        if (columnDefinition.getType() == ColumnType.JOIN_TABLE) {
             HSSFSheet workpage = workbook.createSheet(columnDefinition.getColumnName());
             HSSFRow excelRow = workpage.createRow(0);
 
             /* At this point a JoinTable can only have one joinColumnName and one inverseJoinColumnName. 
              * Later on, we're going to have to iterate over a set or list.
              */
-            excelRow.createCell(0).setCellValue(joinTable.getJoinColumnName());
-            excelRow.createCell(1).setCellValue(joinTable.getInverseJoinColumnName());
+            excelRow.createCell(0).setCellValue(columnDefinition.getJoinColumnName());
+            excelRow.createCell(1).setCellValue(columnDefinition.getInverseJoinColumnName());
         } else {
             LOGGER.warn("Failed to cast [" + columnDefinition.getColumnName() + "] as JoinTable");
         }

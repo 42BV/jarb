@@ -33,11 +33,12 @@ public final class EmbeddedColumnGenerator {
         // This means there are embedded attributes available. Find all attributes in the embeddable class.
         for (Field embeddedPropertyField : embeddableField.getType().getDeclaredFields()) {
             if (!ReflectionUtils.isPublicStaticFinal(embeddedPropertyField)) {
-                ColumnDefinition columnDefinition = FieldAnalyzer.analyzeField(embeddedPropertyField);
-                columnDefinition.setEmbeddableFieldPath(FieldPath.singleField(embeddableField));
-                columnDefinition.setEmbeddedAttribute(true);
-                overrideAttributes(embeddableField, columnDefinition, embeddedPropertyField);
-                columnDefinitions.add(columnDefinition);
+                ColumnDefinition.Builder columnDefinitionBuilder = FieldAnalyzer.analyzeField(embeddedPropertyField);
+                if(columnDefinitionBuilder != null) {
+                    columnDefinitionBuilder.setEmbeddablePath(FieldPath.singleField(embeddableField));
+                    overrideAttributes(embeddableField, columnDefinitionBuilder, embeddedPropertyField);
+                    columnDefinitions.add(columnDefinitionBuilder.build());
+                }
             }
         }
         return columnDefinitions;
@@ -49,23 +50,13 @@ public final class EmbeddedColumnGenerator {
      * @param columnDefinition ColumnDefinition for embedded field
      * @param embeddedField EmbeddedField
      */
-    private static void overrideAttributes(Field field, ColumnDefinition columnDefinition, Field embeddedField) {
+    private static void overrideAttributes(Field field, ColumnDefinition.Builder columnDefinitionBuilder, Field embeddedField) {
         javax.persistence.AttributeOverrides annotation = field.getAnnotation(javax.persistence.AttributeOverrides.class);
         if (annotation != null) {
-            overrideColumnName(columnDefinition, embeddedField, annotation);
-        }
-    }
-
-    /**
-     * Overrides the Column name of an embedded object if an @OverrideAttributes annotation is present.
-     * @param columnDefinition ColumnDefinition to set the column name for
-     * @param embeddedField Embedded field
-     * @param annotation @OverrideAttributes Annotation 
-     */
-    private static void overrideColumnName(ColumnDefinition columnDefinition, Field embeddedField, javax.persistence.AttributeOverrides annotation) {
-        for (AttributeOverride overrideAnnotation : annotation.value()) {
-            if (overrideAnnotation.name().equals(embeddedField.getName())) {
-                columnDefinition.setColumnName(overrideAnnotation.column().name());
+            for (AttributeOverride overrideAnnotation : annotation.value()) {
+                if (overrideAnnotation.name().equals(embeddedField.getName())) {
+                    columnDefinitionBuilder.setColumnName(overrideAnnotation.column().name());
+                }
             }
         }
     }

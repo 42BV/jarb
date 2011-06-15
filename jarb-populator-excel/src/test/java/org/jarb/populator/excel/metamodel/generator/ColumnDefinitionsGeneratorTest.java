@@ -3,6 +3,7 @@ package org.jarb.populator.excel.metamodel.generator;
 import static org.junit.Assert.assertEquals;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashSet;
 import java.util.Set;
@@ -11,26 +12,22 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.metamodel.EntityType;
 import javax.persistence.metamodel.Metamodel;
 
+import org.jarb.populator.excel.DefaultExcelTestDataCase;
 import org.jarb.populator.excel.metamodel.ClassDefinition;
-import org.jarb.populator.excel.metamodel.Column;
-import org.jarb.populator.excel.metamodel.ColumnDefinition;
 import org.junit.Before;
 import org.junit.Test;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 
+import domain.entities.Address;
 import domain.entities.Department;
 import domain.entities.Employee;
 
-public class ColumnDefinitionsGeneratorTest {
-
+public class ColumnDefinitionsGeneratorTest extends DefaultExcelTestDataCase {
     private EntityManagerFactory entityManagerFactory;
-    private ClassPathXmlApplicationContext context;
 
     @Before
     public void setupColumnDefinitionsGeneratorTest() throws SecurityException, NoSuchMethodException, IllegalArgumentException, InstantiationException,
             IllegalAccessException, InvocationTargetException {
-        context = new ClassPathXmlApplicationContext("test-context.xml");
-        entityManagerFactory = (EntityManagerFactory) context.getBean("entityManagerFactory");
+        entityManagerFactory = getEntityManagerFactory();
 
         //For code coverage purposes:
         Constructor<ColumnDefinitionsGenerator> constructor = ColumnDefinitionsGenerator.class.getDeclaredConstructor();
@@ -45,12 +42,10 @@ public class ColumnDefinitionsGeneratorTest {
         Metamodel metamodel = entityManagerFactory.getMetamodel();
         EntityType<?> entity = metamodel.entity(persistentClass);
         Set<EntityType<?>> subClassEntities = new HashSet<EntityType<?>>();
-        ColumnDefinition departmentName = new Column("departmentName");
-        departmentName.setColumnName("department_name");
-        departmentName.setField(persistentClass.getDeclaredField("departmentName"));
+        Field departmentNameField = persistentClass.getDeclaredField("departmentName");
         ClassDefinition.Builder<Department> classDefinitionBuilder = ClassDefinition.forClass(Department.class).setTableName("departments");
         classDefinitionBuilder.includeColumns(ColumnDefinitionsGenerator.createColumnDefinitions(subClassEntities, entity, persistentClass));
-        assertEquals(departmentName.getField(), classDefinitionBuilder.build().getColumnDefinitionByFieldName("departmentName").getField());
+        assertEquals(departmentNameField, classDefinitionBuilder.build().getColumnDefinitionByFieldName("departmentName").getField());
     }
 
     @Test
@@ -60,11 +55,9 @@ public class ColumnDefinitionsGeneratorTest {
         Metamodel metamodel = entityManagerFactory.getMetamodel();
         EntityType<?> entity = metamodel.entity(persistentClass);
         Set<EntityType<?>> subClassEntities = new HashSet<EntityType<?>>();
-        ColumnDefinition buildingAddress = new Column("streetAndNumber");
-        buildingAddress.setColumnName("streetAndNumber");
-        buildingAddress.setField(domain.entities.Address.class.getDeclaredField("streetAndNumber"));
+        Field buildingAddressField = Address.class.getDeclaredField("streetAndNumber");
         ClassDefinition.Builder<Employee> classDefinitionBuilder = ClassDefinition.forClass(Employee.class).setTableName("employees");
         classDefinitionBuilder.includeColumns(ColumnDefinitionsGenerator.createColumnDefinitions(subClassEntities, entity, persistentClass));
-        assertEquals(buildingAddress.getField(), classDefinitionBuilder.build().getColumnDefinitionByFieldName("streetAndNumber").getField());
+        assertEquals(buildingAddressField, classDefinitionBuilder.build().getColumnDefinitionByFieldName("streetAndNumber").getField());
     }
 }

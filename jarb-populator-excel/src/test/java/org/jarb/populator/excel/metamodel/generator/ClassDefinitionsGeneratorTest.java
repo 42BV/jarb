@@ -22,8 +22,8 @@ import org.jarb.populator.excel.DefaultExcelTestDataCase;
 import org.jarb.populator.excel.mapping.importer.WorksheetDefinition;
 import org.jarb.populator.excel.metamodel.ClassDefinition;
 import org.jarb.populator.excel.metamodel.ClassDefinitionNameComparator;
-import org.jarb.populator.excel.metamodel.Column;
 import org.jarb.populator.excel.metamodel.ColumnDefinition;
+import org.jarb.populator.excel.metamodel.ColumnType;
 import org.jarb.populator.excel.workbook.Workbook;
 import org.jarb.populator.excel.workbook.reader.PoiExcelParser;
 import org.junit.Before;
@@ -42,7 +42,7 @@ public class ClassDefinitionsGeneratorTest extends DefaultExcelTestDataCase {
     }
 
     @Test
-    public void testclassDefinitionsGeneration() throws UnsupportedEncodingException, InstantiationException, IllegalAccessException, ClassNotFoundException,
+    public void testClassDefinitionsGeneration() throws UnsupportedEncodingException, InstantiationException, IllegalAccessException, ClassNotFoundException,
             SecurityException, NoSuchFieldException {
         List<ClassDefinition<?>> classDefinitionsGenerated = ClassDefinitionsGenerator.createClassDefinitionsFromMetamodel(getEntityManagerFactory());
         Collections.sort(classDefinitionsGenerated, new ClassDefinitionNameComparator());
@@ -71,10 +71,8 @@ public class ClassDefinitionsGeneratorTest extends DefaultExcelTestDataCase {
 
         ClassDefinition<?> classDefinition = ClassDefinitionsGenerator.createSingleClassDefinitionFromMetamodel(getEntityManagerFactory(), entity, false);
         ColumnDefinition generated = classDefinition.getColumnDefinitionByFieldName("departmentName");
-        ColumnDefinition departmentName = new Column("departmentName");
-        departmentName.setColumnName("department_name");
-        departmentName.setField(persistentClass.getDeclaredField("departmentName"));
-        assertEquals(generated.getField(), departmentName.getField());
+        Field departmentNameField = persistentClass.getDeclaredField("departmentName");
+        assertEquals(departmentNameField, generated.getField());
     }
 
     @Test
@@ -87,10 +85,8 @@ public class ClassDefinitionsGeneratorTest extends DefaultExcelTestDataCase {
 
         ClassDefinition<?> classDefinition = ClassDefinitionsGenerator.createSingleClassDefinitionFromMetamodel(getEntityManagerFactory(), entity, true);
         ColumnDefinition generated = classDefinition.getColumnDefinitionByFieldName("location");
-        ColumnDefinition companyLocation = new Column("location");
-        companyLocation.setColumnName("company_location");
-        companyLocation.setField(subClass.getDeclaredField("location"));
-        assertEquals(generated.getField(), companyLocation.getField());
+        Field companyLocationField = subClass.getDeclaredField("location");
+        assertEquals(companyLocationField, generated.getField());
     }
 
     @Test
@@ -147,7 +143,7 @@ public class ClassDefinitionsGeneratorTest extends DefaultExcelTestDataCase {
                     }
                 } else {
                     //Should be a discriminatorColumn.
-                    assertTrue(columnDefinition.isDiscriminatorColumn());
+                    assertEquals(ColumnType.DISCRIMINATOR, columnDefinition.getType());
                 }
             }
 
