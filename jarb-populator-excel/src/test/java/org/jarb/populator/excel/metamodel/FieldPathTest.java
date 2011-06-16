@@ -10,8 +10,8 @@ public class FieldPathTest {
     private FieldPath fieldPath;
 
     @Before
-    public void setUp() {
-        fieldPath = FieldPath.forNames(Person.class, "address", "street", "name");
+    public void setUp() throws SecurityException, NoSuchFieldException {
+        fieldPath = FieldPath.startingFrom(Person.class, "address").to("street").to(Street.class.getDeclaredField("name"));
     }
     
     @Test
@@ -26,12 +26,24 @@ public class FieldPathTest {
     }
     
     @Test
-    public void testInvalidPath() {
+    public void testInvalidPathByString() {
         try {
-            FieldPath.forNames(Person.class, "address", "unknown", "name");
+            // Address has no 'unknown' field
+            FieldPath.startingFrom(Person.class, "address").to("unknown").to("name");
             fail("Invalid paths should not be accepted during construction.");
         } catch(IllegalStateException e) {
             assertEquals("Field 'unknown' does not exist in 'Address'.", e.getMessage());
+        }
+    }
+    
+    @Test
+    public void testInvalidPathByField() throws SecurityException, NoSuchFieldException {
+        try {
+            // Field 'name' has been declared in Street, not Address
+            FieldPath.startingFrom(Person.class, "address").to(Street.class.getDeclaredField("name"));
+            fail("Invalid paths should not be accepted during construction.");
+        } catch(IllegalStateException e) {
+            assertEquals("Cannot extend path to 'Street.name' as the field is not declared in 'Address'.", e.getMessage());
         }
     }
     

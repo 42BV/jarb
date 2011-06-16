@@ -59,7 +59,7 @@ public class ColumnDefinition {
     }
 
     public boolean isEmbeddedAttribute() {
-        return embeddablePath != null && !embeddablePath.isEmpty();
+        return embeddablePath != null;
     }
 
     public FieldPath getEmbeddablePath() {

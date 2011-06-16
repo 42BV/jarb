@@ -35,7 +35,7 @@ public final class EmbeddedColumnGenerator {
             if (!ReflectionUtils.isPublicStaticFinal(embeddedPropertyField)) {
                 ColumnDefinition.Builder columnDefinitionBuilder = FieldAnalyzer.analyzeField(embeddedPropertyField);
                 if(columnDefinitionBuilder != null) {
-                    columnDefinitionBuilder.setEmbeddablePath(FieldPath.singleField(embeddableField));
+                    columnDefinitionBuilder.setEmbeddablePath(FieldPath.startingFrom(embeddableField));
                     overrideAttributes(embeddableField, columnDefinitionBuilder, embeddedPropertyField);
                     columnDefinitions.add(columnDefinitionBuilder.build());
                 }

@@ -1,6 +1,7 @@
 package org.jarb.populator.excel.metamodel;
 
 import java.lang.reflect.Field;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
 
@@ -24,39 +25,101 @@ public final class FieldPath implements Iterable<FieldNode> {
         nodes = new LinkedList<FieldNode>();
     }
     
-    public static FieldPath singleField(Field field) {
-        FieldPath path = new FieldPath();
-        path.addField(field);
-        return path;
-    }
-    
     /**
-     * Create a path of fields based on field names.
-     * @param rootClass class of the root element
-     * @param fieldNames array of field names
-     * @return path to reach the leaf field
+     * Construct a new {@link FieldPath}.
+     * @param nodes initial nodes
      */
-    public static FieldPath forNames(Class<?> rootClass, String... fieldNames) {
-        FieldPath path = new FieldPath();
-        Class<?> containerClass = rootClass;
-        for(String fieldName : fieldNames) {
-            Field field = ReflectionUtils.findField(containerClass, fieldName);
-            if(field == null) {
-                String msg = String.format("Field '%s' does not exist in '%s'.", fieldName, containerClass.getSimpleName());
-                throw new IllegalStateException(msg);
-            }
-            path.addField(field);
-            containerClass = field.getType();
-        }
-        return path;
+    private FieldPath(Collection<FieldNode> nodes) {
+        this.nodes = new LinkedList<FieldNode>(nodes);
     }
     
     /**
-     * Include a field node in this path.
-     * @param field the field being added
+     * Construct a new field path starting from the specified field.
+     * @param field the field to start our path from
+     * @return new field path, containing only the specified field as node
+     */
+    public static FieldPath startingFrom(Field field) {
+        FieldPath fieldPath = new FieldPath();
+        fieldPath.addField(field);
+        return fieldPath;
+    }
+    
+    /**
+     * Construct a new field path starting from the specified field name. Whenever
+     * the specified field name is not actually a declared field, we will throw
+     * a runtime exception.
+     * @param rootClass class containing the field
+     * @param fieldName name of the field, as defined in the containing class
+     * @return new field path, containing only the specified field as node
+     */
+    public static FieldPath startingFrom(Class<?> rootClass, String fieldName) {
+        Field field = ReflectionUtils.findField(rootClass, fieldName);
+        if(field == null) {
+            String msg = String.format("Field '%s' does not exist in '%s'.", fieldName, rootClass.getSimpleName());
+            throw new IllegalStateException(msg);
+        }
+        return FieldPath.startingFrom(field);
+    }
+    
+    /**
+     * Append a field node to this path, should only be invoked internally.
+     * @param field the field to use for our name
      */
     private void addField(Field field) {
         nodes.add(new FieldNode(field));
+    }
+
+    /**
+     * Create an extended path that goes from our current start field to the
+     * newly specified leaf field. Whenever the current leaf field type has
+     * not declared the new field, we will throw a runtime exception.
+     * @param field the new leaf field
+     * @return new path that extends our previous path with an additional field
+     */
+    public FieldPath to(Field field) {
+        final Class<?> leafType = nodes.getLast().getType();
+        if(fieldIsDeclaredIn(field, leafType)) {
+            FieldPath extendedPath = new FieldPath(nodes);
+            extendedPath.addField(field);
+            return extendedPath;
+        } else {
+            throw new IllegalStateException(
+                String.format(
+                    "Cannot extend path to '%s.%s' as the field is not declared in '%s'.", 
+                    field.getDeclaringClass().getSimpleName(),
+                    field.getName(),
+                    leafType.getSimpleName()
+                )
+            );
+        }
+    }
+    
+    /**
+     * Determine if a field is declared inside a specific class.
+     * @param field the field to check
+     * @param declaringClass the declaring class
+     * @return {@code true} if it has been declared, else {@code false}
+     */
+    private boolean fieldIsDeclaredIn(Field field, Class<?> declaringClass) {
+        return field.getDeclaringClass().isAssignableFrom(declaringClass);
+    }
+    
+    /**
+     * Create an extended path that goes from our current start field to the
+     * newly specified leaf field. Whenever the current leaf field type has
+     * not declared the new field, we will throw a runtime exception
+     * @param fieldName name of the new leaf field
+     * @return new path that extends our previous path with an additional field
+     */
+    public FieldPath to(String fieldName) {
+        final Class<?> leafType = nodes.getLast().getType();
+        Field field = ReflectionUtils.findField(leafType, fieldName);
+        if(field == null) {
+            throw new IllegalStateException(
+                String.format("Field '%s' does not exist in '%s'.", fieldName, leafType.getSimpleName())
+            );
+        }
+        return this.to(field);
     }
     
     /**
@@ -74,10 +137,6 @@ public final class FieldPath implements Iterable<FieldNode> {
             currentValue = ReflectionUtils.getField(field, currentValue);
         }
         return currentValue;
-    }
-    
-    public boolean isEmpty() {
-        return nodes.isEmpty();
     }
     
     /**
@@ -115,8 +174,16 @@ public final class FieldPath implements Iterable<FieldNode> {
          * Retrieve the field name.
          * @return field name
          */
-        public String getFieldName() {
+        public String getName() {
             return field.getName();
+        }
+        
+        /**
+         * Retrieve the field type.
+         * @return field type
+         */
+        public Class<?> getType() {
+            return field.getType();
         }
     }
     
