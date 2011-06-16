@@ -59,7 +59,7 @@ public class FieldAnalyzerTest extends DefaultExcelTestDataCase {
     public void testColumn() {    
         PropertyDefinition testNameColumn = FieldAnalyzer.analyzeField(nameField).build();
         assertEquals("first_name", testNameColumn.getColumnName());
-        assertEquals("name", testNameColumn.getFieldName());
+        assertEquals("name", testNameColumn.getName());
     }
     
 

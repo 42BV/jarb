@@ -40,7 +40,7 @@ public class WorksheetDefinition {
 
         for (PropertyDefinition columnDefinition : classDefinition.getPropertyDefinitions()) {
             final String columnName = columnDefinition.getColumnName();
-            LOGGER.debug("  field name: [" + columnDefinition.getFieldName() + "], column name: [" + columnName + "]");
+            LOGGER.debug("  field name: [" + columnDefinition.getName() + "], column name: [" + columnName + "]");
             if (sheet.containsColumn(columnName)) {
                 worksheetDefinition.addColumnPosition(columnName, classDefinition.getTableName(), sheet.indexOfColumn(columnName));
             } else {

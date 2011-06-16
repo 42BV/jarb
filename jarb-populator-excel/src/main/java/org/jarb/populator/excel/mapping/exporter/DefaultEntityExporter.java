@@ -8,6 +8,7 @@ import org.jarb.populator.excel.metamodel.ClassDefinition;
 import org.jarb.populator.excel.metamodel.ColumnType;
 import org.jarb.populator.excel.metamodel.MetaModel;
 import org.jarb.populator.excel.metamodel.PropertyDefinition;
+import org.jarb.populator.excel.util.BeanPropertyHandler;
 import org.jarb.populator.excel.workbook.BooleanValue;
 import org.jarb.populator.excel.workbook.CellValue;
 import org.jarb.populator.excel.workbook.DateValue;
@@ -63,8 +64,10 @@ public class DefaultEntityExporter implements EntityExporter {
         for(PropertyDefinition propertyDefinition : classDefinition.getPropertyDefinitions()) {
             final ColumnType columnType = propertyDefinition.getColumnType();
             if(columnType == ColumnType.BASIC) {
-//                Object propertyValue = ReflectionUtils.getFieldValue(entity, propertyDefinition.getFieldName());
-//                row.getCellAt(propertyDefinition.getColumnName()).setCellValue(createCellValue(propertyValue));
+                if(BeanPropertyHandler.hasProperty(entity, propertyDefinition.getName())) {
+                    Object propertyValue = BeanPropertyHandler.getValue(entity, propertyDefinition.getName());
+                    row.getCellAt(propertyDefinition.getColumnName()).setCellValue(createCellValue(propertyValue));
+                }
             } else if(columnType == ColumnType.JOIN_COLUMN) {
                 
             } else if(columnType == ColumnType.JOIN_TABLE) {

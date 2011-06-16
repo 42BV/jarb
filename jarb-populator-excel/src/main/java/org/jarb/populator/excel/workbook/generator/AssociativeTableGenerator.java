@@ -77,8 +77,8 @@ public final class AssociativeTableGenerator {
      */
     private static Set<?> getCollectionSet(Object databaseRecord, PropertyDefinition joinTable) throws NoSuchFieldException {
         Set<?> collectionSet = null;
-        if (FieldValidator.isExistingField(joinTable.getFieldName(), databaseRecord.getClass())) {
-            Object collectionObject = ReflectionUtils.getFieldValue(databaseRecord, joinTable.getFieldName());
+        if (FieldValidator.isExistingField(joinTable.getName(), databaseRecord.getClass())) {
+            Object collectionObject = ReflectionUtils.getFieldValue(databaseRecord, joinTable.getName());
             collectionSet = (Set<?>) collectionObject;
         }
         return collectionSet;

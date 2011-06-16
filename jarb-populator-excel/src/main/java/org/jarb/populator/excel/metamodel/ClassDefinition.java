@@ -120,7 +120,7 @@ public class ClassDefinition<T> {
     public PropertyDefinition getPropertyDefinition(String fieldName) {
         PropertyDefinition result = null;
         for (PropertyDefinition columnDefinition : propertyDefinitions) {
-            if (StringUtils.equalsIgnoreCase(fieldName, columnDefinition.getFieldName())) {
+            if (StringUtils.equalsIgnoreCase(fieldName, columnDefinition.getName())) {
                 result = columnDefinition;
             }
         }

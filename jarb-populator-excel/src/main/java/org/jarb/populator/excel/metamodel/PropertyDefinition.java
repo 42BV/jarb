@@ -28,24 +28,20 @@ public class PropertyDefinition {
         return new PropertyDefinition.Builder(field);
     }
     
-    public ColumnType getColumnType() {
-        return columnType;
-    }
-    
-    public boolean hasField() {
-        return field != null;
-    }
-
     public Field getField() {
         return field;
     }
     
-    public String getFieldName() {
+    public String getName() {
         return field.getName();
     }
     
-    public Class<?> getFieldType() {
+    public Class<?> getType() {
         return field.getType();
+    }
+    
+    public ColumnType getColumnType() {
+        return columnType;
     }
 
     public String getColumnName() {
@@ -155,7 +151,7 @@ public class PropertyDefinition {
      */
     @Override
     public String toString() {
-        return String.format("Column: %s (%s)", columnName, getFieldName());
+        return String.format("Column: %s (%s)", columnName, getName());
     }
 
 }

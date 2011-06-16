@@ -35,7 +35,7 @@ public final class StoreJoinColumn {
         Sheet sheet = excel.getSheet(classDefinition.getTableName());
         Object cellValue = sheet.getCellValueAt(rowPosition, columnDefinition.getColumnName());
         if(cellValue instanceof Double) {
-            LOGGER.debug("field: " + columnDefinition.getFieldName() + " column: " + columnDefinition.getColumnName() + " value:[" + cellValue + "]");
+            LOGGER.debug("field: " + columnDefinition.getName() + " column: " + columnDefinition.getColumnName() + " value:[" + cellValue + "]");
             if (cellValue != null) {
                 // Sets the Key
                 Key keyValue = new JoinColumnKey();

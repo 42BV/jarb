@@ -41,13 +41,13 @@ public final class StoreColumn {
 
         Sheet sheet = excel.getSheet(classDefinition.getTableName());
         Object cellValue = getCellValue(sheet, rowPosition, columnPosition);
-        logger.debug("field: " + columnDefinition.getFieldName() + " column: " + columnDefinition.getColumnName() + " value:[" + cellValue + "]");
+        logger.debug("field: " + columnDefinition.getName() + " column: " + columnDefinition.getColumnName() + " value:[" + cellValue + "]");
 
-        if (FieldValidator.isExistingField(columnDefinition.getFieldName(), excelRow.getCreatedInstance().getClass())) {
-            setExcelRowFieldValue(excelRow.getCreatedInstance(), columnDefinition.getFieldName(), cellValue);
+        if (FieldValidator.isExistingField(columnDefinition.getName(), excelRow.getCreatedInstance().getClass())) {
+            setExcelRowFieldValue(excelRow.getCreatedInstance(), columnDefinition.getName(), cellValue);
         } else if (columnDefinition.isEmbeddedAttribute()) {
             Object embeddedField = columnDefinition.getEmbeddablePath().getValueFor(excelRow.getCreatedInstance());
-            setExcelRowFieldValue(embeddedField, columnDefinition.getFieldName(), cellValue);
+            setExcelRowFieldValue(embeddedField, columnDefinition.getName(), cellValue);
         }
     }
 

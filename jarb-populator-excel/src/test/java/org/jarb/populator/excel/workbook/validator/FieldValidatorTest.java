@@ -41,7 +41,7 @@ public class FieldValidatorTest extends DefaultExcelTestDataCase {
         ClassDefinition<?> classDefinition = ClassDefinitionsGenerator.createSingleClassDefinitionFromMetamodel(getEntityManagerFactory(), entity, true);
         excelRow = new ExcelRow(classDefinition.getPersistentClass());
         columnDefinition = classDefinition.getPropertyDefinition("startDate");
-        assertTrue(FieldValidator.isExistingField(columnDefinition.getFieldName(), excelRow.getCreatedInstance().getClass()));
+        assertTrue(FieldValidator.isExistingField(columnDefinition.getName(), excelRow.getCreatedInstance().getClass()));
     }
 
     @Test

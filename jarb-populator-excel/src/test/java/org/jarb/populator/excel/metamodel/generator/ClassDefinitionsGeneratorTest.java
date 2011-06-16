@@ -108,17 +108,17 @@ public class ClassDefinitionsGeneratorTest extends DefaultExcelTestDataCase {
             assertTrue(persistentClass != null);
 
             for (PropertyDefinition columnDefinition : classDefinition.getPropertyDefinitions()) {
-                Field field = ReflectionUtils.findField(persistentClass, columnDefinition.getFieldName());
+                Field field = ReflectionUtils.findField(persistentClass, columnDefinition.getName());
 
                 if ((field == null) && columnDefinition.isEmbeddedAttribute()) {
                     // It's an embedded attribute.
                     Field embeddedField = columnDefinition.getField();
-                    field = embeddedField.getDeclaringClass().getDeclaredField(columnDefinition.getFieldName());
+                    field = embeddedField.getDeclaringClass().getDeclaredField(columnDefinition.getName());
                 }
 
                 // Check if field is valid
                 if (field != null) {
-                    assertEquals(field.getName(), columnDefinition.getFieldName());
+                    assertEquals(field.getName(), columnDefinition.getName());
                 }
             }
 

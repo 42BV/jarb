@@ -47,7 +47,7 @@ public final class ColumnDefinitionUtility {
         if ("id".equals(columnName)) {
             fieldName = "id";
         } else {
-            fieldName = classDefinition.getPropertyDefinitionByColumn(columnName).getFieldName();
+            fieldName = classDefinition.getPropertyDefinitionByColumn(columnName).getName();
         }
         return fieldName;
     }

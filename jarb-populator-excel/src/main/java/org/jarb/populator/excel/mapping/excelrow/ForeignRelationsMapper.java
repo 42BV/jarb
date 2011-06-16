@@ -40,8 +40,8 @@ public final class ForeignRelationsMapper {
 
             // Check if the field is really in THIS excelRow. Thus the parents set is empty.
             Object foreignEntity = ForeignExcelRowGrabber.getInstanceValue(key, objectModel.get(classDefinition));
-            if (FieldValidator.isExistingField(entry.getKey().getFieldName(), excelRow.getCreatedInstance().getClass())) {
-                ReflectionUtils.setFieldValue(excelRow.getCreatedInstance(), entry.getKey().getFieldName(), foreignEntity);
+            if (FieldValidator.isExistingField(entry.getKey().getName(), excelRow.getCreatedInstance().getClass())) {
+                ReflectionUtils.setFieldValue(excelRow.getCreatedInstance(), entry.getKey().getName(), foreignEntity);
             }
 
         }
