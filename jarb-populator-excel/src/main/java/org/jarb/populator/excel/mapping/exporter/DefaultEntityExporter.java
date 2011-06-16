@@ -1,11 +1,13 @@
 package org.jarb.populator.excel.mapping.exporter;
 
+import java.lang.reflect.Field;
 import java.util.Date;
 
 import org.jarb.populator.excel.entity.EntityRegistry;
 import org.jarb.populator.excel.mapping.ValueConversionService;
 import org.jarb.populator.excel.metamodel.ClassDefinition;
 import org.jarb.populator.excel.metamodel.ColumnType;
+import org.jarb.populator.excel.metamodel.FieldPath;
 import org.jarb.populator.excel.metamodel.MetaModel;
 import org.jarb.populator.excel.metamodel.PropertyDefinition;
 import org.jarb.populator.excel.workbook.BooleanValue;
@@ -18,16 +20,21 @@ import org.jarb.populator.excel.workbook.Sheet;
 import org.jarb.populator.excel.workbook.StringValue;
 import org.jarb.populator.excel.workbook.Workbook;
 import org.jarb.utils.BeanPropertyHandler;
+import org.jarb.utils.ReflectionUtils;
 
 /**
  * Default implementation of {@link EntityExporter}.
- * <b>Note that this component does not work yet!</b>
+ * 
  * @author Jeroen van Schagen
  * @since 12-05-2011
  */
 public class DefaultEntityExporter implements EntityExporter {
     private final ValueConversionService valueConversionService;
     
+    /**
+     * Construct a new {@link DefaultEntityExporter}.
+     * @param valueConversionService converts values into any desired type
+     */
     public DefaultEntityExporter(ValueConversionService valueConversionService) {
         this.valueConversionService = valueConversionService;
     }
@@ -64,20 +71,45 @@ public class DefaultEntityExporter implements EntityExporter {
         for(PropertyDefinition propertyDefinition : classDefinition.getPropertyDefinitions()) {
             final ColumnType columnType = propertyDefinition.getColumnType();
             if(columnType == ColumnType.BASIC) {
-                if(BeanPropertyHandler.hasProperty(entity, propertyDefinition.getName())) {
-                    Object propertyValue = BeanPropertyHandler.getValue(entity, propertyDefinition.getName());
-                    row.getCellAt(propertyDefinition.getColumnName()).setCellValue(createCellValue(propertyValue));
-                }
+                Object propertyValue = getPropertyValue(entity, propertyDefinition);
+                row.getCellAt(propertyDefinition.getColumnName()).setCellValue(createCellValue(propertyValue));
             } else if(columnType == ColumnType.JOIN_COLUMN) {
-                
+                // TODO: Add identifier
             } else if(columnType == ColumnType.JOIN_TABLE) {
-                
+                Sheet joinSheet = sheet.getWorkbook().createSheet(propertyDefinition.getJoinTableName());
+                joinSheet.setColumnNameAt(0, propertyDefinition.getJoinColumnName());
+                joinSheet.setColumnNameAt(1, propertyDefinition.getInverseJoinColumnName());
+                // TODO: Add values
             }
         }
         if(classDefinition.hasDiscriminatorColumn()) {
             final String discriminatorValue = classDefinition.getDiscriminatorValue(entity.getClass());
             row.getCellAt(classDefinition.getDiscriminatorColumnName()).setCellValue(new StringValue(discriminatorValue));
         }
+    }
+    
+    private Object getPropertyValue(Object entity, PropertyDefinition propertyDefinition) {
+        Object propertyValue = null;
+        if(propertyDefinition.isEmbeddedAttribute()) {
+            // Ensure the root embeddable field is declared in our entity, and not some other subclass
+            final Field rootEmbeddableField = propertyDefinition.getEmbeddablePath().getStart().getField();
+            if(ReflectionUtils.hasField(entity, rootEmbeddableField)) {
+                Object currentElement = entity;
+                // Traverse the path of embeddables until we reach the leaf
+                for(FieldPath.FieldNode node : propertyDefinition.getEmbeddablePath()) {
+                    currentElement = BeanPropertyHandler.getValue(currentElement, node.getName());
+                    if(currentElement == null) {
+                        return null; // Can only loop threw embedded properties when they are not null
+                    }
+                }
+                // Retrieve the property from our embeddable instance
+                propertyValue = BeanPropertyHandler.getValue(currentElement, propertyDefinition.getName());
+            }
+        } else if(ReflectionUtils.hasField(entity, propertyDefinition.getField())) {
+            // Ensure the field has been defined in our entity, and not some subclass
+            propertyValue = BeanPropertyHandler.getValue(entity, propertyDefinition.getName());
+        }
+        return propertyValue;
     }
     
     private CellValue createCellValue(Object value) {

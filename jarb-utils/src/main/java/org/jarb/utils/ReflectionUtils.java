@@ -111,12 +111,16 @@ public final class ReflectionUtils {
     
     /**
      * Determine if an object has some field.
-     * @param target the target that should contain our field
+     * @param bean the target that should contain our field
      * @param fieldName name of the field
      * @return {@code true} if the bean has this field, {@code false}
      */
-    public static boolean hasField(Object target, String fieldName) {
-        return findField(target.getClass(), fieldName) != null;
+    public static boolean hasField(Object bean, String fieldName) {
+        return findField(bean.getClass(), fieldName) != null;
+    }
+    
+    public static boolean hasField(Object bean, Field field) {
+        return field.getDeclaringClass().isAssignableFrom(bean.getClass());
     }
 
     /**

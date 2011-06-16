@@ -140,6 +140,22 @@ public final class FieldPath implements Iterable<FieldNode> {
     }
     
     /**
+     * Retrieve the first node of our path.
+     * @return first field node
+     */
+    public FieldNode getStart() {
+        return nodes.getFirst();
+    }
+    
+    /**
+     * Retrieve the last node of our path.
+     * @return last field node
+     */
+    public FieldNode getEnd() {
+        return nodes.getLast();
+    }
+    
+    /**
      * {@inheritDoc}
      */
     @Override

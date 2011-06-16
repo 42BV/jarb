@@ -283,8 +283,7 @@ public final class ReferentialPreparement {
         Metamodel metamodel = entityManagerFactory.getMetamodel();
         EntityType<?> entityType = metamodel.entity(entity.getClass());
         for (Attribute<?, ?> attribute : entityType.getAttributes()) {
-            if ((attribute.getJavaType() == referencedObject.getClass())
-                    || (SuperclassRetriever.getListOfSuperClasses(referencedObject.getClass()).contains(attribute.getJavaType()))) {
+            if ((attribute.getJavaType() == referencedObject.getClass()) || SuperclassRetriever.getListOfSuperClasses(referencedObject.getClass()).contains(attribute.getJavaType())) {
                 refName = attribute.getName();
                 break;
             }
