@@ -18,9 +18,9 @@ import org.jarb.populator.excel.metamodel.ClassDefinition;
 import org.jarb.populator.excel.metamodel.PropertyDefinition;
 import org.jarb.populator.excel.metamodel.generator.ClassDefinitionsGenerator;
 import org.jarb.populator.excel.metamodel.generator.FieldAnalyzer;
+import org.jarb.populator.excel.util.ReflectionUtils;
 import org.jarb.populator.excel.workbook.Workbook;
 import org.jarb.populator.excel.workbook.reader.PoiExcelParser;
-import org.jarb.utils.ReflectionUtils;
 import org.junit.Before;
 import org.junit.Test;
 

@@ -5,10 +5,10 @@ import org.jarb.populator.excel.mapping.ValueConversionService;
 import org.jarb.populator.excel.mapping.excelrow.ExcelRow;
 import org.jarb.populator.excel.metamodel.ClassDefinition;
 import org.jarb.populator.excel.metamodel.PropertyDefinition;
+import org.jarb.populator.excel.util.ReflectionUtils;
 import org.jarb.populator.excel.workbook.Sheet;
 import org.jarb.populator.excel.workbook.Workbook;
 import org.jarb.populator.excel.workbook.validator.FieldValidator;
-import org.jarb.utils.ReflectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -60,7 +60,7 @@ public final class StoreColumn {
     private static void setExcelRowFieldValue(Object excelRow, String fieldName, Object cellValue) {
         final Class<?> fieldType = ReflectionUtils.getFieldType(excelRow, fieldName);
         try {
-            Object fieldValue = ValueConversionService.INSTANCE.convert(cellValue, fieldType);
+            Object fieldValue = new ValueConversionService().convert(cellValue, fieldType);
             ReflectionUtils.setFieldValue(excelRow, fieldName, fieldValue);
         } catch (CouldNotConvertException e) {
             logger.warn("Could not convert '{}' into a {}, thus '{}' will remain unchanged.", new Object[] { cellValue, fieldType, fieldName });

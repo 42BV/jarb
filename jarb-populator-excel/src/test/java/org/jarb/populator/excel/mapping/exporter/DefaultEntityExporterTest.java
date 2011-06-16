@@ -5,6 +5,7 @@ import static org.junit.Assert.assertTrue;
 
 import org.jarb.populator.excel.DefaultExcelTestDataCase;
 import org.jarb.populator.excel.entity.EntityRegistry;
+import org.jarb.populator.excel.mapping.ValueConversionService;
 import org.jarb.populator.excel.metamodel.ClassDefinition;
 import org.jarb.populator.excel.metamodel.MetaModel;
 import org.jarb.populator.excel.workbook.Sheet;
@@ -23,7 +24,7 @@ public class DefaultEntityExporterTest extends DefaultExcelTestDataCase {
 
     @Before
     public void setUpExporter() {
-        exporter = new DefaultEntityExporter();
+        exporter = new DefaultEntityExporter(new ValueConversionService());
         registry = new EntityRegistry();
         metamodel = getExcelDataManagerFactory().buildMetamodelGenerator().generateFor(CompanyVehicle.class);
     }
@@ -48,9 +49,21 @@ public class DefaultEntityExporterTest extends DefaultExcelTestDataCase {
         Workbook workbook = exporter.export(registry, metamodel);
         Sheet vehiclesSheet = workbook.getSheet("vehicles");
         ClassDefinition<CompanyVehicle> vehiclesDefinition = metamodel.getClassDefinition(CompanyVehicle.class);
-        String discriminatorColumn = vehiclesDefinition.getDiscriminatorColumnName();
         String carDiscriminatorValue = vehiclesDefinition.getDiscriminatorValue(CompanyCar.class);
-        assertEquals(carDiscriminatorValue, vehiclesSheet.getCellValueAt(1, discriminatorColumn));
+        assertEquals(carDiscriminatorValue, vehiclesSheet.getCellValueAt(1, "type"));
     }
+    
+//    @Test
+//    public void testRegularColumns() {
+//        CompanyCar car = new CompanyCar("bugatti", 999999D, 42, Gearbox.MANUAL, true);
+//        registry.add(CompanyVehicle.class, 1L, car);
+//        Workbook workbook = exporter.export(registry, metamodel);
+//        Sheet vehiclesSheet = workbook.getSheet("vehicles");
+//        assertEquals("bugatti", vehiclesSheet.getCellValueAt(1, "model"));
+//        assertEquals(Double.valueOf(999999), vehiclesSheet.getCellValueAt(1, "price"));
+//        assertEquals(Double.valueOf(42), vehiclesSheet.getCellValueAt(1, "mileage"));
+//        assertEquals("MANUAL", vehiclesSheet.getCellValueAt(1, "gearbox"));
+//        assertEquals(Boolean.TRUE, vehiclesSheet.getCellValueAt(1, "airbags"));
+//    }
 
 }

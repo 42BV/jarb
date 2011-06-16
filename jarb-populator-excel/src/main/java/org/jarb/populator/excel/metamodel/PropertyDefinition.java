@@ -133,11 +133,9 @@ public class PropertyDefinition {
                 Assert.state(StringUtils.isNotBlank(joinTableName), "Join table name cannot be blank");
                 Assert.state(StringUtils.isNotBlank(joinColumnName), "Join column name cannot be blank");
                 Assert.state(StringUtils.isNotBlank(inverseJoinColumnName), "Inverse join column name cannot be blank");
-                // Join tables reference a connection between two entities using a seperate table, thus there is no column in our current table
-                Assert.state(StringUtils.isBlank(columnName), "Join table property should have no column name");
+                Assert.state(StringUtils.isBlank(columnName), "Join table property cannot have a column name");
             } else {
-                Assert.state(StringUtils.isBlank(joinColumnName), "Join column name can only be used for join table properties.");
-                Assert.state(StringUtils.isBlank(inverseJoinColumnName), "Inverse join column name can only be used for join table properties.");
+                Assert.state(StringUtils.isNotBlank(columnName), "Column name cannot be blank");
             }
 
             PropertyDefinition definition = new PropertyDefinition(field);

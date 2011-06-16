@@ -6,12 +6,10 @@ import static org.junit.Assert.fail;
 
 import java.math.BigDecimal;
 
-import org.jarb.populator.excel.mapping.CouldNotConvertException;
-import org.jarb.populator.excel.mapping.ValueConversionService;
 import org.junit.Test;
 
 public class ValueConversionServiceTest {
-    private final ValueConversionService conversionService = ValueConversionService.INSTANCE;
+    private final ValueConversionService conversionService = new ValueConversionService();
 
     /**
      * Check that we can invoke our registered converters.

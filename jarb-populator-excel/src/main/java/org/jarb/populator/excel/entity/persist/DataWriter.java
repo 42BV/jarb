@@ -2,11 +2,12 @@ package org.jarb.populator.excel.entity.persist;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -14,7 +15,6 @@ import javax.persistence.EntityTransaction;
 import javax.persistence.PersistenceUnitUtil;
 
 import org.jarb.populator.excel.mapping.excelrow.ExcelRow;
-import org.jarb.populator.excel.util.ObjectClassInstantationComparator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -88,4 +88,14 @@ public final class DataWriter {
         }
         entityTransaction.commit();
     }
+    
+    // Compares two objects based on class name
+    private static class ObjectClassInstantationComparator implements Comparator<Object> {
+        /** {@inheritDoc} */
+        @Override
+        public int compare(Object left, Object right) {
+            return left.getClass().getName().compareTo(right.getClass().getName());
+        }
+    }
+    
 }

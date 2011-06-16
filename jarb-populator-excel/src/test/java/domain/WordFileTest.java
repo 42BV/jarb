@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.jarb.utils.ReflectionUtils;
+import org.jarb.populator.excel.util.ReflectionUtils;
 import org.junit.Before;
 import org.junit.Test;
 

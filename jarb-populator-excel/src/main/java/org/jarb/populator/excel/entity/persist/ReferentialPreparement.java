@@ -15,7 +15,7 @@ import javax.persistence.metamodel.EntityType;
 import javax.persistence.metamodel.Metamodel;
 
 import org.jarb.populator.excel.metamodel.generator.SuperclassRetriever;
-import org.jarb.utils.ReflectionUtils;
+import org.jarb.populator.excel.util.ReflectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -1,6 +1,7 @@
 package org.jarb.populator.excel.mapping;
 
 import org.springframework.core.convert.ConversionFailedException;
+import org.springframework.core.convert.converter.Converter;
 import org.springframework.core.convert.support.ConversionServiceFactory;
 import org.springframework.core.convert.support.GenericConversionService;
 
@@ -9,21 +10,23 @@ import org.springframework.core.convert.support.GenericConversionService;
  * @author Jeroen van Schagen
  * @since 06-05-2011
  */
-public enum ValueConversionService {
-
-    /**
-     * Conversion service "singleton" instance.
-     */
-    INSTANCE;
-
+public class ValueConversionService {
     private final GenericConversionService genericConversionService;
 
     /**
      * Construct a new {@link ValueConversionService}.
      */
-    private ValueConversionService() {
+    public ValueConversionService() {
         genericConversionService = ConversionServiceFactory.createDefaultConversionService();
-        genericConversionService.addConverter(new StringToBooleanConverter());
+        addConverter(new StringToBooleanConverter());
+    }
+    
+    /**
+     * Include a converter in this conversion service.
+     * @param converter converter to add
+     */
+    protected void addConverter(Converter<?,?> converter) {
+        genericConversionService.addConverter(converter);
     }
 
     /**

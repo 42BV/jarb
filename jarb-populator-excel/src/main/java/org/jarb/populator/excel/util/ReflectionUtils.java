@@ -1,4 +1,4 @@
-package org.jarb.utils;
+package org.jarb.populator.excel.util;
 
 import static org.springframework.util.ReflectionUtils.findField;
 import static org.springframework.util.ReflectionUtils.findMethod;
@@ -21,6 +21,22 @@ import java.lang.reflect.Method;
  * @author Jeroen van Schagen
  */
 public final class ReflectionUtils {
+    
+    /**
+     * Retrieve the classes from a var-arg array of objects.
+     * 
+     * @param objects the objects that should have their types retrieved
+     * @return every object class, returned in a similar order as the arguments
+     */
+    public static Class<?>[] getClasses(Object... objects) {
+        Class<?>[] types = new Class<?>[objects.length];
+        for (int i = 0; i < objects.length; i++) {
+            types[i] = objects[i].getClass();
+        }
+        return types;
+    }
+    
+    // Construction
 
     /**
      * Create a new instance of a class based on its nullary (no-arg) constructor. Invoking
@@ -59,6 +75,8 @@ public final class ReflectionUtils {
         }
     }
     
+    // Methods
+    
     /**
      * Invokes the, potentially not accessible, {@link Method} using a specific array of arguments.
      * 
@@ -88,20 +106,17 @@ public final class ReflectionUtils {
         makeAccessible(method); // Delegate method invocation to the spring utility
         return org.springframework.util.ReflectionUtils.invokeMethod(method, target, args);
     }
-
+    
+    // Fields
     
     /**
-     * Retrieve the classes from a var-arg array of objects.
-     * 
-     * @param objects the objects that should have their types retrieved
-     * @return every object class, returned in a similar order as the arguments
+     * Determine if an object has some field.
+     * @param target the target that should contain our field
+     * @param fieldName name of the field
+     * @return {@code true} if the bean has this field, {@code false}
      */
-    public static Class<?>[] getClasses(Object... objects) {
-        Class<?>[] types = new Class<?>[objects.length];
-        for (int i = 0; i < objects.length; i++) {
-            types[i] = objects[i].getClass();
-        }
-        return types;
+    public static boolean hasField(Object target, String fieldName) {
+        return findField(target.getClass(), fieldName) != null;
     }
 
     /**
@@ -135,6 +150,10 @@ public final class ReflectionUtils {
             String message = String.format("%s has not declared a '%s' field", target.getClass().getName(), fieldName);
             throw new IllegalArgumentException(message);
         }
+        return getFieldValue(target, field);
+    }
+    
+    public static Object getFieldValue(Object target, Field field) {
         makeAccessible(field);
         return getField(field, target);
     }
@@ -153,10 +172,14 @@ public final class ReflectionUtils {
             String message = String.format("%s has not declared a '%s' field", target.getClass().getName(), fieldName);
             throw new IllegalArgumentException(message);
         }
+        setFieldValue(target, field, newValue);
+    }
+    
+    public static void setFieldValue(Object target, Field field, Object newValue) {
         makeAccessible(field);
         setField(field, target, newValue);
     }
-
+    
     // Suppresses default constructor, ensuring non-instantiability.
     private ReflectionUtils() {
         super();

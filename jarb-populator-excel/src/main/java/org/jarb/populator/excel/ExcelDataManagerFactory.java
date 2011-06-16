@@ -6,6 +6,7 @@ import org.jarb.populator.excel.entity.persist.EntityWriter;
 import org.jarb.populator.excel.entity.persist.JpaEntityWriter;
 import org.jarb.populator.excel.entity.query.EntityReader;
 import org.jarb.populator.excel.entity.query.JpaEntityReader;
+import org.jarb.populator.excel.mapping.ValueConversionService;
 import org.jarb.populator.excel.mapping.exporter.DefaultEntityExporter;
 import org.jarb.populator.excel.mapping.exporter.EntityExporter;
 import org.jarb.populator.excel.mapping.importer.DefaultEntityImporter;
@@ -26,9 +27,11 @@ import org.jarb.populator.excel.workbook.writer.PoiExcelWriter;
  */
 public class ExcelDataManagerFactory {
     private final EntityManagerFactory entityManagerFactory;
+    private ValueConversionService valueConversionService;
 
     public ExcelDataManagerFactory(EntityManagerFactory entityManagerFactory) {
         this.entityManagerFactory = entityManagerFactory;
+        valueConversionService = new ValueConversionService();
     }
 
     /**
@@ -63,7 +66,7 @@ public class ExcelDataManagerFactory {
     }
 
     public EntityExporter buildEntityExporter() {
-        return new DefaultEntityExporter();
+        return new DefaultEntityExporter(valueConversionService);
     }
 
     public EntityReader buildEntityReader() {

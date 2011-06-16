@@ -5,7 +5,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.sql.Date;
 
-import org.jarb.utils.ReflectionUtils;
+import org.jarb.populator.excel.util.ReflectionUtils;
 import org.junit.Before;
 import org.junit.Test;
 

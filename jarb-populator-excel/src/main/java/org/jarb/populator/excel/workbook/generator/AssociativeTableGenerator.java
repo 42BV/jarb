@@ -9,8 +9,8 @@ import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.jarb.populator.excel.metamodel.PropertyDefinition;
+import org.jarb.populator.excel.util.ReflectionUtils;
 import org.jarb.populator.excel.workbook.validator.FieldValidator;
-import org.jarb.utils.ReflectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

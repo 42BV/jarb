@@ -11,6 +11,7 @@ import javax.persistence.metamodel.Metamodel;
 
 /**
  * Java Persistence API (JPA) utilities.
+ * 
  * @author Jeroen van Schagen
  * @since 11-05-2011
  */
@@ -61,4 +62,5 @@ public final class JpaUtils {
         }
         return entityClasses;
     }
+    
 }

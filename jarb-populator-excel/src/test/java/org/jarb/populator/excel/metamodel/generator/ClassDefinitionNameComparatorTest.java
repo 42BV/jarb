@@ -1,4 +1,4 @@
-package org.jarb.populator.excel.util;
+package org.jarb.populator.excel.metamodel.generator;
 
 import static org.junit.Assert.assertEquals;
 
