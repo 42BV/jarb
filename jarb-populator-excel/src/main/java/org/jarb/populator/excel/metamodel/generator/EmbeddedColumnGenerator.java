@@ -6,7 +6,7 @@ import java.util.List;
 
 import javax.persistence.AttributeOverride;
 
-import org.jarb.populator.excel.metamodel.ColumnDefinition;
+import org.jarb.populator.excel.metamodel.PropertyDefinition;
 import org.jarb.populator.excel.metamodel.FieldPath;
 import org.springframework.util.ReflectionUtils;
 
@@ -28,12 +28,12 @@ public final class EmbeddedColumnGenerator {
      * @throws InstantiationException Thrown when function is used on a class that cannot be instantiated (abstract or interface)
      * @throws IllegalAccessException Thrown when function does not have access to the definition of the specified class, field, method or constructor 
      */
-    public static List<ColumnDefinition> createColumnDefinitionsForEmbeddedField(Field embeddableField) throws InstantiationException, IllegalAccessException {
-        List<ColumnDefinition> columnDefinitions = new ArrayList<ColumnDefinition>();
+    public static List<PropertyDefinition> createColumnDefinitionsForEmbeddedField(Field embeddableField) throws InstantiationException, IllegalAccessException {
+        List<PropertyDefinition> columnDefinitions = new ArrayList<PropertyDefinition>();
         // This means there are embedded attributes available. Find all attributes in the embeddable class.
         for (Field embeddedPropertyField : embeddableField.getType().getDeclaredFields()) {
             if (!ReflectionUtils.isPublicStaticFinal(embeddedPropertyField)) {
-                ColumnDefinition.Builder columnDefinitionBuilder = FieldAnalyzer.analyzeField(embeddedPropertyField);
+                PropertyDefinition.Builder columnDefinitionBuilder = FieldAnalyzer.analyzeField(embeddedPropertyField);
                 if(columnDefinitionBuilder != null) {
                     columnDefinitionBuilder.setEmbeddablePath(FieldPath.startingFrom(embeddableField));
                     overrideAttributes(embeddableField, columnDefinitionBuilder, embeddedPropertyField);
@@ -50,7 +50,7 @@ public final class EmbeddedColumnGenerator {
      * @param columnDefinition ColumnDefinition for embedded field
      * @param embeddedField EmbeddedField
      */
-    private static void overrideAttributes(Field field, ColumnDefinition.Builder columnDefinitionBuilder, Field embeddedField) {
+    private static void overrideAttributes(Field field, PropertyDefinition.Builder columnDefinitionBuilder, Field embeddedField) {
         javax.persistence.AttributeOverrides annotation = field.getAnnotation(javax.persistence.AttributeOverrides.class);
         if (annotation != null) {
             for (AttributeOverride overrideAnnotation : annotation.value()) {

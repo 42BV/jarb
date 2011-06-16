@@ -11,7 +11,7 @@ import javax.persistence.metamodel.Metamodel;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.jarb.populator.excel.DefaultExcelTestDataCase;
 import org.jarb.populator.excel.metamodel.ClassDefinition;
-import org.jarb.populator.excel.metamodel.ColumnDefinition;
+import org.jarb.populator.excel.metamodel.PropertyDefinition;
 import org.jarb.populator.excel.metamodel.generator.ClassDefinitionsGenerator;
 import org.jarb.populator.excel.metamodel.generator.FieldAnalyzer;
 import org.jarb.populator.excel.workbook.Workbook;
@@ -46,7 +46,7 @@ public class ExcelRowTest extends DefaultExcelTestDataCase {
         classDefinition = ClassDefinitionsGenerator.createSingleClassDefinitionFromMetamodel(getEntityManagerFactory(), entity, false);
         excelRow = new ExcelRow(classDefinition.getPersistentClass());
 
-        ColumnDefinition columnDefinition = FieldAnalyzer.analyzeField(persistentClass.getDeclaredField("id")).build();
+        PropertyDefinition columnDefinition = FieldAnalyzer.analyzeField(persistentClass.getDeclaredField("id")).build();
 
         Double cellValue = (Double) excel.getSheet(classDefinition.getTableName()).getCellValueAt(2, 0);
         Key keyValue = new JoinColumnKey();

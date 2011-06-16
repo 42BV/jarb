@@ -5,7 +5,7 @@ import org.jarb.populator.excel.entity.EntityRegistry;
 import org.jarb.populator.excel.entity.EntityTable;
 import org.jarb.populator.excel.metamodel.ClassDefinition;
 import org.jarb.populator.excel.metamodel.MetaModel;
-import org.jarb.populator.excel.metamodel.ColumnDefinition;
+import org.jarb.populator.excel.metamodel.PropertyDefinition;
 import org.jarb.populator.excel.workbook.Row;
 import org.jarb.populator.excel.workbook.Sheet;
 import org.jarb.populator.excel.workbook.Workbook;
@@ -45,7 +45,7 @@ public class SimpleEntityImporter implements EntityImporter {
     
     private <T> T loadEntity(Row row, ClassDefinition<T> classDefinition) {
         T entity = ReflectionUtils.instantiate(determineClass(row, classDefinition));
-        for(ColumnDefinition propertyDefinition : classDefinition.getColumnDefinitions()) {
+        for(PropertyDefinition propertyDefinition : classDefinition.getPropertyDefinition()) {
             
         }
         return entity;

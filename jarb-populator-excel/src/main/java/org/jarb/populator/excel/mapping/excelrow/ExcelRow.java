@@ -3,7 +3,7 @@ package org.jarb.populator.excel.mapping.excelrow;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.jarb.populator.excel.metamodel.ColumnDefinition;
+import org.jarb.populator.excel.metamodel.PropertyDefinition;
 import org.jarb.utils.ReflectionUtils;
 
 /**
@@ -17,7 +17,7 @@ public class ExcelRow {
     private Object createdInstance;
 
     /** ValueMap with columnDefinitions and their keys. */
-    private Map<ColumnDefinition, Key> valueMap;
+    private Map<PropertyDefinition, Key> valueMap;
     
     public ExcelRow(Class<?> persistentClass) {
         this(ReflectionUtils.instantiate(persistentClass));
@@ -29,7 +29,7 @@ public class ExcelRow {
      */
     public ExcelRow(final Object entity) {
         this.createdInstance = entity;
-        valueMap = new HashMap<ColumnDefinition, Key>();
+        valueMap = new HashMap<PropertyDefinition, Key>();
     }
 
     /**
@@ -37,7 +37,7 @@ public class ExcelRow {
      * @param columnDefinition Instance of ColumnDefinition
      * @param value Key for ColumnDefinition
      */
-    public void addValue(ColumnDefinition columnDefinition, Key value) {
+    public void addValue(PropertyDefinition columnDefinition, Key value) {
         valueMap.put(columnDefinition, value);
     }
 
@@ -45,7 +45,7 @@ public class ExcelRow {
      * Returns a hashmap with columndefinitions and keys.
      * @return hashmap with columnDefinitions and their corresponding keys
      */
-    public Map<ColumnDefinition, Key> getValueMap() {
+    public Map<PropertyDefinition, Key> getValueMap() {
         return this.valueMap;
     }
 

@@ -16,7 +16,7 @@ import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.jarb.populator.excel.DefaultExcelTestDataCase;
 import org.jarb.populator.excel.mapping.importer.WorksheetDefinition;
 import org.jarb.populator.excel.metamodel.ClassDefinition;
-import org.jarb.populator.excel.metamodel.ColumnDefinition;
+import org.jarb.populator.excel.metamodel.PropertyDefinition;
 import org.jarb.populator.excel.workbook.Workbook;
 import org.jarb.populator.excel.workbook.reader.PoiExcelParser;
 import org.junit.Before;
@@ -57,7 +57,7 @@ public class FieldAnalyzerTest extends DefaultExcelTestDataCase {
 
     @Test
     public void testColumn() {    
-        ColumnDefinition testNameColumn = FieldAnalyzer.analyzeField(nameField).build();
+        PropertyDefinition testNameColumn = FieldAnalyzer.analyzeField(nameField).build();
         assertEquals("first_name", testNameColumn.getColumnName());
         assertEquals("name", testNameColumn.getFieldName());
     }
@@ -65,7 +65,7 @@ public class FieldAnalyzerTest extends DefaultExcelTestDataCase {
 
     @Test
     public void testJoinTable() throws SecurityException, NoSuchFieldException {
-        ColumnDefinition definition = FieldAnalyzer.analyzeField(Employee.class.getDeclaredField("projects")).build();
+        PropertyDefinition definition = FieldAnalyzer.analyzeField(Employee.class.getDeclaredField("projects")).build();
         assertEquals("project_id", definition.getInverseJoinColumnName());
         assertEquals("employee_id", definition.getJoinColumnName());
     }

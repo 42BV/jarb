@@ -1,7 +1,6 @@
 package org.jarb.populator.excel.metamodel.generator;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.io.FileInputStream;
@@ -22,7 +21,7 @@ import org.jarb.populator.excel.DefaultExcelTestDataCase;
 import org.jarb.populator.excel.mapping.importer.WorksheetDefinition;
 import org.jarb.populator.excel.metamodel.ClassDefinition;
 import org.jarb.populator.excel.metamodel.ClassDefinitionNameComparator;
-import org.jarb.populator.excel.metamodel.ColumnDefinition;
+import org.jarb.populator.excel.metamodel.PropertyDefinition;
 import org.jarb.populator.excel.workbook.Workbook;
 import org.jarb.populator.excel.workbook.reader.PoiExcelParser;
 import org.junit.Before;
@@ -70,7 +69,7 @@ public class ClassDefinitionsGeneratorTest extends DefaultExcelTestDataCase {
         EntityType<?> entity = ClassDefinitionsGenerator.getEntityFromMetamodel(domain.entities.Department.class, metamodel);
 
         ClassDefinition<?> classDefinition = ClassDefinitionsGenerator.createSingleClassDefinitionFromMetamodel(getEntityManagerFactory(), entity, false);
-        ColumnDefinition generated = classDefinition.getColumnDefinitionByFieldName("departmentName");
+        PropertyDefinition generated = classDefinition.getPropertyDefinition("departmentName");
         Field departmentNameField = persistentClass.getDeclaredField("departmentName");
         assertEquals(departmentNameField, generated.getField());
     }
@@ -84,7 +83,7 @@ public class ClassDefinitionsGeneratorTest extends DefaultExcelTestDataCase {
         EntityType<?> entity = ClassDefinitionsGenerator.getEntityFromMetamodel(domain.entities.Customer.class, metamodel);
 
         ClassDefinition<?> classDefinition = ClassDefinitionsGenerator.createSingleClassDefinitionFromMetamodel(getEntityManagerFactory(), entity, true);
-        ColumnDefinition generated = classDefinition.getColumnDefinitionByFieldName("location");
+        PropertyDefinition generated = classDefinition.getPropertyDefinition("location");
         Field companyLocationField = subClass.getDeclaredField("location");
         assertEquals(companyLocationField, generated.getField());
     }
@@ -108,7 +107,7 @@ public class ClassDefinitionsGeneratorTest extends DefaultExcelTestDataCase {
             Class<?> persistentClass = classDefinition.getPersistentClass();
             assertTrue(persistentClass != null);
 
-            for (ColumnDefinition columnDefinition : classDefinition.getColumnDefinitions()) {
+            for (PropertyDefinition columnDefinition : classDefinition.getPropertyDefinition()) {
                 Field field = ReflectionUtils.findField(persistentClass, columnDefinition.getFieldName());
 
                 if ((field == null) && columnDefinition.isEmbeddedAttribute()) {
@@ -120,7 +119,6 @@ public class ClassDefinitionsGeneratorTest extends DefaultExcelTestDataCase {
                 // Check if field is valid
                 if (field != null) {
                     assertEquals(field.getName(), columnDefinition.getFieldName());
-                    assertFalse(columnDefinition.getColumnName() == null);
                 }
             }
 

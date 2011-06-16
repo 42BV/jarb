@@ -7,8 +7,8 @@ import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.jarb.populator.excel.metamodel.ClassDefinition;
-import org.jarb.populator.excel.metamodel.ColumnDefinition;
 import org.jarb.populator.excel.metamodel.ColumnType;
+import org.jarb.populator.excel.metamodel.PropertyDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,7 +47,7 @@ public final class BasicExcelFileGenerator {
             excelRow.createCell(columnNumber++).setCellValue(classDefinition.getDiscriminatorColumnName());
         }
 
-        for (ColumnDefinition columnDefinition : classDefinition.getColumnDefinitions()) {
+        for (PropertyDefinition columnDefinition : classDefinition.getPropertyDefinition()) {
             if (columnDefinition.getColumnType() == ColumnType.JOIN_TABLE) {
                 createJoinTable(columnDefinition, workbook);
             } else if(!columnDefinition.isGeneratedValue()) {
@@ -63,9 +63,9 @@ public final class BasicExcelFileGenerator {
      * Creates a new excel sheet (table) for an associative columnDefinition and retrieves the joinColumnName and inverseJoinColumnName.
      * @param columnDefinition to be turned into an associative table.
      */
-    protected static void createJoinTable(ColumnDefinition columnDefinition, HSSFWorkbook workbook) {
+    protected static void createJoinTable(PropertyDefinition columnDefinition, HSSFWorkbook workbook) {
         if (columnDefinition.getColumnType() == ColumnType.JOIN_TABLE) {
-            HSSFSheet workpage = workbook.createSheet(columnDefinition.getColumnName());
+            HSSFSheet workpage = workbook.createSheet(columnDefinition.getJoinTableName());
             HSSFRow excelRow = workpage.createRow(0);
 
             /* At this point a JoinTable can only have one joinColumnName and one inverseJoinColumnName. 

@@ -34,8 +34,8 @@ public class ClassDefinition<T> {
     /** Name of the mapped database table. */
     private String tableName;
     
-    /** Definition of each column in the table. */
-    private List<ColumnDefinition> columnDefinitions;
+    /** Description of each defined property. */
+    private List<PropertyDefinition> propertyDefinitions;
     
     /**
      * Construct a new {@link ClassDefinition).
@@ -89,21 +89,21 @@ public class ClassDefinition<T> {
     }
 
     /**
-     * Returns all the columnDefinitions belonging to the classDefinition.
-     * @return set of ColumnDefinitions
+     * Retrieve all property definitions declared inside this class.
+     * @return definition of each declared property
      */
-    public List<ColumnDefinition> getColumnDefinitions() {
-        return columnDefinitions;
+    public List<PropertyDefinition> getPropertyDefinition() {
+        return Collections.unmodifiableList(propertyDefinitions);
     }
 
     /**
-     * Returns a ColumnDefinition that holds the passed fieldname.
-     * @param fieldName Fieldname to search the ColumnDefinitions for
-     * @return ColumnDefinition
+     * Retrieve a specific property definition.
+     * @param fieldName name of the property field
+     * @return matching property field, if any
      */
-    public ColumnDefinition getColumnDefinitionByFieldName(String fieldName) {
-        ColumnDefinition result = null;
-        for (ColumnDefinition columnDefinition : columnDefinitions) {
+    public PropertyDefinition getPropertyDefinition(String fieldName) {
+        PropertyDefinition result = null;
+        for (PropertyDefinition columnDefinition : propertyDefinitions) {
             if (StringUtils.equalsIgnoreCase(fieldName, columnDefinition.getFieldName())) {
                 result = columnDefinition;
             }
@@ -112,13 +112,16 @@ public class ClassDefinition<T> {
     }
 
     /**
-     * Returns a ColumnDefinition that holds the passed column name.
-     * @param columnName Column name to search the ColumnsDefinitions for
-     * @return ColumnDefinition
+     * Retrieve a specific property definition, based on property. Note
+     * that the column must actually map to a property inside our class.
+     * Certain columns, such as discriminators, are not mapped to a field
+     * and thus will result in a {@link null}.
+     * @param columnName name of the column
+     * @return matching property field, if any
      */
-    public ColumnDefinition getColumnDefinitionByColumnName(String columnName) {
-        ColumnDefinition result = null;
-        for (ColumnDefinition columnDefinition : columnDefinitions) {
+    public PropertyDefinition getPropertyDefinitionByColumn(String columnName) {
+        PropertyDefinition result = null;
+        for (PropertyDefinition columnDefinition : propertyDefinitions) {
             if (StringUtils.equalsIgnoreCase(columnName, columnDefinition.getColumnName())) {
                 result = columnDefinition;
             }
@@ -126,10 +129,18 @@ public class ClassDefinition<T> {
         return result;
     }
     
+    /**
+     * Retrieve all column names for this entity table.
+     * @return
+     */
     public List<String> getColumnNames() {
         List<String> columnNames = new ArrayList<String>();
-        for (ColumnDefinition columnDefinition : columnDefinitions) {
-            columnNames.add(columnDefinition.getColumnName());
+        // Include the columns of each property definition
+        for (PropertyDefinition propertyDefinition : propertyDefinitions) {
+            columnNames.add(propertyDefinition.getColumnName());
+        }
+        if(hasDiscriminatorColumn()) {
+            columnNames.add(discriminatorColumnName);
         }
         return columnNames;
     }
@@ -155,7 +166,7 @@ public class ClassDefinition<T> {
         private String discriminatorColumnName;
         private Map<String, Class<? extends T>> subClasses = new HashMap<String, Class<? extends T>>();
         private String tableName;
-        private Set<ColumnDefinition> columnDefinitionSet = new LinkedHashSet<ColumnDefinition>();
+        private Set<PropertyDefinition> columnDefinitionSet = new LinkedHashSet<PropertyDefinition>();
         
         /**
          * Construct a new {@link Builder}.
@@ -204,7 +215,7 @@ public class ClassDefinition<T> {
          * @param columnDefinition column definition being included
          * @return this for method chaining
          */
-        public Builder<T> includeColumns(Collection<ColumnDefinition> columnDefinitions) {
+        public Builder<T> includeColumns(Collection<PropertyDefinition> columnDefinitions) {
             columnDefinitionSet.addAll(columnDefinitions);
             return this;
         }
@@ -220,8 +231,8 @@ public class ClassDefinition<T> {
             classDefinition.discriminatorColumnName = discriminatorColumnName;
             classDefinition.subClasses = Collections.unmodifiableMap(subClasses);
             classDefinition.tableName = tableName;
-            final List<ColumnDefinition> columnDefinitionList = new ArrayList<ColumnDefinition>(columnDefinitionSet);
-            classDefinition.columnDefinitions = Collections.unmodifiableList(columnDefinitionList);
+            final List<PropertyDefinition> columnDefinitionList = new ArrayList<PropertyDefinition>(columnDefinitionSet);
+            classDefinition.propertyDefinitions = Collections.unmodifiableList(columnDefinitionList);
             return classDefinition;
         }
     }

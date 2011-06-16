@@ -112,7 +112,7 @@ public final class ClassDefinitionsGenerator {
             Class<T> persistentClass = (Class<T>) Class.forName(entity.getName());
             ClassDefinition.Builder<T> classDefinitionBuilder = createBasicClassDefinition(entities, entity, persistentClass);
             if (classDefinitionBuilder != null) {
-                classDefinitionBuilder.includeColumns(ColumnDefinitionsGenerator.createColumnDefinitions(subClassEntities, entity, persistentClass));
+                classDefinitionBuilder.includeColumns(ColumnDefinitionsGenerator.createPropertyDefinitions(subClassEntities, entity, persistentClass));
                 if(!subClassEntities.isEmpty()) {
                     classDefinitionBuilder.setDiscriminatorColumnName(DiscriminatorColumnGenerator.getDiscriminatorColumnName(persistentClass));
                     for(Map.Entry<String, Class<?>> subClassMapping : SubclassRetriever.getSubClassMapping(subClassEntities).entrySet()) {

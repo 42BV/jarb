@@ -127,6 +127,9 @@ public class Sheet implements Iterable<Row> {
      * @return {@code true} if the column was found, else {@code false}
      */
     public boolean containsColumn(String columnName) {
+        if(columnName == null) {
+            return false;
+        }
         return getColumnNames().contains(columnName);
     }
 

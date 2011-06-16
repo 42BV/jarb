@@ -16,7 +16,7 @@ import javax.persistence.metamodel.Metamodel;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.jarb.populator.excel.mapping.excelrow.ExcelRow;
 import org.jarb.populator.excel.metamodel.ClassDefinition;
-import org.jarb.populator.excel.metamodel.ColumnDefinition;
+import org.jarb.populator.excel.metamodel.PropertyDefinition;
 import org.jarb.populator.excel.metamodel.generator.ClassDefinitionsGenerator;
 import org.jarb.populator.excel.metamodel.generator.FieldAnalyzer;
 import org.jarb.populator.excel.workbook.Workbook;
@@ -65,7 +65,7 @@ public class StoreJoinTableTest {
 
         excelRow = new ExcelRow(classDefinition.getPersistentClass());
 
-        ColumnDefinition joinTable = FieldAnalyzer.analyzeField(projectsField).build();
+        PropertyDefinition joinTable = FieldAnalyzer.analyzeField(projectsField).build();
 
         rowPosition = 3;
         assertFalse(excelRow.getValueMap().containsKey(joinTable));

@@ -47,16 +47,16 @@ public class NewExcelFileGeneratorTest extends DefaultExcelTestDataCase {
         for (int i = 0; i < classDefinitionsEmpty.size(); i++) {
             ClassDefinition<?> empty = classDefinitionsEmpty.get(i);
             ClassDefinition<?> regular = classDefinitionsRegular.get(i);
-            for (int a = 0; a < empty.getColumnDefinitions().size(); a++) {
-                assertEquals(empty.getColumnDefinitions().get(a).getColumnName(), (regular.getColumnDefinitions().get(a).getColumnName()));
+            for (int a = 0; a < empty.getPropertyDefinition().size(); a++) {
+                assertEquals(empty.getPropertyDefinition().get(a).getColumnName(), (regular.getPropertyDefinition().get(a).getColumnName()));
             }
         }
 
         for (int i = 0; i < classDefinitionsRegular.size(); i++) {
             ClassDefinition<?> empty = classDefinitionsEmpty.get(i);
             ClassDefinition<?> regular = classDefinitionsRegular.get(i);
-            for (int a = 0; a < regular.getColumnDefinitions().size(); a++) {
-                assertEquals(empty.getColumnDefinitions().get(a).getColumnName(), (regular.getColumnDefinitions().get(a).getColumnName()));
+            for (int a = 0; a < regular.getPropertyDefinition().size(); a++) {
+                assertEquals(empty.getPropertyDefinition().get(a).getColumnName(), (regular.getPropertyDefinition().get(a).getColumnName()));
             }
         }
 

@@ -6,7 +6,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
-import org.jarb.populator.excel.metamodel.ColumnDefinition;
+import org.jarb.populator.excel.metamodel.PropertyDefinition;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -26,7 +26,7 @@ public class EmbeddedColumnGeneratorTest {
 
     @Test
     public void testCreateColumnDefinitionsForEmbeddedField() throws SecurityException, NoSuchFieldException, InstantiationException, IllegalAccessException {
-        List<ColumnDefinition> generated = EmbeddedColumnGenerator.createColumnDefinitionsForEmbeddedField(Employee.class.getDeclaredField("address"));
+        List<PropertyDefinition> generated = EmbeddedColumnGenerator.createColumnDefinitionsForEmbeddedField(Employee.class.getDeclaredField("address"));
         assertEquals("building_address", generated.get(0).getColumnName());
         assertEquals("city_name", generated.get(1).getColumnName());
     }

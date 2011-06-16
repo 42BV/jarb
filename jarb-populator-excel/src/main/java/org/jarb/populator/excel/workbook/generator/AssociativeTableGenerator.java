@@ -8,7 +8,7 @@ import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.CellStyle;
-import org.jarb.populator.excel.metamodel.ColumnDefinition;
+import org.jarb.populator.excel.metamodel.PropertyDefinition;
 import org.jarb.populator.excel.workbook.validator.FieldValidator;
 import org.jarb.utils.ReflectionUtils;
 import org.slf4j.Logger;
@@ -34,10 +34,10 @@ public final class AssociativeTableGenerator {
      * @param databaseRecord Current databaserecord that is being handled
      * @throws NoSuchFieldException 
      */
-    protected static void createAssociativeTables(HSSFWorkbook workbook, PersistenceUnitUtil puUtil, Set<ColumnDefinition> associativeColumnDefinitions,
+    protected static void createAssociativeTables(HSSFWorkbook workbook, PersistenceUnitUtil puUtil, Set<PropertyDefinition> associativeColumnDefinitions,
             Object databaseRecord) throws NoSuchFieldException {
         //Process the associative tables
-        for (ColumnDefinition columnDefinition : associativeColumnDefinitions) {
+        for (PropertyDefinition columnDefinition : associativeColumnDefinitions) {
             createAssociateTableSheet(workbook, puUtil, databaseRecord, columnDefinition);
         }
     }
@@ -50,10 +50,10 @@ public final class AssociativeTableGenerator {
      * @param columnDefinition Representation of a database column
      * @throws NoSuchFieldException 
      */
-    private static void createAssociateTableSheet(HSSFWorkbook workbook, PersistenceUnitUtil puUtil, Object databaseRecord, ColumnDefinition columnDefinition)
+    private static void createAssociateTableSheet(HSSFWorkbook workbook, PersistenceUnitUtil puUtil, Object databaseRecord, PropertyDefinition columnDefinition)
             throws NoSuchFieldException {
         //The columnName is the name of the associative table. Get the proper sheet.
-        HSSFSheet sheet = workbook.getSheet(columnDefinition.getColumnName());
+        HSSFSheet sheet = workbook.getSheet(columnDefinition.getJoinTableName());
         int rowNumber = sheet.getLastRowNum() + 1;
 
         Set<?> collectionSet = getCollectionSet(databaseRecord, columnDefinition);
@@ -75,7 +75,7 @@ public final class AssociativeTableGenerator {
      * @return CollectionSet
      * @throws NoSuchFieldException 
      */
-    private static Set<?> getCollectionSet(Object databaseRecord, ColumnDefinition joinTable) throws NoSuchFieldException {
+    private static Set<?> getCollectionSet(Object databaseRecord, PropertyDefinition joinTable) throws NoSuchFieldException {
         Set<?> collectionSet = null;
         if (FieldValidator.isExistingField(joinTable.getFieldName(), databaseRecord.getClass())) {
             Object collectionObject = ReflectionUtils.getFieldValue(databaseRecord, joinTable.getFieldName());
@@ -94,7 +94,7 @@ public final class AssociativeTableGenerator {
      * @param joinTable Associative table type of ColumnDefinition
      * @param collectionItem One associative row object 
      */
-    private static void createAssociativeCollectionRow(PersistenceUnitUtil puUtil, Object databaseRecord, HSSFSheet sheet, HSSFRow row, ColumnDefinition joinTable,
+    private static void createAssociativeCollectionRow(PersistenceUnitUtil puUtil, Object databaseRecord, HSSFSheet sheet, HSSFRow row, PropertyDefinition joinTable,
             Object collectionItem) {
         for (int columnNumber = 0; columnNumber < sheet.getRow(0).getPhysicalNumberOfCells(); columnNumber++) {
             createAssociativeExcelColumn(puUtil, databaseRecord, sheet, row, joinTable, collectionItem, columnNumber);
@@ -113,7 +113,7 @@ public final class AssociativeTableGenerator {
      * @param collectionItem One associative row object 
      * @param columnNumber The horizontal position of the Excel column (0-based)
      */
-    private static void createAssociativeExcelColumn(PersistenceUnitUtil puUtil, Object databaseRecord, HSSFSheet sheet, HSSFRow row, ColumnDefinition joinTable,
+    private static void createAssociativeExcelColumn(PersistenceUnitUtil puUtil, Object databaseRecord, HSSFSheet sheet, HSSFRow row, PropertyDefinition joinTable,
             Object collectionItem, int columnNumber) {
         String columnName = getColumnNameFromSheet(sheet, columnNumber);
         CellStyle dateFormatStyle = DateFormatStyle.getDateFormatStyle(sheet.getWorkbook());

@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.jarb.populator.excel.metamodel.ClassDefinition;
-import org.jarb.populator.excel.metamodel.ColumnDefinition;
+import org.jarb.populator.excel.metamodel.PropertyDefinition;
 import org.jarb.populator.excel.workbook.Sheet;
 import org.jarb.populator.excel.workbook.Workbook;
 import org.slf4j.Logger;
@@ -38,7 +38,7 @@ public class WorksheetDefinition {
         // TODO FIX: crashes here if id sheet is missing from Excel file.
         worksheetDefinition.addColumnPosition(ID_COLUMN_NAME, classDefinition.getTableName(), sheet.indexOfColumn(ID_COLUMN_NAME));
 
-        for (ColumnDefinition columnDefinition : classDefinition.getColumnDefinitions()) {
+        for (PropertyDefinition columnDefinition : classDefinition.getPropertyDefinition()) {
             final String columnName = columnDefinition.getColumnName();
             LOGGER.debug("  field name: [" + columnDefinition.getFieldName() + "], column name: [" + columnName + "]");
             if (sheet.containsColumn(columnName)) {

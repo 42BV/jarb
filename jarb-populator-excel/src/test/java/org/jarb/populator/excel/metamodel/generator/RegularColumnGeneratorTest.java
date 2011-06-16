@@ -5,7 +5,7 @@ import static org.junit.Assert.assertEquals;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
-import org.jarb.populator.excel.metamodel.ColumnDefinition;
+import org.jarb.populator.excel.metamodel.PropertyDefinition;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -24,7 +24,7 @@ public class RegularColumnGeneratorTest {
     @Test
     public void testCreateColumnDefinitionsForEmbeddedField() throws SecurityException, NoSuchFieldException, InstantiationException, IllegalAccessException {
         Class<?> persistentClass = domain.entities.Project.class;
-        ColumnDefinition generated = RegularColumnGenerator.createColumnDefinitionForRegularField(persistentClass.getDeclaredField("name"));
+        PropertyDefinition generated = RegularColumnGenerator.createColumnDefinitionForRegularField(persistentClass.getDeclaredField("name"));
         assertEquals("name", generated.getColumnName());
     }
 }

@@ -9,7 +9,7 @@ import org.jarb.populator.excel.mapping.excelrow.ExcelRow;
 import org.jarb.populator.excel.mapping.excelrow.JoinTableKey;
 import org.jarb.populator.excel.mapping.excelrow.Key;
 import org.jarb.populator.excel.metamodel.ClassDefinition;
-import org.jarb.populator.excel.metamodel.ColumnDefinition;
+import org.jarb.populator.excel.metamodel.PropertyDefinition;
 import org.jarb.populator.excel.workbook.Sheet;
 import org.jarb.populator.excel.workbook.Workbook;
 import org.slf4j.Logger;
@@ -39,10 +39,10 @@ public final class StoreJoinTable {
      * @param rowPosition Vertical position number of the excelRecord
      * @param excelRow ExcelRow to save to.
      */
-    public static void storeValue(Workbook excel, ClassDefinition<?> classDefinition, ColumnDefinition columnDefinition, Integer rowPosition, ExcelRow excelRow) {
+    public static void storeValue(Workbook excel, ClassDefinition<?> classDefinition, PropertyDefinition columnDefinition, Integer rowPosition, ExcelRow excelRow) {
         Sheet mainSheet = excel.getSheet(classDefinition.getTableName());
         Double code = (Double) mainSheet.getCellValueAt(rowPosition, IDCOLUMNNAME);
-        Sheet joinSheet = excel.getSheet(columnDefinition.getColumnName());
+        Sheet joinSheet = excel.getSheet(columnDefinition.getJoinTableName());
 
         if (joinSheet != null) {
             Set<Integer> foreignKeyList = createForeignKeyList(joinSheet, columnDefinition, code);
@@ -57,7 +57,7 @@ public final class StoreJoinTable {
      * @param foreignKeyList List of foreign keys
      * @return JoinTable key instance
      */
-    private static Key createJoinTableKey(ColumnDefinition joinTable, Set<Integer> foreignKeyList) {
+    private static Key createJoinTableKey(PropertyDefinition joinTable, Set<Integer> foreignKeyList) {
         Key keyList = new JoinTableKey();
         keyList.setKeyValue(foreignKeyList);
         Type[] types = ((ParameterizedType) joinTable.getField().getGenericType()).getActualTypeArguments();
@@ -72,7 +72,7 @@ public final class StoreJoinTable {
      * @param code Id number
      * @return Set of foreign keys
      */
-    private static Set<Integer> createForeignKeyList(Sheet sheet, ColumnDefinition joinTable, Double code) {
+    private static Set<Integer> createForeignKeyList(Sheet sheet, PropertyDefinition joinTable, Double code) {
         Set<Integer> foreignKeyList = new HashSet<Integer>();
         for (Integer newRowPosition = 1; newRowPosition <= sheet.getLastRowNumber(); newRowPosition++) {
             Object joinColumnValue = sheet.getCellValueAt(newRowPosition, joinTable.getJoinColumnName());

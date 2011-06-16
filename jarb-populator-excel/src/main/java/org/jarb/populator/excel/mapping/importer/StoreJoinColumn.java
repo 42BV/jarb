@@ -4,7 +4,7 @@ import org.jarb.populator.excel.mapping.excelrow.ExcelRow;
 import org.jarb.populator.excel.mapping.excelrow.JoinColumnKey;
 import org.jarb.populator.excel.mapping.excelrow.Key;
 import org.jarb.populator.excel.metamodel.ClassDefinition;
-import org.jarb.populator.excel.metamodel.ColumnDefinition;
+import org.jarb.populator.excel.metamodel.PropertyDefinition;
 import org.jarb.populator.excel.workbook.Sheet;
 import org.jarb.populator.excel.workbook.Workbook;
 import org.slf4j.Logger;
@@ -31,7 +31,7 @@ public final class StoreJoinColumn {
      * @param rowPosition Vertical position number of the excelRecord
      * @param excelRow ExcelRow to save to.
      */
-    public static void storeValue(Workbook excel, ClassDefinition<?> classDefinition, ColumnDefinition columnDefinition, Integer rowPosition, ExcelRow excelRow) {
+    public static void storeValue(Workbook excel, ClassDefinition<?> classDefinition, PropertyDefinition columnDefinition, Integer rowPosition, ExcelRow excelRow) {
         Sheet sheet = excel.getSheet(classDefinition.getTableName());
         Object cellValue = sheet.getCellValueAt(rowPosition, columnDefinition.getColumnName());
         if(cellValue instanceof Double) {

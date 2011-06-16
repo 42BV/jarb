@@ -12,7 +12,7 @@ import javax.persistence.metamodel.Metamodel;
 
 import org.jarb.populator.excel.DefaultExcelTestDataCase;
 import org.jarb.populator.excel.metamodel.ClassDefinition;
-import org.jarb.populator.excel.metamodel.ColumnDefinition;
+import org.jarb.populator.excel.metamodel.PropertyDefinition;
 import org.jarb.populator.excel.metamodel.generator.ClassDefinitionsGenerator;
 import org.junit.Before;
 import org.junit.Test;
@@ -36,8 +36,8 @@ public class ColumnDefinitionUtilityTest extends DefaultExcelTestDataCase {
 
     @Test
     public void testGatherAssociativeColumnDefinitions() {
-        Set<ColumnDefinition> manual = new HashSet<ColumnDefinition>();
-        manual.add(classDefinition.getColumnDefinitionByFieldName("projects"));
+        Set<PropertyDefinition> manual = new HashSet<PropertyDefinition>();
+        manual.add(classDefinition.getPropertyDefinition("projects"));
         assertEquals(manual, ColumnDefinitionUtility.gatherAssociativeColumnDefinitions(classDefinition));
     }
 

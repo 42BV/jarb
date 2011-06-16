@@ -20,7 +20,7 @@ import org.jarb.populator.excel.DefaultExcelTestDataCase;
 import org.jarb.populator.excel.ExcelDataManager;
 import org.jarb.populator.excel.entity.query.DataReader;
 import org.jarb.populator.excel.metamodel.ClassDefinition;
-import org.jarb.populator.excel.metamodel.ColumnDefinition;
+import org.jarb.populator.excel.metamodel.PropertyDefinition;
 import org.jarb.populator.excel.metamodel.generator.ClassDefinitionsGenerator;
 import org.jarb.populator.excel.metamodel.generator.FieldAnalyzer;
 import org.junit.Before;
@@ -52,11 +52,11 @@ public class AssociativeTableGeneratorTest extends DefaultExcelTestDataCase {
         EntityType<?> entity = metamodel.entity(domain.entities.Employee.class);
         ClassDefinition<?> classDefinition = ClassDefinitionsGenerator.createSingleClassDefinitionFromMetamodel(getEntityManagerFactory(), entity, false);
 
-        BasicExcelFileGenerator.createJoinTable(classDefinition.getColumnDefinitionByFieldName("projects"), workbook);
+        BasicExcelFileGenerator.createJoinTable(classDefinition.getPropertyDefinition("projects"), workbook);
 
         List<?> results = DataReader.getTableFromDatabase(getEntityManagerFactory(), entity);
         int databaseRecordRow = 0;
-        Set<ColumnDefinition> associativeColumnDefinitions = ColumnDefinitionUtility.gatherAssociativeColumnDefinitions(classDefinition);
+        Set<PropertyDefinition> associativeColumnDefinitions = ColumnDefinitionUtility.gatherAssociativeColumnDefinitions(classDefinition);
         Object databaseRecord = results.get(databaseRecordRow);
 
         AssociativeTableGenerator.createAssociativeTables(workbook, puUtil, associativeColumnDefinitions, databaseRecord);
@@ -68,14 +68,14 @@ public class AssociativeTableGeneratorTest extends DefaultExcelTestDataCase {
             IllegalAccessException, NoSuchFieldException, IllegalArgumentException, InvocationTargetException, SecurityException, NoSuchMethodException {
         Class<?> persistentClass = domain.entities.Employee.class;
         Field projectsField = persistentClass.getDeclaredField("projects");
-        ColumnDefinition joinTable = FieldAnalyzer.analyzeField(projectsField).build();
+        PropertyDefinition joinTable = FieldAnalyzer.analyzeField(projectsField).build();
 
         HSSFWorkbook workbook = new HSSFWorkbook();
         HSSFSheet sheet = workbook.createSheet("Test");
         HSSFRow row = sheet.createRow(0);
         row.createCell(0).setCellValue("neithers_id");
 
-        Class<?>[] paramTypes = { PersistenceUnitUtil.class, Object.class, HSSFSheet.class, HSSFRow.class, ColumnDefinition.class, Object.class };
+        Class<?>[] paramTypes = { PersistenceUnitUtil.class, Object.class, HSSFSheet.class, HSSFRow.class, PropertyDefinition.class, Object.class };
         Object[] arguments = { null, null, sheet, null, joinTable, null };
         Method setCellValueByProperType = AssociativeTableGenerator.class.getDeclaredMethod("createAssociativeCollectionRow", paramTypes);
         setCellValueByProperType.setAccessible(true);

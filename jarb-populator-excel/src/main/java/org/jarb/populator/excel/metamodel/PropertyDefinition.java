@@ -2,6 +2,7 @@ package org.jarb.populator.excel.metamodel;
 
 import java.lang.reflect.Field;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.util.Assert;
 
 /**
@@ -9,21 +10,22 @@ import org.springframework.util.Assert;
  * @author Willem Eppen
  * @author Sander Benschop
  */
-public class ColumnDefinition {
+public class PropertyDefinition {
     private final Field field;
     private String columnName;
     private ColumnType columnType;
     private FieldPath embeddablePath;
+    private boolean generatedValue;
+    private String joinTableName;
     private String joinColumnName;
     private String inverseJoinColumnName;
-    private boolean generatedValue;
 
-    private ColumnDefinition(Field field) {
+    private PropertyDefinition(Field field) {
         this.field = field;
     }
     
-    public static ColumnDefinition.Builder forField(Field field) {
-        return new ColumnDefinition.Builder(field);
+    public static PropertyDefinition.Builder forField(Field field) {
+        return new PropertyDefinition.Builder(field);
     }
     
     public ColumnType getColumnType() {
@@ -54,6 +56,14 @@ public class ColumnDefinition {
         return embeddablePath;
     }
     
+    public boolean isGeneratedValue() {
+        return generatedValue;
+    }
+    
+    public String getJoinTableName() {
+        return joinTableName;
+    }
+    
     public String getJoinColumnName() {
         return joinColumnName;
     }
@@ -62,15 +72,12 @@ public class ColumnDefinition {
         return inverseJoinColumnName;
     }
     
-    public boolean isGeneratedValue() {
-        return generatedValue;
-    }
-    
     public static class Builder {
         private final Field field;
         private String columnName;
         private ColumnType columnType = ColumnType.BASIC;
         private FieldPath embeddablePath;
+        private String joinTableName;
         private String joinColumnName;
         private String inverseJoinColumnName;
         private boolean generatedValue = false;
@@ -78,7 +85,6 @@ public class ColumnDefinition {
         public Builder(Field field) {
             Assert.notNull(field, "Field cannot be null");
             this.field = field;
-            columnName = field.getName();
         }
         
         public Builder setColumnName(String columnName) {
@@ -101,26 +107,40 @@ public class ColumnDefinition {
             return this;
         }
         
+        public Builder setJoinTableName(String joinTableName) {
+            this.joinTableName = joinTableName;
+            return this;
+        }
+        
         public Builder setJoinColumnName(String joinColumnName) {
-            Assert.state(columnType == ColumnType.JOIN_TABLE, "Can only configure a join column name on a join table column.");
             this.joinColumnName = joinColumnName;
             return this;
         }
         
         public Builder setInverseJoinColumnName(String inverseJoinColumnName) {
-            Assert.state(columnType == ColumnType.JOIN_TABLE, "Can only configure an inverse join column name on a join table column.");
             this.inverseJoinColumnName = inverseJoinColumnName;
             return this;
         }
         
-        public ColumnDefinition build() {
-            Assert.hasText(columnName, "Column name cannot be empty");
+        public PropertyDefinition build() {
             Assert.notNull(columnType, "Column type cannot be null");
+            
+            if(columnType == ColumnType.JOIN_TABLE) {
+                Assert.state(StringUtils.isNotBlank(joinTableName), "Join table name cannot be blank");
+                Assert.state(StringUtils.isNotBlank(joinColumnName), "Join column name cannot be blank");
+                Assert.state(StringUtils.isNotBlank(inverseJoinColumnName), "Inverse join column name cannot be blank");
+                // Join tables reference a connection between two entities using a seperate table, thus there is no column in our current table
+                Assert.state(StringUtils.isBlank(columnName), "Join table property should have no column name");
+            } else {
+                Assert.state(StringUtils.isBlank(joinColumnName), "Join column name can only be used for join table properties.");
+                Assert.state(StringUtils.isBlank(inverseJoinColumnName), "Inverse join column name can only be used for join table properties.");
+            }
 
-            ColumnDefinition definition = new ColumnDefinition(field);
+            PropertyDefinition definition = new PropertyDefinition(field);
             definition.columnName = columnName;
             definition.columnType = columnType;
             definition.embeddablePath = embeddablePath;
+            definition.joinTableName = joinTableName;
             definition.joinColumnName = joinColumnName;
             definition.inverseJoinColumnName = inverseJoinColumnName;
             definition.generatedValue = generatedValue;

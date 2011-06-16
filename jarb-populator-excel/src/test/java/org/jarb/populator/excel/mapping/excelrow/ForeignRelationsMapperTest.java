@@ -14,7 +14,7 @@ import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.jarb.populator.excel.DefaultExcelTestDataCase;
 import org.jarb.populator.excel.mapping.importer.ExcelImporter;
 import org.jarb.populator.excel.metamodel.ClassDefinition;
-import org.jarb.populator.excel.metamodel.ColumnDefinition;
+import org.jarb.populator.excel.metamodel.PropertyDefinition;
 import org.jarb.populator.excel.metamodel.generator.ClassDefinitionsGenerator;
 import org.jarb.populator.excel.workbook.Workbook;
 import org.jarb.populator.excel.workbook.reader.PoiExcelParser;
@@ -53,7 +53,7 @@ public class ForeignRelationsMapperTest extends DefaultExcelTestDataCase {
                 if (excelRow.getCreatedInstance().getClass() == tobeTested) {
                     ForeignRelationsMapper.makeForeignRelations(excelRow, objectModel);
                     // excelRow.getValueMap().containsValue("JoinColumnKey");
-                    for (Entry<ColumnDefinition, Key> entry : excelRow.getValueMap().entrySet()) {
+                    for (Entry<PropertyDefinition, Key> entry : excelRow.getValueMap().entrySet()) {
                         assertEquals(domain.entities.Customer.class, entry.getValue().getForeignClass());
                     }
                 }

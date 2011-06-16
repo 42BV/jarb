@@ -35,13 +35,13 @@ public class ClassDefinitionTest extends DefaultExcelTestDataCase {
 
     @Test
     public void testAddGetColumnDefinitions() throws InstantiationException, IllegalAccessException {
-        List<ColumnDefinition> columnDefinitions = new ArrayList<ColumnDefinition>();
+        List<PropertyDefinition> columnDefinitions = new ArrayList<PropertyDefinition>();
         for (Field field : Customer.class.getDeclaredFields()) {
             columnDefinitions.add(FieldAnalyzer.analyzeField(field).build());
         }
         classDefinitionBuilder.includeColumns(columnDefinitions);
-        List<ColumnDefinition> resultColumnDefinitions = classDefinitionBuilder.build().getColumnDefinitions();
-        for(ColumnDefinition columnDefinition : columnDefinitions) {
+        List<PropertyDefinition> resultColumnDefinitions = classDefinitionBuilder.build().getPropertyDefinition();
+        for(PropertyDefinition columnDefinition : columnDefinitions) {
             assertTrue(resultColumnDefinitions.contains(columnDefinition));
         }
     }
@@ -65,7 +65,7 @@ public class ClassDefinitionTest extends DefaultExcelTestDataCase {
 
     @Test
     public void testGetColumnDefinitionByColumnName() throws InstantiationException, ClassNotFoundException, IllegalAccessException {
-        assertEquals("company_name", customerDefinition.getColumnDefinitionByColumnName("company_name").getColumnName());
+        assertEquals("company_name", customerDefinition.getPropertyDefinitionByColumn("company_name").getColumnName());
     }
 
 }

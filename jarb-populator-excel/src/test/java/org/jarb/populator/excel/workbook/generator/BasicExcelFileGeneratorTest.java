@@ -24,7 +24,7 @@ import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.Cell;
 import org.jarb.populator.excel.DefaultExcelTestDataCase;
 import org.jarb.populator.excel.metamodel.ClassDefinition;
-import org.jarb.populator.excel.metamodel.ColumnDefinition;
+import org.jarb.populator.excel.metamodel.PropertyDefinition;
 import org.jarb.populator.excel.metamodel.ColumnType;
 import org.jarb.populator.excel.metamodel.generator.ClassDefinitionsGenerator;
 import org.jarb.populator.excel.metamodel.generator.FieldAnalyzer;
@@ -74,7 +74,7 @@ public class BasicExcelFileGeneratorTest extends DefaultExcelTestDataCase {
         HSSFWorkbook workbook = new HSSFWorkbook();
         Class<?> persistentClass = domain.entities.Employee.class;
         Field projectsField = persistentClass.getDeclaredField("projects");
-        ColumnDefinition projectsDefinition = FieldAnalyzer.analyzeField(projectsField).build();
+        PropertyDefinition projectsDefinition = FieldAnalyzer.analyzeField(projectsField).build();
 
         List<String> columns = new ArrayList<String>();
         columns.add("employee_id");
@@ -114,7 +114,7 @@ public class BasicExcelFileGeneratorTest extends DefaultExcelTestDataCase {
 
     @Test
     public void testFailedCastToJoinTable() {
-        for (ColumnDefinition columnDefinition : classDefinition.getColumnDefinitions()) {
+        for (PropertyDefinition columnDefinition : classDefinition.getPropertyDefinition()) {
             if (columnDefinition.getColumnType() != ColumnType.JOIN_TABLE) {
                 HSSFWorkbook workbook = new HSSFWorkbook();
                 BasicExcelFileGenerator.createJoinTable(columnDefinition, workbook);

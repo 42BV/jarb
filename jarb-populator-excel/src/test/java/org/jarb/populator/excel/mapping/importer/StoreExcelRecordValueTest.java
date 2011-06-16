@@ -14,7 +14,7 @@ import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.jarb.populator.excel.DefaultExcelTestDataCase;
 import org.jarb.populator.excel.mapping.excelrow.ExcelRow;
 import org.jarb.populator.excel.metamodel.ClassDefinition;
-import org.jarb.populator.excel.metamodel.ColumnDefinition;
+import org.jarb.populator.excel.metamodel.PropertyDefinition;
 import org.jarb.populator.excel.metamodel.generator.ClassDefinitionsGenerator;
 import org.jarb.populator.excel.metamodel.generator.FieldAnalyzer;
 import org.jarb.populator.excel.workbook.Workbook;
@@ -47,7 +47,7 @@ public class StoreExcelRecordValueTest extends DefaultExcelTestDataCase {
         ClassDefinition<?> classDefinition = ClassDefinitionsGenerator.createSingleClassDefinitionFromMetamodel(getEntityManagerFactory(), entity, false);
         
         rowPosition = 3;
-        ColumnDefinition columnDefinition = FieldAnalyzer.analyzeField(Employee.class.getDeclaredField("projects")).build();
+        PropertyDefinition columnDefinition = FieldAnalyzer.analyzeField(Employee.class.getDeclaredField("projects")).build();
         excelRow = new ExcelRow(Employee.class);
         StoreExcelRecordValue.storeValue(excel, classDefinition, columnDefinition, rowPosition, excelRow);
         assertTrue(excelRow.getValueMap().containsKey(columnDefinition));
