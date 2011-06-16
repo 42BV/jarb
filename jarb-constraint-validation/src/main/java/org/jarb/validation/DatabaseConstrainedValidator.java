@@ -205,19 +205,24 @@ public class DatabaseConstrainedValidator implements ConstraintValidator<Databas
         Assert.notNull(applicationContext, "Application context cannot be null.");
         if (columnMetadataRepository == null) {
             columnMetadataRepository = getBeanFromContext(annotation.repository(), EntityAwareColumnMetadataRepository.class);
-            messageBuilder = new ViolationMessageBuilder(getValidatorFactoryFromContext(annotation.factory()));
+            messageBuilder = new ViolationMessageBuilder(getValidatorFactoryFromContext(annotation));
         }
     }
     
-    private ValidatorFactory getValidatorFactoryFromContext(String identifier) {
-        try {
-            return getBeanFromContext(identifier, ValidatorFactory.class);
-        } catch(NoSuchBeanDefinitionException intialException) {
-            // Whenever we find multiple validator factory, try using the convention identifier
+    private ValidatorFactory getValidatorFactoryFromContext(DatabaseConstrained annotation) {
+        final String identifier = annotation.factory();
+        if (StringUtils.isNotBlank(identifier)) {
+            return applicationContext.getBean(identifier, ValidatorFactory.class);
+        } else {
             try {
-                return getBeanFromContext(DEFAULT_VALIDATOR_FACTORY_ID, ValidatorFactory.class);
-            } catch(NoSuchBeanDefinitionException conventionException) {
-                throw intialException; // Change back to initial exception
+                return applicationContext.getBean(ValidatorFactory.class);
+            } catch(NoSuchBeanDefinitionException intialException) {
+                // Whenever we find multiple validator factory, try using the default identifier
+                try {
+                    return getBeanFromContext(DEFAULT_VALIDATOR_FACTORY_ID, ValidatorFactory.class);
+                } catch(NoSuchBeanDefinitionException conventionException) {
+                    throw intialException; // Change back to initial exception
+                }
             }
         }
     }
