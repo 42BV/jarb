@@ -35,11 +35,6 @@ public class Cell {
     public Object getValue() {
         return cellValue.getValue();
     }
-    
-    public Cell setValue(String text) {
-        setCellValue(new StringValue(text));
-        return this;
-    }
 
     public String getValueAsString() {
         Object value = getValue();
@@ -50,8 +45,9 @@ public class Cell {
         return cellValue;
     }
 
-    public void setCellValue(CellValue cellValue) {
+    public Cell setCellValue(CellValue cellValue) {
         this.cellValue = cellValue;
+        return this;
     }
 
     /**

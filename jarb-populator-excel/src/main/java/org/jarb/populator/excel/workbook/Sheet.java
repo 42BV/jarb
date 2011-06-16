@@ -79,7 +79,7 @@ public class Sheet implements Iterable<Row> {
     }
     
     public void setColumnNameAt(int colNo, String columnName) {
-        getCellAt(COLUMN_ROW_NO, colNo).setValue(columnName);
+        getCellAt(COLUMN_ROW_NO, colNo).setCellValue(new StringValue(columnName));
     }
 
     /**

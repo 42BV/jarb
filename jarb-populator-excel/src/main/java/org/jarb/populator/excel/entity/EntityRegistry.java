@@ -32,7 +32,7 @@ public class EntityRegistry {
      * @return entity of the specified type and identity, if any
      */
     public <T> T get(Class<T> entityClass, Long id) {
-        return entityTable(entityClass).get(id);
+        return entities(entityClass).get(id);
     }
 
     /**
@@ -42,7 +42,7 @@ public class EntityRegistry {
      * @return each entity of the specified type
      */
     public <T> EntityTable<T> getAll(Class<T> entityClass) {
-        return entityTable(entityClass);
+        return entities(entityClass);
     }
 
     /**
@@ -63,7 +63,7 @@ public class EntityRegistry {
      * @param entity reference to the entity being stored
      */
     public <T> void add(Class<T> entityClass, Long id, T entity) {
-        entityTable(entityClass).add(id, entity);
+        entities(entityClass).add(id, entity);
     }
 
     /**
@@ -72,7 +72,7 @@ public class EntityRegistry {
      * @param entities references to each entity that should be stored
      */
     public <T> void addAll(EntityTable<T> entities) {
-        EntityTable<T> currentEntities = entityTable(entities.getEntityClass());
+        EntityTable<T> currentEntities = entities(entities.getEntityClass());
         for (Map.Entry<Long, T> entityEntry : entities.map().entrySet()) {
             currentEntities.add(entityEntry.getKey(), (T) entityEntry.getValue());
         }
@@ -86,7 +86,7 @@ public class EntityRegistry {
      * @return the removed entity
      */
     public <T> T remove(Class<T> entityClass, Long id) {
-        return entityTable(entityClass).remove(id);
+        return entities(entityClass).remove(id);
     }
 
     /**
@@ -98,7 +98,7 @@ public class EntityRegistry {
      */
     public <T> List<T> removeAll(Class<T> entityClass, Iterable<Long> ids) {
         final List<T> deletedEntities = new ArrayList<T>();
-        EntityTable<T> entities = entityTable(entityClass);
+        EntityTable<T> entities = entities(entityClass);
         for (Long id : ids) {
             T deletedEntity = entities.remove(id);
             if (deletedEntity != null) {
@@ -115,7 +115,7 @@ public class EntityRegistry {
      * @return holder of our entities
      */
     @SuppressWarnings("unchecked")
-    private <T> EntityTable<T> entityTable(Class<T> entityClass) {
+    private <T> EntityTable<T> entities(Class<T> entityClass) {
         EntityTable<T> entities = (EntityTable<T>) entityTables.get(entityClass);
         if (entities == null) {
             entities = new EntityTable<T>(entityClass);

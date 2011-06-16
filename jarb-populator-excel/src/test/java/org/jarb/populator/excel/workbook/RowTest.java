@@ -21,7 +21,7 @@ public class RowTest {
      */
     @Test
     public void testSetAndGetCells() {
-        Cell cell = row.getCellAt(2).setValue("test");
+        Cell cell = row.getCellAt(2).setCellValue(new StringValue("test"));
         assertEquals(cell, row.getCellAt(2));
         assertTrue(row.getCells().contains(cell));
         assertEquals("test", row.getCellValueAt(2));
@@ -41,8 +41,8 @@ public class RowTest {
 
     @Test
     public void testToString() {
-        row.getCellAt(2).setValue("third");
-        row.getCellAt(0).setValue("first");
+        row.getCellAt(2).setCellValue(new StringValue("third"));
+        row.getCellAt(0).setCellValue(new StringValue("first"));
         assertEquals("{0=first, 2=third}", row.toString());
     }
 

@@ -48,7 +48,7 @@ public class SheetTest {
      */
     @Test
     public void testGetCell() {
-        final Cell cell = sheet.getCellAt(0, 0).setValue("42");
+        final Cell cell = sheet.getCellAt(0, 0).setCellValue(new StringValue("42"));
         assertEquals(cell, sheet.getCellAt(0, 0));
         assertEquals("42", sheet.getCellValueAt(0, 0));
     }
@@ -59,9 +59,9 @@ public class SheetTest {
     @Test
     public void testColumns() {
         final Row columnRow = sheet.getRowAt(0);
-        columnRow.getCellAt(0).setValue("first");
-        columnRow.getCellAt(2).setValue("third");
-        columnRow.getCellAt(3).setValue("third");
+        columnRow.getCellAt(0).setCellValue(new StringValue("first"));
+        columnRow.getCellAt(2).setCellValue(new StringValue("third"));
+        columnRow.getCellAt(3).setCellValue(new StringValue("third"));
         // Column row is directly accessable
         assertEquals(columnRow, sheet.getColumnRow());
         // Names are available, duplicates cause no problems
@@ -80,9 +80,9 @@ public class SheetTest {
     @Test
     public void testGetValueByColumn() {
         Row columnRow = sheet.getRowAt(0);
-        columnRow.getCellAt(0).setValue("first");
+        columnRow.getCellAt(0).setCellValue(new StringValue("first"));
         Row valueRow = sheet.getRowAt(1);
-        valueRow.getCellAt(0).setValue("test");
+        valueRow.getCellAt(0).setCellValue(new StringValue("test"));
         assertEquals("test", sheet.getCellValueAt(1, "first"));
         assertNull(sheet.getCellValueAt(1, "unknown"));
     }
@@ -93,8 +93,8 @@ public class SheetTest {
     @Test
     public void testToString() {
         Row row = sheet.getRowAt(0);
-        row.getCellAt(0).setValue("first");
-        row.getCellAt(1).setValue("second");
+        row.getCellAt(0).setCellValue(new StringValue("first"));
+        row.getCellAt(1).setCellValue(new StringValue("second"));
         assertEquals("Sheet 'test' {0={0=first, 1=second}}", sheet.toString());
     }
 

@@ -13,6 +13,7 @@ import org.jarb.populator.excel.workbook.FormulaValue;
 import org.jarb.populator.excel.workbook.NumericValue;
 import org.jarb.populator.excel.workbook.Row;
 import org.jarb.populator.excel.workbook.Sheet;
+import org.jarb.populator.excel.workbook.StringValue;
 import org.jarb.populator.excel.workbook.Workbook;
 import org.junit.Before;
 import org.junit.Test;
@@ -42,7 +43,7 @@ public class PoiExcelWriterTest extends DefaultExcelTestDataCase {
     public void testString() {
         Sheet sheet = workbook.createSheet("test");
         Row row = sheet.createRow();
-        row.getCellAt(0).setValue("haha");
+        row.getCellAt(0).setCellValue(new StringValue("haha"));
         writer.write(workbook, createFileOutputStream());
         Sheet result = readGeneratedFile().getSheetAt(0);
         assertEquals("haha", result.getCellValueAt(0, 0));

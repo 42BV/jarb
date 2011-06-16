@@ -43,6 +43,10 @@ public class PropertyDefinition {
     public String getFieldName() {
         return field.getName();
     }
+    
+    public Class<?> getFieldType() {
+        return field.getType();
+    }
 
     public String getColumnName() {
         return columnName;

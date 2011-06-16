@@ -3,7 +3,10 @@ package org.jarb.populator.excel.mapping.exporter;
 import org.jarb.populator.excel.entity.EntityRegistry;
 import org.jarb.populator.excel.metamodel.ClassDefinition;
 import org.jarb.populator.excel.metamodel.MetaModel;
+import org.jarb.populator.excel.metamodel.PropertyDefinition;
+import org.jarb.populator.excel.workbook.Row;
 import org.jarb.populator.excel.workbook.Sheet;
+import org.jarb.populator.excel.workbook.StringValue;
 import org.jarb.populator.excel.workbook.Workbook;
 
 /**
@@ -30,7 +33,7 @@ public class DefaultEntityExporter implements EntityExporter {
         Sheet sheet = workbook.createSheet(classDefinition.getTableName());
         storeColumnNames(sheet, classDefinition);
         for(T entity : registry.getAll(classDefinition.getPersistentClass())) {
-            System.out.println("TODO: Export " + entity + " to excel");
+            storeEntity(entity, sheet, classDefinition);
         }
     }
     
@@ -39,6 +42,18 @@ public class DefaultEntityExporter implements EntityExporter {
         for(String columnName : classDefinition.getColumnNames()) {
             sheet.setColumnNameAt(columnNumber++, columnName);
         }
+    }
+    
+    private <T> void storeEntity(T entity, Sheet sheet, ClassDefinition<T> classDefinition) {
+        Row row = sheet.createRow();
+        for(PropertyDefinition propertyDefinition : classDefinition.getPropertyDefinitions()) {
+            
+        }
+        if(classDefinition.hasDiscriminatorColumn()) {
+            final String discriminatorValue = classDefinition.getDiscriminatorValue(entity.getClass());
+            row.getCellAt(classDefinition.getDiscriminatorColumnName()).setCellValue(new StringValue(discriminatorValue));
+        }
+
     }
 
 }

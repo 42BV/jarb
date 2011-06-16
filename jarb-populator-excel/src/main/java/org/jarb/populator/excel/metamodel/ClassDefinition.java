@@ -64,12 +64,28 @@ public class ClassDefinition<T> {
     }
     
     /**
-     * Retrieve a specific subclass.
+     * Retrieve the subclass for a specific discriminator value.
      * @param discriminatorValue discriminator value
      * @return subclass matching our discriminator, or {@code null}
      */
     public Class<? extends T> getSubClass(String discriminatorValue) {
         return subClasses.get(discriminatorValue);
+    }
+    
+    /**
+     * Retrieve the discriminator value used to indicate a specific subclass.
+     * @param subClass type of subclass for which we retrieve the discriminator
+     * @return discriminator value used to indicate the subclass
+     */
+    public String getDiscriminatorValue(Class<?> subClass) {
+        String result = null;
+        for(Map.Entry<String, Class<? extends T>> subClassesEntry : subClasses.entrySet()) {
+            if(subClassesEntry.getValue().isAssignableFrom(subClass)) {
+                result = subClassesEntry.getKey();
+                break; // Result found, quit searching
+            }
+        }
+        return result;
     }
 
     /** 
