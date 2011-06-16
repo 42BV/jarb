@@ -6,7 +6,7 @@ import java.sql.Date;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.jarb.populator.excel.util.ReflectionUtils;
+import org.jarb.utils.ReflectionUtils;
 import org.junit.Before;
 import org.junit.Test;
 

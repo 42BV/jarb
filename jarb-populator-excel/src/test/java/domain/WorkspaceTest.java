@@ -2,7 +2,7 @@ package domain;
 
 import static org.junit.Assert.assertEquals;
 
-import org.jarb.populator.excel.util.ReflectionUtils;
+import org.jarb.utils.ReflectionUtils;
 import org.junit.Before;
 import org.junit.Test;
 

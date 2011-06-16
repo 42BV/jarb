@@ -8,9 +8,9 @@ import org.jarb.populator.excel.mapping.excelrow.ExcelRow;
 import org.jarb.populator.excel.mapping.excelrow.ForeignRelationsMapper;
 import org.jarb.populator.excel.metamodel.ClassDefinition;
 import org.jarb.populator.excel.metamodel.PropertyDefinition;
-import org.jarb.populator.excel.util.ReflectionUtils;
 import org.jarb.populator.excel.workbook.Sheet;
 import org.jarb.populator.excel.workbook.Workbook;
+import org.jarb.utils.ReflectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

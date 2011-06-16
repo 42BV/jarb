@@ -22,8 +22,8 @@ import org.jarb.populator.excel.metamodel.ClassDefinition;
 import org.jarb.populator.excel.metamodel.PropertyDefinition;
 import org.jarb.populator.excel.metamodel.MetaModel;
 import org.jarb.populator.excel.metamodel.generator.SubclassRetriever;
-import org.jarb.populator.excel.util.ReflectionUtils;
 import org.jarb.populator.excel.workbook.validator.FieldValidator;
+import org.jarb.utils.ReflectionUtils;
 
 /**
  * This class reuses the Class- and ColumnDefinitions from the Metamodel to create a new Excel file filled with data from the database.

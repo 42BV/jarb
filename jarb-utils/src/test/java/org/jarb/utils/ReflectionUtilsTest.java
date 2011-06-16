@@ -1,6 +1,6 @@
-package org.jarb.populator.excel.util;
+package org.jarb.utils;
 
-import org.jarb.populator.excel.util.ReflectionUtils;
+import org.jarb.utils.ReflectionUtils;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;

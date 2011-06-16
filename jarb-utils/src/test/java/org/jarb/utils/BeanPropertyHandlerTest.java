@@ -1,10 +1,11 @@
-package org.jarb.populator.excel.util;
+package org.jarb.utils;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import org.jarb.utils.BeanPropertyHandler;
 import org.junit.Before;
 import org.junit.Test;
 

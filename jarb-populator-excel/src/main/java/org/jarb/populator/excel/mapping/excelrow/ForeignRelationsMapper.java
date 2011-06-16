@@ -7,8 +7,8 @@ import java.util.Set;
 import org.jarb.populator.excel.metamodel.ClassDefinition;
 import org.jarb.populator.excel.metamodel.PropertyDefinition;
 import org.jarb.populator.excel.metamodel.generator.SuperclassRetriever;
-import org.jarb.populator.excel.util.ReflectionUtils;
 import org.jarb.populator.excel.workbook.validator.FieldValidator;
+import org.jarb.utils.ReflectionUtils;
 
 /**
  * Used to map foreign relationships between ExcelRows.

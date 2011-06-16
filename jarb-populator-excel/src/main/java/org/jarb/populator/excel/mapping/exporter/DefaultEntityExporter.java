@@ -8,7 +8,6 @@ import org.jarb.populator.excel.metamodel.ClassDefinition;
 import org.jarb.populator.excel.metamodel.ColumnType;
 import org.jarb.populator.excel.metamodel.MetaModel;
 import org.jarb.populator.excel.metamodel.PropertyDefinition;
-import org.jarb.populator.excel.util.BeanPropertyHandler;
 import org.jarb.populator.excel.workbook.BooleanValue;
 import org.jarb.populator.excel.workbook.CellValue;
 import org.jarb.populator.excel.workbook.DateValue;
@@ -18,6 +17,7 @@ import org.jarb.populator.excel.workbook.Row;
 import org.jarb.populator.excel.workbook.Sheet;
 import org.jarb.populator.excel.workbook.StringValue;
 import org.jarb.populator.excel.workbook.Workbook;
+import org.jarb.utils.BeanPropertyHandler;
 
 /**
  * Default implementation of {@link EntityExporter}.

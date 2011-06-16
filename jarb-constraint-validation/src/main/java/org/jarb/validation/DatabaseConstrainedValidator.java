@@ -11,6 +11,7 @@ import org.apache.commons.lang.StringUtils;
 import org.jarb.constraint.database.column.ColumnMetadata;
 import org.jarb.constraint.database.column.EntityAwareColumnMetadataRepository;
 import org.jarb.constraint.database.column.UnknownColumnException;
+import org.jarb.utils.BeanPropertyHandler;
 import org.jarb.validation.ViolationMessageBuilder.ViolationMessageTemplate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -92,7 +93,7 @@ public class DatabaseConstrainedValidator implements ConstraintValidator<Databas
             final Class<?> beanClass = bean.getClass();
             ColumnMetadata columnMetadata = columnMetadataRepository.getColumnMetadata(beanClass, property.getName());
             if (columnMetadata != null) {
-                final Object propertyValue = PropertyAccessor.getPropertyValue(bean, property);
+                final Object propertyValue = BeanPropertyHandler.getValue(bean, property.getName());
                 propertyIsValid = isValidValue(propertyValue, property.getName(), columnMetadata, context);
             } else {
                 LOGGER.warn("No column meta data has been defined for '{}' ({})", new Object[] { property.getName(), beanClass.getSimpleName() });

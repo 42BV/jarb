@@ -1,4 +1,4 @@
-package org.jarb.populator.excel.util;
+package org.jarb.utils;
 
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Method;
@@ -8,6 +8,7 @@ import org.springframework.beans.BeanUtils;
 public class BeanPropertyHandler {
 
     public static Object getValue(Object bean, String propertyName) {
+        // Attempt to retrieve the property value from a public getter method
         PropertyDescriptor descriptor = BeanUtils.getPropertyDescriptor(bean.getClass(), propertyName);
         if(descriptor != null) {
             Method readMethod = descriptor.getReadMethod();
@@ -15,6 +16,7 @@ public class BeanPropertyHandler {
                 return ReflectionUtils.invokeMethod(bean, readMethod);
             }
         }
+        // Otherwise attempt to read the field directly
         if(ReflectionUtils.hasField(bean, propertyName)) {
             return ReflectionUtils.getFieldValue(bean, propertyName);
         } else {
@@ -25,6 +27,7 @@ public class BeanPropertyHandler {
     }
     
     public static void setValue(Object bean, String propertyName, Object propertyValue) {
+        // Attempt to modify the property value by public setter method
         PropertyDescriptor descriptor = BeanUtils.getPropertyDescriptor(bean.getClass(), propertyName);
         if(descriptor != null) {
             Method writeMethod = descriptor.getWriteMethod();
@@ -33,6 +36,7 @@ public class BeanPropertyHandler {
                 return; // Value has been modified, stop now
             }
         }
+        // Otherwise attempt to modify the field directly
         if(ReflectionUtils.hasField(bean, propertyName)) {
             ReflectionUtils.setFieldValue(bean, propertyName, propertyValue);
         } else {

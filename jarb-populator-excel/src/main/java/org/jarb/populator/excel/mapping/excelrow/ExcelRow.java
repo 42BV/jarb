@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.jarb.populator.excel.metamodel.PropertyDefinition;
-import org.jarb.populator.excel.util.ReflectionUtils;
+import org.jarb.utils.ReflectionUtils;
 
 /**
  * Object which represents an Excel row. Can add data to valueMap and retrieve it.
