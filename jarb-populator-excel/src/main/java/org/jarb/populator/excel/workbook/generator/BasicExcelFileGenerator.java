@@ -47,7 +47,7 @@ public final class BasicExcelFileGenerator {
             excelRow.createCell(columnNumber++).setCellValue(classDefinition.getDiscriminatorColumnName());
         }
 
-        for (PropertyDefinition columnDefinition : classDefinition.getPropertyDefinition()) {
+        for (PropertyDefinition columnDefinition : classDefinition.getPropertyDefinitions()) {
             if (columnDefinition.getColumnType() == ColumnType.JOIN_TABLE) {
                 createJoinTable(columnDefinition, workbook);
             } else if(!columnDefinition.isGeneratedValue()) {

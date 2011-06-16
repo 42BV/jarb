@@ -107,7 +107,7 @@ public class ClassDefinitionsGeneratorTest extends DefaultExcelTestDataCase {
             Class<?> persistentClass = classDefinition.getPersistentClass();
             assertTrue(persistentClass != null);
 
-            for (PropertyDefinition columnDefinition : classDefinition.getPropertyDefinition()) {
+            for (PropertyDefinition columnDefinition : classDefinition.getPropertyDefinitions()) {
                 Field field = ReflectionUtils.findField(persistentClass, columnDefinition.getFieldName());
 
                 if ((field == null) && columnDefinition.isEmbeddedAttribute()) {

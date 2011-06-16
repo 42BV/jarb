@@ -165,7 +165,7 @@ public final class ExcelImporter {
      */
     private static void storeExcelRecordByColumnDefinitions(final Workbook excel, final ClassDefinition<?> classDefinition, Integer rowPosition, ExcelRow excelRow)
             throws NoSuchFieldException {
-        List<PropertyDefinition> columnDefinitions = classDefinition.getPropertyDefinition();
+        List<PropertyDefinition> columnDefinitions = classDefinition.getPropertyDefinitions();
         for (PropertyDefinition columnDefinition : columnDefinitions) {
             StoreExcelRecordValue.storeValue(excel, classDefinition, columnDefinition, rowPosition, excelRow);
         }

@@ -46,7 +46,7 @@ public class MetaModel {
      * @return description of the provided class, else {@code null}
      */
     @SuppressWarnings("unchecked")
-    public <T> ClassDefinition<T> findClassDefinition(Class<T> persistentClass) {
+    public <T> ClassDefinition<T> getClassDefinition(Class<T> persistentClass) {
         ClassDefinition<T> result = null;
         for (ClassDefinition<?> classDefinition : classDefinitions) {
             if (persistentClass.equals(classDefinition.getPersistentClass())) {

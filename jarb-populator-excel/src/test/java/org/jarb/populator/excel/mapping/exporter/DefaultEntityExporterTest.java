@@ -5,7 +5,9 @@ import static org.junit.Assert.assertTrue;
 
 import org.jarb.populator.excel.DefaultExcelTestDataCase;
 import org.jarb.populator.excel.entity.EntityRegistry;
+import org.jarb.populator.excel.metamodel.ClassDefinition;
 import org.jarb.populator.excel.metamodel.MetaModel;
+import org.jarb.populator.excel.workbook.Sheet;
 import org.jarb.populator.excel.workbook.Workbook;
 import org.junit.Before;
 import org.junit.Test;
@@ -28,6 +30,12 @@ public class DefaultEntityExporterTest extends DefaultExcelTestDataCase {
         Workbook workbook = entityExporter.export(registry, metamodel);
         assertEquals(1, workbook.getSheetCount());
         assertTrue(workbook.containsSheet("releases"));
+        Sheet releasesSheet = workbook.getSheet("releases");
+        ClassDefinition<Release> releaseDefinition = metamodel.getClassDefinition(Release.class);
+        // Each column should be stored inside the workbook
+        for(String columnName : releaseDefinition.getColumnNames()) {
+            assertTrue(releasesSheet.containsColumn(columnName));
+        }
     }
 
 }

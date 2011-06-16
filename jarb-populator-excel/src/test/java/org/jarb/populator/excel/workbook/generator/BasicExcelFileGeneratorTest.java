@@ -114,7 +114,7 @@ public class BasicExcelFileGeneratorTest extends DefaultExcelTestDataCase {
 
     @Test
     public void testFailedCastToJoinTable() {
-        for (PropertyDefinition columnDefinition : classDefinition.getPropertyDefinition()) {
+        for (PropertyDefinition columnDefinition : classDefinition.getPropertyDefinitions()) {
             if (columnDefinition.getColumnType() != ColumnType.JOIN_TABLE) {
                 HSSFWorkbook workbook = new HSSFWorkbook();
                 BasicExcelFileGenerator.createJoinTable(columnDefinition, workbook);

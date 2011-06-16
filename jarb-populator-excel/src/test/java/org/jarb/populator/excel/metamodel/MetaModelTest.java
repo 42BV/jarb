@@ -18,7 +18,7 @@ public class MetaModelTest {
     @Test
     public void testFindClassDefinition() {
         MetaModel metamodel = new MetaModel(workspaceDefinition);
-        assertEquals(workspaceDefinition, metamodel.findClassDefinition(Workspace.class));
+        assertEquals(workspaceDefinition, metamodel.getClassDefinition(Workspace.class));
     }
 
     @Test

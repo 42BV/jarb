@@ -23,7 +23,7 @@ public class ClassDefinitionTest extends DefaultExcelTestDataCase {
     @Before
     public void setUpClassDefinitions() throws InvalidFormatException, IOException {
         // Retrieve full customer definition from meta model generator
-        customerDefinition = generateMetamodel().findClassDefinition(Customer.class);
+        customerDefinition = generateMetamodel().getClassDefinition(Customer.class);
         // Build a customer class definition
         classDefinitionBuilder = ClassDefinition.forClass(Customer.class).setTableName("customers");
     }
@@ -40,7 +40,7 @@ public class ClassDefinitionTest extends DefaultExcelTestDataCase {
             columnDefinitions.add(FieldAnalyzer.analyzeField(field).build());
         }
         classDefinitionBuilder.includeColumns(columnDefinitions);
-        List<PropertyDefinition> resultColumnDefinitions = classDefinitionBuilder.build().getPropertyDefinition();
+        List<PropertyDefinition> resultColumnDefinitions = classDefinitionBuilder.build().getPropertyDefinitions();
         for(PropertyDefinition columnDefinition : columnDefinitions) {
             assertTrue(resultColumnDefinitions.contains(columnDefinition));
         }

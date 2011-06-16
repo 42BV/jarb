@@ -10,6 +10,8 @@ import java.util.TreeSet;
 import org.springframework.util.Assert;
 
 public class Sheet implements Iterable<Row> {
+    private static final int COLUMN_ROW_NO = 0;
+    
     private final TreeMap<Integer, Row> rows = new TreeMap<Integer, Row>();
     private final Workbook workbook;
     private String name;
@@ -64,19 +66,9 @@ public class Sheet implements Iterable<Row> {
         return row;
     }
 
-    public Cell getCellAt(int rowNo, int colNo) {
-        return getRowAt(rowNo).getCellAt(colNo);
-    }
-
-    public Object getCellValueAt(int rowNo, int colNo) {
-        return getRowAt(rowNo).getCellValueAt(colNo);
-    }
-
     public Row getColumnRow() {
-        return getRowAt(0);
+        return getRowAt(COLUMN_ROW_NO);
     }
-
-    // Column
 
     /**
      * Retrieve the column name at a specific index.
@@ -84,6 +76,10 @@ public class Sheet implements Iterable<Row> {
      */
     public String getColumnNameAt(int colNo) {
         return getColumnRow().getCellAt(colNo).getValueAsString();
+    }
+    
+    public void setColumnNameAt(int colNo, String columnName) {
+        getCellAt(COLUMN_ROW_NO, colNo).setValue(columnName);
     }
 
     /**
@@ -144,6 +140,16 @@ public class Sheet implements Iterable<Row> {
         if(colNo == -1) {
             return null;
         }
+        return getCellAt(rowNo, colNo);
+    }
+    
+    /**
+     * Retrieve the cell at a specific position.
+     * @param rowNo row number
+     * @param colNo column number
+     * @return cell at the specified position
+     */
+    public Cell getCellAt(int rowNo, int colNo) {
         return getRowAt(rowNo).getCellAt(colNo);
     }
 
@@ -156,6 +162,16 @@ public class Sheet implements Iterable<Row> {
     public Object getCellValueAt(int rowNo, String columnName) {
         Cell cell = getCellAt(rowNo, columnName);
         return cell != null ? cell.getValue() : null;
+    }
+    
+    /**
+     * Retrieve the cell value at a specific position.
+     * @param rowNo row number
+     * @param colNo column number
+     * @return cell at the specified position
+     */
+    public Object getCellValueAt(int rowNo, int colNo) {
+        return getRowAt(rowNo).getCellValueAt(colNo);
     }
 
     /**

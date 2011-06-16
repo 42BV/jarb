@@ -28,7 +28,7 @@ public final class ColumnDefinitionUtility {
         Set<PropertyDefinition> associativeColumnDefinitions = new HashSet<PropertyDefinition>();
         //Check for @JoinTables. Iterating over all columnDefinitions was also considered but this makes searching for cells problematic
         //if the cells are @JoinTables (which means they're not in this sheet.
-        for (PropertyDefinition columnDefinition : classDefinition.getPropertyDefinition()) {
+        for (PropertyDefinition columnDefinition : classDefinition.getPropertyDefinitions()) {
             if (columnDefinition.getColumnType() == ColumnType.JOIN_TABLE) {
                 associativeColumnDefinitions.add(columnDefinition);
             }

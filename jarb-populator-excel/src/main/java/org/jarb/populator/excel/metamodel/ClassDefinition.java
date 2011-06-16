@@ -92,7 +92,7 @@ public class ClassDefinition<T> {
      * Retrieve all property definitions declared inside this class.
      * @return definition of each declared property
      */
-    public List<PropertyDefinition> getPropertyDefinition() {
+    public List<PropertyDefinition> getPropertyDefinitions() {
         return Collections.unmodifiableList(propertyDefinitions);
     }
 
