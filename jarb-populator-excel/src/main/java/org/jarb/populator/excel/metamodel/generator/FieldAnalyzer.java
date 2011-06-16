@@ -40,10 +40,9 @@ public class FieldAnalyzer {
         }
         // Whenever no annotation could be found, and the field is not relational, create a regular column
         if (columnDefinitionBuilder == null && !containsRelationalAnnotation(annotationClasses)) {
-            columnDefinitionBuilder = ColumnDefinition.builder(field.getName(), ColumnType.BASIC);
+            columnDefinitionBuilder = ColumnDefinition.forField(field);
         }
         if(columnDefinitionBuilder != null) {
-            columnDefinitionBuilder.setField(field);
             if (field.getAnnotation(javax.persistence.GeneratedValue.class) != null) {
                 columnDefinitionBuilder.valueIsGenerated();
             }
@@ -56,15 +55,17 @@ public class FieldAnalyzer {
         if(StringUtils.isBlank(columnName)) {
             columnName = field.getName();
         }
-        return ColumnDefinition.builder(columnName, ColumnType.BASIC);
+        return ColumnDefinition.forField(field).setColumnName(columnName);
     }
     
     private static ColumnDefinition.Builder joinColumnDefinition(JoinColumn annotation, Field field) {
-        return ColumnDefinition.builder(annotation.name(), ColumnType.JOIN_COLUMN);
+        return ColumnDefinition.forField(field).setColumnName(annotation.name()).setColumnType(ColumnType.JOIN_COLUMN);
     }
     
     private static ColumnDefinition.Builder joinTableDefinition(JoinTable annotation, Field field) {
-        return ColumnDefinition.builder(annotation.name(), ColumnType.JOIN_TABLE)
+        return ColumnDefinition.forField(field)
+            .setColumnName(annotation.name())
+            .setColumnType(ColumnType.JOIN_TABLE)
             .setJoinColumnName(annotation.joinColumns()[0].name())
             .setInverseJoinColumnName(annotation.inverseJoinColumns()[0].name());
     }

@@ -77,7 +77,6 @@ public final class ColumnDefinitionsGenerator {
         for (EntityType<?> subEntity : subclassEntities) {
             addAttributesAsColumnDefinitions(columnDefinitions, subEntity);
         }
-        columnDefinitions.add(DiscriminatorColumnGenerator.createDiscriminatorColumnDefinition(persistentClass));
     }
 
     /**

@@ -113,8 +113,11 @@ public final class ClassDefinitionsGenerator {
             ClassDefinition.Builder<T> classDefinitionBuilder = createBasicClassDefinition(entities, entity, persistentClass);
             if (classDefinitionBuilder != null) {
                 classDefinitionBuilder.includeColumns(ColumnDefinitionsGenerator.createColumnDefinitions(subClassEntities, entity, persistentClass));
-                for(Map.Entry<String, Class<?>> subClassMapping : SubclassRetriever.getSubClassMapping(subClassEntities).entrySet()) {
-                    classDefinitionBuilder.includeSubClass(subClassMapping.getKey(), (Class<? extends T>) subClassMapping.getValue());
+                if(!subClassEntities.isEmpty()) {
+                    classDefinitionBuilder.setDiscriminatorColumnName(DiscriminatorColumnGenerator.getDiscriminatorColumnName(persistentClass));
+                    for(Map.Entry<String, Class<?>> subClassMapping : SubclassRetriever.getSubClassMapping(subClassEntities).entrySet()) {
+                        classDefinitionBuilder.includeSubClass(subClassMapping.getKey(), (Class<? extends T>) subClassMapping.getValue());
+                    }
                 }
                 classDefinition = classDefinitionBuilder.build();
             }

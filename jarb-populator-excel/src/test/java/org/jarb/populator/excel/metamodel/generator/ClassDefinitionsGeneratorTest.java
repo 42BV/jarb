@@ -23,11 +23,11 @@ import org.jarb.populator.excel.mapping.importer.WorksheetDefinition;
 import org.jarb.populator.excel.metamodel.ClassDefinition;
 import org.jarb.populator.excel.metamodel.ClassDefinitionNameComparator;
 import org.jarb.populator.excel.metamodel.ColumnDefinition;
-import org.jarb.populator.excel.metamodel.ColumnType;
 import org.jarb.populator.excel.workbook.Workbook;
 import org.jarb.populator.excel.workbook.reader.PoiExcelParser;
 import org.junit.Before;
 import org.junit.Test;
+import org.springframework.util.ReflectionUtils;
 
 public class ClassDefinitionsGeneratorTest extends DefaultExcelTestDataCase {
 
@@ -104,46 +104,23 @@ public class ClassDefinitionsGeneratorTest extends DefaultExcelTestDataCase {
         List<ClassDefinition<?>> classDefinitionList = ClassDefinitionsGenerator.createClassDefinitionsFromMetamodel(getEntityManagerFactory());
 
         for (ClassDefinition<?> classDefinition : classDefinitionList) {
-            //Check if it holds a persistent class
+            // Check if it holds a persistent class
             Class<?> persistentClass = classDefinition.getPersistentClass();
             assertTrue(persistentClass != null);
 
             for (ColumnDefinition columnDefinition : classDefinition.getColumnDefinitions()) {
-                if (columnDefinition.getField() != null) {
-                    //Is a regular column, we should be able to get the data from the persistentclass
+                Field field = ReflectionUtils.findField(persistentClass, columnDefinition.getFieldName());
 
-                    Field field = null;
+                if ((field == null) && columnDefinition.isEmbeddedAttribute()) {
+                    // It's an embedded attribute.
+                    Field embeddedField = columnDefinition.getField();
+                    field = embeddedField.getDeclaringClass().getDeclaredField(columnDefinition.getFieldName());
+                }
 
-                    try {
-                        field = persistentClass.getDeclaredField(columnDefinition.getFieldName());
-                    } catch (NoSuchFieldException e) {
-                        //Field is not in persistentclass, checking subclasses.
-                    }
-                    if (field == null) {
-                        //Might be from a subclass, try to reach it from there.
-                        for (Class<?> _class : classDefinition.getSubClasses().values()) {
-                            if (field == null) {
-                                try {
-                                    field = _class.getDeclaredField(columnDefinition.getFieldName());
-                                } catch (NoSuchFieldException e) {
-                                }
-                            }
-                        }
-                    }
-                    if ((field == null) && columnDefinition.isEmbeddedAttribute()) {
-                        //It's an embedded attribute.
-                        Field embeddedField = columnDefinition.getField();
-                        field = embeddedField.getDeclaringClass().getDeclaredField(columnDefinition.getFieldName());
-                    }
-
-                    //Check if field is valid
-                    if (field != null) {
-                        assertEquals(field.getName(), columnDefinition.getFieldName());
-                        assertFalse(columnDefinition.getColumnName() == null);
-                    }
-                } else {
-                    //Should be a discriminatorColumn.
-                    assertEquals(ColumnType.DISCRIMINATOR, columnDefinition.getType());
+                // Check if field is valid
+                if (field != null) {
+                    assertEquals(field.getName(), columnDefinition.getFieldName());
+                    assertFalse(columnDefinition.getColumnName() == null);
                 }
             }
 

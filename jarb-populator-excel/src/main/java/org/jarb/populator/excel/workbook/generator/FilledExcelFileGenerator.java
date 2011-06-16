@@ -11,6 +11,7 @@ import javax.persistence.PersistenceUnitUtil;
 import javax.persistence.metamodel.EntityType;
 import javax.persistence.metamodel.Metamodel;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -126,15 +127,16 @@ public final class FilledExcelFileGenerator {
         String fieldName;
         Class<?> persistentClass = databaseRecord.getClass();
         for (int columnNumber = 0; columnNumber < sheet.getRow(0).getPhysicalNumberOfCells(); columnNumber++) {
-            //Get the column name
             columnName = sheet.getRow(0).getCell(columnNumber).getStringCellValue();
-            fieldName = ColumnDefinitionUtility.getFieldName(classDefinition, columnName);
-            if (FieldValidator.isExistingField(fieldName, persistentClass)) {
-                createRegularFieldCell(puUtil, dateFormatStyle, row, fieldName, databaseRecord, columnNumber);
-            } else if (classDefinition.getColumnDefinitionByFieldName(fieldName).isEmbeddedAttribute()) {
-                createEmbeddedFieldCell(classDefinition, dateFormatStyle, row, columnName, fieldName, databaseRecord, columnNumber);
-            } else if (columnName.equals(classDefinition.getDiscriminatorColumnName())) {
+            if(classDefinition.hasDiscriminatorColumn() && StringUtils.equals(classDefinition.getDiscriminatorColumnName(), columnName)) {
                 createDiscriminatorFieldCell(row, persistentClass, columnNumber);
+            } else {
+                fieldName = ColumnDefinitionUtility.getFieldName(classDefinition, columnName);
+                if (FieldValidator.isExistingField(fieldName, persistentClass)) {
+                    createRegularFieldCell(puUtil, dateFormatStyle, row, fieldName, databaseRecord, columnNumber);
+                } else if (classDefinition.getColumnDefinitionByFieldName(fieldName).isEmbeddedAttribute()) {
+                    createEmbeddedFieldCell(classDefinition, dateFormatStyle, row, columnName, fieldName, databaseRecord, columnNumber);
+                }
             }
         }
     }

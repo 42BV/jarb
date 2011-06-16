@@ -33,20 +33,31 @@ public class WorksheetDefinition {
      */
     public static WorksheetDefinition analyzeWorksheet(final ClassDefinition<?> classDefinition, final Workbook excel) {
         WorksheetDefinition worksheetDefinition = new WorksheetDefinition();
-        LOGGER.info("Analyzing worksheet: [" + classDefinition.getTableName() + "]");
+        LOGGER.debug("Analyzing worksheet: [" + classDefinition.getTableName() + "]");
         Sheet sheet = excel.getSheet(classDefinition.getTableName());
         // TODO FIX: crashes here if id sheet is missing from Excel file.
         worksheetDefinition.addColumnPosition(ID_COLUMN_NAME, classDefinition.getTableName(), sheet.indexOfColumn(ID_COLUMN_NAME));
 
         for (ColumnDefinition columnDefinition : classDefinition.getColumnDefinitions()) {
             final String columnName = columnDefinition.getColumnName();
-            LOGGER.info("  field name: [" + columnDefinition.getFieldName() + "], column name: [" + columnName + "]");
+            LOGGER.debug("  field name: [" + columnDefinition.getFieldName() + "], column name: [" + columnName + "]");
             if (sheet.containsColumn(columnName)) {
                 worksheetDefinition.addColumnPosition(columnName, classDefinition.getTableName(), sheet.indexOfColumn(columnName));
             } else {
-                LOGGER.info("Column name " + columnDefinition.getColumnName() + " was not present in the Worksheet.");
+                LOGGER.warn("Column name " + columnDefinition.getColumnName() + " was not present in the Worksheet.");
             }
         }
+        
+        if(classDefinition.hasDiscriminatorColumn()) {
+            final String discriminatorColumnName = classDefinition.getDiscriminatorColumnName();
+            LOGGER.debug("  discriminator column name: [" + discriminatorColumnName + "]");
+            if(sheet.containsColumn(discriminatorColumnName)) {
+                worksheetDefinition.addColumnPosition(discriminatorColumnName, classDefinition.getTableName(), sheet.indexOfColumn(discriminatorColumnName));
+            } else {
+                LOGGER.warn("Discriminator column {} is missing in the worksheet.", discriminatorColumnName);
+            }
+        }
+        
         return worksheetDefinition;
     }
 

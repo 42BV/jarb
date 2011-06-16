@@ -33,11 +33,11 @@ public final class StoreExcelRecordValue {
      */
     public static void storeValue(Workbook excel, ClassDefinition<?> classDefinition, ColumnDefinition columnDefinition, //
             Integer rowPosition, ExcelRow excelRow) throws NoSuchFieldException {
-        if (columnDefinition.getType() == ColumnType.BASIC) {
+        if (columnDefinition.getColumnType() == ColumnType.BASIC) {
             StoreColumn.storeValue(excel, classDefinition, columnDefinition, rowPosition, excelRow);
-        } else if (columnDefinition.getType() == ColumnType.JOIN_TABLE) {
+        } else if (columnDefinition.getColumnType() == ColumnType.JOIN_TABLE) {
             StoreJoinTable.storeValue(excel, classDefinition, columnDefinition, rowPosition, excelRow);
-        } else if (columnDefinition.getType() == ColumnType.JOIN_COLUMN) {
+        } else if (columnDefinition.getColumnType() == ColumnType.JOIN_COLUMN) {
             StoreJoinColumn.storeValue(excel, classDefinition, columnDefinition, rowPosition, excelRow);
         } else {
             LOGGER.warn("ColumnDefinition is not an instance of Column, JoinTable or JoinColumn. Cannot store data.");

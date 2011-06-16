@@ -12,7 +12,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import javax.persistence.metamodel.EntityType;
 import javax.persistence.metamodel.Metamodel;
@@ -21,8 +20,6 @@ import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.jarb.populator.excel.DefaultExcelTestDataCase;
 import org.jarb.populator.excel.mapping.excelrow.ExcelRow;
 import org.jarb.populator.excel.metamodel.ClassDefinition;
-import org.jarb.populator.excel.metamodel.ColumnDefinition;
-import org.jarb.populator.excel.metamodel.ColumnType;
 import org.jarb.populator.excel.metamodel.generator.ClassDefinitionsGenerator;
 import org.jarb.populator.excel.workbook.Workbook;
 import org.jarb.populator.excel.workbook.reader.PoiExcelParser;
@@ -80,6 +77,9 @@ public class DefaultExcelImporterTest extends DefaultExcelTestDataCase {
         assertTrue(parseWorksheetMap.keySet().contains(5));
     }
 
+    /**
+     * Whenever no type is defined, use the super class. Should not crash.
+     */
     @Test
     public void testCannotFindDiscriminatorPosition() throws InvalidFormatException, IOException, InstantiationException, IllegalAccessException,
             NoSuchFieldException, ClassNotFoundException {
@@ -89,11 +89,6 @@ public class DefaultExcelImporterTest extends DefaultExcelTestDataCase {
         excel = new PoiExcelParser().parse(new FileInputStream("src/test/resources/DiscriminatorColumnLacking.xls"));
         classDefinition = ClassDefinitionsGenerator.createSingleClassDefinitionFromMetamodel(getEntityManagerFactory(), entity, true);
         parseWorksheetMap = ExcelImporter.parseWorksheet(excel, classDefinition);
-        for (Entry<Integer, ExcelRow> entry : parseWorksheetMap.entrySet()) {
-            for (ColumnDefinition columnDefinition : entry.getValue().getValueMap().keySet()) {
-                assertTrue(columnDefinition.getType() != ColumnType.DISCRIMINATOR);
-            }
-        }
     }
 
     @Test

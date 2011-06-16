@@ -5,41 +5,29 @@ import java.lang.reflect.Field;
 import org.springframework.util.Assert;
 
 /**
- * Abstract class containing a columnName, fieldName and a field.
+ * Describes a property and its mapping to the database.
  * @author Willem Eppen
  * @author Sander Benschop
- * 
  */
 public class ColumnDefinition {
-    private final ColumnType type;
-    private final String columnName;
-    private Field field;
+    private final Field field;
+    private String columnName;
+    private ColumnType columnType;
     private FieldPath embeddablePath;
     private String joinColumnName;
     private String inverseJoinColumnName;
     private boolean generatedValue;
 
-    private ColumnDefinition(String columnName, ColumnType type) {
-        Assert.hasText(columnName, "Column name cannot be empty");
-        Assert.notNull(type, "Column type cannot be null");
-        this.columnName = columnName;
-        this.type = type;
+    private ColumnDefinition(Field field) {
+        this.field = field;
     }
     
-    public static ColumnDefinition.Builder builder(String columnName) {
-        return builder(columnName, ColumnType.BASIC);
+    public static ColumnDefinition.Builder forField(Field field) {
+        return new ColumnDefinition.Builder(field);
     }
     
-    public static ColumnDefinition.Builder builder(String columnName, ColumnType type) {
-        return new ColumnDefinition.Builder(type).setColumnName(columnName);
-    }
-    
-    public static ColumnDefinition discriminator(String columnName) {
-        return new ColumnDefinition(columnName, ColumnType.DISCRIMINATOR);
-    }
-    
-    public ColumnType getType() {
-        return type;
+    public ColumnType getColumnType() {
+        return columnType;
     }
     
     public boolean hasField() {
@@ -51,7 +39,7 @@ public class ColumnDefinition {
     }
     
     public String getFieldName() {
-        return field != null ? field.getName() : null;
+        return field.getName();
     }
 
     public String getColumnName() {
@@ -79,16 +67,18 @@ public class ColumnDefinition {
     }
     
     public static class Builder {
-        private final ColumnType type;
+        private final Field field;
         private String columnName;
-        private Field field;
+        private ColumnType columnType = ColumnType.BASIC;
         private FieldPath embeddablePath;
         private String joinColumnName;
         private String inverseJoinColumnName;
         private boolean generatedValue = false;
         
-        public Builder(ColumnType type) {
-            this.type = type;
+        public Builder(Field field) {
+            Assert.notNull(field, "Field cannot be null");
+            this.field = field;
+            columnName = field.getName();
         }
         
         public Builder setColumnName(String columnName) {
@@ -96,13 +86,13 @@ public class ColumnDefinition {
             return this;
         }
         
-        public Builder valueIsGenerated() {
-            generatedValue = true;
+        public Builder setColumnType(ColumnType columnType) {
+            this.columnType = columnType;
             return this;
         }
         
-        public Builder setField(Field field) {
-            this.field = field;
+        public Builder valueIsGenerated() {
+            generatedValue = true;
             return this;
         }
         
@@ -112,20 +102,24 @@ public class ColumnDefinition {
         }
         
         public Builder setJoinColumnName(String joinColumnName) {
-            Assert.state(type == ColumnType.JOIN_TABLE, "Can only configure a join column name on a join table column.");
+            Assert.state(columnType == ColumnType.JOIN_TABLE, "Can only configure a join column name on a join table column.");
             this.joinColumnName = joinColumnName;
             return this;
         }
         
         public Builder setInverseJoinColumnName(String inverseJoinColumnName) {
-            Assert.state(type == ColumnType.JOIN_TABLE, "Can only configure an inverse join column name on a join table column.");
+            Assert.state(columnType == ColumnType.JOIN_TABLE, "Can only configure an inverse join column name on a join table column.");
             this.inverseJoinColumnName = inverseJoinColumnName;
             return this;
         }
         
         public ColumnDefinition build() {
-            ColumnDefinition definition = new ColumnDefinition(columnName, type);
-            definition.field = field;
+            Assert.hasText(columnName, "Column name cannot be empty");
+            Assert.notNull(columnType, "Column type cannot be null");
+
+            ColumnDefinition definition = new ColumnDefinition(field);
+            definition.columnName = columnName;
+            definition.columnType = columnType;
             definition.embeddablePath = embeddablePath;
             definition.joinColumnName = joinColumnName;
             definition.inverseJoinColumnName = inverseJoinColumnName;

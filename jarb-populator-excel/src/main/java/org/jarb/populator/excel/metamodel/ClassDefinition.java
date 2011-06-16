@@ -25,13 +25,18 @@ import org.springframework.util.Assert;
 public class ClassDefinition<T> {
     /** Persistent class being described. */
     private final Class<T> persistentClass;
+    
+    /** Name of the discriminator column. **/
+    private String discriminatorColumnName;
     /** Mapping of each subclass and the related discriminator value. */
     private Map<String, Class<? extends T>> subClasses;
+    
     /** Name of the mapped database table. */
     private String tableName;
+    
     /** Definition of each column in the table. */
     private List<ColumnDefinition> columnDefinitions;
-
+    
     /**
      * Construct a new {@link ClassDefinition).
      * @param persistentClass class being described
@@ -56,6 +61,31 @@ public class ClassDefinition<T> {
      */
     public Class<T> getPersistentClass() {
         return persistentClass;
+    }
+    
+    /**
+     * Retrieve a specific subclass.
+     * @param discriminatorValue discriminator value
+     * @return subclass matching our discriminator, or {@code null}
+     */
+    public Class<? extends T> getSubClass(String discriminatorValue) {
+        return subClasses.get(discriminatorValue);
+    }
+
+    /** 
+     * Returns the discriminator's column name.
+     * @return The discriminator column's column name 
+     */
+    public String getDiscriminatorColumnName() {
+        return discriminatorColumnName;
+    }
+    
+    /**
+     * Determine if a class has a discriminator column.
+     * @return {@code true} if it has, else {@code false}
+     */
+    public boolean hasDiscriminatorColumn() {
+        return StringUtils.isNotBlank(discriminatorColumnName);
     }
 
     /**
@@ -111,32 +141,6 @@ public class ClassDefinition<T> {
     public String getTableName() {
         return tableName;
     }
-
-    /**
-     * Return list of subclasses.
-     * @return List of subclasses
-     */
-    public Map<String, Class<? extends T>> getSubClasses() {
-        return subClasses;
-    }
-    
-    public Class<? extends T> getSubClass(String discriminatorValue) {
-        return subClasses.get(discriminatorValue);
-    }
-
-    /** 
-     * Returns the discriminator's column name.
-     * @return The discriminator column's column name 
-     */
-    public String getDiscriminatorColumnName() {
-        String returnValue = null;
-        for (ColumnDefinition columnDefinition : columnDefinitions) {
-            if (columnDefinition.getType() == ColumnType.DISCRIMINATOR) {
-                returnValue = columnDefinition.getColumnName();
-            }
-        }
-        return returnValue;
-    }
     
     /**
      * Capable of building {@link ClassDefinition} instances.
@@ -148,6 +152,7 @@ public class ClassDefinition<T> {
      */
     public static class Builder<T> {
         private final Class<T> persistentClass;
+        private String discriminatorColumnName;
         private Map<String, Class<? extends T>> subClasses = new HashMap<String, Class<? extends T>>();
         private String tableName;
         private Set<ColumnDefinition> columnDefinitionSet = new LinkedHashSet<ColumnDefinition>();
@@ -162,12 +167,12 @@ public class ClassDefinition<T> {
         }
         
         /**
-         * Sets the tableName of the classDefinition.
-         * @param tableName String
+         * Describe the discriminator column name.
+         * @param discriminatorColumnName discriminator column name
          * @return this for method chaining
          */
-        public Builder<T> setTableName(final String tableName) {
-            this.tableName = tableName;
+        public Builder<T> setDiscriminatorColumnName(final String discriminatorColumnName) {
+            this.discriminatorColumnName = discriminatorColumnName;
             return this;
         }
         
@@ -183,7 +188,17 @@ public class ClassDefinition<T> {
             subClasses.put(discriminatorValue, persistentSubClass);
             return this;
         }
-
+        
+        /**
+         * Describe the table name of our class.
+         * @param tableName name of the table
+         * @return this for method chaining
+         */
+        public Builder<T> setTableName(final String tableName) {
+            this.tableName = tableName;
+            return this;
+        }
+        
         /**
          * Include a column definition.
          * @param columnDefinition column definition being included
@@ -199,11 +214,12 @@ public class ClassDefinition<T> {
          * @return new class definition
          */
         public ClassDefinition<T> build() {
-            ClassDefinition<T> classDefinition = new ClassDefinition<T>(persistentClass);
-            classDefinition.subClasses = Collections.unmodifiableMap(subClasses);
             Assert.hasText(tableName, "Table name cannot be blank");
+
+            ClassDefinition<T> classDefinition = new ClassDefinition<T>(persistentClass);
+            classDefinition.discriminatorColumnName = discriminatorColumnName;
+            classDefinition.subClasses = Collections.unmodifiableMap(subClasses);
             classDefinition.tableName = tableName;
-            // Convert column definitions into a list representation
             final List<ColumnDefinition> columnDefinitionList = new ArrayList<ColumnDefinition>(columnDefinitionSet);
             classDefinition.columnDefinitions = Collections.unmodifiableList(columnDefinitionList);
             return classDefinition;

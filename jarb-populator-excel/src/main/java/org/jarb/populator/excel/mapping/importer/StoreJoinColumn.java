@@ -40,10 +40,6 @@ public final class StoreJoinColumn {
                 // Sets the Key
                 Key keyValue = new JoinColumnKey();
                 keyValue.setKeyValue(((Double) cellValue).intValue());
-                if(columnDefinition.getField() == null) {
-                    String columnName = columnDefinition.getColumnName();
-                    System.out.println(columnName);
-                }
                 keyValue.setForeignClass(columnDefinition.getField().getType());
                 excelRow.addValue(columnDefinition, keyValue);
             }

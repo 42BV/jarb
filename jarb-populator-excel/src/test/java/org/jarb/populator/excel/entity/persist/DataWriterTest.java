@@ -127,9 +127,13 @@ public class DataWriterTest extends DefaultExcelTestDataCase {
         classDefinitionList.add(vehicle);
         //  classDefinitionList.add(project);
 
+        try {
         parseExcelMap = ExcelImporter.parseExcel(excel, classDefinitionList);
         connectionInstances = DataWriter.createConnectionInstanceSet(ExcelRowIntegration.toMap(parseExcelMap));
         DataWriter.saveEntity(connectionInstances, getEntityManagerFactory());
+        } catch(Exception e ) {
+            e.printStackTrace();
+        }
     }
 
 }

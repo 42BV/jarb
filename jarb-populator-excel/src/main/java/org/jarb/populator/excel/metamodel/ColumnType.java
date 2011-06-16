@@ -12,13 +12,6 @@ public enum ColumnType {
     BASIC,
     
     /**
-     * Describes the subclass of an entity. For example, a table
-     * "vehicles" with a discriminator column "type", having the
-     * possible values of ["car","bike"].
-     */
-    DISCRIMINATOR,
-    
-    /**
      * References to another entity.
      */
     JOIN_COLUMN,

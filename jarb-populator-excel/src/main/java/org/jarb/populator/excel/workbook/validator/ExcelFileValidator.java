@@ -64,9 +64,12 @@ public final class ExcelFileValidator {
             ClassDefinition<?> classDefinition) {
         Set<String> columnNames = new HashSet<String>();
         columnNames.add(IDCOLUMNNAME);
+        if(classDefinition.hasDiscriminatorColumn()) {
+            columnNames.add(classDefinition.getDiscriminatorColumnName());
+        }
         excelSheets.add(classDefinition.getTableName());
         for (ColumnDefinition columnDefinition : classDefinition.getColumnDefinitions()) {
-            if (columnDefinition.getType() == ColumnType.JOIN_TABLE) {
+            if (columnDefinition.getColumnType() == ColumnType.JOIN_TABLE) {
                 Set<String> associativeColumnNames = new HashSet<String>();
                 // Check associative table
                 associativeColumnNames.add(columnDefinition.getJoinColumnName());

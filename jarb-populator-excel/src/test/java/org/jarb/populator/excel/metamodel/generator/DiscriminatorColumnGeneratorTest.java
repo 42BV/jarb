@@ -5,8 +5,6 @@ import static org.junit.Assert.assertEquals;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
-import org.jarb.populator.excel.metamodel.ColumnDefinition;
-import org.jarb.populator.excel.metamodel.ColumnType;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -26,16 +24,12 @@ public class DiscriminatorColumnGeneratorTest {
 
     @Test
     public void testCreateDiscriminatorColumnDefinitionWithAnnotation() {
-        ColumnDefinition generated = DiscriminatorColumnGenerator.createDiscriminatorColumnDefinition(Customer.class);
-        assertEquals("type", generated.getColumnName());
-        assertEquals(ColumnType.DISCRIMINATOR, generated.getType());
+        assertEquals("type", DiscriminatorColumnGenerator.getDiscriminatorColumnName(Customer.class));
     }
 
     @Test
     public void testCreateDiscriminatorColumnDefinitionWithoutAnnotation() {
-        ColumnDefinition generated = DiscriminatorColumnGenerator.createDiscriminatorColumnDefinition(Workspace.class);
-        assertEquals("dtype", generated.getColumnName());
-        assertEquals(ColumnType.DISCRIMINATOR, generated.getType());
+        assertEquals("dtype", DiscriminatorColumnGenerator.getDiscriminatorColumnName(Workspace.class));
     }
 
 }

@@ -29,7 +29,7 @@ public final class ColumnDefinitionUtility {
         //Check for @JoinTables. Iterating over all columnDefinitions was also considered but this makes searching for cells problematic
         //if the cells are @JoinTables (which means they're not in this sheet.
         for (ColumnDefinition columnDefinition : classDefinition.getColumnDefinitions()) {
-            if (columnDefinition.getType() == ColumnType.JOIN_TABLE) {
+            if (columnDefinition.getColumnType() == ColumnType.JOIN_TABLE) {
                 associativeColumnDefinitions.add(columnDefinition);
             }
         }

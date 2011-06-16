@@ -79,6 +79,7 @@ public final class ExcelImporter {
         Sheet sheet = excel.getSheet(classDefinition.getTableName());
         String discriminatorColumnName = classDefinition.getDiscriminatorColumnName();
         for (Integer rowPosition = 1; rowPosition <= sheet.getLastRowNumber(); rowPosition++) {
+            LOGGER.debug("Importing row {}", rowPosition);
             ExcelRow excelRow = createFittingExcelRow(sheet, classDefinition, discriminatorColumnName, rowPosition);
             storeExcelRecordByColumnDefinitions(excel, classDefinition, rowPosition, excelRow);
             putCreatedInstance(sheet, classDefinition, createdInstances, rowPosition, excelRow);
@@ -109,7 +110,7 @@ public final class ExcelImporter {
             Integer discriminatorPosition = worksheetDefinition.getColumnPosition(discriminatorColumnName);
             String discriminatorValue = getDiscriminatorValueFromExcelFile(sheet, rowPosition, discriminatorPosition);
             if (discriminatorValue != null) {
-                entityClass = classDefinition.getSubClasses().get(discriminatorValue);
+                entityClass = classDefinition.getSubClass(discriminatorValue);
             }
         }
         return entityClass;

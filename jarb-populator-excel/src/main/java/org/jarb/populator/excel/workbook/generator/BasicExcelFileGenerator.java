@@ -42,11 +42,13 @@ public final class BasicExcelFileGenerator {
         HSSFRow excelRow = workpage.createRow(0);
 
         int columnNumber = 0;
-        excelRow.createCell(columnNumber).setCellValue(IDCOLUMNNAME);
-        columnNumber++;
+        excelRow.createCell(columnNumber++).setCellValue(IDCOLUMNNAME);
+        if(classDefinition.hasDiscriminatorColumn()) {
+            excelRow.createCell(columnNumber++).setCellValue(classDefinition.getDiscriminatorColumnName());
+        }
 
         for (ColumnDefinition columnDefinition : classDefinition.getColumnDefinitions()) {
-            if (columnDefinition.getType() == ColumnType.JOIN_TABLE) {
+            if (columnDefinition.getColumnType() == ColumnType.JOIN_TABLE) {
                 createJoinTable(columnDefinition, workbook);
             } else if(!columnDefinition.isGeneratedValue()) {
                 String columnName = columnDefinition.getColumnName();
@@ -62,7 +64,7 @@ public final class BasicExcelFileGenerator {
      * @param columnDefinition to be turned into an associative table.
      */
     protected static void createJoinTable(ColumnDefinition columnDefinition, HSSFWorkbook workbook) {
-        if (columnDefinition.getType() == ColumnType.JOIN_TABLE) {
+        if (columnDefinition.getColumnType() == ColumnType.JOIN_TABLE) {
             HSSFSheet workpage = workbook.createSheet(columnDefinition.getColumnName());
             HSSFRow excelRow = workpage.createRow(0);
 
