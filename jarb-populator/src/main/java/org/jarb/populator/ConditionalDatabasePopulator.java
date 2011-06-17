@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.datasource.init.DatabasePopulator;
 import org.springframework.util.StringUtils;
 
@@ -17,6 +19,12 @@ import org.springframework.util.StringUtils;
  * @since 17-06-2011
  */
 public abstract class ConditionalDatabasePopulator implements DatabasePopulator {
+    private static final Logger LOGGER = LoggerFactory.getLogger(ConditionalDatabasePopulator.class);
+    private boolean throwErrorOnFailure = false;
+
+    public void setThrowErrorOnFailure(boolean throwErrorOnFailure) {
+        this.throwErrorOnFailure = throwErrorOnFailure;
+    }
 
     /**
      * {@inheritDoc}
@@ -27,10 +35,15 @@ public abstract class ConditionalDatabasePopulator implements DatabasePopulator 
         if(result.isSuccess()) {
             doPopulate(connection);
         } else {
-            StringBuilder errorMessageBuilder = new StringBuilder();
-            errorMessageBuilder.append("Database populator is invalid:").append("\n - ");
-            errorMessageBuilder.append(StringUtils.collectionToDelimitedString(result.getErrors(), "\n - "));
-            throw new IllegalStateException(errorMessageBuilder.toString());
+            StringBuilder failureMessageBuilder = new StringBuilder();
+            failureMessageBuilder.append("Database populator was skipped as precondition is not met:").append("\n - ");
+            failureMessageBuilder.append(StringUtils.collectionToDelimitedString(result.getFailures(), "\n - "));
+            final String failureMessage = failureMessageBuilder.toString();
+            if(throwErrorOnFailure) {
+                throw new IllegalStateException(failureMessage);
+            } else {
+                LOGGER.info(failureMessage);
+            }
         }
     }
     
@@ -52,27 +65,27 @@ public abstract class ConditionalDatabasePopulator implements DatabasePopulator 
      * Result of {@link ConditionalDatabasePopulator#supports(Connection)}.
      */
     public static class SupportsResult {
-        private final List<String> errors;
+        private final List<String> failures;
         
         public SupportsResult() {
-            errors = new ArrayList<String>();
+            failures = new ArrayList<String>();
         }
         
         public static SupportsResult success() {
             return new SupportsResult();
         }
         
-        public SupportsResult addError(String error) {
-            errors.add(error);
+        public SupportsResult addFailure(String failure) {
+            failures.add(failure);
             return this;
         }
 
         public boolean isSuccess() {
-            return errors.isEmpty();
+            return failures.isEmpty();
         }
         
-        public List<String> getErrors() {
-            return Collections.unmodifiableList(errors);
+        public List<String> getFailures() {
+            return Collections.unmodifiableList(failures);
         }
     }
     

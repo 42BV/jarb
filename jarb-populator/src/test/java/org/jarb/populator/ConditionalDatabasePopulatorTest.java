@@ -20,8 +20,8 @@ public class ConditionalDatabasePopulatorTest {
     }
 
     /**
-     * Ensure that our {@link ConditionalDatabasePopulator#doPopulate(Connection)} is invoked
-     * whenever the desired precondition is met.
+     * Ensure that our {@link ConditionalDatabasePopulator#doPopulate(Connection)}
+     * is invoked whenever the desired precondition is met.
      */
     @Test
     public void testSupported() throws SQLException {
@@ -51,7 +51,8 @@ public class ConditionalDatabasePopulatorTest {
     }
     
     /**
-     * If the precondition is not met, we should recieve an exception with all error messages.
+     * If the precondition is not met, we should perform no database populating, and
+     * should recieve information about the unsatisfied precondition.
      */
     @Test
     public void testUnsupported() throws SQLException {
@@ -65,9 +66,9 @@ public class ConditionalDatabasePopulatorTest {
             @Override
             protected SupportsResult supports(Connection connection) {
                 return new SupportsResult()
-                            .addError("Precondition can never succeed")
-                            .addError("Second error message")
-                            .addError("Last error message");
+                            .addFailure("Precondition can never succeed")
+                            .addFailure("Second error message")
+                            .addFailure("Last error message");
             }
             
         };
@@ -76,12 +77,17 @@ public class ConditionalDatabasePopulatorTest {
         
         EasyMock.replay(databasePopulatorMock);
         
+        // Database population will not take place as the precondition is not met
+        conditionalPopulator.populate(connection);
+        
+        // We can even recieve an exception about the invalid precondition
+        conditionalPopulator.setThrowErrorOnFailure(true);
         try {
             conditionalPopulator.populate(connection);
-            fail("Expected an illegal state exception as the supports returned errors.");
+            fail("Expected an illegal state exception as the populator is in an invalid precondition.");
         } catch(IllegalStateException e) {
             final String message = e.getMessage();
-            assertTrue(message.startsWith("Database populator is invalid:"));
+            assertTrue(message.startsWith("Database populator was skipped as precondition is not met:"));
             assertTrue(message.contains("Precondition can never succeed"));
             assertTrue(message.contains("Second error message"));
             assertTrue(message.contains("Last error message"));
