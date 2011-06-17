@@ -35,9 +35,10 @@ public class SkipableSqlResourceDatabasePopulator implements DatabasePopulator {
      */
     @Override
     public void populate(Connection connection) throws SQLException {
-        final ResourceDatabasePopulator resourceDatabasePopulator = new ResourceDatabasePopulator();
-        resourceDatabasePopulator.addScript(script);
-        new FailSafeDatabasePopulator(resourceDatabasePopulator, CannotReadScriptException.class).populate(connection);
+        final ResourceDatabasePopulator populator = new ResourceDatabasePopulator();
+        populator.addScript(script);
+        // Wrap populator in a fail safe populator, which supresses our cannot read script exception
+        new FailSafeDatabasePopulator(populator, CannotReadScriptException.class).populate(connection);
     }
     
     /**
