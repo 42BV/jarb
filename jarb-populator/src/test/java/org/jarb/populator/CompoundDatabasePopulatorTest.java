@@ -32,8 +32,8 @@ public class CompoundDatabasePopulatorTest {
     @Test
     public void testPopulate() throws SQLException {
         CompoundDatabasePopulator populator = new CompoundDatabasePopulator();
-        populator.add(forSqlResource("create-schema.sql"));
-        populator.add(forSqlResource("insert-person.sql"));
+        populator.add(sqlPopulator("create-schema.sql"));
+        populator.add(sqlPopulator("insert-person.sql"));
 
         Connection connection = null;
         try {
@@ -50,11 +50,11 @@ public class CompoundDatabasePopulatorTest {
     @Test
     public void testSupressExceptions() throws SQLException {
         CompoundDatabasePopulator populator = new CompoundDatabasePopulator();
-        populator.add(forSqlResource("unknown.sql")); // Does not exist
-        populator.add(forSqlResource("create-schema.sql"));
-        populator.add(forSqlResource("unknown.sql")); // Does not exist
-        populator.add(forSqlResource("insert-person.sql"));
-        populator.add(forSqlResource("unknown.sql")); // Does not exist
+        populator.add(sqlPopulator("unknown.sql")); // Does not exist
+        populator.add(sqlPopulator("create-schema.sql"));
+        populator.add(sqlPopulator("unknown.sql")); // Does not exist
+        populator.add(sqlPopulator("insert-person.sql"));
+        populator.add(sqlPopulator("unknown.sql")); // Does not exist
 
         Connection connection = null;
         try {
@@ -79,9 +79,7 @@ public class CompoundDatabasePopulatorTest {
         }
     }
     
-    
-    
-    private DatabasePopulator forSqlResource(String name) {
+    private DatabasePopulator sqlPopulator(String name) {
         ResourceDatabasePopulator populator = new ResourceDatabasePopulator();
         populator.addScript(new ClassPathResource(name));
         return populator;
