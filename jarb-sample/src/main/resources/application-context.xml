@@ -43,11 +43,7 @@
     					<!-- And an Excel workbook -->
     					<bean class="org.jarb.populator.excel.ExcelDatabasePopulator">
     						<property name="excelResource" value="classpath:import.xls"/>
-    						<property name="excelDataManager">
-    							<bean class="org.jarb.populator.excel.ExcelDataManagerFactoryBean">
-    								<property name="entityManagerFactory" ref="entityManagerFactory"/>
-    							</bean>
-    						</property>
+    						<property name="entityManagerFactory" ref="entityManagerFactory"/>
     					</bean>
     				</list>
     			</constructor-arg>

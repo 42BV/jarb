@@ -2,11 +2,14 @@ package org.jarb.populator.excel;
 
 import static org.junit.Assert.assertFalse;
 
+import java.sql.Connection;
 import java.sql.SQLException;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
+import org.hibernate.classic.Session;
+import org.hibernate.jdbc.Work;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.core.io.ClassPathResource;
@@ -23,7 +26,7 @@ public class ExcelDatabasePopulatorTest extends DefaultExcelTestDataCase {
     public void setUp() {
         populator = new ExcelDatabasePopulator();
         populator.setExcelResource(new ClassPathResource("Excel.xls"));
-        populator.setExcelDataManager(getExcelDataManagerFactory().build());
+        populator.setEntityManagerFactory(getEntityManagerFactory());
     }
 
     /**
@@ -31,35 +34,16 @@ public class ExcelDatabasePopulatorTest extends DefaultExcelTestDataCase {
      */
     @Test
     public void testPopulate() throws SQLException {
-        populator.populate(null); // Connection is not used
+        Session session = (Session) entityManager.getDelegate();
+        session.doWork(new Work() {
+           
+            @Override
+            public void execute(Connection connection) throws SQLException {
+                populator.populate(connection);
+            }
+            
+        });
         assertFalse(entityManager.createQuery("from domain.entities.Customer", Customer.class).getResultList().isEmpty());
     }
-
-    /**
-     * Resource cannot be null.
-     */
-    @Test(expected = IllegalStateException.class)
-    public void testNullResource() throws SQLException {
-        populator.setExcelResource(null);
-        populator.populate(null);
-    }
-
-    /**
-     * Resource has to exist.
-     */
-    @Test(expected = IllegalStateException.class)
-    public void testNonExistingResource() throws SQLException {
-        populator.setExcelResource(new ClassPathResource("unknown.xls"));
-        populator.populate(null);
-    }
-
-    /**
-     * Data manager cannot be null.
-     */
-    @Test(expected = IllegalStateException.class)
-    public void testNullExcelDataManager() throws SQLException {
-        populator.setExcelDataManager(null);
-        populator.populate(null);
-    }
-
+    
 }

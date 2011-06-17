@@ -40,11 +40,16 @@
     </build>
 
 	<dependencies>
-	   <dependency>
-	       <groupId>org.jarb</groupId>
-	       <artifactId>jarb-utils</artifactId>
-	       <version>${project.version}</version>
-	   </dependency>
+		<dependency>
+			<groupId>org.jarb</groupId>
+			<artifactId>jarb-populator</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.jarb</groupId>
+			<artifactId>jarb-utils</artifactId>
+			<version>${project.version}</version>
+		</dependency>
 	
         <dependency>
             <groupId>org.apache.commons</groupId>
