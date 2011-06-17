@@ -3,8 +3,6 @@ package org.jarb.populator;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.core.io.Resource;
 import org.springframework.jdbc.datasource.init.CannotReadScriptException;
 import org.springframework.jdbc.datasource.init.DatabasePopulator;
@@ -22,24 +20,14 @@ import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
  * @since 01-06-2011
  */
 public class SkipableSqlResourceDatabasePopulator implements DatabasePopulator {
-    private static final Logger LOGGER = LoggerFactory.getLogger(SkipableSqlResourceDatabasePopulator.class);
-    private final ResourceDatabasePopulator populator;
+    private final Resource script;
 
     /**
      * Construct a new {@link SkipableSqlResourceDatabasePopulator} for one resource.
      * @param script resource script that should be executed
      */
     public SkipableSqlResourceDatabasePopulator(Resource script) {
-        this(new ResourceDatabasePopulator());
-        populator.addScript(script);
-    }
-
-    /**
-     * Construct a new {@link SkipableSqlResourceDatabasePopulator}.
-     * @param populator resource based database populator being wrapped
-     */
-    public SkipableSqlResourceDatabasePopulator(ResourceDatabasePopulator populator) {
-        this.populator = populator;
+        this.script = script;
     }
 
     /**
@@ -47,11 +35,17 @@ public class SkipableSqlResourceDatabasePopulator implements DatabasePopulator {
      */
     @Override
     public void populate(Connection connection) throws SQLException {
-        try {
-            populator.populate(connection);
-        } catch (CannotReadScriptException e) {
-            LOGGER.info("Skipped populating database as resource cannot be read.", e);
-        }
+        final ResourceDatabasePopulator resourceDatabasePopulator = new ResourceDatabasePopulator();
+        resourceDatabasePopulator.addScript(script);
+        new FailSafeDatabasePopulator(resourceDatabasePopulator, CannotReadScriptException.class).populate(connection);
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String toString() {
+        return String.format("Skipable SQL %s", script);
     }
 
 }

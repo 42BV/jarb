@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.apache.commons.lang.builder.ToStringBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.datasource.init.DatabasePopulator;
@@ -50,10 +51,19 @@ public class CompoundDatabasePopulator implements DatabasePopulator {
      */
     @Override
     public void populate(Connection connection) throws SQLException {
-        LOGGER.info("Executing {} database populators.", populators.size());
+        LOGGER.info("Starting to execute {} database populators.", populators.size());
         for (DatabasePopulator populator : populators) {
+            LOGGER.info("Executing {}...", populator);
             populator.populate(connection);
         }
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this);
     }
 
 }

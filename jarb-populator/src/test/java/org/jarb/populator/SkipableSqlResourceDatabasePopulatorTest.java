@@ -7,14 +7,13 @@ import java.sql.SQLException;
 
 import javax.sql.DataSource;
 
-import org.jarb.populator.CompoundDatabasePopulator;
-import org.jarb.populator.SkipableSqlResourceDatabasePopulator;
 import org.jarb.utils.JdbcUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.datasource.init.DatabasePopulator;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -46,6 +45,12 @@ public class SkipableSqlResourceDatabasePopulatorTest {
         } finally {
             JdbcUtils.closeQuietly(connection);
         }
+    }
+    
+    @Test
+    public void testToString() {
+        DatabasePopulator populator = new SkipableSqlResourceDatabasePopulator(new ClassPathResource("create-schema.sql"));
+        assertEquals("Skipable SQL class path resource [create-schema.sql]", populator.toString());
     }
 
 }
