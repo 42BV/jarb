@@ -19,7 +19,11 @@ import org.springframework.jdbc.datasource.init.DatabasePopulator;
  */
 public class CompoundDatabasePopulator implements DatabasePopulator {
     private static final Logger LOGGER = LoggerFactory.getLogger(CompoundDatabasePopulator.class);
+    
+    /** Each populator that should be delegated to. **/
     private final List<DatabasePopulator> populators;
+    /** Determine if we should continue after an exception. **/
+    private boolean continueOnException = false;
 
     /**
      * Construct an empty {@link CompoundDatabasePopulator}.
@@ -45,6 +49,10 @@ public class CompoundDatabasePopulator implements DatabasePopulator {
         populators.add(populator);
         return this;
     }
+    
+    public void setContinueOnException(boolean continueOnException) {
+        this.continueOnException = continueOnException;
+    }
 
     /**
      * {@inheritDoc}
@@ -54,6 +62,10 @@ public class CompoundDatabasePopulator implements DatabasePopulator {
         LOGGER.info("Starting to execute {} database populators.", populators.size());
         for (DatabasePopulator populator : populators) {
             LOGGER.info("Executing {}...", populator);
+            if(continueOnException) {
+                // Execute database populator from a fail safe wrapper, preventing all exceptions
+                populator = new FailSafeDatabasePopulator(populator);
+            } 
             populator.populate(connection);
         }
     }
