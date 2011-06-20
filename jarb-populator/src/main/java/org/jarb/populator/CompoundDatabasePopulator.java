@@ -1,7 +1,5 @@
 package org.jarb.populator;
 
-import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -9,7 +7,6 @@ import java.util.List;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.jdbc.datasource.init.DatabasePopulator;
 
 /**
  * Database populator which can execute multiple populators in sequence.
@@ -19,8 +16,7 @@ import org.springframework.jdbc.datasource.init.DatabasePopulator;
  */
 public class CompoundDatabasePopulator implements DatabasePopulator {
     private static final Logger LOGGER = LoggerFactory.getLogger(CompoundDatabasePopulator.class);
-    
-    /** Each populator that should be delegated to. **/
+    /** Ordered collection of delegate populator. **/
     private final List<DatabasePopulator> populators;
     /** Determine if we should continue after an exception. **/
     private boolean continueOnException = false;
@@ -41,7 +37,8 @@ public class CompoundDatabasePopulator implements DatabasePopulator {
     }
 
     /**
-     * Append a database populator to this compound populator.
+     * Include a database populator to this compound populator. Populators
+     * will be executed in the same sequence as they were added.
      * @param populator database populator being added
      * @return this compound populator instance, useful for chaining
      */
@@ -49,7 +46,7 @@ public class CompoundDatabasePopulator implements DatabasePopulator {
         populators.add(populator);
         return this;
     }
-    
+
     public void setContinueOnException(boolean continueOnException) {
         this.continueOnException = continueOnException;
     }
@@ -58,18 +55,17 @@ public class CompoundDatabasePopulator implements DatabasePopulator {
      * {@inheritDoc}
      */
     @Override
-    public void populate(Connection connection) throws SQLException {
+    public void populate() throws Exception {
         LOGGER.info("Starting to execute {} database populators.", populators.size());
         for (DatabasePopulator populator : populators) {
             LOGGER.info("Executing {}...", populator);
-            if(continueOnException) {
-                // Execute database populator from a fail safe wrapper, preventing all exceptions
+            if (continueOnException) {
                 populator = new FailSafeDatabasePopulator(populator);
-            } 
-            populator.populate(connection);
+            }
+            populator.populate();
         }
     }
-    
+
     /**
      * {@inheritDoc}
      */

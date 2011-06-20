@@ -3,97 +3,86 @@ package org.jarb.populator;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import java.sql.Connection;
-import java.sql.SQLException;
-
 import org.easymock.EasyMock;
 import org.junit.Before;
 import org.junit.Test;
-import org.springframework.jdbc.datasource.init.DatabasePopulator;
 
 public class ConditionalDatabasePopulatorTest {
-    private DatabasePopulator databasePopulatorMock;
-    
+    private DatabasePopulator populatorMock;
+
     @Before
     public void setUp() {
-        databasePopulatorMock = EasyMock.createMock(DatabasePopulator.class);
+        populatorMock = EasyMock.createMock(DatabasePopulator.class);
     }
 
     /**
-     * Ensure that our {@link ConditionalDatabasePopulator#doPopulate(Connection)}
-     * is invoked whenever the desired precondition is met.
+     * Ensure that we populate whenever the state is supported.
      */
     @Test
-    public void testSupported() throws SQLException {
+    public void testSupported() throws Exception {
         ConditionalDatabasePopulator conditionalPopulator = new ConditionalDatabasePopulator() {
-          
+
             @Override
-            protected void doPopulate(Connection connection) throws SQLException {
-                databasePopulatorMock.populate(connection);
+            protected void doPopulate() throws Exception {
+                populatorMock.populate();
             }
-            
+
             @Override
-            protected SupportsResult supports(Connection connection) {
+            protected SupportsResult supports() {
                 return SupportsResult.success();
             }
-            
+
         };
-        
-        final Connection connection = EasyMock.createMock(Connection.class);
-        
-        databasePopulatorMock.populate(connection);
+
+        populatorMock.populate();
         EasyMock.expectLastCall();
-        EasyMock.replay(databasePopulatorMock);
-        
-        conditionalPopulator.populate(connection);
-        
-        EasyMock.verify(databasePopulatorMock);
+        EasyMock.replay(populatorMock);
+
+        conditionalPopulator.populate();
+
+        EasyMock.verify(populatorMock);
     }
-    
+
     /**
-     * If the precondition is not met, we should perform no database populating, and
-     * should recieve information about the unsatisfied precondition.
+     * Whenever our state is unsupported, no populate should happen.
      */
     @Test
-    public void testUnsupported() throws SQLException {
+    public void testUnsupported() throws Exception {
         ConditionalDatabasePopulator conditionalPopulator = new ConditionalDatabasePopulator() {
-            
+
             @Override
-            protected void doPopulate(Connection connection) throws SQLException {
-                databasePopulatorMock.populate(connection);
+            protected void doPopulate() throws Exception {
+                populatorMock.populate();
             }
-            
+
             @Override
-            protected SupportsResult supports(Connection connection) {
+            protected SupportsResult supports() {
                 return new SupportsResult()
-                            .addFailure("Precondition can never succeed")
+                            .addFailure("State is always invalid, this is a test")
                             .addFailure("Second error message")
                             .addFailure("Last error message");
             }
-            
+
         };
-        
-        final Connection connection = EasyMock.createMock(Connection.class);
-        
-        EasyMock.replay(databasePopulatorMock);
-        
-        // Database population will not take place as the precondition is not met
-        conditionalPopulator.populate(connection);
-        
-        // We can even recieve an exception about the invalid precondition
-        conditionalPopulator.setThrowErrorOnFailure(true);
+
+        EasyMock.replay(populatorMock);
+
+        // Should not perform any populating
+        conditionalPopulator.populate();
+
+        // We can even recieve an exception about the invalid state
+        conditionalPopulator.setThrowExceptionIfUnsupported(true);
         try {
-            conditionalPopulator.populate(connection);
-            fail("Expected an illegal state exception as the populator is in an invalid precondition.");
-        } catch(IllegalStateException e) {
-            final String message = e.getMessage();
-            assertTrue(message.startsWith("Database populator was skipped as precondition is not met:"));
-            assertTrue(message.contains("Precondition can never succeed"));
-            assertTrue(message.contains("Second error message"));
-            assertTrue(message.contains("Last error message"));
+            conditionalPopulator.populate();
+            fail("Expected an illegal state exception as the populator is in an invalid state.");
+        } catch (IllegalStateException e) {
+            final String exceptionMessage = e.getMessage();
+            assertTrue(exceptionMessage.contains("State is always invalid, this is a test"));
+            assertTrue(exceptionMessage.contains("Second error message"));
+            assertTrue(exceptionMessage.contains("Last error message"));
         }
-        
-        EasyMock.verify(databasePopulatorMock);
+
+        EasyMock.verify(populatorMock);
     }
-    
+
 }

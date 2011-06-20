@@ -16,51 +16,43 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "classpath:application-context.xml")
-public class CompoundDatabasePopulatorTest {
+public class SqlResourceDatabasePopulatorTest {
 
     @Autowired
     private DataSource dataSource;
 
     /**
-     * Create schema populator should run before the row insertions.
+     * Correct script resources can be executed.
      */
     @Test
     public void testPopulate() throws Exception {
-        CompoundDatabasePopulator populator = new CompoundDatabasePopulator();
-        populator.add(fromScript("create-schema.sql"));
-        populator.add(fromScript("insert-person.sql"));
-        populator.populate();
+        fromScript("create-schema.sql").populate();
+        fromScript("insert-person.sql").populate();
 
+        // Ensure the 'persons' table is created, and a record is inserted
         JdbcTemplate template = new JdbcTemplate(dataSource);
         assertEquals("eddie", template.queryForObject("SELECT name FROM persons WHERE id = 1", String.class));
     }
-
+    
+    /**
+     * Executing with a non-existing script resource causes a runtime exception to be thrown.
+     */
     @Test
-    public void testSupressExceptions() throws Exception {
-        CompoundDatabasePopulator populator = new CompoundDatabasePopulator();
-        populator.add(fromScript("unknown.sql")); // Does not exist
-        populator.add(fromScript("create-schema.sql"));
-        populator.add(fromScript("unknown.sql")); // Does not exist
-        populator.add(fromScript("insert-person.sql"));
-        populator.add(fromScript("unknown.sql")); // Does not exist
-
-        // Just to demonstrate that an exception will be thrown
+    public void testFailIfScriptNotFound() throws Exception {
         try {
-            populator.populate();
+            fromScript("unknown.sql").populate();
             fail("Expected an exception because unknown.sql does not exist.");
         } catch(CannotReadScriptException e) {
             assertEquals("Cannot read SQL script from class path resource [unknown.sql]", e.getMessage());
         }
-
-        // Now supress the exception, allowing other populators to also execute
-        populator.setContinueOnException(true);
-        populator.populate();
-
-        JdbcTemplate template = new JdbcTemplate(dataSource);
-        assertEquals("eddie", template.queryForObject("SELECT name FROM persons WHERE id = 1", String.class));
     }
-
-    private DatabasePopulator fromScript(String name) {
+    
+    @Test
+    public void testToString() {
+        assertEquals("SQL populator 'class path resource [create-schema.sql]'", fromScript("create-schema.sql").toString());
+    }
+    
+    private SqlResourceDatabasePopulator fromScript(String name) {
         SqlResourceDatabasePopulator populator = new SqlResourceDatabasePopulator();
         populator.setDataSource(dataSource);
         populator.setSqlResource(new ClassPathResource(name));

@@ -30,15 +30,15 @@
 	</bean>
 	
 	<!-- Insert content into our database -->
-	<bean class="org.springframework.jdbc.datasource.init.DataSourceInitializer">
-    	<property name="dataSource" ref="dataSource"/>
-    	<property name="databasePopulator">
+	<bean class="org.jarb.populator.DatabasePopulatorExecutor">
+    	<constructor-arg>
     		<bean class="org.jarb.populator.CompoundDatabasePopulator">
     			<constructor-arg>
     				<list>
     					<!-- Using SQL statements -->
-    					<bean class="org.jarb.populator.SkipableSqlResourceDatabasePopulator">
-    						<constructor-arg value="classpath:import.sql"/>
+    					<bean class="org.jarb.populator.SqlResourceDatabasePopulator">
+    						<property name="sqlResource" value="classpath:import.sql"/>
+    						<property name="dataSource" ref="dataSource"/>
     					</bean>
     					<!-- And an Excel workbook -->
     					<bean class="org.jarb.populator.excel.ExcelDatabasePopulator">
@@ -48,7 +48,7 @@
     				</list>
     			</constructor-arg>
     		</bean>
-    	</property>
+    	</constructor-arg>
     </bean>
 
     <!-- Object relational mapping using Hibernate and Spring -->
