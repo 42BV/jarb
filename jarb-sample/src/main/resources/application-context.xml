@@ -32,22 +32,18 @@
 	<!-- Insert content into our database -->
 	<bean class="org.jarb.populator.DatabasePopulatorExecutor">
     	<constructor-arg>
-    		<bean class="org.jarb.populator.CompoundDatabasePopulator">
-    			<constructor-arg>
-    				<list>
-    					<!-- Using SQL statements -->
-    					<bean class="org.jarb.populator.SqlResourceDatabasePopulator">
-    						<property name="sqlResource" value="classpath:import.sql"/>
-    						<property name="dataSource" ref="dataSource"/>
-    					</bean>
-    					<!-- And an Excel workbook -->
-    					<bean class="org.jarb.populator.excel.ExcelDatabasePopulator">
-    						<property name="excelResource" value="classpath:import.xls"/>
-    						<property name="entityManagerFactory" ref="entityManagerFactory"/>
-    					</bean>
-    				</list>
-    			</constructor-arg>
-    		</bean>
+			<list>
+				<!-- Using SQL statements -->
+				<bean class="org.jarb.populator.SqlResourceDatabasePopulator">
+					<property name="sqlResource" value="classpath:import.sql"/>
+					<property name="dataSource" ref="dataSource"/>
+				</bean>
+				<!-- And an Excel workbook -->
+				<bean class="org.jarb.populator.excel.ExcelDatabasePopulator">
+					<property name="excelResource" value="classpath:import.xls"/>
+					<property name="entityManagerFactory" ref="entityManagerFactory"/>
+				</bean>
+			</list>
     	</constructor-arg>
     </bean>
 
