@@ -2,8 +2,8 @@ package org.jarb.populator.excel.workbook.writer;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
-import java.util.Arrays;
 import java.util.Date;
 
 import org.jarb.populator.excel.DefaultExcelTestDataCase;
@@ -36,7 +36,9 @@ public class PoiExcelWriterTest extends DefaultExcelTestDataCase {
         writer.write(workbook, createFileOutputStream());
         Workbook result = readGeneratedFile();
         assertEquals(3, result.getSheetCount());
-        assertEquals(Arrays.asList("first", "second", "third"), result.getSheetNames());
+        assertTrue(result.containsSheet("first"));
+        assertTrue(result.containsSheet("second"));
+        assertTrue(result.containsSheet("third"));
     }
 
     @Test

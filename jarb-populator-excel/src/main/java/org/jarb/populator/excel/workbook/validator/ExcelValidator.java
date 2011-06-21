@@ -16,6 +16,6 @@ public interface ExcelValidator {
      * @param metamodel describes what is "correct"
      * @return collection of feedback message
      */
-    ValidationResult validate(Workbook workbook, MetaModel metamodel);
+    WorkbookValidation validate(Workbook workbook, MetaModel metamodel);
 
 }

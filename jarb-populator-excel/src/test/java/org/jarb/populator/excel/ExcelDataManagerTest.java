@@ -11,7 +11,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 import org.jarb.populator.excel.entity.EntityRegistry;
-import org.jarb.populator.excel.workbook.validator.ValidationResult;
+import org.jarb.populator.excel.workbook.validator.WorkbookValidation;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -38,7 +38,7 @@ public class ExcelDataManagerTest extends DefaultExcelTestDataCase {
     @Test
     public void testValidateWorkbook() throws FileNotFoundException {
         InputStream is = new FileInputStream("src/test/resources/Excel.xls");
-        ValidationResult result = excelDataManager.validateWorkbook(is);
+        WorkbookValidation result = excelDataManager.validateWorkbook(is);
         
         assertNotNull(result);
     }
@@ -49,9 +49,9 @@ public class ExcelDataManagerTest extends DefaultExcelTestDataCase {
         excelDataManager.createWorkbookTemplate(os);
         
         InputStream is = new FileInputStream("src/test/resources/excel/generated/NewExcelFile.xls");
-        ValidationResult validation = excelDataManager.validateWorkbook(is);
+        WorkbookValidation validation = excelDataManager.validateWorkbook(is);
 
-        assertTrue(validation.getMessages().contains("All the sheets specified in the mapping are present in the Excel file."));
+        assertTrue(validation.getMissingSheets().isEmpty());
     }
 
     @Test
@@ -65,8 +65,8 @@ public class ExcelDataManagerTest extends DefaultExcelTestDataCase {
         excelDataManager.createWorkbookWithData(os, registry);
         
         InputStream is = new FileInputStream("src/test/resources/excel/generated/NewExcelFileFromDatabase.xls");
-        ValidationResult validation = excelDataManager.validateWorkbook(is);
-        assertTrue(validation.getMessages().contains("All the sheets specified in the mapping are present in the Excel file."));
+        WorkbookValidation validation = excelDataManager.validateWorkbook(is);
+        assertTrue(validation.getMissingSheets().isEmpty());
 
         is = new FileInputStream("src/test/resources/excel/generated/NewExcelFileFromDatabase.xls");
         EntityRegistry resultRegistry = excelDataManager.loadWorkbook(is);

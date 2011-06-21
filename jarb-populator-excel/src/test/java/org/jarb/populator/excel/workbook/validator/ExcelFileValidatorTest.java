@@ -1,19 +1,16 @@
 package org.jarb.populator.excel.workbook.validator;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.io.FileInputStream;
-import java.io.IOException;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.List;
+import java.io.FileNotFoundException;
 
-import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.jarb.populator.excel.DefaultExcelTestDataCase;
 import org.jarb.populator.excel.metamodel.MetaModel;
 import org.jarb.populator.excel.workbook.Workbook;
-import org.jarb.populator.excel.workbook.reader.PoiExcelParser;
+import org.jarb.populator.excel.workbook.reader.ExcelParser;
+import org.jarb.populator.excel.workbook.validator.WorkbookValidation.SheetValidation;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -36,221 +33,83 @@ public class ExcelFileValidatorTest extends DefaultExcelTestDataCase {
 
     private ExcelValidator validator;
     private MetaModel metamodel;
+    
+    private ExcelParser parser;
 
     @Before
-    public void setupExcelFileValidatorTest() throws InstantiationException, IllegalAccessException, ClassNotFoundException, InvalidFormatException,
-            IOException, SecurityException, NoSuchMethodException, IllegalArgumentException, InvocationTargetException {
-        // For code coverage purposes:
-        Constructor<DefaultExcelValidator> constructor = DefaultExcelValidator.class.getDeclaredConstructor();
-        constructor.setAccessible(true);
-        constructor.newInstance();
-        validator = getExcelDataManagerFactory().buildExcelValidator();
+    public void setupExcelFileValidatorTest() {
+        validator = new DefaultExcelValidator();
         metamodel = getExcelDataManagerFactory().buildMetamodelGenerator().generate();
+        parser = getExcelDataManagerFactory().buildExcelParser();
     }
 
     @Test
-    public void testVerify1() throws InvalidFormatException, IOException, InstantiationException, IllegalAccessException, ClassNotFoundException,
-            SecurityException, NoSuchFieldException {
+    public void testSuccess() throws FileNotFoundException {
         //Testcase 1: Everything in order
-        List<String> messages = new ArrayList<String>();
-        messages.add("Excel columns in worksheet [NoTableAnnotation] match the mapping.");
-        messages.add("Excel columns in worksheet [vipcustomers_gifts] match the mapping.");
-        messages.add("Excel columns in worksheet [customers] match the mapping.");
-        messages.add("Excel columns in worksheet [departments] match the mapping.");
-        messages.add("Excel columns in worksheet [document_revisions] match the mapping.");
-        messages.add("Excel columns in worksheet [documents] match the mapping.");
-        messages.add("Excel columns in worksheet [employees_projects] match the mapping.");
-        messages.add("Excel columns in worksheet [employees] match the mapping.");
-        messages.add("Excel columns in worksheet [employees_projects_workspaces] match the mapping.");
-        messages.add("Excel columns in worksheet [gifts] match the mapping.");
-        messages.add("Excel columns in worksheet [projects] match the mapping.");
-        messages.add("Excel columns in worksheet [releases] match the mapping.");
-        messages.add("Excel columns in worksheet [sla] match the mapping.");
-        messages.add("Excel columns in worksheet [vehicles] match the mapping.");
-        messages.add("Excel columns in worksheet [workspaces] match the mapping.");
-        messages.add("All the sheets specified in the mapping are present in the Excel file.");
-        Workbook excel = new PoiExcelParser().parse(new FileInputStream("src/test/resources/ExcelVerification/Testcase1.xls"));
-        assertEquals(messages, validator.validate(excel, metamodel).getMessages());
+        Workbook excel = parser.parse(new FileInputStream("src/test/resources/ExcelVerification/Testcase1.xls"));
+        WorkbookValidation validation = validator.validate(excel, metamodel);
+        assertTrue(validation.getMissingSheets().isEmpty());
     }
 
     @Test
-    public void testVerify2() throws InvalidFormatException, IOException, InstantiationException, IllegalAccessException, ClassNotFoundException,
-            SecurityException, NoSuchFieldException {
+    public void testMissingColumn() throws FileNotFoundException {
         //Testcase 2: Missing column in Excel file
-        List<String> messages = new ArrayList<String>();
-        messages.add("Excel columns in worksheet [NoTableAnnotation] match the mapping.");
-        messages.add("Excel columns in worksheet [vipcustomers_gifts] match the mapping.");
-        messages.add("Excel columns in worksheet [customers] match the mapping.");
-        messages.add("Excel columns in worksheet [departments] match the mapping.");
-        messages.add("Excel columns in worksheet [document_revisions] match the mapping.");
-        messages.add("Excel columns in worksheet [documents] match the mapping.");
-        messages.add("Excel columns in worksheet [employees_projects] match the mapping.");
-        messages.add("Error in Excel worksheet [employees]: Sheet does not contain column [first_name] present in the mapping.");
-        messages.add("Excel columns in worksheet [employees_projects_workspaces] match the mapping.");
-        messages.add("Excel columns in worksheet [gifts] match the mapping.");
-        messages.add("Excel columns in worksheet [projects] match the mapping.");
-        messages.add("Excel columns in worksheet [releases] match the mapping.");
-        messages.add("Excel columns in worksheet [sla] match the mapping.");
-        messages.add("Excel columns in worksheet [vehicles] match the mapping.");
-        messages.add("Excel columns in worksheet [workspaces] match the mapping.");
-        messages.add("All the sheets specified in the mapping are present in the Excel file.");
-
-        Workbook excel = new PoiExcelParser().parse(new FileInputStream("src/test/resources/ExcelVerification/Testcase2.xls"));
-        assertEquals(messages, validator.validate(excel, metamodel).getMessages());
+        Workbook excel = parser.parse(new FileInputStream("src/test/resources/ExcelVerification/Testcase2.xls"));
+        WorkbookValidation validation = validator.validate(excel, metamodel);
+        
+        assertTrue(validation.getMissingSheets().isEmpty());
+        assertTrue(validation.getSheetValidation("employees").getMissingColumns().contains("first_name"));
     }
 
     @Test
-    public void testVerify3() throws InvalidFormatException, IOException, InstantiationException, IllegalAccessException, ClassNotFoundException,
-            SecurityException, NoSuchFieldException {
+    public void testMissingSheet() throws FileNotFoundException {
         //Testcase 3: Missing sheet in Excel file
-        List<String> messages = new ArrayList<String>();
-        messages.add("Excel columns in worksheet [NoTableAnnotation] match the mapping.");
-        messages.add("Excel columns in worksheet [vipcustomers_gifts] match the mapping.");
-        messages.add("Excel columns in worksheet [departments] match the mapping.");
-        messages.add("Excel columns in worksheet [document_revisions] match the mapping.");
-        messages.add("Excel columns in worksheet [documents] match the mapping.");
-        messages.add("Excel columns in worksheet [employees_projects] match the mapping.");
-        messages.add("Excel columns in worksheet [employees] match the mapping.");
-        messages.add("Excel columns in worksheet [employees_projects_workspaces] match the mapping.");
-        messages.add("Excel columns in worksheet [gifts] match the mapping.");
-        messages.add("Excel columns in worksheet [projects] match the mapping.");
-        messages.add("Excel columns in worksheet [releases] match the mapping.");
-        messages.add("Excel columns in worksheet [sla] match the mapping.");
-        messages.add("Excel columns in worksheet [vehicles] match the mapping.");
-        messages.add("Excel columns in worksheet [workspaces] match the mapping.");
-        messages.add("Error in Excel file. Worksheet [customers] from the mapping is not present in the Excel file.");
-
-        Workbook excel = new PoiExcelParser().parse(new FileInputStream("src/test/resources/ExcelVerification/Testcase3.xls"));
-        assertEquals(messages, validator.validate(excel, metamodel).getMessages());
+        Workbook excel = parser.parse(new FileInputStream("src/test/resources/ExcelVerification/Testcase3.xls"));
+        WorkbookValidation validation = validator.validate(excel, metamodel);
+        assertTrue(validation.getMissingSheets().contains("customers"));
     }
 
     @Test
-    public void testVerify4() throws InvalidFormatException, IOException, InstantiationException, IllegalAccessException, ClassNotFoundException,
-            SecurityException, NoSuchFieldException {
+    public void testMissingSheetAssociateTableExists() throws FileNotFoundException {
         //Testcase 4: Missing Employee sheet (because of the associative mapping, see if employees_projects) still tests ok.
-        List<String> messages = new ArrayList<String>();
-        messages.add("Excel columns in worksheet [NoTableAnnotation] match the mapping.");
-        messages.add("Excel columns in worksheet [vipcustomers_gifts] match the mapping.");
-        messages.add("Excel columns in worksheet [customers] match the mapping.");
-        messages.add("Excel columns in worksheet [departments] match the mapping.");
-        messages.add("Excel columns in worksheet [document_revisions] match the mapping.");
-        messages.add("Excel columns in worksheet [documents] match the mapping.");
-        messages.add("Excel columns in worksheet [employees_projects] match the mapping.");
-        messages.add("Excel columns in worksheet [employees_projects_workspaces] match the mapping.");
-        messages.add("Excel columns in worksheet [gifts] match the mapping.");
-        messages.add("Excel columns in worksheet [projects] match the mapping.");
-        messages.add("Excel columns in worksheet [releases] match the mapping.");
-        messages.add("Excel columns in worksheet [sla] match the mapping.");
-        messages.add("Excel columns in worksheet [vehicles] match the mapping.");
-        messages.add("Excel columns in worksheet [workspaces] match the mapping.");
-        messages.add("Error in Excel file. Worksheet [employees] from the mapping is not present in the Excel file.");
-
-        Workbook excel = new PoiExcelParser().parse(new FileInputStream("src/test/resources/ExcelVerification/Testcase4.xls"));
-        assertEquals(messages, validator.validate(excel, metamodel).getMessages());
+        Workbook excel = parser.parse(new FileInputStream("src/test/resources/ExcelVerification/Testcase4.xls"));
+        WorkbookValidation validation = validator.validate(excel, metamodel);
+        assertTrue(validation.getMissingSheets().contains("employees"));
+        assertFalse(validation.getMissingSheets().contains("employees_projects"));
     }
 
     @Test
-    public void testVerify5() throws InvalidFormatException, IOException, InstantiationException, IllegalAccessException, ClassNotFoundException,
-            SecurityException, NoSuchFieldException {
+    public void testUnknownColumn() throws FileNotFoundException {
         //Testcase 5: Extra column in Excel file (not available in mapping)
-        List<String> messages = new ArrayList<String>();
-        messages.add("Excel columns in worksheet [NoTableAnnotation] match the mapping.");
-        messages.add("Excel columns in worksheet [vipcustomers_gifts] match the mapping.");
-        messages.add("Excel columns in worksheet [customers] match the mapping.");
-        messages.add("Excel columns in worksheet [departments] match the mapping.");
-        messages.add("Excel columns in worksheet [document_revisions] match the mapping.");
-        messages.add("Excel columns in worksheet [documents] match the mapping.");
-        messages.add("Excel columns in worksheet [employees_projects] match the mapping.");
-        messages.add("Error in Excel worksheet [employees] : Mapping does not contain column [leased_car_model] present in the Excel sheet.");
-        messages.add("Excel columns in worksheet [employees_projects_workspaces] match the mapping.");
-        messages.add("Excel columns in worksheet [gifts] match the mapping.");
-        messages.add("Excel columns in worksheet [projects] match the mapping.");
-        messages.add("Excel columns in worksheet [releases] match the mapping.");
-        messages.add("Excel columns in worksheet [sla] match the mapping.");
-        messages.add("Excel columns in worksheet [vehicles] match the mapping.");
-        messages.add("Excel columns in worksheet [workspaces] match the mapping.");
-        messages.add("All the sheets specified in the mapping are present in the Excel file.");
-
-        Workbook excel = new PoiExcelParser().parse(new FileInputStream("src/test/resources/ExcelVerification/Testcase5.xls"));
-        assertEquals(messages, validator.validate(excel, metamodel).getMessages());
+        Workbook excel = parser.parse(new FileInputStream("src/test/resources/ExcelVerification/Testcase5.xls"));
+        WorkbookValidation validation = validator.validate(excel, metamodel);
+        SheetValidation employeeValidation = validation.getSheetValidation("employees");
+        assertTrue(employeeValidation.getUnknownColumns().contains("leased_car_model"));
     }
 
     @Test
-    public void testVerify6() throws InvalidFormatException, IOException, InstantiationException, IllegalAccessException, ClassNotFoundException,
-            SecurityException, NoSuchFieldException {
+    public void testUnknownSheet() throws FileNotFoundException {
         //Testcase 6: Extra sheet in Excel file  (not available in mapping)
-        List<String> messages = new ArrayList<String>();
-        messages.add("Excel columns in worksheet [NoTableAnnotation] match the mapping.");
-        messages.add("Excel columns in worksheet [vipcustomers_gifts] match the mapping.");
-        messages.add("Excel columns in worksheet [customers] match the mapping.");
-        messages.add("Excel columns in worksheet [departments] match the mapping.");
-        messages.add("Excel columns in worksheet [document_revisions] match the mapping.");
-        messages.add("Excel columns in worksheet [documents] match the mapping.");
-        messages.add("Excel columns in worksheet [employees_projects] match the mapping.");
-        messages.add("Excel columns in worksheet [employees] match the mapping.");
-        messages.add("Excel columns in worksheet [employees_projects_workspaces] match the mapping.");
-        messages.add("Excel columns in worksheet [gifts] match the mapping.");
-        messages.add("Excel columns in worksheet [projects] match the mapping.");
-        messages.add("Excel columns in worksheet [releases] match the mapping.");
-        messages.add("Excel columns in worksheet [sla] match the mapping.");
-        messages.add("Excel columns in worksheet [vehicles] match the mapping.");
-        messages.add("Excel columns in worksheet [workspaces] match the mapping.");
-        messages.add("Error in Excel file. Worksheet [ExtraSheet] is not present in the mapping.");
-
-        Workbook excel = new PoiExcelParser().parse(new FileInputStream("src/test/resources/ExcelVerification/Testcase6.xls"));
-        assertEquals(messages, validator.validate(excel, metamodel).getMessages());
+        Workbook excel = parser.parse(new FileInputStream("src/test/resources/ExcelVerification/Testcase6.xls"));
+        WorkbookValidation validation = validator.validate(excel, metamodel);
+        assertTrue(validation.getUnknownSheets().contains("ExtraSheet"));
     }
 
     @Test
-    public void testVerify7() throws InvalidFormatException, IOException, InstantiationException, IllegalAccessException, ClassNotFoundException,
-            SecurityException, NoSuchFieldException {
+    public void testUnknownAndMissingColumn() throws FileNotFoundException {
         //Testcase 7: Extra column and missing column
-        List<String> messages = new ArrayList<String>();
-        messages.add("Excel columns in worksheet [NoTableAnnotation] match the mapping.");
-        messages.add("Excel columns in worksheet [vipcustomers_gifts] match the mapping.");
-        messages.add("Excel columns in worksheet [customers] match the mapping.");
-        messages.add("Excel columns in worksheet [departments] match the mapping.");
-        messages.add("Excel columns in worksheet [document_revisions] match the mapping.");
-        messages.add("Excel columns in worksheet [documents] match the mapping.");
-        messages.add("Excel columns in worksheet [employees_projects] match the mapping.");
-        messages.add("Error in Excel worksheet [employees] : Mapping does not contain column [leased_car_model] present in the Excel sheet.");
-        messages.add("Excel columns in worksheet [employees_projects_workspaces] match the mapping.");
-        messages.add("Excel columns in worksheet [gifts] match the mapping.");
-        messages.add("Error in Excel worksheet [projects]: Sheet does not contain column [customer] present in the mapping.");
-        messages.add("Excel columns in worksheet [releases] match the mapping.");
-        messages.add("Excel columns in worksheet [sla] match the mapping.");
-        messages.add("Excel columns in worksheet [vehicles] match the mapping.");
-        messages.add("Excel columns in worksheet [workspaces] match the mapping.");
-        messages.add("All the sheets specified in the mapping are present in the Excel file.");
-
-        Workbook excel = new PoiExcelParser().parse(new FileInputStream("src/test/resources/ExcelVerification/Testcase7.xls"));
-        assertEquals(messages, validator.validate(excel, metamodel).getMessages());
+        Workbook excel = parser.parse(new FileInputStream("src/test/resources/ExcelVerification/Testcase7.xls"));
+        WorkbookValidation validation = validator.validate(excel, metamodel);
+        assertTrue(validation.getSheetValidation("employees").getUnknownColumns().contains("leased_car_model"));
+        assertTrue(validation.getSheetValidation("projects").getMissingColumns().contains("customer"));
     }
 
     @Test
-    public void testVerify8() throws InvalidFormatException, IOException, InstantiationException, IllegalAccessException, ClassNotFoundException,
-            SecurityException, NoSuchFieldException {
+    public void testMissingEmbeddedColumn() throws FileNotFoundException {
         //Testcase 8: Missing embeddable column
-        List<String> messages = new ArrayList<String>();
-        messages.add("Excel columns in worksheet [NoTableAnnotation] match the mapping.");
-        messages.add("Excel columns in worksheet [vipcustomers_gifts] match the mapping.");
-        messages.add("Excel columns in worksheet [customers] match the mapping.");
-        messages.add("Excel columns in worksheet [departments] match the mapping.");
-        messages.add("Excel columns in worksheet [document_revisions] match the mapping.");
-        messages.add("Excel columns in worksheet [documents] match the mapping.");
-        messages.add("Excel columns in worksheet [employees_projects] match the mapping.");
-        messages.add("Excel columns in worksheet [employees] match the mapping.");
-        messages.add("Excel columns in worksheet [employees_projects_workspaces] match the mapping.");
-        messages.add("Excel columns in worksheet [gifts] match the mapping.");
-        messages.add("Excel columns in worksheet [projects] match the mapping.");
-        messages.add("Excel columns in worksheet [releases] match the mapping.");
-        messages.add("Excel columns in worksheet [sla] match the mapping.");
-        messages.add("Excel columns in worksheet [vehicles] match the mapping.");
-        messages.add("Error in Excel worksheet [workspaces]: Sheet does not contain column [\"invoice.city_name\"] present in the mapping.");
-        messages.add("All the sheets specified in the mapping are present in the Excel file.");
-
-        Workbook excel = new PoiExcelParser().parse(new FileInputStream("src/test/resources/ExcelVerification/Testcase8.xls"));
-        assertEquals(messages, validator.validate(excel, metamodel).getMessages());
+        Workbook excel = parser.parse(new FileInputStream("src/test/resources/ExcelVerification/Testcase8.xls"));
+        WorkbookValidation validation = validator.validate(excel, metamodel);
+        assertTrue(validation.getSheetValidation("workspaces").getMissingColumns().contains("\"invoice.city_name\""));
     }
 
 }

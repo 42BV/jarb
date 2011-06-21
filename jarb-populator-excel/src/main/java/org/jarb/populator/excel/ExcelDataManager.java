@@ -13,7 +13,7 @@ import org.jarb.populator.excel.metamodel.generator.MetaModelGenerator;
 import org.jarb.populator.excel.workbook.Workbook;
 import org.jarb.populator.excel.workbook.reader.ExcelParser;
 import org.jarb.populator.excel.workbook.validator.ExcelValidator;
-import org.jarb.populator.excel.workbook.validator.ValidationResult;
+import org.jarb.populator.excel.workbook.validator.WorkbookValidation;
 import org.jarb.populator.excel.workbook.writer.ExcelWriter;
 
 /**
@@ -55,7 +55,7 @@ public class ExcelDataManager {
      * Verify some excel workbook against our current mappings.
      * @param resource excel workbook resource
      */
-    public ValidationResult validateWorkbook(InputStream is) {
+    public WorkbookValidation validateWorkbook(InputStream is) {
         Workbook workbook = excelParser.parse(is);
         MetaModel metamodel = metamodelGenerator.generate();
         return excelValidator.validate(workbook, metamodel);

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 import java.util.TreeMap;
 
 public class Workbook implements Iterable<Sheet> {
@@ -26,9 +27,8 @@ public class Workbook implements Iterable<Sheet> {
         return Collections.unmodifiableList(sheets);
     }
     
-    public List<String> getSheetNames() {
-        List<String> names = new ArrayList<String>(sheetsMap.keySet());
-        return Collections.unmodifiableList(names);
+    public Set<String> getSheetNames() {
+        return Collections.unmodifiableSet(sheetsMap.keySet());
     }
 
     public boolean containsSheet(String name) {
