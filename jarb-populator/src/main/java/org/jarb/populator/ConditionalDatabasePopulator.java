@@ -2,6 +2,7 @@ package org.jarb.populator;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.jarb.populator.condition.ConditionChecker;
+import org.jarb.populator.condition.ConditionResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
@@ -16,7 +17,7 @@ public class ConditionalDatabasePopulator implements DatabasePopulator {
     private static final Logger LOGGER = LoggerFactory.getLogger(ConditionalDatabasePopulator.class);
     /** Delgate database populator, invoked if condition is satisfied. **/
     private final DatabasePopulator populator;
-    /** Used to check if a desired condition is met. **/
+    /** Checks if the desired condition has been satisfied **/
     private final ConditionChecker conditionChecker;
     /** Determine if an exception should be thrown if the condition is not satisfied. **/
     private boolean throwErrorIfUnsupported = false;
@@ -32,7 +33,7 @@ public class ConditionalDatabasePopulator implements DatabasePopulator {
     }
 
     /**
-     * Configure whether an exception should be thrown if {@link #shouldExecute()} fails.
+     * Configure whether an exception should be thrown if the condition is not satisfied.
      * @param throwErrorIfUnsupported {@code true} if an exception should be thrown,
      * or {@link false} if it should only be logged
      * @return this populator, for method chaining

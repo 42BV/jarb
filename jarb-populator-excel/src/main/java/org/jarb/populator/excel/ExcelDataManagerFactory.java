@@ -27,7 +27,7 @@ import org.jarb.populator.excel.workbook.writer.PoiExcelWriter;
  */
 public class ExcelDataManagerFactory {
     private final EntityManagerFactory entityManagerFactory;
-    private ValueConversionService valueConversionService;
+    private final ValueConversionService valueConversionService;
 
     public ExcelDataManagerFactory(EntityManagerFactory entityManagerFactory) {
         this.entityManagerFactory = entityManagerFactory;
@@ -66,7 +66,10 @@ public class ExcelDataManagerFactory {
     }
 
     public EntityExporter buildEntityExporter() {
-        return new DefaultEntityExporter(valueConversionService);
+        DefaultEntityExporter exporter = new DefaultEntityExporter();
+        exporter.setEntityManagerFactory(entityManagerFactory);
+        exporter.setValueConversionService(valueConversionService);
+        return exporter;
     }
 
     public EntityReader buildEntityReader() {

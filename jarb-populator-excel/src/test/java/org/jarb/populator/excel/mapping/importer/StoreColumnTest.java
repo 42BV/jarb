@@ -25,7 +25,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class StoreColumnTest extends DefaultExcelTestDataCase {
-
     private Class<?> persistentClass;
     private ClassDefinition<?> classDefinition;
     private Workbook excel;
@@ -33,7 +32,6 @@ public class StoreColumnTest extends DefaultExcelTestDataCase {
     private Field nameField;
     private WorksheetDefinition worksheetDefinition;
     private Integer rowPosition;
-    private ExcelRow excelRecord2;
 
     @Before
     public void setupTestStoreExcelRecordValue() throws InvalidFormatException, IOException, SecurityException, NoSuchMethodException,
@@ -44,28 +42,6 @@ public class StoreColumnTest extends DefaultExcelTestDataCase {
         Constructor<StoreColumn> constructor = StoreColumn.class.getDeclaredConstructor();
         constructor.setAccessible(true);
         constructor.newInstance();
-    }
-
-    @Test
-    public void testWrongInstanceColumns() throws SecurityException, NoSuchFieldException, InstantiationException, IllegalAccessException,
-            ClassNotFoundException {
-        persistentClass = domain.entities.Project.class;
-        nameField = persistentClass.getDeclaredField("name");
-
-        Metamodel metamodel = getEntityManagerFactory().getMetamodel();
-        EntityType<?> entity = ClassDefinitionsGenerator.getEntityFromMetamodel(domain.entities.Project.class, metamodel);
-
-        classDefinition = ClassDefinitionsGenerator.createSingleClassDefinitionFromMetamodel(getEntityManagerFactory(), entity, false);
-
-        excelRow = new ExcelRow(classDefinition.getPersistentClass());
-        excelRecord2 = new ExcelRow(classDefinition.getPersistentClass());
-
-        rowPosition = 1;
-        PropertyDefinition column = FieldAnalyzer.analyzeField(nameField).build();
-        
-        //StoreExcelRecordValue.storeValue(excel, classDefinition, column, rowPosition, excelRow);
-        StoreJoinColumn.storeValue(excel, classDefinition, column, rowPosition, excelRow);
-        StoreJoinTable.storeValue(excel, classDefinition, column, rowPosition, excelRecord2);
     }
 
     @Test

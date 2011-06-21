@@ -22,15 +22,15 @@ public class WorkbookTest {
         assertEquals(0, workbook.getSheetCount());
         final Sheet sheet = workbook.createSheet("test");
         assertEquals(1, workbook.getSheetCount());
-        assertEquals(sheet, workbook.getSheetAt(0));
+        assertEquals(sheet, workbook.getSheet("test"));
         List<Sheet> sheets = workbook.getSheets();
         assertEquals(Arrays.asList(sheet), sheets);
         final Sheet another = workbook.createSheet("another");
-        assertEquals(another, workbook.getSheetAt(1));
+        assertEquals(another, workbook.getSheet("another"));
         assertEquals(2, workbook.getSheetCount());
-        workbook.removeSheet(another);
+        workbook.removeSheet("test");
         assertEquals(1, workbook.getSheetCount());
-        workbook.removeSheet(sheet);
+        workbook.removeSheet("another");
         assertEquals(0, workbook.getSheetCount());
     }
 

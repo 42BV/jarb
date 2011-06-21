@@ -1,4 +1,4 @@
-package org.jarb.populator;
+package org.jarb.populator.condition;
 
 import java.util.ArrayList;
 import java.util.Collections;

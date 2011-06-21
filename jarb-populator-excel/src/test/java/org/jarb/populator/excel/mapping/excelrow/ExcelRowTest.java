@@ -48,7 +48,7 @@ public class ExcelRowTest extends DefaultExcelTestDataCase {
 
         PropertyDefinition columnDefinition = FieldAnalyzer.analyzeField(persistentClass.getDeclaredField("id")).build();
 
-        Double cellValue = (Double) excel.getSheet(classDefinition.getTableName()).getCellValueAt(2, 0);
+        Double cellValue = (Double) excel.getSheet(classDefinition.getTableName()).getValueAt(2, 0);
         Key keyValue = new JoinColumnKey();
         keyValue.setKeyValue(cellValue.intValue());
         excelRow.addValue(columnDefinition, keyValue);

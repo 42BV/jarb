@@ -41,7 +41,7 @@ public final class StoreJoinTable {
      */
     public static void storeValue(Workbook excel, ClassDefinition<?> classDefinition, PropertyDefinition columnDefinition, Integer rowPosition, ExcelRow excelRow) {
         Sheet mainSheet = excel.getSheet(classDefinition.getTableName());
-        Double code = (Double) mainSheet.getCellValueAt(rowPosition, IDCOLUMNNAME);
+        Double code = (Double) mainSheet.getValueAt(rowPosition, IDCOLUMNNAME);
         Sheet joinSheet = excel.getSheet(columnDefinition.getJoinTableName());
 
         if (joinSheet != null) {
@@ -75,9 +75,9 @@ public final class StoreJoinTable {
     private static Set<Integer> createForeignKeyList(Sheet sheet, PropertyDefinition joinTable, Double code) {
         Set<Integer> foreignKeyList = new HashSet<Integer>();
         for (Integer newRowPosition = 1; newRowPosition <= sheet.getLastRowNumber(); newRowPosition++) {
-            Object joinColumnValue = sheet.getCellValueAt(newRowPosition, joinTable.getJoinColumnName());
+            Object joinColumnValue = sheet.getValueAt(newRowPosition, joinTable.getJoinColumnName());
             if(joinColumnValue instanceof Double && joinColumnValue.equals(code)) {
-                Object inverseJoinColumnValue = sheet.getCellValueAt(newRowPosition, joinTable.getInverseJoinColumnName());
+                Object inverseJoinColumnValue = sheet.getValueAt(newRowPosition, joinTable.getInverseJoinColumnName());
                 if(inverseJoinColumnValue instanceof Number) {
                     foreignKeyList.add(((Number) inverseJoinColumnValue).intValue());
                 } else {

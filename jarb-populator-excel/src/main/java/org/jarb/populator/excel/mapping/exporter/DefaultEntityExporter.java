@@ -3,6 +3,8 @@ package org.jarb.populator.excel.mapping.exporter;
 import java.lang.reflect.Field;
 import java.util.Date;
 
+import javax.persistence.EntityManagerFactory;
+
 import org.jarb.populator.excel.entity.EntityRegistry;
 import org.jarb.populator.excel.mapping.ValueConversionService;
 import org.jarb.populator.excel.metamodel.ClassDefinition;
@@ -10,6 +12,7 @@ import org.jarb.populator.excel.metamodel.ColumnType;
 import org.jarb.populator.excel.metamodel.FieldPath;
 import org.jarb.populator.excel.metamodel.MetaModel;
 import org.jarb.populator.excel.metamodel.PropertyDefinition;
+import org.jarb.populator.excel.util.JpaUtils;
 import org.jarb.populator.excel.workbook.BooleanValue;
 import org.jarb.populator.excel.workbook.CellValue;
 import org.jarb.populator.excel.workbook.DateValue;
@@ -29,13 +32,14 @@ import org.jarb.utils.ReflectionUtils;
  * @since 12-05-2011
  */
 public class DefaultEntityExporter implements EntityExporter {
-    private final ValueConversionService valueConversionService;
+    private EntityManagerFactory entityManagerFactory;
+    private ValueConversionService valueConversionService;
     
-    /**
-     * Construct a new {@link DefaultEntityExporter}.
-     * @param valueConversionService converts values into any desired type
-     */
-    public DefaultEntityExporter(ValueConversionService valueConversionService) {
+    public void setEntityManagerFactory(EntityManagerFactory entityManagerFactory) {
+        this.entityManagerFactory = entityManagerFactory;
+    }
+    
+    public void setValueConversionService(ValueConversionService valueConversionService) {
         this.valueConversionService = valueConversionService;
     }
 
@@ -71,20 +75,32 @@ public class DefaultEntityExporter implements EntityExporter {
         for(PropertyDefinition propertyDefinition : classDefinition.getPropertyDefinitions()) {
             final ColumnType columnType = propertyDefinition.getColumnType();
             if(columnType == ColumnType.BASIC) {
+                // Retrieve the property value and store it as cell value
                 Object propertyValue = getPropertyValue(entity, propertyDefinition);
-                row.getCellAt(propertyDefinition.getColumnName()).setCellValue(createCellValue(propertyValue));
+                row.setCellValueAt(propertyDefinition.getColumnName(), createCellValue(propertyValue));
             } else if(columnType == ColumnType.JOIN_COLUMN) {
-                // TODO: Add identifier
+                // Retrieve the entity as property value and store its identifier
+                Object referenceEntity = getPropertyValue(entity, propertyDefinition);
+                Object referenceIdentifier = JpaUtils.getIdentifier(referenceEntity, entityManagerFactory);
+                row.setCellValueAt(propertyDefinition.getColumnName(), createCellValue(referenceIdentifier));
             } else if(columnType == ColumnType.JOIN_TABLE) {
+                // Store all reference entities in a seperate join sheet
                 Sheet joinSheet = sheet.getWorkbook().createSheet(propertyDefinition.getJoinTableName());
                 joinSheet.setColumnNameAt(0, propertyDefinition.getJoinColumnName());
                 joinSheet.setColumnNameAt(1, propertyDefinition.getInverseJoinColumnName());
-                // TODO: Add values
+                final Object entityIdentifier = JpaUtils.getIdentifier(entity, entityManagerFactory);
+                Iterable<?> referenceEntities = (Iterable<?>) getPropertyValue(entity, propertyDefinition);
+                for(Object referenceEntity : referenceEntities) {
+                    Row joinRow = joinSheet.createRow();
+                    joinRow.setCellValueAt(0, createCellValue(entityIdentifier));
+                    Object referenceIdentifier = JpaUtils.getIdentifier(referenceEntity, entityManagerFactory);
+                    joinRow.setCellValueAt(1, createCellValue(referenceIdentifier));
+                }
             }
         }
         if(classDefinition.hasDiscriminatorColumn()) {
             final String discriminatorValue = classDefinition.getDiscriminatorValue(entity.getClass());
-            row.getCellAt(classDefinition.getDiscriminatorColumnName()).setCellValue(new StringValue(discriminatorValue));
+            row.setCellValueAt(classDefinition.getDiscriminatorColumnName(), new StringValue(discriminatorValue));
         }
     }
     

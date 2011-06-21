@@ -126,7 +126,7 @@ public final class ExcelImporter {
     private static String getDiscriminatorValueFromExcelFile(final Sheet sheet, Integer rowPosition, Integer discriminatorPosition) {
         String discriminatorValue = null;
         if (discriminatorPosition != null) {
-            discriminatorValue = (String) sheet.getCellValueAt(rowPosition, discriminatorPosition);
+            discriminatorValue = (String) sheet.getValueAt(rowPosition, discriminatorPosition);
         }
         return discriminatorValue;
     }
@@ -142,7 +142,7 @@ public final class ExcelImporter {
     private static void putCreatedInstance(final Sheet sheet, final ClassDefinition<?> classDefinition, Map<Integer, ExcelRow> createdInstances,
             Integer rowPosition, ExcelRow excelRow) {
         if (sheet.containsColumn(IDCOLUMNNAME)) {
-            Integer idNumber = ((Double) sheet.getCellValueAt(rowPosition, IDCOLUMNNAME)).intValue();
+            Integer idNumber = ((Double) sheet.getValueAt(rowPosition, IDCOLUMNNAME)).intValue();
             if (!createdInstances.containsKey(idNumber)) {
                 createdInstances.put(idNumber, excelRow);
             } else {
@@ -151,7 +151,7 @@ public final class ExcelImporter {
             }
         } else {
             // If this is not because of the fact that it's a composite id, an id field is missing and foreign key constraints might fail.
-            createdInstances.put(((Double) sheet.getCellValueAt(rowPosition, 0)).intValue(), excelRow);
+            createdInstances.put(((Double) sheet.getValueAt(rowPosition, 0)).intValue(), excelRow);
         }
     }
 

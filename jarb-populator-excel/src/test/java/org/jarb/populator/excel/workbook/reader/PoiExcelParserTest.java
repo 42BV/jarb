@@ -21,33 +21,33 @@ public class PoiExcelParserTest {
     @Test
     public void testEachValueType() throws FileNotFoundException {
         Workbook excel = new PoiExcelParser().parse(new FileInputStream("src/test/resources/excel/parser/all-types.xlsx"));
-        Sheet sheet = excel.getSheetAt(0);
+        Sheet sheet = excel.getSheet("types");
         assertEquals("types", sheet.getName());
         // String: "lol"
-        assertEquals("lol", sheet.getCellValueAt(0, 0));
+        assertEquals("lol", sheet.getValueAt(0, 0));
         // Double: 99.23
-        assertEquals(Double.valueOf(99.23), sheet.getCellValueAt(3, 1));
+        assertEquals(Double.valueOf(99.23), sheet.getValueAt(3, 1));
         // Boolean: true
-        assertEquals(Boolean.TRUE, sheet.getCellValueAt(4, 0));
+        assertEquals(Boolean.TRUE, sheet.getValueAt(4, 0));
         // Date: 5/5/2011 12:05:24 PM
         Calendar calendar = Calendar.getInstance();
         calendar.set(2011, 4, 5, 12, 5, 24);
-        Date dateObject = (Date) sheet.getCellValueAt(9, 1);
+        Date dateObject = (Date) sheet.getValueAt(9, 1);
         final DateFormat dateFormat = DateFormat.getDateTimeInstance();
         assertEquals(dateFormat.format(calendar.getTime()), dateFormat.format(dateObject));
         // Formula: =SUM(B4,A6)
-        assertEquals("SUM(B4,A6)", sheet.getCellValueAt(5, 1));
+        assertEquals("SUM(B4,A6)", sheet.getValueAt(5, 1));
         // Non existing
-        assertNull(sheet.getCellValueAt(0, 2));
+        assertNull(sheet.getValueAt(0, 2));
     }
 
     @Test
     public void testMultiSheet() throws FileNotFoundException {
         Workbook excel = new PoiExcelParser().parse(new FileInputStream("src/test/resources/excel/parser/multi-sheet.xlsx"));
         assertEquals(3, excel.getSheetCount());
-        for (int sheetNo = 0; sheetNo < 3; sheetNo++) {
-            Sheet sheet = excel.getSheetAt(sheetNo);
-            final String expectedSheetName = "Sheet" + (sheetNo + 1);
+        int sheetNo = 1;
+        for (Sheet sheet : excel) {
+            final String expectedSheetName = "Sheet" + (sheetNo++);
             assertEquals(expectedSheetName, sheet.getName());
         }
     }

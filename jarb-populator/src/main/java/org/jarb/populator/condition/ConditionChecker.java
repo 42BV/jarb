@@ -1,6 +1,5 @@
 package org.jarb.populator.condition;
 
-import org.jarb.populator.ConditionResult;
 
 /**
  * Determines if the desired condition is met.

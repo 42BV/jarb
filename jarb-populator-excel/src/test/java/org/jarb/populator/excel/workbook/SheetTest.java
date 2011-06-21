@@ -50,7 +50,7 @@ public class SheetTest {
     public void testGetCell() {
         final Cell cell = sheet.getCellAt(0, 0).setCellValue(new StringValue("42"));
         assertEquals(cell, sheet.getCellAt(0, 0));
-        assertEquals("42", sheet.getCellValueAt(0, 0));
+        assertEquals("42", sheet.getValueAt(0, 0));
     }
 
     /**
@@ -83,8 +83,8 @@ public class SheetTest {
         columnRow.getCellAt(0).setCellValue(new StringValue("first"));
         Row valueRow = sheet.getRowAt(1);
         valueRow.getCellAt(0).setCellValue(new StringValue("test"));
-        assertEquals("test", sheet.getCellValueAt(1, "first"));
-        assertNull(sheet.getCellValueAt(1, "unknown"));
+        assertEquals("test", sheet.getValueAt(1, "first"));
+        assertNull(sheet.getValueAt(1, "unknown"));
     }
 
     /**

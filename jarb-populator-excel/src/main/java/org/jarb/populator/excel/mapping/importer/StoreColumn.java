@@ -77,7 +77,7 @@ public final class StoreColumn {
     private static Object getCellValue(Sheet sheet, Integer rowPosition, Integer columnPosition) {
         Object cellValue = null;
         if (columnPosition != null) {
-            cellValue = sheet.getCellValueAt(rowPosition, columnPosition);
+            cellValue = sheet.getValueAt(rowPosition, columnPosition);
         }
         return cellValue;
     }

@@ -24,7 +24,7 @@ public class RowTest {
         Cell cell = row.getCellAt(2).setCellValue(new StringValue("test"));
         assertEquals(cell, row.getCellAt(2));
         assertTrue(row.getCells().contains(cell));
-        assertEquals("test", row.getCellValueAt(2));
+        assertEquals("test", row.getValueAt(2));
         assertEquals(2, row.getLastCellNumber());
     }
 
@@ -36,7 +36,7 @@ public class RowTest {
         Cell unknownCell = row.getCellAt(0);
         assertNotNull(unknownCell);
         assertNull(unknownCell.getValue());
-        assertNull(row.getCellValueAt(0));
+        assertNull(row.getValueAt(0));
     }
 
     @Test

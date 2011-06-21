@@ -48,7 +48,7 @@ public class Row implements Iterable<Cell> {
         return cell;
     }
 
-    public Object getCellValueAt(int colNo) {
+    public Object getValueAt(int colNo) {
         return getCellAt(colNo).getValue();
     }
     
@@ -56,8 +56,18 @@ public class Row implements Iterable<Cell> {
         return sheet.getCellAt(rowNo, columnName);
     }
     
-    public Object getCellValueAt(String columnName) {
-        return sheet.getCellValueAt(rowNo, columnName);
+    public Object getValueAt(String columnName) {
+        return sheet.getValueAt(rowNo, columnName);
+    }
+    
+    public Row setCellValueAt(int colNo, CellValue cellValue) {
+        getCellAt(colNo).setCellValue(cellValue);
+        return this;
+    }
+    
+    public Row setCellValueAt(String columnName, CellValue cellValue) {
+        getCellAt(columnName).setCellValue(cellValue);
+        return this;
     }
 
     public Cell createCell() {

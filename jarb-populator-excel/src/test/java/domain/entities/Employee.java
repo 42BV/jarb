@@ -149,6 +149,7 @@ public final class Employee {
      * @return Date of birth.
      */
     public Date getDateOfBirth() {
+        if(dateOfBirth == null) return null;
         return new Date(dateOfBirth.getTime());
     }
 

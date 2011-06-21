@@ -159,7 +159,7 @@ public class Sheet implements Iterable<Row> {
      * @param columnName name of the column that describes our cell
      * @return desired cell value, or {@code null} if no matching column could be found
      */
-    public Object getCellValueAt(int rowNo, String columnName) {
+    public Object getValueAt(int rowNo, String columnName) {
         Cell cell = getCellAt(rowNo, columnName);
         return cell != null ? cell.getValue() : null;
     }
@@ -170,8 +170,8 @@ public class Sheet implements Iterable<Row> {
      * @param colNo column number
      * @return cell at the specified position
      */
-    public Object getCellValueAt(int rowNo, int colNo) {
-        return getRowAt(rowNo).getCellValueAt(colNo);
+    public Object getValueAt(int rowNo, int colNo) {
+        return getRowAt(rowNo).getValueAt(colNo);
     }
 
     /**
