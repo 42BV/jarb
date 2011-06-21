@@ -14,7 +14,7 @@ public class PropertyDefinition {
     private final Field field;
     private String columnName;
     private ColumnType columnType;
-    private FieldPath embeddablePath;
+    private PropertyPath embeddablePath;
     private boolean generatedValue;
     private String joinTableName;
     private String joinColumnName;
@@ -52,7 +52,7 @@ public class PropertyDefinition {
         return embeddablePath != null;
     }
 
-    public FieldPath getEmbeddablePath() {
+    public PropertyPath getEmbeddablePath() {
         return embeddablePath;
     }
     
@@ -76,7 +76,7 @@ public class PropertyDefinition {
         private final Field field;
         private String columnName;
         private ColumnType columnType = ColumnType.BASIC;
-        private FieldPath embeddablePath;
+        private PropertyPath embeddablePath;
         private String joinTableName;
         private String joinColumnName;
         private String inverseJoinColumnName;
@@ -102,7 +102,7 @@ public class PropertyDefinition {
             return this;
         }
         
-        public Builder setEmbeddablePath(FieldPath embeddablePath) {
+        public Builder setEmbeddablePath(PropertyPath embeddablePath) {
             this.embeddablePath = embeddablePath;
             return this;
         }

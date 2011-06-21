@@ -7,7 +7,7 @@ import java.util.List;
 import javax.persistence.AttributeOverride;
 
 import org.jarb.populator.excel.metamodel.PropertyDefinition;
-import org.jarb.populator.excel.metamodel.FieldPath;
+import org.jarb.populator.excel.metamodel.PropertyPath;
 import org.springframework.util.ReflectionUtils;
 
 /**
@@ -35,7 +35,7 @@ public final class EmbeddedColumnGenerator {
             if (!ReflectionUtils.isPublicStaticFinal(embeddedPropertyField)) {
                 PropertyDefinition.Builder columnDefinitionBuilder = FieldAnalyzer.analyzeField(embeddedPropertyField);
                 if(columnDefinitionBuilder != null) {
-                    columnDefinitionBuilder.setEmbeddablePath(FieldPath.startingFrom(embeddableField));
+                    columnDefinitionBuilder.setEmbeddablePath(PropertyPath.startingFrom(embeddableField));
                     overrideAttributes(embeddableField, columnDefinitionBuilder, embeddedPropertyField);
                     columnDefinitions.add(columnDefinitionBuilder.build());
                 }

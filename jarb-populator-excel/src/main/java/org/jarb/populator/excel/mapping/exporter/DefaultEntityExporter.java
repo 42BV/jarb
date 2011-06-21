@@ -1,6 +1,5 @@
 package org.jarb.populator.excel.mapping.exporter;
 
-import java.lang.reflect.Field;
 import java.util.Date;
 
 import javax.persistence.EntityManagerFactory;
@@ -9,9 +8,9 @@ import org.jarb.populator.excel.entity.EntityRegistry;
 import org.jarb.populator.excel.mapping.ValueConversionService;
 import org.jarb.populator.excel.metamodel.ClassDefinition;
 import org.jarb.populator.excel.metamodel.ColumnType;
-import org.jarb.populator.excel.metamodel.FieldPath;
 import org.jarb.populator.excel.metamodel.MetaModel;
 import org.jarb.populator.excel.metamodel.PropertyDefinition;
+import org.jarb.populator.excel.metamodel.PropertyPath;
 import org.jarb.populator.excel.util.JpaUtils;
 import org.jarb.populator.excel.workbook.BooleanValue;
 import org.jarb.populator.excel.workbook.CellValue;
@@ -23,7 +22,6 @@ import org.jarb.populator.excel.workbook.Sheet;
 import org.jarb.populator.excel.workbook.StringValue;
 import org.jarb.populator.excel.workbook.Workbook;
 import org.jarb.utils.BeanPropertyHandler;
-import org.jarb.utils.ReflectionUtils;
 
 /**
  * Default implementation of {@link EntityExporter}.
@@ -55,14 +53,26 @@ public class DefaultEntityExporter implements EntityExporter {
         return workbook;
     }
     
+    /**
+     * Create the sheet for a specific type of entity.
+     * @param <T> type of entity
+     * @param workbook the workbook that will hold our sheet
+     * @param registry contains all entities that should be stored in our sheet
+     * @param classDefinition description of the entity structure being stored
+     */
     private <T> void createEntitySheet(Workbook workbook, EntityRegistry registry, ClassDefinition<T> classDefinition) {
         Sheet sheet = workbook.createSheet(classDefinition.getTableName());
         storeColumnNames(sheet, classDefinition);
         for(T entity : registry.getAll(classDefinition.getPersistentClass())) {
-            storeEntity(entity, sheet, classDefinition, registry);
+            storeEntity(entity, sheet, classDefinition);
         }
     }
     
+    /**
+     * Store all column names in the sheet.
+     * @param sheet the sheet that should contain our columns
+     * @param classDefinition description of all columns
+     */
     private void storeColumnNames(Sheet sheet, ClassDefinition<?> classDefinition) {
         int columnNumber = 0;
         for(String columnName : classDefinition.getColumnNames()) {
@@ -70,7 +80,14 @@ public class DefaultEntityExporter implements EntityExporter {
         }
     }
     
-    private <T> void storeEntity(T entity, Sheet sheet, ClassDefinition<T> classDefinition, EntityRegistry registry) {
+    /**
+     * Store a specific entity in our sheet.
+     * @param <T> type of entity being stored
+     * @param entity the entity being stored
+     * @param sheet the sheet in which we store the entity
+     * @param classDefinition description of the entity
+     */
+    private <T> void storeEntity(T entity, Sheet sheet, ClassDefinition<T> classDefinition) {
         Row row = sheet.createRow();
         for(PropertyDefinition propertyDefinition : classDefinition.getPropertyDefinitions()) {
             final ColumnType columnType = propertyDefinition.getColumnType();
@@ -84,18 +101,7 @@ public class DefaultEntityExporter implements EntityExporter {
                 Object referenceIdentifier = JpaUtils.getIdentifier(referenceEntity, entityManagerFactory);
                 row.setCellValueAt(propertyDefinition.getColumnName(), createCellValue(referenceIdentifier));
             } else if(columnType == ColumnType.JOIN_TABLE) {
-                // Store all reference entities in a seperate join sheet
-                Sheet joinSheet = sheet.getWorkbook().createSheet(propertyDefinition.getJoinTableName());
-                joinSheet.setColumnNameAt(0, propertyDefinition.getJoinColumnName());
-                joinSheet.setColumnNameAt(1, propertyDefinition.getInverseJoinColumnName());
-                final Object entityIdentifier = JpaUtils.getIdentifier(entity, entityManagerFactory);
-                Iterable<?> referenceEntities = (Iterable<?>) getPropertyValue(entity, propertyDefinition);
-                for(Object referenceEntity : referenceEntities) {
-                    Row joinRow = joinSheet.createRow();
-                    joinRow.setCellValueAt(0, createCellValue(entityIdentifier));
-                    Object referenceIdentifier = JpaUtils.getIdentifier(referenceEntity, entityManagerFactory);
-                    joinRow.setCellValueAt(1, createCellValue(referenceIdentifier));
-                }
+                storeJoinTableSheet(entity, propertyDefinition, sheet.getWorkbook());
             }
         }
         if(classDefinition.hasDiscriminatorColumn()) {
@@ -104,30 +110,57 @@ public class DefaultEntityExporter implements EntityExporter {
         }
     }
     
-    private Object getPropertyValue(Object entity, PropertyDefinition propertyDefinition) {
-        Object propertyValue = null;
-        if(propertyDefinition.isEmbeddedAttribute()) {
-            // Ensure the root embeddable field is declared in our entity, and not some other subclass
-            final Field rootEmbeddableField = propertyDefinition.getEmbeddablePath().getStart().getField();
-            if(ReflectionUtils.hasField(entity, rootEmbeddableField)) {
-                Object currentElement = entity;
-                // Traverse the path of embeddables until we reach the leaf
-                for(FieldPath.FieldNode node : propertyDefinition.getEmbeddablePath()) {
-                    currentElement = BeanPropertyHandler.getValue(currentElement, node.getName());
-                    if(currentElement == null) {
-                        return null; // Can only loop threw embedded properties when they are not null
-                    }
-                }
-                // Retrieve the property from our embeddable instance
-                propertyValue = BeanPropertyHandler.getValue(currentElement, propertyDefinition.getName());
-            }
-        } else if(ReflectionUtils.hasField(entity, propertyDefinition.getField())) {
-            // Ensure the field has been defined in our entity, and not some subclass
-            propertyValue = BeanPropertyHandler.getValue(entity, propertyDefinition.getName());
+    /**
+     * Store a collection of reference entities in a seperate "join" sheet.
+     * This seperate sheet represents the join between two entities, as in
+     * the relational database.
+     * @param entity the entity containing our joins
+     * @param propertyDefinition description of the join property
+     * @param workbook the workbook that will contain our "join" sheet
+     */
+    private void storeJoinTableSheet(Object entity, PropertyDefinition propertyDefinition, Workbook workbook) {
+        Sheet joinSheet = workbook.createSheet(propertyDefinition.getJoinTableName());
+        joinSheet.setColumnNameAt(0, propertyDefinition.getJoinColumnName());
+        joinSheet.setColumnNameAt(1, propertyDefinition.getInverseJoinColumnName());
+        final Object entityIdentifier = JpaUtils.getIdentifier(entity, entityManagerFactory);
+        Iterable<?> referenceEntities = (Iterable<?>) getPropertyValue(entity, propertyDefinition);
+        for(Object referenceEntity : referenceEntities) {
+            Row joinRow = joinSheet.createRow();
+            joinRow.setCellValueAt(0, createCellValue(entityIdentifier));
+            Object referenceIdentifier = JpaUtils.getIdentifier(referenceEntity, entityManagerFactory);
+            joinRow.setCellValueAt(1, createCellValue(referenceIdentifier));
         }
-        return propertyValue;
     }
     
+    /**
+     * Retrieve the property value of an entity.
+     * @param entity the entity that contains our value
+     * @param propertyDefinition description of the property being retrieved
+     * @return value of the property in our entity
+     */
+    private Object getPropertyValue(Object entity, PropertyDefinition propertyDefinition) {
+        // Determine who contains our property directly
+        Object container = entity;
+        if(propertyDefinition.isEmbeddedAttribute()) {
+            // Whenever our property is embedded, retrieve the embeddable that contains it
+            final PropertyPath embeddablePath = propertyDefinition.getEmbeddablePath();
+            if(BeanPropertyHandler.hasProperty(entity, embeddablePath.getStart().getName())) {
+                container = embeddablePath.traverse(entity);
+            }
+        }
+        // Retrieve the property value, whenever it is contained
+        Object value = null;
+        if(container != null && BeanPropertyHandler.hasProperty(container, propertyDefinition.getName())) {
+            value = BeanPropertyHandler.getValue(container, propertyDefinition.getName());
+        }
+        return value;
+    }
+    
+    /**
+     * Create a cell value based on some raw value.
+     * @param value raw value being stored
+     * @return cell value containing our raw value
+     */
     private CellValue createCellValue(Object value) {
         CellValue cellValue = null;
         if(value == null) {
@@ -143,7 +176,7 @@ public class DefaultEntityExporter implements EntityExporter {
             } else if(Number.class.isAssignableFrom(valueType)) {
                 cellValue = new NumericValue((Number) value);
             } else {
-                // Convert the value into a string and store it as such
+                // Remaining types are converted into string values
                 final String valueAsString = valueConversionService.convert(value, String.class);
                 cellValue = new StringValue(valueAsString);
             }

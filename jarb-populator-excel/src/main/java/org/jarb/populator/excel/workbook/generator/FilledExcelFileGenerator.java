@@ -186,7 +186,7 @@ public final class FilledExcelFileGenerator {
     private static void createEmbeddedFieldCell(ClassDefinition<?> classDefinition, CellStyle dateFormatStyle, HSSFRow row, String columnName, String fieldName,
             Object databaseRecord, int columnNumber) {
         PropertyDefinition columnDefinition = classDefinition.getPropertyDefinitionByColumn(columnName);
-        Object embeddedObject = columnDefinition.getEmbeddablePath().getValueFor(databaseRecord);
+        Object embeddedObject = columnDefinition.getEmbeddablePath().traverse(databaseRecord);
         if (embeddedObject != null) {
             Object cellValue = ReflectionUtils.getFieldValue(embeddedObject, fieldName);
             if (cellValue != null) {

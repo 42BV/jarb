@@ -46,7 +46,7 @@ public final class StoreColumn {
         if (FieldValidator.isExistingField(columnDefinition.getName(), excelRow.getCreatedInstance().getClass())) {
             setExcelRowFieldValue(excelRow.getCreatedInstance(), columnDefinition.getName(), cellValue);
         } else if (columnDefinition.isEmbeddedAttribute()) {
-            Object embeddedField = columnDefinition.getEmbeddablePath().getValueFor(excelRow.getCreatedInstance());
+            Object embeddedField = columnDefinition.getEmbeddablePath().traverse(excelRow.getCreatedInstance());
             setExcelRowFieldValue(embeddedField, columnDefinition.getName(), cellValue);
         }
     }

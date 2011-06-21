@@ -6,12 +6,12 @@ import static org.junit.Assert.fail;
 import org.junit.Before;
 import org.junit.Test;
 
-public class FieldPathTest {
-    private FieldPath fieldPath;
+public class PropertyPathTest {
+    private PropertyPath fieldPath;
 
     @Before
     public void setUp() throws SecurityException, NoSuchFieldException {
-        fieldPath = FieldPath.startingFrom(Person.class, "address").to("street").to(Street.class.getDeclaredField("name"));
+        fieldPath = PropertyPath.startingFrom(Person.class, "address").to("street").to("name");
     }
     
     @Test
@@ -22,28 +22,17 @@ public class FieldPathTest {
         street.name = "Teststreet 45";
         address.street = street;
         person.address = address;
-        assertEquals("Teststreet 45", fieldPath.getValueFor(person));
+        assertEquals("Teststreet 45", fieldPath.traverse(person));
     }
     
     @Test
     public void testInvalidPathByString() {
         try {
             // Address has no 'unknown' field
-            FieldPath.startingFrom(Person.class, "address").to("unknown").to("name");
+            PropertyPath.startingFrom(Person.class, "address").to("unknown").to("name");
             fail("Invalid paths should not be accepted during construction.");
         } catch(IllegalStateException e) {
-            assertEquals("Field 'unknown' does not exist in 'Address'.", e.getMessage());
-        }
-    }
-    
-    @Test
-    public void testInvalidPathByField() throws SecurityException, NoSuchFieldException {
-        try {
-            // Field 'name' has been declared in Street, not Address
-            FieldPath.startingFrom(Person.class, "address").to(Street.class.getDeclaredField("name"));
-            fail("Invalid paths should not be accepted during construction.");
-        } catch(IllegalStateException e) {
-            assertEquals("Cannot extend path to 'Street.name' as the field is not declared in 'Address'.", e.getMessage());
+            assertEquals("Property 'unknown' does not exist in 'Address'.", e.getMessage());
         }
     }
     
