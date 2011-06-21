@@ -1,6 +1,6 @@
 package domain.entities;
 
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -25,7 +25,7 @@ public class VeryImportantCustomer extends SpecialCustomer {
 
     @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "vipcustomers_gifts", joinColumns = { @JoinColumn(name = "customer_id") }, inverseJoinColumns = { @JoinColumn(name = "gift_id") })
-    private Set<BusinessRelationshipGift> gifts = new HashSet<BusinessRelationshipGift>();
+    private Set<BusinessRelationshipGift> gifts = new LinkedHashSet<BusinessRelationshipGift>();
 
     /**
      * Sets the title.
@@ -49,5 +49,9 @@ public class VeryImportantCustomer extends SpecialCustomer {
 
     public Set<BusinessRelationshipGift> getGifts() {
         return gifts;
+    }
+    
+    public void addGift(BusinessRelationshipGift gift) {
+        gifts.add(gift);
     }
 }

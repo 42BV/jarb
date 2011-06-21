@@ -98,8 +98,10 @@ public class DefaultEntityExporter implements EntityExporter {
             } else if(columnType == ColumnType.JOIN_COLUMN) {
                 // Retrieve the entity as property value and store its identifier
                 Object referenceEntity = getPropertyValue(entity, propertyDefinition);
-                Object referenceIdentifier = JpaUtils.getIdentifier(referenceEntity, entityManagerFactory);
-                row.setCellValueAt(propertyDefinition.getColumnName(), createCellValue(referenceIdentifier));
+                if(referenceEntity != null) {
+                    Object referenceIdentifier = JpaUtils.getIdentifier(referenceEntity, entityManagerFactory);
+                    row.setCellValueAt(propertyDefinition.getColumnName(), createCellValue(referenceIdentifier));
+                }
             } else if(columnType == ColumnType.JOIN_TABLE) {
                 storeJoinTableSheet(entity, propertyDefinition, sheet.getWorkbook());
             }
@@ -139,19 +141,16 @@ public class DefaultEntityExporter implements EntityExporter {
      * @return value of the property in our entity
      */
     private Object getPropertyValue(Object entity, PropertyDefinition propertyDefinition) {
-        // Determine who contains our property directly
-        Object container = entity;
+        Object value = null;
         if(propertyDefinition.isEmbeddedAttribute()) {
             // Whenever our property is embedded, retrieve the embeddable that contains it
             final PropertyPath embeddablePath = propertyDefinition.getEmbeddablePath();
             if(BeanPropertyHandler.hasProperty(entity, embeddablePath.getStart().getName())) {
-                container = embeddablePath.traverse(entity);
+                Object leafEmbeddable = embeddablePath.traverse(entity);
+                value = BeanPropertyHandler.getValue(leafEmbeddable, propertyDefinition.getName());
             }
-        }
-        // Retrieve the property value, whenever it is contained
-        Object value = null;
-        if(container != null && BeanPropertyHandler.hasProperty(container, propertyDefinition.getName())) {
-            value = BeanPropertyHandler.getValue(container, propertyDefinition.getName());
+        } else if(BeanPropertyHandler.hasProperty(entity, propertyDefinition.getName())) {
+            value = BeanPropertyHandler.getValue(entity, propertyDefinition.getName());
         }
         return value;
     }

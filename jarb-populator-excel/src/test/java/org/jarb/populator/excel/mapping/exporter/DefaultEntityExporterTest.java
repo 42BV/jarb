@@ -1,6 +1,7 @@
 package org.jarb.populator.excel.mapping.exporter;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import org.jarb.populator.excel.DefaultExcelTestDataCase;
@@ -14,10 +15,13 @@ import org.jarb.populator.excel.workbook.Workbook;
 import org.junit.Before;
 import org.junit.Test;
 
+import domain.entities.BusinessRelationshipGift;
 import domain.entities.CompanyCar;
 import domain.entities.CompanyVehicle;
 import domain.entities.CompanyVehicle.Gearbox;
+import domain.entities.Customer;
 import domain.entities.Employee;
+import domain.entities.VeryImportantCustomer;
 
 public class DefaultEntityExporterTest extends DefaultExcelTestDataCase {
     private DefaultEntityExporter exporter;
@@ -84,6 +88,28 @@ public class DefaultEntityExporterTest extends DefaultExcelTestDataCase {
         Workbook workbook = exporter.export(registry, metamodel);
         Sheet employeesSheet = workbook.getSheet("employees");
         assertEquals(Double.valueOf(42), employeesSheet.getValueAt(1, "company_vehicle_id"));
+    }
+    
+    @Test
+    public void testJoinTable() {
+        VeryImportantCustomer customer = new VeryImportantCustomer();
+        customer.setId(24L);
+        BusinessRelationshipGift gift = new BusinessRelationshipGift();
+        gift.setId(42L);
+        customer.addGift(gift);
+        BusinessRelationshipGift anotherGift = new BusinessRelationshipGift();
+        anotherGift.setId(99L);
+        customer.addGift(anotherGift);
+        registry.add(Customer.class, 1L, customer);
+        Workbook workbook = exporter.export(registry, metamodel);
+        Sheet joinSheet = workbook.getSheet("vipcustomers_gifts");
+        assertNotNull("Join sheet was not created", joinSheet);
+        assertEquals("customer_id", joinSheet.getValueAt(0, 0));
+        assertEquals("gift_id", joinSheet.getValueAt(0, 1));
+        assertEquals(Double.valueOf(24), joinSheet.getValueAt(1, "customer_id"));
+        assertEquals(Double.valueOf(42), joinSheet.getValueAt(1, "gift_id"));
+        assertEquals(Double.valueOf(24), joinSheet.getValueAt(2, "customer_id"));
+        assertEquals(Double.valueOf(99), joinSheet.getValueAt(2, "gift_id"));
     }
 
 }
