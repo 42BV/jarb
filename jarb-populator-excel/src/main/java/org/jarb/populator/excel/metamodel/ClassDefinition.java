@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -149,9 +150,8 @@ public class ClassDefinition<T> {
      * Retrieve all column names for this entity table.
      * @return
      */
-    public List<String> getColumnNames() {
-        List<String> columnNames = new ArrayList<String>();
-        // Include the columns of each property definition
+    public Set<String> getColumnNames() {
+        Set<String> columnNames = new HashSet<String>();
         for (PropertyDefinition propertyDefinition : propertyDefinitions) {
             columnNames.add(propertyDefinition.getColumnName());
         }

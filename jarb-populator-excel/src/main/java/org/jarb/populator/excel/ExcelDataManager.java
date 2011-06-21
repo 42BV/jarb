@@ -1,14 +1,8 @@
 package org.jarb.populator.excel;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-import javax.persistence.EntityManagerFactory;
-
-import org.apache.commons.io.IOUtils;
 import org.jarb.populator.excel.entity.EntityRegistry;
 import org.jarb.populator.excel.entity.persist.EntityWriter;
 import org.jarb.populator.excel.entity.query.EntityReader;
@@ -17,8 +11,6 @@ import org.jarb.populator.excel.mapping.importer.EntityImporter;
 import org.jarb.populator.excel.metamodel.MetaModel;
 import org.jarb.populator.excel.metamodel.generator.MetaModelGenerator;
 import org.jarb.populator.excel.workbook.Workbook;
-import org.jarb.populator.excel.workbook.generator.FilledExcelFileGenerator;
-import org.jarb.populator.excel.workbook.generator.NewExcelFileGenerator;
 import org.jarb.populator.excel.workbook.reader.ExcelParser;
 import org.jarb.populator.excel.workbook.validator.ExcelValidator;
 import org.jarb.populator.excel.workbook.validator.ValidationResult;
@@ -27,8 +19,8 @@ import org.jarb.populator.excel.workbook.writer.ExcelWriter;
 /**
  * Excel test data facade, provides all functionality.
  * @author Sander Benschop
+ * @author Jeroen van Schagen
  */
-@SuppressWarnings("unused")
 public class ExcelDataManager {
     private ExcelParser excelParser;
     private ExcelWriter excelWriter;
@@ -39,35 +31,29 @@ public class ExcelDataManager {
     private ExcelValidator excelValidator;
     private MetaModelGenerator metamodelGenerator;
 
-    // TODO: Remove entity manager factory, and delegate all to the above components
-    private EntityManagerFactory entityManagerFactory;
-
     /**
-     * The main functionality of the component: read data from the specified Excel file and persist this.
-     * @param is Stream of the Excel file which is to be persisted
+     * Read all entities from the specified excel resource and persist them in the database.
+     * @param resource excel workbook resource
      */
     public void persistWorkbook(InputStream is) {
-        try {
-            Workbook workbook = excelParser.parse(is);
-            MetaModel metamodel = metamodelGenerator.generate();
-            EntityRegistry registry = entityImporter.load(workbook, metamodel);
-            entityWriter.persist(registry);
-        } finally {
-            IOUtils.closeQuietly(is);
-        }
+        EntityRegistry registry = loadWorkbook(is);
+        entityWriter.persist(registry);
     }
-
+    
     /**
-     * The main functionality of the component: read data from the specified Excel file and persist this.
-     * @param excelFile The Excel file which is to be persisted
+     * Read all entities from the excel resource.
+     * @param resource excel workbook resource
+     * @return registry of all entities
      */
-    public void persistWorkbook(String excelFile) throws FileNotFoundException {
-        persistWorkbook(new FileInputStream(excelFile));
+    public EntityRegistry loadWorkbook(InputStream is) {
+        Workbook workbook = excelParser.parse(is);
+        MetaModel metamodel = metamodelGenerator.generate();
+        return entityImporter.load(workbook, metamodel);
     }
-
+    
     /**
-     * Sheet validator: tests the specified Excel file against the current mapping and checks for differences.
-     * @param is stream to the excel file being tested
+     * Verify some excel workbook against our current mappings.
+     * @param resource excel workbook resource
      */
     public ValidationResult validateWorkbook(InputStream is) {
         Workbook workbook = excelParser.parse(is);
@@ -76,58 +62,33 @@ public class ExcelDataManager {
     }
 
     /**
-     * Sheet validator: tests the specified Excel file against the current mapping and checks for differences.
-     * @param excelFile path to the excel file being tested
-     * @throws FileNotFoundException when the file cannot be found
+     * Create a new excel workbook based on the current mapping.
+     * @param os output stream to the excel resource
      */
-    public ValidationResult validateWorkbook(String excelFile) throws FileNotFoundException {
-        return validateWorkbook(new FileInputStream(excelFile));
+    public void createWorkbookTemplate(OutputStream os) {
+        MetaModel metamodel = metamodelGenerator.generate();
+        EntityRegistry emptyRegistry = new EntityRegistry();
+        Workbook workbook = entityExporter.export(emptyRegistry, metamodel);
+        excelWriter.write(workbook, os);
     }
 
     /**
-     * New sheet generator: generates a new Excel file at the specified destination based on the current mapping.
-     * @param os Stream to the Excel file that is to be created
-     */
-    public void createEmptyWorkbook(OutputStream os) {
-        try {
-            MetaModel metamodel = metamodelGenerator.generate();
-            NewExcelFileGenerator.createEmptyXLS(os, metamodel);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        } finally {
-            IOUtils.closeQuietly(os);
-        }
-    }
-
-    /**
-     * New sheet generator: generates a new Excel file at the specified destination based on the current mapping.
-     * @param fileDestination The path to the Excel file that is to be created
-     */
-    public void createEmptyWorkbook(String fileDestination) throws FileNotFoundException {
-        createEmptyWorkbook(new FileOutputStream(fileDestination));
-    }
-
-    /**
-     * Filled sheet generator: generates a new Excel file at the specified destination based on the current mapping and fills this with data from the Database.
-     * @param os Stream to the Excel file that is to be created
+     * Create a new excel workbook based on the current mapping and database data.
+     * @param os output stream to the excel resource
      */
     public void createWorkbookWithDatabaseData(OutputStream os) {
-        try {
-            MetaModel metamodel = metamodelGenerator.generate();
-            FilledExcelFileGenerator.createFilledExcelFile(os, metamodel, entityManagerFactory);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        } finally {
-            IOUtils.closeQuietly(os);
-        }
+        createWorkbookWithData(os, entityReader.fetchAll());
     }
-
+    
     /**
-     * Filled sheet generator: generates a new Excel file at the specified destination based on the current mapping and fills this with data from the Database.
-     * @param fileDestination The path to the Excel file that is to be created
+     * Create a new excel workbook based on the current mapping and database data.
+     * @param os output stream to the excel resource
+     * @param registry the entities that should be included
      */
-    public void createWorkbookWithDatabaseData(String fileDestination) throws FileNotFoundException {
-        createWorkbookWithDatabaseData(new FileOutputStream(fileDestination));
+    public void createWorkbookWithData(OutputStream os, EntityRegistry registry) {
+        MetaModel metamodel = metamodelGenerator.generate();
+        Workbook workbook = entityExporter.export(registry, metamodel);
+        excelWriter.write(workbook, os);
     }
 
     public void setExcelParser(ExcelParser excelParser) {
@@ -160,10 +121,6 @@ public class ExcelDataManager {
 
     public void setMetamodelGenerator(MetaModelGenerator metaModelGenerator) {
         this.metamodelGenerator = metaModelGenerator;
-    }
-
-    public void setEntityManagerFactory(EntityManagerFactory entityManagerFactory) {
-        this.entityManagerFactory = entityManagerFactory;
     }
 
 }

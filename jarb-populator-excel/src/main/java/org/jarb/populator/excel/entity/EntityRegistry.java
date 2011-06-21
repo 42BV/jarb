@@ -31,7 +31,7 @@ public class EntityRegistry {
      * @param id identifier of the entity being retrieved
      * @return entity of the specified type and identity, if any
      */
-    public <T> T get(Class<T> entityClass, Long id) {
+    public <T> T get(Class<T> entityClass, Object id) {
         return entities(entityClass).get(id);
     }
 
@@ -51,7 +51,7 @@ public class EntityRegistry {
      * @param id identifier of the entity
      * @return {@code true} if it exists, else {@code false}
      */
-    public boolean exists(Class<?> entityClass, Long id) {
+    public boolean exists(Class<?> entityClass, Object id) {
         return get(entityClass, id) != null;
     }
 
@@ -62,7 +62,7 @@ public class EntityRegistry {
      * @param id identifier of the entity
      * @param entity reference to the entity being stored
      */
-    public <T> void add(Class<T> entityClass, Long id, T entity) {
+    public <T> void add(Class<T> entityClass, Object id, T entity) {
         entities(entityClass).add(id, entity);
     }
 
@@ -73,7 +73,7 @@ public class EntityRegistry {
      */
     public <T> void addAll(EntityTable<T> entities) {
         EntityTable<T> currentEntities = entities(entities.getEntityClass());
-        for (Map.Entry<Long, T> entityEntry : entities.map().entrySet()) {
+        for (Map.Entry<Object, T> entityEntry : entities.map().entrySet()) {
             currentEntities.add(entityEntry.getKey(), (T) entityEntry.getValue());
         }
     }
@@ -85,7 +85,7 @@ public class EntityRegistry {
      * @param id identifier of the entity
      * @return the removed entity
      */
-    public <T> T remove(Class<T> entityClass, Long id) {
+    public <T> T remove(Class<T> entityClass, Object id) {
         return entities(entityClass).remove(id);
     }
 
@@ -96,10 +96,10 @@ public class EntityRegistry {
      * @param ids identifiers of the entities
      * @return the removed entities
      */
-    public <T> List<T> removeAll(Class<T> entityClass, Iterable<Long> ids) {
+    public <T> List<T> removeAll(Class<T> entityClass, Iterable<Object> ids) {
         final List<T> deletedEntities = new ArrayList<T>();
         EntityTable<T> entities = entities(entityClass);
-        for (Long id : ids) {
+        for (Object id : ids) {
             T deletedEntity = entities.remove(id);
             if (deletedEntity != null) {
                 deletedEntities.add(deletedEntity);

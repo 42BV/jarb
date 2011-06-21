@@ -41,8 +41,8 @@ public class Workbook implements Iterable<Sheet> {
 
     public Sheet createSheet(String name) {
         if(containsSheet(name)) {
-            throw new IllegalStateException("Sheet '" + name + "' already exists.");
-        }
+            throw new IllegalStateException("Sheet '" + name + "' already exists");
+        } 
         Sheet sheet = new Sheet(this, name);
         sheetsMap.put(name, sheet);
         return sheet;

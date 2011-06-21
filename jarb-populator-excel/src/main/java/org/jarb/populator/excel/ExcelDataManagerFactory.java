@@ -48,8 +48,6 @@ public class ExcelDataManagerFactory {
         etd.setEntityWriter(buildEntityWriter());
         etd.setExcelValidator(buildExcelValidator());
         etd.setMetamodelGenerator(buildMetamodelGenerator());
-        // TODO: Remove entity manager factory reference from ETD
-        etd.setEntityManagerFactory(entityManagerFactory);
         return etd;
     }
 

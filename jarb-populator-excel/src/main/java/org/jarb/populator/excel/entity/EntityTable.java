@@ -2,10 +2,10 @@ package org.jarb.populator.excel.entity;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 
 /**
  * In-memory representation of a database table. Contains all
@@ -18,7 +18,7 @@ import java.util.TreeMap;
  */
 public class EntityTable<T> implements Iterable<T> {
     private final Class<T> entityClass;
-    private TreeMap<Long, T> entitiesMap = new TreeMap<Long, T>();
+    private Map<Object, T> entitiesMap = new HashMap<Object, T>();
     
     public EntityTable(Class<T> entityClass) {
         this.entityClass = entityClass;
@@ -33,7 +33,7 @@ public class EntityTable<T> implements Iterable<T> {
      * @param id identifier of the entity
      * @return entity matching or identifier, if any
      */
-    public T get(Long id) {
+    public T get(Object id) {
         return entitiesMap.get(id);
     }
 
@@ -57,7 +57,7 @@ public class EntityTable<T> implements Iterable<T> {
      * Retrieve every entity, in {@link Map} format.
      * @return map representation of each stored entity
      */
-    public Map<Long, T> map() {
+    public Map<Object, T> map() {
         return Collections.unmodifiableMap(entitiesMap);
     }
 
@@ -82,7 +82,7 @@ public class EntityTable<T> implements Iterable<T> {
      * @param id identifier of the entity
      * @param entity reference to the entity
      */
-    public void add(Long id, T entity) {
+    public void add(Object id, T entity) {
         entitiesMap.put(id, entity);
     }
 
@@ -91,7 +91,7 @@ public class EntityTable<T> implements Iterable<T> {
      * @param id identifier of the entity
      * @return removed entity
      */
-    public T remove(Long id) {
+    public T remove(Object id) {
         return entitiesMap.remove(id);
     }
 

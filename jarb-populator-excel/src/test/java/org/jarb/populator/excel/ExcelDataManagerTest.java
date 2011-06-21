@@ -1,41 +1,78 @@
 package org.jarb.populator.excel;
 
-import java.io.IOException;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
-import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
+
+import org.jarb.populator.excel.entity.EntityRegistry;
+import org.jarb.populator.excel.workbook.validator.ValidationResult;
 import org.junit.Before;
 import org.junit.Test;
 
+import domain.entities.CompanyCar;
+import domain.entities.CompanyVehicle;
+import domain.entities.CompanyVehicle.Gearbox;
+
 public class ExcelDataManagerTest extends DefaultExcelTestDataCase {
-    private ExcelDataManager excelTestData;
+    private ExcelDataManager excelDataManager;
 
     @Before
-    public void setupETD() {
-        excelTestData = getExcelDataManagerFactory().build();
+    public void setUp() {
+        excelDataManager = getExcelDataManager();
     }
 
     @Test
-    public void testProcessData() throws InvalidFormatException, IOException, ClassNotFoundException, InstantiationException, IllegalAccessException,
-            SecurityException, NoSuchFieldException {
-        excelTestData.persistWorkbook("src/test/resources/Excel.xls");
+    public void testPersistWorkbook() throws FileNotFoundException {
+        InputStream is = new FileInputStream("src/test/resources/Excel.xls");
+        excelDataManager.persistWorkbook(is);
+        
+        // TODO: Assert that entities are in the database
+    }
+    
+    @Test
+    public void testValidateWorkbook() throws FileNotFoundException {
+        InputStream is = new FileInputStream("src/test/resources/Excel.xls");
+        ValidationResult result = excelDataManager.validateWorkbook(is);
+        
+        assertNotNull(result);
+    }
+    
+    @Test
+    public void testCreateWorkbookTemplate() throws FileNotFoundException {
+        OutputStream os = new FileOutputStream("src/test/resources/excel/generated/NewExcelFile.xls");
+        excelDataManager.createWorkbookTemplate(os);
+        
+        InputStream is = new FileInputStream("src/test/resources/excel/generated/NewExcelFile.xls");
+        ValidationResult validation = excelDataManager.validateWorkbook(is);
+
+        assertTrue(validation.getMessages().contains("All the sheets specified in the mapping are present in the Excel file."));
     }
 
     @Test
-    public void testNewSheetFilledWithDatabaseData() throws ClassNotFoundException, InstantiationException, IllegalAccessException, IOException,
-            NoSuchFieldException {
-        excelTestData.createWorkbookWithDatabaseData("src/test/resources/excel/generated/NewExcelFileFromDatabase.xls");
-    }
+    public void testCreateWorkbookWithDatabaseData() throws FileNotFoundException {
+        CompanyCar car = new CompanyCar("bugatti", 999999D, 42, Gearbox.MANUAL, true);
+        car.setId(42L);
+        EntityRegistry registry = new EntityRegistry();
+        registry.add(CompanyVehicle.class, 42L, car);
+        
+        OutputStream os = new FileOutputStream("src/test/resources/excel/generated/NewExcelFileFromDatabase.xls");
+        excelDataManager.createWorkbookWithData(os, registry);
+        
+        InputStream is = new FileInputStream("src/test/resources/excel/generated/NewExcelFileFromDatabase.xls");
+        ValidationResult validation = excelDataManager.validateWorkbook(is);
+        assertTrue(validation.getMessages().contains("All the sheets specified in the mapping are present in the Excel file."));
 
-    @Test
-    public void testValidateSheet() throws InvalidFormatException, IOException, InstantiationException, IllegalAccessException, ClassNotFoundException,
-            SecurityException, NoSuchFieldException {
-        excelTestData.validateWorkbook("src/test/resources/Excel.xls");
-    }
-
-    @Test
-    public void testNewSheet() throws InstantiationException, IllegalAccessException, IOException, ClassNotFoundException, SecurityException,
-            NoSuchFieldException {
-        excelTestData.createEmptyWorkbook("src/test/resources/excel/generated/NewExcelFile.xls");
+        is = new FileInputStream("src/test/resources/excel/generated/NewExcelFileFromDatabase.xls");
+        EntityRegistry resultRegistry = excelDataManager.loadWorkbook(is);
+        CompanyVehicle resultCar = resultRegistry.get(CompanyVehicle.class, car.getId());
+        assertNotNull("Car was not maintained during export.", resultCar);
+        assertEquals(car.getId(), resultCar.getId());
     }
 
 }

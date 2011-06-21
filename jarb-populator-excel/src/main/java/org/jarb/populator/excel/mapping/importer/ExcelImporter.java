@@ -110,7 +110,10 @@ public final class ExcelImporter {
             Integer discriminatorPosition = worksheetDefinition.getColumnPosition(discriminatorColumnName);
             String discriminatorValue = getDiscriminatorValueFromExcelFile(sheet, rowPosition, discriminatorPosition);
             if (discriminatorValue != null) {
-                entityClass = classDefinition.getSubClass(discriminatorValue);
+                Class<?> subClass = classDefinition.getSubClass(discriminatorValue);
+                if(subClass != null) {
+                    entityClass = subClass;
+                }
             }
         }
         return entityClass;

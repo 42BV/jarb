@@ -49,7 +49,7 @@ public class JpaEntityReader implements EntityReader {
     private <T> EntityTable<T> fetchEntitiesWithIdentifier(Class<T> entityClass) {
         EntityTable<T> entities = new EntityTable<T>(entityClass);
         for (T entity : fetchEntities(entityClass)) {
-            entities.add(JpaUtils.getIdentifierAsLong(entity, entityManagerFactory), entity);
+            entities.add(JpaUtils.getIdentifier(entity, entityManagerFactory), entity);
         }
         return entities;
     }

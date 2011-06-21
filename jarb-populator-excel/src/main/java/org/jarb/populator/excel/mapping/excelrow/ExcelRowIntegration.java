@@ -34,8 +34,8 @@ public class ExcelRowIntegration {
         Map<Class<?>, Map<Integer, ExcelRow>> entitiesMap = new HashMap<Class<?>, Map<Integer, ExcelRow>>();
         for (Class<?> entityClass : registry.getEntityClasses()) {
             Map<Integer, ExcelRow> excelRowMap = new HashMap<Integer, ExcelRow>();
-            for (Map.Entry<Long, ?> entityEntry : registry.getAll(entityClass).map().entrySet()) {
-                excelRowMap.put(entityEntry.getKey().intValue(), new ExcelRow(entityEntry.getValue()));
+            for (Map.Entry<Object, ?> entityEntry : registry.getAll(entityClass).map().entrySet()) {
+                excelRowMap.put(((Long) entityEntry.getKey()).intValue(), new ExcelRow(entityEntry.getValue()));
             }
             entitiesMap.put(entityClass, excelRowMap);
         }

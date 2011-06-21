@@ -1,6 +1,7 @@
 package org.jarb.populator.excel.mapping.exporter;
 
 import java.util.Date;
+import java.util.Set;
 
 import javax.persistence.EntityManagerFactory;
 
@@ -40,31 +41,41 @@ public class DefaultEntityExporter implements EntityExporter {
     public void setValueConversionService(ValueConversionService valueConversionService) {
         this.valueConversionService = valueConversionService;
     }
-
+    
     /**
      * {@inheritDoc}
      */
     @Override
     public Workbook export(EntityRegistry registry, MetaModel metamodel) {
+        Workbook workbook = createTemplate(metamodel);
+        for (ClassDefinition<?> classDefinition : metamodel.getClassDefinitions()) {
+            includeEntities(registry, classDefinition, workbook);
+        }
+        return workbook;
+    }
+    
+    // Create template (sheets for each type, and each column name)
+    
+    private Workbook createTemplate(MetaModel metamodel) {
         Workbook workbook = new Workbook();
         for (ClassDefinition<?> classDefinition : metamodel.getClassDefinitions()) {
-            createEntitySheet(workbook, registry, classDefinition);
+            createClassSheet(classDefinition, workbook);
         }
         return workbook;
     }
     
     /**
      * Create the sheet for a specific type of entity.
-     * @param <T> type of entity
-     * @param workbook the workbook that will hold our sheet
-     * @param registry contains all entities that should be stored in our sheet
      * @param classDefinition description of the entity structure being stored
+     * @param workbook the workbook that will hold our sheet
      */
-    private <T> void createEntitySheet(Workbook workbook, EntityRegistry registry, ClassDefinition<T> classDefinition) {
+    private void createClassSheet(ClassDefinition<?> classDefinition, Workbook workbook) {
         Sheet sheet = workbook.createSheet(classDefinition.getTableName());
         storeColumnNames(sheet, classDefinition);
-        for(T entity : registry.getAll(classDefinition.getPersistentClass())) {
-            storeEntity(entity, sheet, classDefinition);
+        for(PropertyDefinition propertyDefinition : classDefinition.getPropertyDefinitions()) {
+            if(propertyDefinition.getColumnType() == ColumnType.JOIN_TABLE) {
+                createJoinSheet(propertyDefinition, workbook);
+            }
         }
     }
     
@@ -75,11 +86,33 @@ public class DefaultEntityExporter implements EntityExporter {
      */
     private void storeColumnNames(Sheet sheet, ClassDefinition<?> classDefinition) {
         int columnNumber = 0;
-        for(String columnName : classDefinition.getColumnNames()) {
+        Set<String> columnNames = classDefinition.getColumnNames();
+        columnNames.add("id");
+        for(String columnName : columnNames) {
             sheet.setColumnNameAt(columnNumber++, columnName);
         }
     }
     
+    /**
+     * Create the join sheet between two types of entities.
+     * @param propertyDefinition definition of the join table property
+     * @param workbook the workbook that will hold our sheet
+     */
+    private void createJoinSheet(PropertyDefinition propertyDefinition, Workbook workbook) {
+        Sheet joinSheet = workbook.createSheet(propertyDefinition.getJoinTableName());
+        joinSheet.setColumnNameAt(0, propertyDefinition.getJoinColumnName());
+        joinSheet.setColumnNameAt(1, propertyDefinition.getInverseJoinColumnName());
+    }
+    
+    // Include entities into our workbook
+    
+    private <T> void includeEntities(EntityRegistry registry, ClassDefinition<T> classDefinition, Workbook workbook) {
+        Sheet sheet = workbook.getSheet(classDefinition.getTableName());
+        for(T entity : registry.getAll(classDefinition.getPersistentClass())) {
+            includeEntity(entity, classDefinition, sheet);
+        }
+    }
+   
     /**
      * Store a specific entity in our sheet.
      * @param <T> type of entity being stored
@@ -87,7 +120,7 @@ public class DefaultEntityExporter implements EntityExporter {
      * @param sheet the sheet in which we store the entity
      * @param classDefinition description of the entity
      */
-    private <T> void storeEntity(T entity, Sheet sheet, ClassDefinition<T> classDefinition) {
+    private <T> void includeEntity(T entity, ClassDefinition<T> classDefinition, Sheet sheet) {
         Row row = sheet.createRow();
         for(PropertyDefinition propertyDefinition : classDefinition.getPropertyDefinitions()) {
             final ColumnType columnType = propertyDefinition.getColumnType();
@@ -103,13 +136,15 @@ public class DefaultEntityExporter implements EntityExporter {
                     row.setCellValueAt(propertyDefinition.getColumnName(), createCellValue(referenceIdentifier));
                 }
             } else if(columnType == ColumnType.JOIN_TABLE) {
-                storeJoinTableSheet(entity, propertyDefinition, sheet.getWorkbook());
+                includeJoinTable(entity, propertyDefinition, sheet.getWorkbook());
             }
         }
         if(classDefinition.hasDiscriminatorColumn()) {
             final String discriminatorValue = classDefinition.getDiscriminatorValue(entity.getClass());
             row.setCellValueAt(classDefinition.getDiscriminatorColumnName(), new StringValue(discriminatorValue));
         }
+        Object entityIdentifier = JpaUtils.getIdentifier(entity, entityManagerFactory);
+        row.setCellValueAt("id", createCellValue(entityIdentifier));
     }
     
     /**
@@ -120,17 +155,17 @@ public class DefaultEntityExporter implements EntityExporter {
      * @param propertyDefinition description of the join property
      * @param workbook the workbook that will contain our "join" sheet
      */
-    private void storeJoinTableSheet(Object entity, PropertyDefinition propertyDefinition, Workbook workbook) {
-        Sheet joinSheet = workbook.createSheet(propertyDefinition.getJoinTableName());
-        joinSheet.setColumnNameAt(0, propertyDefinition.getJoinColumnName());
-        joinSheet.setColumnNameAt(1, propertyDefinition.getInverseJoinColumnName());
-        final Object entityIdentifier = JpaUtils.getIdentifier(entity, entityManagerFactory);
+    private void includeJoinTable(Object entity, PropertyDefinition propertyDefinition, Workbook workbook) {
         Iterable<?> referenceEntities = (Iterable<?>) getPropertyValue(entity, propertyDefinition);
-        for(Object referenceEntity : referenceEntities) {
-            Row joinRow = joinSheet.createRow();
-            joinRow.setCellValueAt(0, createCellValue(entityIdentifier));
-            Object referenceIdentifier = JpaUtils.getIdentifier(referenceEntity, entityManagerFactory);
-            joinRow.setCellValueAt(1, createCellValue(referenceIdentifier));
+        if(referenceEntities != null) {
+            Sheet joinSheet = workbook.getSheet(propertyDefinition.getJoinTableName());
+            Object entityIdentifier = JpaUtils.getIdentifier(entity, entityManagerFactory);
+            for(Object referenceEntity : referenceEntities) {
+                Row joinRow = joinSheet.createRow();
+                joinRow.setCellValueAt(0, createCellValue(entityIdentifier));
+                Object referenceIdentifier = JpaUtils.getIdentifier(referenceEntity, entityManagerFactory);
+                joinRow.setCellValueAt(1, createCellValue(referenceIdentifier));
+            }
         }
     }
     
