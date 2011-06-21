@@ -41,7 +41,8 @@ public abstract class JdbcDatabasePopulator implements DatabasePopulator {
      */
     @Override
     public final void populate() throws Exception {
-        Assert.state(dataSource != null, "Data source cannot be null.");
+        Assert.state(dataSource != null, "Data source cannot be null");
+        
         Connection connection = null;
         try {
             connection = dataSource.getConnection();

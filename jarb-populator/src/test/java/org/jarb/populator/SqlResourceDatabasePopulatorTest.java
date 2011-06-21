@@ -47,6 +47,16 @@ public class SqlResourceDatabasePopulatorTest {
         }
     }
     
+    /**
+     * However, we can also create a database populator that skips non existing script resources.
+     * Thus preventing any runtime exception from being thrown. Use this type of populator whenever
+     * it is not certain if a file will be available.
+     */
+    @Test
+    public void testIgnoreIfScriptNotFound() throws Exception {
+        SqlResourceDatabasePopulator.ignoreIfResourceMissing(new ClassPathResource("unknown.sql"), dataSource).populate();
+    }
+    
     @Test
     public void testToString() {
         assertEquals("SQL populator 'class path resource [create-schema.sql]'", fromScript("create-schema.sql").toString());
