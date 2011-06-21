@@ -16,8 +16,10 @@ import org.slf4j.LoggerFactory;
  */
 public class CompoundDatabasePopulator implements DatabasePopulator {
     private static final Logger LOGGER = LoggerFactory.getLogger(CompoundDatabasePopulator.class);
+    
     /** Ordered collection of delegate populator. **/
     private final List<DatabasePopulator> populators;
+    
     /** Determine if we should continue after an exception. **/
     private boolean continueOnException = false;
 

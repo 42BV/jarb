@@ -99,7 +99,7 @@ public class FailSafeDatabasePopulator implements DatabasePopulator {
      */
     private void logIfNeeded(Exception e) {
         if (logError) {
-            LOGGER.warn("An error occured while executing database populator (" + populator + ").", e);
+            LOGGER.info("An error occured while executing database populator (" + populator + ").", e);
         }
     }
 

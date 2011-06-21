@@ -1,27 +1,38 @@
 package org.jarb.populator;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
+import org.apache.commons.lang.builder.ToStringBuilder;
+import org.jarb.populator.condition.ConditionChecker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
 
 /**
- * Database populator that first checks its precondition before executing.
- * Whenever the precondition is not met, an illegal state exception is thrown.
+ * Database populator that only executes whenever a desired condition is met.
  * 
  * @author Jeroen van Schagen
  * @since 17-06-2011
  */
-public abstract class ConditionalDatabasePopulator implements DatabasePopulator {
+public class ConditionalDatabasePopulator implements DatabasePopulator {
     private static final Logger LOGGER = LoggerFactory.getLogger(ConditionalDatabasePopulator.class);
-    /** Determine if an exception should be thrown if {@link #supports()} fails. **/
+    /** Delgate database populator, invoked if condition is satisfied. **/
+    private final DatabasePopulator populator;
+    /** Used to check if a desired condition is met. **/
+    private final ConditionChecker conditionChecker;
+    /** Determine if an exception should be thrown if the condition is not satisfied. **/
     private boolean throwErrorIfUnsupported = false;
+    
+    /**
+     * Construct a new {@link ConditionalDatabasePopulator}.
+     * @param populator delgate database populator, invoked if condition is satisfied
+     * @param conditionChecker checks if the desired condition is met
+     */
+    public ConditionalDatabasePopulator(DatabasePopulator populator, ConditionChecker conditionChecker) {
+        this.populator = populator;
+        this.conditionChecker = conditionChecker;
+    }
 
     /**
-     * Configure whether an exception should be thrown if {@link #supports()} fails.
+     * Configure whether an exception should be thrown if {@link #shouldExecute()} fails.
      * @param throwErrorIfUnsupported {@code true} if an exception should be thrown,
      * or {@link false} if it should only be logged
      * @return this populator, for method chaining
@@ -35,13 +46,13 @@ public abstract class ConditionalDatabasePopulator implements DatabasePopulator 
      * {@inheritDoc}
      */
     @Override
-    public final void populate() throws Exception {
-        SupportsResult result = supports();
-        if (result.isSuccess()) {
-            doPopulate();
+    public void populate() throws Exception {
+        ConditionResult result = conditionChecker.checkCondition();
+        if (result.isSatisfied()) {
+            populator.populate();
         } else {
             StringBuilder failureMessageBuilder = new StringBuilder();
-            failureMessageBuilder.append("Database populator (").append(this).append(") was not executed, because:");
+            failureMessageBuilder.append("Database populator (").append(populator).append(") was not executed, because:");
             failureMessageBuilder.append("\n - ").append(StringUtils.collectionToDelimitedString(result.getFailures(), "\n - "));
             final String failureMessage = failureMessageBuilder.toString();
             if (throwErrorIfUnsupported) {
@@ -51,78 +62,13 @@ public abstract class ConditionalDatabasePopulator implements DatabasePopulator 
             }
         }
     }
-
+    
     /**
-     * Perform the actual database population after our precondition was met.
-     * @throws Exception if an unrecoverable exception occurs during database population
+     * {@inheritDoc}
      */
-    protected abstract void doPopulate() throws Exception;
-
-    /**
-     * Determine if this populator satisfies the requested precondition.
-     * @return {@code true} if the precondition has been met, else {@code false}
-     */
-    protected abstract SupportsResult supports();
-
-    /**
-     * Result of {@link ConditionalDatabasePopulator#supports()}.
-     */
-    public static class SupportsResult {
-        private final List<String> failures;
-
-        /**
-         * Construct a new {@link SupportsResult}.
-         */
-        public SupportsResult() {
-            failures = new ArrayList<String>();
-        }
-
-        /**
-         * Create an empty (succesful) result.
-         * @return sucesful result
-         */
-        public static SupportsResult success() {
-            return new SupportsResult();
-        }
-
-        /**
-         * Include a failure, causing {@link #isSuccess()} to fail.
-         * @param failure state failure that should be included
-         * @return same result, for chaining
-         */
-        public SupportsResult addFailure(String failure, Object... arguments) {
-            failures.add(String.format(failure, arguments));
-            return this;
-        }
-        
-        /**
-         * Whenever the specified state is {@code false}, include
-         * the specified failure message.
-         * @param state the state that should evaluate {@code true}
-         * @param message failure message if state is {@code false}
-         * @return same result, for chaining
-         */
-        public SupportsResult verifyState(boolean state, String message, Object... arguments) {
-            if(!state) { addFailure(message, arguments); }
-            return this;
-        }
-
-        /**
-         * Determine if this state is supported. Returns {@code true}
-         * whenever there are no failure messages.
-         * @return {@code true} if succesful, else {@code false}
-         */
-        public boolean isSuccess() {
-            return failures.isEmpty();
-        }
-
-        /**
-         * Retrieve an unmodifiable list of failure messages.
-         * @return failure messages
-         */
-        public List<String> getFailures() {
-            return Collections.unmodifiableList(failures);
-        }
+    @Override
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this);
     }
 
 }

@@ -1,11 +1,16 @@
 package org.jarb.populator;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import org.easymock.EasyMock;
+import org.jarb.populator.condition.ConditionChecker;
+import org.jarb.populator.condition.ResourceExistsConditionChecker;
 import org.junit.Before;
 import org.junit.Test;
+import org.springframework.core.io.ClassPathResource;
 
 public class ConditionalDatabasePopulatorTest {
     private DatabasePopulator populatorMock;
@@ -20,19 +25,10 @@ public class ConditionalDatabasePopulatorTest {
      */
     @Test
     public void testSupported() throws Exception {
-        ConditionalDatabasePopulator conditionalPopulator = new ConditionalDatabasePopulator() {
-
-            @Override
-            protected void doPopulate() throws Exception {
-                populatorMock.populate();
-            }
-
-            @Override
-            protected SupportsResult supports() {
-                return SupportsResult.success();
-            }
-
-        };
+        final ConditionChecker existingResourceExists = new ResourceExistsConditionChecker(new ClassPathResource("create-schema.sql"));
+        assertTrue(existingResourceExists.checkCondition().isSatisfied()); // Resource 'create-schema.sql' exists on our classpath
+        
+        ConditionalDatabasePopulator conditionalPopulator = new ConditionalDatabasePopulator(populatorMock, existingResourceExists);
 
         populatorMock.populate();
         EasyMock.expectLastCall();
@@ -48,38 +44,27 @@ public class ConditionalDatabasePopulatorTest {
      */
     @Test
     public void testUnsupported() throws Exception {
-        ConditionalDatabasePopulator conditionalPopulator = new ConditionalDatabasePopulator() {
-
-            @Override
-            protected void doPopulate() throws Exception {
-                populatorMock.populate();
-            }
-
-            @Override
-            protected SupportsResult supports() {
-                return new SupportsResult()
-                            .addFailure("State is always invalid, this is a test")
-                            .addFailure("Second error message")
-                            .addFailure("Last error message");
-            }
-
-        };
+        final ConditionChecker unknownResourceDoesNotExists = new ResourceExistsConditionChecker(new ClassPathResource("unknown.sql"));
+        assertFalse(unknownResourceDoesNotExists.checkCondition().isSatisfied()); // Resource 'unknown.sql' does not exist on our classpath
+        
+        ConditionalDatabasePopulator conditionalPopulator = new ConditionalDatabasePopulator(populatorMock, unknownResourceDoesNotExists);
 
         EasyMock.replay(populatorMock);
 
-        // Should not perform any populating
+        // Should not perform any populating, because the condition is not satisfied
         conditionalPopulator.populate();
 
-        // We can even recieve an exception about the invalid state
+        // We can even recieve an exception about the unsatisfied condition
         conditionalPopulator.setThrowExceptionIfUnsupported(true);
         try {
             conditionalPopulator.populate();
-            fail("Expected an illegal state exception as the populator is in an invalid state.");
+            fail("Expected an illegal state exception because our condition was not satisfied.");
         } catch (IllegalStateException e) {
-            final String exceptionMessage = e.getMessage();
-            assertTrue(exceptionMessage.contains("State is always invalid, this is a test"));
-            assertTrue(exceptionMessage.contains("Second error message"));
-            assertTrue(exceptionMessage.contains("Last error message"));
+            assertEquals(
+                    "Database populator (" + populatorMock + ") was not executed, because:\n" +
+                    " - Resource 'class path resource [unknown.sql]' does not exist."
+                    , e.getMessage()
+            );
         }
 
         EasyMock.verify(populatorMock);
