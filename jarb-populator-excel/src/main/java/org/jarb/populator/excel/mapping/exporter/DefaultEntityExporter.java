@@ -22,7 +22,7 @@ import org.jarb.populator.excel.workbook.Row;
 import org.jarb.populator.excel.workbook.Sheet;
 import org.jarb.populator.excel.workbook.StringValue;
 import org.jarb.populator.excel.workbook.Workbook;
-import org.jarb.utils.BeanPropertyHandler;
+import org.jarb.utils.BeanPropertyUtils;
 
 /**
  * Default implementation of {@link EntityExporter}.
@@ -180,12 +180,12 @@ public class DefaultEntityExporter implements EntityExporter {
         if(propertyDefinition.isEmbeddedAttribute()) {
             // Whenever our property is embedded, retrieve the embeddable that contains it
             final PropertyPath embeddablePath = propertyDefinition.getEmbeddablePath();
-            if(BeanPropertyHandler.hasProperty(entity, embeddablePath.getStart().getName())) {
+            if(BeanPropertyUtils.hasProperty(entity, embeddablePath.getStart().getName())) {
                 Object leafEmbeddable = embeddablePath.traverse(entity);
-                value = BeanPropertyHandler.getValue(leafEmbeddable, propertyDefinition.getName());
+                value = BeanPropertyUtils.getValue(leafEmbeddable, propertyDefinition.getName());
             }
-        } else if(BeanPropertyHandler.hasProperty(entity, propertyDefinition.getName())) {
-            value = BeanPropertyHandler.getValue(entity, propertyDefinition.getName());
+        } else if(BeanPropertyUtils.hasProperty(entity, propertyDefinition.getName())) {
+            value = BeanPropertyUtils.getValue(entity, propertyDefinition.getName());
         }
         return value;
     }

@@ -5,7 +5,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import org.jarb.utils.BeanPropertyHandler;
+import org.jarb.utils.BeanPropertyUtils;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -20,19 +20,19 @@ public class BeanPropertyHandlerTest {
     @Test
     public void testGetValueFromField() {
         bean.hiddenProperty = "test";
-        assertEquals("test", BeanPropertyHandler.getValue(bean, "hiddenProperty"));
+        assertEquals("test", BeanPropertyUtils.getValue(bean, "hiddenProperty"));
     }
     
     @Test
     public void testGetValueFromMethod() {
         bean.readableProperty = "test";
-        assertEquals("test(from getter)", BeanPropertyHandler.getValue(bean, "readableProperty"));
+        assertEquals("test(from getter)", BeanPropertyUtils.getValue(bean, "readableProperty"));
     }
     
     @Test
     public void testGetNonExistingProperty() {
         try {
-            BeanPropertyHandler.getValue(bean, "unknownProperty");
+            BeanPropertyUtils.getValue(bean, "unknownProperty");
             fail("Expected an exception because the property does not exist");
         } catch(IllegalArgumentException e) {
             assertEquals("Property 'unknownProperty' does not exist in SomeBean.", e.getMessage());
@@ -41,20 +41,20 @@ public class BeanPropertyHandlerTest {
     
     @Test
     public void testSetValueOnField() {
-        BeanPropertyHandler.setValue(bean, "hiddenProperty", "test");
+        BeanPropertyUtils.setValue(bean, "hiddenProperty", "test");
         assertEquals("test", bean.hiddenProperty);
     }
     
     @Test
     public void testSetValueByMethod() {
-        BeanPropertyHandler.setValue(bean, "writableProperty", "test");
+        BeanPropertyUtils.setValue(bean, "writableProperty", "test");
         assertEquals("test(from setter)", bean.writableProperty);
     }
     
     @Test
     public void testSetNonExistingProperty() {
         try {
-            BeanPropertyHandler.setValue(bean, "unknownProperty", "value");
+            BeanPropertyUtils.setValue(bean, "unknownProperty", "value");
             fail("Expected an exception because the property does not exist");
         } catch(IllegalArgumentException e) {
             assertEquals("Property 'unknownProperty' does not exist in SomeBean.", e.getMessage());
@@ -63,18 +63,18 @@ public class BeanPropertyHandlerTest {
     
     @Test
     public void testHasPropertyByField() {
-        assertTrue(BeanPropertyHandler.hasProperty(bean, "hiddenProperty"));
+        assertTrue(BeanPropertyUtils.hasProperty(bean, "hiddenProperty"));
     }
 
     @Test
     public void testHasPropertyByMethod() {
-        assertTrue(BeanPropertyHandler.hasProperty(bean, "readableProperty"));
-        assertTrue(BeanPropertyHandler.hasProperty(bean, "writableProperty"));
+        assertTrue(BeanPropertyUtils.hasProperty(bean, "readableProperty"));
+        assertTrue(BeanPropertyUtils.hasProperty(bean, "writableProperty"));
     }
     
     @Test
     public void testDoesNotHaveProperty() {
-        assertFalse(BeanPropertyHandler.hasProperty(bean, "unknownProperty"));
+        assertFalse(BeanPropertyUtils.hasProperty(bean, "unknownProperty"));
     }
     
     public static class SomeBean {

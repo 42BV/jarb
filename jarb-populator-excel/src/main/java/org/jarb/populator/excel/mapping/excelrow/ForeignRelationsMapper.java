@@ -7,7 +7,7 @@ import java.util.Set;
 import org.jarb.populator.excel.metamodel.ClassDefinition;
 import org.jarb.populator.excel.metamodel.PropertyDefinition;
 import org.jarb.populator.excel.metamodel.generator.SuperclassRetriever;
-import org.jarb.populator.excel.workbook.validator.FieldValidator;
+import org.jarb.utils.BeanPropertyUtils;
 import org.jarb.utils.ReflectionUtils;
 
 /**
@@ -40,7 +40,7 @@ public final class ForeignRelationsMapper {
 
             // Check if the field is really in THIS excelRow. Thus the parents set is empty.
             Object foreignEntity = ForeignExcelRowGrabber.getInstanceValue(key, objectModel.get(classDefinition));
-            if (FieldValidator.isExistingField(entry.getKey().getName(), excelRow.getCreatedInstance().getClass())) {
+            if (BeanPropertyUtils.hasProperty(excelRow.getCreatedInstance(), entry.getKey().getName())) {
                 ReflectionUtils.setFieldValue(excelRow.getCreatedInstance(), entry.getKey().getName(), foreignEntity);
             }
 

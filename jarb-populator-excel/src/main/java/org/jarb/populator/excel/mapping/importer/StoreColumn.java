@@ -7,7 +7,7 @@ import org.jarb.populator.excel.metamodel.ClassDefinition;
 import org.jarb.populator.excel.metamodel.PropertyDefinition;
 import org.jarb.populator.excel.workbook.Sheet;
 import org.jarb.populator.excel.workbook.Workbook;
-import org.jarb.populator.excel.workbook.validator.FieldValidator;
+import org.jarb.utils.BeanPropertyUtils;
 import org.jarb.utils.ReflectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,7 +43,7 @@ public final class StoreColumn {
         Object cellValue = getCellValue(sheet, rowPosition, columnPosition);
         logger.debug("field: " + columnDefinition.getName() + " column: " + columnDefinition.getColumnName() + " value:[" + cellValue + "]");
 
-        if (FieldValidator.isExistingField(columnDefinition.getName(), excelRow.getCreatedInstance().getClass())) {
+        if (BeanPropertyUtils.hasProperty(excelRow.getCreatedInstance(), columnDefinition.getName())) {
             setExcelRowFieldValue(excelRow.getCreatedInstance(), columnDefinition.getName(), cellValue);
         } else if (columnDefinition.isEmbeddedAttribute()) {
             Object embeddedField = columnDefinition.getEmbeddablePath().traverse(excelRow.getCreatedInstance());

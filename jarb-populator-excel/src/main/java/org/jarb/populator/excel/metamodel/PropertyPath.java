@@ -6,7 +6,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 
 import org.jarb.populator.excel.metamodel.PropertyPath.PropertyNode;
-import org.jarb.utils.BeanPropertyHandler;
+import org.jarb.utils.BeanPropertyUtils;
 import org.springframework.util.Assert;
 import org.springframework.util.ReflectionUtils;
 
@@ -105,7 +105,7 @@ public final class PropertyPath implements Iterable<PropertyNode> {
             if(value == null) {
                 break; // Quit looping whenever null, as we cannot go any deeper
             }
-            value = BeanPropertyHandler.getValue(value, propertyNode.getName());
+            value = BeanPropertyUtils.getValue(value, propertyNode.getName());
         }
         return value;
     }

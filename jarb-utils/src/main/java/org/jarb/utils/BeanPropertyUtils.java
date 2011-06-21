@@ -5,7 +5,7 @@ import java.lang.reflect.Method;
 
 import org.springframework.beans.BeanUtils;
 
-public class BeanPropertyHandler {
+public class BeanPropertyUtils {
 
     public static Object getValue(Object bean, String propertyName) {
         // Attempt to retrieve the property value from a public getter method
@@ -51,7 +51,7 @@ public class BeanPropertyHandler {
         return hasDescriptor || ReflectionUtils.hasField(bean, propertyName);
     }
     
-    private BeanPropertyHandler() {
+    private BeanPropertyUtils() {
         // Prevent construction
     }
     
