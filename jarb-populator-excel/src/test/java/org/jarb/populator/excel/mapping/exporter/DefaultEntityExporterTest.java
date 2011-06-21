@@ -15,6 +15,7 @@ import org.jarb.populator.excel.workbook.Workbook;
 import org.junit.Before;
 import org.junit.Test;
 
+import domain.entities.Address;
 import domain.entities.BusinessRelationshipGift;
 import domain.entities.CompanyCar;
 import domain.entities.CompanyVehicle;
@@ -110,6 +111,18 @@ public class DefaultEntityExporterTest extends DefaultExcelTestDataCase {
         assertEquals(Double.valueOf(42), joinSheet.getValueAt(1, "gift_id"));
         assertEquals(Double.valueOf(24), joinSheet.getValueAt(2, "customer_id"));
         assertEquals(Double.valueOf(99), joinSheet.getValueAt(2, "gift_id"));
+    }
+    
+    @Test
+    public void testEmbeddable() {
+        Employee employee = new Employee();
+        Address address = new Address("Test street 42", "Amsterdam");
+        employee.setAddress(address);
+        registry.add(Employee.class, 1L, employee);
+        Workbook workbook = exporter.export(registry, metamodel);
+        Sheet employeesSheet = workbook.getSheet("employees");
+        assertEquals("Test street 42", employeesSheet.getValueAt(1, "building_address"));
+        assertEquals("Amsterdam", employeesSheet.getValueAt(1, "city_name"));
     }
 
 }
