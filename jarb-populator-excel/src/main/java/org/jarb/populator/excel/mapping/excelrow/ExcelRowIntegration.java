@@ -16,7 +16,7 @@ import org.jarb.populator.excel.metamodel.ClassDefinition;
  */
 public class ExcelRowIntegration {
 
-    @SuppressWarnings({ "rawtypes", "unchecked" })
+    @SuppressWarnings("unchecked")
     public static EntityRegistry toRegistry(Map<ClassDefinition<?>, Map<Integer, ExcelRow>> entitiesMap) {
         EntityRegistry registry = new EntityRegistry();
         for (Map.Entry<ClassDefinition<?>, Map<Integer, ExcelRow>> entitiesEntry : entitiesMap.entrySet()) {

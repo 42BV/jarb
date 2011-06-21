@@ -2,7 +2,7 @@ package org.jarb.populator;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.jarb.populator.condition.ConditionChecker;
-import org.jarb.populator.condition.ConditionResult;
+import org.jarb.populator.condition.ConditionCheckResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
@@ -48,7 +48,7 @@ public class ConditionalDatabasePopulator implements DatabasePopulator {
      */
     @Override
     public void populate() throws Exception {
-        ConditionResult result = conditionChecker.checkCondition();
+        ConditionCheckResult result = conditionChecker.checkCondition();
         if (result.isSatisfied()) {
             populator.populate();
         } else {

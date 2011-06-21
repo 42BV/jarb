@@ -25,9 +25,9 @@ public class ResourceExistsConditionChecker implements ConditionChecker {
      * {@inheritDoc}
      */
     @Override
-    public ConditionResult checkCondition() {
-        ConditionResult result = new ConditionResult();
-        result.verifyState(resource.exists(), "Resource '%s' does not exist.", resource);
+    public ConditionCheckResult checkCondition() {
+        ConditionCheckResult result = new ConditionCheckResult();
+        result.verifyState(resource.exists(), "Resource '" + resource + "' does not exist.");
         return result;
     }
     

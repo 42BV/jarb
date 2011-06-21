@@ -4,13 +4,22 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class ConditionResult {
+/**
+ * Result of {@link ConditionChecker#checkCondition()}.
+ * Condition has been accepted when {@link #isSatisfied()}
+ * evaluates into {@code true}. Whenever the condition is
+ * not satisfied, use {@link #getFailures()} for details.
+ * 
+ * @author Jeroen van Schagen
+ * @since 21-06-2011
+ */
+public class ConditionCheckResult {
     private final List<String> failures;
 
     /**
-     * Construct a new {@link ConditionResult}.
+     * Construct a new {@link ConditionCheckResult}.
      */
-    public ConditionResult() {
+    public ConditionCheckResult() {
         failures = new ArrayList<String>();
     }
 
@@ -18,8 +27,8 @@ public class ConditionResult {
      * Create an empty (succesful) result.
      * @return sucesful result
      */
-    public static ConditionResult success() {
-        return new ConditionResult();
+    public static ConditionCheckResult success() {
+        return new ConditionCheckResult();
     }
 
     /**
@@ -27,8 +36,8 @@ public class ConditionResult {
      * @param failure state failure that should be included
      * @return same result, for chaining
      */
-    public ConditionResult addFailure(String failure, Object... arguments) {
-        failures.add(String.format(failure, arguments));
+    public ConditionCheckResult addFailure(String failure) {
+        failures.add(failure);
         return this;
     }
     
@@ -39,13 +48,13 @@ public class ConditionResult {
      * @param message failure message if state is {@code false}
      * @return same result, for chaining
      */
-    public ConditionResult verifyState(boolean state, String message, Object... arguments) {
-        if(!state) { addFailure(message, arguments); }
+    public ConditionCheckResult verifyState(boolean state, String message) {
+        if(!state) { addFailure(message); }
         return this;
     }
 
     /**
-     * Determine if this state is supported. Returns {@code true}
+     * Determine if this condition is supported. Returns {@code true}
      * whenever there are no failure messages.
      * @return {@code true} if succesful, else {@code false}
      */
