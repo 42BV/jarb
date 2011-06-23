@@ -4,40 +4,64 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 
 import org.jarb.populator.excel.workbook.validator.WorkbookValidation;
 import org.junit.Before;
 import org.junit.Test;
+import org.springframework.core.io.ClassPathResource;
 
 import domain.entities.CompanyCar;
 import domain.entities.CompanyVehicle;
 import domain.entities.CompanyVehicle.Gearbox;
 
 public class ExcelDataManagerTest extends DefaultExcelTestDataCase {
-    private ExcelDataManager excelDataManager;
+    private ExcelDataManager excelData;
 
     @Before
     public void setUp() {
-        excelDataManager = getExcelDataManager();
+        excelData = getExcelDataManager();
     }
 
     @Test
-    public void testPersistWorkbook() throws FileNotFoundException {
-        excelDataManager.load("src/test/resources/Excel.xls").persist();
+    public void testLoadByInputStream() throws FileNotFoundException {
+        excelData.loadWorkbook(new FileInputStream("src/test/resources/Excel.xls")).continueIfValid();
+    }
+   
+    @Test
+    public void testLoadByResource() throws IOException {
+        excelData.loadWorkbook(new ClassPathResource("Excel.xls")).continueIfValid();
+    }
+    
+    @Test
+    public void testLoadByString() throws FileNotFoundException {
+        excelData.loadWorkbook("src/test/resources/Excel.xls").continueIfValid();
     }
     
     @Test
     public void testValidateWorkbook() throws FileNotFoundException {
-        WorkbookValidation result = excelDataManager.load("src/test/resources/Excel.xls").validate();
-        assertNotNull(result);
-        assertFalse(result.hasErrors());
+        WorkbookValidation validation = excelData.loadWorkbook("src/test/resources/Excel.xls").validate();
+        assertNotNull("No workbook validation was returned", validation);
+        assertFalse("Workbook should not contain errors", validation.hasErrors());
+    }
+    
+    @Test(expected = InvalidWorkbookException.class)
+    public void testInvalidWorkbook() throws FileNotFoundException {
+        excelData.loadWorkbook("src/test/resources/ExcelVerification/Testcase3.xls").entities();
+    }
+    
+    @Test
+    public void testPersistWorkbook() throws FileNotFoundException {
+        excelData.loadWorkbook("src/test/resources/Excel.xls").persist();
     }
     
     @Test
     public void testCreateWorkbookTemplate() throws FileNotFoundException {
-        excelDataManager.buildWorkbook().write("src/test/resources/excel/generated/NewExcelFile.xls");
-        assertFalse(excelDataManager.load("src/test/resources/excel/generated/NewExcelFile.xls").validate().hasErrors());
+        excelData.newWorkbook().write("src/test/resources/excel/generated/NewExcelFile.xls");
+        WorkbookValidation validation = excelData.loadWorkbook("src/test/resources/excel/generated/NewExcelFile.xls").validate();
+        assertFalse("Created workbook template is not valid", validation.hasErrors());
     }
 
     @Test
@@ -45,16 +69,16 @@ public class ExcelDataManagerTest extends DefaultExcelTestDataCase {
         CompanyCar car = new CompanyCar("bugatti", 999999D, 42, Gearbox.MANUAL, true);
         car.setId(42L);
         
-        excelDataManager.buildWorkbook()
-            .includeEntity(CompanyVehicle.class, 42L, car)
+        // Create a new workbook template, including our newly created car instance
+        excelData.newWorkbook()
+            .includeNewEntity(CompanyVehicle.class, 42L, car)
             .write("src/test/resources/excel/generated/NewExcelFileFromDatabase.xls");
         
+        // Read the generated workbook and check if the included entity was maintained
+        CompanyVehicle result = excelData.loadWorkbook("src/test/resources/excel/generated/NewExcelFileFromDatabase.xls")
+            .entities().get(CompanyVehicle.class, car.getId());
         
-        CompanyVehicle result = excelDataManager
-            .load("src/test/resources/excel/generated/NewExcelFileFromDatabase.xls")
-                .continueIfValid().entities()
-                    .get(CompanyVehicle.class, car.getId());
-        assertNotNull("Car was not maintained during store() -> load().", result);
+        assertNotNull("Car was not maintained during store and load.", result);
         assertEquals(car.getId(), result.getId());
     }
 
