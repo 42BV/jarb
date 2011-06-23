@@ -1,13 +1,10 @@
 package org.jarb.populator.excel.entity.persist;
 
-import java.util.List;
-import java.util.Map;
+import java.util.Set;
 
 import javax.persistence.EntityManagerFactory;
 
 import org.jarb.populator.excel.entity.EntityRegistry;
-import org.jarb.populator.excel.mapping.excelrow.ExcelRow;
-import org.jarb.populator.excel.mapping.excelrow.ExcelRowIntegration;
 
 /**
  * Java Persistence API (JPA) implementation of {@link EntityWriter}.
@@ -26,13 +23,8 @@ public class JpaEntityWriter implements EntityWriter {
      */
     @Override
     public void persist(EntityRegistry registry) {
-        Map<Class<?>, Map<Integer, ExcelRow>> entitiesMap = ExcelRowIntegration.toMap(registry);
-        try {
-            List<Object> saveableInstances = DataWriter.createConnectionInstanceSet(entitiesMap);
-            DataWriter.saveEntity(saveableInstances, entityManagerFactory);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        Set<Object> saveableInstances = DataWriter.createInstanceSet(registry);
+        DataWriter.saveEntity(saveableInstances, entityManagerFactory);
     }
 
 }

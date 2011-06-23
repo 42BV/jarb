@@ -34,7 +34,7 @@ import domain.entities.Project;
 import domain.entities.ServiceLevelAgreement;
 
 public class DataWriterTest extends DefaultExcelTestDataCase {
-    private List<Object> connectionInstances;
+    private Set<Object> connectionInstances;
     private Set<Object> actualConnectionInstanceClassNames;
     private Set<Object> expectedConnectionInstanceClassNames;
     private Map<ClassDefinition<?>, Map<Integer, ExcelRow>> parseExcelMap;
@@ -51,7 +51,7 @@ public class DataWriterTest extends DefaultExcelTestDataCase {
     public void setUpDatabaseConnectionTest() throws InvalidFormatException, IOException, InstantiationException, IllegalAccessException, SecurityException,
             NoSuchMethodException, IllegalArgumentException, InvocationTargetException, ClassNotFoundException {
         excel = new PoiExcelParser().parse(new FileInputStream("src/test/resources/ExcelUnitTesting.xls"));
-        connectionInstances = new ArrayList<Object>();
+        connectionInstances = new HashSet<Object>();
 
         metamodel = getEntityManagerFactory().getMetamodel();
         customerEntity = ClassDefinitionsGenerator.getEntityFromMetamodel(Customer.class, metamodel);
@@ -80,7 +80,7 @@ public class DataWriterTest extends DefaultExcelTestDataCase {
         classDefinitionList.add(sla);
 
         parseExcelMap = ExcelImporter.parseExcel(excel, classDefinitionList);
-        connectionInstances = DataWriter.createConnectionInstanceSet(ExcelRowIntegration.toMap(parseExcelMap));
+        connectionInstances = DataWriter.createInstanceSet(ExcelRowIntegration.toRegistry(parseExcelMap));
 
         for (Object connectionInstance : connectionInstances) {
             actualConnectionInstanceClassNames.add(connectionInstance.getClass().getName());
@@ -106,7 +106,7 @@ public class DataWriterTest extends DefaultExcelTestDataCase {
         classDefinitionList.add(sla);
 
         parseExcelMap = ExcelImporter.parseExcel(excel, classDefinitionList);
-        connectionInstances = DataWriter.createConnectionInstanceSet(ExcelRowIntegration.toMap(parseExcelMap));
+        connectionInstances = DataWriter.createInstanceSet(ExcelRowIntegration.toRegistry(parseExcelMap));
         DataWriter.saveEntity(connectionInstances, getEntityManagerFactory());
     }
 
@@ -129,7 +129,7 @@ public class DataWriterTest extends DefaultExcelTestDataCase {
 
         try {
         parseExcelMap = ExcelImporter.parseExcel(excel, classDefinitionList);
-        connectionInstances = DataWriter.createConnectionInstanceSet(ExcelRowIntegration.toMap(parseExcelMap));
+        connectionInstances = DataWriter.createInstanceSet(ExcelRowIntegration.toRegistry(parseExcelMap));
         DataWriter.saveEntity(connectionInstances, getEntityManagerFactory());
         } catch(Exception e ) {
             e.printStackTrace();

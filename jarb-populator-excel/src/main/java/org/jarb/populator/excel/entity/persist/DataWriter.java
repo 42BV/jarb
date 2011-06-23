@@ -5,8 +5,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 
 import javax.persistence.EntityManager;
@@ -14,7 +12,7 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.PersistenceUnitUtil;
 
-import org.jarb.populator.excel.mapping.excelrow.ExcelRow;
+import org.jarb.populator.excel.entity.EntityRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,30 +29,15 @@ public final class DataWriter {
      */
     private DataWriter() {
     }
-
-    /**
-     * Creates an instance set ready to be saved to the database with instances containing all Excel records.
-     * @param objectModel Map with ClassDefinitions and their corresponding Excel records 
-     * @return Instance set ready to save to the database
-     * @throws InstantiationException Thrown when function is used on a class that cannot be instantiated (abstract or interface)
-     * @throws IllegalAccessException Thrown when function does not have access to the definition of the specified class, field, method or constructor 
-     * @throws NoSuchFieldException 
-     */
-    public static List<Object> createConnectionInstanceSet(Map<Class<?>, Map<Integer, ExcelRow>> objectModel) throws InstantiationException,
-            IllegalAccessException, NoSuchFieldException {
-        List<Object> instances = new ArrayList<Object>();
-
-        for (Entry<Class<?>, Map<Integer, ExcelRow>> classRecord : objectModel.entrySet()) {
-            LOGGER.info(classRecord.getKey().getName());
-            for (Entry<Integer, ExcelRow> classValues : classRecord.getValue().entrySet()) {
-                LOGGER.info("" + classValues.getKey());
-                ExcelRow excelRow = classValues.getValue();
-                // Relations are now made inside the importer, allowing clean conversion
-                // ForeignRelationsMapper.makeForeignRelations(excelRow, objectModel);
-                instances.add(excelRow.getCreatedInstance());
+    
+    public static Set<Object> createInstanceSet(EntityRegistry registry) {
+        Set<Object> entities = new HashSet<Object>();
+        for(Class<?> entityClass : registry.getEntityClasses()) {
+            for(Object entity : registry.getAll(entityClass)) {
+                entities.add(entity);
             }
         }
-        return instances;
+        return entities;
     }
 
     /**
@@ -63,16 +46,17 @@ public final class DataWriter {
      * @param entityManagerFactory From ApplicationContext file, gives us the information we need to persist such as database
      * connectivity information.
      */
-    public static void saveEntity(List<Object> saveableInstances, EntityManagerFactory entityManagerFactory) {
+    public static void saveEntity(Set<Object> saveableInstances, EntityManagerFactory entityManagerFactory) {
         EntityManager entityManager = entityManagerFactory.createEntityManager(entityManagerFactory.getProperties());
         EntityTransaction entityTransaction = entityManager.getTransaction();
 
         PersistenceUnitUtil persistenceUnitUtil = entityManagerFactory.getPersistenceUnitUtil();
         Set<Object> cascadedObjectsInThisInteration = new HashSet<Object>();
-        Collections.sort(saveableInstances, new ObjectClassInstantationComparator());
+        List<Object> savableInstancesList = new ArrayList<Object>(saveableInstances);
+        Collections.sort(savableInstancesList, new ObjectClassInstantationComparator());
         entityTransaction.begin();
 
-        for (Object saveableInstance : saveableInstances) {
+        for (Object saveableInstance : savableInstancesList) {
             cascadedObjectsInThisInteration.clear();
             cascadedObjectsInThisInteration.add(saveableInstance);
             LOGGER.info("Persisting Excelrow of class: " + saveableInstance.getClass());
