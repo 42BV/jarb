@@ -1,6 +1,7 @@
 package org.jarb.populator.excel.entity.query;
 
 import org.jarb.populator.excel.entity.EntityRegistry;
+import org.jarb.populator.excel.entity.EntityTable;
 
 /**
  * Queries all entities from the database.
@@ -20,6 +21,23 @@ public interface EntityReader {
      * @param entityClasses type of entities to retrieve
      * @return registry containing all entities of the specified types
      */
-    EntityRegistry fetch(Iterable<Class<?>> entityClasses);
+    EntityRegistry fetchForTypes(Iterable<Class<?>> entityClasses);
+    
+    /**
+     * 
+     * @param <T>
+     * @param entityClass
+     * @return
+     */
+    <T> EntityTable<T> fetchForType(Class<T> entityClass);
+    
+    /**
+     * 
+     * @param <T>
+     * @param entityClass
+     * @param identifier
+     * @return
+     */
+    <T> T fetch(Class<T> entityClass, Object identifier);
 
 }

@@ -1,6 +1,9 @@
 package org.jarb.populator.excel.mapping.exporter;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.EntityManagerFactory;
@@ -8,6 +11,7 @@ import javax.persistence.EntityManagerFactory;
 import org.jarb.populator.excel.entity.EntityRegistry;
 import org.jarb.populator.excel.mapping.ValueConversionService;
 import org.jarb.populator.excel.metamodel.ClassDefinition;
+import org.jarb.populator.excel.metamodel.ClassDefinitionNameComparator;
 import org.jarb.populator.excel.metamodel.ColumnType;
 import org.jarb.populator.excel.metamodel.MetaModel;
 import org.jarb.populator.excel.metamodel.PropertyDefinition;
@@ -58,7 +62,9 @@ public class DefaultEntityExporter implements EntityExporter {
     
     private Workbook createTemplate(MetaModel metamodel) {
         Workbook workbook = new Workbook();
-        for (ClassDefinition<?> classDefinition : metamodel.getClassDefinitions()) {
+        List<ClassDefinition<?>> classDefinitions = new ArrayList<ClassDefinition<?>>(metamodel.getClassDefinitions());
+        Collections.sort(classDefinitions, new ClassDefinitionNameComparator());
+        for (ClassDefinition<?> classDefinition : classDefinitions) {
             createClassSheet(classDefinition, workbook);
         }
         return workbook;

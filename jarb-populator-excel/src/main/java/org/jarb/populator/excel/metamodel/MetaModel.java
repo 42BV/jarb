@@ -3,8 +3,8 @@ package org.jarb.populator.excel.metamodel;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.SortedSet;
-import java.util.TreeSet;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Describes the entities in our context.
@@ -12,7 +12,7 @@ import java.util.TreeSet;
  * @since 10-05-2011
  */
 public class MetaModel {
-    private final SortedSet<ClassDefinition<?>> classDefinitions;
+    private final Map<Class<?>, ClassDefinition<?>> classDefinitionMap;
     
     /**
      * Construct a new {@link MetaModel}.
@@ -27,16 +27,18 @@ public class MetaModel {
      * @param classDefinitions all class definitions
      */
     public MetaModel(Collection<ClassDefinition<?>> classDefinitions) {
-        this.classDefinitions = new TreeSet<ClassDefinition<?>>(new ClassDefinitionNameComparator());
-        this.classDefinitions.addAll(classDefinitions);
+        classDefinitionMap = new HashMap<Class<?>, ClassDefinition<?>>();
+        for(ClassDefinition<?> classDefinition : classDefinitions) {
+            classDefinitionMap.put(classDefinition.getPersistentClass(), classDefinition);
+        }
     }
 
     /**
      * Retrieve all currently defined class definitions.
      * @return each defined class definition
      */
-    public SortedSet<ClassDefinition<?>> getClassDefinitions() {
-        return Collections.unmodifiableSortedSet(classDefinitions);
+    public Collection<ClassDefinition<?>> getClassDefinitions() {
+        return Collections.unmodifiableCollection(classDefinitionMap.values());
     }
 
     /**
@@ -46,15 +48,25 @@ public class MetaModel {
      * @return description of the provided class, else {@code null}
      */
     @SuppressWarnings("unchecked")
-    public <T> ClassDefinition<T> getClassDefinition(Class<T> persistentClass) {
-        ClassDefinition<T> result = null;
-        for (ClassDefinition<?> classDefinition : classDefinitions) {
-            if (persistentClass.equals(classDefinition.getPersistentClass())) {
-                result = (ClassDefinition<T>) classDefinition;
-                break;
-            }
+    public <T> ClassDefinition<? super T> describeClass(Class<T> persistentClass) {
+        ClassDefinition<? super T> definition = (ClassDefinition<T>) classDefinitionMap.get(persistentClass);
+        if(definition == null && persistentClass.getSuperclass() != null) {
+            definition = describeClass(persistentClass.getSuperclass());
         }
-        return result;
+        return definition;
+    }
+    
+    /**
+     * Determine if this meta model contains the described persistent class.
+     * @param persistentClass class that we are looking for
+     * @return {@code true} if it is contained, else {@code false}
+     */
+    public boolean containsClass(Class<?> persistentClass) {
+        boolean found = classDefinitionMap.containsKey(persistentClass);
+        if(!found && persistentClass.getSuperclass() != null) {
+            found = containsClass(persistentClass.getSuperclass());
+        }
+        return found;
     }
 
     /**
@@ -62,7 +74,7 @@ public class MetaModel {
      */
     @Override
     public String toString() {
-        return classDefinitions.toString();
+        return classDefinitionMap.keySet().toString();
     }
 
 }

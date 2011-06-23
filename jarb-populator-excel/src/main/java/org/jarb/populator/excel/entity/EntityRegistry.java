@@ -1,9 +1,7 @@
 package org.jarb.populator.excel.entity;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -72,9 +70,9 @@ public class EntityRegistry {
      * @param entities references to each entity that should be stored
      */
     public <T> void addAll(EntityTable<T> entities) {
-        EntityTable<T> currentEntities = entities(entities.getEntityClass());
+        EntityTable<T> storedEntities = entities(entities.getEntityClass());
         for (Map.Entry<Object, T> entityEntry : entities.map().entrySet()) {
-            currentEntities.add(entityEntry.getKey(), (T) entityEntry.getValue());
+            storedEntities.add(entityEntry.getKey(), (T) entityEntry.getValue());
         }
     }
     
@@ -87,25 +85,6 @@ public class EntityRegistry {
      */
     public <T> T remove(Class<T> entityClass, Object id) {
         return entities(entityClass).remove(id);
-    }
-
-    /**
-     * Remove a collection of entities from our registry.
-     * @param <T> type of the entities being removed
-     * @param entityClass class of the entities
-     * @param ids identifiers of the entities
-     * @return the removed entities
-     */
-    public <T> List<T> removeAll(Class<T> entityClass, Iterable<Object> ids) {
-        final List<T> deletedEntities = new ArrayList<T>();
-        EntityTable<T> entities = entities(entityClass);
-        for (Object id : ids) {
-            T deletedEntity = entities.remove(id);
-            if (deletedEntity != null) {
-                deletedEntities.add(deletedEntity);
-            }
-        }
-        return deletedEntities;
     }
 
     /**

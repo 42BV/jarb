@@ -15,7 +15,7 @@ import org.jarb.populator.excel.workbook.validator.WorkbookValidation.SheetValid
  * @author Jeroen van Schagen
  * @since 12-05-2011
  */
-public class SimpleValidationResultExporter {
+public class SimpleValidationExporter implements ValidationExporter {
 
     /**
      * Perform the validation result export into our output stream.

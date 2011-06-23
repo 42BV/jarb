@@ -18,13 +18,13 @@ public class MetaModelTest {
     @Test
     public void testFindClassDefinition() {
         MetaModel metamodel = new MetaModel(workspaceDefinition);
-        assertEquals(workspaceDefinition, metamodel.getClassDefinition(Workspace.class));
+        assertEquals(workspaceDefinition, metamodel.describeClass(Workspace.class));
     }
 
     @Test
     public void testToString() {
         MetaModel metamodel = new MetaModel(workspaceDefinition);
-        assertEquals("[domain.entities.Workspace]", metamodel.toString());
+        assertEquals("[class domain.entities.Workspace]", metamodel.toString());
     }
     
 }

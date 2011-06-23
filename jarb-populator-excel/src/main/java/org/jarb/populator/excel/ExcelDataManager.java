@@ -1,5 +1,9 @@
 package org.jarb.populator.excel;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
@@ -15,11 +19,14 @@ import org.jarb.populator.excel.workbook.reader.ExcelParser;
 import org.jarb.populator.excel.workbook.validator.ExcelValidator;
 import org.jarb.populator.excel.workbook.validator.WorkbookValidation;
 import org.jarb.populator.excel.workbook.writer.ExcelWriter;
+import org.springframework.core.io.Resource;
+import org.springframework.util.Assert;
 
 /**
- * Excel test data facade, provides all functionality.
- * @author Sander Benschop
+ * Excel data insertion facade.
+ * 
  * @author Jeroen van Schagen
+ * @since 23-06-2011
  */
 public class ExcelDataManager {
     private ExcelParser excelParser;
@@ -30,67 +37,118 @@ public class ExcelDataManager {
     private EntityWriter entityWriter;
     private ExcelValidator excelValidator;
     private MetaModelGenerator metamodelGenerator;
-
-    /**
-     * Read all entities from the specified excel resource and persist them in the database.
-     * @param resource excel workbook resource
-     */
-    public void persistWorkbook(InputStream is) {
-        EntityRegistry registry = loadWorkbook(is);
-        entityWriter.persist(registry);
-    }
     
-    /**
-     * Read all entities from the excel resource.
-     * @param resource excel workbook resource
-     * @return registry of all entities
-     */
-    public EntityRegistry loadWorkbook(InputStream is) {
+    public WorkbookLoader load(InputStream is) {
+        Assert.notNull(is, "Workbook input stream cannot be null");
+
         Workbook workbook = excelParser.parse(is);
-        MetaModel metamodel = metamodelGenerator.generate();
-        return entityImporter.load(workbook, metamodel);
+        return new WorkbookLoader(workbook);
     }
     
-    /**
-     * Verify some excel workbook against our current mappings.
-     * @param resource excel workbook resource
-     */
-    public WorkbookValidation validateWorkbook(InputStream is) {
-        Workbook workbook = excelParser.parse(is);
-        MetaModel metamodel = metamodelGenerator.generate();
-        return excelValidator.validate(workbook, metamodel);
-    }
+    public WorkbookLoader load(Resource resource) throws IOException {
+        Assert.notNull(resource, "Workbook resource cannot be null");
 
-    /**
-     * Create a new excel workbook based on the current mapping.
-     * @param os output stream to the excel resource
-     */
-    public void createWorkbookTemplate(OutputStream os) {
-        MetaModel metamodel = metamodelGenerator.generate();
-        EntityRegistry emptyRegistry = new EntityRegistry();
-        Workbook workbook = entityExporter.export(emptyRegistry, metamodel);
-        excelWriter.write(workbook, os);
-    }
-
-    /**
-     * Create a new excel workbook based on the current mapping and database data.
-     * @param os output stream to the excel resource
-     */
-    public void createWorkbookWithDatabaseData(OutputStream os) {
-        createWorkbookWithData(os, entityReader.fetchAll());
+        return load(resource.getInputStream());
     }
     
-    /**
-     * Create a new excel workbook based on the current mapping and database data.
-     * @param os output stream to the excel resource
-     * @param registry the entities that should be included
-     */
-    public void createWorkbookWithData(OutputStream os, EntityRegistry registry) {
-        MetaModel metamodel = metamodelGenerator.generate();
-        Workbook workbook = entityExporter.export(registry, metamodel);
-        excelWriter.write(workbook, os);
-    }
+    public WorkbookLoader load(String fileName) throws FileNotFoundException {
+        Assert.hasText(fileName, "Workbook file name cannot be empty");
 
+        return load(new FileInputStream(fileName));
+    }
+   
+    public class WorkbookLoader {
+        private final Workbook workbook;
+        private EntityRegistry entities;
+        
+        private WorkbookLoader(Workbook workbook) {
+            Assert.notNull(workbook, "Workbook cannot be null");
+            this.workbook = workbook;
+        }
+        
+        protected WorkbookLoader continueIfValid() {
+            WorkbookValidation validation = validate();
+            if(validation.hasErrors()) {
+                throw new InvalidWorkbookException(validation);
+            }
+            return this;
+        }
+        
+        public WorkbookValidation validate() {
+            MetaModel metamodel = metamodelGenerator.generate();
+            return excelValidator.validate(workbook, metamodel);
+        }
+        
+        public EntityRegistry entities() {
+            continueIfValid();
+            if(entities == null) {
+                MetaModel metamodel = metamodelGenerator.generate();
+                entities = entityImporter.load(workbook, metamodel);
+            }
+            return entities;
+        }
+        
+        public WorkbookLoader persist() {
+            entities = entityWriter.persist(entities());
+            return this;
+        }
+    }
+    
+    public WorkbookBuilder buildWorkbook() {
+        return new WorkbookBuilder();
+    }
+    
+    public class WorkbookBuilder {
+        private EntityRegistry entities = new EntityRegistry();
+        
+        private WorkbookBuilder() {
+            // Hide initialization
+        }
+        
+        public WorkbookBuilder includeAllEntities() {
+            entities = entityReader.fetchAll();
+            return this;
+        }
+        
+        public <T> WorkbookBuilder includeEntities(Class<T> entityClass) {
+            Assert.notNull(entityClass, "Entity class cannot be null");
+            
+            entities.addAll(entityReader.fetchForType(entityClass));
+            return this;
+        }
+        
+        public <T> WorkbookBuilder includeEntity(Class<T> entityClass, Object identifier) {
+            Assert.notNull(entityClass, "Entity class cannot be null");
+            Assert.notNull(identifier, "Entity identifier cannot be null");
+            
+            entities.add(entityClass, identifier, entityReader.fetch(entityClass, identifier));
+            return this;
+        }
+        
+        public <T> WorkbookBuilder includeEntity(Class<T> entityClass, Object identifier, T entity) {
+            Assert.notNull(entity, "Entity cannot be null");
+            Assert.notNull(entityClass, "Entity class cannot be null");
+            Assert.notNull(identifier, "Entity identifier cannot be null");
+            
+            entities.add(entityClass, identifier, entity);
+            return this;
+        }
+        
+        public void write(OutputStream os) {
+            Assert.notNull(os, "Workbook output stream cannot be null");
+            
+            MetaModel metamodel = metamodelGenerator.generate();
+            Workbook workbook = entityExporter.export(entities, metamodel);
+            excelWriter.write(workbook, os);
+        }
+        
+        public void write(String fileName) throws FileNotFoundException {
+            Assert.hasText(fileName, "Workbook file name cannot be empty");
+
+            write(new FileOutputStream(fileName));
+        }
+    }
+    
     public void setExcelParser(ExcelParser excelParser) {
         this.excelParser = excelParser;
     }

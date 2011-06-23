@@ -12,7 +12,9 @@ public interface EntityWriter {
     /**
      * Persist entities in the database.
      * @param registry the entities to persist
+     * @return updated entity registry, entities can now
+     * be retrieved using their database identifier
      */
-    void persist(EntityRegistry registry);
+    EntityRegistry persist(EntityRegistry registry);
 
 }

@@ -1,13 +1,18 @@
 package org.jarb.populator.excel.workbook.validator;
 
+import java.io.OutputStream;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import org.jarb.populator.excel.workbook.validator.export.SimpleValidationExporter;
+import org.jarb.populator.excel.workbook.validator.export.ValidationExporter;
+
 /**
  * Result of a validation operation.
+ * 
  * @author Jeroen van Schagen
  * @since 10-05-2011
  */
@@ -15,6 +20,18 @@ public class WorkbookValidation {
     private Set<String> missingSheets = new HashSet<String>();
     private Set<String> unknownSheets = new HashSet<String>();
     private Map<String, SheetValidation> sheetValidationMap = new HashMap<String, SheetValidation>();
+    
+    public void export(OutputStream os) {
+        export(new SimpleValidationExporter(), os);
+    }
+    
+    public void export(ValidationExporter exporter, OutputStream os) {
+        exporter.export(this, os);
+    }
+
+    public boolean hasErrors() {
+        return !missingSheets.isEmpty() || !unknownSheets.isEmpty();
+    }
     
     public Set<String> getMissingSheets() {
         return Collections.unmodifiableSet(missingSheets);
@@ -63,7 +80,6 @@ public class WorkbookValidation {
         public void addUnknownColumn(String unknownColumn) {
             unknownColumns.add(unknownColumn);
         }
-        
     }
 
 }

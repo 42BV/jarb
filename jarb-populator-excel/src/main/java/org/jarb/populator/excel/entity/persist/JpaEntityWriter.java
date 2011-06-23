@@ -22,9 +22,10 @@ public class JpaEntityWriter implements EntityWriter {
      * {@inheritDoc}
      */
     @Override
-    public void persist(EntityRegistry registry) {
+    public EntityRegistry persist(EntityRegistry registry) {
         Set<Object> saveableInstances = DataWriter.createInstanceSet(registry);
         DataWriter.saveEntity(saveableInstances, entityManagerFactory);
+        return registry;
     }
 
 }

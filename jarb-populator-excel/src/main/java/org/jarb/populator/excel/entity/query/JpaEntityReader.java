@@ -16,9 +16,15 @@ import org.jarb.populator.excel.util.JpaUtils;
  */
 public class JpaEntityReader implements EntityReader {
     private final EntityManagerFactory entityManagerFactory;
+    private EntityManager entityManager;
 
+    /**
+     * Construct a new {@link JpaEntityReader}.
+     * @param entityManagerFactory entity manager factory used for retrieving data
+     */
     public JpaEntityReader(EntityManagerFactory entityManagerFactory) {
         this.entityManagerFactory = entityManagerFactory;
+        entityManager = JpaUtils.createEntityManager(entityManagerFactory);
     }
 
     /**
@@ -26,43 +32,52 @@ public class JpaEntityReader implements EntityReader {
      */
     @Override
     public EntityRegistry fetchAll() {
-        return fetch(JpaUtils.getEntityClasses(entityManagerFactory));
+        return fetchForTypes(JpaUtils.getEntityClasses(entityManagerFactory));
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public EntityRegistry fetch(Iterable<Class<?>> entityClasses) {
+    public EntityRegistry fetchForTypes(Iterable<Class<?>> entityClasses) {
         EntityRegistry registry = new EntityRegistry();
         for (Class<?> entityClass : entityClasses) {
-            registry.addAll(fetchEntitiesWithIdentifier(entityClass));
+            registry.addAll(fetchForType(entityClass));
         }
         return registry;
     }
-
+    
     /**
-     * Fetch all entities of a specific type.
-     * @param classDefinition describes the type of entity to retrieve
-     * @return map of each retrieved entity
+     * {@inheritDoc}
      */
-    private <T> EntityTable<T> fetchEntitiesWithIdentifier(Class<T> entityClass) {
+    @Override
+    public <T> EntityTable<T> fetchForType(Class<T> entityClass) {
         EntityTable<T> entities = new EntityTable<T>(entityClass);
-        for (T entity : fetchEntities(entityClass)) {
+        for (T entity : queryForClass(entityClass)) {
             entities.add(JpaUtils.getIdentifier(entity, entityManagerFactory), entity);
         }
         return entities;
     }
-
+    
     /**
      * Perform the actual database query, retrieving our entities.
      * @param <T> type of entities to retrieve
      * @param entityClass class reference to the entity type
      * @return list of each entity, currently stored inside the database, from that type
      */
-    protected <T> List<T> fetchEntities(Class<T> entityClass) {
+    protected <T> List<T> queryForClass(Class<T> entityClass) {
         EntityManager entityManager = JpaUtils.createEntityManager(entityManagerFactory);
         return entityManager.createQuery("from " + entityClass.getName(), entityClass).getResultList();
     }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public <T> T fetch(Class<T> entityClass, Object identifier) {
+        return entityManager.find(entityClass, identifier);
+    }
+
+
 
 }

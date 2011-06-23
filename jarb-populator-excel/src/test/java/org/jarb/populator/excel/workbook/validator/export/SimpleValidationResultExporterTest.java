@@ -3,7 +3,6 @@ package org.jarb.populator.excel.workbook.validator.export;
 import static org.junit.Assert.assertNotNull;
 
 import java.io.ByteArrayOutputStream;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 
 import org.jarb.populator.excel.DefaultExcelTestDataCase;
@@ -14,9 +13,9 @@ public class SimpleValidationResultExporterTest extends DefaultExcelTestDataCase
 
     @Test
     public void testExport() throws FileNotFoundException {
-        WorkbookValidation validation = getExcelDataManager().validateWorkbook(new FileInputStream("src/test/resources/Excel.xls"));
+        WorkbookValidation validation = getExcelDataManager().load("src/test/resources/Excel.xls").validate();
         ByteArrayOutputStream arrayOutputStream = new ByteArrayOutputStream();
-        new SimpleValidationResultExporter().export(validation, arrayOutputStream);
+        new SimpleValidationExporter().export(validation, arrayOutputStream);
         String validationExport = arrayOutputStream.toString();
         assertNotNull(validationExport);
     }
