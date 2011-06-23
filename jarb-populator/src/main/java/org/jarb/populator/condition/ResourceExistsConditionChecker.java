@@ -17,7 +17,7 @@ public class ResourceExistsConditionChecker implements ConditionChecker {
      * @param resource the resource being checked on existence
      */
     public ResourceExistsConditionChecker(Resource resource) {
-        Assert.notNull(resource);
+        Assert.notNull(resource, "Cannot check the existence of a null resource");
         this.resource = resource;
     }
     
@@ -27,7 +27,7 @@ public class ResourceExistsConditionChecker implements ConditionChecker {
     @Override
     public ConditionCheckResult checkCondition() {
         ConditionCheckResult result = new ConditionCheckResult();
-        result.verifyState(resource.exists(), "Resource '" + resource + "' does not exist.");
+        result.checkState(resource.exists(), "Resource '" + resource + "' does not exist.");
         return result;
     }
     

@@ -5,10 +5,10 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * Result of {@link ConditionChecker#checkCondition()}.
- * Condition has been accepted when {@link #isSatisfied()}
- * evaluates into {@code true}. Whenever the condition is
- * not satisfied, use {@link #getFailures()} for details.
+ * Result of {@link ConditionChecker#checkCondition()}. The
+ * condition has been accepted whenever {@link #isSatisfied()}
+ * evaluates into {@code true}. If the condition is not satisfied,
+ * look at {@link #getFailures()}.
  * 
  * @author Jeroen van Schagen
  * @since 21-06-2011
@@ -30,16 +30,6 @@ public class ConditionCheckResult {
     public static ConditionCheckResult success() {
         return new ConditionCheckResult();
     }
-
-    /**
-     * Include a failure, causing {@link #isSatisfied()} to fail.
-     * @param failure state failure that should be included
-     * @return same result, for chaining
-     */
-    public ConditionCheckResult addFailure(String failure) {
-        failures.add(failure);
-        return this;
-    }
     
     /**
      * Whenever the specified state is {@code false}, include
@@ -48,8 +38,18 @@ public class ConditionCheckResult {
      * @param message failure message if state is {@code false}
      * @return same result, for chaining
      */
-    public ConditionCheckResult verifyState(boolean state, String message) {
+    public ConditionCheckResult checkState(boolean state, String message) {
         if(!state) { addFailure(message); }
+        return this;
+    }
+
+    /**
+     * Include a failure, causing {@link #isSatisfied()} to fail.
+     * @param failure state failure that should be included
+     * @return same result, for chaining
+     */
+    public ConditionCheckResult addFailure(String failure) {
+        failures.add(failure);
         return this;
     }
 
