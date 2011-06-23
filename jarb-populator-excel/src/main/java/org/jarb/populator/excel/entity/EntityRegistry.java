@@ -1,9 +1,8 @@
 package org.jarb.populator.excel.entity;
 
-import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * Capable of storing and retrieving entities from any type.
@@ -11,15 +10,31 @@ import java.util.Set;
  * @author Jeroen van Schagen
  * @since 09-05-2011
  */
-public class EntityRegistry {
+public class EntityRegistry implements Iterable<EntityTable<?>> {
     private Map<Class<?>, EntityTable<?>> entityTables = new HashMap<Class<?>, EntityTable<?>>();
 
     /**
-     * Retrieve the classes of each entity type stored in this registry.
-     * @return collection of each entity type
+     * {@inheritDoc}
      */
-    public Set<Class<?>> getEntityClasses() {
-        return Collections.unmodifiableSet(entityTables.keySet());
+    @Override
+    public Iterator<EntityTable<?>> iterator() {
+        return entityTables.values().iterator();
+    }
+    
+    /**
+     * Retrieve all entities of a specific type.
+     * @param <T> type of the entities being retrieved
+     * @param entityClass class of the entities
+     * @return each entity of the specified type
+     */
+    @SuppressWarnings("unchecked")
+    public <T> EntityTable<T> forClass(Class<T> entityClass) {
+        EntityTable<T> entities = (EntityTable<T>) entityTables.get(entityClass);
+        if (entities == null) {
+            entities = new EntityTable<T>(entityClass);
+            entityTables.put(entityClass, entities);
+        }
+        return entities;
     }
 
     /**
@@ -29,18 +44,8 @@ public class EntityRegistry {
      * @param id identifier of the entity being retrieved
      * @return entity of the specified type and identity, if any
      */
-    public <T> T get(Class<T> entityClass, Object id) {
-        return entities(entityClass).get(id);
-    }
-
-    /**
-     * Retrieve all entities of a specific type.
-     * @param <T> type of the entities being retrieved
-     * @param entityClass class of the entities
-     * @return each entity of the specified type
-     */
-    public <T> EntityTable<T> getAll(Class<T> entityClass) {
-        return entities(entityClass);
+    public <T> T find(Class<T> entityClass, Object id) {
+        return forClass(entityClass).find(id);
     }
 
     /**
@@ -50,7 +55,7 @@ public class EntityRegistry {
      * @return {@code true} if it exists, else {@code false}
      */
     public boolean exists(Class<?> entityClass, Object id) {
-        return get(entityClass, id) != null;
+        return forClass(entityClass).exists(id);
     }
 
     /**
@@ -61,7 +66,7 @@ public class EntityRegistry {
      * @param entity reference to the entity being stored
      */
     public <T> void add(Class<T> entityClass, Object id, T entity) {
-        entities(entityClass).add(id, entity);
+        forClass(entityClass).add(id, entity);
     }
 
     /**
@@ -70,9 +75,9 @@ public class EntityRegistry {
      * @param entities references to each entity that should be stored
      */
     public <T> void addAll(EntityTable<T> entities) {
-        EntityTable<T> storedEntities = entities(entities.getEntityClass());
+        EntityTable<T> storedEntities = forClass(entities.getEntityClass());
         for (Map.Entry<Object, T> entityEntry : entities.map().entrySet()) {
-            storedEntities.add(entityEntry.getKey(), (T) entityEntry.getValue());
+            storedEntities.add(entityEntry.getKey(), entityEntry.getValue());
         }
     }
     
@@ -84,23 +89,7 @@ public class EntityRegistry {
      * @return the removed entity
      */
     public <T> T remove(Class<T> entityClass, Object id) {
-        return entities(entityClass).remove(id);
-    }
-
-    /**
-     * Retrieve the holder that maintains entities of a specific type.
-     * @param <T> type of entities
-     * @param entityClass class of the entities
-     * @return holder of our entities
-     */
-    @SuppressWarnings("unchecked")
-    private <T> EntityTable<T> entities(Class<T> entityClass) {
-        EntityTable<T> entities = (EntityTable<T>) entityTables.get(entityClass);
-        if (entities == null) {
-            entities = new EntityTable<T>(entityClass);
-            entityTables.put(entityClass, entities);
-        }
-        return entities;
+        return forClass(entityClass).remove(id);
     }
 
     /**

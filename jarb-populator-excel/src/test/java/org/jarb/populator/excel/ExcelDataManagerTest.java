@@ -76,7 +76,7 @@ public class ExcelDataManagerTest extends DefaultExcelTestDataCase {
         
         // Read the generated workbook and check if the included entity was maintained
         CompanyVehicle result = excelData.loadWorkbook("src/test/resources/excel/generated/NewExcelFileFromDatabase.xls")
-            .entities().get(CompanyVehicle.class, car.getId());
+            .entities().find(CompanyVehicle.class, car.getId());
         
         assertNotNull("Car was not maintained during store and load.", result);
         assertEquals(car.getId(), result.getId());

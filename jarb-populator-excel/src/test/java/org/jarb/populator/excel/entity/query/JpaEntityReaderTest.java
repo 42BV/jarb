@@ -23,7 +23,7 @@ public class JpaEntityReaderTest extends DefaultExcelTestDataCase {
     public void testFetchAll() throws FileNotFoundException {
         getExcelDataManager().loadWorkbook("src/test/resources/Excel.xls").persist();
         EntityRegistry registry = entityReader.fetchAll();
-        assertFalse(registry.getAll(Project.class).isEmpty());
+        assertFalse(registry.forClass(Project.class).isEmpty());
     }
 
 }

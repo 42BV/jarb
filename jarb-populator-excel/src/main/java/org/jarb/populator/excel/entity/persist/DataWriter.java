@@ -10,9 +10,10 @@ import java.util.Set;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
-import javax.persistence.PersistenceUnitUtil;
 
 import org.jarb.populator.excel.entity.EntityRegistry;
+import org.jarb.populator.excel.entity.EntityTable;
+import org.jarb.populator.excel.util.JpaUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,13 +32,13 @@ public final class DataWriter {
     }
     
     public static Set<Object> createInstanceSet(EntityRegistry registry) {
-        Set<Object> entities = new HashSet<Object>();
-        for(Class<?> entityClass : registry.getEntityClasses()) {
-            for(Object entity : registry.getAll(entityClass)) {
-                entities.add(entity);
+        Set<Object> instanceSet = new HashSet<Object>();
+        for(EntityTable<?> entities : registry) {
+            for(Object entity : entities) {
+                instanceSet.add(entity);
             }
         }
-        return entities;
+        return instanceSet;
     }
 
     /**
@@ -47,10 +48,9 @@ public final class DataWriter {
      * connectivity information.
      */
     public static void saveEntity(Set<Object> saveableInstances, EntityManagerFactory entityManagerFactory) {
-        EntityManager entityManager = entityManagerFactory.createEntityManager(entityManagerFactory.getProperties());
+        EntityManager entityManager = JpaUtils.createEntityManager(entityManagerFactory);
         EntityTransaction entityTransaction = entityManager.getTransaction();
 
-        PersistenceUnitUtil persistenceUnitUtil = entityManagerFactory.getPersistenceUnitUtil();
         Set<Object> cascadedObjectsInThisInteration = new HashSet<Object>();
         List<Object> savableInstancesList = new ArrayList<Object>(saveableInstances);
         Collections.sort(savableInstancesList, new ObjectClassInstantationComparator());
@@ -63,7 +63,7 @@ public final class DataWriter {
             saveableInstance = ReferentialPreparement.prepareEntityReferences(saveableInstance, entityManager, cascadedObjectsInThisInteration);
 
             //Simply checking if the identifier is null is not good enough, since the ID could be preloaded. We must check the persistence context.
-            Object identifier = persistenceUnitUtil.getIdentifier(saveableInstance);
+            Object identifier = JpaUtils.getIdentifier(saveableInstance, entityManagerFactory);
             if (identifier == null) {
                 entityManager.merge(saveableInstance);
             } else if (entityManager.find(saveableInstance.getClass(), identifier) == null) {

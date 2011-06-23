@@ -27,12 +27,12 @@ public class EntityRegistryTest {
      */
     @Test
     public void testGetAddRemove() {
-        assertNull(registry.get(Employee.class, 1L));
+        assertNull(registry.find(Employee.class, 1L));
         final Employee bas = new Employee();
         registry.add(Employee.class, 1L, bas);
-        assertEquals(bas, registry.get(Employee.class, 1L));
+        assertEquals(bas, registry.find(Employee.class, 1L));
         assertEquals(bas, registry.remove(Employee.class, 1L));
-        assertNull(registry.get(Employee.class, 1L));
+        assertNull(registry.find(Employee.class, 1L));
     }
 
     /**
@@ -40,7 +40,7 @@ public class EntityRegistryTest {
      */
     @Test
     public void testRemoveNonExisting() {
-        assertNull(registry.get(Employee.class, 1L));
+        assertNull(registry.find(Employee.class, 1L));
         assertNull(registry.remove(Employee.class, 1L));
     }
 
@@ -53,7 +53,7 @@ public class EntityRegistryTest {
         final Employee jeroen = new Employee();
         registry.add(Employee.class, 1L, bas);
         registry.add(Employee.class, 2L, jeroen);
-        List<Employee> employees = registry.getAll(Employee.class).list();
+        List<Employee> employees = registry.forClass(Employee.class).list();
         assertEquals(Arrays.asList(bas, jeroen), employees);
     }
 
@@ -62,7 +62,7 @@ public class EntityRegistryTest {
      */
     @Test
     public void testGetAllNonExisting() {
-        assertTrue(registry.getAll(Employee.class).isEmpty());
+        assertTrue(registry.forClass(Employee.class).isEmpty());
     }
 
     /**

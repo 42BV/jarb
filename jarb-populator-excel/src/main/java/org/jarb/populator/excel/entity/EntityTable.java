@@ -17,13 +17,23 @@ import java.util.Map;
  * @param <T> type of entities being maintained
  */
 public class EntityTable<T> implements Iterable<T> {
+    /** Class of entities being stored **/
     private final Class<T> entityClass;
+    /** Map based container of all stored entities **/
     private Map<Object, T> entitiesMap = new HashMap<Object, T>();
     
+    /**
+     * Construct a new {@link EntityTable}.
+     * @param entityClass class of entities stored in this table
+     */
     public EntityTable(Class<T> entityClass) {
         this.entityClass = entityClass;
     }
 
+    /**
+     * Retrieve the class of entities stored in this table.
+     * @return entity class
+     */
     public Class<T> getEntityClass() {
         return entityClass;
     }
@@ -33,34 +43,19 @@ public class EntityTable<T> implements Iterable<T> {
      * @param id identifier of the entity
      * @return entity matching or identifier, if any
      */
-    public T get(Object id) {
+    public T find(Object id) {
         return entitiesMap.get(id);
     }
-
+    
     /**
-     * Retrieve every entity, in {@link List} format.
-     * @return list representation of each stored entity
+     * Determine if an entity with the specified identifier exists.
+     * @param id identifier of the entity
+     * @return {@code true} whenever the entity exists
      */
-    public List<T> list() {
-        return new ArrayList<T>(entitiesMap.values());
+    public boolean exists(Object id) {
+        return entitiesMap.containsKey(id);
     }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Iterator<T> iterator() {
-        return list().iterator();
-    }
-
-    /**
-     * Retrieve every entity, in {@link Map} format.
-     * @return map representation of each stored entity
-     */
-    public Map<Object, T> map() {
-        return Collections.unmodifiableMap(entitiesMap);
-    }
-
+    
     /**
      * Count the number of stored entities.
      * @return number of stored entities
@@ -75,6 +70,30 @@ public class EntityTable<T> implements Iterable<T> {
      */
     public boolean isEmpty() {
         return entitiesMap.isEmpty();
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Iterator<T> iterator() {
+        return entitiesMap.values().iterator();
+    }
+
+    /**
+     * Retrieve every entity, in {@link List} format.
+     * @return list representation of each stored entity
+     */
+    public List<T> list() {
+        return Collections.unmodifiableList(new ArrayList<T>(entitiesMap.values()));
+    }
+
+    /**
+     * Retrieve every entity, in {@link Map} format.
+     * @return map representation of each stored entity
+     */
+    public Map<Object, T> map() {
+        return Collections.unmodifiableMap(entitiesMap);
     }
 
     /**
