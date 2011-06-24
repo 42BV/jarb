@@ -5,20 +5,21 @@ import java.util.Iterator;
 import java.util.Map;
 
 /**
- * Capable of storing and retrieving entities from any type.
+ * In memory storage of entity instances.
  * 
  * @author Jeroen van Schagen
  * @since 09-05-2011
  */
 public class EntityRegistry implements Iterable<EntityTable<?>> {
-    private Map<Class<?>, EntityTable<?>> entityTables = new HashMap<Class<?>, EntityTable<?>>();
+    /** Map based container of all entity tables. **/
+    private Map<Class<?>, EntityTable<?>> entityTableMap = new HashMap<Class<?>, EntityTable<?>>();
 
     /**
      * {@inheritDoc}
      */
     @Override
     public Iterator<EntityTable<?>> iterator() {
-        return entityTables.values().iterator();
+        return entityTableMap.values().iterator();
     }
     
     /**
@@ -29,10 +30,10 @@ public class EntityRegistry implements Iterable<EntityTable<?>> {
      */
     @SuppressWarnings("unchecked")
     public <T> EntityTable<T> forClass(Class<T> entityClass) {
-        EntityTable<T> entities = (EntityTable<T>) entityTables.get(entityClass);
+        EntityTable<T> entities = (EntityTable<T>) entityTableMap.get(entityClass);
         if (entities == null) {
             entities = new EntityTable<T>(entityClass);
-            entityTables.put(entityClass, entities);
+            entityTableMap.put(entityClass, entities);
         }
         return entities;
     }
@@ -44,7 +45,7 @@ public class EntityRegistry implements Iterable<EntityTable<?>> {
      * @param id identifier of the entity being retrieved
      * @return entity of the specified type and identity, if any
      */
-    public <T> T find(Class<T> entityClass, Object id) {
+    public <T> T find(Class<T> entityClass, Long id) {
         return forClass(entityClass).find(id);
     }
 
@@ -97,6 +98,6 @@ public class EntityRegistry implements Iterable<EntityTable<?>> {
      */
     @Override
     public String toString() {
-        return entityTables.toString();
+        return entityTableMap.toString();
     }
 }

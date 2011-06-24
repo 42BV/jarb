@@ -102,21 +102,6 @@ public class ExcelDataManager {
         }
         
         /**
-         * Validate the workbook, if validation has errors, we throw
-         * a runtime exception. This method is, for example, used in
-         * {@link #entities()} to ensure the workbook is always valid.
-         * @throws InvalidWorkbookException if validation fails
-         * @return this instance, for chaining
-         */
-        protected WorkbookAccessor continueIfValid() {
-            WorkbookValidation validation = validate();
-            if(validation.hasErrors()) {
-                throw new InvalidWorkbookException(validation);
-            }
-            return this;
-        }
-        
-        /**
          * Validate the workbook, and return the validation result.
          * @see WorkbookValidation
          * @return validation result
@@ -124,6 +109,18 @@ public class ExcelDataManager {
         public WorkbookValidation validate() {
             MetaModel metamodel = metamodelGenerator.generate();
             return excelValidator.validate(workbook, metamodel);
+        }
+        
+        /**
+         * Persist our workbook entities in the database. Whenever
+         * the entities are persisted, entity identifiers may be
+         * subject to change.
+         * @return this instance, for chaining
+         */
+        public WorkbookAccessor persist() {
+            // Update the entity identifiers based on database
+            entities = entityWriter.persist(entities());
+            return this;
         }
         
         /**
@@ -141,14 +138,17 @@ public class ExcelDataManager {
         }
         
         /**
-         * Persist our workbook entities in the database. Whenever
-         * the entities are persisted, entity identifiers may be
-         * subject to change.
+         * Validate the workbook, if validation has errors, we throw
+         * a runtime exception. This method is, for example, used in
+         * {@link #entities()} to ensure the workbook is always valid.
+         * @throws InvalidWorkbookException if validation fails
          * @return this instance, for chaining
          */
-        public WorkbookAccessor persist() {
-            // Update the entity identifiers based on database
-            entities = entityWriter.persist(entities());
+        protected WorkbookAccessor continueIfValid() {
+            WorkbookValidation validation = validate();
+            if(validation.hasErrors()) {
+                throw new InvalidWorkbookException(validation);
+            }
             return this;
         }
     }
@@ -180,7 +180,7 @@ public class ExcelDataManager {
          * @return this builder, for chaining
          */
         public WorkbookBuilder includeAllEntities() {
-            entities = entityReader.fetchAll();
+            entities = entityReader.readAll();
             return this;
         }
         
@@ -192,7 +192,7 @@ public class ExcelDataManager {
          */
         public <T> WorkbookBuilder includeEntities(Class<T> entityClass) {
             Assert.notNull(entityClass, "Entity class cannot be null");
-            entities.addAll(entityReader.fetchForType(entityClass));
+            entities.addAll(entityReader.readForType(entityClass));
             return this;
         }
         
@@ -206,7 +206,7 @@ public class ExcelDataManager {
         public <T> WorkbookBuilder includeEntity(Class<T> entityClass, Object identifier) {
             Assert.notNull(entityClass, "Entity class cannot be null");
             Assert.notNull(identifier, "Entity identifier cannot be null");
-            entities.add(entityClass, identifier, entityReader.fetch(entityClass, identifier));
+            entities.add(entityClass, identifier, entityReader.read(entityClass, identifier));
             return this;
         }
         

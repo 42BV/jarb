@@ -33,9 +33,7 @@ public class DefaultEntityExporterTest extends DefaultExcelTestDataCase {
 
     @Before
     public void setUpExporter() {
-        exporter = new DefaultEntityExporter();
-        exporter.setValueConversionService(new ValueConversionService());
-        exporter.setEntityManagerFactory(getEntityManagerFactory());
+        exporter = new DefaultEntityExporter(new ValueConversionService());
         registry = new EntityRegistry();
         metamodelGenerator = getExcelDataManagerFactory().buildMetamodelGenerator();
         metamodel = metamodelGenerator.generate();
@@ -81,25 +79,24 @@ public class DefaultEntityExporterTest extends DefaultExcelTestDataCase {
     
     @Test
     public void testJoinColumn() {
-        Employee employee = new Employee();
         CompanyCar car = new CompanyCar("bugatti", 999999D, 42, Gearbox.MANUAL, true);
-        car.setId(42L);
+        registry.add(CompanyVehicle.class, 42L, car);
+        Employee employee = new Employee();
         employee.setVehicle(car);
-        registry.add(Employee.class, 1L, employee);
+        registry.add(Employee.class, 24L, employee);
         Workbook workbook = exporter.export(registry, metamodel);
-        Sheet employeesSheet = workbook.getSheet("employees");
-        assertEquals(Double.valueOf(42), employeesSheet.getValueAt(1, "company_vehicle_id"));
+        Object carIdentifier = workbook.getSheet("vehicles").getValueAt(1, 0);
+        assertEquals(carIdentifier, workbook.getSheet("employees").getValueAt(1, "company_vehicle_id"));
     }
     
     @Test
     public void testJoinTable() {
-        VeryImportantCustomer customer = new VeryImportantCustomer();
-        customer.setId(24L);
         BusinessRelationshipGift gift = new BusinessRelationshipGift();
-        gift.setId(42L);
-        customer.addGift(gift);
+        registry.add(BusinessRelationshipGift.class, 1L, gift);
         BusinessRelationshipGift anotherGift = new BusinessRelationshipGift();
-        anotherGift.setId(99L);
+        registry.add(BusinessRelationshipGift.class, 2L, anotherGift);
+        VeryImportantCustomer customer = new VeryImportantCustomer();
+        customer.addGift(gift);
         customer.addGift(anotherGift);
         registry.add(Customer.class, 1L, customer);
         Workbook workbook = exporter.export(registry, metamodel);
@@ -107,10 +104,11 @@ public class DefaultEntityExporterTest extends DefaultExcelTestDataCase {
         assertNotNull("Join sheet was not created", joinSheet);
         assertEquals("customer_id", joinSheet.getValueAt(0, 0));
         assertEquals("gift_id", joinSheet.getValueAt(0, 1));
-        assertEquals(Double.valueOf(24), joinSheet.getValueAt(1, "customer_id"));
-        assertEquals(Double.valueOf(42), joinSheet.getValueAt(1, "gift_id"));
-        assertEquals(Double.valueOf(24), joinSheet.getValueAt(2, "customer_id"));
-        assertEquals(Double.valueOf(99), joinSheet.getValueAt(2, "gift_id"));
+        Object customerId = workbook.getSheet("customers").getValueAt(1, 0);
+        assertEquals(customerId, joinSheet.getValueAt(1, "customer_id"));
+        assertEquals(workbook.getSheet("gifts").getValueAt(1, 0), joinSheet.getValueAt(1, "gift_id"));
+        assertEquals(customerId, joinSheet.getValueAt(2, "customer_id"));
+        assertEquals(workbook.getSheet("gifts").getValueAt(2, 0), joinSheet.getValueAt(2, "gift_id"));
     }
     
     @Test

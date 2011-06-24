@@ -44,10 +44,10 @@ public class ForeignRelationsMapperTest extends DefaultExcelTestDataCase {
 
         List<ClassDefinition<?>> classDefinitions = ClassDefinitionsGenerator.createClassDefinitionsFromMetamodel(getEntityManagerFactory());
 
-        Map<ClassDefinition<?>, Map<Integer, ExcelRow>> objectModel = ExcelImporter.parseExcel(excel, classDefinitions);
+        Map<ClassDefinition<?>, Map<Object, ExcelRow>> objectModel = ExcelImporter.parseExcel(excel, classDefinitions);
 
-        for (Entry<ClassDefinition<?>, Map<Integer, ExcelRow>> classRecord : objectModel.entrySet()) {
-            for (Entry<Integer, ExcelRow> classValues : classRecord.getValue().entrySet()) {
+        for (Entry<ClassDefinition<?>, Map<Object, ExcelRow>> classRecord : objectModel.entrySet()) {
+            for (Entry<Object, ExcelRow> classValues : classRecord.getValue().entrySet()) {
                 ExcelRow excelRow = classValues.getValue();
                 Class<?> tobeTested = domain.entities.Project.class;
                 if (excelRow.getCreatedInstance().getClass() == tobeTested) {

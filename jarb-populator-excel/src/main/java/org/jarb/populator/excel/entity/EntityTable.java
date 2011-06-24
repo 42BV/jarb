@@ -7,9 +7,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.util.Assert;
+
 /**
- * In-memory representation of a database table. Contains all
- * entities of a specific type, allowing them to be retrieved.
+ * In memory representation of entities from a specific type.
  * 
  * @author Jeroen van Schagen
  * @since 09-05-2011
@@ -102,6 +103,8 @@ public class EntityTable<T> implements Iterable<T> {
      * @param entity reference to the entity
      */
     public void add(Object id, T entity) {
+        Assert.notNull(id, "Cannot store an entity using a null identifier");
+        Assert.notNull(id, "Cannot store a null entity");
         entitiesMap.put(id, entity);
     }
 

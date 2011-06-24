@@ -32,9 +32,9 @@ public class DefaultExcelImporterTest extends DefaultExcelTestDataCase {
     private List<ClassDefinition<?>> classDefinitionList;
     private ClassDefinition<?> customer;
     private ClassDefinition<?> project;
-    private Map<ClassDefinition<?>, Map<Integer, ExcelRow>> parseExcelMap;
+    private Map<ClassDefinition<?>, Map<Object, ExcelRow>> parseExcelMap;
     private ClassDefinition<?> classDefinition;
-    private Map<Integer, ExcelRow> parseWorksheetMap;
+    private Map<Object, ExcelRow> parseWorksheetMap;
 
     @Before
     public void setUpExcelImporterTest() throws InstantiationException, IllegalAccessException, InvalidFormatException, IOException, SecurityException,
@@ -53,7 +53,7 @@ public class DefaultExcelImporterTest extends DefaultExcelTestDataCase {
         classDefinitionList.add(project);
 
         classDefinition = ClassDefinitionsGenerator.createSingleClassDefinitionFromMetamodel(getEntityManagerFactory(), customerEntity, false);
-        parseWorksheetMap = new HashMap<Integer, ExcelRow>();
+        parseWorksheetMap = new HashMap<Object, ExcelRow>();
 
         //For code coverage purposes:
         Constructor<ExcelImporter> constructor = ExcelImporter.class.getDeclaredConstructor();
@@ -70,11 +70,11 @@ public class DefaultExcelImporterTest extends DefaultExcelTestDataCase {
     @Test
     public void testParseWorksheet() throws InstantiationException, IllegalAccessException, SecurityException, NoSuchFieldException {
         parseWorksheetMap = ExcelImporter.parseWorksheet(excel, classDefinition);
-        assertTrue(parseWorksheetMap.keySet().contains(1));
-        assertFalse(parseWorksheetMap.keySet().contains(2));
-        assertTrue(parseWorksheetMap.keySet().contains(3));
-        assertTrue(parseWorksheetMap.keySet().contains(4));
-        assertTrue(parseWorksheetMap.keySet().contains(5));
+        assertTrue(parseWorksheetMap.keySet().contains(1D));
+        assertFalse(parseWorksheetMap.keySet().contains(2D));
+        assertTrue(parseWorksheetMap.keySet().contains(3D));
+        assertTrue(parseWorksheetMap.keySet().contains(4D));
+        assertTrue(parseWorksheetMap.keySet().contains(5D));
     }
 
     /**

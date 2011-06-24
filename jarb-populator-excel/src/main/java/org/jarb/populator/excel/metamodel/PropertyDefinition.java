@@ -13,7 +13,7 @@ import org.springframework.util.Assert;
 public class PropertyDefinition {
     private final Field field;
     private String columnName;
-    private ColumnType columnType;
+    private DatabasePropertyType databaseType;
     private PropertyPath embeddablePath;
     private boolean generatedValue;
     private String joinTableName;
@@ -36,16 +36,21 @@ public class PropertyDefinition {
         return field.getName();
     }
     
-    public Class<?> getType() {
+    public Class<?> getJavaType() {
         return field.getType();
     }
     
-    public ColumnType getColumnType() {
-        return columnType;
+    public DatabasePropertyType getDatabaseType() {
+        return databaseType;
     }
 
     public String getColumnName() {
         return columnName;
+    }
+    
+    public boolean hasColumn() {
+        // Join table properties have no column name, their content is in another table
+        return databaseType != DatabasePropertyType.JOIN_TABLE;
     }
 
     public boolean isEmbeddedAttribute() {
@@ -75,7 +80,7 @@ public class PropertyDefinition {
     public static class Builder {
         private final Field field;
         private String columnName;
-        private ColumnType columnType = ColumnType.BASIC;
+        private DatabasePropertyType databaseType = DatabasePropertyType.COLUMN;
         private PropertyPath embeddablePath;
         private String joinTableName;
         private String joinColumnName;
@@ -92,8 +97,8 @@ public class PropertyDefinition {
             return this;
         }
         
-        public Builder setColumnType(ColumnType columnType) {
-            this.columnType = columnType;
+        public Builder setDatabaseType(DatabasePropertyType columnType) {
+            this.databaseType = columnType;
             return this;
         }
         
@@ -123,9 +128,9 @@ public class PropertyDefinition {
         }
         
         public PropertyDefinition build() {
-            Assert.notNull(columnType, "Column type cannot be null");
+            Assert.notNull(databaseType, "Column type cannot be null");
             
-            if(columnType == ColumnType.JOIN_TABLE) {
+            if(databaseType == DatabasePropertyType.JOIN_TABLE) {
                 Assert.state(StringUtils.isNotBlank(joinTableName), "Join table name cannot be blank");
                 Assert.state(StringUtils.isNotBlank(joinColumnName), "Join column name cannot be blank");
                 Assert.state(StringUtils.isNotBlank(inverseJoinColumnName), "Inverse join column name cannot be blank");
@@ -136,7 +141,7 @@ public class PropertyDefinition {
 
             PropertyDefinition definition = new PropertyDefinition(field);
             definition.columnName = columnName;
-            definition.columnType = columnType;
+            definition.databaseType = databaseType;
             definition.embeddablePath = embeddablePath;
             definition.joinTableName = joinTableName;
             definition.joinColumnName = joinColumnName;
@@ -151,7 +156,7 @@ public class PropertyDefinition {
      */
     @Override
     public String toString() {
-        return String.format("Column: %s (%s)", columnName, getName());
+        return String.format("Property: %s (%s)", columnName, getName());
     }
 
 }

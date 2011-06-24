@@ -6,8 +6,8 @@ import java.io.OutputStreamWriter;
 import java.io.Writer;
 
 import org.apache.commons.io.IOUtils;
+import org.jarb.populator.excel.workbook.validator.SheetValidation;
 import org.jarb.populator.excel.workbook.validator.WorkbookValidation;
-import org.jarb.populator.excel.workbook.validator.WorkbookValidation.SheetValidation;
 
 /**
  * Exports a {@link WorkbookValidation} into the provided output stream.

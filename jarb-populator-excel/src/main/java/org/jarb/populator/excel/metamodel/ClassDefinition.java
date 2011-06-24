@@ -153,7 +153,9 @@ public class ClassDefinition<T> {
     public Set<String> getColumnNames() {
         Set<String> columnNames = new HashSet<String>();
         for (PropertyDefinition propertyDefinition : propertyDefinitions) {
-            columnNames.add(propertyDefinition.getColumnName());
+            if(propertyDefinition.hasColumn()) {
+                columnNames.add(propertyDefinition.getColumnName());
+            }
         }
         if(hasDiscriminatorColumn()) {
             columnNames.add(discriminatorColumnName);

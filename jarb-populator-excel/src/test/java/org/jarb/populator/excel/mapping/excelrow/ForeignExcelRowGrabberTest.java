@@ -33,7 +33,7 @@ public class ForeignExcelRowGrabberTest extends DefaultExcelTestDataCase {
     private Workbook excel;
     private ClassDefinition<?> classDefinition;
     private Class<?> persistentClass;
-    private Map<Integer, ExcelRow> objectModel;
+    private Map<Object, ExcelRow> objectModel;
 
     @Before
     public void setUpExcelRecordTest() throws InstantiationException, IllegalAccessException, SecurityException, NoSuchFieldException, InvalidFormatException,
@@ -58,7 +58,7 @@ public class ForeignExcelRowGrabberTest extends DefaultExcelTestDataCase {
 
         Key keyValue = new JoinColumnKey();
         keyValue.setForeignClass(Customer.class);
-        keyValue.setKeyValue(6);
+        keyValue.setKeyValue(6D);
         objectModel = ExcelImporter.parseWorksheet(excel, classDefinition);
         assertEquals(persistentClass, ForeignExcelRowGrabber.getInstanceValue(keyValue, objectModel).getClass());
     }
@@ -109,8 +109,8 @@ public class ForeignExcelRowGrabberTest extends DefaultExcelTestDataCase {
             InvocationTargetException {
 
         Class<?> foreignExcelRowGrabber = ForeignExcelRowGrabber.class;
-        Class<?>[] paramTypes = { Integer.class, java.util.Map.class };
-        Object[] parameters = { 1, new HashMap<Integer, ExcelRow>() };
+        Class<?>[] paramTypes = { Object.class, java.util.Map.class };
+        Object[] parameters = { 1D, new HashMap<Integer, ExcelRow>() };
         Method getInstanceByJoinColumnKey = foreignExcelRowGrabber.getDeclaredMethod("getInstanceByJoinColumnKey", paramTypes);
         getInstanceByJoinColumnKey.setAccessible(true);
         assertEquals(null, getInstanceByJoinColumnKey.invoke(null, parameters));

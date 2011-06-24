@@ -4,12 +4,12 @@ package org.jarb.populator.excel.metamodel;
  * Type of "column" we can have in our mapping.
  * @author Jeroen van Schagen
  */
-public enum ColumnType {
+public enum DatabasePropertyType {
     
     /**
      * Regular column, contains a value.
      */
-    BASIC,
+    COLUMN,
     
     /**
      * References to another entity.

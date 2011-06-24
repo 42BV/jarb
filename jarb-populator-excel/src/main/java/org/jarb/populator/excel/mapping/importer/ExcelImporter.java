@@ -27,9 +27,6 @@ public final class ExcelImporter {
     private ExcelImporter() {
     }
 
-    /** Identification number of row in Excel file. */
-    private static final String IDCOLUMNNAME = "id";
-
     /**
      * Returns an objectModel hashmap containing ClassDefinitions with their corresponding Excel records, also by calling parseWorksheet listed below.
      * @param excel Excel file in use to be stored in the objectModel
@@ -39,9 +36,9 @@ public final class ExcelImporter {
      * @throws IllegalAccessException Thrown when function does not have access to the definition of the specified class, field, method or constructor 
      * @throws NoSuchFieldException Thrown when a field is not available
      */
-    public static Map<ClassDefinition<?>, Map<Integer, ExcelRow>> parseExcel(Workbook excel, List<ClassDefinition<?>> classDefinitions)
+    public static Map<ClassDefinition<?>, Map<Object, ExcelRow>> parseExcel(Workbook excel, List<ClassDefinition<?>> classDefinitions)
             throws InstantiationException, IllegalAccessException, NoSuchFieldException {
-        Map<ClassDefinition<?>, Map<Integer, ExcelRow>> objectModel = new HashMap<ClassDefinition<?>, Map<Integer, ExcelRow>>();
+        Map<ClassDefinition<?>, Map<Object, ExcelRow>> objectModel = new HashMap<ClassDefinition<?>, Map<Object, ExcelRow>>();
 
         for (ClassDefinition<?> classDefinition : classDefinitions) {
             LOGGER.debug("Importing " + classDefinition.getTableName());
@@ -50,8 +47,8 @@ public final class ExcelImporter {
 
         // Create foreign key relations, resulting in a fully prepared instance
 
-        for (Map.Entry<ClassDefinition<?>, Map<Integer, ExcelRow>> objectModelEntry : objectModel.entrySet()) {
-            for (Map.Entry<Integer, ExcelRow> excelRowEntry : objectModelEntry.getValue().entrySet()) {
+        for (Map.Entry<ClassDefinition<?>, Map<Object, ExcelRow>> objectModelEntry : objectModel.entrySet()) {
+            for (Map.Entry<Object, ExcelRow> excelRowEntry : objectModelEntry.getValue().entrySet()) {
                 try {
                     ForeignRelationsMapper.makeForeignRelations(excelRowEntry.getValue(), objectModel);
                 } catch (NoSuchFieldException e) {
@@ -72,9 +69,9 @@ public final class ExcelImporter {
      * @throws IllegalAccessException Thrown when function does not have access to the definition of the specified class, field, method or constructor 
      * @throws NoSuchFieldException Thrown when a field is not available
      */
-    public static Map<Integer, ExcelRow> parseWorksheet(final Workbook excel, final ClassDefinition<?> classDefinition) throws InstantiationException,
+    public static Map<Object, ExcelRow> parseWorksheet(final Workbook excel, final ClassDefinition<?> classDefinition) throws InstantiationException,
             IllegalAccessException, NoSuchFieldException {
-        Map<Integer, ExcelRow> createdInstances = new HashMap<Integer, ExcelRow>();
+        Map<Object, ExcelRow> createdInstances = new HashMap<Object, ExcelRow>();
 
         Sheet sheet = excel.getSheet(classDefinition.getTableName());
         String discriminatorColumnName = classDefinition.getDiscriminatorColumnName();
@@ -142,19 +139,17 @@ public final class ExcelImporter {
      * @param rowPosition The rowPosition in the Excel file (0 based) 
      * @param excelRow An excelRow to store in the value map
      */
-    private static void putCreatedInstance(final Sheet sheet, final ClassDefinition<?> classDefinition, Map<Integer, ExcelRow> createdInstances,
+    private static void putCreatedInstance(final Sheet sheet, final ClassDefinition<?> classDefinition, Map<Object, ExcelRow> createdInstances,
             Integer rowPosition, ExcelRow excelRow) {
-        if (sheet.containsColumn(IDCOLUMNNAME)) {
-            Integer idNumber = ((Double) sheet.getValueAt(rowPosition, IDCOLUMNNAME)).intValue();
-            if (!createdInstances.containsKey(idNumber)) {
-                createdInstances.put(idNumber, excelRow);
-            } else {
-                // Primary key is not unique
-                LOGGER.error("IDCOLUMNNAME value '" + idNumber + "' in table " + classDefinition.getTableName() + " is not unique.");
-            }
+        Object identifier = sheet.getValueAt(rowPosition, 0);
+        if(identifier == null) {
+            LOGGER.error("Could not store row #{} of {}, because the identifier is empty.", new Object[] { rowPosition, sheet.getName() });
         } else {
-            // If this is not because of the fact that it's a composite id, an id field is missing and foreign key constraints might fail.
-            createdInstances.put(((Double) sheet.getValueAt(rowPosition, 0)).intValue(), excelRow);
+            if (!createdInstances.containsKey(identifier)) {
+                createdInstances.put(identifier, excelRow);
+            } else {
+                LOGGER.error("IDCOLUMNNAME value '" + identifier + "' in table " + classDefinition.getTableName() + " is not unique.");
+            }
         }
     }
 

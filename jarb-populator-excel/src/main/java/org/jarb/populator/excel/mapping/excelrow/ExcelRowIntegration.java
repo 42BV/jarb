@@ -16,16 +16,16 @@ import org.jarb.populator.excel.metamodel.ClassDefinition;
 public class ExcelRowIntegration {
 
     @SuppressWarnings("unchecked")
-    public static EntityRegistry toRegistry(Map<ClassDefinition<?>, Map<Integer, ExcelRow>> entitiesMap) {
+    public static EntityRegistry toRegistry(Map<ClassDefinition<?>, Map<Object, ExcelRow>> entitiesMap) {
         EntityRegistry registry = new EntityRegistry();
-        for (Map.Entry<ClassDefinition<?>, Map<Integer, ExcelRow>> entitiesEntry : entitiesMap.entrySet()) {
+        for (Map.Entry<ClassDefinition<?>, Map<Object, ExcelRow>> entitiesEntry : entitiesMap.entrySet()) {
             @SuppressWarnings("rawtypes")
             final Class entityClass = entitiesEntry.getKey().getPersistentClass();
-            EntityTable<Object> entities = new EntityTable<Object>(entityClass);
-            for (Map.Entry<Integer, ExcelRow> excelRowEntry : entitiesEntry.getValue().entrySet()) {
-                entities.add(excelRowEntry.getKey().longValue(), excelRowEntry.getValue().getCreatedInstance());
+            EntityTable<Object> table = new EntityTable<Object>(entityClass);
+            for (Map.Entry<Object, ExcelRow> excelRowEntry : entitiesEntry.getValue().entrySet()) {
+                table.add(excelRowEntry.getKey(), excelRowEntry.getValue().getCreatedInstance());
             }
-            registry.addAll(entities);
+            registry.addAll(table);
         }
         return registry;
     }

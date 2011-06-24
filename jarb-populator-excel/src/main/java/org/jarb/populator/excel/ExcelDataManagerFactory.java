@@ -60,14 +60,11 @@ public class ExcelDataManagerFactory {
     }
 
     public EntityImporter buildEntityImporter() {
-        return new DefaultEntityImporter();
+        return new DefaultEntityImporter(entityManagerFactory);
     }
 
     public EntityExporter buildEntityExporter() {
-        DefaultEntityExporter exporter = new DefaultEntityExporter();
-        exporter.setEntityManagerFactory(entityManagerFactory);
-        exporter.setValueConversionService(valueConversionService);
-        return exporter;
+        return new DefaultEntityExporter(valueConversionService);
     }
 
     public EntityReader buildEntityReader() {

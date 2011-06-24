@@ -34,15 +34,13 @@ public final class StoreJoinColumn {
     public static void storeValue(Workbook excel, ClassDefinition<?> classDefinition, PropertyDefinition columnDefinition, Integer rowPosition, ExcelRow excelRow) {
         Sheet sheet = excel.getSheet(classDefinition.getTableName());
         Object cellValue = sheet.getValueAt(rowPosition, columnDefinition.getColumnName());
-        if(cellValue instanceof Double) {
-            LOGGER.debug("field: " + columnDefinition.getName() + " column: " + columnDefinition.getColumnName() + " value:[" + cellValue + "]");
-            if (cellValue != null) {
-                // Sets the Key
-                Key keyValue = new JoinColumnKey();
-                keyValue.setKeyValue(((Double) cellValue).intValue());
-                keyValue.setForeignClass(columnDefinition.getField().getType());
-                excelRow.addValue(columnDefinition, keyValue);
-            }
+        LOGGER.debug("field: " + columnDefinition.getName() + " column: " + columnDefinition.getColumnName() + " value:[" + cellValue + "]");
+        if (cellValue != null) {
+            // Sets the Key
+            Key keyValue = new JoinColumnKey();
+            keyValue.setKeyValue(cellValue);
+            keyValue.setForeignClass(columnDefinition.getField().getType());
+            excelRow.addValue(columnDefinition, keyValue);
         }
     }
 }

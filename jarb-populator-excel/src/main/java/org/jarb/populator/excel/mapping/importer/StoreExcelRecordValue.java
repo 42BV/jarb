@@ -3,10 +3,7 @@ package org.jarb.populator.excel.mapping.importer;
 import org.jarb.populator.excel.mapping.excelrow.ExcelRow;
 import org.jarb.populator.excel.metamodel.ClassDefinition;
 import org.jarb.populator.excel.metamodel.PropertyDefinition;
-import org.jarb.populator.excel.metamodel.ColumnType;
 import org.jarb.populator.excel.workbook.Workbook;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Function which is responsible for saving values to ExcelRecords, put here because the ExcelRow class was getting quite large.
@@ -15,7 +12,6 @@ import org.slf4j.LoggerFactory;
  *
  */
 public final class StoreExcelRecordValue {
-    private static final Logger LOGGER = LoggerFactory.getLogger(StoreExcelRecordValue.class);
 
     /** Private constructor. */
     private StoreExcelRecordValue() {
@@ -31,16 +27,19 @@ public final class StoreExcelRecordValue {
      * @param excelRow ExcelRow to save to.
      * @throws NoSuchFieldException Thrown when a field is not available
      */
-    public static void storeValue(Workbook excel, ClassDefinition<?> classDefinition, PropertyDefinition columnDefinition, //
+    public static void storeValue(Workbook excel, ClassDefinition<?> classDefinition, PropertyDefinition columnDefinition, 
             Integer rowPosition, ExcelRow excelRow) throws NoSuchFieldException {
-        if (columnDefinition.getColumnType() == ColumnType.BASIC) {
+        switch(columnDefinition.getDatabaseType()) {
+        case COLUMN:
             StoreColumn.storeValue(excel, classDefinition, columnDefinition, rowPosition, excelRow);
-        } else if (columnDefinition.getColumnType() == ColumnType.JOIN_TABLE) {
+            break;
+        case JOIN_TABLE:
             StoreJoinTable.storeValue(excel, classDefinition, columnDefinition, rowPosition, excelRow);
-        } else if (columnDefinition.getColumnType() == ColumnType.JOIN_COLUMN) {
+            break;
+        case JOIN_COLUMN:
             StoreJoinColumn.storeValue(excel, classDefinition, columnDefinition, rowPosition, excelRow);
-        } else {
-            LOGGER.warn("ColumnDefinition is not an instance of Column, JoinTable or JoinColumn. Cannot store data.");
+            break;
         }
     }
+    
 }

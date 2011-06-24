@@ -60,26 +60,4 @@ public class WorkbookValidation {
     public Set<String> getValidatedSheetNames() {
         return Collections.unmodifiableSet(sheetValidationMap.keySet());
     }
-    
-    public static class SheetValidation {
-        private Set<String> missingColumns = new HashSet<String>();
-        private Set<String> unknownColumns = new HashSet<String>();
-        
-        public Set<String> getMissingColumns() {
-            return Collections.unmodifiableSet(missingColumns);
-        }
-        
-        public void addMissingColumn(String missingColumn) {
-            missingColumns.add(missingColumn);
-        }
-        
-        public Set<String> getUnknownColumns() {
-            return Collections.unmodifiableSet(unknownColumns);
-        }
-        
-        public void addUnknownColumn(String unknownColumn) {
-            unknownColumns.add(unknownColumn);
-        }
-    }
-
 }

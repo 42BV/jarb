@@ -1,6 +1,7 @@
 package org.jarb.populator.excel.entity.query;
 
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -11,6 +12,7 @@ import org.jarb.populator.excel.util.JpaUtils;
 
 /**
  * Java Persistence API (JPA) implementation of {@link EntityReader}.
+ * 
  * @author Jeroen van Schagen
  * @since 11-05-2011
  */
@@ -31,30 +33,27 @@ public class JpaEntityReader implements EntityReader {
      * {@inheritDoc}
      */
     @Override
-    public EntityRegistry fetchAll() {
-        return fetchForTypes(JpaUtils.getEntityClasses(entityManagerFactory));
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public EntityRegistry fetchForTypes(Iterable<Class<?>> entityClasses) {
+    public EntityRegistry readAll() {
         EntityRegistry registry = new EntityRegistry();
-        for (Class<?> entityClass : entityClasses) {
-            registry.addAll(fetchForType(entityClass));
+        for (Class<?> entityClass : getEntityClasses()) {
+            registry.addAll(readForType(entityClass));
         }
         return registry;
+    }
+    
+    private Set<Class<?>> getEntityClasses() {
+        return JpaUtils.getEntityClasses(entityManagerFactory);
     }
     
     /**
      * {@inheritDoc}
      */
     @Override
-    public <T> EntityTable<T> fetchForType(Class<T> entityClass) {
+    public <T> EntityTable<T> readForType(Class<T> entityClass) {
         EntityTable<T> entities = new EntityTable<T>(entityClass);
-        for (T entity : queryForClass(entityClass)) {
-            entities.add(JpaUtils.getIdentifier(entity, entityManagerFactory), entity);
+        Long identifier = 0L;
+        for (T entity : queryInstancesOf(entityClass)) {
+            entities.add(identifier++, entity);
         }
         return entities;
     }
@@ -65,8 +64,7 @@ public class JpaEntityReader implements EntityReader {
      * @param entityClass class reference to the entity type
      * @return list of each entity, currently stored inside the database, from that type
      */
-    protected <T> List<T> queryForClass(Class<T> entityClass) {
-        EntityManager entityManager = JpaUtils.createEntityManager(entityManagerFactory);
+    protected <T> List<T> queryInstancesOf(Class<T> entityClass) {
         return entityManager.createQuery("from " + entityClass.getName(), entityClass).getResultList();
     }
     
@@ -74,10 +72,8 @@ public class JpaEntityReader implements EntityReader {
      * {@inheritDoc}
      */
     @Override
-    public <T> T fetch(Class<T> entityClass, Object identifier) {
+    public <T> T read(Class<T> entityClass, Object identifier) {
         return entityManager.find(entityClass, identifier);
     }
-
-
 
 }

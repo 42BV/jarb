@@ -25,12 +25,12 @@ public final class ForeignExcelRowGrabber {
      * @param map Hashmap of Excelrecords and foreign keys
      * @return Set of excelRecords referenced to by foreignKeys
      */
-    protected static Object getInstanceValue(Key key, Map<Integer, ExcelRow> map) {
+    protected static Object getInstanceValue(Key key, Map<Object, ExcelRow> map) {
         Object returnValue;
         if (key instanceof JoinTableKey) {
             returnValue = getInstancesByJoinTableKey(key, map);
         } else if (key instanceof JoinColumnKey) {
-            Integer foreignKey = ((JoinColumnKey) key).getKeyValue();
+            Object foreignKey = ((JoinColumnKey) key).getKeyValue();
             returnValue = getInstanceByJoinColumnKey(foreignKey, map);
         } else {
             LOGGER.warn("Not an instance of JoinTableKey or JoinColumnKey. Cannot retrieve data.");
@@ -45,7 +45,7 @@ public final class ForeignExcelRowGrabber {
      * @param map Map to search the foreign record in
      * @return Foreign record or null if not available
      */
-    private static Object getInstanceByJoinColumnKey(Integer foreignKey, Map<Integer, ExcelRow> map) {
+    private static Object getInstanceByJoinColumnKey(Object foreignKey, Map<Object, ExcelRow> map) {
         Object returnValue = null;
         if (map != null && map.containsKey(foreignKey)) {
             returnValue = map.get(foreignKey).getCreatedInstance();
@@ -61,7 +61,7 @@ public final class ForeignExcelRowGrabber {
      * @param map Map with excelrows
      * @return Set of instances
      */
-    private static Set<Object> getInstancesByJoinTableKey(Key key, Map<Integer, ExcelRow> map) {
+    private static Set<Object> getInstancesByJoinTableKey(Key key, Map<Object, ExcelRow> map) {
         Set<Object> instances = new HashSet<Object>();
         Set<Integer> foreignKeys = ((JoinTableKey) key).getKeyValues();
         for (Integer foreignKey : foreignKeys) {

@@ -27,7 +27,7 @@ public class ExcelRowTest extends DefaultExcelTestDataCase {
     private Customer createdInstance;
     private ClassDefinition<?> classDefinition;
     private Class<?> persistentClass;
-    private int retrievenKeyValue;
+    private Object retrievenKeyValue;
 
     @Before
     public void setUpExcelRecordTest() throws InstantiationException, IllegalAccessException, SecurityException, NoSuchFieldException, InvalidFormatException,

@@ -7,6 +7,7 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.util.Assert;
 
 public class Sheet implements Iterable<Row> {
@@ -92,7 +93,7 @@ public class Sheet implements Iterable<Row> {
         Set<String> columnNames = new TreeSet<String>();
         for (Cell cell : getColumnRow()) {
             String columnName = cell.getValueAsString();
-            if (columnName != null) {
+            if (StringUtils.isNotBlank(columnName)) {
                 columnNames.add(columnName);
             }
         }

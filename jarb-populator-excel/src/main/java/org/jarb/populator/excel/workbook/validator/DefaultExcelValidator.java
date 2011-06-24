@@ -7,15 +7,15 @@ import java.util.Map;
 import java.util.Set;
 
 import org.jarb.populator.excel.metamodel.ClassDefinition;
-import org.jarb.populator.excel.metamodel.ColumnType;
+import org.jarb.populator.excel.metamodel.DatabasePropertyType;
 import org.jarb.populator.excel.metamodel.MetaModel;
 import org.jarb.populator.excel.metamodel.PropertyDefinition;
 import org.jarb.populator.excel.workbook.Sheet;
 import org.jarb.populator.excel.workbook.Workbook;
-import org.jarb.populator.excel.workbook.validator.WorkbookValidation.SheetValidation;
 
 /**
  * Default implementation of {@link ExcelValidator}.
+ * 
  * @author Jeroen van Schagen
  * @since 10-05-2011
  */
@@ -79,7 +79,7 @@ public class DefaultExcelValidator implements ExcelValidator {
                     columnNames.add(classDefinition.getDiscriminatorColumnName());
                 }
                 for(PropertyDefinition propertyDefinition : classDefinition.getPropertyDefinitions()) {
-                    if(propertyDefinition.getColumnType() == ColumnType.JOIN_TABLE) {
+                    if(propertyDefinition.getDatabaseType() == DatabasePropertyType.JOIN_TABLE) {
                         // Join table properties got their own sheet
                         final String joinSheetName = propertyDefinition.getJoinTableName();
                         sheetNames.add(joinSheetName);

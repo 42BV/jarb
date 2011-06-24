@@ -10,11 +10,10 @@ import org.jarb.populator.excel.DefaultExcelTestDataCase;
 import org.jarb.populator.excel.metamodel.MetaModel;
 import org.jarb.populator.excel.workbook.Workbook;
 import org.jarb.populator.excel.workbook.reader.ExcelParser;
-import org.jarb.populator.excel.workbook.validator.WorkbookValidation.SheetValidation;
 import org.junit.Before;
 import org.junit.Test;
 
-public class ExcelFileValidatorTest extends DefaultExcelTestDataCase {
+public class DefaultExcelValidatorTest extends DefaultExcelTestDataCase {
 
     /*
      * Because of the amount of options this class can generate, it has to be tested thourougly.

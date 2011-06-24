@@ -37,7 +37,7 @@ public class DataWriterTest extends DefaultExcelTestDataCase {
     private Set<Object> connectionInstances;
     private Set<Object> actualConnectionInstanceClassNames;
     private Set<Object> expectedConnectionInstanceClassNames;
-    private Map<ClassDefinition<?>, Map<Integer, ExcelRow>> parseExcelMap;
+    private Map<ClassDefinition<?>, Map<Object, ExcelRow>> parseExcelMap;
     private Workbook excel;
     private ClassDefinition<?> customer;
     private ClassDefinition<?> project;

@@ -65,7 +65,7 @@ public class ExcelDataManagerTest extends DefaultExcelTestDataCase {
     }
 
     @Test
-    public void testCreateWorkbookWithDatabaseData() throws FileNotFoundException {
+    public void testCreateWorkbookWithData() throws FileNotFoundException {
         CompanyCar car = new CompanyCar("bugatti", 999999D, 42, Gearbox.MANUAL, true);
         car.setId(42L);
         
