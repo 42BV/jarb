@@ -8,14 +8,14 @@ Features
  * Database initialization
   * Automate database migrations on application startup
   * Populate database on application startup
-   * SQL script based (using Spring JDBC)
-   * Excel based
-   * Building blocks: compound, conditional, fail-safe
+   + SQL script based (using Spring JDBC)
+   + Excel based
+   + Building blocks: compound, conditional, fail-safe
  * (Database) constraints 
   * Automate database constraint validation with JSR303
   * Translate JDBC exceptions into constraint violation exceptions
-   * Full access to constraint violation metadata
-   * Map custom exceptions to named constraints
+   + Full access to constraint violation metadata
+   + Map custom exceptions to named constraints
   * Describe bean constraint metadata, with content from JDBC and JSR303
   
 Developers
