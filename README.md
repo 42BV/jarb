@@ -46,8 +46,7 @@ automatically be migrated to the latest version during application startup.
 In the below example we use Liquibase to perform database migrations, by
 default it will look for a 'src/main/db/changelog.groovy' file.
 
-<?xml version="1.0" encoding="UTF-8"?>
-<beans>
+
 	<bean id="dataSource" class="org.jarb.migrations.MigratingDataSource">
 	    <property name="delegate">
 			<bean class="org.springframework.jdbc.datasource.DriverManagerDataSource">
@@ -61,7 +60,7 @@ default it will look for a 'src/main/db/changelog.groovy' file.
 	    	<bean class="org.jarb.migrations.liquibase.LiquibaseMigrator"/>
 	    </property>
 	</bean>
-</beans>
+
 
 Database populating
 -------------------
@@ -69,8 +68,6 @@ Whenever we require data to be inserted during application startup, the
 database populator interface can be used. Below we demonstrate how to
 insert data using an SQL script and Excel file.
 
-<?xml version="1.0" encoding="UTF-8"?>
-<beans>
 	<bean class="org.jarb.populator.DatabasePopulatorExecutor">
 		<constructor-arg>
 			<list>
@@ -87,7 +84,6 @@ insert data using an SQL script and Excel file.
 			</list>
 		</constructor-arg>
 	</bean>
-</beans>
 
 JSR303 database constraints
 ---------------------------
@@ -112,8 +108,6 @@ because all metadata is held inside its message. By using exception translation
 we can convert the driver exception into a more intuitive constraint violation
 exception. It is even possible to map custom exceptions on to named constraints.
 
-<?xml version="1.0" encoding="UTF-8"?>
-<beans>
 	<bean class="org.jarb.violation.integration.ConstraintViolationExceptionTranslatingBeanPostProcessor">
 	    <property name="translator">
 	        <bean class="org.jarb.violation.integration.JpaConstraintViolationExceptionTranslatorFactoryBean">
@@ -127,7 +121,6 @@ exception. It is even possible to map custom exceptions on to named constraints.
 	        </bean>
 	    </property>
 	</bean>
-</beans>
 
 By using our exception translator, we now recieve a PostTitleAlreadyExistsException
 whenever the "uk_posts_title" database constraint is violated.
