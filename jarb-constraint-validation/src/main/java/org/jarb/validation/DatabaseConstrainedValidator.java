@@ -52,8 +52,8 @@ public class DatabaseConstrainedValidator implements ConstraintValidator<Databas
 
     // Violation message templates
     private static final String NOT_NULL_TEMPLATE = "{javax.validation.constraints.NotNull.message}";
-    private static final String LENGTH_TEMPLATE = "{nl.mad.constraint.validation.DatabaseConstraint.Length.message}";
-    private static final String FRACTION_LENGTH_TEMPLATE = "{nl.mad.constraint.validation.DatabaseConstraint.FractionLength.message}";
+    private static final String LENGTH_TEMPLATE = "{org.jarb.validation.DatabaseConstraint.Length.message}";
+    private static final String FRACTION_LENGTH_TEMPLATE = "{org.jarb.validation.DatabaseConstraint.FractionLength.message}";
 
     /** Used to retrieve column metadata repository during initialization **/
     private ApplicationContext applicationContext;
@@ -206,7 +206,8 @@ public class DatabaseConstrainedValidator implements ConstraintValidator<Databas
         Assert.notNull(applicationContext, "Application context cannot be null.");
         if (columnMetadataRepository == null) {
             columnMetadataRepository = getBeanFromContext(annotation.repository(), EntityAwareColumnMetadataRepository.class);
-            messageBuilder = new ViolationMessageBuilder(getValidatorFactoryFromContext(annotation));
+            ValidatorFactory validatorFactory = getValidatorFactoryFromContext(annotation);
+            messageBuilder = new ViolationMessageBuilder(validatorFactory.getMessageInterpolator());
         }
     }
     

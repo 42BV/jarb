@@ -10,7 +10,6 @@ import java.util.Set;
 import javax.validation.ConstraintValidator;
 import javax.validation.MessageInterpolator;
 import javax.validation.Payload;
-import javax.validation.ValidatorFactory;
 import javax.validation.metadata.ConstraintDescriptor;
 
 /**
@@ -26,19 +25,11 @@ public class ViolationMessageBuilder {
     private final MessageInterpolator messageInterpolator;
 
     /**
-     * Construct a new {@link ViolationMessageBuilder}.
-     * @param messageInterpolator converts templates into a string message
+     * Construct a new {@link ViolationMessageBuilder}, using a custom message interpoulator.
+     * @param messageInterpolator interpolator used to build violation messages
      */
     public ViolationMessageBuilder(MessageInterpolator messageInterpolator) {
         this.messageInterpolator = messageInterpolator;
-    }
-    
-    /**
-     * Construct a new {@link ViolationMessageBuilder}.
-     * @param violationFactory provides the message interpolator
-     */
-    public ViolationMessageBuilder(ValidatorFactory violationFactory) {
-        this(violationFactory.getMessageInterpolator());
     }
 
     /**
@@ -98,7 +89,6 @@ public class ViolationMessageBuilder {
             AttributeConstraintDescriptor descriptor = new AttributeConstraintDescriptor(attributes);
             return messageInterpolator.interpolate(templateName, new SimpleInterpolatorContext(descriptor, rejectedValue));
         }
-
     }
 
     /**
@@ -128,7 +118,6 @@ public class ViolationMessageBuilder {
         public Object getValidatedValue() {
             return value;
         }
-
     }
 
     /**
@@ -197,7 +186,6 @@ public class ViolationMessageBuilder {
         public boolean isReportAsSingleViolation() {
             return false;
         }
-
     }
 
 }

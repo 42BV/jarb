@@ -40,7 +40,7 @@ public class DatabaseConstraintValidatorTest {
         Assert.assertEquals(1, violations.size());
         ConstraintViolation<Car> licenseViolation = violations.iterator().next();
         Assert.assertEquals("licenseNumber", licenseViolation.getPropertyPath().toString());
-        Assert.assertEquals("mag niet leeg zijn", licenseViolation.getMessage());
+        Assert.assertEquals("cannot be null", licenseViolation.getMessage());
     }
 
     /**
@@ -54,7 +54,7 @@ public class DatabaseConstraintValidatorTest {
         Assert.assertEquals(1, violations.size());
         ConstraintViolation<Car> licenseViolation = violations.iterator().next();
         Assert.assertEquals("licenseNumber", licenseViolation.getPropertyPath().toString());
-        Assert.assertEquals("lengte kan niet groter zijn dan 6", licenseViolation.getMessage());
+        Assert.assertEquals("length cannot be greater than 6", licenseViolation.getMessage());
     }
 
     /**
@@ -69,7 +69,7 @@ public class DatabaseConstraintValidatorTest {
         Assert.assertEquals(1, violations.size());
         ConstraintViolation<Car> licenseViolation = violations.iterator().next();
         Assert.assertEquals("price", licenseViolation.getPropertyPath().toString());
-        Assert.assertEquals("lengte kan niet groter zijn dan 6", licenseViolation.getMessage());
+        Assert.assertEquals("length cannot be greater than 6", licenseViolation.getMessage());
     }
 
     /**
@@ -84,7 +84,7 @@ public class DatabaseConstraintValidatorTest {
         Assert.assertEquals(1, violations.size());
         ConstraintViolation<Car> licenseViolation = violations.iterator().next();
         Assert.assertEquals("price", licenseViolation.getPropertyPath().toString());
-        Assert.assertEquals("lengte kan niet groter zijn dan 2 achter de komma", licenseViolation.getMessage());
+        Assert.assertEquals("cannot have more than 2 numbers behind the comma", licenseViolation.getMessage());
     }
 
     /**
@@ -97,9 +97,9 @@ public class DatabaseConstraintValidatorTest {
         Set<ConstraintViolation<Car>> violations = validator.validate(unknownOverpricedCar);
         Assert.assertEquals(3, violations.size());
         Collection<String> messages = collectMessage(violations);
-        Assert.assertTrue(messages.contains("mag niet leeg zijn"));
-        Assert.assertTrue(messages.contains("lengte kan niet groter zijn dan 6"));
-        Assert.assertTrue(messages.contains("lengte kan niet groter zijn dan 2 achter de komma"));
+        Assert.assertTrue(messages.contains("cannot be null"));
+        Assert.assertTrue(messages.contains("length cannot be greater than 6"));
+        Assert.assertTrue(messages.contains("cannot have more than 2 numbers behind the comma"));
     }
 
     /**
