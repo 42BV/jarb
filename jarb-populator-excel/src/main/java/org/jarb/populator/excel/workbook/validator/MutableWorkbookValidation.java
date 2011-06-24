@@ -37,7 +37,7 @@ public class MutableWorkbookValidation implements WorkbookValidation {
      */
     @Override
     public Set<WorkbookViolation> getViolations() {
-        Set<WorkbookViolation> allViolations = new HashSet<WorkbookViolation>();
+        Set<WorkbookViolation> allViolations = new HashSet<WorkbookViolation>(violations);
         for(Set<WorkbookViolation> sheetViolations : sheetViolationsMap.values()) {
             allViolations.addAll(sheetViolations);
         }
@@ -52,6 +52,10 @@ public class MutableWorkbookValidation implements WorkbookValidation {
         return Collections.unmodifiableSet(violations);
     }
     
+    /**
+     * Include a global violation, for example a missing or unknown sheet.
+     * @param violation global violation being added
+     */
     public void addGlobalViolation(WorkbookViolation violation) {
         violations.add(violation);
     }
@@ -64,6 +68,11 @@ public class MutableWorkbookValidation implements WorkbookValidation {
         return Collections.unmodifiableSet(sheetViolationsMap.get(sheetName));
     }
     
+    /**
+     * Include a sheet specific violation, for example a missing or unknown column.
+     * @param sheetName name of the sheet
+     * @param sheetViolation sheet specific violation being added
+     */
     public void addSheetViolation(String sheetName, WorkbookViolation sheetViolation) {
         Set<WorkbookViolation> sheetViolations = sheetViolationsMap.get(sheetName);
         if(sheetViolations == null) {

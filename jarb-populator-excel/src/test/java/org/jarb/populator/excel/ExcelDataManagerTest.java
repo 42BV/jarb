@@ -3,6 +3,7 @@ package org.jarb.populator.excel;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -47,9 +48,19 @@ public class ExcelDataManagerTest extends DefaultExcelTestDataCase {
         assertFalse("Workbook should not contain errors", validation.hasViolations());
     }
     
-    @Test(expected = InvalidWorkbookException.class)
+    @Test
     public void testInvalidWorkbook() throws FileNotFoundException {
-        excelData.loadWorkbook("src/test/resources/ExcelVerification/missing_sheet.xls").entities();
+        try {
+            // Calling entities() should implictly invoke continueIfValid()
+            excelData.loadWorkbook("src/test/resources/ExcelVerification/missing_sheet.xls").entities();
+            fail("Expected an exception as the loaded workbook has an invalid structure");
+        } catch(InvalidWorkbookException e) {
+            WorkbookValidation validation = e.getValidation();
+            assertNotNull("Expected a workbook validation with the exception", validation);
+            assertEquals(1, validation.getViolations().size());
+            assertEquals("Sheet 'customers' is missing.", validation.getViolations().iterator().next().getMessage());
+            assertEquals("Worbook is invalid:\n - Sheet 'customers' is missing.", e.getMessage());
+        }
     }
     
     @Test
