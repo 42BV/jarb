@@ -60,7 +60,7 @@ public class ClassDefinition<T> {
      * Returns the persistentClass belonging to classDefinition.
      * @return persistentClass instance from domain package
      */
-    public Class<T> getPersistentClass() {
+    public Class<T> getEntityClass() {
         return persistentClass;
     }
     

@@ -100,7 +100,7 @@ public final class ExcelImporter {
     }
     
     private static Class<?> determineEntityClass(final Sheet sheet, final ClassDefinition<?> classDefinition, String discriminatorColumnName, Integer rowPosition) {
-        Class<?> entityClass = classDefinition.getPersistentClass();
+        Class<?> entityClass = classDefinition.getEntityClass();
         if (discriminatorColumnName != null) {
             WorksheetDefinition worksheetDefinition = WorksheetDefinition.analyzeWorksheet(classDefinition, sheet.getWorkbook());
             Integer discriminatorPosition = worksheetDefinition.getColumnPosition(discriminatorColumnName);

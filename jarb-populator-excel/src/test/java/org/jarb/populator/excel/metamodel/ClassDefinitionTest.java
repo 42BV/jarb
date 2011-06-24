@@ -30,7 +30,7 @@ public class ClassDefinitionTest extends DefaultExcelTestDataCase {
 
     @Test
     public void testGetPersistentClass() {
-        assertEquals(Customer.class, classDefinitionBuilder.build().getPersistentClass());
+        assertEquals(Customer.class, classDefinitionBuilder.build().getEntityClass());
     }
 
     @Test

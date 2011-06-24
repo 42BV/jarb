@@ -53,7 +53,7 @@ public class StoreJoinColumnTest extends DefaultExcelTestDataCase {
 
         classDefinition = ClassDefinitionsGenerator.createSingleClassDefinitionFromMetamodel(getEntityManagerFactory(), entity, false);
 
-        excelRow = new ExcelRow(classDefinition.getPersistentClass());
+        excelRow = new ExcelRow(classDefinition.getEntityClass());
 
         rowPosition = 1;
         PropertyDefinition joinColumn = FieldAnalyzer.analyzeField(customerField).build();
@@ -70,7 +70,7 @@ public class StoreJoinColumnTest extends DefaultExcelTestDataCase {
         EntityType<?> entity = ClassDefinitionsGenerator.getEntityFromMetamodel(domain.entities.Project.class, metamodel);
 
         classDefinition = ClassDefinitionsGenerator.createSingleClassDefinitionFromMetamodel(getEntityManagerFactory(), entity, false);
-        excelRow = new ExcelRow(classDefinition.getPersistentClass());
+        excelRow = new ExcelRow(classDefinition.getEntityClass());
 
         StoreJoinColumn.storeValue(excel, classDefinition, classDefinition.getPropertyDefinition("customer"), 2, excelRow);
     }

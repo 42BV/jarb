@@ -47,7 +47,7 @@ public class ExcelRowTest extends DefaultExcelTestDataCase {
         EntityType<?> entity = ClassDefinitionsGenerator.getEntityFromMetamodel(domain.entities.Customer.class, metamodel);
 
         classDefinition = ClassDefinitionsGenerator.createSingleClassDefinitionFromMetamodel(getEntityManagerFactory(), entity, false);
-        excelRow = new ExcelRow(classDefinition.getPersistentClass());
+        excelRow = new ExcelRow(classDefinition.getEntityClass());
 
         PropertyDefinition columnDefinition = FieldAnalyzer.analyzeField(persistentClass.getDeclaredField("id")).build();
 
@@ -67,7 +67,7 @@ public class ExcelRowTest extends DefaultExcelTestDataCase {
         EntityType<?> entity = ClassDefinitionsGenerator.getEntityFromMetamodel(domain.entities.Customer.class, metamodel);
 
         classDefinition = ClassDefinitionsGenerator.createSingleClassDefinitionFromMetamodel(getEntityManagerFactory(), entity, false);
-        excelRow = new ExcelRow(classDefinition.getPersistentClass());
+        excelRow = new ExcelRow(classDefinition.getEntityClass());
 
         createdInstance = (Customer) excelRow.getCreatedInstance();
         assertEquals(persistentClass, createdInstance.getClass());

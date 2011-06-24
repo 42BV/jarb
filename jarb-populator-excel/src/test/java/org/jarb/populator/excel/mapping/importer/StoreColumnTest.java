@@ -58,7 +58,7 @@ public class StoreColumnTest extends DefaultExcelTestDataCase {
         worksheetDefinition = new WorksheetDefinition();
         worksheetDefinition = WorksheetDefinition.analyzeWorksheet(classDefinition, excel);
         worksheetDefinition.addColumnPosition("address", "customers", 0);
-        excelRow = new ExcelRow(classDefinition.getPersistentClass());
+        excelRow = new ExcelRow(classDefinition.getEntityClass());
 
         rowPosition = 1;
         StoreExcelRecordValue.storeValue(excel, classDefinition, column, rowPosition, excelRow);

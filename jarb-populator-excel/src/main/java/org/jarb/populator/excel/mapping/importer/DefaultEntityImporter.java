@@ -45,7 +45,7 @@ public class DefaultEntityImporter implements EntityImporter {
         EntityRegistry registry = new EntityRegistry();
         for (Map.Entry<ClassDefinition<?>, Map<Object, ExcelRow>> entitiesEntry : entitiesMap.entrySet()) {
             @SuppressWarnings("rawtypes")
-            final Class entityClass = entitiesEntry.getKey().getPersistentClass();
+            final Class entityClass = entitiesEntry.getKey().getEntityClass();
             EntityTable<Object> entities = new EntityTable<Object>(entityClass);
             for (Map.Entry<Object, ExcelRow> excelRowEntry : entitiesEntry.getValue().entrySet()) {
                 // Entity registry uses the entities persistent identifier, rather than its row identifier

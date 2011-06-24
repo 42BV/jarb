@@ -24,7 +24,7 @@ public final class ClassDefinitionFinder {
      */
     public static ClassDefinition<?> findClassDefinitionByPersistentClass(Set<ClassDefinition<?>> classDefinitions, Class<?> toFind) {
         for (ClassDefinition<?> classDefinition : classDefinitions) {
-            if (classDefinition.getPersistentClass() == toFind) {
+            if (classDefinition.getEntityClass() == toFind) {
                 return classDefinition;
             }
         }

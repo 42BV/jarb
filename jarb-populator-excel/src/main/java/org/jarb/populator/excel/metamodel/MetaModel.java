@@ -23,7 +23,7 @@ public class MetaModel implements Iterable<ClassDefinition<?>> {
     public MetaModel(Collection<ClassDefinition<?>> classDefinitions) {
         classDefinitionMap = new HashMap<Class<?>, ClassDefinition<?>>();
         for(ClassDefinition<?> classDefinition : classDefinitions) {
-            classDefinitionMap.put(classDefinition.getPersistentClass(), classDefinition);
+            classDefinitionMap.put(classDefinition.getEntityClass(), classDefinition);
         }
     }
     

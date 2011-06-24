@@ -1,14 +1,10 @@
 package org.jarb.populator.excel.mapping.exporter;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
-import java.util.List;
 
 import org.jarb.populator.excel.entity.EntityRegistry;
 import org.jarb.populator.excel.mapping.ValueConversionService;
 import org.jarb.populator.excel.metamodel.ClassDefinition;
-import org.jarb.populator.excel.metamodel.ClassDefinitionNameComparator;
 import org.jarb.populator.excel.metamodel.DatabasePropertyType;
 import org.jarb.populator.excel.metamodel.MetaModel;
 import org.jarb.populator.excel.metamodel.PropertyDefinition;
@@ -31,9 +27,17 @@ import org.jarb.utils.BeanPropertyUtils;
  * @since 12-05-2011
  */
 public class DefaultEntityExporter implements EntityExporter {
-    private final EntityRowIdResolver entityRowIdResolver = new EntityRowIdResolver();
+    /** Builds the excel template file. **/
+    private ExcelTemplateBuilder excelTemplateBuilder = new ExcelTemplateBuilder();
+    /** Resolves the row identifier of an entity. **/
+    private EntityRowIdResolver entityRowIdResolver = new EntityRowIdResolver();
+    /** Converts property values into any desired format. **/
     private ValueConversionService valueConversionService;
     
+    /**
+     * Construct a new {@link DefaultEntityExporter}.
+     * @param valueConversionService converts property values into any desired format
+     */
     public DefaultEntityExporter(ValueConversionService valueConversionService) {
         this.valueConversionService = valueConversionService;
     }
@@ -43,70 +47,24 @@ public class DefaultEntityExporter implements EntityExporter {
      */
     @Override
     public Workbook export(EntityRegistry registry, MetaModel metamodel) {
-        Workbook workbook = createTemplate(metamodel);
+        Workbook workbook = excelTemplateBuilder.createTemplate(metamodel);
         for (ClassDefinition<?> classDefinition : metamodel.getClassDefinitions()) {
-            includeEntities(registry, classDefinition, workbook);
-        }
-        return workbook;
-    }
-    
-    // Create template (sheets for each type, and each column name)
-    
-    private Workbook createTemplate(MetaModel metamodel) {
-        Workbook workbook = new Workbook();
-        List<ClassDefinition<?>> classDefinitions = new ArrayList<ClassDefinition<?>>(metamodel.getClassDefinitions());
-        Collections.sort(classDefinitions, new ClassDefinitionNameComparator());
-        for (ClassDefinition<?> classDefinition : classDefinitions) {
-            createClassSheet(classDefinition, workbook);
+            exportEntities(registry, classDefinition, workbook);
         }
         return workbook;
     }
     
     /**
-     * Create the sheet for a specific type of entity.
-     * @param classDefinition description of the entity structure being stored
-     * @param workbook the workbook that will hold our sheet
+     * Store the entities of a specific type in our sheet.
+     * @param <T> type of entities being stored
+     * @param registry registry containing the entities
+     * @param classDefinition description of the entity class
+     * @param workbook excel workbook that will contain our data
      */
-    private void createClassSheet(ClassDefinition<?> classDefinition, Workbook workbook) {
-        Sheet sheet = workbook.createSheet(classDefinition.getTableName());
-        storeColumnNames(sheet, classDefinition);
-        for(PropertyDefinition propertyDefinition : classDefinition.getPropertyDefinitions()) {
-            if(propertyDefinition.getDatabaseType() == DatabasePropertyType.JOIN_TABLE) {
-                createJoinSheet(propertyDefinition, workbook);
-            }
-        }
-    }
-    
-    /**
-     * Store all column names in the sheet.
-     * @param sheet the sheet that should contain our columns
-     * @param classDefinition description of all columns
-     */
-    private void storeColumnNames(Sheet sheet, ClassDefinition<?> classDefinition) {
-        int columnNumber = 0;
-        sheet.setColumnNameAt(columnNumber++, "#"); // Row identifier
-        for(String columnName : classDefinition.getColumnNames()) {
-            sheet.setColumnNameAt(columnNumber++, columnName);
-        }
-    }
-    
-    /**
-     * Create the join sheet between two types of entities.
-     * @param propertyDefinition definition of the join table property
-     * @param workbook the workbook that will hold our sheet
-     */
-    private void createJoinSheet(PropertyDefinition propertyDefinition, Workbook workbook) {
-        Sheet joinSheet = workbook.createSheet(propertyDefinition.getJoinTableName());
-        joinSheet.setColumnNameAt(0, propertyDefinition.getJoinColumnName());
-        joinSheet.setColumnNameAt(1, propertyDefinition.getInverseJoinColumnName());
-    }
-    
-    // Include entities into our workbook
-    
-    private <T> void includeEntities(EntityRegistry registry, ClassDefinition<T> classDefinition, Workbook workbook) {
+    private <T> void exportEntities(EntityRegistry registry, ClassDefinition<T> classDefinition, Workbook workbook) {
         Sheet sheet = workbook.getSheet(classDefinition.getTableName());
-        for(T entity : registry.forClass(classDefinition.getPersistentClass())) {
-            includeEntity(entity, classDefinition, sheet);
+        for(T entity : registry.forClass(classDefinition.getEntityClass())) {
+            exportEntity(entity, classDefinition, sheet);
         }
     }
    
@@ -114,10 +72,10 @@ public class DefaultEntityExporter implements EntityExporter {
      * Store a specific entity in our sheet.
      * @param <T> type of entity being stored
      * @param entity the entity being stored
+     * @param classDefinition description of the entity class
      * @param sheet the sheet in which we store the entity
-     * @param classDefinition description of the entity
      */
-    private <T> void includeEntity(T entity, ClassDefinition<T> classDefinition, Sheet sheet) {
+    private <T> void exportEntity(T entity, ClassDefinition<T> classDefinition, Sheet sheet) {
         Row row = sheet.createRow();
         for(PropertyDefinition propertyDefinition : classDefinition.getPropertyDefinitions()) {
             final DatabasePropertyType type = propertyDefinition.getDatabaseType();
@@ -133,7 +91,7 @@ public class DefaultEntityExporter implements EntityExporter {
                     row.setCellValueAt(propertyDefinition.getColumnName(), createCellValue(referenceIdentifier));
                 }
             } else if(type == DatabasePropertyType.JOIN_TABLE) {
-                includeJoinTable(entity, propertyDefinition, sheet.getWorkbook());
+                exportJoinTable(entity, propertyDefinition, sheet.getWorkbook());
             }
         }
         if(classDefinition.hasDiscriminatorColumn()) {
@@ -151,7 +109,7 @@ public class DefaultEntityExporter implements EntityExporter {
      * @param propertyDefinition description of the join property
      * @param workbook the workbook that will contain our "join" sheet
      */
-    private void includeJoinTable(Object entity, PropertyDefinition propertyDefinition, Workbook workbook) {
+    private void exportJoinTable(Object entity, PropertyDefinition propertyDefinition, Workbook workbook) {
         Iterable<?> referenceEntities = (Iterable<?>) getPropertyValue(entity, propertyDefinition);
         if(referenceEntities != null) {
             Sheet joinSheet = workbook.getSheet(propertyDefinition.getJoinTableName());

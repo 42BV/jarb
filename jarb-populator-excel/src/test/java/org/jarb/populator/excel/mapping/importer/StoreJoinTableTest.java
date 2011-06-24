@@ -62,7 +62,7 @@ public class StoreJoinTableTest {
 
         classDefinition = ClassDefinitionsGenerator.createSingleClassDefinitionFromMetamodel(entityManagerFactory, entity, false);
 
-        excelRow = new ExcelRow(classDefinition.getPersistentClass());
+        excelRow = new ExcelRow(classDefinition.getEntityClass());
 
         PropertyDefinition joinTable = FieldAnalyzer.analyzeField(projectsField).build();
 
