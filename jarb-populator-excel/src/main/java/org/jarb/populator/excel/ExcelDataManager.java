@@ -17,6 +17,7 @@ import org.jarb.populator.excel.metamodel.generator.MetaModelGenerator;
 import org.jarb.populator.excel.workbook.Workbook;
 import org.jarb.populator.excel.workbook.reader.ExcelParser;
 import org.jarb.populator.excel.workbook.validator.ExcelValidator;
+import org.jarb.populator.excel.workbook.validator.MutableWorkbookValidation;
 import org.jarb.populator.excel.workbook.validator.WorkbookValidation;
 import org.jarb.populator.excel.workbook.writer.ExcelWriter;
 import org.springframework.core.io.Resource;
@@ -103,7 +104,7 @@ public class ExcelDataManager {
         
         /**
          * Validate the workbook, and return the validation result.
-         * @see WorkbookValidation
+         * @see MutableWorkbookValidation
          * @return validation result
          */
         public WorkbookValidation validate() {
@@ -146,7 +147,7 @@ public class ExcelDataManager {
          */
         protected WorkbookAccessor continueIfValid() {
             WorkbookValidation validation = validate();
-            if(validation.hasErrors()) {
+            if(validation.hasViolations()) {
                 throw new InvalidWorkbookException(validation);
             }
             return this;

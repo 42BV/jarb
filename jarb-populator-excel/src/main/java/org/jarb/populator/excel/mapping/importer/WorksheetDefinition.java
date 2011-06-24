@@ -36,10 +36,12 @@ public class WorksheetDefinition {
         for (PropertyDefinition columnDefinition : classDefinition.getPropertyDefinitions()) {
             final String columnName = columnDefinition.getColumnName();
             LOGGER.debug("  field name: [" + columnDefinition.getName() + "], column name: [" + columnName + "]");
-            if (sheet.containsColumn(columnName)) {
-                worksheetDefinition.addColumnPosition(columnName, classDefinition.getTableName(), sheet.indexOfColumn(columnName));
-            } else {
-                LOGGER.warn("Column name " + columnDefinition.getColumnName() + " was not present in the Worksheet.");
+            if (columnDefinition.hasColumn()) {
+                if(sheet.containsColumn(columnName)) {
+                    worksheetDefinition.addColumnPosition(columnName, classDefinition.getTableName(), sheet.indexOfColumn(columnName));
+                } else {
+                    LOGGER.warn("Column name " + columnDefinition.getColumnName() + " was not present in the Worksheet.");
+                }
             }
         }
         

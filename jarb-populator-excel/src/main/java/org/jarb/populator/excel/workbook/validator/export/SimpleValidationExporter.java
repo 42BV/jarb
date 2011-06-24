@@ -6,11 +6,11 @@ import java.io.OutputStreamWriter;
 import java.io.Writer;
 
 import org.apache.commons.io.IOUtils;
-import org.jarb.populator.excel.workbook.validator.SheetValidation;
-import org.jarb.populator.excel.workbook.validator.WorkbookValidation;
+import org.jarb.populator.excel.workbook.validator.MutableWorkbookValidation;
+import org.jarb.populator.excel.workbook.validator.WorkbookViolation;
 
 /**
- * Exports a {@link WorkbookValidation} into the provided output stream.
+ * Exports a {@link MutableWorkbookValidation} into the provided output stream.
  * 
  * @author Jeroen van Schagen
  * @since 12-05-2011
@@ -22,27 +22,17 @@ public class SimpleValidationExporter implements ValidationExporter {
      * @param validation result of our validation
      * @param os stream being written to
      */
-    public void export(WorkbookValidation validation, OutputStream os) {
+    public void export(MutableWorkbookValidation validation, OutputStream os) {
         Writer writer = new OutputStreamWriter(os);
         try {
-            writer.write("Missing sheets:\n");
-            for (String sheetName : validation.getMissingSheets()) {
-                writer.write(" - " + sheetName + "\n");
-            }
-            writer.write("Unknown sheets:\n");
-            for (String sheetName : validation.getUnknownSheets()) {
-                writer.write(" - " + sheetName + "\n");
+            writer.write("Workbook violations\n");
+            for(WorkbookViolation violation : validation.getGlobalViolations()) {
+                writer.write(" - " + violation.getMessage() + "\n");
             }
             for(String sheetName : validation.getValidatedSheetNames()) {
-                writer.write("\nSheet '" + sheetName + "' validation\n");
-                SheetValidation sheetValidation = validation.getSheetValidation(sheetName);
-                writer.write("Missing columns:\n");
-                for (String columnName : sheetValidation.getMissingColumns()) {
-                    writer.write(" - " + columnName + "\n");
-                }
-                writer.write("Unknown columns:\n");
-                for (String columnName : sheetValidation.getUnknownColumns()) {
-                    writer.write(" - " + columnName + "\n");
+                writer.write("\nSheet '" + sheetName + "':\n");
+                for(WorkbookViolation violation : validation.getSheetViolations(sheetName)) {
+                    writer.write(" - " + violation.getMessage() + "\n");
                 }
             }
             writer.flush();

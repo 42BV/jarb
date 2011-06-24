@@ -8,13 +8,13 @@ import java.util.Set;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
-import javax.persistence.PersistenceUnitUtil;
 import javax.persistence.metamodel.Attribute;
 import javax.persistence.metamodel.Attribute.PersistentAttributeType;
 import javax.persistence.metamodel.EntityType;
 import javax.persistence.metamodel.Metamodel;
 
 import org.jarb.populator.excel.metamodel.generator.SuperclassRetriever;
+import org.jarb.populator.excel.util.JpaUtils;
 import org.jarb.utils.ReflectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -153,16 +153,19 @@ public final class ReferentialPreparement {
      */
     private static Object setFieldValuesForReferencedObject(Object entity, EntityManager entityManager, String attributeName, Object referencedObject,
             Set<Object> cascadedObjectsInThisInteration) {
-        Object retrievenObject = null;
-        EntityManagerFactory entityManagerFactory = entityManager.getEntityManagerFactory();
-        PersistenceUnitUtil persistenceUnitUtil = entityManagerFactory.getPersistenceUnitUtil();
-
         if (referencedObject != null) {
-            //Identifier is null if referencedObject has not yet been persisted.
-            if (persistenceUnitUtil.getIdentifier(referencedObject) != null) {
-                retrievenObject = entityManager.find(referencedObject.getClass(), persistenceUnitUtil.getIdentifier(referencedObject));
-                ReflectionUtils.setFieldValue(entity, attributeName, retrievenObject);
+            Object identifier = JpaUtils.getIdentifier(referencedObject, entityManager.getEntityManagerFactory());
+            if (identifier != null) {
+                Object retrievenObject = entityManager.find(referencedObject.getClass(), identifier);
+                if(retrievenObject != null) {
+                    // Entity has already been persisted, couple to persisted value
+                    ReflectionUtils.setFieldValue(entity, attributeName, retrievenObject);
+                } else {
+                    // Entity claimed to have an identifier, but is not known in database
+                    cascadeReferencedObject(entity, entityManager, attributeName, referencedObject, cascadedObjectsInThisInteration);
+                }
             } else {
+                // Entity has no identifier yet
                 cascadeReferencedObject(entity, entityManager, attributeName, referencedObject, cascadedObjectsInThisInteration);
             }
         }

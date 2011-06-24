@@ -26,15 +26,12 @@ public final class ForeignExcelRowGrabber {
      * @return Set of excelRecords referenced to by foreignKeys
      */
     protected static Object getInstanceValue(Key key, Map<Object, ExcelRow> map) {
-        Object returnValue;
+        Object returnValue = null;
         if (key instanceof JoinTableKey) {
             returnValue = getInstancesByJoinTableKey(key, map);
         } else if (key instanceof JoinColumnKey) {
             Object foreignKey = ((JoinColumnKey) key).getKeyValue();
             returnValue = getInstanceByJoinColumnKey(foreignKey, map);
-        } else {
-            LOGGER.warn("Not an instance of JoinTableKey or JoinColumnKey. Cannot retrieve data.");
-            returnValue = null;
         }
         return returnValue;
     }

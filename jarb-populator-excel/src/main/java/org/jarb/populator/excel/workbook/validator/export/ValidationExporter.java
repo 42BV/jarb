@@ -2,10 +2,10 @@ package org.jarb.populator.excel.workbook.validator.export;
 
 import java.io.OutputStream;
 
-import org.jarb.populator.excel.workbook.validator.WorkbookValidation;
+import org.jarb.populator.excel.workbook.validator.MutableWorkbookValidation;
 
 public interface ValidationExporter {
 
-    void export(WorkbookValidation validation, OutputStream os);
+    void export(MutableWorkbookValidation validation, OutputStream os);
     
 }

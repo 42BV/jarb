@@ -55,7 +55,7 @@ public final class ExcelImporter {
                 }
             }
         }
-
+        
         return objectModel;
     }
 

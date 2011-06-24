@@ -10,6 +10,7 @@ import org.jarb.populator.excel.metamodel.ClassDefinition;
 import org.jarb.populator.excel.metamodel.DatabasePropertyType;
 import org.jarb.populator.excel.metamodel.MetaModel;
 import org.jarb.populator.excel.metamodel.PropertyDefinition;
+import org.jarb.populator.excel.workbook.Row;
 import org.jarb.populator.excel.workbook.Sheet;
 import org.jarb.populator.excel.workbook.Workbook;
 
@@ -26,42 +27,48 @@ public class DefaultExcelValidator implements ExcelValidator {
      */
     @Override
     public WorkbookValidation validate(Workbook workbook, MetaModel metamodel) {
-        WorkbookValidation validation = new WorkbookValidation();
+        MutableWorkbookValidation validation = new MutableWorkbookValidation();
         WorkbookExpectation expectation = new WorkbookExpectation(metamodel);
-        // Ensure that each sheet maps to a definition in our metamodel
-        for(String sheetName : workbook.getSheetNames()) {
-            if(expectation.containsSheet(sheetName)) {
-                Sheet sheet = workbook.getSheet(sheetName);
-                Set<String> expectedColumnNames = expectation.getColumnNames(sheetName);
-                validation.includeSheetValidation(sheetName, validateSheet(sheet, expectedColumnNames));
+        // Ensure that each definition has a corresponding sheet
+        for(String expectedSheetName : expectation.getSheetNames()) {
+            if(workbook.containsSheet(expectedSheetName)) {
+                Sheet sheet = workbook.getSheet(expectedSheetName);
+                Set<String> expectedColumnNames = expectation.getColumnNames(expectedSheetName);
+                validateSheet(sheet, expectedColumnNames, validation);
             } else {
-                validation.addUnknownSheet(sheetName);   
+                validation.addGlobalViolation(new MissingSheetViolation(expectedSheetName));
             }
         }
-        // Ensure that each definition has a corresponding sheet
-        for(String sheetName : expectation.getSheetNames()) {
-            if(!workbook.containsSheet(sheetName)) {
-                validation.addMissingSheet(sheetName);
+        // Ensure that each sheet maps to a definition in our metamodel
+        for(String sheetName : workbook.getSheetNames()) {
+            if(!expectation.containsSheet(sheetName)) {
+                validation.addGlobalViolation(new UnknownSheetViolation(sheetName));
             }
         }
         return validation;
     }
     
-    private SheetValidation validateSheet(Sheet sheet, Set<String> expectedColumnNames) {
-        SheetValidation validation = new SheetValidation();
+    private void validateSheet(Sheet sheet, Set<String> expectedColumnNames, MutableWorkbookValidation validation) {
+        final String sheetName = sheet.getName();
         // Ensure that each expected column is defined in our sheet
         for(String expectedColumnName : expectedColumnNames) {
             if(!sheet.containsColumn(expectedColumnName)) {
-                validation.addMissingColumn(expectedColumnName);
+                validation.addSheetViolation(sheetName, new MissingColumnViolation(sheetName, expectedColumnName));
             }
         }
-        // Ensure that each defined column is expected
+        // Ensure that each defined column is acceptable
         for(String columnName : sheet.getColumnNames()) {
-            if(!expectedColumnNames.contains(columnName)) {
-                validation.addUnknownColumn(columnName);
+            // The first column can have any value as it represents the row identifier
+            if(!expectedColumnNames.contains(columnName) && sheet.indexOfColumn(columnName) != 0) {
+                validation.addSheetViolation(sheetName, new UnknownColumnViolation(sheetName, columnName));
             }
         }
-        return validation;
+        // Ensure that each row has an identifier
+        for(Row row : sheet.getRows()) {
+            if(row.getValueAt(0) == null) {
+                validation.addSheetViolation(sheetName, new MissingIdentifierViolation(sheetName, row.getRowNo()));
+            }
+        }
     }
     
     private class WorkbookExpectation {
@@ -74,7 +81,6 @@ public class DefaultExcelValidator implements ExcelValidator {
                 // Each entity type has a specific sheet name
                 sheetNames.add(sheetName);
                 Set<String> columnNames = new HashSet<String>();
-                columnNames.add("id");
                 if(classDefinition.hasDiscriminatorColumn()) {
                     columnNames.add(classDefinition.getDiscriminatorColumnName());
                 }

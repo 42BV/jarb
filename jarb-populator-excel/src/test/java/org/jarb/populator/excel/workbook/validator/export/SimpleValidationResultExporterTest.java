@@ -14,10 +14,10 @@ public class SimpleValidationResultExporterTest extends DefaultExcelTestDataCase
     @Test
     public void testExport() throws FileNotFoundException {
         WorkbookValidation validation = getExcelDataManager().loadWorkbook("src/test/resources/Excel.xls").validate();
-        ByteArrayOutputStream arrayOutputStream = new ByteArrayOutputStream();
-        new SimpleValidationExporter().export(validation, arrayOutputStream);
-        String validationExport = arrayOutputStream.toString();
-        assertNotNull(validationExport);
+        ByteArrayOutputStream os = new ByteArrayOutputStream();
+        validation.export(new SimpleValidationExporter(), os);
+        String exportedValidation = os.toString();
+        assertNotNull(exportedValidation);
     }
 
 }

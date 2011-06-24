@@ -44,12 +44,12 @@ public class ExcelDataManagerTest extends DefaultExcelTestDataCase {
     public void testValidateWorkbook() throws FileNotFoundException {
         WorkbookValidation validation = excelData.loadWorkbook("src/test/resources/Excel.xls").validate();
         assertNotNull("No workbook validation was returned", validation);
-        assertFalse("Workbook should not contain errors", validation.hasErrors());
+        assertFalse("Workbook should not contain errors", validation.hasViolations());
     }
     
     @Test(expected = InvalidWorkbookException.class)
     public void testInvalidWorkbook() throws FileNotFoundException {
-        excelData.loadWorkbook("src/test/resources/ExcelVerification/Testcase3.xls").entities();
+        excelData.loadWorkbook("src/test/resources/ExcelVerification/missing_sheet.xls").entities();
     }
     
     @Test
@@ -61,7 +61,7 @@ public class ExcelDataManagerTest extends DefaultExcelTestDataCase {
     public void testCreateWorkbookTemplate() throws FileNotFoundException {
         excelData.newWorkbook().write("src/test/resources/excel/generated/NewExcelFile.xls");
         WorkbookValidation validation = excelData.loadWorkbook("src/test/resources/excel/generated/NewExcelFile.xls").validate();
-        assertFalse("Created workbook template is not valid", validation.hasErrors());
+        assertFalse("Created workbook template is not valid", validation.hasViolations());
     }
 
     @Test
