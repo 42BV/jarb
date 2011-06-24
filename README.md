@@ -15,7 +15,7 @@ License
    you may not use this file except in compliance with the License.
    You may obtain a copy of the License at
 
-       http://www.apache.org/licenses/LICENSE-2.0
+	http://www.apache.org/licenses/LICENSE-2.0
 
    Unless required by applicable law or agreed to in writing, software
    distributed under the License is distributed on an "AS IS" BASIS,
@@ -92,13 +92,13 @@ duplicate constraint information in both the database and entity class.
 Duplication is never good, so we made a @DatabaseConstrained annotation that
 dynamically validates all simple database constraints based on JDBC metadata.
 
-@DatabaseConstrained @Entity
-public class Person {
- @Id @GeneratedValue
- private Long id;
- private String name;
- ...
-}
+	@DatabaseConstrained @Entity
+	public class Person {
+		@Id @GeneratedValue
+		private Long id;
+		private String name;
+		...
+	}
 
 Database constraint exceptions
 ------------------------------
