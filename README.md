@@ -9,7 +9,7 @@ Developers
  
 License
 -------
- Copyright [2011] [42BV]
+ Copyright 2011 42bv (http://www.42.nl)
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -40,19 +40,88 @@ Features
 
 Database migrations (schema)
 ----------------------------
-TODO
+By wrapping the data source in a migrating data source, the data base will
+automatically be migrated to the latest version during application startup.
+
+In the below example we use Liquibase to perform database migrations, by
+default it will look for a 'src/main/db/changelog.groovy' file.
+
+<bean id="dataSource" class="org.jarb.migrations.MigratingDataSource">
+    <property name="delegate">
+		<bean class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		    <property name="driverClassName" value="org.hsqldb.jdbcDriver"/>
+		    <property name="url" value="jdbc:hsqldb:mem:jarb"/>
+		    <property name="username" value="sa"/>
+		    <property name="password" value=""/>
+		</bean>
+	</property>
+    <property name="migrator">
+    	<bean class="org.jarb.migrations.liquibase.LiquibaseMigrator"/>
+    </property>
+</bean>
 
 Database populating
 -------------------
-TODO
+Whenever we require data to be inserted during application startup, the
+database populator interface can be used. Below we demonstrate how to
+insert data using an SQL script and Excel file.
+
+<bean class="org.jarb.populator.DatabasePopulatorExecutor">
+	<constructor-arg>
+		<list>
+			<!-- Using SQL statements -->
+			<bean class="org.jarb.populator.SqlResourceDatabasePopulator">
+				<property name="sqlResource" value="classpath:import.sql"/>
+				<property name="dataSource" ref="dataSource"/>
+			</bean>
+			<!-- And an Excel workbook -->
+			<bean class="org.jarb.populator.excel.ExcelDatabasePopulator">
+				<property name="excelResource" value="classpath:import.xls"/>
+				<property name="entityManagerFactory" ref="entityManagerFactory"/>
+			</bean>
+		</list>
+	</constructor-arg>
+</bean>
 
 JSR303 database constraints
 ---------------------------
-TODO
+To validate database constraints with JSR303 validation, we often need to
+duplicate constraint information in both the database and entity class.
+Duplication is never good, so we made a @DatabaseConstrained annotation that
+dynamically validates all simple database constraints based on JDBC metadata.
+
+@DatabaseConstrained @Entity
+public class Person {
+ @Id @GeneratedValue
+ private Long id;
+ private String name;
+ ...
+}
 
 Database constraint exceptions
 ------------------------------
-TODO
+Whenever a database constraint is violated, the JDBC driver will convert it
+into a runtime exception. This SQLException is hard to use in the application
+because all metadata is held inside its message. By using exception translation
+we can convert the driver exception into a more intuitive constraint violation
+exception. It is even possible to map custom exceptions on to named constraints.
+
+<bean class="org.jarb.violation.integration.ConstraintViolationExceptionTranslatingBeanPostProcessor">
+    <property name="translator">
+        <bean class="org.jarb.violation.integration.JpaConstraintViolationExceptionTranslatorFactoryBean">
+            <property name="entityManagerFactory" ref="entityManagerFactory"/>
+            <!-- Custom exception classes, these are optional -->
+            <property name="exceptionClasses">
+                <map>
+                    <entry key="uk_posts_title" value="org.jarb.sample.domain.PostTitleAlreadyExistsException"/>
+                </map>
+            </property>
+        </bean>
+    </property>
+</bean>
+
+By using our exception translator, we now recieve a PostTitleAlreadyExistsException
+whenever the "uk_posts_title" database constraint is violated.
 
 Components
 ----------
