@@ -3,6 +3,21 @@ Java Repository Bridge (JaRB)
 
 JaRB aims to improve database usage in Java enterprise applications.
 
+Features
+--------
+ * Database initialization
+  * Automate database migrations on application startup
+  * Populate database on application startup
+   * SQL script based (using Spring JDBC)
+   * Excel based
+   * Building blocks: compound, conditional, fail-safe
+ * (Database) constraints 
+  * Automate database constraint validation with JSR303
+  * Translate JDBC exceptions into constraint violation exceptions
+   * Full access to constraint violation metadata
+   * Map custom exceptions to named constraints
+  * Describe bean constraint metadata, with content from JDBC and JSR303
+  
 Developers
 ----------
  * Jeroen van Schagen (jeroen@42.nl)
@@ -22,21 +37,6 @@ License
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
-
-Features
---------
- * Database initialization
-  * Automate database migrations on application startup
-  * Populate database on application startup
-   * SQL script based (using Spring JDBC)
-   * Excel based
-   * Building blocks: compound, conditional, fail-safe
- * (Database) constraints 
-  * Automate database constraint validation with JSR303
-  * Translate JDBC exceptions into constraint violation exceptions
-   * Full access to constraint violation metadata
-   * Map custom exceptions to named constraints
-  * Describe bean constraint metadata, with content from JDBC and JSR303
 
 Database migrations (schema)
 ----------------------------
