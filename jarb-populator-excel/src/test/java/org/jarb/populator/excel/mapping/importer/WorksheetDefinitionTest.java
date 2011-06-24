@@ -5,18 +5,14 @@ import static org.junit.Assert.assertEquals;
 import java.io.FileInputStream;
 import java.io.IOException;
 
-import javax.persistence.metamodel.EntityType;
-import javax.persistence.metamodel.Metamodel;
-
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.jarb.populator.excel.DefaultExcelTestDataCase;
-import org.jarb.populator.excel.mapping.importer.WorksheetDefinition;
 import org.jarb.populator.excel.metamodel.ClassDefinition;
-import org.jarb.populator.excel.metamodel.generator.ClassDefinitionsGenerator;
 import org.jarb.populator.excel.workbook.Workbook;
-import org.jarb.populator.excel.workbook.reader.PoiExcelParser;
 import org.junit.Before;
 import org.junit.Test;
+
+import domain.entities.Customer;
 
 public class WorksheetDefinitionTest extends DefaultExcelTestDataCase {
 
@@ -27,18 +23,13 @@ public class WorksheetDefinitionTest extends DefaultExcelTestDataCase {
     @Before
     public void setUpWorksheetDefinition() throws InvalidFormatException, IOException, InstantiationException, IllegalAccessException, ClassNotFoundException {
         worksheetDefinition = new WorksheetDefinition();
-        excel = new PoiExcelParser().parse(new FileInputStream("src/test/resources/ExcelUnitTesting.xls"));
-
-        Metamodel metamodel = getEntityManagerFactory().getMetamodel();
-        EntityType<?> entity = ClassDefinitionsGenerator.getEntityFromMetamodel(domain.entities.Customer.class, metamodel);
-
-        classDefinition = ClassDefinitionsGenerator.createSingleClassDefinitionFromMetamodel(getEntityManagerFactory(), entity, false);
+        excel = getExcelDataManagerFactory().buildExcelParser().parse(new FileInputStream("src/test/resources/ExcelUnitTesting.xls"));
+        classDefinition = getExcelDataManagerFactory().buildMetamodelGenerator().generate().describe(Customer.class);
     }
 
     @Test
     public void testAnalyzeWorksheet() {
         worksheetDefinition = WorksheetDefinition.analyzeWorksheet(classDefinition, excel);
-        assertEquals(0, (int) worksheetDefinition.getColumnPosition("id"));
         assertEquals(1, (int) worksheetDefinition.getColumnPosition("first_name"));
         assertEquals(2, (int) worksheetDefinition.getColumnPosition("company_name"));
     }

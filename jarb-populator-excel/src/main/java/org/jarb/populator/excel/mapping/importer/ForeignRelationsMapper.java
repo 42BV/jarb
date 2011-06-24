@@ -1,4 +1,4 @@
-package org.jarb.populator.excel.mapping.excelrow;
+package org.jarb.populator.excel.mapping.importer;
 
 import java.util.Map;
 import java.util.Map.Entry;

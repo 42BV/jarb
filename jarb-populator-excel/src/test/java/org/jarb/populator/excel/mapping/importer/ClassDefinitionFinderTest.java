@@ -1,4 +1,4 @@
-package org.jarb.populator.excel.mapping.excelrow;
+package org.jarb.populator.excel.mapping.importer;
 
 import static org.junit.Assert.assertEquals;
 
@@ -13,6 +13,7 @@ import javax.persistence.metamodel.EntityType;
 import javax.persistence.metamodel.Metamodel;
 
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+import org.jarb.populator.excel.mapping.importer.ClassDefinitionFinder;
 import org.jarb.populator.excel.metamodel.ClassDefinition;
 import org.jarb.populator.excel.metamodel.generator.ClassDefinitionsGenerator;
 import org.junit.Before;

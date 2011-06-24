@@ -1,9 +1,7 @@
 package org.jarb.populator.excel.metamodel.generator;
 
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Set;
 
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.metamodel.EntityType;
@@ -15,6 +13,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Java Persistence API (JPA) implementation of {@link MetaModelGenerator}.
+ * 
  * @author Jeroen van Schagen
  * @since 10-05-2011
  */
@@ -22,6 +21,10 @@ public class JpaMetaModelGenerator implements MetaModelGenerator {
     private static final Logger LOGGER = LoggerFactory.getLogger(JpaMetaModelGenerator.class);
     private final EntityManagerFactory entityManagerFactory;
 
+    /**
+     * Construct a new {@link JpaMetaModelGenerator}.
+     * @param entityManagerFactory entity manager factory, used for its metamodel
+     */
     public JpaMetaModelGenerator(EntityManagerFactory entityManagerFactory) {
         this.entityManagerFactory = entityManagerFactory;
     }
@@ -31,56 +34,9 @@ public class JpaMetaModelGenerator implements MetaModelGenerator {
      */
     @Override
     public MetaModel generate() {
-        return generateForTypes(entityManagerFactory.getMetamodel().getEntities());
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public final MetaModel generateFor(java.lang.Class<?>... entityClasses) {
-        return generateFor(Arrays.asList(entityClasses));
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public MetaModel generateFor(Iterable<Class<?>> entityClasses) {
-        Set<EntityType<?>> entityTypes = new HashSet<EntityType<?>>();
-        for (Class<?> entityClass : entityClasses) {
-            EntityType<?> entityType = entityType(entityClass);
-            if (entityType != null) {
-                entityTypes.add(entityType);
-            }
-        }
-        return generateForTypes(entityTypes);
-    }
-
-    /**
-     * Retrieve the {@link EntityType} for a specific entity class.
-     * @param entityClass class of the entity to look for
-     * @return matching entity type, or {@code null} if nothing can be found
-     */
-    private EntityType<?> entityType(Class<?> entityClass) {
-        EntityType<?> entity = null;
-        try {
-            entity = entityManagerFactory.getMetamodel().entity(entityClass);
-        } catch (IllegalArgumentException e) {
-            LOGGER.warn("Class '{}' is not in the JPA meta model, ensure it is annotated as @Entity.", entityClass.getName());
-        }
-        return entity;
-    }
-
-    /**
-     * Generate a new {@link MetaModel} for a specific selection of entity types.
-     * @param entityTypes type of entities to include in our meta model
-     * @return meta model including a definition for each valid entity type
-     */
-    protected MetaModel generateForTypes(Set<EntityType<?>> entityTypes) {
         Collection<ClassDefinition<?>> classDefinitions = new HashSet<ClassDefinition<?>>();
-        for (EntityType<?> entityType : entityTypes) {
-            ClassDefinition<?> classDefinition = generateClassDefinition(entityType);
+        for (EntityType<?> entityType : entityManagerFactory.getMetamodel().getEntities()) {
+            ClassDefinition<?> classDefinition = describeEntityType(entityType);
             if (classDefinition != null) {
                 classDefinitions.add(classDefinition);
             }
@@ -93,8 +49,9 @@ public class JpaMetaModelGenerator implements MetaModelGenerator {
      * @param entityType type of entity being inspected
      * @return definition of the class
      */
-    private ClassDefinition<?> generateClassDefinition(EntityType<?> entityType) {
+    private ClassDefinition<?> describeEntityType(EntityType<?> entityType) {
         try {
+            LOGGER.debug("Generating metamodel definition of '{}'.", entityType.getJavaType().getName());
             return ClassDefinitionsGenerator.createSingleClassDefinitionFromMetamodel(entityManagerFactory, entityType, true);
         } catch (Exception e) {
             // TODO: Delegating class should not be throwing this many exceptions

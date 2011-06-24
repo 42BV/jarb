@@ -41,12 +41,11 @@ public class DefaultEntityExporterTest extends DefaultExcelTestDataCase {
 
     @Test
     public void testSheetAndColumnsCreated() {
-        MetaModel vehicleMetamodel = metamodelGenerator.generateFor(CompanyVehicle.class);
-        Workbook workbook = exporter.export(registry, vehicleMetamodel);
-        assertEquals(1, workbook.getSheetCount());
+        MetaModel metamodel = metamodelGenerator.generate();
+        Workbook workbook = exporter.export(registry, metamodel);
         assertTrue(workbook.containsSheet("vehicles"));
         Sheet vehiclesSheet = workbook.getSheet("vehicles");
-        ClassDefinition<? super CompanyVehicle> vehiclesDefinition = vehicleMetamodel.describeClass(CompanyVehicle.class);
+        ClassDefinition<? super CompanyVehicle> vehiclesDefinition = metamodel.describe(CompanyVehicle.class);
         // Each column should be stored inside the workbook
         for(String columnName : vehiclesDefinition.getColumnNames()) {
             assertTrue(vehiclesSheet.containsColumn(columnName));
@@ -59,7 +58,7 @@ public class DefaultEntityExporterTest extends DefaultExcelTestDataCase {
         registry.add(CompanyVehicle.class, 1L, car);
         Workbook workbook = exporter.export(registry, metamodel);
         Sheet vehiclesSheet = workbook.getSheet("vehicles");
-        ClassDefinition<? super CompanyVehicle> vehiclesDefinition = metamodel.describeClass(CompanyVehicle.class);
+        ClassDefinition<? super CompanyVehicle> vehiclesDefinition = metamodel.describe(CompanyVehicle.class);
         String carDiscriminatorValue = vehiclesDefinition.getDiscriminatorValue(CompanyCar.class);
         assertEquals(carDiscriminatorValue, vehiclesSheet.getValueAt(1, "type"));
     }

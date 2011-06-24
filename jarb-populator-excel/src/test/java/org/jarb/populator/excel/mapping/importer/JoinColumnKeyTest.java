@@ -1,4 +1,4 @@
-package org.jarb.populator.excel.mapping.excelrow;
+package org.jarb.populator.excel.mapping.importer;
 
 import static org.junit.Assert.assertEquals;
 
@@ -6,6 +6,8 @@ import java.io.IOException;
 
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.jarb.populator.excel.DefaultExcelTestDataCase;
+import org.jarb.populator.excel.mapping.importer.JoinColumnKey;
+import org.jarb.populator.excel.mapping.importer.Key;
 import org.junit.Before;
 import org.junit.Test;
 

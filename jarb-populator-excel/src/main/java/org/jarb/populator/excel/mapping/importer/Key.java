@@ -1,4 +1,4 @@
-package org.jarb.populator.excel.mapping.excelrow;
+package org.jarb.populator.excel.mapping.importer;
 
 /**
  * Abstract key class, can set and return foreign key classes.

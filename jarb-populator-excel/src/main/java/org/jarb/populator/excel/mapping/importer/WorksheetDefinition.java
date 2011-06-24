@@ -19,9 +19,6 @@ import org.slf4j.LoggerFactory;
 public class WorksheetDefinition {
     private static final Logger LOGGER = LoggerFactory.getLogger(WorksheetDefinition.class);
 
-    /** Identification number of row in Excel file. */
-    private static final String ID_COLUMN_NAME = "id";
-
     /** Hashmap containing columnPositions and their names. */
     private Map<String, Integer> columnPositions = new HashMap<String, Integer>();
 
@@ -35,8 +32,6 @@ public class WorksheetDefinition {
         WorksheetDefinition worksheetDefinition = new WorksheetDefinition();
         LOGGER.debug("Analyzing worksheet: [" + classDefinition.getTableName() + "]");
         Sheet sheet = excel.getSheet(classDefinition.getTableName());
-        // TODO FIX: crashes here if id sheet is missing from Excel file.
-        worksheetDefinition.addColumnPosition(ID_COLUMN_NAME, classDefinition.getTableName(), sheet.indexOfColumn(ID_COLUMN_NAME));
 
         for (PropertyDefinition columnDefinition : classDefinition.getPropertyDefinitions()) {
             final String columnName = columnDefinition.getColumnName();

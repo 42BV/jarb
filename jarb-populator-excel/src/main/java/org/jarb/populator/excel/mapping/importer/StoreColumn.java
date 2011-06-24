@@ -2,7 +2,6 @@ package org.jarb.populator.excel.mapping.importer;
 
 import org.jarb.populator.excel.mapping.CouldNotConvertException;
 import org.jarb.populator.excel.mapping.ValueConversionService;
-import org.jarb.populator.excel.mapping.excelrow.ExcelRow;
 import org.jarb.populator.excel.metamodel.ClassDefinition;
 import org.jarb.populator.excel.metamodel.PropertyDefinition;
 import org.jarb.populator.excel.workbook.Sheet;

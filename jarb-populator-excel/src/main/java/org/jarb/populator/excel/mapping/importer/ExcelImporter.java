@@ -1,11 +1,10 @@
 package org.jarb.populator.excel.mapping.importer;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.jarb.populator.excel.mapping.excelrow.ExcelRow;
-import org.jarb.populator.excel.mapping.excelrow.ForeignRelationsMapper;
 import org.jarb.populator.excel.metamodel.ClassDefinition;
 import org.jarb.populator.excel.metamodel.PropertyDefinition;
 import org.jarb.populator.excel.workbook.Sheet;
@@ -36,7 +35,7 @@ public final class ExcelImporter {
      * @throws IllegalAccessException Thrown when function does not have access to the definition of the specified class, field, method or constructor 
      * @throws NoSuchFieldException Thrown when a field is not available
      */
-    public static Map<ClassDefinition<?>, Map<Object, ExcelRow>> parseExcel(Workbook excel, List<ClassDefinition<?>> classDefinitions)
+    public static Map<ClassDefinition<?>, Map<Object, ExcelRow>> parseExcel(Workbook excel, Collection<ClassDefinition<?>> classDefinitions)
             throws InstantiationException, IllegalAccessException, NoSuchFieldException {
         Map<ClassDefinition<?>, Map<Object, ExcelRow>> objectModel = new HashMap<ClassDefinition<?>, Map<Object, ExcelRow>>();
 

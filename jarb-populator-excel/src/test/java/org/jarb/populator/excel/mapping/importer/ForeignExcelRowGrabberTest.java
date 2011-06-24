@@ -1,4 +1,4 @@
-package org.jarb.populator.excel.mapping.excelrow;
+package org.jarb.populator.excel.mapping.importer;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -19,6 +19,11 @@ import javax.persistence.metamodel.Metamodel;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.jarb.populator.excel.DefaultExcelTestDataCase;
 import org.jarb.populator.excel.mapping.importer.ExcelImporter;
+import org.jarb.populator.excel.mapping.importer.ExcelRow;
+import org.jarb.populator.excel.mapping.importer.ForeignExcelRowGrabber;
+import org.jarb.populator.excel.mapping.importer.JoinColumnKey;
+import org.jarb.populator.excel.mapping.importer.JoinTableKey;
+import org.jarb.populator.excel.mapping.importer.Key;
 import org.jarb.populator.excel.metamodel.ClassDefinition;
 import org.jarb.populator.excel.metamodel.generator.ClassDefinitionsGenerator;
 import org.jarb.populator.excel.workbook.Workbook;

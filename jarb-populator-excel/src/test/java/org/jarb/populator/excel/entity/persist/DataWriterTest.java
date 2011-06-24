@@ -17,9 +17,10 @@ import javax.persistence.metamodel.Metamodel;
 
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.jarb.populator.excel.DefaultExcelTestDataCase;
-import org.jarb.populator.excel.mapping.excelrow.ExcelRow;
-import org.jarb.populator.excel.mapping.excelrow.ExcelRowIntegration;
+import org.jarb.populator.excel.entity.EntityRegistry;
+import org.jarb.populator.excel.entity.EntityTable;
 import org.jarb.populator.excel.mapping.importer.ExcelImporter;
+import org.jarb.populator.excel.mapping.importer.ExcelRow;
 import org.jarb.populator.excel.metamodel.ClassDefinition;
 import org.jarb.populator.excel.metamodel.generator.ClassDefinitionsGenerator;
 import org.jarb.populator.excel.workbook.Workbook;
@@ -80,7 +81,7 @@ public class DataWriterTest extends DefaultExcelTestDataCase {
         classDefinitionList.add(sla);
 
         parseExcelMap = ExcelImporter.parseExcel(excel, classDefinitionList);
-        connectionInstances = DataWriter.createInstanceSet(ExcelRowIntegration.toRegistry(parseExcelMap));
+        connectionInstances = DataWriter.createInstanceSet(toRegistry(parseExcelMap));
 
         for (Object connectionInstance : connectionInstances) {
             actualConnectionInstanceClassNames.add(connectionInstance.getClass().getName());
@@ -106,7 +107,7 @@ public class DataWriterTest extends DefaultExcelTestDataCase {
         classDefinitionList.add(sla);
 
         parseExcelMap = ExcelImporter.parseExcel(excel, classDefinitionList);
-        connectionInstances = DataWriter.createInstanceSet(ExcelRowIntegration.toRegistry(parseExcelMap));
+        connectionInstances = DataWriter.createInstanceSet(toRegistry(parseExcelMap));
         DataWriter.saveEntity(connectionInstances, getEntityManagerFactory());
     }
 
@@ -129,11 +130,26 @@ public class DataWriterTest extends DefaultExcelTestDataCase {
 
         try {
         parseExcelMap = ExcelImporter.parseExcel(excel, classDefinitionList);
-        connectionInstances = DataWriter.createInstanceSet(ExcelRowIntegration.toRegistry(parseExcelMap));
+        connectionInstances = DataWriter.createInstanceSet(toRegistry(parseExcelMap));
         DataWriter.saveEntity(connectionInstances, getEntityManagerFactory());
         } catch(Exception e ) {
             e.printStackTrace();
         }
+    }
+    
+    @SuppressWarnings("unchecked")
+    private EntityRegistry toRegistry(Map<ClassDefinition<?>, Map<Object, ExcelRow>> entitiesMap) {
+        EntityRegistry registry = new EntityRegistry();
+        for (Map.Entry<ClassDefinition<?>, Map<Object, ExcelRow>> entitiesEntry : entitiesMap.entrySet()) {
+            @SuppressWarnings("rawtypes")
+            final Class entityClass = entitiesEntry.getKey().getPersistentClass();
+            EntityTable<Object> table = new EntityTable<Object>(entityClass);
+            for (Map.Entry<Object, ExcelRow> excelRowEntry : entitiesEntry.getValue().entrySet()) {
+                table.add(excelRowEntry.getKey(), excelRowEntry.getValue().getCreatedInstance());
+            }
+            registry.addAll(table);
+        }
+        return registry;
     }
 
 }

@@ -23,7 +23,7 @@ public class ClassDefinitionTest extends DefaultExcelTestDataCase {
     @Before
     public void setUpClassDefinitions() throws InvalidFormatException, IOException {
         // Retrieve full customer definition from meta model generator
-        customerDefinition = generateMetamodel().describeClass(Customer.class);
+        customerDefinition = generateMetamodel().describe(Customer.class);
         // Build a customer class definition
         classDefinitionBuilder = ClassDefinition.forClass(Customer.class).setTableName("customers");
     }
