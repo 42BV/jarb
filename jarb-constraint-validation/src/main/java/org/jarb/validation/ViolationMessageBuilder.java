@@ -49,7 +49,7 @@ public class ViolationMessageBuilder {
     public class ViolationMessageTemplate {
         private final Map<String, Object> attributes;
         private final String templateName;
-        private Object rejectedValue;
+        private Object value;
 
         /**
          * Construct a new {@link ViolationMessageTemplate}.
@@ -72,12 +72,12 @@ public class ViolationMessageBuilder {
         }
 
         /**
-         * Configure the rejected value, which can be referenced inside the template.
-         * @param rejectedValue the rejected value
+         * Configure the value that was validated, which can be referenced inside the template.
+         * @param value the rejected value
          * @return same template instance, allowing method chaining
          */
-        public ViolationMessageTemplate rejectedValue(Object rejectedValue) {
-            this.rejectedValue = rejectedValue;
+        public ViolationMessageTemplate value(Object value) {
+            this.value = value;
             return this;
         }
 
@@ -87,7 +87,7 @@ public class ViolationMessageBuilder {
          */
         public String message() {
             AttributeConstraintDescriptor descriptor = new AttributeConstraintDescriptor(attributes);
-            return messageInterpolator.interpolate(templateName, new SimpleInterpolatorContext(descriptor, rejectedValue));
+            return messageInterpolator.interpolate(templateName, new SimpleInterpolatorContext(descriptor, value));
         }
     }
 

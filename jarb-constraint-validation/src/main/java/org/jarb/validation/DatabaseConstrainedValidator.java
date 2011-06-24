@@ -12,7 +12,6 @@ import org.jarb.constraint.database.column.ColumnMetadata;
 import org.jarb.constraint.database.column.EntityAwareColumnMetadataRepository;
 import org.jarb.constraint.database.column.UnknownColumnException;
 import org.jarb.utils.BeanPropertyUtils;
-import org.jarb.validation.ViolationMessageBuilder.ViolationMessageTemplate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -119,14 +118,13 @@ public class DatabaseConstrainedValidator implements ConstraintValidator<Databas
             valueIsValid = false;
         }
         if (lengthExceeded(value, columnMetadata)) {
-            String message = messageBuilder.template(LENGTH_TEMPLATE).attribute("max", columnMetadata.getMaximumLength()).rejectedValue(value).message();
+            String message = messageBuilder.template(LENGTH_TEMPLATE).attribute("max", columnMetadata.getMaximumLength()).value(value).message();
             context.buildConstraintViolationWithTemplate(message).addNode(propertyName).addConstraintViolation();
             valueIsValid = false;
         }
         if (fractionLengthExceeded(value, columnMetadata)) {
-            ViolationMessageTemplate fractionLengthExceededTemplate = messageBuilder.template(FRACTION_LENGTH_TEMPLATE);
-            fractionLengthExceededTemplate.attribute("max", columnMetadata.getFractionLength()).rejectedValue(value);
-            context.buildConstraintViolationWithTemplate(fractionLengthExceededTemplate.message()).addNode(propertyName).addConstraintViolation();
+            String message = messageBuilder.template(FRACTION_LENGTH_TEMPLATE).attribute("max", columnMetadata.getFractionLength()).value(value).message();
+            context.buildConstraintViolationWithTemplate(message).addNode(propertyName).addConstraintViolation();
             valueIsValid = false;
         }
         return valueIsValid;

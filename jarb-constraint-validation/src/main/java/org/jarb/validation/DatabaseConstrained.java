@@ -20,7 +20,8 @@ import javax.validation.Payload;
 @Retention(RUNTIME)
 @Constraint(validatedBy = DatabaseConstrainedValidator.class)
 public @interface DatabaseConstrained {
-    String message() default "{nl.mad.constraint.validation.DatabaseConstraint.message}";
+    /** Message template, never used. **/
+    String message() default "{org.jarb.validation.DatabaseConstraint.message}";
 
     Class<?>[] groups() default {};
 
@@ -40,6 +41,7 @@ public @interface DatabaseConstrained {
      */
     String repository() default "";
     
+    // Whenever we want to check the constraints of a collection
     @Target({ METHOD, FIELD, ANNOTATION_TYPE, CONSTRUCTOR, PARAMETER })
     @Retention(RUNTIME)
     @Documented
