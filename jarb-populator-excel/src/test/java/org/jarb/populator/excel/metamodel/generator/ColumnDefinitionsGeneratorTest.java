@@ -44,7 +44,7 @@ public class ColumnDefinitionsGeneratorTest extends DefaultExcelTestDataCase {
         Set<EntityType<?>> subClassEntities = new HashSet<EntityType<?>>();
         Field departmentNameField = persistentClass.getDeclaredField("departmentName");
         ClassDefinition.Builder<Department> classDefinitionBuilder = ClassDefinition.forClass(Department.class).setTableName("departments");
-        classDefinitionBuilder.includeColumns(ColumnDefinitionsGenerator.createPropertyDefinitions(subClassEntities, entity, persistentClass));
+        classDefinitionBuilder.includeProperties(ColumnDefinitionsGenerator.createPropertyDefinitions(subClassEntities, entity, persistentClass));
         assertEquals(departmentNameField, classDefinitionBuilder.build().getPropertyDefinition("departmentName").getField());
     }
 
@@ -57,7 +57,7 @@ public class ColumnDefinitionsGeneratorTest extends DefaultExcelTestDataCase {
         Set<EntityType<?>> subClassEntities = new HashSet<EntityType<?>>();
         Field buildingAddressField = Address.class.getDeclaredField("streetAndNumber");
         ClassDefinition.Builder<Employee> classDefinitionBuilder = ClassDefinition.forClass(Employee.class).setTableName("employees");
-        classDefinitionBuilder.includeColumns(ColumnDefinitionsGenerator.createPropertyDefinitions(subClassEntities, entity, persistentClass));
+        classDefinitionBuilder.includeProperties(ColumnDefinitionsGenerator.createPropertyDefinitions(subClassEntities, entity, persistentClass));
         assertEquals(buildingAddressField, classDefinitionBuilder.build().getPropertyDefinition("streetAndNumber").getField());
     }
 }

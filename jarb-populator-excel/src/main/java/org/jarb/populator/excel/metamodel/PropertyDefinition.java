@@ -1,19 +1,22 @@
 package org.jarb.populator.excel.metamodel;
 
+import static org.apache.commons.lang.StringUtils.isBlank;
+import static org.apache.commons.lang.StringUtils.isNotBlank;
+
 import java.lang.reflect.Field;
 
-import org.apache.commons.lang.StringUtils;
 import org.springframework.util.Assert;
 
 /**
  * Describes a property and its mapping to the database.
+ * 
  * @author Willem Eppen
  * @author Sander Benschop
  */
 public class PropertyDefinition {
     private final Field field;
     private String columnName;
-    private DatabasePropertyType databaseType;
+    private PropertyDatabaseType databaseType;
     private PropertyPath embeddablePath;
     private boolean generatedValue;
     private String joinTableName;
@@ -40,7 +43,7 @@ public class PropertyDefinition {
         return field.getType();
     }
     
-    public DatabasePropertyType getDatabaseType() {
+    public PropertyDatabaseType getDatabaseType() {
         return databaseType;
     }
 
@@ -50,7 +53,7 @@ public class PropertyDefinition {
     
     public boolean hasColumn() {
         // Join table properties have no column name, their content is in another table
-        return databaseType != DatabasePropertyType.JOIN_TABLE;
+        return databaseType != PropertyDatabaseType.JOIN_TABLE;
     }
 
     public boolean isEmbeddedAttribute() {
@@ -80,7 +83,7 @@ public class PropertyDefinition {
     public static class Builder {
         private final Field field;
         private String columnName;
-        private DatabasePropertyType databaseType = DatabasePropertyType.COLUMN;
+        private PropertyDatabaseType databaseType = PropertyDatabaseType.COLUMN;
         private PropertyPath embeddablePath;
         private String joinTableName;
         private String joinColumnName;
@@ -97,7 +100,7 @@ public class PropertyDefinition {
             return this;
         }
         
-        public Builder setDatabaseType(DatabasePropertyType columnType) {
+        public Builder setDatabaseType(PropertyDatabaseType columnType) {
             this.databaseType = columnType;
             return this;
         }
@@ -128,15 +131,14 @@ public class PropertyDefinition {
         }
         
         public PropertyDefinition build() {
-            Assert.notNull(databaseType, "Column type cannot be null");
-            
-            if(databaseType == DatabasePropertyType.JOIN_TABLE) {
-                Assert.state(StringUtils.isNotBlank(joinTableName), "Join table name cannot be blank");
-                Assert.state(StringUtils.isNotBlank(joinColumnName), "Join column name cannot be blank");
-                Assert.state(StringUtils.isNotBlank(inverseJoinColumnName), "Inverse join column name cannot be blank");
-                Assert.state(StringUtils.isBlank(columnName), "Join table property cannot have a column name");
+            Assert.notNull(databaseType, "Database type cannot be null");
+            if(databaseType == PropertyDatabaseType.JOIN_TABLE) {
+                Assert.state(isBlank(columnName), "Join table property cannot have a column name");
+                Assert.state(isNotBlank(joinTableName), "Join table name cannot be blank");
+                Assert.state(isNotBlank(joinColumnName), "Join column name cannot be blank");
+                Assert.state(isNotBlank(inverseJoinColumnName), "Inverse join column name cannot be blank");
             } else {
-                Assert.state(StringUtils.isNotBlank(columnName), "Column name cannot be blank");
+                Assert.state(isNotBlank(columnName), "Column name cannot be blank");
             }
 
             PropertyDefinition definition = new PropertyDefinition(field);
@@ -149,6 +151,33 @@ public class PropertyDefinition {
             definition.generatedValue = generatedValue;
             return definition;
         }
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if(obj == this) {
+            return true;
+        }
+        if(obj instanceof PropertyDefinition) {
+            boolean equal = field.equals(((PropertyDefinition) obj).field);
+            if(isEmbeddedAttribute()) {
+                equal = equal && embeddablePath.equals(((PropertyDefinition) obj).embeddablePath);
+            }
+            return equal;
+        } else {
+            return false;
+        }
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int hashCode() {
+        return field.hashCode();
     }
     
     /**

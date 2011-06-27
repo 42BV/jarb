@@ -4,7 +4,7 @@ package org.jarb.populator.excel.metamodel;
  * Type of "column" we can have in our mapping.
  * @author Jeroen van Schagen
  */
-public enum DatabasePropertyType {
+public enum PropertyDatabaseType {
     
     /**
      * Regular column, contains a value.

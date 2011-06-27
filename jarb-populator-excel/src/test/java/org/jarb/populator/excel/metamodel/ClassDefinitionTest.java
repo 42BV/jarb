@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.jarb.populator.excel.DefaultExcelTestDataCase;
@@ -39,8 +40,8 @@ public class ClassDefinitionTest extends DefaultExcelTestDataCase {
         for (Field field : Customer.class.getDeclaredFields()) {
             columnDefinitions.add(FieldAnalyzer.analyzeField(field).build());
         }
-        classDefinitionBuilder.includeColumns(columnDefinitions);
-        List<PropertyDefinition> resultColumnDefinitions = classDefinitionBuilder.build().getPropertyDefinitions();
+        classDefinitionBuilder.includeProperties(columnDefinitions);
+        Set<PropertyDefinition> resultColumnDefinitions = classDefinitionBuilder.build().getPropertyDefinitions();
         for(PropertyDefinition columnDefinition : columnDefinitions) {
             assertTrue(resultColumnDefinitions.contains(columnDefinition));
         }

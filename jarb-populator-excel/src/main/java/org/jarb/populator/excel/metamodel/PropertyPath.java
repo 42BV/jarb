@@ -5,6 +5,8 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
 
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.jarb.populator.excel.metamodel.PropertyPath.PropertyNode;
 import org.jarb.utils.BeanPropertyUtils;
 import org.springframework.util.Assert;
@@ -180,6 +182,38 @@ public final class PropertyPath implements Iterable<PropertyNode> {
         public Class<?> getDeclaringClass() {
             return field.getDeclaringClass();
         }
+        
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public boolean equals(Object obj) {
+            return EqualsBuilder.reflectionEquals(this, obj);
+        }
+        
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public int hashCode() {
+            return HashCodeBuilder.reflectionHashCode(this);
+        }
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean equals(Object obj) {
+        return EqualsBuilder.reflectionEquals(this, obj);
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int hashCode() {
+        return getStart().hashCode();
     }
     
 }

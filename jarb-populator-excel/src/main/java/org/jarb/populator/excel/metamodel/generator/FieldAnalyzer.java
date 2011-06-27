@@ -10,7 +10,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 
 import org.apache.commons.lang.StringUtils;
-import org.jarb.populator.excel.metamodel.DatabasePropertyType;
+import org.jarb.populator.excel.metamodel.PropertyDatabaseType;
 import org.jarb.populator.excel.metamodel.PropertyDefinition;
 
 /**
@@ -59,12 +59,12 @@ public class FieldAnalyzer {
     }
     
     private static PropertyDefinition.Builder joinColumnDefinition(JoinColumn annotation, Field field) {
-        return PropertyDefinition.forField(field).setColumnName(annotation.name()).setDatabaseType(DatabasePropertyType.JOIN_COLUMN);
+        return PropertyDefinition.forField(field).setColumnName(annotation.name()).setDatabaseType(PropertyDatabaseType.JOIN_COLUMN);
     }
     
     private static PropertyDefinition.Builder joinTableDefinition(JoinTable annotation, Field field) {
         return PropertyDefinition.forField(field)
-            .setDatabaseType(DatabasePropertyType.JOIN_TABLE)
+            .setDatabaseType(PropertyDatabaseType.JOIN_TABLE)
             .setJoinTableName(annotation.name())
             .setJoinColumnName(annotation.joinColumns()[0].name())
             .setInverseJoinColumnName(annotation.inverseJoinColumns()[0].name());

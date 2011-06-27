@@ -5,7 +5,7 @@ import java.util.Date;
 import org.jarb.populator.excel.entity.EntityRegistry;
 import org.jarb.populator.excel.mapping.ValueConversionService;
 import org.jarb.populator.excel.metamodel.ClassDefinition;
-import org.jarb.populator.excel.metamodel.DatabasePropertyType;
+import org.jarb.populator.excel.metamodel.PropertyDatabaseType;
 import org.jarb.populator.excel.metamodel.MetaModel;
 import org.jarb.populator.excel.metamodel.PropertyDefinition;
 import org.jarb.populator.excel.metamodel.PropertyPath;
@@ -78,19 +78,19 @@ public class DefaultEntityExporter implements EntityExporter {
     private <T> void exportEntity(T entity, ClassDefinition<T> classDefinition, Sheet sheet) {
         Row row = sheet.createRow();
         for(PropertyDefinition propertyDefinition : classDefinition.getPropertyDefinitions()) {
-            final DatabasePropertyType type = propertyDefinition.getDatabaseType();
-            if(type == DatabasePropertyType.COLUMN) {
+            final PropertyDatabaseType type = propertyDefinition.getDatabaseType();
+            if(type == PropertyDatabaseType.COLUMN) {
                 // Retrieve the property value and store it as cell value
                 Object propertyValue = getPropertyValue(entity, propertyDefinition);
                 row.setCellValueAt(propertyDefinition.getColumnName(), createCellValue(propertyValue));
-            } else if(type == DatabasePropertyType.JOIN_COLUMN) {
+            } else if(type == PropertyDatabaseType.JOIN_COLUMN) {
                 // Retrieve the entity as property value and store its identifier
                 Object referenceEntity = getPropertyValue(entity, propertyDefinition);
                 if(referenceEntity != null) {
                     Object referenceIdentifier = entityRowIdResolver.resolveRowId(referenceEntity);
                     row.setCellValueAt(propertyDefinition.getColumnName(), createCellValue(referenceIdentifier));
                 }
-            } else if(type == DatabasePropertyType.JOIN_TABLE) {
+            } else if(type == PropertyDatabaseType.JOIN_TABLE) {
                 exportJoinTable(entity, propertyDefinition, sheet.getWorkbook());
             }
         }

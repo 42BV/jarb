@@ -26,12 +26,16 @@ import org.jarb.populator.excel.workbook.writer.PoiExcelWriter;
  * @since 10-05-2011
  */
 public class ExcelDataManagerFactory {
-    private final EntityManagerFactory entityManagerFactory;
-    private final ValueConversionService valueConversionService;
+    private EntityManagerFactory entityManagerFactory;
+    private ValueConversionService valueConversionService;
 
     public ExcelDataManagerFactory(EntityManagerFactory entityManagerFactory) {
         this.entityManagerFactory = entityManagerFactory;
         valueConversionService = new ValueConversionService();
+    }
+    
+    public void setValueConversionService(ValueConversionService valueConversionService) {
+        this.valueConversionService = valueConversionService;
     }
 
     /**

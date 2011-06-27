@@ -2,7 +2,6 @@ package org.jarb.populator.excel.mapping.importer;
 
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.jarb.populator.excel.metamodel.ClassDefinition;
@@ -162,8 +161,7 @@ public final class ExcelImporter {
      */
     private static void storeExcelRecordByColumnDefinitions(final Workbook excel, final ClassDefinition<?> classDefinition, Integer rowPosition, ExcelRow excelRow)
             throws NoSuchFieldException {
-        List<PropertyDefinition> columnDefinitions = classDefinition.getPropertyDefinitions();
-        for (PropertyDefinition columnDefinition : columnDefinitions) {
+        for (PropertyDefinition columnDefinition : classDefinition.getPropertyDefinitions()) {
             StoreExcelRecordValue.storeValue(excel, classDefinition, columnDefinition, rowPosition, excelRow);
         }
     }

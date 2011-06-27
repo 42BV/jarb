@@ -6,7 +6,7 @@ import java.util.Comparator;
 import java.util.List;
 
 import org.jarb.populator.excel.metamodel.ClassDefinition;
-import org.jarb.populator.excel.metamodel.DatabasePropertyType;
+import org.jarb.populator.excel.metamodel.PropertyDatabaseType;
 import org.jarb.populator.excel.metamodel.MetaModel;
 import org.jarb.populator.excel.metamodel.PropertyDefinition;
 import org.jarb.populator.excel.workbook.Sheet;
@@ -47,7 +47,7 @@ public class ExcelTemplateBuilder {
         Sheet sheet = workbook.createSheet(classDefinition.getTableName());
         storeColumnNames(sheet, classDefinition);
         for(PropertyDefinition propertyDefinition : classDefinition.getPropertyDefinitions()) {
-            if(propertyDefinition.getDatabaseType() == DatabasePropertyType.JOIN_TABLE) {
+            if(propertyDefinition.getDatabaseType() == PropertyDatabaseType.JOIN_TABLE) {
                 createJoinSheet(propertyDefinition, workbook);
             }
         }

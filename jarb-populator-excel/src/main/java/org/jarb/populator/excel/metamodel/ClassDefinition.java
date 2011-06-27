@@ -1,12 +1,9 @@
 package org.jarb.populator.excel.metamodel;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -36,7 +33,7 @@ public class ClassDefinition<T> {
     private String tableName;
     
     /** Description of each defined property. */
-    private List<PropertyDefinition> propertyDefinitions;
+    private Set<PropertyDefinition> propertyDefinitions;
     
     /**
      * Construct a new {@link ClassDefinition).
@@ -109,8 +106,8 @@ public class ClassDefinition<T> {
      * Retrieve all property definitions declared inside this class.
      * @return definition of each declared property
      */
-    public List<PropertyDefinition> getPropertyDefinitions() {
-        return Collections.unmodifiableList(propertyDefinitions);
+    public Set<PropertyDefinition> getPropertyDefinitions() {
+        return Collections.unmodifiableSet(propertyDefinitions);
     }
 
     /**
@@ -184,7 +181,7 @@ public class ClassDefinition<T> {
         private String discriminatorColumnName;
         private Map<String, Class<? extends T>> subClasses = new HashMap<String, Class<? extends T>>();
         private String tableName;
-        private Set<PropertyDefinition> columnDefinitionSet = new LinkedHashSet<PropertyDefinition>();
+        private Set<PropertyDefinition> propertyDefinitions = new HashSet<PropertyDefinition>();
         
         /**
          * Construct a new {@link Builder}.
@@ -233,8 +230,8 @@ public class ClassDefinition<T> {
          * @param columnDefinition column definition being included
          * @return this for method chaining
          */
-        public Builder<T> includeColumns(Collection<PropertyDefinition> columnDefinitions) {
-            columnDefinitionSet.addAll(columnDefinitions);
+        public Builder<T> includeProperties(Collection<PropertyDefinition> propertyDefinitions) {
+            this.propertyDefinitions.addAll(propertyDefinitions);
             return this;
         }
         
@@ -249,10 +246,32 @@ public class ClassDefinition<T> {
             classDefinition.discriminatorColumnName = discriminatorColumnName;
             classDefinition.subClasses = Collections.unmodifiableMap(subClasses);
             classDefinition.tableName = tableName;
-            final List<PropertyDefinition> columnDefinitionList = new ArrayList<PropertyDefinition>(columnDefinitionSet);
-            classDefinition.propertyDefinitions = Collections.unmodifiableList(columnDefinitionList);
+            classDefinition.propertyDefinitions = Collections.unmodifiableSet(propertyDefinitions);
             return classDefinition;
         }
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if(obj == this) {
+            return true;
+        }
+        if(obj instanceof ClassDefinition) {
+            return persistentClass.equals(((ClassDefinition<?>) obj).persistentClass);
+        } else {
+            return false;
+        }
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int hashCode() {
+        return persistentClass.hashCode();
     }
 
     /**
