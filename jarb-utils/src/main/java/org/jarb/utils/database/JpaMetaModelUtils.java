@@ -3,11 +3,16 @@ package org.jarb.utils.database;
 import static org.apache.commons.lang.StringUtils.isBlank;
 
 import java.lang.reflect.Field;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import javax.persistence.metamodel.EntityType;
+import javax.persistence.metamodel.Metamodel;
 
 import org.springframework.util.ReflectionUtils;
 
@@ -74,12 +79,12 @@ public class JpaMetaModelUtils {
 
     /**
      * Retrieve the column name of a property.
-     * @param containerClass class of the bean containing our property
+     * @param entityClass class of the entity containing our property
      * @param propertyName name of the property
      * @return column name of the property
      */
-    public static String getColumnName(Class<?> containerClass, String propertyName) {
-        Field field = ReflectionUtils.findField(containerClass, propertyName);
+    public static String getColumnName(Class<?> entityClass, String propertyName) {
+        Field field = ReflectionUtils.findField(entityClass, propertyName);
         if (field == null) {
             return null;
         }
@@ -95,4 +100,52 @@ public class JpaMetaModelUtils {
         }
         return columnName;
     }
+    
+//    /**
+//     * Retrieve all java types represented in a collection of entity types.
+//     * @param entityTypes each entity type that should be included
+//     * @return java types for each provided entity type
+//     */
+//    public static Collection<Class<?>> getJavaTypes(Collection<EntityType<?>> entityTypes) {
+//        Set<Class<?>> javaTypes = new LinkedHashSet<Class<?>>();
+//        for(EntityType<?> entityType : entityTypes) {
+//            javaTypes.add(entityType.getJavaType());
+//        }
+//        return javaTypes;
+//    }
+    
+    /**
+     * Retrieve all "root" entities described in our JPA metamodel.
+     * @param metamodel JPA metamodel, containing all entity descriptions
+     * @return entity types for each root entity class
+     */
+    public static Collection<EntityType<?>> getRootEntities(Metamodel metamodel) {
+        Set<EntityType<?>> entityTypes = new HashSet<EntityType<?>>();
+        for(EntityType<?> entityType : metamodel.getEntities()) {            
+            if(!hasEntitySuperClass(entityType.getJavaType())) {
+                entityTypes.add(entityType);
+            }
+        }
+        return entityTypes;
+    }
+    
+    /**
+     * Determine if an entity has a one or more entity super classes.
+     * @param entityClass class of the entity to check
+     * @return {@code true} if one or more entity super classes were found, else {@code false}
+     */
+    private static boolean hasEntitySuperClass(Class<?> entityClass) {
+        boolean found = false;
+        Class<?> currentClass = entityClass;
+        while(currentClass.getSuperclass() != null) {
+            final Class<?> superClass = currentClass.getSuperclass();
+            if(isEntity(superClass)) {
+                found = true;
+                break;
+            }
+            currentClass = superClass;
+        }
+        return found;
+    }
+    
 }

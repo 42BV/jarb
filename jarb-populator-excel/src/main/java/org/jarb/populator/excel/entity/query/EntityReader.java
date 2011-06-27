@@ -23,7 +23,7 @@ public interface EntityReader {
      * @param entityClass class of the entity type
      * @return entity table containing all entities of that type
      */
-    <T> EntityTable<T> readForType(Class<T> entityClass);
+    <T> EntityTable<T> readFrom(Class<T> entityClass);
     
     /**
      * Retrieve a specific entity from the database.

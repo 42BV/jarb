@@ -1,14 +1,15 @@
 package org.jarb.populator.excel.entity.query;
 
 import java.util.List;
-import java.util.Set;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.metamodel.EntityType;
 
 import org.jarb.populator.excel.entity.EntityRegistry;
 import org.jarb.populator.excel.entity.EntityTable;
 import org.jarb.populator.excel.util.JpaUtils;
+import org.jarb.utils.database.JpaMetaModelUtils;
 
 /**
  * Java Persistence API (JPA) implementation of {@link EntityReader}.
@@ -17,7 +18,6 @@ import org.jarb.populator.excel.util.JpaUtils;
  * @since 11-05-2011
  */
 public class JpaEntityReader implements EntityReader {
-    private final EntityManagerFactory entityManagerFactory;
     private EntityManager entityManager;
 
     /**
@@ -25,7 +25,6 @@ public class JpaEntityReader implements EntityReader {
      * @param entityManagerFactory entity manager factory used for retrieving data
      */
     public JpaEntityReader(EntityManagerFactory entityManagerFactory) {
-        this.entityManagerFactory = entityManagerFactory;
         entityManager = JpaUtils.createEntityManager(entityManagerFactory);
     }
 
@@ -35,25 +34,22 @@ public class JpaEntityReader implements EntityReader {
     @Override
     public EntityRegistry readAll() {
         EntityRegistry registry = new EntityRegistry();
-        for (Class<?> entityClass : getEntityClasses()) {
-            registry.addAll(readForType(entityClass));
+        for (EntityType<?> entityType : JpaMetaModelUtils.getRootEntities(entityManager.getMetamodel())) {
+            final Class<?> entityClass = entityType.getJavaType();
+            registry.addAll(readFrom(entityClass));
         }
         return registry;
-    }
-    
-    private Set<Class<?>> getEntityClasses() {
-        return JpaUtils.getEntityClasses(entityManagerFactory);
     }
     
     /**
      * {@inheritDoc}
      */
     @Override
-    public <T> EntityTable<T> readForType(Class<T> entityClass) {
+    public <T> EntityTable<T> readFrom(Class<T> entityClass) {
         EntityTable<T> entities = new EntityTable<T>(entityClass);
-        Long identifier = 0L;
         for (T entity : queryInstancesOf(entityClass)) {
-            entities.add(identifier++, entity);
+            Object identifier = JpaUtils.getIdentifier(entity, entityManager.getEntityManagerFactory());
+            entities.add(identifier, entity);
         }
         return entities;
     }

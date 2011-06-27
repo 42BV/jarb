@@ -1,13 +1,9 @@
 package org.jarb.populator.excel.util;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
-import javax.persistence.PersistenceUnitUtil;
-import javax.persistence.metamodel.EntityType;
-import javax.persistence.metamodel.Metamodel;
+
+import org.hibernate.proxy.HibernateProxy;
 
 /**
  * Java Persistence API (JPA) utilities.
@@ -25,20 +21,6 @@ public final class JpaUtils {
     public static EntityManager createEntityManager(EntityManagerFactory entityManagerFactory) {
         return entityManagerFactory.createEntityManager(entityManagerFactory.getProperties());
     }
-
-    /**
-     * Retrieve the {@link Class} of each entity type known inside our persistence context.
-     * @param entityManagerFactory holds our persistence context
-     * @return set of all entity classes in our context
-     */
-    public static Set<Class<?>> getEntityClasses(EntityManagerFactory entityManagerFactory) {
-        Set<Class<?>> entityClasses = new HashSet<Class<?>>();
-        Metamodel jpaMetamodel = entityManagerFactory.getMetamodel();
-        for (EntityType<?> entityType : jpaMetamodel.getEntities()) {
-            entityClasses.add(entityType.getJavaType());
-        }
-        return entityClasses;
-    }
     
     /**
      * Retrieve the identifier (@Id) value of an entity.
@@ -47,8 +29,10 @@ public final class JpaUtils {
      * @return identifier of the entity, if any
      */
     public static Object getIdentifier(Object entity, EntityManagerFactory entityManagerFactory) {
-        PersistenceUnitUtil persistenceUtil = entityManagerFactory.getPersistenceUnitUtil();
-        return persistenceUtil.getIdentifier(entity);
+        if (entity instanceof HibernateProxy) {
+            entity = ((HibernateProxy) entity).getHibernateLazyInitializer().getImplementation();
+        }
+        return entityManagerFactory.getPersistenceUnitUtil().getIdentifier(entity);
     }
     
 }
