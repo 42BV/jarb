@@ -34,9 +34,9 @@
 	</developers>
 
 	<scm>
-		<connection>scm:git:https://github.com/42BV/jarb.git</connection>
 		<url>https://github.com/42BV/jarb.git</url>
-		<developerConnection>scm:git:https://github.com/42BV/jarb.git</developerConnection>
+		<connection>scm:git:git://github.com/42BV/jarb.git</connection>
+		<developerConnection>scm:git:git://github.com/42BV/jarb.git</developerConnection>
 	</scm>
 
 	<properties>
