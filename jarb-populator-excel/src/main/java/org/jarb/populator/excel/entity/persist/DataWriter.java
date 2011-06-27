@@ -22,7 +22,7 @@ import org.slf4j.LoggerFactory;
  * @author Willem Eppen
  * @author Sander Benschop
  */
-public final class DataWriter {
+class DataWriter {
     private static final Logger LOGGER = LoggerFactory.getLogger(DataWriter.class);
 
     /**

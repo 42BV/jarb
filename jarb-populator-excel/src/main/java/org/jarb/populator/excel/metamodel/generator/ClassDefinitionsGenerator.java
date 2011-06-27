@@ -17,7 +17,7 @@ import org.jarb.utils.database.JpaMetaModelUtils;
  * @author Sander Benschop
  *
  */
-public final class ClassDefinitionsGenerator {
+public class ClassDefinitionsGenerator {
 
     /**
      * Used to create a ClassDefinition, is used by the function createClassDefinitionsFromMetamodel but can also be used to create a single ClassDefinition.

@@ -36,7 +36,7 @@ public class DataWriterTest extends DefaultExcelTestDataCase {
     private EntityDefinition<?> customer;
     private EntityDefinition<?> project;
     private EntityDefinition<?> sla;
-    private Metamodel metamodel;
+    private Metamodel jpaMetamodel;
     private EntityType<?> customerEntity;
     private EntityType<?> projectEntity;
     private EntityType<?> slaEntity;
@@ -46,10 +46,10 @@ public class DataWriterTest extends DefaultExcelTestDataCase {
             NoSuchMethodException, IllegalArgumentException, InvocationTargetException, ClassNotFoundException {
         excel = new PoiWorkbookParser().parse(new FileInputStream("src/test/resources/ExcelUnitTesting.xls"));
 
-        metamodel = getEntityManagerFactory().getMetamodel();
-        customerEntity = metamodel.entity(Customer.class);
-        projectEntity = metamodel.entity(Project.class);
-        slaEntity = metamodel.entity(ServiceLevelAgreement.class);
+        jpaMetamodel = getEntityManagerFactory().getMetamodel();
+        customerEntity = jpaMetamodel.entity(Customer.class);
+        projectEntity = jpaMetamodel.entity(Project.class);
+        slaEntity = jpaMetamodel.entity(ServiceLevelAgreement.class);
         
         // For code coverage purposes:
         Constructor<DataWriter> constructor = DataWriter.class.getDeclaredConstructor();
@@ -80,8 +80,8 @@ public class DataWriterTest extends DefaultExcelTestDataCase {
         List<EntityDefinition<?>> classDefinitionList = new ArrayList<EntityDefinition<?>>();
         excel = new PoiWorkbookParser().parse(new FileInputStream("src/test/resources/ExcelEmployeesVehicles.xls"));
 
-        EntityType<?> employeeEntity = metamodel.entity(Employee.class);
-        EntityType<?> vehicleEntity = metamodel.entity(CompanyVehicle.class);
+        EntityType<?> employeeEntity = jpaMetamodel.entity(Employee.class);
+        EntityType<?> vehicleEntity = jpaMetamodel.entity(CompanyVehicle.class);
 
         EntityDefinition<?> employee = ClassDefinitionsGenerator.createSingleClassDefinitionFromMetamodel(getEntityManagerFactory(), employeeEntity, false);
         EntityDefinition<?> vehicle = ClassDefinitionsGenerator.createSingleClassDefinitionFromMetamodel(getEntityManagerFactory(), vehicleEntity, true);
@@ -109,5 +109,45 @@ public class DataWriterTest extends DefaultExcelTestDataCase {
         }
         return registry;
     }
+
+//    private MetaModel metamodel;
+//    
+//    @Before
+//    public void setUpDatabaseConnectionTest() throws InvalidFormatException, IOException, InstantiationException, IllegalAccessException, SecurityException,
+//            NoSuchMethodException, IllegalArgumentException, InvocationTargetException, ClassNotFoundException {
+//        metamodel = generateMetamodel();
+//        
+//        // For code coverage purposes:
+//        Constructor<DataWriter> constructor = DataWriter.class.getDeclaredConstructor();
+//        constructor.setAccessible(true);
+//        constructor.newInstance();
+//    }
+//
+//    @Test
+//    public void testSaveEntity() throws InstantiationException, IllegalAccessException, SecurityException, NoSuchFieldException, ClassNotFoundException,
+//            InvalidFormatException, IOException {
+//        Workbook excel = getExcelDataManagerFactory().buildExcelParser().parse(new FileInputStream("src/test/resources/ExcelUnitTesting.xls"));
+//
+//        List<EntityDefinition<?>> classDefinitionList = new ArrayList<EntityDefinition<?>>();
+//        classDefinitionList.add(metamodel.entity(Customer.class));
+//        classDefinitionList.add(metamodel.entity(Project.class));
+//        classDefinitionList.add(metamodel.entity(ServiceLevelAgreement.class));
+//
+//        Map<EntityDefinition<?>, Map<Object, ExcelRow>> parseExcelMap = ExcelImporter.parseExcel(excel, classDefinitionList);
+//        DataWriter.saveEntity(toRegistry(parseExcelMap), getEntityManagerFactory());
+//    }
+//
+//    @Test
+//    public void testEntityReferencing() throws InstantiationException, ClassNotFoundException, IllegalAccessException, NoSuchFieldException,
+//            InvalidFormatException, IOException {
+//        Workbook excel = getExcelDataManagerFactory().buildExcelParser().parse(new FileInputStream("src/test/resources/ExcelEmployeesVehicles.xls"));
+//
+//        List<EntityDefinition<?>> classDefinitionList = new ArrayList<EntityDefinition<?>>();
+//        classDefinitionList.add(metamodel.entity(Employee.class));
+//        classDefinitionList.add(metamodel.entity(CompanyVehicle.class));
+//        
+//        Map<EntityDefinition<?>, Map<Object, ExcelRow>> parseExcelMap = ExcelImporter.parseExcel(excel, classDefinitionList);
+//        DataWriter.saveEntity(toRegistry(parseExcelMap), getEntityManagerFactory());
+//    }
 
 }

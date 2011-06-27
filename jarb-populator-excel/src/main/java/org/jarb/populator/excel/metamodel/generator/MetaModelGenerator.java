@@ -1,5 +1,7 @@
 package org.jarb.populator.excel.metamodel.generator;
 
+import java.util.Collection;
+
 import org.jarb.populator.excel.metamodel.MetaModel;
 
 /**
@@ -15,5 +17,11 @@ public interface MetaModelGenerator {
      * @return new meta model
      */
     MetaModel generate();
+    
+    /**
+     * Generate a meta model for all entities.
+     * @return new meta model
+     */
+    MetaModel generateFor(Collection<Class<?>> entityClasses);
 
 }
