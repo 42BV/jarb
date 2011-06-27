@@ -30,16 +30,6 @@ public final class DataWriter {
      */
     private DataWriter() {
     }
-    
-    public static Set<Object> createInstanceSet(EntityRegistry registry) {
-        Set<Object> instanceSet = new HashSet<Object>();
-        for(EntityTable<?> entities : registry) {
-            for(Object entity : entities) {
-                instanceSet.add(entity);
-            }
-        }
-        return instanceSet;
-    }
 
     /**
      * Saves the instances in the instance set to the database.
@@ -47,30 +37,35 @@ public final class DataWriter {
      * @param entityManagerFactory From ApplicationContext file, gives us the information we need to persist such as database
      * connectivity information.
      */
-    public static void saveEntity(Set<Object> saveableInstances, EntityManagerFactory entityManagerFactory) {
+    public static void saveEntity(EntityRegistry registry, EntityManagerFactory entityManagerFactory) {
         EntityManager entityManager = JpaUtils.createEntityManager(entityManagerFactory);
         EntityTransaction entityTransaction = entityManager.getTransaction();
-
-        Set<Object> cascadedObjectsInThisInteration = new HashSet<Object>();
-        List<Object> savableInstancesList = new ArrayList<Object>(saveableInstances);
-        Collections.sort(savableInstancesList, new ObjectClassInstantationComparator());
+        
+        List<Object> entities = new ArrayList<Object>(createInstanceSet(registry));
+        Collections.sort(entities, new ObjectClassInstantationComparator());
+        
         entityTransaction.begin();
-
-        for (Object saveableInstance : savableInstancesList) {
-            cascadedObjectsInThisInteration.clear();
-            cascadedObjectsInThisInteration.add(saveableInstance);
-            LOGGER.info("Persisting Excelrow of class: " + saveableInstance.getClass());
-            saveableInstance = ReferentialPreparement.prepareEntityReferences(saveableInstance, entityManager, cascadedObjectsInThisInteration);
-
-            //Simply checking if the identifier is null is not good enough, since the ID could be preloaded. We must check the persistence context.
-            Object identifier = JpaUtils.getIdentifier(saveableInstance, entityManagerFactory);
-            if (identifier == null) {
-                entityManager.merge(saveableInstance);
-            } else if (entityManager.find(saveableInstance.getClass(), identifier) == null) {
-                entityManager.merge(saveableInstance);
+        for (Object entity : entities) {
+            Set<Object> cascadedObjectsInThisInteration = new HashSet<Object>();
+            cascadedObjectsInThisInteration.add(entity);
+            entity = ReferentialPreparement.prepareEntityReferences(entity, entityManager, cascadedObjectsInThisInteration);
+            Object identifier = JpaUtils.getIdentifier(entity, entityManagerFactory);
+            LOGGER.info("Persisting entity '{}' #{}.", new Object[] { entity.getClass(), identifier });
+            if (identifier == null || entityManager.find(entity.getClass(), identifier) == null) {
+                entityManager.merge(entity);
             }
         }
         entityTransaction.commit();
+    }
+    
+    private static Set<Object> createInstanceSet(EntityRegistry registry) {
+        Set<Object> instanceSet = new HashSet<Object>();
+        for(EntityTable<?> entities : registry) {
+            for(Object entity : entities) {
+                instanceSet.add(entity);
+            }
+        }
+        return instanceSet;
     }
     
     // Compares two objects based on class name
