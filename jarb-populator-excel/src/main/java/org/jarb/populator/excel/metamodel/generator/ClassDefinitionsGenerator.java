@@ -1,9 +1,7 @@
 package org.jarb.populator.excel.metamodel.generator;
 
 import java.lang.annotation.Annotation;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -28,44 +26,6 @@ public final class ClassDefinitionsGenerator {
 
     /** Private constructor. */
     private ClassDefinitionsGenerator() {
-    }
-
-    /**
-     * Used to create a list of all ClassDefinitions that can be made from the metamodel.
-     * Classes that need to be persisted should be annotated with @Entity, otherwise they will not be picked up.
-     * @param entityManagerFactory EntityManagerFactory from the ApplicationContext file
-     * @return List of ClassDefinitions, still without a worksheetDefinition 
-     * @throws ClassNotFoundException Throws if a class cannot be found
-     * @throws InstantiationException Thrown when function is used on a class that cannot be instantiated (abstract or interface)
-     * @throws IllegalAccessException Thrown when function does not have access to the definition of the specified class, field, method or constructor 
-     */
-    public static List<ClassDefinition<?>> createClassDefinitionsFromMetamodel(EntityManagerFactory entityManagerFactory) throws ClassNotFoundException,
-            InstantiationException, IllegalAccessException {
-        Metamodel metamodel = entityManagerFactory.getMetamodel();
-        Set<EntityType<?>> entities = metamodel.getEntities();
-
-        return createClassDefinitionList(entityManagerFactory, entities);
-    }
-
-    /**
-     * Creates a list of ClassDefinitions by calling the createSingleClassDefinitionFromMetamodel function several times.
-     * @param entityManagerFactory EntityManagerFactory needed to gather the metamodel from
-     * @param entities List of entities from the metamodel
-     * @return List of ClassDefinitions
-     * @throws ClassNotFoundException Throws if a class cannot be found
-     * @throws InstantiationException Thrown when function is used on a class that cannot be instantiated (abstract or interface)
-     * @throws IllegalAccessException Thrown when function does not have access to the definition of the specified class, field, method or constructor 
-     */
-    private static List<ClassDefinition<?>> createClassDefinitionList(EntityManagerFactory entityManagerFactory, Set<EntityType<?>> entities)
-            throws InstantiationException, ClassNotFoundException, IllegalAccessException {
-        List<ClassDefinition<?>> classDefinitionList = new ArrayList<ClassDefinition<?>>();
-        for (EntityType<?> entity : entities) {
-            ClassDefinition<?> classDefinition = createSingleClassDefinitionFromMetamodel(entityManagerFactory, entity, true);
-            if (classDefinition != null) {
-                classDefinitionList.add(classDefinition);
-            }
-        }
-        return classDefinitionList;
     }
 
     /**

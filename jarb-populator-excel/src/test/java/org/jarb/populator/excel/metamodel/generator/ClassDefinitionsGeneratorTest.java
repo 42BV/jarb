@@ -1,11 +1,9 @@
 package org.jarb.populator.excel.metamodel.generator;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -24,7 +22,6 @@ import org.jarb.populator.excel.workbook.Workbook;
 import org.jarb.populator.excel.workbook.reader.PoiExcelParser;
 import org.junit.Before;
 import org.junit.Test;
-import org.springframework.util.ReflectionUtils;
 
 public class ClassDefinitionsGeneratorTest extends DefaultExcelTestDataCase {
 
@@ -36,31 +33,6 @@ public class ClassDefinitionsGeneratorTest extends DefaultExcelTestDataCase {
         Constructor<ClassDefinitionsGenerator> constructor = ClassDefinitionsGenerator.class.getDeclaredConstructor();
         constructor.setAccessible(true);
         constructor.newInstance();
-    }
-
-    @Test
-    public void testClassDefinitionsGeneration() throws UnsupportedEncodingException, InstantiationException, IllegalAccessException, ClassNotFoundException,
-            SecurityException, NoSuchFieldException {
-        List<ClassDefinition<?>> classDefinitionsGenerated = ClassDefinitionsGenerator.createClassDefinitionsFromMetamodel(getEntityManagerFactory());
-
-        List<String> classDefinitionsManual = new ArrayList<String>();
-        classDefinitionsManual.add("NoTableAnnotation");
-        classDefinitionsManual.add("customers");
-        classDefinitionsManual.add("documents");
-        classDefinitionsManual.add("document_revisions");
-        classDefinitionsManual.add("departments");
-        classDefinitionsManual.add("employees");
-        classDefinitionsManual.add("employees_projects_workspaces");
-        classDefinitionsManual.add("projects");
-        classDefinitionsManual.add("vehicles");
-        classDefinitionsManual.add("sla");
-        classDefinitionsManual.add("gifts");
-        classDefinitionsManual.add("releases");
-        classDefinitionsManual.add("workspaces");
-        
-        for(ClassDefinition<?> classDefinition : classDefinitionsGenerated) {
-            assertTrue(classDefinition.getTableName() + " was not expected.", classDefinitionsManual.contains(classDefinition.getTableName()));
-        }
     }
 
     @Test
@@ -98,35 +70,6 @@ public class ClassDefinitionsGeneratorTest extends DefaultExcelTestDataCase {
 
         ClassDefinition<?> classDefinition = ClassDefinitionsGenerator.createSingleClassDefinitionFromMetamodel(getEntityManagerFactory(), entity, false);
         assertEquals(null, classDefinition);
-    }
-
-    @Test
-    public void testCreateClassDefinitionsFromMetamodel() throws ClassNotFoundException, SecurityException, InstantiationException, IllegalAccessException,
-            NoSuchFieldException {
-        List<ClassDefinition<?>> classDefinitionList = ClassDefinitionsGenerator.createClassDefinitionsFromMetamodel(getEntityManagerFactory());
-
-        for (ClassDefinition<?> classDefinition : classDefinitionList) {
-            // Check if it holds a persistent class
-            Class<?> persistentClass = classDefinition.getEntityClass();
-            assertTrue(persistentClass != null);
-
-            for (PropertyDefinition columnDefinition : classDefinition.getPropertyDefinitions()) {
-                Field field = ReflectionUtils.findField(persistentClass, columnDefinition.getName());
-
-                if ((field == null) && columnDefinition.isEmbeddedAttribute()) {
-                    // It's an embedded attribute.
-                    Field embeddedField = columnDefinition.getField();
-                    field = embeddedField.getDeclaringClass().getDeclaredField(columnDefinition.getName());
-                }
-
-                // Check if field is valid
-                if (field != null) {
-                    assertEquals(field.getName(), columnDefinition.getName());
-                }
-            }
-
-        }
-
     }
 
     public void testAddWorksheetDefinitionsToClassDefinitions() throws InvalidFormatException, IOException, InstantiationException, ClassNotFoundException,

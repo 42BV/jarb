@@ -53,7 +53,7 @@ public final class JpaUtils {
     }
     
     public static boolean isEmbeddable(Object entity) {
-        return entity != null && entity.getClass().getAnnotation(Embeddable.class) != null;
+        return entity != null && AnnotationUtils.hasAnnotation(entity.getClass(), Embeddable.class);
     }
     
 }

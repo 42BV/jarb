@@ -6,21 +6,14 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.jarb.populator.excel.DefaultExcelTestDataCase;
-import org.jarb.populator.excel.mapping.importer.ExcelImporter;
-import org.jarb.populator.excel.mapping.importer.ExcelRow;
-import org.jarb.populator.excel.mapping.importer.ForeignRelationsMapper;
-import org.jarb.populator.excel.mapping.importer.Key;
 import org.jarb.populator.excel.metamodel.ClassDefinition;
 import org.jarb.populator.excel.metamodel.PropertyDefinition;
-import org.jarb.populator.excel.metamodel.generator.ClassDefinitionsGenerator;
 import org.jarb.populator.excel.workbook.Workbook;
-import org.jarb.populator.excel.workbook.reader.PoiExcelParser;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -31,7 +24,7 @@ public class ForeignRelationsMapperTest extends DefaultExcelTestDataCase {
     @Before
     public void setUpExcelRecordTest() throws InstantiationException, IllegalAccessException, SecurityException, NoSuchFieldException, InvalidFormatException,
             IOException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException {
-        excel = new PoiExcelParser().parse(new FileInputStream("src/test/resources/ExcelUnitTesting.xls"));
+        excel = getExcelDataManagerFactory().buildExcelParser().parse(new FileInputStream("src/test/resources/ExcelUnitTesting.xls"));
 
         //For code coverage purposes:
         Constructor<ForeignRelationsMapper> constructor = ForeignRelationsMapper.class.getDeclaredConstructor();
@@ -43,11 +36,9 @@ public class ForeignRelationsMapperTest extends DefaultExcelTestDataCase {
     @Test
     public void testMakeForeignRelations() throws ClassNotFoundException, InstantiationException, IllegalAccessException, InvalidFormatException, IOException,
             SecurityException, NoSuchFieldException {
-        excel = new PoiExcelParser().parse(new FileInputStream("src/test/resources/Excel.xls"));
+        excel = getExcelDataManagerFactory().buildExcelParser().parse(new FileInputStream("src/test/resources/Excel.xls"));
 
-        List<ClassDefinition<?>> classDefinitions = ClassDefinitionsGenerator.createClassDefinitionsFromMetamodel(getEntityManagerFactory());
-
-        Map<ClassDefinition<?>, Map<Object, ExcelRow>> objectModel = ExcelImporter.parseExcel(excel, classDefinitions);
+        Map<ClassDefinition<?>, Map<Object, ExcelRow>> objectModel = ExcelImporter.parseExcel(excel, generateMetamodel().getClassDefinitions());
 
         for (Entry<ClassDefinition<?>, Map<Object, ExcelRow>> classRecord : objectModel.entrySet()) {
             for (Entry<Object, ExcelRow> classValues : classRecord.getValue().entrySet()) {

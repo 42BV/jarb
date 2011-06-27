@@ -43,6 +43,9 @@ public final class EmbeddedColumnGenerator {
         }
         return columnDefinitions;
     }
+    
+    
+    
 
     /**
      * If an attribute has got an @AttributeOverrides annotation the column name will be changed here.
