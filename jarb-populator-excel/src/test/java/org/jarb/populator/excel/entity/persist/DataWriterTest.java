@@ -21,7 +21,7 @@ import org.jarb.populator.excel.entity.EntityRegistry;
 import org.jarb.populator.excel.entity.EntityTable;
 import org.jarb.populator.excel.mapping.importer.ExcelImporter;
 import org.jarb.populator.excel.mapping.importer.ExcelRow;
-import org.jarb.populator.excel.metamodel.ClassDefinition;
+import org.jarb.populator.excel.metamodel.EntityDefinition;
 import org.jarb.populator.excel.metamodel.generator.ClassDefinitionsGenerator;
 import org.jarb.populator.excel.workbook.Workbook;
 import org.jarb.populator.excel.workbook.reader.PoiExcelParser;
@@ -38,11 +38,11 @@ public class DataWriterTest extends DefaultExcelTestDataCase {
     private Set<Object> connectionInstances;
     private Set<Object> actualConnectionInstanceClassNames;
     private Set<Object> expectedConnectionInstanceClassNames;
-    private Map<ClassDefinition<?>, Map<Object, ExcelRow>> parseExcelMap;
+    private Map<EntityDefinition<?>, Map<Object, ExcelRow>> parseExcelMap;
     private Workbook excel;
-    private ClassDefinition<?> customer;
-    private ClassDefinition<?> project;
-    private ClassDefinition<?> sla;
+    private EntityDefinition<?> customer;
+    private EntityDefinition<?> project;
+    private EntityDefinition<?> sla;
     private Metamodel metamodel;
     private EntityType<?> customerEntity;
     private EntityType<?> projectEntity;
@@ -55,9 +55,9 @@ public class DataWriterTest extends DefaultExcelTestDataCase {
         connectionInstances = new HashSet<Object>();
 
         metamodel = getEntityManagerFactory().getMetamodel();
-        customerEntity = ClassDefinitionsGenerator.getEntityFromMetamodel(Customer.class, metamodel);
-        projectEntity = ClassDefinitionsGenerator.getEntityFromMetamodel(Project.class, metamodel);
-        slaEntity = ClassDefinitionsGenerator.getEntityFromMetamodel(ServiceLevelAgreement.class, metamodel);
+        customerEntity = metamodel.entity(Customer.class);
+        projectEntity = metamodel.entity(Project.class);
+        slaEntity = metamodel.entity(ServiceLevelAgreement.class);
 
         actualConnectionInstanceClassNames = new HashSet<Object>();
         expectedConnectionInstanceClassNames = new HashSet<Object>();
@@ -72,7 +72,7 @@ public class DataWriterTest extends DefaultExcelTestDataCase {
     @Test
     public void testCreateConnectionInstanceSet() throws InstantiationException, IllegalAccessException, SecurityException, NoSuchFieldException,
             ClassNotFoundException {
-        List<ClassDefinition<?>> classDefinitionList = new ArrayList<ClassDefinition<?>>();
+        List<EntityDefinition<?>> classDefinitionList = new ArrayList<EntityDefinition<?>>();
         customer = ClassDefinitionsGenerator.createSingleClassDefinitionFromMetamodel(getEntityManagerFactory(), customerEntity, false);
         project = ClassDefinitionsGenerator.createSingleClassDefinitionFromMetamodel(getEntityManagerFactory(), projectEntity, false);
         sla = ClassDefinitionsGenerator.createSingleClassDefinitionFromMetamodel(getEntityManagerFactory(), slaEntity, false);
@@ -96,7 +96,7 @@ public class DataWriterTest extends DefaultExcelTestDataCase {
     @Test
     public void testSaveEntity() throws InstantiationException, IllegalAccessException, SecurityException, NoSuchFieldException, ClassNotFoundException,
             InvalidFormatException, IOException {
-        List<ClassDefinition<?>> classDefinitionList = new ArrayList<ClassDefinition<?>>();
+        List<EntityDefinition<?>> classDefinitionList = new ArrayList<EntityDefinition<?>>();
 
         customer = ClassDefinitionsGenerator.createSingleClassDefinitionFromMetamodel(getEntityManagerFactory(), customerEntity, false);
         project = ClassDefinitionsGenerator.createSingleClassDefinitionFromMetamodel(getEntityManagerFactory(), projectEntity, false);
@@ -114,14 +114,14 @@ public class DataWriterTest extends DefaultExcelTestDataCase {
     @Test
     public void testEntityReferencing() throws InstantiationException, ClassNotFoundException, IllegalAccessException, NoSuchFieldException,
             InvalidFormatException, IOException {
-        List<ClassDefinition<?>> classDefinitionList = new ArrayList<ClassDefinition<?>>();
+        List<EntityDefinition<?>> classDefinitionList = new ArrayList<EntityDefinition<?>>();
         excel = new PoiExcelParser().parse(new FileInputStream("src/test/resources/ExcelEmployeesVehicles.xls"));
 
-        EntityType<?> employeeEntity = ClassDefinitionsGenerator.getEntityFromMetamodel(Employee.class, metamodel);
-        EntityType<?> vehicleEntity = ClassDefinitionsGenerator.getEntityFromMetamodel(CompanyVehicle.class, metamodel);
+        EntityType<?> employeeEntity = metamodel.entity(Employee.class);
+        EntityType<?> vehicleEntity = metamodel.entity(CompanyVehicle.class);
 
-        ClassDefinition<?> employee = ClassDefinitionsGenerator.createSingleClassDefinitionFromMetamodel(getEntityManagerFactory(), employeeEntity, false);
-        ClassDefinition<?> vehicle = ClassDefinitionsGenerator.createSingleClassDefinitionFromMetamodel(getEntityManagerFactory(), vehicleEntity, true);
+        EntityDefinition<?> employee = ClassDefinitionsGenerator.createSingleClassDefinitionFromMetamodel(getEntityManagerFactory(), employeeEntity, false);
+        EntityDefinition<?> vehicle = ClassDefinitionsGenerator.createSingleClassDefinitionFromMetamodel(getEntityManagerFactory(), vehicleEntity, true);
         //  project = ClassDefinitionsGenerator.createSingleClassDefinitionFromMetamodel(entityManagerFactory, projectEntity, true);
 
         classDefinitionList.add(employee);
@@ -138,9 +138,9 @@ public class DataWriterTest extends DefaultExcelTestDataCase {
     }
     
     @SuppressWarnings("unchecked")
-    private EntityRegistry toRegistry(Map<ClassDefinition<?>, Map<Object, ExcelRow>> entitiesMap) {
+    private EntityRegistry toRegistry(Map<EntityDefinition<?>, Map<Object, ExcelRow>> entitiesMap) {
         EntityRegistry registry = new EntityRegistry();
-        for (Map.Entry<ClassDefinition<?>, Map<Object, ExcelRow>> entitiesEntry : entitiesMap.entrySet()) {
+        for (Map.Entry<EntityDefinition<?>, Map<Object, ExcelRow>> entitiesEntry : entitiesMap.entrySet()) {
             @SuppressWarnings("rawtypes")
             final Class entityClass = entitiesEntry.getKey().getEntityClass();
             EntityTable<Object> table = new EntityTable<Object>(entityClass);

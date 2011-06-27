@@ -9,7 +9,7 @@ import javax.persistence.EntityManagerFactory;
 
 import org.jarb.populator.excel.entity.EntityRegistry;
 import org.jarb.populator.excel.entity.EntityTable;
-import org.jarb.populator.excel.metamodel.ClassDefinition;
+import org.jarb.populator.excel.metamodel.EntityDefinition;
 import org.jarb.populator.excel.metamodel.MetaModel;
 import org.jarb.populator.excel.util.JpaUtils;
 import org.jarb.populator.excel.workbook.Workbook;
@@ -31,9 +31,9 @@ public class DefaultEntityImporter implements EntityImporter {
      */
     @Override
     public EntityRegistry load(Workbook workbook, MetaModel metamodel) {
-        List<ClassDefinition<?>> classDefinitions = new ArrayList<ClassDefinition<?>>(metamodel.getClassDefinitions());
+        List<EntityDefinition<?>> classDefinitions = new ArrayList<EntityDefinition<?>>(metamodel.getClassDefinitions());
         try {
-            Map<ClassDefinition<?>, Map<Object, ExcelRow>> objectMap = ExcelImporter.parseExcel(workbook, classDefinitions);
+            Map<EntityDefinition<?>, Map<Object, ExcelRow>> objectMap = ExcelImporter.parseExcel(workbook, classDefinitions);
             return toRegistry(objectMap);
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -41,9 +41,9 @@ public class DefaultEntityImporter implements EntityImporter {
     }
     
     @SuppressWarnings("unchecked")
-    private EntityRegistry toRegistry(Map<ClassDefinition<?>, Map<Object, ExcelRow>> entitiesMap) {
+    private EntityRegistry toRegistry(Map<EntityDefinition<?>, Map<Object, ExcelRow>> entitiesMap) {
         EntityRegistry registry = new EntityRegistry();
-        for (Map.Entry<ClassDefinition<?>, Map<Object, ExcelRow>> entitiesEntry : entitiesMap.entrySet()) {
+        for (Map.Entry<EntityDefinition<?>, Map<Object, ExcelRow>> entitiesEntry : entitiesMap.entrySet()) {
             @SuppressWarnings("rawtypes")
             final Class entityClass = entitiesEntry.getKey().getEntityClass();
             EntityTable<Object> entities = new EntityTable<Object>(entityClass);

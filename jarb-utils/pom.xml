@@ -16,5 +16,15 @@
 	<artifactId>jarb-utils</artifactId>
 	<packaging>jar</packaging>
 	<description>Provides common utilities</description>
+	
+	<dependencies>
+		<dependency>
+		    <!-- JPA annotation utilities -->
+		    <groupId>org.hibernate.javax.persistence</groupId>
+		    <artifactId>hibernate-jpa-2.0-api</artifactId>
+		    <version>1.0.0.Final</version>
+            <optional>true</optional>
+		</dependency>
+	</dependencies>
 
 </project>

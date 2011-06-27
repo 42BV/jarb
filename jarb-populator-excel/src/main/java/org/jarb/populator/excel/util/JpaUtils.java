@@ -3,7 +3,6 @@ package org.jarb.populator.excel.util;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.persistence.Embeddable;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.PersistenceUnitUtil;
@@ -50,10 +49,6 @@ public final class JpaUtils {
     public static Object getIdentifier(Object entity, EntityManagerFactory entityManagerFactory) {
         PersistenceUnitUtil persistenceUtil = entityManagerFactory.getPersistenceUnitUtil();
         return persistenceUtil.getIdentifier(entity);
-    }
-    
-    public static boolean isEmbeddable(Object entity) {
-        return entity != null && AnnotationUtils.hasAnnotation(entity.getClass(), Embeddable.class);
     }
     
 }

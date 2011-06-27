@@ -12,7 +12,7 @@ import javax.persistence.metamodel.Metamodel;
 
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.jarb.populator.excel.DefaultExcelTestDataCase;
-import org.jarb.populator.excel.metamodel.ClassDefinition;
+import org.jarb.populator.excel.metamodel.EntityDefinition;
 import org.jarb.populator.excel.metamodel.PropertyDefinition;
 import org.jarb.populator.excel.metamodel.generator.ClassDefinitionsGenerator;
 import org.jarb.populator.excel.metamodel.generator.FieldAnalyzer;
@@ -42,8 +42,8 @@ public class StoreExcelRecordValueTest extends DefaultExcelTestDataCase {
     @Test
     public void testStoreNullClass() throws SecurityException, NoSuchFieldException, InstantiationException, IllegalAccessException, ClassNotFoundException {       
         Metamodel metamodel = getEntityManagerFactory().getMetamodel();
-        EntityType<?> entity = ClassDefinitionsGenerator.getEntityFromMetamodel(Employee.class, metamodel);
-        ClassDefinition<?> classDefinition = ClassDefinitionsGenerator.createSingleClassDefinitionFromMetamodel(getEntityManagerFactory(), entity, false);
+        EntityType<?> entity = metamodel.entity(Employee.class);
+        EntityDefinition<?> classDefinition = ClassDefinitionsGenerator.createSingleClassDefinitionFromMetamodel(getEntityManagerFactory(), entity, false);
         
         rowPosition = 3;
         PropertyDefinition columnDefinition = FieldAnalyzer.analyzeField(Employee.class.getDeclaredField("projects")).build();

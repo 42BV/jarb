@@ -10,10 +10,7 @@ import javax.persistence.metamodel.Metamodel;
 
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.jarb.populator.excel.DefaultExcelTestDataCase;
-import org.jarb.populator.excel.mapping.importer.ExcelRow;
-import org.jarb.populator.excel.mapping.importer.JoinColumnKey;
-import org.jarb.populator.excel.mapping.importer.Key;
-import org.jarb.populator.excel.metamodel.ClassDefinition;
+import org.jarb.populator.excel.metamodel.EntityDefinition;
 import org.jarb.populator.excel.metamodel.PropertyDefinition;
 import org.jarb.populator.excel.metamodel.generator.ClassDefinitionsGenerator;
 import org.jarb.populator.excel.metamodel.generator.FieldAnalyzer;
@@ -28,7 +25,7 @@ public class ExcelRowTest extends DefaultExcelTestDataCase {
     private Workbook excel;
     private ExcelRow excelRow;
     private Customer createdInstance;
-    private ClassDefinition<?> classDefinition;
+    private EntityDefinition<?> classDefinition;
     private Class<?> persistentClass;
     private Object retrievenKeyValue;
 
@@ -44,7 +41,7 @@ public class ExcelRowTest extends DefaultExcelTestDataCase {
         persistentClass = domain.entities.Customer.class;
 
         Metamodel metamodel = getEntityManagerFactory().getMetamodel();
-        EntityType<?> entity = ClassDefinitionsGenerator.getEntityFromMetamodel(domain.entities.Customer.class, metamodel);
+        EntityType<?> entity = metamodel.entity(domain.entities.Customer.class);
 
         classDefinition = ClassDefinitionsGenerator.createSingleClassDefinitionFromMetamodel(getEntityManagerFactory(), entity, false);
         excelRow = new ExcelRow(classDefinition.getEntityClass());
@@ -64,7 +61,7 @@ public class ExcelRowTest extends DefaultExcelTestDataCase {
         persistentClass = domain.entities.Customer.class;
 
         Metamodel metamodel = getEntityManagerFactory().getMetamodel();
-        EntityType<?> entity = ClassDefinitionsGenerator.getEntityFromMetamodel(domain.entities.Customer.class, metamodel);
+        EntityType<?> entity = metamodel.entity(domain.entities.Customer.class);
 
         classDefinition = ClassDefinitionsGenerator.createSingleClassDefinitionFromMetamodel(getEntityManagerFactory(), entity, false);
         excelRow = new ExcelRow(classDefinition.getEntityClass());

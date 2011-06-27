@@ -4,7 +4,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import org.jarb.populator.excel.metamodel.ClassDefinition;
+import org.jarb.populator.excel.metamodel.EntityDefinition;
 import org.jarb.populator.excel.metamodel.PropertyDefinition;
 import org.jarb.populator.excel.metamodel.generator.SuperclassRetriever;
 import org.jarb.utils.BeanPropertyUtils;
@@ -28,11 +28,11 @@ public final class ForeignRelationsMapper {
      * @param excelRow Object representing one row in an excel file.
      * @throws NoSuchFieldException 
      */
-    public static void makeForeignRelations(ExcelRow excelRow, Map<ClassDefinition<?>, Map<Object, ExcelRow>> objectModel) throws NoSuchFieldException {
+    public static void makeForeignRelations(ExcelRow excelRow, Map<EntityDefinition<?>, Map<Object, ExcelRow>> objectModel) throws NoSuchFieldException {
         for (Entry<PropertyDefinition, Key> entry : excelRow.getValueMap().entrySet()) {
             Key key = entry.getValue();
 
-            ClassDefinition<?> classDefinition = ClassDefinitionFinder.findClassDefinitionByPersistentClass(objectModel.keySet(), key.getForeignClass());
+            EntityDefinition<?> classDefinition = ClassDefinitionFinder.findClassDefinitionByPersistentClass(objectModel.keySet(), key.getForeignClass());
             if (classDefinition == null) {
                 Set<Class<?>> superClasses = SuperclassRetriever.getListOfSuperClasses(key.getForeignClass());
                 classDefinition = getClassDefinitionFromParents(objectModel, superClasses);
@@ -47,8 +47,8 @@ public final class ForeignRelationsMapper {
         }
     }
 
-    private static ClassDefinition<?> getClassDefinitionFromParents(Map<ClassDefinition<?>, Map<Object, ExcelRow>> objectModel, Set<Class<?>> parents) {
-        ClassDefinition<?> classDefinition = null;
+    private static EntityDefinition<?> getClassDefinitionFromParents(Map<EntityDefinition<?>, Map<Object, ExcelRow>> objectModel, Set<Class<?>> parents) {
+        EntityDefinition<?> classDefinition = null;
         for (Class<?> parent : parents) {
             classDefinition = ClassDefinitionFinder.findClassDefinitionByPersistentClass(objectModel.keySet(), parent);
             if (classDefinition != null) {

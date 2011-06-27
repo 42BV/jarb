@@ -10,18 +10,18 @@ import org.junit.Test;
 import domain.entities.Workspace;
 
 public class MetaModelTest {
-    private ClassDefinition<Workspace> workspaceDefinition;
+    private EntityDefinition<Workspace> workspaceDefinition;
     private MetaModel metamodel;
     
     @Before
     public void setUp() {
-        workspaceDefinition = ClassDefinition.forClass(Workspace.class).setTableName("workspaces").build();
-        metamodel = new MetaModel(Arrays.<ClassDefinition<?>> asList(workspaceDefinition));
+        workspaceDefinition = EntityDefinition.forClass(Workspace.class).setTableName("workspaces").build();
+        metamodel = new MetaModel(Arrays.<EntityDefinition<?>> asList(workspaceDefinition));
     }
 
     @Test
     public void testFindClassDefinition() {
-        assertEquals(workspaceDefinition, metamodel.describe(Workspace.class));
+        assertEquals(workspaceDefinition, metamodel.entity(Workspace.class));
     }
 
     @Test

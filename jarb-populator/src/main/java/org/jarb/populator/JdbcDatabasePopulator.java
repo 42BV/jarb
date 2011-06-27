@@ -4,7 +4,7 @@ import java.sql.Connection;
 
 import javax.sql.DataSource;
 
-import org.jarb.utils.JdbcUtils;
+import org.jarb.utils.database.JdbcUtils;
 import org.springframework.util.Assert;
 
 /**

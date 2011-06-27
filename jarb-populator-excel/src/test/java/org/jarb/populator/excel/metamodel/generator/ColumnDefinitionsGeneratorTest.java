@@ -13,7 +13,7 @@ import javax.persistence.metamodel.EntityType;
 import javax.persistence.metamodel.Metamodel;
 
 import org.jarb.populator.excel.DefaultExcelTestDataCase;
-import org.jarb.populator.excel.metamodel.ClassDefinition;
+import org.jarb.populator.excel.metamodel.EntityDefinition;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -43,9 +43,9 @@ public class ColumnDefinitionsGeneratorTest extends DefaultExcelTestDataCase {
         EntityType<?> entity = metamodel.entity(persistentClass);
         Set<EntityType<?>> subClassEntities = new HashSet<EntityType<?>>();
         Field departmentNameField = persistentClass.getDeclaredField("departmentName");
-        ClassDefinition.Builder<Department> classDefinitionBuilder = ClassDefinition.forClass(Department.class).setTableName("departments");
+        EntityDefinition.Builder<Department> classDefinitionBuilder = EntityDefinition.forClass(Department.class).setTableName("departments");
         classDefinitionBuilder.includeProperties(ColumnDefinitionsGenerator.createPropertyDefinitions(subClassEntities, entity, persistentClass));
-        assertEquals(departmentNameField, classDefinitionBuilder.build().getPropertyDefinition("departmentName").getField());
+        assertEquals(departmentNameField, classDefinitionBuilder.build().property("departmentName").getField());
     }
 
     @Test
@@ -56,8 +56,8 @@ public class ColumnDefinitionsGeneratorTest extends DefaultExcelTestDataCase {
         EntityType<?> entity = metamodel.entity(persistentClass);
         Set<EntityType<?>> subClassEntities = new HashSet<EntityType<?>>();
         Field buildingAddressField = Address.class.getDeclaredField("streetAndNumber");
-        ClassDefinition.Builder<Employee> classDefinitionBuilder = ClassDefinition.forClass(Employee.class).setTableName("employees");
+        EntityDefinition.Builder<Employee> classDefinitionBuilder = EntityDefinition.forClass(Employee.class).setTableName("employees");
         classDefinitionBuilder.includeProperties(ColumnDefinitionsGenerator.createPropertyDefinitions(subClassEntities, entity, persistentClass));
-        assertEquals(buildingAddressField, classDefinitionBuilder.build().getPropertyDefinition("streetAndNumber").getField());
+        assertEquals(buildingAddressField, classDefinitionBuilder.build().property("streetAndNumber").getField());
     }
 }

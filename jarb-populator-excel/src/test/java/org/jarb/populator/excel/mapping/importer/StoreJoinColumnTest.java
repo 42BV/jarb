@@ -13,7 +13,7 @@ import javax.persistence.metamodel.Metamodel;
 
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.jarb.populator.excel.DefaultExcelTestDataCase;
-import org.jarb.populator.excel.metamodel.ClassDefinition;
+import org.jarb.populator.excel.metamodel.EntityDefinition;
 import org.jarb.populator.excel.metamodel.PropertyDefinition;
 import org.jarb.populator.excel.metamodel.generator.ClassDefinitionsGenerator;
 import org.jarb.populator.excel.metamodel.generator.FieldAnalyzer;
@@ -25,7 +25,7 @@ import org.junit.Test;
 public class StoreJoinColumnTest extends DefaultExcelTestDataCase {
 
     private Class<?> persistentClass;
-    private ClassDefinition<?> classDefinition;
+    private EntityDefinition<?> classDefinition;
     private Workbook excel;
     private ExcelRow excelRow;
     private Field customerField;
@@ -49,7 +49,7 @@ public class StoreJoinColumnTest extends DefaultExcelTestDataCase {
         customerField = persistentClass.getDeclaredField("customer");
 
         Metamodel metamodel = getEntityManagerFactory().getMetamodel();
-        EntityType<?> entity = ClassDefinitionsGenerator.getEntityFromMetamodel(domain.entities.Project.class, metamodel);
+        EntityType<?> entity = metamodel.entity(domain.entities.Project.class);
 
         classDefinition = ClassDefinitionsGenerator.createSingleClassDefinitionFromMetamodel(getEntityManagerFactory(), entity, false);
 
@@ -67,11 +67,11 @@ public class StoreJoinColumnTest extends DefaultExcelTestDataCase {
         excel = new PoiExcelParser().parse(new FileInputStream("src/test/resources/ForeignKeyValueMissing.xls"));
 
         Metamodel metamodel = getEntityManagerFactory().getMetamodel();
-        EntityType<?> entity = ClassDefinitionsGenerator.getEntityFromMetamodel(domain.entities.Project.class, metamodel);
+        EntityType<?> entity = metamodel.entity(domain.entities.Project.class);
 
         classDefinition = ClassDefinitionsGenerator.createSingleClassDefinitionFromMetamodel(getEntityManagerFactory(), entity, false);
         excelRow = new ExcelRow(classDefinition.getEntityClass());
 
-        StoreJoinColumn.storeValue(excel, classDefinition, classDefinition.getPropertyDefinition("customer"), 2, excelRow);
+        StoreJoinColumn.storeValue(excel, classDefinition, classDefinition.property("customer"), 2, excelRow);
     }
 }

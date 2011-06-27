@@ -18,15 +18,15 @@ import org.junit.Test;
 import domain.entities.Customer;
 
 public class ClassDefinitionTest extends DefaultExcelTestDataCase {
-    private ClassDefinition.Builder<Customer> classDefinitionBuilder;
-    private ClassDefinition<? super Customer> customerDefinition;
+    private EntityDefinition.Builder<Customer> classDefinitionBuilder;
+    private EntityDefinition<? super Customer> customerDefinition;
 
     @Before
     public void setUpClassDefinitions() throws InvalidFormatException, IOException {
         // Retrieve full customer definition from meta model generator
-        customerDefinition = generateMetamodel().describe(Customer.class);
+        customerDefinition = generateMetamodel().entity(Customer.class);
         // Build a customer class definition
-        classDefinitionBuilder = ClassDefinition.forClass(Customer.class).setTableName("customers");
+        classDefinitionBuilder = EntityDefinition.forClass(Customer.class).setTableName("customers");
     }
 
     @Test

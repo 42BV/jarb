@@ -7,7 +7,7 @@ import java.io.IOException;
 
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.jarb.populator.excel.DefaultExcelTestDataCase;
-import org.jarb.populator.excel.metamodel.ClassDefinition;
+import org.jarb.populator.excel.metamodel.EntityDefinition;
 import org.jarb.populator.excel.workbook.Workbook;
 import org.junit.Before;
 import org.junit.Test;
@@ -16,7 +16,7 @@ import domain.entities.Customer;
 
 public class WorksheetDefinitionTest extends DefaultExcelTestDataCase {
 
-    private ClassDefinition<?> classDefinition;
+    private EntityDefinition<?> classDefinition;
     private WorksheetDefinition worksheetDefinition;
     private Workbook excel;
 
@@ -24,7 +24,7 @@ public class WorksheetDefinitionTest extends DefaultExcelTestDataCase {
     public void setUpWorksheetDefinition() throws InvalidFormatException, IOException, InstantiationException, IllegalAccessException, ClassNotFoundException {
         worksheetDefinition = new WorksheetDefinition();
         excel = getExcelDataManagerFactory().buildExcelParser().parse(new FileInputStream("src/test/resources/ExcelUnitTesting.xls"));
-        classDefinition = getExcelDataManagerFactory().buildMetamodelGenerator().generate().describe(Customer.class);
+        classDefinition = getExcelDataManagerFactory().buildMetamodelGenerator().generate().entity(Customer.class);
     }
 
     @Test

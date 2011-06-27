@@ -6,6 +6,7 @@ import static org.springframework.util.ReflectionUtils.getField;
 import static org.springframework.util.ReflectionUtils.makeAccessible;
 import static org.springframework.util.ReflectionUtils.setField;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -36,6 +37,17 @@ public final class ReflectionUtils {
         return types;
     }
     
+    /**
+     * Determine if a class has a specific annotation.
+     * 
+     * @param clazz the class being checked for an annotation
+     * @param annotationClass type of annotation being checked on
+     * @return {@code true} if the annotation was found, else {@code false}
+     */
+    public static boolean hasAnnotation(Class<?> clazz, Class<? extends Annotation> annotationClass) {
+        return clazz.getAnnotation(annotationClass) != null;
+    }
+    
     // Construction
 
     /**
@@ -52,8 +64,10 @@ public final class ReflectionUtils {
         try {
             return instantiate(clazz.getDeclaredConstructor());
         } catch (NoSuchMethodException e) {
-            String message = String.format("%s has not declared a nullary constructor.", clazz.getName());
-            throw new IllegalArgumentException(message, e);
+            throw new IllegalArgumentException(
+                String.format("%s has not declared a nullary constructor.", clazz.getName()),
+                e
+            );
         }
     }
 
@@ -88,8 +102,9 @@ public final class ReflectionUtils {
     public static Object invokeMethod(Object target, String methodName, Object... args) {
         Method method = findMethod(target.getClass(), methodName, getClasses(args));
         if (method == null) {
-            String message = String.format("%s has not declared a '%s' method", target.getClass().getName(), methodName);
-            throw new IllegalArgumentException(message);
+            throw new IllegalArgumentException(
+                String.format("%s has not declared a '%s' method", target.getClass().getName(), methodName)
+            );
         }
         return invokeMethod(target, method, args);
     }
@@ -111,6 +126,7 @@ public final class ReflectionUtils {
     
     /**
      * Determine if an object has some field.
+     * 
      * @param bean the target that should contain our field
      * @param fieldName name of the field
      * @return {@code true} if the bean has this field, {@code false}
@@ -119,6 +135,13 @@ public final class ReflectionUtils {
         return findField(bean.getClass(), fieldName) != null;
     }
     
+    /**
+     * Determine if an object has some field.
+     * 
+     * @param bean the target that should contain our field
+     * @param field the field that should be contained
+     * @return {@code true} if the bean has this field, {@code false}
+     */
     public static boolean hasField(Object bean, Field field) {
         return field.getDeclaringClass().isAssignableFrom(bean.getClass());
     }
@@ -134,8 +157,9 @@ public final class ReflectionUtils {
     public static Class<?> getFieldType(Object target, String fieldName) {
         Field field = findField(target.getClass(), fieldName);
         if (field == null) {
-            String message = String.format("%s has not declared a '%s' field", target.getClass().getName(), fieldName);
-            throw new IllegalArgumentException(message);
+            throw new IllegalArgumentException(
+                String.format("%s has not declared a '%s' field", target.getClass().getName(), fieldName)
+            );
         }
         return field.getType();
     }
@@ -144,19 +168,27 @@ public final class ReflectionUtils {
      * Retrieve the field value of a certain {@link Object}. When the field name does not
      * exist inside the object, or its sub-classes, a runtime exception will be thrown.
      * 
+     * @param target object that contains the field
      * @param fieldName name of the field that should be read
-     * @param target instance of the object that should have its field value retrieved
      * @return current value of the field
      */
     public static Object getFieldValue(Object target, String fieldName) {
         Field field = findField(target.getClass(), fieldName);
         if (field == null) {
-            String message = String.format("%s has not declared a '%s' field", target.getClass().getName(), fieldName);
-            throw new IllegalArgumentException(message);
+            throw new IllegalArgumentException(
+                String.format("%s has not declared a '%s' field", target.getClass().getName(), fieldName)
+            );
         }
         return getFieldValue(target, field);
     }
     
+    /**
+     * Retrieve the field value of a certain {@link Object}.
+     * 
+     * @param target object that contains the field
+     * @param field the field being accessed
+     * @return current field value
+     */
     public static Object getFieldValue(Object target, Field field) {
         makeAccessible(field);
         return getField(field, target);
@@ -166,19 +198,27 @@ public final class ReflectionUtils {
      * Modify the field value of a certain {@link Object}. When the field name does not
      * exist inside the object, or its sub-classes, a runtime exception will be thrown.
      * 
+     * @param target object that contains the field
      * @param fieldName name of the field that should be modified
-     * @param target instance of the object that should have its field value modified
      * @param newValue new value of the field
      */
     public static void setFieldValue(Object target, String fieldName, Object newValue) {
         Field field = findField(target.getClass(), fieldName);
         if (field == null) {
-            String message = String.format("%s has not declared a '%s' field", target.getClass().getName(), fieldName);
-            throw new IllegalArgumentException(message);
+            throw new IllegalArgumentException(
+                String.format("%s has not declared a '%s' field", target.getClass().getName(), fieldName)
+            );
         }
         setFieldValue(target, field, newValue);
     }
     
+    /**
+     * Modify the field value of a certain {@link Object}. 
+     * 
+     * @param target object that contains the field
+     * @param field the field being modified
+     * @param newValue new value of the field
+     */
     public static void setFieldValue(Object target, Field field, Object newValue) {
         makeAccessible(field);
         setField(field, target, newValue);

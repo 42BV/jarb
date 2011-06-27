@@ -2,7 +2,7 @@ package org.jarb.populator.excel.mapping.importer;
 
 import java.util.Set;
 
-import org.jarb.populator.excel.metamodel.ClassDefinition;
+import org.jarb.populator.excel.metamodel.EntityDefinition;
 
 
 /**
@@ -22,8 +22,8 @@ public final class ClassDefinitionFinder {
      * @param toFind Persistent class to look for in classDefinitions set
      * @return Found ClassDefinition
      */
-    public static ClassDefinition<?> findClassDefinitionByPersistentClass(Set<ClassDefinition<?>> classDefinitions, Class<?> toFind) {
-        for (ClassDefinition<?> classDefinition : classDefinitions) {
+    public static EntityDefinition<?> findClassDefinitionByPersistentClass(Set<EntityDefinition<?>> classDefinitions, Class<?> toFind) {
+        for (EntityDefinition<?> classDefinition : classDefinitions) {
             if (classDefinition.getEntityClass() == toFind) {
                 return classDefinition;
             }

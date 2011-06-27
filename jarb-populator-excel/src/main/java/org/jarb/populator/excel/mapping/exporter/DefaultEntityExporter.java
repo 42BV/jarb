@@ -2,7 +2,7 @@ package org.jarb.populator.excel.mapping.exporter;
 
 import org.jarb.populator.excel.entity.EntityRegistry;
 import org.jarb.populator.excel.mapping.ValueConversionService;
-import org.jarb.populator.excel.metamodel.ClassDefinition;
+import org.jarb.populator.excel.metamodel.EntityDefinition;
 import org.jarb.populator.excel.metamodel.MetaModel;
 import org.jarb.populator.excel.metamodel.PropertyDatabaseType;
 import org.jarb.populator.excel.metamodel.PropertyDefinition;
@@ -49,7 +49,7 @@ public class DefaultEntityExporter implements EntityExporter {
     @Override
     public Workbook export(EntityRegistry registry, MetaModel metamodel) {
         Workbook workbook = excelTemplateBuilder.createTemplate(metamodel);
-        for (ClassDefinition<?> classDefinition : metamodel.getClassDefinitions()) {
+        for (EntityDefinition<?> classDefinition : metamodel.getClassDefinitions()) {
             exportEntities(registry, classDefinition, workbook);
         }
         return workbook;
@@ -62,7 +62,7 @@ public class DefaultEntityExporter implements EntityExporter {
      * @param classDefinition description of the entity class
      * @param workbook excel workbook that will contain our data
      */
-    private <T> void exportEntities(EntityRegistry registry, ClassDefinition<T> classDefinition, Workbook workbook) {
+    private <T> void exportEntities(EntityRegistry registry, EntityDefinition<T> classDefinition, Workbook workbook) {
         Sheet sheet = workbook.getSheet(classDefinition.getTableName());
         for(T entity : registry.forClass(classDefinition.getEntityClass())) {
             exportEntity(entity, classDefinition, sheet);
@@ -76,7 +76,7 @@ public class DefaultEntityExporter implements EntityExporter {
      * @param classDefinition description of the entity class
      * @param sheet the sheet in which we store the entity
      */
-    private <T> void exportEntity(T entity, ClassDefinition<T> classDefinition, Sheet sheet) {
+    private <T> void exportEntity(T entity, EntityDefinition<T> classDefinition, Sheet sheet) {
         Row row = sheet.createRow();
         // Handle each property definition
         for(PropertyDefinition propertyDefinition : classDefinition.getPropertyDefinitions()) {

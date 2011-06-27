@@ -3,7 +3,7 @@ package org.jarb.populator.excel.metamodel.generator;
 import static org.junit.Assert.assertEquals;
 
 import org.jarb.populator.excel.DefaultExcelTestDataCase;
-import org.jarb.populator.excel.metamodel.ClassDefinition;
+import org.jarb.populator.excel.metamodel.EntityDefinition;
 import org.jarb.populator.excel.metamodel.MetaModel;
 import org.junit.Before;
 import org.junit.Test;
@@ -23,7 +23,7 @@ public class JpaMetaModelGeneratorTest extends DefaultExcelTestDataCase {
         MetaModel metamodel = metaModelGenerator.generate();
         assertEquals(13, metamodel.getKnownClasses().size());
         
-        ClassDefinition<?> releaseDefinition = metamodel.describe(Release.class);
+        EntityDefinition<?> releaseDefinition = metamodel.entity(Release.class);
         assertEquals(Release.class, releaseDefinition.getEntityClass());
         assertEquals("releases", releaseDefinition.getTableName());
     }

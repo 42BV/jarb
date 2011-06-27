@@ -10,7 +10,7 @@ import java.util.Set;
 import javax.sql.DataSource;
 
 import org.apache.commons.lang.StringUtils;
-import org.jarb.utils.JdbcUtils;
+import org.jarb.utils.database.JdbcUtils;
 import org.springframework.util.Assert;
 
 /**

@@ -14,7 +14,7 @@ import javax.persistence.metamodel.EntityType;
 import javax.persistence.metamodel.Metamodel;
 
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
-import org.jarb.populator.excel.metamodel.ClassDefinition;
+import org.jarb.populator.excel.metamodel.EntityDefinition;
 import org.jarb.populator.excel.metamodel.PropertyDefinition;
 import org.jarb.populator.excel.metamodel.generator.ClassDefinitionsGenerator;
 import org.jarb.populator.excel.metamodel.generator.FieldAnalyzer;
@@ -26,7 +26,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 public class StoreJoinTableTest {
     private Class<?> persistentClass;
-    private ClassDefinition<?> classDefinition;
+    private EntityDefinition<?> classDefinition;
     private Workbook excel;
     private ExcelRow excelRow;
     private Field projectsField;
@@ -55,10 +55,10 @@ public class StoreJoinTableTest {
 
         projectsField = persistentClass.getDeclaredField("projects");
 
-        classDefinition = ClassDefinition.forClass(persistentClass).setTableName("projects").build();
+        classDefinition = EntityDefinition.forClass(persistentClass).setTableName("projects").build();
 
         Metamodel metamodel = entityManagerFactory.getMetamodel();
-        EntityType<?> entity = ClassDefinitionsGenerator.getEntityFromMetamodel(domain.entities.Employee.class, metamodel);
+        EntityType<?> entity = metamodel.entity(domain.entities.Employee.class);
 
         classDefinition = ClassDefinitionsGenerator.createSingleClassDefinitionFromMetamodel(entityManagerFactory, entity, false);
 

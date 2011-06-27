@@ -13,8 +13,7 @@ import javax.persistence.metamodel.EntityType;
 import javax.persistence.metamodel.Metamodel;
 
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
-import org.jarb.populator.excel.mapping.importer.ClassDefinitionFinder;
-import org.jarb.populator.excel.metamodel.ClassDefinition;
+import org.jarb.populator.excel.metamodel.EntityDefinition;
 import org.jarb.populator.excel.metamodel.generator.ClassDefinitionsGenerator;
 import org.junit.Before;
 import org.junit.Test;
@@ -24,11 +23,11 @@ public class ClassDefinitionFinderTest {
 
     private Class<?> foreignClass;
 
-    private Set<ClassDefinition<?>> classDefinitionSet;
-    private Set<ClassDefinition<?>> emptyClassDefinitionSet;
+    private Set<EntityDefinition<?>> classDefinitionSet;
+    private Set<EntityDefinition<?>> emptyClassDefinitionSet;
 
-    private ClassDefinition<?> customer;
-    private ClassDefinition<?> project;
+    private EntityDefinition<?> customer;
+    private EntityDefinition<?> project;
 
     private ClassPathXmlApplicationContext context;
     private EntityManagerFactory entityManagerFactory;
@@ -36,7 +35,7 @@ public class ClassDefinitionFinderTest {
     @Before
     public void setupClassDefinitionFinder() throws InvalidFormatException, IOException, InstantiationException, IllegalAccessException,
             IllegalArgumentException, InvocationTargetException, SecurityException, NoSuchMethodException, ClassNotFoundException {
-        emptyClassDefinitionSet = new HashSet<ClassDefinition<?>>();
+        emptyClassDefinitionSet = new HashSet<EntityDefinition<?>>();
 
         context = new ClassPathXmlApplicationContext("test-context.xml");
         entityManagerFactory = (EntityManagerFactory) context.getBean("entityManagerFactory");
@@ -44,10 +43,10 @@ public class ClassDefinitionFinderTest {
         foreignClass = domain.entities.Project.class;
 
         Metamodel metamodel = entityManagerFactory.getMetamodel();
-        EntityType<?> persistentEntity = ClassDefinitionsGenerator.getEntityFromMetamodel(domain.entities.Customer.class, metamodel);
-        EntityType<?> foreignEntity = ClassDefinitionsGenerator.getEntityFromMetamodel(domain.entities.Project.class, metamodel);
+        EntityType<?> persistentEntity = metamodel.entity(domain.entities.Customer.class);
+        EntityType<?> foreignEntity = metamodel.entity(domain.entities.Project.class);
 
-        classDefinitionSet = new HashSet<ClassDefinition<?>>();
+        classDefinitionSet = new HashSet<EntityDefinition<?>>();
         customer = ClassDefinitionsGenerator.createSingleClassDefinitionFromMetamodel(entityManagerFactory, persistentEntity, false);
         project = ClassDefinitionsGenerator.createSingleClassDefinitionFromMetamodel(entityManagerFactory, foreignEntity, false);
         classDefinitionSet.add(customer);

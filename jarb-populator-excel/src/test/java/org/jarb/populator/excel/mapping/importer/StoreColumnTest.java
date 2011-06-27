@@ -13,7 +13,7 @@ import javax.persistence.metamodel.Metamodel;
 
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.jarb.populator.excel.DefaultExcelTestDataCase;
-import org.jarb.populator.excel.metamodel.ClassDefinition;
+import org.jarb.populator.excel.metamodel.EntityDefinition;
 import org.jarb.populator.excel.metamodel.PropertyDefinition;
 import org.jarb.populator.excel.metamodel.generator.ClassDefinitionsGenerator;
 import org.jarb.populator.excel.metamodel.generator.FieldAnalyzer;
@@ -25,7 +25,7 @@ import org.junit.Test;
 
 public class StoreColumnTest extends DefaultExcelTestDataCase {
     private Class<?> persistentClass;
-    private ClassDefinition<?> classDefinition;
+    private EntityDefinition<?> classDefinition;
     private Workbook excel;
     private ExcelRow excelRow;
     private Field nameField;
@@ -50,7 +50,7 @@ public class StoreColumnTest extends DefaultExcelTestDataCase {
         nameField = persistentClass.getDeclaredField("name");
 
         Metamodel metamodel = getEntityManagerFactory().getMetamodel();
-        EntityType<?> entity = ClassDefinitionsGenerator.getEntityFromMetamodel(domain.entities.Customer.class, metamodel);
+        EntityType<?> entity = metamodel.entity(domain.entities.Customer.class);
 
         PropertyDefinition column = FieldAnalyzer.analyzeField(nameField).build();
         classDefinition = ClassDefinitionsGenerator.createSingleClassDefinitionFromMetamodel(getEntityManagerFactory(), entity, false);

@@ -11,7 +11,7 @@ import java.util.Map.Entry;
 
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.jarb.populator.excel.DefaultExcelTestDataCase;
-import org.jarb.populator.excel.metamodel.ClassDefinition;
+import org.jarb.populator.excel.metamodel.EntityDefinition;
 import org.jarb.populator.excel.metamodel.PropertyDefinition;
 import org.jarb.populator.excel.workbook.Workbook;
 import org.junit.Before;
@@ -38,9 +38,9 @@ public class ForeignRelationsMapperTest extends DefaultExcelTestDataCase {
             SecurityException, NoSuchFieldException {
         excel = getExcelDataManagerFactory().buildExcelParser().parse(new FileInputStream("src/test/resources/Excel.xls"));
 
-        Map<ClassDefinition<?>, Map<Object, ExcelRow>> objectModel = ExcelImporter.parseExcel(excel, generateMetamodel().getClassDefinitions());
+        Map<EntityDefinition<?>, Map<Object, ExcelRow>> objectModel = ExcelImporter.parseExcel(excel, generateMetamodel().getClassDefinitions());
 
-        for (Entry<ClassDefinition<?>, Map<Object, ExcelRow>> classRecord : objectModel.entrySet()) {
+        for (Entry<EntityDefinition<?>, Map<Object, ExcelRow>> classRecord : objectModel.entrySet()) {
             for (Entry<Object, ExcelRow> classValues : classRecord.getValue().entrySet()) {
                 ExcelRow excelRow = classValues.getValue();
                 Class<?> tobeTested = domain.entities.Project.class;

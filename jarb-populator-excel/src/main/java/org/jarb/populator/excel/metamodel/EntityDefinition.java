@@ -20,9 +20,9 @@ import org.springframework.util.Assert;
  * @author Sander Benschop
  * @author Jeroen van Schagen
  */
-public class ClassDefinition<T> {
+public class EntityDefinition<T> {
     /** Persistent class being described. */
-    private final Class<T> persistentClass;
+    private final Class<T> entityClass;
     
     /** Name of the discriminator column. **/
     private String discriminatorColumnName;
@@ -37,20 +37,20 @@ public class ClassDefinition<T> {
     
     /**
      * Construct a new {@link ClassDefinition).
-     * @param persistentClass class being described
+     * @param entityClass class being described
      */
-    private ClassDefinition(Class<T> persistentClass) {
-        this.persistentClass = persistentClass;
+    private EntityDefinition(Class<T> entityClass) {
+        this.entityClass = entityClass;
     }
     
     /**
-     * Start building a new {@link ClassDefinition}.
+     * Start building a new {@link EntityDefinition}.
      * @param <T> type of class being described
-     * @param persistentClass class being described
+     * @param entityClass class being described
      * @return class definition builder
      */
-    public static <T> Builder<T> forClass(Class<T> persistentClass) {
-        return new Builder<T>(persistentClass);
+    public static <T> Builder<T> forClass(Class<T> entityClass) {
+        return new Builder<T>(entityClass);
     }
 
     /**
@@ -58,7 +58,7 @@ public class ClassDefinition<T> {
      * @return persistentClass instance from domain package
      */
     public Class<T> getEntityClass() {
-        return persistentClass;
+        return entityClass;
     }
     
     /**
@@ -66,7 +66,7 @@ public class ClassDefinition<T> {
      * @param discriminatorValue discriminator value
      * @return subclass matching our discriminator, or {@code null}
      */
-    public Class<? extends T> getSubClass(String discriminatorValue) {
+    public Class<? extends T> getEntitySubClass(String discriminatorValue) {
         return subClasses.get(discriminatorValue);
     }
     
@@ -112,13 +112,13 @@ public class ClassDefinition<T> {
 
     /**
      * Retrieve a specific property definition.
-     * @param fieldName name of the property field
+     * @param propertyName name of the property field
      * @return matching property field, if any
      */
-    public PropertyDefinition getPropertyDefinition(String fieldName) {
+    public PropertyDefinition property(String propertyName) {
         PropertyDefinition result = null;
         for (PropertyDefinition columnDefinition : propertyDefinitions) {
-            if (StringUtils.equalsIgnoreCase(fieldName, columnDefinition.getName())) {
+            if (StringUtils.equalsIgnoreCase(propertyName, columnDefinition.getName())) {
                 result = columnDefinition;
             }
         }
@@ -169,7 +169,7 @@ public class ClassDefinition<T> {
     }
     
     /**
-     * Capable of building {@link ClassDefinition} instances.
+     * Capable of building {@link EntityDefinition} instances.
      * 
      * @author Jeroen van Schagen
      * @since 15-06-2011
@@ -239,10 +239,10 @@ public class ClassDefinition<T> {
          * Construct a new class definition that contains all previously configured attributes.
          * @return new class definition
          */
-        public ClassDefinition<T> build() {
+        public EntityDefinition<T> build() {
             Assert.hasText(tableName, "Table name cannot be blank");
 
-            ClassDefinition<T> classDefinition = new ClassDefinition<T>(persistentClass);
+            EntityDefinition<T> classDefinition = new EntityDefinition<T>(persistentClass);
             classDefinition.discriminatorColumnName = discriminatorColumnName;
             classDefinition.subClasses = Collections.unmodifiableMap(subClasses);
             classDefinition.tableName = tableName;
@@ -259,8 +259,8 @@ public class ClassDefinition<T> {
         if(obj == this) {
             return true;
         }
-        if(obj instanceof ClassDefinition) {
-            return persistentClass.equals(((ClassDefinition<?>) obj).persistentClass);
+        if(obj instanceof EntityDefinition) {
+            return entityClass.equals(((EntityDefinition<?>) obj).entityClass);
         } else {
             return false;
         }
@@ -271,7 +271,7 @@ public class ClassDefinition<T> {
      */
     @Override
     public int hashCode() {
-        return persistentClass.hashCode();
+        return entityClass.hashCode();
     }
 
     /**
@@ -279,7 +279,7 @@ public class ClassDefinition<T> {
      */
     @Override
     public String toString() {
-        return persistentClass.getName();
+        return entityClass.getName();
     }
 
 }

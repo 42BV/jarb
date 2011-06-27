@@ -13,16 +13,16 @@ import java.util.Set;
  * @author Jeroen van Schagen
  * @since 10-05-2011
  */
-public class MetaModel implements Iterable<ClassDefinition<?>> {
-    private final Map<Class<?>, ClassDefinition<?>> classDefinitionMap;
+public class MetaModel implements Iterable<EntityDefinition<?>> {
+    private final Map<Class<?>, EntityDefinition<?>> classDefinitionMap;
     
     /**
      * Construct a new {@link MetaModel}.
      * @param classDefinitions all class definitions
      */
-    public MetaModel(Collection<ClassDefinition<?>> classDefinitions) {
-        classDefinitionMap = new HashMap<Class<?>, ClassDefinition<?>>();
-        for(ClassDefinition<?> classDefinition : classDefinitions) {
+    public MetaModel(Collection<EntityDefinition<?>> classDefinitions) {
+        classDefinitionMap = new HashMap<Class<?>, EntityDefinition<?>>();
+        for(EntityDefinition<?> classDefinition : classDefinitions) {
             classDefinitionMap.put(classDefinition.getEntityClass(), classDefinition);
         }
     }
@@ -34,10 +34,10 @@ public class MetaModel implements Iterable<ClassDefinition<?>> {
      * @return description of the provided class, else {@code null}
      */
     @SuppressWarnings("unchecked")
-    public <T> ClassDefinition<? super T> describe(Class<T> persistentClass) {
-        ClassDefinition<? super T> definition = (ClassDefinition<T>) classDefinitionMap.get(persistentClass);
+    public <T> EntityDefinition<? super T> entity(Class<T> persistentClass) {
+        EntityDefinition<? super T> definition = (EntityDefinition<T>) classDefinitionMap.get(persistentClass);
         if(definition == null && persistentClass.getSuperclass() != null) {
-            definition = describe(persistentClass.getSuperclass());
+            definition = entity(persistentClass.getSuperclass());
         }
         return definition;
     }
@@ -67,7 +67,7 @@ public class MetaModel implements Iterable<ClassDefinition<?>> {
      * Retrieve an unmodifiable collection of all class definitions.
      * @return all class definitions stored in this metamodel
      */
-    public Collection<ClassDefinition<?>> getClassDefinitions() {
+    public Collection<EntityDefinition<?>> getClassDefinitions() {
         return Collections.unmodifiableCollection(classDefinitionMap.values());
     }
 
@@ -75,7 +75,7 @@ public class MetaModel implements Iterable<ClassDefinition<?>> {
      * {@inheritDoc}
      */
     @Override
-    public Iterator<ClassDefinition<?>> iterator() {
+    public Iterator<EntityDefinition<?>> iterator() {
         return classDefinitionMap.values().iterator();
     }
 

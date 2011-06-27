@@ -18,13 +18,7 @@ import javax.persistence.metamodel.Metamodel;
 
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.jarb.populator.excel.DefaultExcelTestDataCase;
-import org.jarb.populator.excel.mapping.importer.ExcelImporter;
-import org.jarb.populator.excel.mapping.importer.ExcelRow;
-import org.jarb.populator.excel.mapping.importer.ForeignExcelRowGrabber;
-import org.jarb.populator.excel.mapping.importer.JoinColumnKey;
-import org.jarb.populator.excel.mapping.importer.JoinTableKey;
-import org.jarb.populator.excel.mapping.importer.Key;
-import org.jarb.populator.excel.metamodel.ClassDefinition;
+import org.jarb.populator.excel.metamodel.EntityDefinition;
 import org.jarb.populator.excel.metamodel.generator.ClassDefinitionsGenerator;
 import org.jarb.populator.excel.workbook.Workbook;
 import org.jarb.populator.excel.workbook.reader.PoiExcelParser;
@@ -36,7 +30,7 @@ import domain.entities.Customer;
 public class ForeignExcelRowGrabberTest extends DefaultExcelTestDataCase {
 
     private Workbook excel;
-    private ClassDefinition<?> classDefinition;
+    private EntityDefinition<?> classDefinition;
     private Class<?> persistentClass;
     private Map<Object, ExcelRow> objectModel;
 
@@ -57,7 +51,7 @@ public class ForeignExcelRowGrabberTest extends DefaultExcelTestDataCase {
         persistentClass = domain.entities.Project.class;
 
         Metamodel metamodel = getEntityManagerFactory().getMetamodel();
-        EntityType<?> entity = ClassDefinitionsGenerator.getEntityFromMetamodel(domain.entities.Project.class, metamodel);
+        EntityType<?> entity = metamodel.entity(domain.entities.Project.class);
 
         classDefinition = ClassDefinitionsGenerator.createSingleClassDefinitionFromMetamodel(getEntityManagerFactory(), entity, false);
 
@@ -74,7 +68,7 @@ public class ForeignExcelRowGrabberTest extends DefaultExcelTestDataCase {
         persistentClass = domain.entities.Project.class;
 
         Metamodel metamodel = getEntityManagerFactory().getMetamodel();
-        EntityType<?> entity = ClassDefinitionsGenerator.getEntityFromMetamodel(domain.entities.Project.class, metamodel);
+        EntityType<?> entity = metamodel.entity(domain.entities.Project.class);
 
         classDefinition = ClassDefinitionsGenerator.createSingleClassDefinitionFromMetamodel(getEntityManagerFactory(), entity, false);
 
@@ -100,7 +94,7 @@ public class ForeignExcelRowGrabberTest extends DefaultExcelTestDataCase {
         persistentClass = domain.entities.Project.class;
 
         Metamodel metamodel = getEntityManagerFactory().getMetamodel();
-        EntityType<?> entity = ClassDefinitionsGenerator.getEntityFromMetamodel(domain.entities.Project.class, metamodel);
+        EntityType<?> entity = metamodel.entity(domain.entities.Project.class);
 
         classDefinition = ClassDefinitionsGenerator.createSingleClassDefinitionFromMetamodel(getEntityManagerFactory(), entity, false);
 

@@ -2,12 +2,14 @@ package org.jarb.populator.excel.metamodel.generator;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Set;
 
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.metamodel.EntityType;
 
-import org.jarb.populator.excel.metamodel.ClassDefinition;
+import org.jarb.populator.excel.metamodel.EntityDefinition;
 import org.jarb.populator.excel.metamodel.MetaModel;
+import org.jarb.utils.database.JpaMetaModelUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,22 +36,43 @@ public class JpaMetaModelGenerator implements MetaModelGenerator {
      */
     @Override
     public MetaModel generate() {
-        Collection<ClassDefinition<?>> classDefinitions = new HashSet<ClassDefinition<?>>();
-        for (EntityType<?> entityType : entityManagerFactory.getMetamodel().getEntities()) {
-            ClassDefinition<?> classDefinition = describeEntityType(entityType);
-            if (classDefinition != null) {
-                classDefinitions.add(classDefinition);
-            }
+        Collection<EntityDefinition<?>> classDefinitions = new HashSet<EntityDefinition<?>>();
+        for (EntityType<?> entityType : getRootEntities()) {
+            classDefinitions.add(describeEntityType(entityType));
         }
         return new MetaModel(classDefinitions);
     }
+    
+    private Collection<EntityType<?>> getRootEntities() {
+        Set<EntityType<?>> entityTypes = new HashSet<EntityType<?>>();
+        for(EntityType<?> entityType : entityManagerFactory.getMetamodel().getEntities()) {
+            if(!hasEntitySuperClass(entityType.getJavaType())) {
+                entityTypes.add(entityType);
+            }
+        }
+        return entityTypes;
+    }
+    
+    private boolean hasEntitySuperClass(Class<?> entityClass) {
+        boolean found = false;
+        Class<?> currentClass = entityClass;
+        while(currentClass.getSuperclass() != null) {
+            final Class<?> superClass = currentClass.getSuperclass();
+            if(JpaMetaModelUtils.isEntity(superClass)) {
+                found = true;
+                break;
+            }
+            currentClass = superClass;
+        }
+        return found;
+    }
 
     /**
-     * Generate the {@link ClassDefinition} of a specific entity type.
+     * Generate the {@link EntityDefinition} of a specific entity type.
      * @param entityType type of entity being inspected
      * @return definition of the class
      */
-    private ClassDefinition<?> describeEntityType(EntityType<?> entityType) {
+    private EntityDefinition<?> describeEntityType(EntityType<?> entityType) {
         try {
             LOGGER.debug("Generating metamodel definition of '{}'.", entityType.getJavaType().getName());
             return ClassDefinitionsGenerator.createSingleClassDefinitionFromMetamodel(entityManagerFactory, entityType, true);

@@ -5,7 +5,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import org.jarb.populator.excel.metamodel.ClassDefinition;
+import org.jarb.populator.excel.metamodel.EntityDefinition;
 import org.jarb.populator.excel.metamodel.PropertyDatabaseType;
 import org.jarb.populator.excel.metamodel.MetaModel;
 import org.jarb.populator.excel.metamodel.PropertyDefinition;
@@ -30,9 +30,9 @@ public class ExcelTemplateBuilder {
      */
     public Workbook createTemplate(MetaModel metamodel) {
         Workbook workbook = new Workbook();
-        List<ClassDefinition<?>> classDefinitions = new ArrayList<ClassDefinition<?>>(metamodel.getClassDefinitions());
+        List<EntityDefinition<?>> classDefinitions = new ArrayList<EntityDefinition<?>>(metamodel.getClassDefinitions());
         Collections.sort(classDefinitions, new ClassDefinitionNameComparator());
-        for (ClassDefinition<?> classDefinition : classDefinitions) {
+        for (EntityDefinition<?> classDefinition : classDefinitions) {
             createClassSheet(classDefinition, workbook);
         }
         return workbook;
@@ -43,7 +43,7 @@ public class ExcelTemplateBuilder {
      * @param classDefinition description of the entity structure being stored
      * @param workbook the workbook that will hold our sheet
      */
-    private void createClassSheet(ClassDefinition<?> classDefinition, Workbook workbook) {
+    private void createClassSheet(EntityDefinition<?> classDefinition, Workbook workbook) {
         Sheet sheet = workbook.createSheet(classDefinition.getTableName());
         storeColumnNames(sheet, classDefinition);
         for(PropertyDefinition propertyDefinition : classDefinition.getPropertyDefinitions()) {
@@ -58,7 +58,7 @@ public class ExcelTemplateBuilder {
      * @param sheet the sheet that should contain our columns
      * @param classDefinition description of all columns
      */
-    private void storeColumnNames(Sheet sheet, ClassDefinition<?> classDefinition) {
+    private void storeColumnNames(Sheet sheet, EntityDefinition<?> classDefinition) {
         int columnNumber = 0;
         sheet.setColumnNameAt(columnNumber++, "#"); // Row identifier
         for(String columnName : classDefinition.getColumnNames()) {
@@ -78,12 +78,12 @@ public class ExcelTemplateBuilder {
     }
     
     // Sorts class definitions based on table name
-    private static class ClassDefinitionNameComparator implements Comparator<ClassDefinition<?>> {
+    private static class ClassDefinitionNameComparator implements Comparator<EntityDefinition<?>> {
         /**
          * {@inheritDoc}
          */
         @Override
-        public int compare(ClassDefinition<?> left, ClassDefinition<?> right) {
+        public int compare(EntityDefinition<?> left, EntityDefinition<?> right) {
             return left.getTableName().compareTo(right.getTableName());
         }
     }

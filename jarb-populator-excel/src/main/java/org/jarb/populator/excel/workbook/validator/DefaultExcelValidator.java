@@ -6,7 +6,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import org.jarb.populator.excel.metamodel.ClassDefinition;
+import org.jarb.populator.excel.metamodel.EntityDefinition;
 import org.jarb.populator.excel.metamodel.PropertyDatabaseType;
 import org.jarb.populator.excel.metamodel.MetaModel;
 import org.jarb.populator.excel.metamodel.PropertyDefinition;
@@ -76,7 +76,7 @@ public class DefaultExcelValidator implements ExcelValidator {
         private Map<String, Set<String>> columnNamesMap = new HashMap<String, Set<String>>();
         
         public WorkbookExpectation(MetaModel metamodel) {
-            for(ClassDefinition<?> classDefinition : metamodel.getClassDefinitions()) {
+            for(EntityDefinition<?> classDefinition : metamodel.getClassDefinitions()) {
                 final String sheetName = classDefinition.getTableName();
                 // Each entity type has a specific sheet name
                 sheetNames.add(sheetName);
