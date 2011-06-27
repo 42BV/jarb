@@ -9,7 +9,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
-import org.jarb.populator.excel.workbook.validator.WorkbookValidation;
+import org.jarb.populator.excel.workbook.validator.WorkbookValidationResult;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.core.io.ClassPathResource;
@@ -43,7 +43,7 @@ public class ExcelDataManagerTest extends DefaultExcelTestDataCase {
     
     @Test
     public void testValidateWorkbook() throws FileNotFoundException {
-        WorkbookValidation validation = excelData.loadWorkbook("src/test/resources/Excel.xls").validate();
+        WorkbookValidationResult validation = excelData.loadWorkbook("src/test/resources/Excel.xls").validate();
         assertNotNull("No workbook validation was returned", validation);
         assertFalse("Workbook should not contain errors", validation.hasViolations());
     }
@@ -55,7 +55,7 @@ public class ExcelDataManagerTest extends DefaultExcelTestDataCase {
             excelData.loadWorkbook("src/test/resources/ExcelVerification/missing_sheet.xls").entities();
             fail("Expected an exception as the loaded workbook has an invalid structure");
         } catch(InvalidWorkbookException e) {
-            WorkbookValidation validation = e.getValidation();
+            WorkbookValidationResult validation = e.getValidation();
             assertNotNull("Expected a workbook validation with the exception", validation);
             assertEquals(1, validation.getViolations().size());
             assertEquals("Sheet 'customers' is missing.", validation.getViolations().iterator().next().getMessage());
@@ -71,7 +71,7 @@ public class ExcelDataManagerTest extends DefaultExcelTestDataCase {
     @Test
     public void testCreateWorkbookTemplate() throws FileNotFoundException {
         excelData.newWorkbook().write("src/test/resources/excel/generated/NewExcelFile.xls");
-        WorkbookValidation validation = excelData.loadWorkbook("src/test/resources/excel/generated/NewExcelFile.xls").validate();
+        WorkbookValidationResult validation = excelData.loadWorkbook("src/test/resources/excel/generated/NewExcelFile.xls").validate();
         assertFalse("Created workbook template is not valid", validation.hasViolations());
     }
 
@@ -87,7 +87,8 @@ public class ExcelDataManagerTest extends DefaultExcelTestDataCase {
         
         // Read the generated workbook and check if the included entity was maintained
         CompanyVehicle result = excelData.loadWorkbook("src/test/resources/excel/generated/NewExcelFileFromDatabase.xls")
-            .entities().find(CompanyVehicle.class, car.getId());
+            .entities()
+                .find(CompanyVehicle.class, car.getId());
         
         assertNotNull("Car was not maintained during store and load.", result);
         assertEquals(car.getId(), result.getId());

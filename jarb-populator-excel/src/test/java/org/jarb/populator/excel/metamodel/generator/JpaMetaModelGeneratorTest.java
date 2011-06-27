@@ -11,17 +11,17 @@ import org.junit.Test;
 import domain.entities.Release;
 
 public class JpaMetaModelGeneratorTest extends DefaultExcelTestDataCase {
-    private JpaMetaModelGenerator metaModelGenerator;
+    private JpaMetaModelGenerator generator;
 
     @Before
     public void buildMetaModelGenerator() {
-        metaModelGenerator = new JpaMetaModelGenerator(getEntityManagerFactory());
+        generator = new JpaMetaModelGenerator(getEntityManagerFactory());
     }
 
     @Test
     public void testGenerate() {
-        MetaModel metamodel = metaModelGenerator.generate();
-        assertEquals(13, metamodel.getKnownClasses().size());
+        MetaModel metamodel = generator.generate();
+        assertEquals(13, metamodel.entities().size());
         
         EntityDefinition<?> releaseDefinition = metamodel.entity(Release.class);
         assertEquals(Release.class, releaseDefinition.getEntityClass());

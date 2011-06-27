@@ -15,21 +15,16 @@ import org.jarb.populator.excel.workbook.validator.export.ValidationExporter;
  * @author Jeroen van Schagen
  * @since 10-05-2011
  */
-public class MutableWorkbookValidation implements WorkbookValidation {
-    private Set<WorkbookViolation> violations = new HashSet<WorkbookViolation>();
+public class MutableWorkbookValidationResult implements WorkbookValidationResult {
+    private Set<WorkbookViolation> globalViolations = new HashSet<WorkbookViolation>();
     private Map<String, Set<WorkbookViolation>> sheetViolationsMap = new HashMap<String, Set<WorkbookViolation>>();
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public boolean hasViolations() {
-        boolean violationFound = !violations.isEmpty();
-        if(!violationFound) {
-            for(Set<WorkbookViolation> sheetViolations : sheetViolationsMap.values()) {
-                if(!sheetViolations.isEmpty()) {
-                    violationFound = true;
-                    break;
-                }
-            }
-        }
-        return violationFound;
+        return !getViolations().isEmpty();
     }
     
     /**
@@ -37,11 +32,11 @@ public class MutableWorkbookValidation implements WorkbookValidation {
      */
     @Override
     public Set<WorkbookViolation> getViolations() {
-        Set<WorkbookViolation> allViolations = new HashSet<WorkbookViolation>(violations);
+        Set<WorkbookViolation> violations = new HashSet<WorkbookViolation>(globalViolations);
         for(Set<WorkbookViolation> sheetViolations : sheetViolationsMap.values()) {
-            allViolations.addAll(sheetViolations);
+            violations.addAll(sheetViolations);
         }
-        return Collections.unmodifiableSet(allViolations);
+        return Collections.unmodifiableSet(violations);
     }
     
     /**
@@ -49,7 +44,7 @@ public class MutableWorkbookValidation implements WorkbookValidation {
      */
     @Override
     public Set<WorkbookViolation> getGlobalViolations() {
-        return Collections.unmodifiableSet(violations);
+        return Collections.unmodifiableSet(globalViolations);
     }
     
     /**
@@ -57,7 +52,7 @@ public class MutableWorkbookValidation implements WorkbookValidation {
      * @param violation global violation being added
      */
     public void addGlobalViolation(WorkbookViolation violation) {
-        violations.add(violation);
+        globalViolations.add(violation);
     }
     
     /**
@@ -71,15 +66,15 @@ public class MutableWorkbookValidation implements WorkbookValidation {
     /**
      * Include a sheet specific violation, for example a missing or unknown column.
      * @param sheetName name of the sheet
-     * @param sheetViolation sheet specific violation being added
+     * @param violation sheet specific violation being added
      */
-    public void addSheetViolation(String sheetName, WorkbookViolation sheetViolation) {
+    public void addSheetViolation(String sheetName, WorkbookViolation violation) {
         Set<WorkbookViolation> sheetViolations = sheetViolationsMap.get(sheetName);
         if(sheetViolations == null) {
             sheetViolations = new HashSet<WorkbookViolation>();
             sheetViolationsMap.put(sheetName, sheetViolations);
         }
-        sheetViolations.add(sheetViolation);
+        sheetViolations.add(violation);
     }
     
     /**

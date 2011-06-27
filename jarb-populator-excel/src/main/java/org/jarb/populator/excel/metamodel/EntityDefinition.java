@@ -21,7 +21,7 @@ import org.springframework.util.Assert;
  * @author Jeroen van Schagen
  */
 public class EntityDefinition<T> {
-    /** Persistent class being described. */
+    /** Entity class being described. */
     private final Class<T> entityClass;
     
     /** Name of the discriminator column. **/
@@ -72,13 +72,13 @@ public class EntityDefinition<T> {
     
     /**
      * Retrieve the discriminator value used to indicate a specific subclass.
-     * @param subClass type of subclass for which we retrieve the discriminator
+     * @param entitySubClass type of subclass for which we retrieve the discriminator
      * @return discriminator value used to indicate the subclass
      */
-    public String getDiscriminatorValue(Class<?> subClass) {
+    public String getDiscriminatorValue(Class<?> entitySubClass) {
         String result = null;
         for(Map.Entry<String, Class<? extends T>> subClassesEntry : subClasses.entrySet()) {
-            if(subClassesEntry.getValue().isAssignableFrom(subClass)) {
+            if(subClassesEntry.getValue().isAssignableFrom(entitySubClass)) {
                 result = subClassesEntry.getKey();
                 break; // Result found, quit searching
             }
@@ -106,7 +106,7 @@ public class EntityDefinition<T> {
      * Retrieve all property definitions declared inside this class.
      * @return definition of each declared property
      */
-    public Set<PropertyDefinition> getPropertyDefinitions() {
+    public Set<PropertyDefinition> properties() {
         return Collections.unmodifiableSet(propertyDefinitions);
     }
 
@@ -117,9 +117,9 @@ public class EntityDefinition<T> {
      */
     public PropertyDefinition property(String propertyName) {
         PropertyDefinition result = null;
-        for (PropertyDefinition columnDefinition : propertyDefinitions) {
-            if (StringUtils.equalsIgnoreCase(propertyName, columnDefinition.getName())) {
-                result = columnDefinition;
+        for (PropertyDefinition property : propertyDefinitions) {
+            if (StringUtils.equalsIgnoreCase(propertyName, property.getName())) {
+                result = property;
             }
         }
         return result;
@@ -133,11 +133,11 @@ public class EntityDefinition<T> {
      * @param columnName name of the column
      * @return matching property field, if any
      */
-    public PropertyDefinition getPropertyDefinitionByColumn(String columnName) {
+    public PropertyDefinition propertyByColumnName(String columnName) {
         PropertyDefinition result = null;
-        for (PropertyDefinition columnDefinition : propertyDefinitions) {
-            if (StringUtils.equalsIgnoreCase(columnName, columnDefinition.getColumnName())) {
-                result = columnDefinition;
+        for (PropertyDefinition property : propertyDefinitions) {
+            if (StringUtils.equalsIgnoreCase(columnName, property.getColumnName())) {
+                result = property;
             }
         }
         return result;
@@ -145,13 +145,13 @@ public class EntityDefinition<T> {
     
     /**
      * Retrieve all column names for this entity table.
-     * @return
+     * @return each column name on this entity
      */
     public Set<String> getColumnNames() {
         Set<String> columnNames = new HashSet<String>();
-        for (PropertyDefinition propertyDefinition : propertyDefinitions) {
-            if(propertyDefinition.hasColumn()) {
-                columnNames.add(propertyDefinition.getColumnName());
+        for (PropertyDefinition property : propertyDefinitions) {
+            if(property.hasColumn()) {
+                columnNames.add(property.getColumnName());
             }
         }
         if(hasDiscriminatorColumn()) {
@@ -181,15 +181,15 @@ public class EntityDefinition<T> {
         private String discriminatorColumnName;
         private Map<String, Class<? extends T>> subClasses = new HashMap<String, Class<? extends T>>();
         private String tableName;
-        private Set<PropertyDefinition> propertyDefinitions = new HashSet<PropertyDefinition>();
+        private Set<PropertyDefinition> properties = new HashSet<PropertyDefinition>();
         
         /**
          * Construct a new {@link Builder}.
-         * @param persistentClass class being described
+         * @param entityClass class being described
          */
-        public Builder(Class<T> persistentClass) {
-            Assert.notNull(persistentClass, "Persistent class cannot be null");
-            this.persistentClass = persistentClass;
+        public Builder(Class<T> entityClass) {
+            Assert.notNull(entityClass, "Entity class cannot be null");
+            this.persistentClass = entityClass;
         }
         
         /**
@@ -227,11 +227,11 @@ public class EntityDefinition<T> {
         
         /**
          * Include a column definition.
-         * @param columnDefinition column definition being included
+         * @param properties property definitions being added
          * @return this for method chaining
          */
-        public Builder<T> includeProperties(Collection<PropertyDefinition> propertyDefinitions) {
-            this.propertyDefinitions.addAll(propertyDefinitions);
+        public Builder<T> includeProperties(Collection<PropertyDefinition> properties) {
+            this.properties.addAll(properties);
             return this;
         }
         
@@ -246,7 +246,7 @@ public class EntityDefinition<T> {
             classDefinition.discriminatorColumnName = discriminatorColumnName;
             classDefinition.subClasses = Collections.unmodifiableMap(subClasses);
             classDefinition.tableName = tableName;
-            classDefinition.propertyDefinitions = Collections.unmodifiableSet(propertyDefinitions);
+            classDefinition.propertyDefinitions = Collections.unmodifiableSet(properties);
             return classDefinition;
         }
     }

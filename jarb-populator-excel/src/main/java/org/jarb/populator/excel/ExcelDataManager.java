@@ -16,9 +16,9 @@ import org.jarb.populator.excel.metamodel.MetaModel;
 import org.jarb.populator.excel.metamodel.generator.MetaModelGenerator;
 import org.jarb.populator.excel.workbook.Workbook;
 import org.jarb.populator.excel.workbook.reader.ExcelParser;
-import org.jarb.populator.excel.workbook.validator.ExcelValidator;
-import org.jarb.populator.excel.workbook.validator.MutableWorkbookValidation;
-import org.jarb.populator.excel.workbook.validator.WorkbookValidation;
+import org.jarb.populator.excel.workbook.validator.WorkbookValidator;
+import org.jarb.populator.excel.workbook.validator.MutableWorkbookValidationResult;
+import org.jarb.populator.excel.workbook.validator.WorkbookValidationResult;
 import org.jarb.populator.excel.workbook.writer.ExcelWriter;
 import org.springframework.core.io.Resource;
 import org.springframework.util.Assert;
@@ -47,7 +47,7 @@ public class ExcelDataManager {
     private EntityExporter entityExporter;
     private EntityReader entityReader;
     private EntityWriter entityWriter;
-    private ExcelValidator excelValidator;
+    private WorkbookValidator excelValidator;
     private MetaModelGenerator metamodelGenerator;
     
     /**
@@ -104,10 +104,10 @@ public class ExcelDataManager {
         
         /**
          * Validate the workbook, and return the validation result.
-         * @see MutableWorkbookValidation
+         * @see MutableWorkbookValidationResult
          * @return validation result
          */
-        public WorkbookValidation validate() {
+        public WorkbookValidationResult validate() {
             MetaModel metamodel = metamodelGenerator.generate();
             return excelValidator.validate(workbook, metamodel);
         }
@@ -146,7 +146,7 @@ public class ExcelDataManager {
          * @return this instance, for chaining
          */
         protected WorkbookAccessor continueIfValid() {
-            WorkbookValidation validation = validate();
+            WorkbookValidationResult validation = validate();
             if(validation.hasViolations()) {
                 throw new InvalidWorkbookException(validation);
             }
@@ -275,7 +275,7 @@ public class ExcelDataManager {
         this.entityWriter = entityWriter;
     }
 
-    public void setExcelValidator(ExcelValidator excelValidator) {
+    public void setExcelValidator(WorkbookValidator excelValidator) {
         this.excelValidator = excelValidator;
     }
 

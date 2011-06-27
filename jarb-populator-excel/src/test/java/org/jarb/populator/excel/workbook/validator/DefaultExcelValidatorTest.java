@@ -32,14 +32,14 @@ public class DefaultExcelValidatorTest extends DefaultExcelTestDataCase {
      * 
      */
 
-    private ExcelValidator validator;
+    private WorkbookValidator validator;
     private MetaModel metamodel;
     
     private ExcelParser parser;
 
     @Before
     public void setupExcelFileValidatorTest() {
-        validator = new DefaultExcelValidator();
+        validator = new DefaultWorkbookValidator();
         metamodel = getExcelDataManagerFactory().buildMetamodelGenerator().generate();
         parser = getExcelDataManagerFactory().buildExcelParser();
     }
@@ -48,7 +48,7 @@ public class DefaultExcelValidatorTest extends DefaultExcelTestDataCase {
     public void testSuccess() throws FileNotFoundException {
         //Testcase 1: Everything in order
         Workbook excel = parser.parse(new FileInputStream("src/test/resources/ExcelVerification/valid.xls"));
-        WorkbookValidation validation = validator.validate(excel, metamodel);
+        WorkbookValidationResult validation = validator.validate(excel, metamodel);
         assertFalse(validation.hasViolations());
     }
 
@@ -56,7 +56,7 @@ public class DefaultExcelValidatorTest extends DefaultExcelTestDataCase {
     public void testMissingColumn() throws FileNotFoundException {
         //Testcase 2: Missing column in Excel file
         Workbook excel = parser.parse(new FileInputStream("src/test/resources/ExcelVerification/missing_column.xls"));
-        WorkbookValidation validation = validator.validate(excel, metamodel);
+        WorkbookValidationResult validation = validator.validate(excel, metamodel);
         assertTrue(validation.hasViolations());
         Set<WorkbookViolation> violations = validation.getSheetViolations("employees");
         assertEquals(1, violations.size());
@@ -67,7 +67,7 @@ public class DefaultExcelValidatorTest extends DefaultExcelTestDataCase {
     public void testMissingSheet() throws FileNotFoundException {
         //Testcase 3: Missing sheet in Excel file
         Workbook excel = parser.parse(new FileInputStream("src/test/resources/ExcelVerification/missing_sheet.xls"));
-        WorkbookValidation validation = validator.validate(excel, metamodel);
+        WorkbookValidationResult validation = validator.validate(excel, metamodel);
         assertTrue(validation.hasViolations());
         Set<WorkbookViolation> violations = validation.getGlobalViolations();
         assertEquals(1, violations.size());
@@ -78,7 +78,7 @@ public class DefaultExcelValidatorTest extends DefaultExcelTestDataCase {
     public void testMissingSheetAssociateTableExists() throws FileNotFoundException {
         //Testcase 4: Missing Employee sheet (because of the associative mapping, see if employees_projects) still tests ok.
         Workbook excel = parser.parse(new FileInputStream("src/test/resources/ExcelVerification/missing_sheet_with_associate.xls"));        
-        WorkbookValidation validation = validator.validate(excel, metamodel);
+        WorkbookValidationResult validation = validator.validate(excel, metamodel);
         assertTrue(validation.hasViolations());
         Set<WorkbookViolation> violations = validation.getGlobalViolations();
         assertEquals(1, violations.size());
@@ -89,7 +89,7 @@ public class DefaultExcelValidatorTest extends DefaultExcelTestDataCase {
     public void testUnknownColumn() throws FileNotFoundException {
         //Testcase 5: Extra column in Excel file (not available in mapping)
         Workbook excel = parser.parse(new FileInputStream("src/test/resources/ExcelVerification/unknown_column.xls"));
-        WorkbookValidation validation = validator.validate(excel, metamodel);
+        WorkbookValidationResult validation = validator.validate(excel, metamodel);
         assertTrue(validation.hasViolations());
         Set<WorkbookViolation> violations = validation.getSheetViolations("employees");
         assertEquals(1, violations.size());
@@ -100,7 +100,7 @@ public class DefaultExcelValidatorTest extends DefaultExcelTestDataCase {
     public void testUnknownSheet() throws FileNotFoundException {
         //Testcase 6: Extra sheet in Excel file  (not available in mapping)
         Workbook excel = parser.parse(new FileInputStream("src/test/resources/ExcelVerification/unknown_sheet.xls"));
-        WorkbookValidation validation = validator.validate(excel, metamodel);
+        WorkbookValidationResult validation = validator.validate(excel, metamodel);
         assertTrue(validation.hasViolations());
         Set<WorkbookViolation> violations = validation.getGlobalViolations();
         assertEquals(1, violations.size());
@@ -111,7 +111,7 @@ public class DefaultExcelValidatorTest extends DefaultExcelTestDataCase {
   public void testMissingEmbeddedColumn() throws FileNotFoundException {
       //Testcase 7: Missing embeddable column
       Workbook excel = parser.parse(new FileInputStream("src/test/resources/ExcelVerification/missing_embedded_column.xls"));
-      WorkbookValidation validation = validator.validate(excel, metamodel);
+      WorkbookValidationResult validation = validator.validate(excel, metamodel);
       assertTrue(validation.hasViolations());
       Set<WorkbookViolation> violations = validation.getSheetViolations("workspaces");
       assertEquals(1, violations.size());
@@ -122,7 +122,7 @@ public class DefaultExcelValidatorTest extends DefaultExcelTestDataCase {
     public void testUnknownAndMissingColumn() throws FileNotFoundException {
         //Testcase 8: Extra column and missing column
         Workbook excel = parser.parse(new FileInputStream("src/test/resources/ExcelVerification/missing_and_unknown_column.xls"));
-        WorkbookValidation validation = validator.validate(excel, metamodel);
+        WorkbookValidationResult validation = validator.validate(excel, metamodel);
         assertTrue(validation.hasViolations());
         Set<WorkbookViolation> employeeViolations = validation.getSheetViolations("employees");
         assertEquals(1, employeeViolations.size());

@@ -49,7 +49,7 @@ public class DefaultEntityExporter implements EntityExporter {
     @Override
     public Workbook export(EntityRegistry registry, MetaModel metamodel) {
         Workbook workbook = excelTemplateBuilder.createTemplate(metamodel);
-        for (EntityDefinition<?> classDefinition : metamodel.getClassDefinitions()) {
+        for (EntityDefinition<?> classDefinition : metamodel.entities()) {
             exportEntities(registry, classDefinition, workbook);
         }
         return workbook;
@@ -79,7 +79,7 @@ public class DefaultEntityExporter implements EntityExporter {
     private <T> void exportEntity(T entity, EntityDefinition<T> classDefinition, Sheet sheet) {
         Row row = sheet.createRow();
         // Handle each property definition
-        for(PropertyDefinition propertyDefinition : classDefinition.getPropertyDefinitions()) {
+        for(PropertyDefinition propertyDefinition : classDefinition.properties()) {
             final PropertyDatabaseType type = propertyDefinition.getDatabaseType();
             if(type == PropertyDatabaseType.COLUMN) {
                 // Retrieve the property value and store it as cell value

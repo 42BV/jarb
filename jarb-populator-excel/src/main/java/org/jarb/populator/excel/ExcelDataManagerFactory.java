@@ -15,8 +15,8 @@ import org.jarb.populator.excel.metamodel.generator.JpaMetaModelGenerator;
 import org.jarb.populator.excel.metamodel.generator.MetaModelGenerator;
 import org.jarb.populator.excel.workbook.reader.ExcelParser;
 import org.jarb.populator.excel.workbook.reader.PoiExcelParser;
-import org.jarb.populator.excel.workbook.validator.DefaultExcelValidator;
-import org.jarb.populator.excel.workbook.validator.ExcelValidator;
+import org.jarb.populator.excel.workbook.validator.DefaultWorkbookValidator;
+import org.jarb.populator.excel.workbook.validator.WorkbookValidator;
 import org.jarb.populator.excel.workbook.writer.ExcelWriter;
 import org.jarb.populator.excel.workbook.writer.PoiExcelWriter;
 
@@ -83,8 +83,8 @@ public class ExcelDataManagerFactory {
         return new JpaMetaModelGenerator(entityManagerFactory);
     }
 
-    public ExcelValidator buildExcelValidator() {
-        return new DefaultExcelValidator();
+    public WorkbookValidator buildExcelValidator() {
+        return new DefaultWorkbookValidator();
     }
 
 }

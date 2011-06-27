@@ -8,7 +8,7 @@ import org.jarb.populator.excel.workbook.Workbook;
  * @author Jeroen van Schagen
  * @since 10-05-2011
  */
-public interface ExcelValidator {
+public interface WorkbookValidator {
 
     /**
      * Check the validity of an excel workbook.
@@ -16,6 +16,6 @@ public interface ExcelValidator {
      * @param metamodel describes what is "correct"
      * @return collection of feedback message
      */
-    WorkbookValidation validate(Workbook workbook, MetaModel metamodel);
+    WorkbookValidationResult validate(Workbook workbook, MetaModel metamodel);
 
 }

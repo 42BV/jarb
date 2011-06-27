@@ -33,7 +33,7 @@ public class WorksheetDefinition {
         LOGGER.debug("Analyzing worksheet: [" + classDefinition.getTableName() + "]");
         Sheet sheet = excel.getSheet(classDefinition.getTableName());
 
-        for (PropertyDefinition columnDefinition : classDefinition.getPropertyDefinitions()) {
+        for (PropertyDefinition columnDefinition : classDefinition.properties()) {
             final String columnName = columnDefinition.getColumnName();
             LOGGER.debug("  field name: [" + columnDefinition.getName() + "], column name: [" + columnName + "]");
             if (columnDefinition.hasColumn()) {

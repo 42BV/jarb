@@ -6,23 +6,21 @@ import java.io.OutputStreamWriter;
 import java.io.Writer;
 
 import org.apache.commons.io.IOUtils;
-import org.jarb.populator.excel.workbook.validator.MutableWorkbookValidation;
+import org.jarb.populator.excel.workbook.validator.WorkbookValidationResult;
 import org.jarb.populator.excel.workbook.validator.WorkbookViolation;
 
 /**
- * Exports a {@link MutableWorkbookValidation} into the provided output stream.
- * 
+ * Export the validation result as a simple text.
  * @author Jeroen van Schagen
  * @since 12-05-2011
  */
 public class SimpleValidationExporter implements ValidationExporter {
 
     /**
-     * Perform the validation result export into our output stream.
-     * @param validation result of our validation
-     * @param os stream being written to
+     * {@inheritDoc}
      */
-    public void export(MutableWorkbookValidation validation, OutputStream os) {
+    @Override
+    public void export(WorkbookValidationResult validation, OutputStream os) {
         Writer writer = new OutputStreamWriter(os);
         try {
             writer.write("Workbook violations\n");

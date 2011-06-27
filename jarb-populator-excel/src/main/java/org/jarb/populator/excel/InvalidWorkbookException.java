@@ -2,7 +2,7 @@ package org.jarb.populator.excel;
 
 import static org.springframework.util.StringUtils.collectionToDelimitedString;
 
-import org.jarb.populator.excel.workbook.validator.WorkbookValidation;
+import org.jarb.populator.excel.workbook.validator.WorkbookValidationResult;
 
 /**
  * Exception thrown whenever an action is invoked on an invalid workbook.
@@ -13,13 +13,13 @@ import org.jarb.populator.excel.workbook.validator.WorkbookValidation;
 public class InvalidWorkbookException extends RuntimeException {
     private static final long serialVersionUID = -2057031583220142988L;
     /** Validation result that contains our workbook violations. **/
-    private final WorkbookValidation validation;
+    private final WorkbookValidationResult validation;
     
     /**
      * Construct a new {@link InvalidWorkbookException}.
      * @param validation validation results with our workbook violations
      */
-    public InvalidWorkbookException(WorkbookValidation validation) {
+    public InvalidWorkbookException(WorkbookValidationResult validation) {
         super("Worbook is invalid:\n - " + collectionToDelimitedString(validation.getViolations(), "\n - "));
         this.validation = validation;
     }
@@ -28,7 +28,7 @@ public class InvalidWorkbookException extends RuntimeException {
      * Retrieve the validation result that contains our workbook violations.
      * @return validation result
      */
-    public WorkbookValidation getValidation() {
+    public WorkbookValidationResult getValidation() {
         return validation;
     }
 }

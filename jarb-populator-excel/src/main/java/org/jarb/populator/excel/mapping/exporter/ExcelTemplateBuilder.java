@@ -30,7 +30,7 @@ public class ExcelTemplateBuilder {
      */
     public Workbook createTemplate(MetaModel metamodel) {
         Workbook workbook = new Workbook();
-        List<EntityDefinition<?>> classDefinitions = new ArrayList<EntityDefinition<?>>(metamodel.getClassDefinitions());
+        List<EntityDefinition<?>> classDefinitions = new ArrayList<EntityDefinition<?>>(metamodel.entities());
         Collections.sort(classDefinitions, new ClassDefinitionNameComparator());
         for (EntityDefinition<?> classDefinition : classDefinitions) {
             createClassSheet(classDefinition, workbook);
@@ -46,7 +46,7 @@ public class ExcelTemplateBuilder {
     private void createClassSheet(EntityDefinition<?> classDefinition, Workbook workbook) {
         Sheet sheet = workbook.createSheet(classDefinition.getTableName());
         storeColumnNames(sheet, classDefinition);
-        for(PropertyDefinition propertyDefinition : classDefinition.getPropertyDefinitions()) {
+        for(PropertyDefinition propertyDefinition : classDefinition.properties()) {
             if(propertyDefinition.getDatabaseType() == PropertyDatabaseType.JOIN_TABLE) {
                 createJoinSheet(propertyDefinition, workbook);
             }

@@ -5,7 +5,13 @@ import java.util.Set;
 
 import org.jarb.populator.excel.workbook.validator.export.ValidationExporter;
 
-public interface WorkbookValidation {
+/**
+ * Workbook validation result, returned by {@link WorkbookValidator}.
+ * 
+ * @author Jeroen van Schagen
+ * @since 27-06-2011
+ */
+public interface WorkbookValidationResult {
     
     boolean hasViolations();
     

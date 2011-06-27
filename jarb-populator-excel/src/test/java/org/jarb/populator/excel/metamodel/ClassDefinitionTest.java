@@ -41,7 +41,7 @@ public class ClassDefinitionTest extends DefaultExcelTestDataCase {
             columnDefinitions.add(FieldAnalyzer.analyzeField(field).build());
         }
         classDefinitionBuilder.includeProperties(columnDefinitions);
-        Set<PropertyDefinition> resultColumnDefinitions = classDefinitionBuilder.build().getPropertyDefinitions();
+        Set<PropertyDefinition> resultColumnDefinitions = classDefinitionBuilder.build().properties();
         for(PropertyDefinition columnDefinition : columnDefinitions) {
             assertTrue(resultColumnDefinitions.contains(columnDefinition));
         }
@@ -66,7 +66,7 @@ public class ClassDefinitionTest extends DefaultExcelTestDataCase {
 
     @Test
     public void testGetColumnDefinitionByColumnName() throws InstantiationException, ClassNotFoundException, IllegalAccessException {
-        assertEquals("company_name", customerDefinition.getPropertyDefinitionByColumn("company_name").getColumnName());
+        assertEquals("company_name", customerDefinition.propertyByColumnName("company_name").getColumnName());
     }
 
 }
