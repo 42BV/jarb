@@ -1,6 +1,8 @@
 package org.jarb.populator.excel.metamodel;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import org.junit.Before;
@@ -34,6 +36,22 @@ public class PropertyPathTest {
         } catch(IllegalStateException e) {
             assertEquals("Property 'unknown' does not exist in 'Address'.", e.getMessage());
         }
+    }
+    
+    @Test
+    public void testEquals() {
+        // Reference to the same object should always be equal
+        assertTrue(fieldPath.equals(fieldPath));
+        // Similar path, just a different instance
+        assertTrue(fieldPath.equals(PropertyPath.startingFrom(Person.class, "address").to("street").to("name")));
+        // Different path, should not be equal
+        assertFalse(fieldPath.equals(PropertyPath.startingFrom(Person.class, "address").to("street")));
+    }
+    
+    @Test
+    public void testHashCode() {
+        // Reference to the same object should always have equal hash code
+        assertEquals(fieldPath.hashCode(), fieldPath.hashCode());
     }
     
     public static class Person {

@@ -34,4 +34,5 @@ public class EntityRowIdResolver {
         }
         return identifier;
     }
+    
 }
