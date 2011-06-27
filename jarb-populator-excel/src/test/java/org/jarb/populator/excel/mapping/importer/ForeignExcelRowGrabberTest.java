@@ -21,7 +21,7 @@ import org.jarb.populator.excel.DefaultExcelTestDataCase;
 import org.jarb.populator.excel.metamodel.EntityDefinition;
 import org.jarb.populator.excel.metamodel.generator.ClassDefinitionsGenerator;
 import org.jarb.populator.excel.workbook.Workbook;
-import org.jarb.populator.excel.workbook.reader.PoiExcelParser;
+import org.jarb.populator.excel.workbook.reader.PoiWorkbookParser;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -37,7 +37,7 @@ public class ForeignExcelRowGrabberTest extends DefaultExcelTestDataCase {
     @Before
     public void setUpExcelRecordTest() throws InstantiationException, IllegalAccessException, SecurityException, NoSuchFieldException, InvalidFormatException,
             IOException, NoSuchMethodException, IllegalArgumentException, InvocationTargetException {
-        excel = new PoiExcelParser().parse(new FileInputStream("src/test/resources/ExcelUnitTesting.xls"));
+        excel = new PoiWorkbookParser().parse(new FileInputStream("src/test/resources/ExcelUnitTesting.xls"));
 
         //For code coverage purposes:
         Constructor<ForeignExcelRowGrabber> constructor = ForeignExcelRowGrabber.class.getDeclaredConstructor();

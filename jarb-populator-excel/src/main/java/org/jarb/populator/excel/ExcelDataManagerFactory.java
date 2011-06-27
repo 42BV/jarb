@@ -13,12 +13,12 @@ import org.jarb.populator.excel.mapping.importer.DefaultEntityImporter;
 import org.jarb.populator.excel.mapping.importer.EntityImporter;
 import org.jarb.populator.excel.metamodel.generator.JpaMetaModelGenerator;
 import org.jarb.populator.excel.metamodel.generator.MetaModelGenerator;
-import org.jarb.populator.excel.workbook.reader.ExcelParser;
-import org.jarb.populator.excel.workbook.reader.PoiExcelParser;
+import org.jarb.populator.excel.workbook.reader.WorkbookParser;
+import org.jarb.populator.excel.workbook.reader.PoiWorkbookParser;
 import org.jarb.populator.excel.workbook.validator.DefaultWorkbookValidator;
 import org.jarb.populator.excel.workbook.validator.WorkbookValidator;
-import org.jarb.populator.excel.workbook.writer.ExcelWriter;
-import org.jarb.populator.excel.workbook.writer.PoiExcelWriter;
+import org.jarb.populator.excel.workbook.writer.WorkbookWriter;
+import org.jarb.populator.excel.workbook.writer.PoiWorkbookWriter;
 
 /**
  * Factory that is capable of building {@link ExcelDataManager} instances.
@@ -55,12 +55,12 @@ public class ExcelDataManagerFactory {
         return etd;
     }
 
-    public ExcelParser buildExcelParser() {
-        return new PoiExcelParser();
+    public WorkbookParser buildExcelParser() {
+        return new PoiWorkbookParser();
     }
 
-    public ExcelWriter buildExcelWriter() {
-        return new PoiExcelWriter();
+    public WorkbookWriter buildExcelWriter() {
+        return new PoiWorkbookWriter();
     }
 
     public EntityImporter buildEntityImporter() {

@@ -18,7 +18,7 @@ import org.jarb.populator.excel.metamodel.PropertyDefinition;
 import org.jarb.populator.excel.metamodel.generator.ClassDefinitionsGenerator;
 import org.jarb.populator.excel.metamodel.generator.FieldAnalyzer;
 import org.jarb.populator.excel.workbook.Workbook;
-import org.jarb.populator.excel.workbook.reader.PoiExcelParser;
+import org.jarb.populator.excel.workbook.reader.PoiWorkbookParser;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -34,7 +34,7 @@ public class StoreJoinColumnTest extends DefaultExcelTestDataCase {
     @Before
     public void setupTestStoreExcelRecordValue() throws InvalidFormatException, IOException, SecurityException, NoSuchMethodException,
             IllegalArgumentException, InstantiationException, IllegalAccessException, InvocationTargetException {
-        excel = new PoiExcelParser().parse(new FileInputStream("src/test/resources/ExcelUnitTesting.xls"));
+        excel = new PoiWorkbookParser().parse(new FileInputStream("src/test/resources/ExcelUnitTesting.xls"));
 
         //For code coverage purposes:
         Constructor<StoreJoinColumn> constructor = StoreJoinColumn.class.getDeclaredConstructor();
@@ -64,7 +64,7 @@ public class StoreJoinColumnTest extends DefaultExcelTestDataCase {
 
     @Test
     public void testStoreValueNull() throws InstantiationException, ClassNotFoundException, IllegalAccessException, InvalidFormatException, IOException {
-        excel = new PoiExcelParser().parse(new FileInputStream("src/test/resources/ForeignKeyValueMissing.xls"));
+        excel = new PoiWorkbookParser().parse(new FileInputStream("src/test/resources/ForeignKeyValueMissing.xls"));
 
         Metamodel metamodel = getEntityManagerFactory().getMetamodel();
         EntityType<?> entity = metamodel.entity(domain.entities.Project.class);

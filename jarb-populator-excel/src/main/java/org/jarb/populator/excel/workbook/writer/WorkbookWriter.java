@@ -9,7 +9,7 @@ import org.jarb.populator.excel.workbook.Workbook;
  * @author Jeroen van Schagen
  * @since 10-05-2011
  */
-public interface ExcelWriter {
+public interface WorkbookWriter {
 
     /**
      * Write away the content of our workbook.

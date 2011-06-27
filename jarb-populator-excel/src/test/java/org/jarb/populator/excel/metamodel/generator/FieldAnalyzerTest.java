@@ -18,7 +18,7 @@ import org.jarb.populator.excel.mapping.importer.WorksheetDefinition;
 import org.jarb.populator.excel.metamodel.EntityDefinition;
 import org.jarb.populator.excel.metamodel.PropertyDefinition;
 import org.jarb.populator.excel.workbook.Workbook;
-import org.jarb.populator.excel.workbook.reader.PoiExcelParser;
+import org.jarb.populator.excel.workbook.reader.PoiWorkbookParser;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -36,7 +36,7 @@ public class FieldAnalyzerTest extends DefaultExcelTestDataCase {
     @Before
     public void setupAnalyzeField() throws InstantiationException, IllegalAccessException, SecurityException, NoSuchFieldException, InvalidFormatException,
             IOException, NoSuchMethodException, IllegalArgumentException, InvocationTargetException, ClassNotFoundException {
-        excel = new PoiExcelParser().parse(new FileInputStream("src/test/resources/ExcelUnitTesting.xls"));
+        excel = new PoiWorkbookParser().parse(new FileInputStream("src/test/resources/ExcelUnitTesting.xls"));
         persistentClass = domain.entities.Customer.class;
         nameField = persistentClass.getDeclaredField("name");
         idField = persistentClass.getDeclaredField("id");

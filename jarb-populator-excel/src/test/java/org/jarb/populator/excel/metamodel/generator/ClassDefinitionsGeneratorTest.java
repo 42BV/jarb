@@ -19,7 +19,7 @@ import org.jarb.populator.excel.mapping.importer.WorksheetDefinition;
 import org.jarb.populator.excel.metamodel.EntityDefinition;
 import org.jarb.populator.excel.metamodel.PropertyDefinition;
 import org.jarb.populator.excel.workbook.Workbook;
-import org.jarb.populator.excel.workbook.reader.PoiExcelParser;
+import org.jarb.populator.excel.workbook.reader.PoiWorkbookParser;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -65,7 +65,7 @@ public class ClassDefinitionsGeneratorTest extends DefaultExcelTestDataCase {
 
     public void testAddWorksheetDefinitionsToClassDefinitions() throws InvalidFormatException, IOException, InstantiationException, ClassNotFoundException,
             IllegalAccessException {
-        Workbook excel = new PoiExcelParser().parse(new FileInputStream("src/test/resources/Excel.xls"));
+        Workbook excel = new PoiWorkbookParser().parse(new FileInputStream("src/test/resources/Excel.xls"));
 
         List<EntityDefinition<?>> classDefinitions = new ArrayList<EntityDefinition<?>>();
         Metamodel metamodel = getEntityManagerFactory().getMetamodel();

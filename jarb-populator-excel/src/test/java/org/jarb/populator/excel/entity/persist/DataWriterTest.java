@@ -24,7 +24,7 @@ import org.jarb.populator.excel.mapping.importer.ExcelRow;
 import org.jarb.populator.excel.metamodel.EntityDefinition;
 import org.jarb.populator.excel.metamodel.generator.ClassDefinitionsGenerator;
 import org.jarb.populator.excel.workbook.Workbook;
-import org.jarb.populator.excel.workbook.reader.PoiExcelParser;
+import org.jarb.populator.excel.workbook.reader.PoiWorkbookParser;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -51,7 +51,7 @@ public class DataWriterTest extends DefaultExcelTestDataCase {
     @Before
     public void setUpDatabaseConnectionTest() throws InvalidFormatException, IOException, InstantiationException, IllegalAccessException, SecurityException,
             NoSuchMethodException, IllegalArgumentException, InvocationTargetException, ClassNotFoundException {
-        excel = new PoiExcelParser().parse(new FileInputStream("src/test/resources/ExcelUnitTesting.xls"));
+        excel = new PoiWorkbookParser().parse(new FileInputStream("src/test/resources/ExcelUnitTesting.xls"));
         connectionInstances = new HashSet<Object>();
 
         metamodel = getEntityManagerFactory().getMetamodel();
@@ -115,7 +115,7 @@ public class DataWriterTest extends DefaultExcelTestDataCase {
     public void testEntityReferencing() throws InstantiationException, ClassNotFoundException, IllegalAccessException, NoSuchFieldException,
             InvalidFormatException, IOException {
         List<EntityDefinition<?>> classDefinitionList = new ArrayList<EntityDefinition<?>>();
-        excel = new PoiExcelParser().parse(new FileInputStream("src/test/resources/ExcelEmployeesVehicles.xls"));
+        excel = new PoiWorkbookParser().parse(new FileInputStream("src/test/resources/ExcelEmployeesVehicles.xls"));
 
         EntityType<?> employeeEntity = metamodel.entity(Employee.class);
         EntityType<?> vehicleEntity = metamodel.entity(CompanyVehicle.class);

@@ -22,11 +22,11 @@ import org.jarb.populator.excel.workbook.StringValue;
 import org.jarb.populator.excel.workbook.Workbook;
 
 /**
- * Apache POI implementation of {@link ExcelWriter}.
+ * Apache POI implementation of {@link WorkbookWriter}.
  * @author Jeroen van Schagen
  * @since 12-05-2011
  */
-public class PoiExcelWriter implements ExcelWriter {
+public class PoiWorkbookWriter implements WorkbookWriter {
 
     /**
      * {@inheritDoc}

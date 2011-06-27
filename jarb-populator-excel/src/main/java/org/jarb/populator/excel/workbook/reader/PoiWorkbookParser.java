@@ -25,11 +25,11 @@ import org.jarb.populator.excel.workbook.StringValue;
 import org.jarb.populator.excel.workbook.Workbook;
 
 /**
- * Apache POI implementation of {@link ExcelParser}.
+ * Apache POI implementation of {@link WorkbookParser}.
  * @author Jeroen van Schagen
  * @since 06-05-2011
  */
-public class PoiExcelParser implements ExcelParser {
+public class PoiWorkbookParser implements WorkbookParser {
 
     /**
      * {@inheritDoc}

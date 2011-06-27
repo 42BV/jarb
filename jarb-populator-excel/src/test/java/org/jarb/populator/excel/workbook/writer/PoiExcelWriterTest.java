@@ -19,12 +19,12 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class PoiExcelWriterTest extends DefaultExcelTestDataCase {
-    private PoiExcelWriter writer;
+    private PoiWorkbookWriter writer;
     private Workbook workbook;
 
     @Before
     public void setUpWorkbook() {
-        writer = new PoiExcelWriter();
+        writer = new PoiWorkbookWriter();
         workbook = new Workbook();
     }
 

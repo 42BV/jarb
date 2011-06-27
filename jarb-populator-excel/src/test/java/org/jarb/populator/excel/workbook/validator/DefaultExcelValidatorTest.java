@@ -11,7 +11,7 @@ import java.util.Set;
 import org.jarb.populator.excel.DefaultExcelTestDataCase;
 import org.jarb.populator.excel.metamodel.MetaModel;
 import org.jarb.populator.excel.workbook.Workbook;
-import org.jarb.populator.excel.workbook.reader.ExcelParser;
+import org.jarb.populator.excel.workbook.reader.WorkbookParser;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -35,7 +35,7 @@ public class DefaultExcelValidatorTest extends DefaultExcelTestDataCase {
     private WorkbookValidator validator;
     private MetaModel metamodel;
     
-    private ExcelParser parser;
+    private WorkbookParser parser;
 
     @Before
     public void setupExcelFileValidatorTest() {

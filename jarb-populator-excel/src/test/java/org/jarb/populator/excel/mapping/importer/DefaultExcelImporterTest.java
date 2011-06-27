@@ -21,7 +21,7 @@ import org.jarb.populator.excel.DefaultExcelTestDataCase;
 import org.jarb.populator.excel.metamodel.EntityDefinition;
 import org.jarb.populator.excel.metamodel.generator.ClassDefinitionsGenerator;
 import org.jarb.populator.excel.workbook.Workbook;
-import org.jarb.populator.excel.workbook.reader.PoiExcelParser;
+import org.jarb.populator.excel.workbook.reader.PoiWorkbookParser;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -38,7 +38,7 @@ public class DefaultExcelImporterTest extends DefaultExcelTestDataCase {
     @Before
     public void setUpExcelImporterTest() throws InstantiationException, IllegalAccessException, InvalidFormatException, IOException, SecurityException,
             NoSuchMethodException, IllegalArgumentException, InvocationTargetException, ClassNotFoundException {
-        excel = new PoiExcelParser().parse(new FileInputStream("src/test/resources/ExcelUnitTesting.xls"));
+        excel = new PoiWorkbookParser().parse(new FileInputStream("src/test/resources/ExcelUnitTesting.xls"));
 
         classDefinitionList = new ArrayList<EntityDefinition<?>>();
 
@@ -85,14 +85,14 @@ public class DefaultExcelImporterTest extends DefaultExcelTestDataCase {
         Metamodel metamodel = getEntityManagerFactory().getMetamodel();
         EntityType<?> entity = metamodel.entity(domain.entities.Customer.class);
 
-        excel = new PoiExcelParser().parse(new FileInputStream("src/test/resources/DiscriminatorColumnLacking.xls"));
+        excel = new PoiWorkbookParser().parse(new FileInputStream("src/test/resources/DiscriminatorColumnLacking.xls"));
         classDefinition = ClassDefinitionsGenerator.createSingleClassDefinitionFromMetamodel(getEntityManagerFactory(), entity, true);
         parseWorksheetMap = ExcelImporter.parseWorksheet(excel, classDefinition);
     }
 
     @Test
     public void testDuplicatePrimaryKey() throws InvalidFormatException, IOException, InstantiationException, IllegalAccessException, NoSuchFieldException {
-        excel = new PoiExcelParser().parse(new FileInputStream("src/test/resources/DuplicatePrimaryKey.xls"));
+        excel = new PoiWorkbookParser().parse(new FileInputStream("src/test/resources/DuplicatePrimaryKey.xls"));
         parseWorksheetMap = ExcelImporter.parseWorksheet(excel, classDefinition);
         assertEquals(1, parseWorksheetMap.size());
     }

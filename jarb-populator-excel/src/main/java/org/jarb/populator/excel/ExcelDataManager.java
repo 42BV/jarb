@@ -15,11 +15,11 @@ import org.jarb.populator.excel.mapping.importer.EntityImporter;
 import org.jarb.populator.excel.metamodel.MetaModel;
 import org.jarb.populator.excel.metamodel.generator.MetaModelGenerator;
 import org.jarb.populator.excel.workbook.Workbook;
-import org.jarb.populator.excel.workbook.reader.ExcelParser;
+import org.jarb.populator.excel.workbook.reader.WorkbookParser;
 import org.jarb.populator.excel.workbook.validator.WorkbookValidator;
 import org.jarb.populator.excel.workbook.validator.MutableWorkbookValidationResult;
 import org.jarb.populator.excel.workbook.validator.WorkbookValidationResult;
-import org.jarb.populator.excel.workbook.writer.ExcelWriter;
+import org.jarb.populator.excel.workbook.writer.WorkbookWriter;
 import org.springframework.core.io.Resource;
 import org.springframework.util.Assert;
 
@@ -41,8 +41,8 @@ import org.springframework.util.Assert;
  * @since 23-06-2011
  */
 public class ExcelDataManager {
-    private ExcelParser excelParser;
-    private ExcelWriter excelWriter;
+    private WorkbookParser excelParser;
+    private WorkbookWriter excelWriter;
     private EntityImporter entityImporter;
     private EntityExporter entityExporter;
     private EntityReader entityReader;
@@ -251,11 +251,11 @@ public class ExcelDataManager {
         }
     }
     
-    public void setExcelParser(ExcelParser excelParser) {
+    public void setExcelParser(WorkbookParser excelParser) {
         this.excelParser = excelParser;
     }
 
-    public void setExcelWriter(ExcelWriter excelWriter) {
+    public void setExcelWriter(WorkbookWriter excelWriter) {
         this.excelWriter = excelWriter;
     }
 

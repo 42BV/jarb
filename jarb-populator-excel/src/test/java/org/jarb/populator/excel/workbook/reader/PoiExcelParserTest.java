@@ -20,7 +20,7 @@ public class PoiExcelParserTest {
 
     @Test
     public void testEachValueType() throws FileNotFoundException {
-        Workbook excel = new PoiExcelParser().parse(new FileInputStream("src/test/resources/excel/parser/all-types.xlsx"));
+        Workbook excel = new PoiWorkbookParser().parse(new FileInputStream("src/test/resources/excel/parser/all-types.xlsx"));
         Sheet sheet = excel.getSheet("types");
         assertEquals("types", sheet.getName());
         // String: "lol"
@@ -43,7 +43,7 @@ public class PoiExcelParserTest {
 
     @Test
     public void testMultiSheet() throws FileNotFoundException {
-        Workbook excel = new PoiExcelParser().parse(new FileInputStream("src/test/resources/excel/parser/multi-sheet.xlsx"));
+        Workbook excel = new PoiWorkbookParser().parse(new FileInputStream("src/test/resources/excel/parser/multi-sheet.xlsx"));
         assertEquals(3, excel.getSheetCount());
         int sheetNo = 1;
         for (Sheet sheet : excel) {
@@ -56,7 +56,7 @@ public class PoiExcelParserTest {
 
     @Test(expected = RuntimeException.class)
     public void testIOException() {
-        new PoiExcelParser() {
+        new PoiWorkbookParser() {
             @Override
             protected org.apache.poi.ss.usermodel.Workbook createWorkbook(InputStream inputStream) throws IOException {
                 throw new IOException("Fail");
@@ -66,7 +66,7 @@ public class PoiExcelParserTest {
 
     @Test(expected = RuntimeException.class)
     public void testInvalidFileException() {
-        new PoiExcelParser() {
+        new PoiWorkbookParser() {
             @Override
             protected org.apache.poi.ss.usermodel.Workbook createWorkbook(InputStream inputStream) throws InvalidFormatException {
                 throw new InvalidFormatException("Fail");

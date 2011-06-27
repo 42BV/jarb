@@ -9,7 +9,7 @@ import org.jarb.populator.excel.workbook.Workbook;
  * @author Jeroen van Schagen
  * @since 06-05-2011
  */
-public interface ExcelParser {
+public interface WorkbookParser {
 
     /**
      * Read the content of an excel file, and convert it into a {@link Workbook}.
