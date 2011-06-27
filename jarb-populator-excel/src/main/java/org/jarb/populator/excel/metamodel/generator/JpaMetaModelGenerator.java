@@ -36,11 +36,26 @@ public class JpaMetaModelGenerator implements MetaModelGenerator {
      */
     @Override
     public MetaModel generate() {
-        Collection<EntityDefinition<?>> classDefinitions = new HashSet<EntityDefinition<?>>();
+        Collection<EntityDefinition<?>> entityDefinition = new HashSet<EntityDefinition<?>>();
         for (EntityType<?> entityType : getRootEntities()) {
-            classDefinitions.add(describeEntityType(entityType));
+            entityDefinition.add(generateEntityDefinition(entityType));
         }
-        return new MetaModel(classDefinitions);
+        return new MetaModel(entityDefinition);
+    }
+    
+    /**
+     * Generate the {@link EntityDefinition} of a specific entity type.
+     * @param entityType type of entity being inspected
+     * @return definition of the class
+     */
+    private EntityDefinition<?> generateEntityDefinition(EntityType<?> entityType) {
+        try {
+            LOGGER.debug("Generating metamodel definition of '{}'.", entityType.getJavaType().getName());
+            return ClassDefinitionsGenerator.createSingleClassDefinitionFromMetamodel(entityManagerFactory, entityType, true);
+        } catch (Exception e) {
+            // TODO: Delegating class should not be throwing this many exceptions
+            throw new RuntimeException(e);
+        }
     }
     
     private Collection<EntityType<?>> getRootEntities() {
@@ -67,18 +82,4 @@ public class JpaMetaModelGenerator implements MetaModelGenerator {
         return found;
     }
 
-    /**
-     * Generate the {@link EntityDefinition} of a specific entity type.
-     * @param entityType type of entity being inspected
-     * @return definition of the class
-     */
-    private EntityDefinition<?> describeEntityType(EntityType<?> entityType) {
-        try {
-            LOGGER.debug("Generating metamodel definition of '{}'.", entityType.getJavaType().getName());
-            return ClassDefinitionsGenerator.createSingleClassDefinitionFromMetamodel(entityManagerFactory, entityType, true);
-        } catch (Exception e) {
-            // TODO: Delegating class should not be throwing this many exceptions
-            throw new RuntimeException(e);
-        }
-    }
 }
