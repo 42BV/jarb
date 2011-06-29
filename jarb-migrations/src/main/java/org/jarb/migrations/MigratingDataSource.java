@@ -6,7 +6,6 @@ import java.sql.SQLException;
 import javax.annotation.PostConstruct;
 
 import org.jarb.utils.database.JdbcUtils;
-import org.springframework.beans.factory.annotation.Required;
 
 /**
  * Data source that triggers database migrations during construction.
@@ -16,7 +15,6 @@ import org.springframework.beans.factory.annotation.Required;
 public class MigratingDataSource extends DataSourceDelegate {
     private DatabaseMigrator migrator;
 
-    @Required
     public void setMigrator(DatabaseMigrator migrator) {
         this.migrator = migrator;
     }

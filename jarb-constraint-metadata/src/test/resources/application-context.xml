@@ -17,7 +17,7 @@
 		    </bean>
         </property>
         <property name="migrator">
-            <bean class="org.jarb.migrations.liquibase.LiquibaseMigrator">
+            <bean class="org.jarb.migrations.LiquibaseMigrator">
                 <property name="changeLogPath" value="src/test/resources/create-schema.groovy"/>
             </bean>
         </property>
