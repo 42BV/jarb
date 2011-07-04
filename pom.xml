@@ -3,7 +3,7 @@
 	xmlns="http://maven.apache.org/POM/4.0.0"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-	
+
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>org.jarb</groupId>
@@ -38,7 +38,7 @@
 		<connection>scm:git:git://github.com/42BV/jarb.git</connection>
 		<developerConnection>scm:git:git://github.com/42BV/jarb.git</developerConnection>
 	</scm>
-	
+
 	<distributionManagement>
 		<repository>
 			<id>repository.42.nl</id>
@@ -50,7 +50,7 @@
 			<uniqueVersion>false</uniqueVersion>
 		</snapshotRepository>
 	</distributionManagement>
-	
+
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<!-- Java version -->
@@ -58,10 +58,10 @@
 		<!-- Dependency versions -->
 		<spring.version>3.0.5.RELEASE</spring.version>
 		<hibernate.version>3.5.5-Final</hibernate.version>
-		<hsqldb.version>2.1.0</hsqldb.version>
+		<hsqldb.version>2.2.4</hsqldb.version>
 		<slf4j.version>1.6.1</slf4j.version>
 	</properties>
-	
+
 	<build>
 		<pluginManagement>
 			<plugins>
