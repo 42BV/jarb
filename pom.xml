@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project
+	xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
 	<modelVersion>4.0.0</modelVersion>
 
@@ -7,7 +10,7 @@
 	<artifactId>jarb-parent</artifactId>
 	<packaging>pom</packaging>
 	<name>Java Repository Bridge</name>
-	<version>1.0</version>
+	<version>0.1-SNAPSHOT</version>
 	<description>Provides support for databases.</description>
 	<url>https://github.com/42BV/jarb</url>
 	<inceptionYear>2011</inceptionYear>
@@ -32,8 +35,8 @@
 
 	<scm>
 		<url>https://github.com/42BV/jarb.git</url>
-		<connection>scm:git:git@github.com:42BV/jarb.git</connection>
-		<developerConnection>scm:git:git@github.com:42BV/jarb.git</developerConnection>
+		<connection>scm:git:git://github.com/42BV/jarb.git</connection>
+		<developerConnection>scm:git:git://github.com/42BV/jarb.git</developerConnection>
 	</scm>
 
 	<distributionManagement>
