@@ -32,7 +32,7 @@
 
 	<scm>
 		<url>https://github.com/42BV/jarb.git</url>
-		<connection>scm:git:git://github.com/42BV/jarb.git</connection>
+		<connection>scm:git:git@github.com:42BV/jarb.git</connection>
 		<developerConnection>scm:git:git@github.com:42BV/jarb.git</developerConnection>
 	</scm>
 
