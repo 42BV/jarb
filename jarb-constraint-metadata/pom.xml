@@ -17,7 +17,7 @@
 	<packaging>jar</packaging>
 	<description>Constraint metadata access</description>
 
-    <dependencies>
+    	<dependencies>
 		<dependency>
 		    <groupId>org.jarb</groupId>
 		    <artifactId>jarb-utils</artifactId>
