@@ -7,7 +7,7 @@
 	<artifactId>jarb-parent</artifactId>
 	<packaging>pom</packaging>
 	<name>Java Repository Bridge</name>
-	<version>0.1</version>
+	<version>0.1-SNAPSHOT</version>
 	<description>Provides support for databases.</description>
 	<url>https://github.com/42BV/jarb</url>
 	<inceptionYear>2011</inceptionYear>
