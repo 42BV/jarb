@@ -2,7 +2,6 @@ package org.jarb.violation.integration;
 
 import org.jarb.utils.spring.AdvisorAddingBeanPostProcessor;
 import org.jarb.violation.ConstraintViolationExceptionTranslator;
-import org.springframework.aop.Advisor;
 import org.springframework.aop.Pointcut;
 import org.springframework.aop.support.annotation.AnnotationMatchingPointcut;
 import org.springframework.beans.factory.InitializingBean;
@@ -51,15 +50,11 @@ public class ConstraintViolationExceptionTranslatingBeanPostProcessor extends Ad
     /** Converted into a persistence exception translator. */
     private ConstraintViolationExceptionTranslator translator;
 
-    /** Describes the translation logic that should be performed. */
-    private Advisor translationAdvisor;
-
     /**
-     * {@inheritDoc}
+     * Construct a new translating bean post processor.
      */
-    @Override
-    protected Advisor getAdvisor() {
-        return translationAdvisor;
+    public ConstraintViolationExceptionTranslatingBeanPostProcessor() {
+        setAdvisorPosition(0); // Put translation advisor up front
     }
 
     /**
@@ -69,7 +64,8 @@ public class ConstraintViolationExceptionTranslatingBeanPostProcessor extends Ad
     public void afterPropertiesSet() throws Exception {
         Assert.state(translator != null, "Exception translator cannot be null");
         Assert.state(pointcut != null, "Pointcut cannot be null");
-        translationAdvisor = new ConstraintViolationExceptionTranslationAdvisor(translator, pointcut);
+
+        setAdvisor(new ConstraintViolationExceptionTranslationAdvisor(translator, pointcut));
     }
 
     /**

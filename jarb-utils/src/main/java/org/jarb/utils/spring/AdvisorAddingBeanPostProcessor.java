@@ -8,6 +8,7 @@ import org.springframework.aop.framework.ProxyFactory;
 import org.springframework.aop.support.AopUtils;
 import org.springframework.beans.factory.BeanClassLoaderAware;
 import org.springframework.beans.factory.config.BeanPostProcessor;
+import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
 
 /**
@@ -18,8 +19,13 @@ import org.springframework.util.ClassUtils;
  */
 public abstract class AdvisorAddingBeanPostProcessor extends ProxyConfig implements BeanPostProcessor, BeanClassLoaderAware {
     private static final long serialVersionUID = 912342245657548924L;
-    /** Required to potentially create a proxy for our bean **/
+
     private ClassLoader beanClassLoader = ClassUtils.getDefaultClassLoader();
+
+    /** The advisor that should be added **/
+    private Advisor advisor = null;
+    /** Position of the advisor to add (<b>optional</b>) **/
+    private Integer advisorPosition = null;
 
     /**
      * {@inheritDoc}
@@ -30,10 +36,18 @@ public abstract class AdvisorAddingBeanPostProcessor extends ProxyConfig impleme
     }
 
     /**
-     * Retrieve the advisor instance that should be added to our beans during initialization.
-     * @return advistor instance that should be added
+     * @param advisor the advisor to set
      */
-    protected abstract Advisor getAdvisor();
+    public void setAdvisor(Advisor advisor) {
+        this.advisor = advisor;
+    }
+
+    /**
+     * @param advisorPosition the position to set
+     */
+    public void setAdvisorPosition(Integer advisorPosition) {
+        this.advisorPosition = advisorPosition;
+    }
 
     /**
      * {@inheritDoc}
@@ -48,21 +62,28 @@ public abstract class AdvisorAddingBeanPostProcessor extends ProxyConfig impleme
      */
     @Override
     public Object postProcessAfterInitialization(Object bean, String beanName) {
+        Assert.state(advisor != null, "Cannot add a null pointer advisor to beans.");
+
         Object result = bean;
-        if (!(bean instanceof AopInfrastructureBean)) { // Ignore infastructure
-            final Advisor advisor = getAdvisor();
+        if (!(bean instanceof AopInfrastructureBean)) {
             if (AopUtils.canApply(advisor, AopUtils.getTargetClass(bean))) {
                 if (bean instanceof Advised) {
-                    ((Advised) bean).addAdvisor(advisor);
+                    // Bean already has advisors, append new advisor on the desired position
+                    if (advisorPosition != null) {
+                        ((Advised) bean).addAdvisor(advisorPosition, advisor);
+                    } else {
+                        ((Advised) bean).addAdvisor(advisor);
+                    }
                 } else {
-                    // Convert bean into a proxy with advisor logic
+                    // Wrap the bean in a proxy, including our advisor.
                     ProxyFactory proxyFactory = new ProxyFactory(bean);
                     proxyFactory.copyFrom(this);
                     proxyFactory.addAdvisor(advisor);
-                    result = proxyFactory.getProxy(this.beanClassLoader);
+                    result = proxyFactory.getProxy(beanClassLoader);
                 }
             }
         }
+
         return result;
     }
 
