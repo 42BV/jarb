@@ -82,8 +82,16 @@ public class JdbcColumnMetadataProvider implements ColumnMetadataProvider {
         columnMetadata.setMaximumLength(getValueAsInteger(resultSet, "COLUMN_SIZE"));
         columnMetadata.setFractionLength(getValueAsInteger(resultSet, "DECIMAL_DIGITS"));
         columnMetadata.setRadix(getValueAsInteger(resultSet, "NUM_PREC_RADIX"));
-        columnMetadata.setRequired("NO".equals(getValueSafely(resultSet, "IS_NULLABLE")));
-        columnMetadata.setAutoIncrement("YES".equals(getValueSafely(resultSet, "IS_AUTOINCREMENT")));
+        // TODO: Quick fix to work with Oracle database, need some way of
+        // detecting auto-increment by trigger. Perhaps a seperate metadata
+        // table [table_name, column_name, is_autoincrement]
+        if ("id".equals(columnName)) {
+            columnMetadata.setRequired(true);
+            columnMetadata.setAutoIncrement(true);
+        } else {
+            columnMetadata.setRequired("NO".equals(getValueSafely(resultSet, "IS_NULLABLE")));
+            columnMetadata.setAutoIncrement("YES".equals(getValueSafely(resultSet, "IS_AUTOINCREMENT")));
+        }
         return columnMetadata;
     }
 
@@ -99,7 +107,7 @@ public class JdbcColumnMetadataProvider implements ColumnMetadataProvider {
         try {
             return resultSet.getObject(columnLabel);
         } catch (SQLException e) {
-            LOGGER.info("Could not extract '" + columnLabel + "' from result set", e);
+            LOGGER.debug("Could not extract '" + columnLabel + "' from result set");
             return null;
         }
     }
