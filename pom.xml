@@ -36,18 +36,6 @@
 		<developerConnection>scm:git:https://git@github.com/42BV/jarb.git</developerConnection>
 	</scm>
 
-	<distributionManagement>
-		<repository>
-			<id>repository.42.nl</id>
-			<url>https://repository.42.nl/content/repositories/releases</url>
-		</repository>
-		<snapshotRepository>
-			<id>snapshots.repository.42.nl</id>
-			<url>https://repository.42.nl/content/repositories/snapshots</url>
-			<uniqueVersion>false</uniqueVersion>
-		</snapshotRepository>
-	</distributionManagement>
-
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<!-- Java version -->
