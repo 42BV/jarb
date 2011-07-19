@@ -18,8 +18,7 @@ public final class JdbcUtils {
      */
     public static void commitSafely(Connection connection) {
         try {
-            if (!connection.getAutoCommit())
-                connection.commit();
+            if (!connection.getAutoCommit()) connection.commit();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -32,8 +31,7 @@ public final class JdbcUtils {
      */
     public static void closeQuietly(Connection connection) {
         try {
-            if (connection != null)
-                connection.close();
+            if (connection != null) connection.close();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -46,8 +44,7 @@ public final class JdbcUtils {
      */
     public static void closeQuietly(Statement statement) {
         try {
-            if (statement != null)
-                statement.close();
+            if (statement != null) statement.close();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

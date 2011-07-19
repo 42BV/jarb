@@ -11,6 +11,8 @@ import javax.sql.DataSource;
 
 import org.apache.commons.lang.StringUtils;
 import org.jarb.utils.database.JdbcUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.util.Assert;
 
 /**
@@ -20,6 +22,7 @@ import org.springframework.util.Assert;
  * @since 30-05-2011
  */
 public class JdbcColumnMetadataProvider implements ColumnMetadataProvider {
+    private static final Logger LOGGER = LoggerFactory.getLogger(JdbcColumnMetadataProvider.class);
     private final DataSource dataSource;
 
     /**
@@ -79,24 +82,26 @@ public class JdbcColumnMetadataProvider implements ColumnMetadataProvider {
         columnMetadata.setMaximumLength(getValueAsInteger(resultSet, "COLUMN_SIZE"));
         columnMetadata.setFractionLength(getValueAsInteger(resultSet, "DECIMAL_DIGITS"));
         columnMetadata.setRadix(getValueAsInteger(resultSet, "NUM_PREC_RADIX"));
-        columnMetadata.setRequired(resultSet.getString("IS_NULLABLE").equals("NO"));
-        columnMetadata.setAutoIncrement((resultSet.getString("IS_AUTOINCREMENT").equals("YES")));
+        columnMetadata.setRequired("NO".equals(getValueSafely(resultSet, "IS_NULLABLE")));
+        columnMetadata.setAutoIncrement("YES".equals(getValueSafely(resultSet, "IS_AUTOINCREMENT")));
         return columnMetadata;
     }
 
-    /**
-     * Retrieve a column from the result set, as integer. Whenever the column
-     * value is {@code null}, it will be returned as {@code null}.
-     * @param resultSet the result set containing our information
-     * @param columnName name of the numeric column
-     * @return column value as integer
-     * @throws SQLException if any exception occurs
-     */
-    public Integer getValueAsInteger(ResultSet resultSet, String columnName) throws SQLException {
-        String numberAsString = resultSet.getString(columnName);
+    private Integer getValueAsInteger(ResultSet resultSet, String columnLabel) throws SQLException {
+        String numberAsString = resultSet.getString(columnLabel);
         if (StringUtils.isBlank(numberAsString)) {
             return null;
         }
         return Integer.parseInt(numberAsString);
     }
+
+    public Object getValueSafely(ResultSet resultSet, String columnLabel) {
+        try {
+            return resultSet.getObject(columnLabel);
+        } catch (SQLException e) {
+            LOGGER.info("Could not extract '" + columnLabel + "' from result set", e);
+            return null;
+        }
+    }
+
 }
