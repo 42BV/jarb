@@ -85,7 +85,7 @@ public class JdbcColumnMetadataProvider implements ColumnMetadataProvider {
         // TODO: Quick fix to work with Oracle database, need some way of
         // detecting auto-increment by trigger. Perhaps a seperate metadata
         // table [table_name, column_name, is_autoincrement]
-        if ("id".equals(columnName)) {
+        if ("id".equalsIgnoreCase(columnName)) {
             columnMetadata.setRequired(true);
             columnMetadata.setAutoIncrement(true);
         } else {
