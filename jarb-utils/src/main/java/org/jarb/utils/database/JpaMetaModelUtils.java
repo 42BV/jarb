@@ -2,6 +2,7 @@ package org.jarb.utils.database;
 
 import static org.apache.commons.lang.StringUtils.isBlank;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.util.Collection;
 import java.util.HashSet;
@@ -10,6 +11,9 @@ import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.metamodel.EntityType;
 import javax.persistence.metamodel.Metamodel;
@@ -23,7 +27,7 @@ import org.springframework.util.ReflectionUtils;
  * @since 20-05-2011
  */
 public class JpaMetaModelUtils {
-    
+
     /**
      * Determine if a bean class is annotated with @Entity.
      * @param beanClass class of the bean
@@ -32,7 +36,7 @@ public class JpaMetaModelUtils {
     public static boolean isEntity(Class<?> beanClass) {
         return beanClass.getAnnotation(Entity.class) != null;
     }
-    
+
     /**
      * Determine if a bean class is annotated with @Embeddable.
      * @param beanClass class of the bean
@@ -90,30 +94,29 @@ public class JpaMetaModelUtils {
         }
         String columnName = null;
         // Attempt to retrieve the column name from annotation
-        Column columnAnnotation = field.getAnnotation(Column.class);
-        if (columnAnnotation != null) {
-            columnName = columnAnnotation.name();
+        boolean isReferenceColumn = hasAnnotation(field, ManyToOne.class) || hasAnnotation(field, OneToMany.class);
+        if (isReferenceColumn) {
+            JoinColumn columnAnnotation = field.getAnnotation(JoinColumn.class);
+            if (columnAnnotation != null) {
+                columnName = columnAnnotation.name();
+            }
+        } else {
+            Column columnAnnotation = field.getAnnotation(Column.class);
+            if (columnAnnotation != null) {
+                columnName = columnAnnotation.name();
+            }
         }
-        // Otherwise use the field name
+        // Whenever no column name is provided by annotation, the field name is used
         if (isBlank(columnName)) {
             columnName = propertyName;
         }
         return columnName;
     }
-    
-//    /**
-//     * Retrieve all java types represented in a collection of entity types.
-//     * @param entityTypes each entity type that should be included
-//     * @return java types for each provided entity type
-//     */
-//    public static Collection<Class<?>> getJavaTypes(Collection<EntityType<?>> entityTypes) {
-//        Set<Class<?>> javaTypes = new LinkedHashSet<Class<?>>();
-//        for(EntityType<?> entityType : entityTypes) {
-//            javaTypes.add(entityType.getJavaType());
-//        }
-//        return javaTypes;
-//    }
-    
+
+    private static boolean hasAnnotation(Field field, Class<? extends Annotation> annotationClass) {
+        return field.getAnnotation(annotationClass) != null;
+    }
+
     /**
      * Retrieve all "root" entities described in our JPA metamodel.
      * @param metamodel JPA metamodel, containing all entity descriptions
@@ -121,14 +124,14 @@ public class JpaMetaModelUtils {
      */
     public static Collection<EntityType<?>> getRootEntities(Metamodel metamodel) {
         Set<EntityType<?>> entityTypes = new HashSet<EntityType<?>>();
-        for(EntityType<?> entityType : metamodel.getEntities()) {            
-            if(!hasEntitySuperClass(entityType.getJavaType())) {
+        for (EntityType<?> entityType : metamodel.getEntities()) {
+            if (!hasEntitySuperClass(entityType.getJavaType())) {
                 entityTypes.add(entityType);
             }
         }
         return entityTypes;
     }
-    
+
     /**
      * Determine if an entity has a one or more entity super classes.
      * @param entityClass class of the entity to check
@@ -137,9 +140,9 @@ public class JpaMetaModelUtils {
     private static boolean hasEntitySuperClass(Class<?> entityClass) {
         boolean found = false;
         Class<?> currentClass = entityClass;
-        while(currentClass.getSuperclass() != null) {
+        while (currentClass.getSuperclass() != null) {
             final Class<?> superClass = currentClass.getSuperclass();
-            if(isEntity(superClass)) {
+            if (isEntity(superClass)) {
                 found = true;
                 break;
             }
@@ -147,5 +150,5 @@ public class JpaMetaModelUtils {
         }
         return found;
     }
-    
+
 }
