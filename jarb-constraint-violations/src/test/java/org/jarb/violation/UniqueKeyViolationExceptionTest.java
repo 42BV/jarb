@@ -1,7 +1,7 @@
 package org.jarb.violation;
 
-import static org.jarb.violation.ConstraintViolationType.CANNOT_BE_NULL;
-import static org.jarb.violation.ConstraintViolationType.UNIQUE_VIOLATION;
+import static org.jarb.violation.ConstraintViolationType.NOT_NULL;
+import static org.jarb.violation.ConstraintViolationType.UNIQUE;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
@@ -11,7 +11,7 @@ public class UniqueKeyViolationExceptionTest {
     private final ConstraintViolation uniqueConstraintViolation;
     
     public UniqueKeyViolationExceptionTest() {
-        uniqueConstraintViolation = new ConstraintViolation.Builder(UNIQUE_VIOLATION).setConstraintName("uk_persons_name").build();
+        uniqueConstraintViolation = new ConstraintViolation.Builder(UNIQUE).setConstraintName("uk_persons_name").build();
     }
 
     @Test
@@ -31,7 +31,7 @@ public class UniqueKeyViolationExceptionTest {
     @Test
     public void testInvalidViolationType() {
         try {
-            new UniqueKeyViolationException(new ConstraintViolation.Builder(CANNOT_BE_NULL).build());
+            new UniqueKeyViolationException(new ConstraintViolation.Builder(NOT_NULL).build());
             fail("Invalid violation types should result in an illegal argument exception");
         } catch(IllegalArgumentException e) {
             assertEquals("Unique key violation exceptions can only be used for unique key violations.", e.getMessage());

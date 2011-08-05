@@ -1,7 +1,7 @@
 package org.jarb.violation;
 
 import static org.jarb.violation.ConstraintViolationType.LENGTH_EXCEEDED;
-import static org.jarb.violation.ConstraintViolationType.UNIQUE_VIOLATION;
+import static org.jarb.violation.ConstraintViolationType.UNIQUE;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
@@ -31,7 +31,7 @@ public class LengthExceededExceptionTest {
     @Test
     public void testInvalidViolationType() {
         try {
-            new LengthExceededException(new ConstraintViolation.Builder(UNIQUE_VIOLATION).build());
+            new LengthExceededException(new ConstraintViolation.Builder(UNIQUE).build());
             fail("Invalid violation types should result in an illegal argument exception");
         } catch(IllegalArgumentException e) {
             assertEquals("Length exceeded exceptions can only be used for length exceeded violations.", e.getMessage());

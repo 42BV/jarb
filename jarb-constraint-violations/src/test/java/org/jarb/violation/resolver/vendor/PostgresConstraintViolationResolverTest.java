@@ -28,7 +28,7 @@ public class PostgresConstraintViolationResolverTest {
     @Test
     public void testNotNull() {
         ConstraintViolation violation = resolver.resolveByMessage("ERROR: null value in column \"name\" violates not-null constraint");
-        assertEquals(ConstraintViolationType.CANNOT_BE_NULL, violation.getType());
+        assertEquals(ConstraintViolationType.NOT_NULL, violation.getType());
         assertEquals("name", violation.getColumnName());
     }
 
@@ -36,7 +36,7 @@ public class PostgresConstraintViolationResolverTest {
     public void testUnique() {
         ConstraintViolation violation = resolver
                 .resolveByMessage("ERROR: duplicate key value violates unique constraint \"un_employees_first_name\" Detail: Key (first_name)=(Emp6) already exists.");
-        assertEquals(ConstraintViolationType.UNIQUE_VIOLATION, violation.getType());
+        assertEquals(ConstraintViolationType.UNIQUE, violation.getType());
         assertEquals("un_employees_first_name", violation.getConstraintName());
         assertEquals("first_name", violation.getColumnName());
         assertEquals("Emp6", violation.getValue());

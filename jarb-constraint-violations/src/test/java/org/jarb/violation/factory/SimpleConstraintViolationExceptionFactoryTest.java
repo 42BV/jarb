@@ -35,7 +35,7 @@ public class SimpleConstraintViolationExceptionFactoryTest {
 
     @Test
     public void testUniqueKeyViolated() {
-        ConstraintViolation.Builder violationBuilder = new ConstraintViolation.Builder(ConstraintViolationType.UNIQUE_VIOLATION);
+        ConstraintViolation.Builder violationBuilder = new ConstraintViolation.Builder(ConstraintViolationType.UNIQUE);
         violationBuilder.setConstraintName("uk_persons_name");
         ConstraintViolation violation = violationBuilder.build();
         ConstraintViolationException exception = factory.createException(violation, null);
@@ -46,7 +46,7 @@ public class SimpleConstraintViolationExceptionFactoryTest {
 
     @Test
     public void testNotNullViolated() {
-        ConstraintViolation.Builder violationBuilder = new ConstraintViolation.Builder(ConstraintViolationType.CANNOT_BE_NULL);
+        ConstraintViolation.Builder violationBuilder = new ConstraintViolation.Builder(ConstraintViolationType.NOT_NULL);
         violationBuilder.setColumnName("name");
         ConstraintViolation violation = violationBuilder.build();
         ConstraintViolationException exception = factory.createException(violation, null);

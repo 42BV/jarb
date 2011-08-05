@@ -43,7 +43,7 @@ public class UniqueKeyViolationException extends ConstraintViolationException {
      */
     public UniqueKeyViolationException(ConstraintViolation violation, String message, Throwable cause) {
         super(violation, message, cause);
-        if(violation.getType() != ConstraintViolationType.UNIQUE_VIOLATION) {
+        if(violation.getType() != ConstraintViolationType.UNIQUE) {
             throw new IllegalArgumentException("Unique key violation exceptions can only be used for unique key violations.");
         }
     }

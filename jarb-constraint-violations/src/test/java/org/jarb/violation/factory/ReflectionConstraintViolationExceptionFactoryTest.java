@@ -22,7 +22,7 @@ public class ReflectionConstraintViolationExceptionFactoryTest {
     @Test
     public void testInstantiateWithBestConstructor() {
         ConstraintViolationExceptionFactory factory = new ReflectionConstraintViolationExceptionFactory(LicenseNumberAlreadyExistsException.class);
-        ConstraintViolation violation = new ConstraintViolation.Builder(ConstraintViolationType.UNIQUE_VIOLATION).setConstraintName("uk_cars_license_number").build();
+        ConstraintViolation violation = new ConstraintViolation.Builder(ConstraintViolationType.UNIQUE).setConstraintName("uk_cars_license_number").build();
         final Throwable cause = new SQLException("Database exception 'uk_cars_license_number' violated !");
         Throwable exception = factory.createException(violation, cause);
         // Ensure we created an instance of the correct type
@@ -39,7 +39,7 @@ public class ReflectionConstraintViolationExceptionFactoryTest {
     @Test
     public void testInstantiateThirdPartyException() {
         ConstraintViolationExceptionFactory factory = new ReflectionConstraintViolationExceptionFactory(IllegalStateException.class);
-        ConstraintViolation violation = new ConstraintViolation.Builder(ConstraintViolationType.UNIQUE_VIOLATION).setConstraintName("uk_cars_license_number").build();
+        ConstraintViolation violation = new ConstraintViolation.Builder(ConstraintViolationType.UNIQUE).setConstraintName("uk_cars_license_number").build();
         final Throwable cause = new SQLException("Database exception 'uk_cars_license_number' violated !");
         Throwable exception = factory.createException(violation, cause);
         // The only supported constructor is (Throwable)
@@ -53,7 +53,7 @@ public class ReflectionConstraintViolationExceptionFactoryTest {
     @Test
     public void testInstantiateNullary() {
         ConstraintViolationExceptionFactory factory = new ReflectionConstraintViolationExceptionFactory(ExceptionWithOnlyNullaryConstructor.class);
-        ConstraintViolation violation = new ConstraintViolation.Builder(ConstraintViolationType.UNIQUE_VIOLATION).build();
+        ConstraintViolation violation = new ConstraintViolation.Builder(ConstraintViolationType.UNIQUE).build();
         final Throwable cause = new SQLException("Database exception 'uk_cars_license_number' violated !");
         Throwable exception = factory.createException(violation, cause);
         assertTrue(exception instanceof ExceptionWithOnlyNullaryConstructor);

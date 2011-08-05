@@ -23,7 +23,7 @@ public class SimpleConstraintViolationExceptionFactory implements ConstraintViol
     public ConstraintViolationException createException(ConstraintViolation violation, Throwable cause) {
         ConstraintViolationException exception = null;
         switch (violation.getType()) {
-        case CANNOT_BE_NULL:
+        case NOT_NULL:
             exception = new NotNullViolationException(violation, cause);
             break;
         case CHECK_FAILED:
@@ -35,7 +35,7 @@ public class SimpleConstraintViolationExceptionFactory implements ConstraintViol
         case LENGTH_EXCEEDED:
             exception = new LengthExceededException(violation, cause);
             break;
-        case UNIQUE_VIOLATION:
+        case UNIQUE:
             exception = new UniqueKeyViolationException(violation, cause);
             break;
         }

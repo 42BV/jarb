@@ -40,7 +40,7 @@ public class DatabaseSpecificConstraintViolationResolverTest {
         Throwable mysqlException = new SQLException("Column 'name' cannot be null");
         ConstraintViolation violation = resolver.resolve(mysqlException);
         assertNotNull(violation);
-        assertEquals(ConstraintViolationType.CANNOT_BE_NULL, violation.getType());
+        assertEquals(ConstraintViolationType.NOT_NULL, violation.getType());
         assertEquals("name", violation.getColumnName());
     }
 

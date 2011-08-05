@@ -24,6 +24,10 @@ public class HsqlConstraintViolationResolver extends RootCauseMessageConstraintV
     /* Provided: constraint name, table name */
     = "integrity constraint violation: unique constraint or index violation; (.+) table: (.+)";
 
+    private static final String FK_VIOLATION_PATTERN
+    /* Provided: constraint name, table name */
+    = "integrity constraint violation: foreign key no action; (.+) table: (.+)";
+
     private static final String LENGTH_EXCEEDED_PATTERN
     /* Provided: value type */
     = "data exception: (.+) data, right truncation";
@@ -42,6 +46,8 @@ public class HsqlConstraintViolationResolver extends RootCauseMessageConstraintV
             violation = resolveNotNullViolation(message);
         } else if (message.matches(UNIQUE_VIOLATION_PATTERN)) {
             violation = resolveUniqueViolation(message);
+        } else if (message.matches(FK_VIOLATION_PATTERN)) {
+            violation = resolveForeignKeyViolation(message);
         } else if (message.matches(LENGTH_EXCEEDED_PATTERN)) {
             violation = resolveLengthViolation(message);
         } else if (message.matches(INVALID_TYPE_PATTERN)) {
@@ -50,8 +56,17 @@ public class HsqlConstraintViolationResolver extends RootCauseMessageConstraintV
         return violation;
     }
 
+    private ConstraintViolation resolveForeignKeyViolation(String message) {
+        ConstraintViolation.Builder violationBuilder = new ConstraintViolation.Builder(ConstraintViolationType.FOREIGN_KEY);
+        Matcher matcher = Pattern.compile(FK_VIOLATION_PATTERN).matcher(message);
+        Assert.isTrue(matcher.matches()); // Retrieve group information
+        violationBuilder.setConstraintName(matcher.group(1).toLowerCase());
+        violationBuilder.setTableName(matcher.group(2).toLowerCase());
+        return violationBuilder.build();
+    }
+
     private ConstraintViolation resolveNotNullViolation(String message) {
-        ConstraintViolation.Builder violationBuilder = new ConstraintViolation.Builder(ConstraintViolationType.CANNOT_BE_NULL);
+        ConstraintViolation.Builder violationBuilder = new ConstraintViolation.Builder(ConstraintViolationType.NOT_NULL);
         Matcher matcher = Pattern.compile(CANNOT_BE_NULL_PATTERN).matcher(message);
         Assert.isTrue(matcher.matches()); // Retrieve group information
         violationBuilder.setConstraintName(matcher.group(1).toLowerCase());
@@ -61,7 +76,7 @@ public class HsqlConstraintViolationResolver extends RootCauseMessageConstraintV
     }
 
     private ConstraintViolation resolveUniqueViolation(String message) {
-        ConstraintViolation.Builder violationBuilder = new ConstraintViolation.Builder(ConstraintViolationType.UNIQUE_VIOLATION);
+        ConstraintViolation.Builder violationBuilder = new ConstraintViolation.Builder(ConstraintViolationType.UNIQUE);
         Matcher matcher = Pattern.compile(UNIQUE_VIOLATION_PATTERN).matcher(message);
         Assert.isTrue(matcher.matches()); // Retrieve group information
         violationBuilder.setConstraintName(matcher.group(1).toLowerCase());

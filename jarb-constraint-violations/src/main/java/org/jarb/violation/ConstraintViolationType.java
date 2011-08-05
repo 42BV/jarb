@@ -11,17 +11,17 @@ public enum ConstraintViolationType {
     /**
      * Unique key already exists in database.
      */
-    UNIQUE_VIOLATION,
-
-    /**
-     * Null value was not accepted for column.
-     */
-    CANNOT_BE_NULL,
+    UNIQUE,
 
     /**
      * Foreign key reference does not exist.
      */
-    INVALID_REFERENCE,
+    FOREIGN_KEY,
+
+    /**
+     * Null value was not accepted for column.
+     */
+    NOT_NULL,
 
     /**
      * Expression type does not match column.

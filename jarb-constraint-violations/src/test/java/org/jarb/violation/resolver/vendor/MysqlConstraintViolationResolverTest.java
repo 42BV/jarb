@@ -19,14 +19,14 @@ public class MysqlConstraintViolationResolverTest {
     @Test
     public void testNotNull() {
         ConstraintViolation violation = resolver.resolveByMessage("Column 'name' cannot be null");
-        assertEquals(ConstraintViolationType.CANNOT_BE_NULL, violation.getType());
+        assertEquals(ConstraintViolationType.NOT_NULL, violation.getType());
         assertEquals("name", violation.getColumnName());
     }
 
     @Test
     public void testUnique() {
         ConstraintViolation violation = resolver.resolveByMessage("Duplicate entry 'Emp6' for key 'un_employees_first_name'");
-        assertEquals(ConstraintViolationType.UNIQUE_VIOLATION, violation.getType());
+        assertEquals(ConstraintViolationType.UNIQUE, violation.getType());
         assertEquals("Emp6", violation.getValue());
         assertEquals("un_employees_first_name", violation.getConstraintName());
     }

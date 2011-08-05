@@ -20,7 +20,7 @@ public class HsqlConstraintViolationResolverTest {
     public void testNotNull() {
         ConstraintViolation violation = resolver
                 .resolveByMessage("integrity constraint violation: NOT NULL check constraint; SYS_CT_10041 table: CARS column: NAME");
-        assertEquals(ConstraintViolationType.CANNOT_BE_NULL, violation.getType());
+        assertEquals(ConstraintViolationType.NOT_NULL, violation.getType());
         assertEquals("sys_ct_10041", violation.getConstraintName());
         assertEquals("cars", violation.getTableName());
         assertEquals("name", violation.getColumnName());
@@ -29,9 +29,17 @@ public class HsqlConstraintViolationResolverTest {
     @Test
     public void testUnique() {
         ConstraintViolation violation = resolver
-                .resolveByMessage("integrity constraint violation: unique constraint or index violation; SYS_CT_10042 table: CARS");
-        assertEquals(ConstraintViolationType.UNIQUE_VIOLATION, violation.getType());
-        assertEquals("sys_ct_10042", violation.getConstraintName());
+                .resolveByMessage("integrity constraint violation: unique constraint or index violation; UK_CARS_LICENSE table: CARS");
+        assertEquals(ConstraintViolationType.UNIQUE, violation.getType());
+        assertEquals("uk_cars_license", violation.getConstraintName());
+        assertEquals("cars", violation.getTableName());
+    }
+
+    @Test
+    public void testForeignKey() {
+        ConstraintViolation violation = resolver.resolveByMessage("integrity constraint violation: foreign key no action; FK_CARS_OWNER table: CARS");
+        assertEquals(ConstraintViolationType.FOREIGN_KEY, violation.getType());
+        assertEquals("fk_cars_owner", violation.getConstraintName());
         assertEquals("cars", violation.getTableName());
     }
 
