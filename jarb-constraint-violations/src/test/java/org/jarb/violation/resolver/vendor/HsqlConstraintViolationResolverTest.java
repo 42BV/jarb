@@ -30,7 +30,7 @@ public class HsqlConstraintViolationResolverTest {
     public void testUnique() {
         ConstraintViolation violation = resolver
                 .resolveByMessage("integrity constraint violation: unique constraint or index violation; UK_CARS_LICENSE table: CARS");
-        assertEquals(ConstraintViolationType.UNIQUE, violation.getType());
+        assertEquals(ConstraintViolationType.UNIQUE_KEY, violation.getType());
         assertEquals("uk_cars_license", violation.getConstraintName());
         assertEquals("cars", violation.getTableName());
     }

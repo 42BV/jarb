@@ -1,5 +1,7 @@
 package org.jarb.violation;
 
+import static org.springframework.util.Assert.state;
+
 /**
  * Thrown whenever a {@code null} value was provided for a not nullable column.
  * 
@@ -16,7 +18,7 @@ public class NotNullViolationException extends ConstraintViolationException {
     public NotNullViolationException(ConstraintViolation violation) {
         this(violation, (Throwable) null);
     }
-    
+
     /**
      * Construct a new {@link NotNullViolationException}.
      * @param violation constraint violation that triggered this exception
@@ -34,7 +36,7 @@ public class NotNullViolationException extends ConstraintViolationException {
     public NotNullViolationException(ConstraintViolation violation, Throwable cause) {
         this(violation, "Column '" + violation.getColumnName() + "' cannot be null.", cause);
     }
- 
+
     /**
      * Construct a new {@link NotNullViolationException}.
      * @param violation constraint violation that triggered this exception
@@ -43,8 +45,6 @@ public class NotNullViolationException extends ConstraintViolationException {
      */
     public NotNullViolationException(ConstraintViolation violation, String message, Throwable cause) {
         super(violation, message, cause);
-        if(violation.getType() != ConstraintViolationType.NOT_NULL) {
-            throw new IllegalArgumentException("Not null violation exceptions can only be used for not null violations.");
-        }
+        state(violation.getType() == ConstraintViolationType.NOT_NULL, "Not null exception can only occur for not null violations");
     }
 }

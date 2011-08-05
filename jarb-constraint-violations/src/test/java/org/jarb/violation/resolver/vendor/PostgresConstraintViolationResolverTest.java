@@ -36,7 +36,7 @@ public class PostgresConstraintViolationResolverTest {
     public void testUnique() {
         ConstraintViolation violation = resolver
                 .resolveByMessage("ERROR: duplicate key value violates unique constraint \"un_employees_first_name\" Detail: Key (first_name)=(Emp6) already exists.");
-        assertEquals(ConstraintViolationType.UNIQUE, violation.getType());
+        assertEquals(ConstraintViolationType.UNIQUE_KEY, violation.getType());
         assertEquals("un_employees_first_name", violation.getConstraintName());
         assertEquals("first_name", violation.getColumnName());
         assertEquals("Emp6", violation.getValue());

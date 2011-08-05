@@ -11,7 +11,7 @@ public enum ConstraintViolationType {
     /**
      * Unique key already exists in database.
      */
-    UNIQUE,
+    UNIQUE_KEY,
 
     /**
      * Foreign key reference does not exist.

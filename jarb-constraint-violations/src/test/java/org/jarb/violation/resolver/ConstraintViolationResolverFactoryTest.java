@@ -76,7 +76,7 @@ public class ConstraintViolationResolverFactoryTest {
             fail("Expected a runtime exception");
         } catch (RuntimeException e) {
             ConstraintViolation violation = resolver.resolve(e);
-            assertEquals(ConstraintViolationType.UNIQUE, violation.getType());
+            assertEquals(ConstraintViolationType.UNIQUE_KEY, violation.getType());
             assertEquals("uk_cars_license_number", violation.getConstraintName());
             assertEquals("cars", violation.getTableName());
         }

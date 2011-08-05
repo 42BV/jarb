@@ -76,7 +76,7 @@ public class HsqlConstraintViolationResolver extends RootCauseMessageConstraintV
     }
 
     private ConstraintViolation resolveUniqueViolation(String message) {
-        ConstraintViolation.Builder violationBuilder = new ConstraintViolation.Builder(ConstraintViolationType.UNIQUE);
+        ConstraintViolation.Builder violationBuilder = new ConstraintViolation.Builder(ConstraintViolationType.UNIQUE_KEY);
         Matcher matcher = Pattern.compile(UNIQUE_VIOLATION_PATTERN).matcher(message);
         Assert.isTrue(matcher.matches()); // Retrieve group information
         violationBuilder.setConstraintName(matcher.group(1).toLowerCase());

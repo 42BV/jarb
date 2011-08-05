@@ -1,5 +1,7 @@
 package org.jarb.violation;
 
+import static org.springframework.util.Assert.state;
+
 /**
  * Thrown whenever the expression type does not match the column type.
  * 
@@ -16,7 +18,7 @@ public class InvalidTypeException extends ConstraintViolationException {
     public InvalidTypeException(ConstraintViolation violation) {
         this(violation, (Throwable) null);
     }
-    
+
     /**
      * Construct a new {@link InvalidTypeException}.
      * @param violation constraint violation that triggered this exception
@@ -34,7 +36,7 @@ public class InvalidTypeException extends ConstraintViolationException {
     public InvalidTypeException(ConstraintViolation violation, Throwable cause) {
         this(violation, "Column is of an invalid type.", cause);
     }
- 
+
     /**
      * Construct a new {@link InvalidTypeException}.
      * @param violation constraint violation that triggered this exception
@@ -43,8 +45,6 @@ public class InvalidTypeException extends ConstraintViolationException {
      */
     public InvalidTypeException(ConstraintViolation violation, String message, Throwable cause) {
         super(violation, message, cause);
-        if(violation.getType() != ConstraintViolationType.INVALID_TYPE) {
-            throw new IllegalArgumentException("Invalid type exceptions can only be used for invalid type violations.");
-        }
+        state(violation.getType() == ConstraintViolationType.INVALID_TYPE, "Invalid type exception can only occur for invalid type violations");
     }
 }

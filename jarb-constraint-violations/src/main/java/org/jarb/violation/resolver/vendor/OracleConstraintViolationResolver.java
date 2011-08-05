@@ -71,7 +71,7 @@ public class OracleConstraintViolationResolver extends RootCauseMessageConstrain
     }
 
     private ConstraintViolation resolveUniqueKeyViolation(String message) {
-        ConstraintViolation.Builder violationBuilder = new ConstraintViolation.Builder(ConstraintViolationType.UNIQUE);
+        ConstraintViolation.Builder violationBuilder = new ConstraintViolation.Builder(ConstraintViolationType.UNIQUE_KEY);
         Matcher matcher = Pattern.compile(UNIQUE_VIOLATION_PATTERN).matcher(message);
         Assert.isTrue(matcher.matches()); // Retrieve group information
         violationBuilder.setConstraintName(matcher.group(3));

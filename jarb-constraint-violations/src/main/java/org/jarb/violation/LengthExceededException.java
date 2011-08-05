@@ -1,5 +1,7 @@
 package org.jarb.violation;
 
+import static org.springframework.util.Assert.state;
+
 /**
  * Thrown whenever the expression value is longer than our column length.
  * 
@@ -16,7 +18,7 @@ public class LengthExceededException extends ConstraintViolationException {
     public LengthExceededException(ConstraintViolation violation) {
         this(violation, (Throwable) null);
     }
-    
+
     /**
      * Construct a new {@link LengthExceededException}.
      * @param violation constraint violation that triggered this exception
@@ -25,7 +27,7 @@ public class LengthExceededException extends ConstraintViolationException {
     public LengthExceededException(ConstraintViolation violation, String message) {
         this(violation, message, null);
     }
-    
+
     /**
      * Construct a new {@link LengthExceededException}.
      * @param violation constraint violation that triggered this exception
@@ -34,7 +36,7 @@ public class LengthExceededException extends ConstraintViolationException {
     public LengthExceededException(ConstraintViolation violation, Throwable cause) {
         this(violation, "Column maximum length was exceeded.", cause);
     }
- 
+
     /**
      * Construct a new {@link LengthExceededException}.
      * @param violation constraint violation that triggered this exception
@@ -43,8 +45,6 @@ public class LengthExceededException extends ConstraintViolationException {
      */
     public LengthExceededException(ConstraintViolation violation, String message, Throwable cause) {
         super(violation, message, cause);
-        if(violation.getType() != ConstraintViolationType.LENGTH_EXCEEDED) {
-            throw new IllegalArgumentException("Length exceeded exceptions can only be used for length exceeded violations.");
-        }
+        state(violation.getType() == ConstraintViolationType.LENGTH_EXCEEDED, "Length exceeded exception can only occur for length exceeded violations");
     }
 }

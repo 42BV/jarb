@@ -26,7 +26,7 @@ public class MysqlConstraintViolationResolverTest {
     @Test
     public void testUnique() {
         ConstraintViolation violation = resolver.resolveByMessage("Duplicate entry 'Emp6' for key 'un_employees_first_name'");
-        assertEquals(ConstraintViolationType.UNIQUE, violation.getType());
+        assertEquals(ConstraintViolationType.UNIQUE_KEY, violation.getType());
         assertEquals("Emp6", violation.getValue());
         assertEquals("un_employees_first_name", violation.getConstraintName());
     }

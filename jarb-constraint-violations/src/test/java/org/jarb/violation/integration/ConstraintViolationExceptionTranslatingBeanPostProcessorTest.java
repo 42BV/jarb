@@ -48,7 +48,7 @@ public class ConstraintViolationExceptionTranslatingBeanPostProcessorTest {
             fail("Expected a license number already exists exception");
         } catch (LicenseNumberAlreadyExistsException e) {
             ConstraintViolation violation = e.getViolation();
-            assertEquals(ConstraintViolationType.UNIQUE, violation.getType());
+            assertEquals(ConstraintViolationType.UNIQUE_KEY, violation.getType());
             assertEquals("uk_cars_license_number", violation.getConstraintName());
         }
     }

@@ -34,7 +34,7 @@ public class OracleConstraintViolationResolverTest {
     @Test
     public void testUnique() {
         ConstraintViolation violation = resolver.resolveByMessage("ORA-00001: unique constraint (S01_PCAT3.UK_COMMODITY_GROUPS_CODE) violated");
-        assertEquals(ConstraintViolationType.UNIQUE, violation.getType());
+        assertEquals(ConstraintViolationType.UNIQUE_KEY, violation.getType());
         assertEquals("UK_COMMODITY_GROUPS_CODE", violation.getConstraintName());
     }
 

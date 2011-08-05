@@ -4,30 +4,29 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.hibernate.dialect.Dialect;
-import org.springframework.util.Assert;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
- * Resolves the database, using a hibernate dialect value.
+ * Resolves the database by {@link Dialect}.
  * 
  * @author Jeroen van Schagen
  * @since 13-05-2011
  */
 public class HibernateDialectDatabaseResolver implements DatabaseResolver {
     private static final Map<Class<? extends Dialect>, Database> DIALECT_MAPPING;
-
     static {
         DIALECT_MAPPING = new HashMap<Class<? extends Dialect>, Database>();
         DIALECT_MAPPING.put(org.hibernate.dialect.HSQLDialect.class, Database.HSQL);
         DIALECT_MAPPING.put(org.hibernate.dialect.MySQLDialect.class, Database.MYSQL);
         DIALECT_MAPPING.put(org.hibernate.dialect.Oracle8iDialect.class, Database.ORACLE);
         DIALECT_MAPPING.put(org.hibernate.dialect.Oracle9iDialect.class, Database.ORACLE);
+        DIALECT_MAPPING.put(org.hibernate.dialect.Oracle10gDialect.class, Database.ORACLE);
         DIALECT_MAPPING.put(org.hibernate.dialect.PostgreSQLDialect.class, Database.POSTGRESQL);
         DIALECT_MAPPING.put(org.hibernate.dialect.ProgressDialect.class, Database.POSTGRESQL);
     }
 
-    /**
-     * Hibernate dialect that should be used for database resolving.
-     */
+    private final Logger logger = LoggerFactory.getLogger(HibernateDialectDatabaseResolver.class);
     private final Class<?> dialectClass;
 
     /**
@@ -35,7 +34,6 @@ public class HibernateDialectDatabaseResolver implements DatabaseResolver {
      * @param hibernateDialect the dialect being used, cannot be null and has to be in the class path
      */
     public HibernateDialectDatabaseResolver(String hibernateDialect) {
-        Assert.hasText(hibernateDialect, "Dialect cannot be empty.");
         try {
             this.dialectClass = Class.forName(hibernateDialect);
         } catch (ClassNotFoundException e) {
@@ -44,9 +42,9 @@ public class HibernateDialectDatabaseResolver implements DatabaseResolver {
     }
 
     /**
-     * Resolve the database using a hibernate dialect.
-     * @param hibernateDialect hibernate dialect of the database
-     * @return database matching the provided dialect, if any
+     * Resolve our database type by dialect class name.
+     * @param hibernateDialect class name of the dialect
+     * @return database matching the provided dialect
      */
     public static Database resolveByDialect(String hibernateDialect) {
         return new HibernateDialectDatabaseResolver(hibernateDialect).resolve();
@@ -58,26 +56,22 @@ public class HibernateDialectDatabaseResolver implements DatabaseResolver {
     @Override
     public Database resolve() {
         Database database = DIALECT_MAPPING.get(dialectClass);
-        // No direct database dialect could be matched, look for inheritance
         if (database == null) {
-            database = resolveDialectByInstanceOf();
+            logger.info("Could not resolve database for dialect '{}', looking for recognized superclasses.", dialectClass.getName());
+            database = determineDatabaseBySuperclasses();
         }
         if (database == null) {
             throw new UnsupportedOperationException("Could not resolve database for dialect '" + dialectClass.getName() + "'");
         }
+        logger.info("Recognized database as '{}'.", database);
         return database;
     }
 
-    /**
-     * Resolve the database using an {@code instance of} check. This
-     * will also allow custom dialect subclasses to be resolved.
-     * @return matched dialect, if any
-     */
-    private Database resolveDialectByInstanceOf() {
+    private Database determineDatabaseBySuperclasses() {
         Database database = null;
-        for (Map.Entry<Class<? extends Dialect>, Database> dialectMappingEntry : DIALECT_MAPPING.entrySet()) {
-            if (dialectMappingEntry.getKey().isAssignableFrom(dialectClass)) {
-                database = dialectMappingEntry.getValue();
+        for (Map.Entry<Class<? extends Dialect>, Database> entry : DIALECT_MAPPING.entrySet()) {
+            if (entry.getKey().isAssignableFrom(dialectClass)) {
+                database = entry.getValue();
                 break;
             }
         }

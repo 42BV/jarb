@@ -3,6 +3,7 @@ package org.jarb.violation.factory;
 import org.jarb.violation.CheckFailedException;
 import org.jarb.violation.ConstraintViolation;
 import org.jarb.violation.ConstraintViolationException;
+import org.jarb.violation.ForeignKeyViolationException;
 import org.jarb.violation.InvalidTypeException;
 import org.jarb.violation.LengthExceededException;
 import org.jarb.violation.NotNullViolationException;
@@ -35,8 +36,11 @@ public class SimpleConstraintViolationExceptionFactory implements ConstraintViol
         case LENGTH_EXCEEDED:
             exception = new LengthExceededException(violation, cause);
             break;
-        case UNIQUE:
+        case UNIQUE_KEY:
             exception = new UniqueKeyViolationException(violation, cause);
+            break;
+        case FOREIGN_KEY:
+            exception = new ForeignKeyViolationException(violation, cause);
             break;
         }
         return exception;

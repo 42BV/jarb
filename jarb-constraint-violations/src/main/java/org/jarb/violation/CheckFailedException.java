@@ -1,5 +1,7 @@
 package org.jarb.violation;
 
+import static org.springframework.util.Assert.state;
+
 /**
  * Exception thrown whenever a database check fails.
  * 
@@ -16,7 +18,7 @@ public class CheckFailedException extends ConstraintViolationException {
     public CheckFailedException(ConstraintViolation violation) {
         this(violation, (Throwable) null);
     }
-    
+
     /**
      * Construct a new {@link CheckFailedException}.
      * @param violation constraint violation that triggered this exception
@@ -34,7 +36,7 @@ public class CheckFailedException extends ConstraintViolationException {
     public CheckFailedException(ConstraintViolation violation, Throwable cause) {
         this(violation, "Check '" + violation.getConstraintName() + "' failed.", cause);
     }
- 
+
     /**
      * Construct a new {@link CheckFailedException}.
      * @param violation constraint violation that triggered this exception
@@ -43,8 +45,6 @@ public class CheckFailedException extends ConstraintViolationException {
      */
     public CheckFailedException(ConstraintViolation violation, String message, Throwable cause) {
         super(violation, message, cause);
-        if(violation.getType() != ConstraintViolationType.CHECK_FAILED) {
-            throw new IllegalArgumentException("Check failed exceptions can only be used for check failed violations.");
-        }
+        state(violation.getType() == ConstraintViolationType.CHECK_FAILED, "Check failed exception can only occur for check violations");
     }
 }

@@ -7,6 +7,7 @@ import org.jarb.violation.CheckFailedException;
 import org.jarb.violation.ConstraintViolation;
 import org.jarb.violation.ConstraintViolationException;
 import org.jarb.violation.ConstraintViolationType;
+import org.jarb.violation.ForeignKeyViolationException;
 import org.jarb.violation.InvalidTypeException;
 import org.jarb.violation.LengthExceededException;
 import org.jarb.violation.NotNullViolationException;
@@ -35,12 +36,23 @@ public class SimpleConstraintViolationExceptionFactoryTest {
 
     @Test
     public void testUniqueKeyViolated() {
-        ConstraintViolation.Builder violationBuilder = new ConstraintViolation.Builder(ConstraintViolationType.UNIQUE);
+        ConstraintViolation.Builder violationBuilder = new ConstraintViolation.Builder(ConstraintViolationType.UNIQUE_KEY);
         violationBuilder.setConstraintName("uk_persons_name");
         ConstraintViolation violation = violationBuilder.build();
         ConstraintViolationException exception = factory.createException(violation, null);
         assertTrue(exception instanceof UniqueKeyViolationException);
         assertEquals("Unique key 'uk_persons_name' was violated.", exception.getMessage());
+        assertEquals(violation, exception.getViolation());
+    }
+
+    @Test
+    public void testForeignKeyViolated() {
+        ConstraintViolation.Builder violationBuilder = new ConstraintViolation.Builder(ConstraintViolationType.FOREIGN_KEY);
+        violationBuilder.setConstraintName("fk_persons_parent");
+        ConstraintViolation violation = violationBuilder.build();
+        ConstraintViolationException exception = factory.createException(violation, null);
+        assertTrue(exception instanceof ForeignKeyViolationException);
+        assertEquals("Foreign key 'fk_persons_parent' was violated.", exception.getMessage());
         assertEquals(violation, exception.getViolation());
     }
 

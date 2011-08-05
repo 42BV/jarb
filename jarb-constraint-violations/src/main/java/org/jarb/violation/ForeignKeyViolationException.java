@@ -3,6 +3,8 @@
  */
 package org.jarb.violation;
 
+import static org.springframework.util.Assert.state;
+
 /**
  * Thrown whenever a foreign key constraint has been violated.
  *
@@ -34,7 +36,7 @@ public class ForeignKeyViolationException extends ConstraintViolationException {
      * @param cause the cause of this constraint violation exception, can be {@code null}
      */
     public ForeignKeyViolationException(ConstraintViolation violation, Throwable cause) {
-        this(violation, "Column '" + violation.getColumnName() + "' cannot be null.", cause);
+        this(violation, "Foreign key '" + violation.getConstraintName() + "' was violated.", cause);
     }
 
     /**
@@ -45,9 +47,7 @@ public class ForeignKeyViolationException extends ConstraintViolationException {
      */
     public ForeignKeyViolationException(ConstraintViolation violation, String message, Throwable cause) {
         super(violation, message, cause);
-        if (violation.getType() != ConstraintViolationType.NOT_NULL) {
-            throw new IllegalArgumentException("Not null violation exceptions can only be used for not null violations.");
-        }
+        state(violation.getType() == ConstraintViolationType.FOREIGN_KEY, "Foreign key exception can only occur for foreign key violations");
     }
 
 }
