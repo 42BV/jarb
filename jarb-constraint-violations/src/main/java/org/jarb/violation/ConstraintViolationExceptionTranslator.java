@@ -3,7 +3,6 @@ package org.jarb.violation;
 import org.jarb.violation.factory.ConstraintViolationExceptionFactory;
 import org.jarb.violation.factory.SimpleConstraintViolationExceptionFactory;
 import org.jarb.violation.resolver.ConstraintViolationResolver;
-import org.jarb.violation.resolver.database.HibernateDialectDatabaseResolver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.Assert;
@@ -17,7 +16,7 @@ import org.springframework.util.Assert;
  * @since 17-05-2011
  */
 public class ConstraintViolationExceptionTranslator {
-    private final Logger logger = LoggerFactory.getLogger(HibernateDialectDatabaseResolver.class);
+    private final Logger logger = LoggerFactory.getLogger(ConstraintViolationExceptionTranslator.class);
 
     /** Resolves the constraint violation from an exception. **/
     private final ConstraintViolationResolver violationResolver;
@@ -53,7 +52,7 @@ public class ConstraintViolationExceptionTranslator {
         ConstraintViolation violation = violationResolver.resolve(throwable);
         if (violation != null) {
             translatedException = exceptionFactory.createException(violation, throwable);
-            logger.debug("Translated '{}' into '{}'.", throwable.getClass().getSimpleName(), translatedException.getClass().getSimpleName());
+            logger.info("Translated '{}' into '{}'.", throwable.getClass().getSimpleName(), translatedException.getClass().getSimpleName());
         }
         return translatedException;
     }
