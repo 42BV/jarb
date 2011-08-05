@@ -18,14 +18,14 @@ public class OracleConstraintViolationResolverTest {
 
     @Test
     public void testCheck() {
-        ConstraintViolation violation = resolver.resolveByMessage("ORA-02290: check constraint (HIBERNATE.CK_EMPLOYEES_SALARY_MIN) violated");
+        ConstraintViolation violation = resolver.resolveByMessage("ORA-02290: check constraint (HIBERNATE.CK_EMPLOYEES_SALARY_MIN) violated\n");
         assertEquals(ConstraintViolationType.CHECK_FAILED, violation.getType());
         assertEquals("CK_EMPLOYEES_SALARY_MIN", violation.getConstraintName());
     }
 
     @Test
     public void testNotNull() {
-        ConstraintViolation violation = resolver.resolveByMessage("ORA-01400: cannot insert NULL into (\"HIBERNATE\".\"PROJECTS\".\"NAME\")");
+        ConstraintViolation violation = resolver.resolveByMessage("ORA-01400: cannot insert NULL into (\"HIBERNATE\".\"PROJECTS\".\"NAME\")\n");
         assertEquals(ConstraintViolationType.NOT_NULL, violation.getType());
         assertEquals("PROJECTS", violation.getTableName());
         assertEquals("NAME", violation.getColumnName());
@@ -33,7 +33,7 @@ public class OracleConstraintViolationResolverTest {
 
     @Test
     public void testUnique() {
-        ConstraintViolation violation = resolver.resolveByMessage("ORA-00001: unique constraint (S01_PCAT3.UK_COMMODITY_GROUPS_CODE) violated");
+        ConstraintViolation violation = resolver.resolveByMessage("ORA-00001: unique constraint (S01_PCAT3.UK_COMMODITY_GROUPS_CODE) violated\n");
         assertEquals(ConstraintViolationType.UNIQUE_KEY, violation.getType());
         assertEquals("UK_COMMODITY_GROUPS_CODE", violation.getConstraintName());
     }
@@ -41,7 +41,7 @@ public class OracleConstraintViolationResolverTest {
     @Test
     public void testForeignKey() {
         ConstraintViolation violation = resolver
-                .resolveByMessage("ORA-02292: integrity constraint (S01_PCAT3.FK_COMMODITIES_COMM_GRP_ID) violated - child record found");
+                .resolveByMessage("ORA-02292: integrity constraint (S01_PCAT3.FK_COMMODITIES_COMM_GRP_ID) violated - child record found\n");
         assertEquals(ConstraintViolationType.FOREIGN_KEY, violation.getType());
         assertEquals("FK_COMMODITIES_COMM_GRP_ID", violation.getConstraintName());
     }
@@ -49,7 +49,7 @@ public class OracleConstraintViolationResolverTest {
     @Test
     public void testLength() {
         ConstraintViolation violation = resolver
-                .resolveByMessage("ORA-12899: value too large for column \"HIBERNATE\".\"CUSTOMERS\".\"FIRST_NAME\" (actual: 72, maximum: 50)");
+                .resolveByMessage("ORA-12899: value too large for column \"HIBERNATE\".\"CUSTOMERS\".\"FIRST_NAME\" (actual: 72, maximum: 50)\n");
         assertEquals(ConstraintViolationType.LENGTH_EXCEEDED, violation.getType());
         assertEquals("CUSTOMERS", violation.getTableName());
         assertEquals("FIRST_NAME", violation.getColumnName());
@@ -58,7 +58,7 @@ public class OracleConstraintViolationResolverTest {
 
     @Test
     public void testInvalidType() {
-        ConstraintViolation violation = resolver.resolveByMessage("ORA-01722: invalid number");
+        ConstraintViolation violation = resolver.resolveByMessage("ORA-01722: invalid number\n");
         assertEquals(ConstraintViolationType.INVALID_TYPE, violation.getType());
         assertEquals("number", violation.getExpectedType());
     }

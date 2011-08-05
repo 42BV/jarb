@@ -18,27 +18,27 @@ public class OracleConstraintViolationResolver extends RootCauseMessageConstrain
 
     private static final String CHECK_FAILED_PATTERN
     /* Provided: schema and check name */
-    = "(.+): check constraint \\((.+)\\.(.+)\\) violated";
+    = "(.+): check constraint \\((.+)\\.(.+)\\) violated\n";
 
     private static final String CANNOT_BE_NULL_PATTERN
     /* Provided: schema, table and column name */
-    = "(.+): cannot insert NULL into \\(\"(.+)\"\\.\"(.+)\"\\.\"(.+)\"\\)";
+    = "(.+): cannot insert NULL into \\(\"(.+)\"\\.\"(.+)\"\\.\"(.+)\"\\)\n";
 
     private static final String UNIQUE_VIOLATION_PATTERN
     /* Provided: schema and constraint name */
-    = "(.+): unique constraint \\((.+)\\.(.+)\\) violated";
+    = "(.+): unique constraint \\((.+)\\.(.+)\\) violated\n";
 
     private static final String FK_VIOLATION_PATTERN
     /* Provided: schema and constraint name */
-    = "(.+): integrity constraint \\((.+)\\.(.+)\\) violated - child record found";
+    = "(.+): integrity constraint \\((.+)\\.(.+)\\) violated - child record found\n";
 
     private static final String LENGTH_EXCEEDED_PATTERN
     /* Provided: schema, table and column name, actual length, maximum length */
-    = "(.+): value too large for column \"(.+)\"\\.\"(.+)\"\\.\"(.+)\" \\(actual: (\\d+), maximum: (\\d+)\\)";
+    = "(.+): value too large for column \"(.+)\"\\.\"(.+)\"\\.\"(.+)\" \\(actual: (\\d+), maximum: (\\d+)\\)\n";
 
     private static final String INVALID_TYPE_PATTERN
     /* Provided: column type */
-    = "(.+): invalid (.+)";
+    = "(.+): invalid (.+)\n";
 
     /**
      * {@inheritDoc}

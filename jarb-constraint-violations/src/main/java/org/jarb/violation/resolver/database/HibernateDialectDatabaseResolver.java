@@ -57,7 +57,7 @@ public class HibernateDialectDatabaseResolver implements DatabaseResolver {
     public Database resolve() {
         Database database = DIALECT_MAPPING.get(dialectClass);
         if (database == null) {
-            logger.info("Could not resolve database for dialect '{}', looking for recognized superclasses.", dialectClass.getName());
+            logger.debug("Could not resolve database for dialect '{}', looking for recognized superclasses.", dialectClass.getName());
             database = determineDatabaseBySuperclasses();
         }
         if (database == null) {
