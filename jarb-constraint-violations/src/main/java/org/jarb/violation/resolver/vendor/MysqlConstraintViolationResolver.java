@@ -1,5 +1,7 @@
 package org.jarb.violation.resolver.vendor;
 
+import static org.jarb.violation.ConstraintViolation.createViolation;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -51,7 +53,7 @@ public class MysqlConstraintViolationResolver extends RootCauseMessageConstraint
     }
 
     private ConstraintViolation resolveNotNullViolation(String message) {
-        ConstraintViolation.Builder violationBuilder = new ConstraintViolation.Builder(ConstraintViolationType.NOT_NULL);
+        ConstraintViolation.Builder violationBuilder = createViolation(ConstraintViolationType.NOT_NULL);
         Matcher matcher = Pattern.compile(CANNOT_BE_NULL_PATTERN).matcher(message);
         Assert.isTrue(matcher.matches()); // Retrieve group information
         violationBuilder.setColumnName(matcher.group(1));
@@ -59,7 +61,7 @@ public class MysqlConstraintViolationResolver extends RootCauseMessageConstraint
     }
 
     private ConstraintViolation resolveUniqueKeyViolation(String message) {
-        ConstraintViolation.Builder violationBuilder = new ConstraintViolation.Builder(ConstraintViolationType.UNIQUE_KEY);
+        ConstraintViolation.Builder violationBuilder = createViolation(ConstraintViolationType.UNIQUE_KEY);
         Matcher matcher = Pattern.compile(UNIQUE_VIOLATION_PATTERN).matcher(message);
         Assert.isTrue(matcher.matches()); // Retrieve group information
         violationBuilder.setValue(matcher.group(1));
@@ -68,7 +70,7 @@ public class MysqlConstraintViolationResolver extends RootCauseMessageConstraint
     }
 
     private ConstraintViolation resolveLengthViolation(String message) {
-        ConstraintViolation.Builder violationBuilder = new ConstraintViolation.Builder(ConstraintViolationType.LENGTH_EXCEEDED);
+        ConstraintViolation.Builder violationBuilder = createViolation(ConstraintViolationType.LENGTH_EXCEEDED);
         Matcher matcher = Pattern.compile(LENGTH_EXCEEDED_PATTERN).matcher(message);
         Assert.isTrue(matcher.matches()); // Retrieve group information
         violationBuilder.setColumnName(matcher.group(1));
@@ -76,7 +78,7 @@ public class MysqlConstraintViolationResolver extends RootCauseMessageConstraint
     }
 
     private ConstraintViolation resolveTypeViolation(String message) {
-        ConstraintViolation.Builder violationBuilder = new ConstraintViolation.Builder(ConstraintViolationType.INVALID_TYPE);
+        ConstraintViolation.Builder violationBuilder = createViolation(ConstraintViolationType.INVALID_TYPE);
         Matcher matcher = Pattern.compile(INVALID_TYPE_PATTERN).matcher(message);
         Assert.isTrue(matcher.matches()); // Retrieve group information
         violationBuilder.setExpectedType(matcher.group(1));

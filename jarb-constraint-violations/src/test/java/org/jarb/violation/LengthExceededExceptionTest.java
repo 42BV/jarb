@@ -1,5 +1,6 @@
 package org.jarb.violation;
 
+import static org.jarb.violation.ConstraintViolation.createViolation;
 import static org.jarb.violation.ConstraintViolationType.LENGTH_EXCEEDED;
 import static org.junit.Assert.assertEquals;
 
@@ -9,7 +10,7 @@ public class LengthExceededExceptionTest {
     private final ConstraintViolation lengthConstraintViolation;
 
     public LengthExceededExceptionTest() {
-        lengthConstraintViolation = new ConstraintViolation.Builder(LENGTH_EXCEEDED).build();
+        lengthConstraintViolation = createViolation(LENGTH_EXCEEDED).build();
     }
 
     @Test

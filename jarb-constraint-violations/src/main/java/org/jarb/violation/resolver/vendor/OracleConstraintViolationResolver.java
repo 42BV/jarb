@@ -1,5 +1,7 @@
 package org.jarb.violation.resolver.vendor;
 
+import static org.jarb.violation.ConstraintViolation.createViolation;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -63,7 +65,7 @@ public class OracleConstraintViolationResolver extends RootCauseMessageConstrain
     }
 
     private ConstraintViolation resolveCheckViolation(String message) {
-        ConstraintViolation.Builder violationBuilder = new ConstraintViolation.Builder(ConstraintViolationType.CHECK_FAILED);
+        ConstraintViolation.Builder violationBuilder = createViolation(ConstraintViolationType.CHECK_FAILED);
         Matcher matcher = Pattern.compile(CHECK_FAILED_PATTERN).matcher(message);
         Assert.isTrue(matcher.matches()); // Retrieve group information
         violationBuilder.setConstraintName(matcher.group(3));
@@ -71,7 +73,7 @@ public class OracleConstraintViolationResolver extends RootCauseMessageConstrain
     }
 
     private ConstraintViolation resolveUniqueKeyViolation(String message) {
-        ConstraintViolation.Builder violationBuilder = new ConstraintViolation.Builder(ConstraintViolationType.UNIQUE_KEY);
+        ConstraintViolation.Builder violationBuilder = createViolation(ConstraintViolationType.UNIQUE_KEY);
         Matcher matcher = Pattern.compile(UNIQUE_VIOLATION_PATTERN).matcher(message);
         Assert.isTrue(matcher.matches()); // Retrieve group information
         violationBuilder.setConstraintName(matcher.group(3));
@@ -79,7 +81,7 @@ public class OracleConstraintViolationResolver extends RootCauseMessageConstrain
     }
 
     private ConstraintViolation resolveForeignKeyViolation(String message) {
-        ConstraintViolation.Builder violationBuilder = new ConstraintViolation.Builder(ConstraintViolationType.FOREIGN_KEY);
+        ConstraintViolation.Builder violationBuilder = createViolation(ConstraintViolationType.FOREIGN_KEY);
         Matcher matcher = Pattern.compile(FK_VIOLATION_PATTERN).matcher(message);
         Assert.isTrue(matcher.matches()); // Retrieve group information
         violationBuilder.setConstraintName(matcher.group(3));
@@ -87,7 +89,7 @@ public class OracleConstraintViolationResolver extends RootCauseMessageConstrain
     }
 
     private ConstraintViolation resolveNotNullViolation(String message) {
-        ConstraintViolation.Builder violationBuilder = new ConstraintViolation.Builder(ConstraintViolationType.NOT_NULL);
+        ConstraintViolation.Builder violationBuilder = createViolation(ConstraintViolationType.NOT_NULL);
         Matcher matcher = Pattern.compile(CANNOT_BE_NULL_PATTERN).matcher(message);
         Assert.isTrue(matcher.matches()); // Retrieve group information
         violationBuilder.setTableName(matcher.group(3));
@@ -96,7 +98,7 @@ public class OracleConstraintViolationResolver extends RootCauseMessageConstrain
     }
 
     private ConstraintViolation resolveLengthViolation(String message) {
-        ConstraintViolation.Builder violationBuilder = new ConstraintViolation.Builder(ConstraintViolationType.LENGTH_EXCEEDED);
+        ConstraintViolation.Builder violationBuilder = createViolation(ConstraintViolationType.LENGTH_EXCEEDED);
         Matcher matcher = Pattern.compile(LENGTH_EXCEEDED_PATTERN).matcher(message);
         Assert.isTrue(matcher.matches()); // Retrieve group information
         violationBuilder.setTableName(matcher.group(3));
@@ -106,7 +108,7 @@ public class OracleConstraintViolationResolver extends RootCauseMessageConstrain
     }
 
     private ConstraintViolation resolveTypeViolation(String message) {
-        ConstraintViolation.Builder violationBuilder = new ConstraintViolation.Builder(ConstraintViolationType.INVALID_TYPE);
+        ConstraintViolation.Builder violationBuilder = createViolation(ConstraintViolationType.INVALID_TYPE);
         Matcher matcher = Pattern.compile(INVALID_TYPE_PATTERN).matcher(message);
         Assert.isTrue(matcher.matches()); // Retrieve group information
         violationBuilder.setExpectedType(matcher.group(2));

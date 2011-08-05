@@ -1,5 +1,6 @@
 package org.jarb.violation;
 
+import static org.jarb.violation.ConstraintViolation.createViolation;
 import static org.jarb.violation.ConstraintViolationType.UNIQUE_KEY;
 import static org.junit.Assert.assertEquals;
 
@@ -9,7 +10,7 @@ public class UniqueKeyViolationExceptionTest {
     private final ConstraintViolation uniqueConstraintViolation;
 
     public UniqueKeyViolationExceptionTest() {
-        uniqueConstraintViolation = new ConstraintViolation.Builder(UNIQUE_KEY).setConstraintName("uk_persons_name").build();
+        uniqueConstraintViolation = createViolation(UNIQUE_KEY).setConstraintName("uk_persons_name").build();
     }
 
     @Test

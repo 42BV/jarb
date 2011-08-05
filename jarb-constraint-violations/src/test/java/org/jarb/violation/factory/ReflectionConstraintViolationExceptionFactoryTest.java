@@ -1,5 +1,7 @@
 package org.jarb.violation.factory;
 
+import static org.jarb.violation.ConstraintViolation.createViolation;
+import static org.jarb.violation.ConstraintViolationType.UNIQUE_KEY;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -9,7 +11,6 @@ import java.math.BigDecimal;
 import java.sql.SQLException;
 
 import org.jarb.violation.ConstraintViolation;
-import org.jarb.violation.ConstraintViolationType;
 import org.jarb.violation.domain.LicenseNumberAlreadyExistsException;
 import org.junit.Test;
 
@@ -22,7 +23,7 @@ public class ReflectionConstraintViolationExceptionFactoryTest {
     @Test
     public void testInstantiateWithBestConstructor() {
         ConstraintViolationExceptionFactory factory = new ReflectionConstraintViolationExceptionFactory(LicenseNumberAlreadyExistsException.class);
-        ConstraintViolation violation = new ConstraintViolation.Builder(ConstraintViolationType.UNIQUE_KEY).setConstraintName("uk_cars_license_number").build();
+        ConstraintViolation violation = createViolation(UNIQUE_KEY).setConstraintName("uk_cars_license_number").build();
         final Throwable cause = new SQLException("Database exception 'uk_cars_license_number' violated !");
         Throwable exception = factory.createException(violation, cause);
         // Ensure we created an instance of the correct type
@@ -32,14 +33,14 @@ public class ReflectionConstraintViolationExceptionFactoryTest {
         assertEquals(cause, exception.getCause());
         assertEquals(factory, ((LicenseNumberAlreadyExistsException) exception).getExceptionFactory());
     }
-    
+
     /**
      * Even third party exception classes can be used, as long as they have a supported constructor.
      */
     @Test
     public void testInstantiateThirdPartyException() {
         ConstraintViolationExceptionFactory factory = new ReflectionConstraintViolationExceptionFactory(IllegalStateException.class);
-        ConstraintViolation violation = new ConstraintViolation.Builder(ConstraintViolationType.UNIQUE_KEY).setConstraintName("uk_cars_license_number").build();
+        ConstraintViolation violation = createViolation(UNIQUE_KEY).setConstraintName("uk_cars_license_number").build();
         final Throwable cause = new SQLException("Database exception 'uk_cars_license_number' violated !");
         Throwable exception = factory.createException(violation, cause);
         // The only supported constructor is (Throwable)
@@ -53,7 +54,7 @@ public class ReflectionConstraintViolationExceptionFactoryTest {
     @Test
     public void testInstantiateNullary() {
         ConstraintViolationExceptionFactory factory = new ReflectionConstraintViolationExceptionFactory(ExceptionWithOnlyNullaryConstructor.class);
-        ConstraintViolation violation = new ConstraintViolation.Builder(ConstraintViolationType.UNIQUE_KEY).build();
+        ConstraintViolation violation = createViolation(UNIQUE_KEY).build();
         final Throwable cause = new SQLException("Database exception 'uk_cars_license_number' violated !");
         Throwable exception = factory.createException(violation, cause);
         assertTrue(exception instanceof ExceptionWithOnlyNullaryConstructor);
@@ -67,11 +68,11 @@ public class ReflectionConstraintViolationExceptionFactoryTest {
         try {
             new ReflectionConstraintViolationExceptionFactory(ExceptionWithUnsupportedConstructor.class);
             fail("Expected an illegal state exception, as no supported constructor could be found!");
-        } catch(IllegalStateException e) {
+        } catch (IllegalStateException e) {
             assertEquals("Could not find a supported constructor in 'ExceptionWithUnsupportedConstructor'.", e.getMessage());
         }
     }
-    
+
     /**
      * Unsupported constructors cannot be used.
      */
@@ -81,7 +82,7 @@ public class ReflectionConstraintViolationExceptionFactoryTest {
         try {
             new ReflectionConstraintViolationExceptionFactory(unsupportedConstructor);
             fail("Expected an illegal argument exception, as an unsupported constructor was provided!");
-        } catch(IllegalArgumentException e) {
+        } catch (IllegalArgumentException e) {
             assertEquals("Constructor contains unsupported parameter types", e.getMessage());
         }
     }
@@ -94,7 +95,7 @@ public class ReflectionConstraintViolationExceptionFactoryTest {
             super();
         }
     }
-    
+
     // Exception with unsupported constructor, cannot be created
     public static class ExceptionWithUnsupportedConstructor extends RuntimeException {
         private static final long serialVersionUID = -8084276175092538738L;

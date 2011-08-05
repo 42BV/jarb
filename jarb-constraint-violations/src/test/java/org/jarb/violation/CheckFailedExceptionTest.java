@@ -1,5 +1,6 @@
 package org.jarb.violation;
 
+import static org.jarb.violation.ConstraintViolation.createViolation;
 import static org.jarb.violation.ConstraintViolationType.CHECK_FAILED;
 import static org.junit.Assert.assertEquals;
 
@@ -9,7 +10,7 @@ public class CheckFailedExceptionTest {
     private final ConstraintViolation checkConstraintViolation;
 
     public CheckFailedExceptionTest() {
-        checkConstraintViolation = new ConstraintViolation.Builder(CHECK_FAILED).setConstraintName("ck_person_birth_before_now").build();
+        checkConstraintViolation = createViolation(CHECK_FAILED).setConstraintName("ck_person_birth_before_now").build();
     }
 
     @Test

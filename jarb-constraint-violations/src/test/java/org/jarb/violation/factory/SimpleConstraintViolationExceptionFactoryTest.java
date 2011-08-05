@@ -1,12 +1,18 @@
 package org.jarb.violation.factory;
 
+import static org.jarb.violation.ConstraintViolation.createViolation;
+import static org.jarb.violation.ConstraintViolationType.CHECK_FAILED;
+import static org.jarb.violation.ConstraintViolationType.FOREIGN_KEY;
+import static org.jarb.violation.ConstraintViolationType.INVALID_TYPE;
+import static org.jarb.violation.ConstraintViolationType.LENGTH_EXCEEDED;
+import static org.jarb.violation.ConstraintViolationType.NOT_NULL;
+import static org.jarb.violation.ConstraintViolationType.UNIQUE_KEY;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import org.jarb.violation.CheckFailedException;
 import org.jarb.violation.ConstraintViolation;
 import org.jarb.violation.ConstraintViolationException;
-import org.jarb.violation.ConstraintViolationType;
 import org.jarb.violation.ForeignKeyViolationException;
 import org.jarb.violation.InvalidTypeException;
 import org.jarb.violation.LengthExceededException;
@@ -25,9 +31,7 @@ public class SimpleConstraintViolationExceptionFactoryTest {
 
     @Test
     public void testCheckFailed() {
-        ConstraintViolation.Builder violationBuilder = new ConstraintViolation.Builder(ConstraintViolationType.CHECK_FAILED);
-        violationBuilder.setConstraintName("ck_name_cannot_be_henk");
-        ConstraintViolation violation = violationBuilder.build();
+        ConstraintViolation violation = createViolation(CHECK_FAILED).setConstraintName("ck_name_cannot_be_henk").build();
         ConstraintViolationException exception = factory.createException(violation, null);
         assertTrue(exception instanceof CheckFailedException);
         assertEquals("Check 'ck_name_cannot_be_henk' failed.", exception.getMessage());
@@ -36,9 +40,7 @@ public class SimpleConstraintViolationExceptionFactoryTest {
 
     @Test
     public void testUniqueKeyViolated() {
-        ConstraintViolation.Builder violationBuilder = new ConstraintViolation.Builder(ConstraintViolationType.UNIQUE_KEY);
-        violationBuilder.setConstraintName("uk_persons_name");
-        ConstraintViolation violation = violationBuilder.build();
+        ConstraintViolation violation = createViolation(UNIQUE_KEY).setConstraintName("uk_persons_name").build();
         ConstraintViolationException exception = factory.createException(violation, null);
         assertTrue(exception instanceof UniqueKeyViolationException);
         assertEquals("Unique key 'uk_persons_name' was violated.", exception.getMessage());
@@ -47,9 +49,7 @@ public class SimpleConstraintViolationExceptionFactoryTest {
 
     @Test
     public void testForeignKeyViolated() {
-        ConstraintViolation.Builder violationBuilder = new ConstraintViolation.Builder(ConstraintViolationType.FOREIGN_KEY);
-        violationBuilder.setConstraintName("fk_persons_parent");
-        ConstraintViolation violation = violationBuilder.build();
+        ConstraintViolation violation = createViolation(FOREIGN_KEY).setConstraintName("fk_persons_parent").build();
         ConstraintViolationException exception = factory.createException(violation, null);
         assertTrue(exception instanceof ForeignKeyViolationException);
         assertEquals("Foreign key 'fk_persons_parent' was violated.", exception.getMessage());
@@ -58,9 +58,7 @@ public class SimpleConstraintViolationExceptionFactoryTest {
 
     @Test
     public void testNotNullViolated() {
-        ConstraintViolation.Builder violationBuilder = new ConstraintViolation.Builder(ConstraintViolationType.NOT_NULL);
-        violationBuilder.setColumnName("name");
-        ConstraintViolation violation = violationBuilder.build();
+        ConstraintViolation violation = createViolation(NOT_NULL).setColumnName("name").build();
         ConstraintViolationException exception = factory.createException(violation, null);
         assertTrue(exception instanceof NotNullViolationException);
         assertEquals("Column 'name' cannot be null.", exception.getMessage());
@@ -69,8 +67,7 @@ public class SimpleConstraintViolationExceptionFactoryTest {
 
     @Test
     public void testInvalidType() {
-        ConstraintViolation.Builder violationBuilder = new ConstraintViolation.Builder(ConstraintViolationType.INVALID_TYPE);
-        ConstraintViolation violation = violationBuilder.build();
+        ConstraintViolation violation = createViolation(INVALID_TYPE).build();
         ConstraintViolationException exception = factory.createException(violation, null);
         assertTrue(exception instanceof InvalidTypeException);
         assertEquals("Column is of an invalid type.", exception.getMessage());
@@ -79,8 +76,7 @@ public class SimpleConstraintViolationExceptionFactoryTest {
 
     @Test
     public void testLengthExceeded() {
-        ConstraintViolation.Builder violationBuilder = new ConstraintViolation.Builder(ConstraintViolationType.LENGTH_EXCEEDED);
-        ConstraintViolation violation = violationBuilder.build();
+        ConstraintViolation violation = createViolation(LENGTH_EXCEEDED).build();
         ConstraintViolationException exception = factory.createException(violation, null);
         assertTrue(exception instanceof LengthExceededException);
         assertEquals("Column maximum length was exceeded.", exception.getMessage());

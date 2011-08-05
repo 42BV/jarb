@@ -2,6 +2,7 @@ package org.jarb.violation;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
+import org.springframework.util.Assert;
 
 /**
  * Representation of the constraint violation that occurred.
@@ -22,6 +23,15 @@ public final class ConstraintViolation {
 
     private ConstraintViolation(ConstraintViolationType type) {
         this.type = type;
+    }
+
+    /**
+     * Start building a new {@link ConstraintViolation}.
+     * @param type the type of constraint violation
+     * @return new constraint violation builder
+     */
+    public static ConstraintViolation.Builder createViolation(ConstraintViolationType type) {
+        return new ConstraintViolation.Builder(type);
     }
 
     public ConstraintViolationType getType() {
@@ -56,8 +66,16 @@ public final class ConstraintViolation {
         return maximumLength;
     }
 
-    public static class Builder {
+    /**
+     * Responsible for building {@link ConstraintViolation} instances.
+     * During construction, the violation instance will be validated.
+     *
+     * @author Jeroen van Schagen
+     * @date Aug 5, 2011
+     */
+    public static final class Builder {
         private final ConstraintViolationType type;
+
         private String constraintName;
         private String tableName;
         private String columnName;
@@ -67,7 +85,8 @@ public final class ConstraintViolation {
         private String expectedType;
         private Long maximumLength;
 
-        public Builder(ConstraintViolationType type) {
+        private Builder(ConstraintViolationType type) {
+            Assert.notNull(type, "Violation type cannot be null");
             this.type = type;
         }
 

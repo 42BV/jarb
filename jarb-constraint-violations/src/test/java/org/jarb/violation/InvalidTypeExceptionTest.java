@@ -1,5 +1,6 @@
 package org.jarb.violation;
 
+import static org.jarb.violation.ConstraintViolation.createViolation;
 import static org.jarb.violation.ConstraintViolationType.INVALID_TYPE;
 import static org.junit.Assert.assertEquals;
 
@@ -9,7 +10,7 @@ public class InvalidTypeExceptionTest {
     private final ConstraintViolation typeConstraintViolation;
 
     public InvalidTypeExceptionTest() {
-        typeConstraintViolation = new ConstraintViolation.Builder(INVALID_TYPE).build();
+        typeConstraintViolation = createViolation(INVALID_TYPE).build();
     }
 
     @Test

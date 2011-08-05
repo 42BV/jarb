@@ -1,5 +1,7 @@
 package org.jarb.violation;
 
+import static org.jarb.violation.ConstraintViolation.createViolation;
+import static org.jarb.violation.ConstraintViolationType.CHECK_FAILED;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -12,7 +14,7 @@ public class ConstraintViolationTest {
      */
     @Test
     public void testToString() {
-        ConstraintViolation.Builder violationBuilder = new ConstraintViolation.Builder(ConstraintViolationType.CHECK_FAILED);
+        ConstraintViolation.Builder violationBuilder = createViolation(CHECK_FAILED);
         violationBuilder.setConstraintName("ck_name_cannot_be_henk");
         ConstraintViolation violation = violationBuilder.build();
         final String toString = violation.toString();

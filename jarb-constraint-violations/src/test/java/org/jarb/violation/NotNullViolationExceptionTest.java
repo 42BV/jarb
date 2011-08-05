@@ -1,5 +1,6 @@
 package org.jarb.violation;
 
+import static org.jarb.violation.ConstraintViolation.createViolation;
 import static org.jarb.violation.ConstraintViolationType.NOT_NULL;
 import static org.junit.Assert.assertEquals;
 
@@ -9,7 +10,7 @@ public class NotNullViolationExceptionTest {
     private final ConstraintViolation notNullConstraintViolation;
 
     public NotNullViolationExceptionTest() {
-        notNullConstraintViolation = new ConstraintViolation.Builder(NOT_NULL).setColumnName("column_name").build();
+        notNullConstraintViolation = createViolation(NOT_NULL).setColumnName("column_name").build();
     }
 
     @Test
