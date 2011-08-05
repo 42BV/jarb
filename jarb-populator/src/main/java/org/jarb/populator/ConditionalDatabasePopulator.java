@@ -1,8 +1,8 @@
 package org.jarb.populator;
 
-import org.apache.commons.lang.builder.ToStringBuilder;
-import org.jarb.populator.condition.ConditionChecker;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.jarb.populator.condition.ConditionCheckResult;
+import org.jarb.populator.condition.ConditionChecker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
@@ -21,7 +21,7 @@ public class ConditionalDatabasePopulator implements DatabasePopulator {
     private final ConditionChecker conditionChecker;
     /** Determine if an exception should be thrown if the condition is not satisfied. **/
     private boolean throwErrorIfUnsupported = false;
-    
+
     /**
      * Construct a new {@link ConditionalDatabasePopulator}.
      * @param populator delgate database populator, invoked if condition is satisfied
@@ -63,7 +63,7 @@ public class ConditionalDatabasePopulator implements DatabasePopulator {
             }
         }
     }
-    
+
     /**
      * {@inheritDoc}
      */

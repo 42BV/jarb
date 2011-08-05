@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.apache.commons.lang.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,10 +16,10 @@ import org.slf4j.LoggerFactory;
  */
 public class CompoundDatabasePopulator implements DatabasePopulator {
     private static final Logger LOGGER = LoggerFactory.getLogger(CompoundDatabasePopulator.class);
-    
+
     /** Ordered collection of delegate populator. **/
     private final List<DatabasePopulator> populators;
-    
+
     /** Determine if we should continue after an exception. **/
     private boolean continueOnException = false;
 

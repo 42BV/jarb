@@ -7,7 +7,7 @@ import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 import javax.validation.ValidatorFactory;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.jarb.constraint.database.column.ColumnMetadata;
 import org.jarb.constraint.database.column.EntityAwareColumnMetadataRepository;
 import org.jarb.constraint.database.column.UnknownColumnException;
@@ -46,7 +46,7 @@ import org.springframework.util.Assert;
  */
 public class DatabaseConstrainedValidator implements ConstraintValidator<DatabaseConstrained, Object>, ApplicationContextAware {
     private static final Logger LOGGER = LoggerFactory.getLogger(DatabaseConstrainedValidator.class);
-    
+
     public static final String DEFAULT_VALIDATOR_FACTORY_ID = "validator";
 
     // Violation message templates
@@ -208,7 +208,7 @@ public class DatabaseConstrainedValidator implements ConstraintValidator<Databas
             messageBuilder = new ViolationMessageBuilder(validatorFactory.getMessageInterpolator());
         }
     }
-    
+
     private ValidatorFactory getValidatorFactoryFromContext(DatabaseConstrained annotation) {
         final String identifier = annotation.factory();
         if (StringUtils.isNotBlank(identifier)) {
@@ -216,11 +216,11 @@ public class DatabaseConstrainedValidator implements ConstraintValidator<Databas
         } else {
             try {
                 return applicationContext.getBean(ValidatorFactory.class);
-            } catch(NoSuchBeanDefinitionException intialException) {
+            } catch (NoSuchBeanDefinitionException intialException) {
                 // Whenever we find multiple validator factory, try using the default identifier
                 try {
                     return getBeanFromContext(DEFAULT_VALIDATOR_FACTORY_ID, ValidatorFactory.class);
-                } catch(NoSuchBeanDefinitionException conventionException) {
+                } catch (NoSuchBeanDefinitionException conventionException) {
                     throw intialException; // Change back to initial exception
                 }
             }

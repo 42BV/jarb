@@ -5,8 +5,8 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.apache.commons.lang.builder.ToStringBuilder;
-import org.apache.commons.lang.builder.ToStringStyle;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 import org.springframework.util.Assert;
 
 /**
@@ -20,7 +20,7 @@ import org.springframework.util.Assert;
 public class MutablePropertyConstraintMetadata<T> implements PropertyConstraintMetadata<T> {
     private final String propertyName;
     private final Class<T> propertyClass;
-    
+
     private Set<PropertyType> types;
 
     // Global requirements
@@ -53,7 +53,7 @@ public class MutablePropertyConstraintMetadata<T> implements PropertyConstraintM
     public String getName() {
         return propertyName;
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -61,7 +61,7 @@ public class MutablePropertyConstraintMetadata<T> implements PropertyConstraintM
     public Class<T> getJavaType() {
         return propertyClass;
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -69,7 +69,7 @@ public class MutablePropertyConstraintMetadata<T> implements PropertyConstraintM
     public Collection<PropertyType> getTypes() {
         return Collections.unmodifiableSet(types);
     }
-    
+
     public MutablePropertyConstraintMetadata<T> addType(PropertyType type) {
         types.add(type);
         return this;

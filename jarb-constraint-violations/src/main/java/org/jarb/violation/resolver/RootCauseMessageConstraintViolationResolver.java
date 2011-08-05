@@ -1,6 +1,6 @@
 package org.jarb.violation.resolver;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.jarb.violation.ConstraintViolation;
 
 /**
@@ -18,7 +18,7 @@ public abstract class RootCauseMessageConstraintViolationResolver implements Con
     public final ConstraintViolation resolve(Throwable throwable) {
         ConstraintViolation violation = null;
         String rootMessage = ExceptionFinder.getRootCause(throwable).getMessage();
-        if(StringUtils.isNotBlank(rootMessage)) {
+        if (StringUtils.isNotBlank(rootMessage)) {
             violation = resolveByMessage(rootMessage);
         }
         return violation;

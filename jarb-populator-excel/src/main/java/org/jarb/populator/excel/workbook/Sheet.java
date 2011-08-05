@@ -7,12 +7,12 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.util.Assert;
 
 public class Sheet implements Iterable<Row> {
     private static final int COLUMN_ROW_NO = 0;
-    
+
     private final TreeMap<Integer, Row> rows = new TreeMap<Integer, Row>();
     private final Workbook workbook;
     private String name;
@@ -23,7 +23,7 @@ public class Sheet implements Iterable<Row> {
         this.workbook = workbook;
         this.name = name;
     }
-    
+
     public Workbook getWorkbook() {
         return workbook;
     }
@@ -55,12 +55,12 @@ public class Sheet implements Iterable<Row> {
         }
         return row;
     }
-    
+
     public Row createRow() {
         int rowNo = rows.isEmpty() ? 0 : rows.lastKey() + 1;
         return createRow(rowNo);
     }
-    
+
     private Row createRow(int rowNo) {
         Row row = new Row(this, rowNo);
         rows.put(rowNo, row);
@@ -78,7 +78,7 @@ public class Sheet implements Iterable<Row> {
     public String getColumnNameAt(int colNo) {
         return getColumnRow().getCellAt(colNo).getValueAsString();
     }
-    
+
     public void setColumnNameAt(int colNo, String columnName) {
         getCellAt(COLUMN_ROW_NO, colNo).setCellValue(new StringValue(columnName));
     }
@@ -124,7 +124,7 @@ public class Sheet implements Iterable<Row> {
      * @return {@code true} if the column was found, else {@code false}
      */
     public boolean containsColumn(String columnName) {
-        if(columnName == null) {
+        if (columnName == null) {
             return false;
         }
         return getColumnNames().contains(columnName);
@@ -138,12 +138,12 @@ public class Sheet implements Iterable<Row> {
      */
     public Cell getCellAt(int rowNo, String columnName) {
         int colNo = indexOfColumn(columnName);
-        if(colNo == -1) {
+        if (colNo == -1) {
             return null;
         }
         return getCellAt(rowNo, colNo);
     }
-    
+
     /**
      * Retrieve the cell at a specific position.
      * @param rowNo row number
@@ -164,7 +164,7 @@ public class Sheet implements Iterable<Row> {
         Cell cell = getCellAt(rowNo, columnName);
         return cell != null ? cell.getValue() : null;
     }
-    
+
     /**
      * Retrieve the cell value at a specific position.
      * @param rowNo row number

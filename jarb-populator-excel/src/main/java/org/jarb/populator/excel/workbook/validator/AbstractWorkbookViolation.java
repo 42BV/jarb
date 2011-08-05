@@ -1,7 +1,7 @@
 package org.jarb.populator.excel.workbook.validator;
 
-import org.apache.commons.lang.builder.EqualsBuilder;
-import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 /**
  * Abstract implementation of {@link WorkbookViolation}.
@@ -18,7 +18,7 @@ public abstract class AbstractWorkbookViolation implements WorkbookViolation {
     public String toString() {
         return getMessage();
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -26,7 +26,7 @@ public abstract class AbstractWorkbookViolation implements WorkbookViolation {
     public boolean equals(Object obj) {
         return EqualsBuilder.reflectionEquals(this, obj);
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -34,5 +34,5 @@ public abstract class AbstractWorkbookViolation implements WorkbookViolation {
     public int hashCode() {
         return HashCodeBuilder.reflectionHashCode(this);
     }
-    
+
 }

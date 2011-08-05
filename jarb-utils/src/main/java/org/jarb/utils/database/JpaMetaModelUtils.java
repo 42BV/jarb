@@ -1,6 +1,6 @@
 package org.jarb.utils.database;
 
-import static org.apache.commons.lang.StringUtils.isBlank;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;

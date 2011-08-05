@@ -1,6 +1,6 @@
 package org.jarb.constraint.database.column;
 
-import static org.apache.commons.lang.StringUtils.lowerCase;
+import static org.apache.commons.lang3.StringUtils.lowerCase;
 
 import java.util.HashMap;
 import java.util.Map;

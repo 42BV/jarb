@@ -7,7 +7,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.util.Assert;
 
 /**
@@ -23,18 +23,18 @@ import org.springframework.util.Assert;
 public class EntityDefinition<T> {
     /** Entity class being described. */
     private final Class<T> entityClass;
-    
+
     /** Name of the discriminator column. **/
     private String discriminatorColumnName;
     /** Mapping of each subclass and the related discriminator value. */
     private Map<String, Class<? extends T>> subClasses;
-    
+
     /** Name of the mapped database table. */
     private String tableName;
-    
+
     /** Description of each defined property. */
     private Set<PropertyDefinition> propertyDefinitions;
-    
+
     /**
      * Construct a new {@link ClassDefinition).
      * @param entityClass class being described
@@ -42,7 +42,7 @@ public class EntityDefinition<T> {
     private EntityDefinition(Class<T> entityClass) {
         this.entityClass = entityClass;
     }
-    
+
     /**
      * Start building a new {@link EntityDefinition}.
      * @param <T> type of class being described
@@ -60,7 +60,7 @@ public class EntityDefinition<T> {
     public Class<T> getEntityClass() {
         return entityClass;
     }
-    
+
     /**
      * Retrieve the subclass for a specific discriminator value.
      * @param discriminatorValue discriminator value
@@ -69,7 +69,7 @@ public class EntityDefinition<T> {
     public Class<? extends T> getEntitySubClass(String discriminatorValue) {
         return subClasses.get(discriminatorValue);
     }
-    
+
     /**
      * Retrieve the discriminator value used to indicate a specific subclass.
      * @param entitySubClass type of subclass for which we retrieve the discriminator
@@ -77,8 +77,8 @@ public class EntityDefinition<T> {
      */
     public String getDiscriminatorValue(Class<?> entitySubClass) {
         String result = null;
-        for(Map.Entry<String, Class<? extends T>> subClassesEntry : subClasses.entrySet()) {
-            if(subClassesEntry.getValue().isAssignableFrom(entitySubClass)) {
+        for (Map.Entry<String, Class<? extends T>> subClassesEntry : subClasses.entrySet()) {
+            if (subClassesEntry.getValue().isAssignableFrom(entitySubClass)) {
                 result = subClassesEntry.getKey();
                 break; // Result found, quit searching
             }
@@ -93,7 +93,7 @@ public class EntityDefinition<T> {
     public String getDiscriminatorColumnName() {
         return discriminatorColumnName;
     }
-    
+
     /**
      * Determine if a class has a discriminator column.
      * @return {@code true} if it has, else {@code false}
@@ -142,7 +142,7 @@ public class EntityDefinition<T> {
         }
         return result;
     }
-    
+
     /**
      * Retrieve all column names for this entity table.
      * @return each column name on this entity
@@ -150,11 +150,11 @@ public class EntityDefinition<T> {
     public Set<String> getColumnNames() {
         Set<String> columnNames = new HashSet<String>();
         for (PropertyDefinition property : propertyDefinitions) {
-            if(property.hasColumn()) {
+            if (property.hasColumn()) {
                 columnNames.add(property.getColumnName());
             }
         }
-        if(hasDiscriminatorColumn()) {
+        if (hasDiscriminatorColumn()) {
             columnNames.add(discriminatorColumnName);
         }
         return columnNames;
@@ -167,7 +167,7 @@ public class EntityDefinition<T> {
     public String getTableName() {
         return tableName;
     }
-    
+
     /**
      * Capable of building {@link EntityDefinition} instances.
      * 
@@ -182,7 +182,7 @@ public class EntityDefinition<T> {
         private Map<String, Class<? extends T>> subClasses = new HashMap<String, Class<? extends T>>();
         private String tableName;
         private Set<PropertyDefinition> properties = new HashSet<PropertyDefinition>();
-        
+
         /**
          * Construct a new {@link Builder}.
          * @param entityClass class being described
@@ -191,7 +191,7 @@ public class EntityDefinition<T> {
             Assert.notNull(entityClass, "Entity class cannot be null");
             this.persistentClass = entityClass;
         }
-        
+
         /**
          * Describe the discriminator column name.
          * @param discriminatorColumnName discriminator column name
@@ -201,7 +201,7 @@ public class EntityDefinition<T> {
             this.discriminatorColumnName = discriminatorColumnName;
             return this;
         }
-        
+
         /**
          * Include a persistent sub class to the definition.
          * @param discriminatorValue discriminator value of subclass
@@ -214,7 +214,7 @@ public class EntityDefinition<T> {
             subClasses.put(discriminatorValue, persistentSubClass);
             return this;
         }
-        
+
         /**
          * Describe the table name of our class.
          * @param tableName name of the table
@@ -224,7 +224,7 @@ public class EntityDefinition<T> {
             this.tableName = tableName;
             return this;
         }
-        
+
         /**
          * Include a column definition.
          * @param properties property definitions being added
@@ -234,7 +234,7 @@ public class EntityDefinition<T> {
             this.properties.addAll(properties);
             return this;
         }
-        
+
         /**
          * Construct a new class definition that contains all previously configured attributes.
          * @return new class definition
@@ -250,22 +250,22 @@ public class EntityDefinition<T> {
             return classDefinition;
         }
     }
-    
+
     /**
      * {@inheritDoc}
      */
     @Override
     public boolean equals(Object obj) {
-        if(obj == this) {
+        if (obj == this) {
             return true;
         }
-        if(obj instanceof EntityDefinition) {
+        if (obj instanceof EntityDefinition) {
             return entityClass.equals(((EntityDefinition<?>) obj).entityClass);
         } else {
             return false;
         }
     }
-    
+
     /**
      * {@inheritDoc}
      */

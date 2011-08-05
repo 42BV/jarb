@@ -5,7 +5,7 @@ import static org.jarb.violation.ConstraintViolation.createViolation;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.jarb.violation.ConstraintViolation;
 import org.jarb.violation.ConstraintViolationType;
 import org.jarb.violation.resolver.RootCauseMessageConstraintViolationResolver;

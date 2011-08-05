@@ -1,6 +1,6 @@
 package org.jarb.migrations;
 
-import static org.apache.commons.lang.StringUtils.isNotBlank;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 import java.io.FileWriter;
 import java.io.IOException;
@@ -31,14 +31,14 @@ public class LiquibaseMigrator implements DatabaseMigrator {
     // Required liquibase information
     private String changeLogPath = "src/main/db/changelog.groovy";
     private ResourceAccessor resourceAccessor = new FileSystemResourceAccessor();
-    
+
     // Optional migration details
     private boolean dropFirst = false;
     private Map<String, String> parameters;
     private String defaultSchemaName;
     private String contexts = "";
     private int changesToApply = 0;
-    
+
     /** Configure this property whenever an output file should be created. **/
     private String outputFilePath;
 
@@ -60,7 +60,7 @@ public class LiquibaseMigrator implements DatabaseMigrator {
             throw new RuntimeException(e);
         }
     }
-    
+
     private Liquibase createLiquibase(Connection connection) throws LiquibaseException {
         Liquibase liquibase = new Liquibase(changeLogPath, resourceAccessor, connectionToDatabase(connection));
         if (parameters != null) {
@@ -97,7 +97,7 @@ public class LiquibaseMigrator implements DatabaseMigrator {
             liquibase.update(contexts);
         }
     }
-    
+
     /**
      * Determine if a SQL output should be written away.
      * @return {@code true} if it should, else {@code false}
@@ -153,7 +153,7 @@ public class LiquibaseMigrator implements DatabaseMigrator {
     public void setChangeLogPath(String changeLogPath) {
         this.changeLogPath = changeLogPath;
     }
-    
+
     public void setResourceAccessor(ResourceAccessor resourceAccessor) {
         this.resourceAccessor = resourceAccessor;
     }
@@ -161,15 +161,15 @@ public class LiquibaseMigrator implements DatabaseMigrator {
     public void setDropFirst(boolean dropFirst) {
         this.dropFirst = dropFirst;
     }
-    
+
     public void setDefaultSchemaName(String defaultSchemaName) {
         this.defaultSchemaName = defaultSchemaName;
     }
-    
+
     public void setParameters(Map<String, String> parameters) {
         this.parameters = parameters;
     }
-    
+
     public void setContexts(String contexts) {
         this.contexts = contexts;
     }
