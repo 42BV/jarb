@@ -63,7 +63,7 @@ public class HibernateDialectDatabaseResolver implements DatabaseResolver {
         if (database == null) {
             throw new UnsupportedOperationException("Could not resolve database for dialect '" + dialectClass.getName() + "'");
         }
-        logger.info("Recognized database as '{}'.", database);
+        logger.debug("Recognized database as '{}'.", database);
         return database;
     }
 

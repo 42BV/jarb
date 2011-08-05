@@ -3,16 +3,22 @@ package org.jarb.violation;
 import org.jarb.violation.factory.ConstraintViolationExceptionFactory;
 import org.jarb.violation.factory.SimpleConstraintViolationExceptionFactory;
 import org.jarb.violation.resolver.ConstraintViolationResolver;
+import org.jarb.violation.resolver.database.HibernateDialectDatabaseResolver;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.util.Assert;
 
 /**
  * Possibly translates database exceptions into, a more clear,
- * constraint violation exception.
+ * constraint violation exception. Whenever no translation could
+ * be performed, we return the original exception.
  * 
  * @author Jeroen van Schagen
  * @since 17-05-2011
  */
 public class ConstraintViolationExceptionTranslator {
+    private final Logger logger = LoggerFactory.getLogger(HibernateDialectDatabaseResolver.class);
+
     /** Resolves the constraint violation from an exception. **/
     private final ConstraintViolationResolver violationResolver;
     /** Creates an exception for some constraint violation. **/
@@ -43,12 +49,13 @@ public class ConstraintViolationExceptionTranslator {
      * @return a constraint violation exception, or {@code null} if no translation could be done
      */
     public Throwable translateExceptionIfPossible(Throwable throwable) {
-        Throwable result = null;
+        Throwable translatedException = null;
         ConstraintViolation violation = violationResolver.resolve(throwable);
         if (violation != null) {
-            result = exceptionFactory.createException(violation, throwable);
+            translatedException = exceptionFactory.createException(violation, throwable);
+            logger.debug("Translated '{}' into '{}'.", throwable.getClass().getSimpleName(), translatedException.getClass().getSimpleName());
         }
-        return result;
+        return translatedException;
     }
 
 }
