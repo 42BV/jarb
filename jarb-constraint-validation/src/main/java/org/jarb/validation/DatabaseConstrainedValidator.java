@@ -1,5 +1,7 @@
 package org.jarb.validation;
 
+import static org.jarb.utils.BeanAnnotationUtils.hasAnnotation;
+
 import java.beans.PropertyDescriptor;
 import java.math.BigDecimal;
 
@@ -126,7 +128,8 @@ public class DatabaseConstrainedValidator implements ConstraintValidator<Databas
             valueIsValid = false;
         }
         if (fractionLengthExceeded(propertyValue, columnMetadata)) {
-            String message = messageBuilder.template(FRACTION_LENGTH_TEMPLATE).attribute("max", columnMetadata.getFractionLength()).value(propertyValue).message();
+            String message = messageBuilder.template(FRACTION_LENGTH_TEMPLATE).attribute("max", columnMetadata.getFractionLength()).value(propertyValue)
+                    .message();
             context.buildConstraintViolationWithTemplate(message).addNode(propertyName).addConstraintViolation();
             valueIsValid = false;
         }
@@ -145,7 +148,7 @@ public class DatabaseConstrainedValidator implements ConstraintValidator<Databas
     }
 
     private boolean isGeneratable(Object bean, String propertyName, ColumnMetadata columnMetadata) {
-        return columnMetadata.isGeneratable() || new FlexiblePropertyAccessor(bean).hasAnnotation(propertyName, annotation.autoIncrementalClass());
+        return columnMetadata.isGeneratable() || hasAnnotation(bean.getClass(), propertyName, annotation.autoIncrementalClass());
     }
 
     /**

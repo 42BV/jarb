@@ -3,9 +3,6 @@
  */
 package org.jarb.utils;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Method;
-
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.beans.BeansException;
@@ -53,39 +50,6 @@ public class FlexiblePropertyAccessor {
 
     public boolean isWritableProperty(String propertyName) {
         return beanWrapper.isWritableProperty(propertyName) || fieldAccessor.isWritableProperty(propertyName);
-    }
-
-    public boolean hasAnnotation(String propertyName, Class<? extends Annotation> annotationType) {
-        return hasAnnotation(propertyName, annotationType, true, false);
-    }
-
-    public boolean hasAnnotation(String propertyName, Class<? extends Annotation> annotationType, boolean includeGetter, boolean includeSetter) {
-        boolean annotationFound = AnnotationUtils.hasAnnotation(fieldAccessor.getPropertyTypeDescriptor(propertyName).getField(), annotationType);
-        if (!annotationFound && includeGetter) {
-            annotationFound = hasAnnotationInGetter(propertyName, annotationType);
-        }
-        if (!annotationFound && includeSetter) {
-            annotationFound = hasAnnotationInSetter(propertyName, annotationType);
-        }
-        return annotationFound;
-    }
-
-    private boolean hasAnnotationInGetter(String propertyName, Class<? extends Annotation> annotationType) {
-        boolean annotationFound = false;
-        Method readMethod = beanWrapper.getPropertyDescriptor(propertyName).getReadMethod();
-        if (readMethod != null) {
-            annotationFound = AnnotationUtils.hasAnnotation(readMethod, annotationType);
-        }
-        return annotationFound;
-    }
-
-    private boolean hasAnnotationInSetter(String propertyName, Class<? extends Annotation> annotationType) {
-        boolean annotationFound = false;
-        Method writeMethod = beanWrapper.getPropertyDescriptor(propertyName).getWriteMethod();
-        if (writeMethod != null) {
-            annotationFound = AnnotationUtils.hasAnnotation(writeMethod, annotationType);
-        }
-        return annotationFound;
     }
 
 }

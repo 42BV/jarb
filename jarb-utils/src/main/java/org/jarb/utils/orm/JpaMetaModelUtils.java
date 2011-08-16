@@ -1,7 +1,6 @@
 package org.jarb.utils.orm;
 
 import static org.apache.commons.lang3.StringUtils.isBlank;
-import static org.jarb.utils.AnnotationUtils.hasAnnotation;
 
 import java.lang.reflect.Field;
 import java.util.Collection;
@@ -34,7 +33,7 @@ public class JpaMetaModelUtils {
      * @return {@code true} if it is annotated, else {@code false}
      */
     public static boolean isEntity(Class<?> beanClass) {
-        return hasAnnotation(beanClass, Entity.class);
+        return beanClass.getAnnotation(Entity.class) != null;
     }
 
     /**
@@ -43,7 +42,7 @@ public class JpaMetaModelUtils {
      * @return {@code true} if it is annotated, else {@code false}
      */
     public static boolean isEmbeddable(Class<?> beanClass) {
-        return hasAnnotation(beanClass, Embeddable.class);
+        return beanClass.getAnnotation(Embeddable.class) != null;
     }
 
     /**
@@ -94,7 +93,7 @@ public class JpaMetaModelUtils {
         }
         String columnName = null;
         // Attempt to retrieve the column name from annotation
-        boolean isReferenceColumn = hasAnnotation(field, ManyToOne.class) || hasAnnotation(field, OneToMany.class);
+        boolean isReferenceColumn = field.getAnnotation(ManyToOne.class) != null || field.getAnnotation(OneToMany.class) != null;
         if (isReferenceColumn) {
             JoinColumn columnAnnotation = field.getAnnotation(JoinColumn.class);
             if (columnAnnotation != null) {
