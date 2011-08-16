@@ -9,6 +9,10 @@ import java.lang.reflect.Method;
 
 public class AnnotationUtils {
 
+    public static boolean hasAnnotation(Class<?> clazz, Class<? extends Annotation> annotationType) {
+        return clazz.getAnnotation(annotationType) != null;
+    }
+
     public static boolean hasAnnotation(Field field, Class<? extends Annotation> annotationType) {
         return field.getAnnotation(annotationType) != null;
     }

@@ -1,8 +1,8 @@
 package org.jarb.utils.database;
 
 import static org.apache.commons.lang3.StringUtils.isBlank;
+import static org.jarb.utils.AnnotationUtils.hasAnnotation;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.util.Collection;
 import java.util.HashSet;
@@ -34,7 +34,7 @@ public class JpaMetaModelUtils {
      * @return {@code true} if it is annotated, else {@code false}
      */
     public static boolean isEntity(Class<?> beanClass) {
-        return beanClass.getAnnotation(Entity.class) != null;
+        return hasAnnotation(beanClass, Entity.class);
     }
 
     /**
@@ -43,7 +43,7 @@ public class JpaMetaModelUtils {
      * @return {@code true} if it is annotated, else {@code false}
      */
     public static boolean isEmbeddable(Class<?> beanClass) {
-        return beanClass.getAnnotation(Embeddable.class) != null;
+        return hasAnnotation(beanClass, Embeddable.class);
     }
 
     /**
@@ -113,13 +113,9 @@ public class JpaMetaModelUtils {
         return columnName;
     }
 
-    private static boolean hasAnnotation(Field field, Class<? extends Annotation> annotationClass) {
-        return field.getAnnotation(annotationClass) != null;
-    }
-
     /**
-     * Retrieve all "root" entities described in our JPA metamodel.
-     * @param metamodel JPA metamodel, containing all entity descriptions
+     * Retrieve all "root" entities described in our JPA meta-model.
+     * @param metamodel JPA meta-model, containing all entity descriptions
      * @return entity types for each root entity class
      */
     public static Collection<EntityType<?>> getRootEntities(Metamodel metamodel) {
