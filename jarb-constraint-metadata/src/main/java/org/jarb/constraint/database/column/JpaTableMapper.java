@@ -1,6 +1,6 @@
 package org.jarb.constraint.database.column;
 
-import org.jarb.utils.database.JpaMetaModelUtils;
+import org.jarb.utils.orm.JpaMetaModelUtils;
 
 /**
  * Table mapper that works using Java Persistence API (JPA) annotations.

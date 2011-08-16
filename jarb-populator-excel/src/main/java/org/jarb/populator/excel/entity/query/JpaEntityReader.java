@@ -9,7 +9,7 @@ import javax.persistence.metamodel.EntityType;
 import org.jarb.populator.excel.entity.EntityRegistry;
 import org.jarb.populator.excel.entity.EntityTable;
 import org.jarb.populator.excel.util.JpaUtils;
-import org.jarb.utils.database.JpaMetaModelUtils;
+import org.jarb.utils.orm.JpaMetaModelUtils;
 
 /**
  * Java Persistence API (JPA) implementation of {@link EntityReader}.

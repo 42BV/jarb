@@ -1,4 +1,4 @@
-package org.jarb.utils.database;
+package org.jarb.utils;
 
 import java.sql.Connection;
 import java.sql.SQLException;

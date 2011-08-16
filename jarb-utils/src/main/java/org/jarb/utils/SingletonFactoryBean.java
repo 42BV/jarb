@@ -1,4 +1,4 @@
-package org.jarb.utils.spring;
+package org.jarb.utils;
 
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.core.GenericTypeResolver;

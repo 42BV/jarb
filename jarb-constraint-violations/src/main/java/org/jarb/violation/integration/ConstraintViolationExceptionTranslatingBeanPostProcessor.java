@@ -1,6 +1,6 @@
 package org.jarb.violation.integration;
 
-import org.jarb.utils.spring.AdvisorAddingBeanPostProcessor;
+import org.jarb.utils.AdvisorAddingBeanPostProcessor;
 import org.jarb.violation.ConstraintViolationExceptionTranslator;
 import org.springframework.aop.Pointcut;
 import org.springframework.aop.support.annotation.AnnotationMatchingPointcut;

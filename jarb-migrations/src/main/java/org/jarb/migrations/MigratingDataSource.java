@@ -5,7 +5,7 @@ import java.sql.SQLException;
 
 import javax.annotation.PostConstruct;
 
-import org.jarb.utils.database.JdbcUtils;
+import org.jarb.utils.JdbcUtils;
 
 /**
  * Data source that triggers database migrations during construction.

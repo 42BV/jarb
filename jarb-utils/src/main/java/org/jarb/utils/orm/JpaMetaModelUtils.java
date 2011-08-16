@@ -1,4 +1,4 @@
-package org.jarb.utils.database;
+package org.jarb.utils.orm;
 
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.jarb.utils.AnnotationUtils.hasAnnotation;
