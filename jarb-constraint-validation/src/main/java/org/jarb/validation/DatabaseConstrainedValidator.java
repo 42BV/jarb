@@ -1,5 +1,7 @@
 package org.jarb.validation;
 
+import static org.jarb.utils.AnnotationUtils.hasAnnotation;
+
 import java.beans.PropertyDescriptor;
 import java.math.BigDecimal;
 
@@ -54,13 +56,15 @@ public class DatabaseConstrainedValidator implements ConstraintValidator<Databas
     private static final String LENGTH_TEMPLATE = "{org.jarb.validation.DatabaseConstraint.Length.message}";
     private static final String FRACTION_LENGTH_TEMPLATE = "{org.jarb.validation.DatabaseConstraint.FractionLength.message}";
 
-    /** Used to retrieve column metadata repository during initialization **/
+    /** Used to retrieve column meta-data repository during initialization **/
     private ApplicationContext applicationContext;
 
-    /** Provides the metadata of columns in our database **/
+    /** Provides the meta-data of columns in our database **/
     private EntityAwareColumnMetadataRepository columnMetadataRepository;
     /** Allows custom violation messages to be build **/
     private ViolationMessageBuilder messageBuilder;
+
+    private DatabaseConstrained annotation;
 
     /**
      * {@inheritDoc}
@@ -93,7 +97,7 @@ public class DatabaseConstrainedValidator implements ConstraintValidator<Databas
             ColumnMetadata columnMetadata = columnMetadataRepository.getColumnMetadata(beanClass, property.getName());
             if (columnMetadata != null) {
                 final Object propertyValue = BeanPropertyUtils.getValue(bean, property.getName());
-                propertyIsValid = isValidValue(propertyValue, property.getName(), columnMetadata, context);
+                propertyIsValid = isValidValue(bean, property.getName(), propertyValue, columnMetadata, context);
             } else {
                 LOGGER.warn("No column meta data has been defined for '{}' ({})", new Object[] { property.getName(), beanClass.getSimpleName() });
             }
@@ -111,19 +115,19 @@ public class DatabaseConstrainedValidator implements ConstraintValidator<Databas
      * @param context validator context, used to create custom violation messages
      * @return {@code true} if the value satisfies our database constraints, else {@code false}
      */
-    private boolean isValidValue(Object value, String propertyName, ColumnMetadata columnMetadata, ConstraintValidatorContext context) {
+    private boolean isValidValue(Object bean, String propertyName, Object propertyValue, ColumnMetadata columnMetadata, ConstraintValidatorContext context) {
         boolean valueIsValid = true;
-        if (notNullViolated(value, columnMetadata)) {
+        if (notNullViolated(bean, propertyName, propertyValue, columnMetadata)) {
             context.buildConstraintViolationWithTemplate(NOT_NULL_TEMPLATE).addNode(propertyName).addConstraintViolation();
             valueIsValid = false;
         }
-        if (lengthExceeded(value, columnMetadata)) {
-            String message = messageBuilder.template(LENGTH_TEMPLATE).attribute("max", columnMetadata.getMaximumLength()).value(value).message();
+        if (lengthExceeded(propertyValue, columnMetadata)) {
+            String message = messageBuilder.template(LENGTH_TEMPLATE).attribute("max", columnMetadata.getMaximumLength()).value(propertyValue).message();
             context.buildConstraintViolationWithTemplate(message).addNode(propertyName).addConstraintViolation();
             valueIsValid = false;
         }
-        if (fractionLengthExceeded(value, columnMetadata)) {
-            String message = messageBuilder.template(FRACTION_LENGTH_TEMPLATE).attribute("max", columnMetadata.getFractionLength()).value(value).message();
+        if (fractionLengthExceeded(propertyValue, columnMetadata)) {
+            String message = messageBuilder.template(FRACTION_LENGTH_TEMPLATE).attribute("max", columnMetadata.getFractionLength()).value(propertyValue).message();
             context.buildConstraintViolationWithTemplate(message).addNode(propertyName).addConstraintViolation();
             valueIsValid = false;
         }
@@ -137,8 +141,12 @@ public class DatabaseConstrainedValidator implements ConstraintValidator<Databas
      * @param columnMetadata provides column information
      * @return {@code true} if the not null constraint was violated, else {@code false}
      */
-    protected boolean notNullViolated(Object propertyValue, ColumnMetadata columnMetadata) {
-        return propertyValue == null && columnMetadata.isRequired() && !columnMetadata.isGeneratable();
+    protected boolean notNullViolated(Object bean, String propertyName, Object propertyValue, ColumnMetadata columnMetadata) {
+        return propertyValue == null && columnMetadata.isRequired() && !isGeneratable(bean, propertyName, columnMetadata);
+    }
+
+    private boolean isGeneratable(Object bean, String propertyName, ColumnMetadata columnMetadata) {
+        return columnMetadata.isGeneratable() || hasAnnotation(bean, propertyName, annotation.autoIncrementalClass());
     }
 
     /**
@@ -207,6 +215,7 @@ public class DatabaseConstrainedValidator implements ConstraintValidator<Databas
             ValidatorFactory validatorFactory = getValidatorFactoryFromContext(annotation);
             messageBuilder = new ViolationMessageBuilder(validatorFactory.getMessageInterpolator());
         }
+        this.annotation = annotation;
     }
 
     private ValidatorFactory getValidatorFactoryFromContext(DatabaseConstrained annotation) {

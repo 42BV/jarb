@@ -8,6 +8,7 @@ import static java.lang.annotation.ElementType.PARAMETER;
 import static java.lang.annotation.ElementType.TYPE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
+import java.lang.annotation.Annotation;
 import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
@@ -20,28 +21,32 @@ import javax.validation.Payload;
 @Retention(RUNTIME)
 @Constraint(validatedBy = DatabaseConstrainedValidator.class)
 public @interface DatabaseConstrained {
-    /** Message template, never used. **/
     String message() default "{org.jarb.validation.DatabaseConstraint.message}";
 
     Class<?>[] groups() default {};
 
     Class<? extends Payload>[] payload() default {};
-    
+
     /**
-     * Identifier of the validator factory that should be used.
-     * Can only be left empty is there is one validator factory
-     * in the application context.
+     * Class used to state that a property is auto incremental
+     * in the database.
+     */
+    Class<? extends Annotation> autoIncrementalClass() default AutoIncremental.class;
+
+    /**
+     * Component identifier of the validator factory to be used.
+     * Note that this can only be left empty whenever there is one
+     * factory in the application context.
      */
     String factory() default "";
-    
+
     /**
-     * Identifier of the constraint repository that should be used.
-     * Can only be left empty is there is one constraint repository
-     * in the application context.
+     * Component identifier of the database constraint repository.
+     * Note this can only be left empty whenever there is one
+     * repository in the application context.
      */
     String repository() default "";
-    
-    // Whenever we want to check the constraints of a collection
+
     @Target({ METHOD, FIELD, ANNOTATION_TYPE, CONSTRUCTOR, PARAMETER })
     @Retention(RUNTIME)
     @Documented
