@@ -1,7 +1,5 @@
 package org.jarb.validation;
 
-import static org.jarb.utils.AnnotationUtils.hasAnnotation;
-
 import java.beans.PropertyDescriptor;
 import java.math.BigDecimal;
 
@@ -13,7 +11,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.jarb.constraint.database.column.ColumnMetadata;
 import org.jarb.constraint.database.column.EntityAwareColumnMetadataRepository;
 import org.jarb.constraint.database.column.UnknownColumnException;
-import org.jarb.utils.BeanPropertyUtils;
+import org.jarb.utils.FlexiblePropertyAccessor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -96,7 +94,8 @@ public class DatabaseConstrainedValidator implements ConstraintValidator<Databas
             final Class<?> beanClass = bean.getClass();
             ColumnMetadata columnMetadata = columnMetadataRepository.getColumnMetadata(beanClass, property.getName());
             if (columnMetadata != null) {
-                final Object propertyValue = BeanPropertyUtils.getValue(bean, property.getName());
+                FlexiblePropertyAccessor propertyAccessor = new FlexiblePropertyAccessor(bean);
+                final Object propertyValue = propertyAccessor.getPropertyValue(property.getName());
                 propertyIsValid = isValidValue(bean, property.getName(), propertyValue, columnMetadata, context);
             } else {
                 LOGGER.warn("No column meta data has been defined for '{}' ({})", new Object[] { property.getName(), beanClass.getSimpleName() });
@@ -146,7 +145,7 @@ public class DatabaseConstrainedValidator implements ConstraintValidator<Databas
     }
 
     private boolean isGeneratable(Object bean, String propertyName, ColumnMetadata columnMetadata) {
-        return columnMetadata.isGeneratable() || hasAnnotation(bean, propertyName, annotation.autoIncrementalClass());
+        return columnMetadata.isGeneratable() || new FlexiblePropertyAccessor(bean).hasAnnotation(propertyName, annotation.autoIncrementalClass());
     }
 
     /**

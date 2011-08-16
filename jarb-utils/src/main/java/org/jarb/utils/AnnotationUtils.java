@@ -5,17 +5,16 @@ package org.jarb.utils;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
-
-import org.springframework.util.ReflectionUtils;
+import java.lang.reflect.Method;
 
 public class AnnotationUtils {
 
-    public static boolean hasAnnotation(Field field, Class<? extends Annotation> annotationClass) {
-        return field.getAnnotation(annotationClass) != null;
+    public static boolean hasAnnotation(Field field, Class<? extends Annotation> annotationType) {
+        return field.getAnnotation(annotationType) != null;
     }
 
-    public static boolean hasAnnotation(Object bean, String propertyName, Class<? extends Annotation> annotationClass) {
-        return hasAnnotation(ReflectionUtils.findField(bean.getClass(), propertyName), annotationClass);
+    public static boolean hasAnnotation(Method method, Class<? extends Annotation> annotationType) {
+        return method.getAnnotation(annotationType) != null;
     }
 
 }

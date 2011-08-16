@@ -6,7 +6,7 @@ import org.jarb.populator.excel.metamodel.EntityDefinition;
 import org.jarb.populator.excel.metamodel.PropertyDefinition;
 import org.jarb.populator.excel.workbook.Sheet;
 import org.jarb.populator.excel.workbook.Workbook;
-import org.jarb.utils.BeanPropertyUtils;
+import org.jarb.utils.FlexiblePropertyAccessor;
 import org.jarb.utils.ReflectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,8 +33,8 @@ public final class StoreColumn {
      * @param excelRow ExcelRow to save to.
      * @throws NoSuchFieldException Thrown when a field is not available
      */
-    public static void storeValue(Workbook excel, EntityDefinition<?> classDefinition, PropertyDefinition columnDefinition, Integer rowPosition, ExcelRow excelRow)
-            throws NoSuchFieldException {
+    public static void storeValue(Workbook excel, EntityDefinition<?> classDefinition, PropertyDefinition columnDefinition, Integer rowPosition,
+            ExcelRow excelRow) throws NoSuchFieldException {
         WorksheetDefinition worksheetDefinition = WorksheetDefinition.analyzeWorksheet(classDefinition, excel);
         Integer columnPosition = worksheetDefinition.getColumnPosition(columnDefinition.getColumnName());
 
@@ -42,7 +42,8 @@ public final class StoreColumn {
         Object cellValue = getCellValue(sheet, rowPosition, columnPosition);
         logger.debug("field: " + columnDefinition.getName() + " column: " + columnDefinition.getColumnName() + " value:[" + cellValue + "]");
 
-        if (BeanPropertyUtils.hasProperty(excelRow.getCreatedInstance(), columnDefinition.getName())) {
+        FlexiblePropertyAccessor propertyAccessor = new FlexiblePropertyAccessor(excelRow.getCreatedInstance());
+        if (propertyAccessor.isWritableProperty(columnDefinition.getName())) {
             setExcelRowFieldValue(excelRow.getCreatedInstance(), columnDefinition.getName(), cellValue);
         } else if (columnDefinition.isEmbeddedAttribute()) {
             Object embeddedField = columnDefinition.getEmbeddablePath().traverse(excelRow.getCreatedInstance());

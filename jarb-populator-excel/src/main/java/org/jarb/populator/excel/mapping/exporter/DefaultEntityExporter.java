@@ -11,7 +11,7 @@ import org.jarb.populator.excel.workbook.Row;
 import org.jarb.populator.excel.workbook.Sheet;
 import org.jarb.populator.excel.workbook.StringValue;
 import org.jarb.populator.excel.workbook.Workbook;
-import org.jarb.utils.BeanPropertyUtils;
+import org.jarb.utils.FlexiblePropertyAccessor;
 
 /**
  * Default implementation of {@link EntityExporter}.
@@ -26,7 +26,7 @@ public class DefaultEntityExporter implements EntityExporter {
     private EntityRowIdResolver entityRowIdResolver = new EntityRowIdResolver();
     /** Generates cell values for any type of property value. **/
     private CellValueGenerator cellValueGenerator;
-    
+
     /**
      * Construct a new {@link DefaultEntityExporter}.
      * @param valueConversionService converts property values into any desired format
@@ -34,15 +34,15 @@ public class DefaultEntityExporter implements EntityExporter {
     public DefaultEntityExporter(ValueConversionService valueConversionService) {
         cellValueGenerator = new CellValueGenerator(valueConversionService);
     }
-    
+
     public void setExcelTemplateBuilder(ExcelTemplateBuilder excelTemplateBuilder) {
         this.excelTemplateBuilder = excelTemplateBuilder;
     }
-    
+
     public void setEntityRowIdResolver(EntityRowIdResolver entityRowIdResolver) {
         this.entityRowIdResolver = entityRowIdResolver;
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -54,7 +54,7 @@ public class DefaultEntityExporter implements EntityExporter {
         }
         return workbook;
     }
-    
+
     /**
      * Store the entities of a specific type in our sheet.
      * @param <T> type of entities being stored
@@ -64,11 +64,11 @@ public class DefaultEntityExporter implements EntityExporter {
      */
     private <T> void exportEntities(EntityRegistry registry, EntityDefinition<T> classDefinition, Workbook workbook) {
         Sheet sheet = workbook.getSheet(classDefinition.getTableName());
-        for(T entity : registry.forClass(classDefinition.getEntityClass())) {
+        for (T entity : registry.forClass(classDefinition.getEntityClass())) {
             exportEntity(entity, classDefinition, sheet);
         }
     }
-   
+
     /**
      * Store a specific entity in our sheet.
      * @param <T> type of entity being stored
@@ -79,32 +79,32 @@ public class DefaultEntityExporter implements EntityExporter {
     private <T> void exportEntity(T entity, EntityDefinition<T> classDefinition, Sheet sheet) {
         Row row = sheet.createRow();
         // Handle each property definition
-        for(PropertyDefinition propertyDefinition : classDefinition.properties()) {
+        for (PropertyDefinition propertyDefinition : classDefinition.properties()) {
             final PropertyDatabaseType type = propertyDefinition.getDatabaseType();
-            if(type == PropertyDatabaseType.COLUMN) {
+            if (type == PropertyDatabaseType.COLUMN) {
                 // Retrieve the property value and store it as cell value
                 Object propertyValue = getPropertyValue(entity, propertyDefinition);
                 row.setCellValueAt(propertyDefinition.getColumnName(), cellValueGenerator.asCellValue(propertyValue));
-            } else if(type == PropertyDatabaseType.JOIN_COLUMN) {
+            } else if (type == PropertyDatabaseType.JOIN_COLUMN) {
                 // Retrieve the entity as property value and store its identifier
                 Object referenceEntity = getPropertyValue(entity, propertyDefinition);
-                if(referenceEntity != null) {
+                if (referenceEntity != null) {
                     Object referenceIdentifier = entityRowIdResolver.resolveRowId(referenceEntity);
                     row.setCellValueAt(propertyDefinition.getColumnName(), cellValueGenerator.asCellValue(referenceIdentifier));
                 }
-            } else if(type == PropertyDatabaseType.JOIN_TABLE) {
+            } else if (type == PropertyDatabaseType.JOIN_TABLE) {
                 exportJoinTable(entity, propertyDefinition, sheet.getWorkbook());
             }
         }
         // Include the discriminator value, whenever relevant
-        if(classDefinition.hasDiscriminatorColumn()) {
+        if (classDefinition.hasDiscriminatorColumn()) {
             String discriminatorValue = classDefinition.getDiscriminatorValue(entity.getClass());
             row.setCellValueAt(classDefinition.getDiscriminatorColumnName(), new StringValue(discriminatorValue));
         }
         // Define the row identifier of our entity, allowing us to reference it
         row.setCellValueAt(0, cellValueGenerator.asCellValue(entityRowIdResolver.resolveRowId(entity)));
     }
-    
+
     /**
      * Store a collection of reference entities in a seperate "join" sheet.
      * This seperate sheet represents the join between two entities, as in
@@ -115,10 +115,10 @@ public class DefaultEntityExporter implements EntityExporter {
      */
     private void exportJoinTable(Object entity, PropertyDefinition propertyDefinition, Workbook workbook) {
         Iterable<?> referenceEntities = (Iterable<?>) getPropertyValue(entity, propertyDefinition);
-        if(referenceEntities != null) {
+        if (referenceEntities != null) {
             Sheet joinSheet = workbook.getSheet(propertyDefinition.getJoinTableName());
             Object entityIdentifier = entityRowIdResolver.resolveRowId(entity);
-            for(Object referenceEntity : referenceEntities) {
+            for (Object referenceEntity : referenceEntities) {
                 Row joinRow = joinSheet.createRow();
                 joinRow.setCellValueAt(0, cellValueGenerator.asCellValue(entityIdentifier));
                 Object referenceIdentifier = entityRowIdResolver.resolveRowId(referenceEntity);
@@ -126,7 +126,7 @@ public class DefaultEntityExporter implements EntityExporter {
             }
         }
     }
-    
+
     /**
      * Retrieve the property value of an entity.
      * @param entity the entity that contains our value
@@ -135,15 +135,17 @@ public class DefaultEntityExporter implements EntityExporter {
      */
     private Object getPropertyValue(Object entity, PropertyDefinition propertyDefinition) {
         Object value = null;
-        if(propertyDefinition.isEmbeddedAttribute()) {
-            // Whenever our property is embedded, retrieve the embeddable that contains it
+        FlexiblePropertyAccessor propertyAccessor = new FlexiblePropertyAccessor(entity);
+        if (propertyDefinition.isEmbeddedAttribute()) {
+            // Whenever our property is embedded, retrieve the container
             final PropertyPath embeddablePath = propertyDefinition.getEmbeddablePath();
-            if(BeanPropertyUtils.hasProperty(entity, embeddablePath.getStart().getName())) {
+            if (propertyAccessor.isReadableProperty(embeddablePath.getStart().getName())) {
                 Object leafEmbeddable = embeddablePath.traverse(entity);
-                value = BeanPropertyUtils.getValue(leafEmbeddable, propertyDefinition.getName());
+                FlexiblePropertyAccessor leafAccessor = new FlexiblePropertyAccessor(leafEmbeddable);
+                value = leafAccessor.getPropertyValue(propertyDefinition.getName());
             }
-        } else if(BeanPropertyUtils.hasProperty(entity, propertyDefinition.getName())) {
-            value = BeanPropertyUtils.getValue(entity, propertyDefinition.getName());
+        } else if (propertyAccessor.isReadableProperty(propertyDefinition.getName())) {
+            value = propertyAccessor.getPropertyValue(propertyDefinition.getName());
         }
         return value;
     }

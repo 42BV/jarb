@@ -1,14 +1,15 @@
 package org.jarb.populator.excel.mapping.importer;
 
+import static org.jarb.populator.excel.mapping.importer.ClassDefinitionFinder.findClassDefinitionByPersistentClass;
+import static org.jarb.populator.excel.metamodel.generator.SuperclassRetriever.getListOfSuperClasses;
+
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
 import org.jarb.populator.excel.metamodel.EntityDefinition;
 import org.jarb.populator.excel.metamodel.PropertyDefinition;
-import org.jarb.populator.excel.metamodel.generator.SuperclassRetriever;
-import org.jarb.utils.BeanPropertyUtils;
-import org.jarb.utils.ReflectionUtils;
+import org.jarb.utils.FlexiblePropertyAccessor;
 
 /**
  * Used to map foreign relationships between ExcelRows.
@@ -32,18 +33,18 @@ public final class ForeignRelationsMapper {
         for (Entry<PropertyDefinition, Key> entry : excelRow.getValueMap().entrySet()) {
             Key key = entry.getValue();
 
-            EntityDefinition<?> classDefinition = ClassDefinitionFinder.findClassDefinitionByPersistentClass(objectModel.keySet(), key.getForeignClass());
+            EntityDefinition<?> classDefinition = findClassDefinitionByPersistentClass(objectModel.keySet(), key.getForeignClass());
             if (classDefinition == null) {
-                Set<Class<?>> superClasses = SuperclassRetriever.getListOfSuperClasses(key.getForeignClass());
+                Set<Class<?>> superClasses = getListOfSuperClasses(key.getForeignClass());
                 classDefinition = getClassDefinitionFromParents(objectModel, superClasses);
             }
 
             // Check if the field is really in THIS excelRow. Thus the parents set is empty.
             Object foreignEntity = ForeignExcelRowGrabber.getInstanceValue(key, objectModel.get(classDefinition));
-            if (BeanPropertyUtils.hasProperty(excelRow.getCreatedInstance(), entry.getKey().getName())) {
-                ReflectionUtils.setFieldValue(excelRow.getCreatedInstance(), entry.getKey().getName(), foreignEntity);
+            FlexiblePropertyAccessor propertyAccessor = new FlexiblePropertyAccessor(excelRow.getCreatedInstance());
+            if (propertyAccessor.isWritableProperty(entry.getKey().getName())) {
+                propertyAccessor.setPropertyValue(entry.getKey().getName(), foreignEntity);
             }
-
         }
     }
 

@@ -22,7 +22,7 @@ import java.lang.reflect.Method;
  * @author Jeroen van Schagen
  */
 public final class ReflectionUtils {
-    
+
     /**
      * Retrieve the classes from a var-arg array of objects.
      * 
@@ -36,7 +36,7 @@ public final class ReflectionUtils {
         }
         return types;
     }
-    
+
     /**
      * Determine if a class has a specific annotation.
      * 
@@ -47,7 +47,7 @@ public final class ReflectionUtils {
     public static boolean hasAnnotation(Class<?> clazz, Class<? extends Annotation> annotationClass) {
         return clazz.getAnnotation(annotationClass) != null;
     }
-    
+
     // Construction
 
     /**
@@ -64,10 +64,7 @@ public final class ReflectionUtils {
         try {
             return instantiate(clazz.getDeclaredConstructor());
         } catch (NoSuchMethodException e) {
-            throw new IllegalArgumentException(
-                String.format("%s has not declared a nullary constructor.", clazz.getName()),
-                e
-            );
+            throw new IllegalArgumentException(String.format("%s has not declared a nullary constructor.", clazz.getName()), e);
         }
     }
 
@@ -88,9 +85,9 @@ public final class ReflectionUtils {
             throw new IllegalStateException(e);
         }
     }
-    
+
     // Methods
-    
+
     /**
      * Invokes the, potentially not accessible, {@link Method} using a specific array of arguments.
      * 
@@ -102,13 +99,11 @@ public final class ReflectionUtils {
     public static Object invokeMethod(Object target, String methodName, Object... args) {
         Method method = findMethod(target.getClass(), methodName, getClasses(args));
         if (method == null) {
-            throw new IllegalArgumentException(
-                String.format("%s has not declared a '%s' method", target.getClass().getName(), methodName)
-            );
+            throw new IllegalArgumentException(String.format("%s has not declared a '%s' method", target.getClass().getName(), methodName));
         }
         return invokeMethod(target, method, args);
     }
-    
+
     /**
      * Invokes the, potentially not accessible, {@link Method} using a specific array of arguments.
      * 
@@ -121,9 +116,9 @@ public final class ReflectionUtils {
         makeAccessible(method); // Delegate method invocation to the spring utility
         return org.springframework.util.ReflectionUtils.invokeMethod(method, target, args);
     }
-    
+
     // Fields
-    
+
     /**
      * Determine if an object has some field.
      * 
@@ -134,7 +129,7 @@ public final class ReflectionUtils {
     public static boolean hasField(Object bean, String fieldName) {
         return findField(bean.getClass(), fieldName) != null;
     }
-    
+
     /**
      * Determine if an object has some field.
      * 
@@ -157,9 +152,7 @@ public final class ReflectionUtils {
     public static Class<?> getFieldType(Object target, String fieldName) {
         Field field = findField(target.getClass(), fieldName);
         if (field == null) {
-            throw new IllegalArgumentException(
-                String.format("%s has not declared a '%s' field", target.getClass().getName(), fieldName)
-            );
+            throw new IllegalArgumentException(String.format("%s has not declared a '%s' field", target.getClass().getName(), fieldName));
         }
         return field.getType();
     }
@@ -175,13 +168,11 @@ public final class ReflectionUtils {
     public static Object getFieldValue(Object target, String fieldName) {
         Field field = findField(target.getClass(), fieldName);
         if (field == null) {
-            throw new IllegalArgumentException(
-                String.format("%s has not declared a '%s' field", target.getClass().getName(), fieldName)
-            );
+            throw new IllegalArgumentException(String.format("%s has not declared a '%s' field", target.getClass().getName(), fieldName));
         }
         return getFieldValue(target, field);
     }
-    
+
     /**
      * Retrieve the field value of a certain {@link Object}.
      * 
@@ -205,13 +196,11 @@ public final class ReflectionUtils {
     public static void setFieldValue(Object target, String fieldName, Object newValue) {
         Field field = findField(target.getClass(), fieldName);
         if (field == null) {
-            throw new IllegalArgumentException(
-                String.format("%s has not declared a '%s' field", target.getClass().getName(), fieldName)
-            );
+            throw new IllegalArgumentException(String.format("%s has not declared a '%s' field", target.getClass().getName(), fieldName));
         }
         setFieldValue(target, field, newValue);
     }
-    
+
     /**
      * Modify the field value of a certain {@link Object}. 
      * 
@@ -223,8 +212,8 @@ public final class ReflectionUtils {
         makeAccessible(field);
         setField(field, target, newValue);
     }
-    
-    // Suppresses default constructor, ensuring non-instantiability.
+
+    // Suppresses default constructor, ensure it cannot be instantiated.
     private ReflectionUtils() {
         super();
     }
