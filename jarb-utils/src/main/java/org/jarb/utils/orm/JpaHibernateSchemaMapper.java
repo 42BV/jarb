@@ -51,8 +51,14 @@ public class JpaHibernateSchemaMapper implements SchemaMapper {
         if (namingStrategy == null) {
             this.namingStrategy = new DefaultNamingStrategy();
         } else {
-            isInstanceOf(Class.class, namingStrategy, "Naming strategy needs to be a class");
-            this.namingStrategy = instantiateClass((Class<? extends NamingStrategy>) namingStrategy);
+            isInstanceOf(String.class, namingStrategy, "Naming strategy needs to be a string");
+            Class<?> namingStrategyClass;
+            try {
+                namingStrategyClass = Class.forName(namingStrategy.toString());
+            } catch (ClassNotFoundException e) {
+                throw new RuntimeException("Suggested naming strategy is not available in classpath", e);
+            }
+            this.namingStrategy = (NamingStrategy) instantiateClass(namingStrategyClass);
         }
     }
 

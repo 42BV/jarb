@@ -77,7 +77,7 @@
         <property name="validationMessageSource" ref="messageSource"/>
     </bean>
     
-	<!-- Provides column metadata, required for validation and bean description -->
+	<!-- Provides column meta-data, required for validation and bean description -->
 	<bean id="columnMetadataRepository" class="org.jarb.constraint.database.column.EntityAwareColumnMetadataRepository">
         <constructor-arg ref="dataSource" />
         <property name="schemaMapper">
@@ -87,7 +87,7 @@
         </property>
     </bean>
     
-    <!-- Provides a bean constraint metadata, required for front-end -->
+    <!-- Provides a bean constraint meta-data, required for front-end -->
     <bean id="constraintMetadataGenerator" class="org.jarb.constraint.BeanConstraintMetadataGeneratorFactoryBean">
     	<property name="columnMetadataRepository" ref="columnMetadataRepository"/>
     </bean>
