@@ -54,7 +54,7 @@ public class JpaHibernateSchemaMapper implements SchemaMapper {
             isInstanceOf(String.class, namingStrategy, "Naming strategy needs to be a string");
             Class<?> namingStrategyClass;
             try {
-                namingStrategyClass = Class.forName(namingStrategy.toString());
+                namingStrategyClass = Class.forName((String) namingStrategy);
             } catch (ClassNotFoundException e) {
                 throw new RuntimeException("Suggested naming strategy is not available in classpath", e);
             }
