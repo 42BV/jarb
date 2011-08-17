@@ -32,18 +32,21 @@ public class BeanAnnotationUtils {
         return getAnnotation(beanClass, propertyName, annotationType, true, false);
     }
 
-    public static <T extends Annotation> T getAnnotation(Class<?> beanClass, String propertyName, Class<T> annotationType, boolean includeGetter, boolean includeSetter) {
+    public static <T extends Annotation> T getAnnotation(Class<?> beanClass, String propertyName, Class<T> annotationType, boolean includeGetter,
+            boolean includeSetter) {
         T annotation = null;
         Field field = ReflectionUtils.findField(beanClass, propertyName);
         if (field != null) {
             annotation = field.getAnnotation(annotationType);
         }
         PropertyDescriptor propertyDescriptor = BeanUtils.getPropertyDescriptor(beanClass, propertyName);
-        if (annotation == null && includeGetter) {
-            annotation = getAnnotationFromGetter(propertyDescriptor, annotationType);
-        }
-        if (annotation == null && includeSetter) {
-            annotation = getAnnotationFromSetter(propertyDescriptor, annotationType);
+        if (propertyDescriptor != null) {
+            if (annotation == null && includeGetter) {
+                annotation = getAnnotationFromGetter(propertyDescriptor, annotationType);
+            }
+            if (annotation == null && includeSetter) {
+                annotation = getAnnotationFromSetter(propertyDescriptor, annotationType);
+            }
         }
         return annotation;
     }
@@ -70,7 +73,8 @@ public class BeanAnnotationUtils {
         return getAnnotation(beanClass, propertyName, annotationType) != null;
     }
 
-    public static boolean hasAnnotation(Class<?> beanClass, String propertyName, Class<? extends Annotation> annotationType, boolean includeGetter, boolean includeSetter) {
+    public static boolean hasAnnotation(Class<?> beanClass, String propertyName, Class<? extends Annotation> annotationType, boolean includeGetter,
+            boolean includeSetter) {
         return getAnnotation(beanClass, propertyName, annotationType, includeGetter, includeSetter) != null;
     }
 

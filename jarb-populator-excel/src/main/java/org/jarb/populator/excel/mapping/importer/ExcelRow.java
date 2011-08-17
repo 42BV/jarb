@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.jarb.populator.excel.metamodel.PropertyDefinition;
-import org.jarb.utils.ReflectionUtils;
+import org.springframework.beans.BeanUtils;
 
 /**
  * Object which represents an Excel row. Can add data to valueMap and retrieve it.
@@ -18,9 +18,9 @@ public class ExcelRow {
 
     /** ValueMap with columnDefinitions and their keys. */
     private Map<PropertyDefinition, Key> valueMap;
-    
+
     public ExcelRow(Class<?> persistentClass) {
-        this(ReflectionUtils.instantiate(persistentClass));
+        this(BeanUtils.instantiateClass(persistentClass));
     }
 
     /**

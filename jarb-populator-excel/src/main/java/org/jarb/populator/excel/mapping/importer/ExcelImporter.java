@@ -8,9 +8,9 @@ import org.jarb.populator.excel.metamodel.EntityDefinition;
 import org.jarb.populator.excel.metamodel.PropertyDefinition;
 import org.jarb.populator.excel.workbook.Sheet;
 import org.jarb.populator.excel.workbook.Workbook;
-import org.jarb.utils.ReflectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 
 /**
  * Parses through Excel data. Can create a set of columnDefinitions and add to a columnDefinition.
@@ -54,7 +54,7 @@ public final class ExcelImporter {
                 }
             }
         }
-        
+
         return objectModel;
     }
 
@@ -92,13 +92,14 @@ public final class ExcelImporter {
      * @throws InstantiationException Thrown when function is used on a class that cannot be instantiated (abstract or interface)
      * @throws IllegalAccessException Thrown when function does not have access to the definition of the specified class, field, method or constructor 
      */
-    private static ExcelRow createFittingExcelRow(final Sheet sheet, final EntityDefinition<?> classDefinition, String discriminatorColumnName, Integer rowPosition)
-            throws InstantiationException, IllegalAccessException {
+    private static ExcelRow createFittingExcelRow(final Sheet sheet, final EntityDefinition<?> classDefinition, String discriminatorColumnName,
+            Integer rowPosition) throws InstantiationException, IllegalAccessException {
         Class<?> entityClass = determineEntityClass(sheet, classDefinition, discriminatorColumnName, rowPosition);
-        return new ExcelRow(ReflectionUtils.instantiate(entityClass));
+        return new ExcelRow(BeanUtils.instantiateClass(entityClass));
     }
-    
-    private static Class<?> determineEntityClass(final Sheet sheet, final EntityDefinition<?> classDefinition, String discriminatorColumnName, Integer rowPosition) {
+
+    private static Class<?> determineEntityClass(final Sheet sheet, final EntityDefinition<?> classDefinition, String discriminatorColumnName,
+            Integer rowPosition) {
         Class<?> entityClass = classDefinition.getEntityClass();
         if (discriminatorColumnName != null) {
             WorksheetDefinition worksheetDefinition = WorksheetDefinition.analyzeWorksheet(classDefinition, sheet.getWorkbook());
@@ -106,7 +107,7 @@ public final class ExcelImporter {
             String discriminatorValue = getDiscriminatorValueFromExcelFile(sheet, rowPosition, discriminatorPosition);
             if (discriminatorValue != null) {
                 Class<?> subClass = classDefinition.getEntitySubClass(discriminatorValue);
-                if(subClass != null) {
+                if (subClass != null) {
                     entityClass = subClass;
                 }
             }
@@ -140,7 +141,7 @@ public final class ExcelImporter {
     private static void putCreatedInstance(final Sheet sheet, final EntityDefinition<?> classDefinition, Map<Object, ExcelRow> createdInstances,
             Integer rowPosition, ExcelRow excelRow) {
         Object identifier = sheet.getValueAt(rowPosition, 0);
-        if(identifier == null) {
+        if (identifier == null) {
             LOGGER.error("Could not store row #{} of {}, because the identifier is empty.", new Object[] { rowPosition, sheet.getName() });
         } else {
             if (!createdInstances.containsKey(identifier)) {
@@ -159,8 +160,8 @@ public final class ExcelImporter {
      * @param excelRow The excelRecord to save the data to
      * @throws NoSuchFieldException Thrown if field cannot be found
      */
-    private static void storeExcelRecordByColumnDefinitions(final Workbook excel, final EntityDefinition<?> classDefinition, Integer rowPosition, ExcelRow excelRow)
-            throws NoSuchFieldException {
+    private static void storeExcelRecordByColumnDefinitions(final Workbook excel, final EntityDefinition<?> classDefinition, Integer rowPosition,
+            ExcelRow excelRow) throws NoSuchFieldException {
         for (PropertyDefinition columnDefinition : classDefinition.properties()) {
             StoreExcelRecordValue.storeValue(excel, classDefinition, columnDefinition, rowPosition, excelRow);
         }

@@ -7,9 +7,12 @@ import static org.springframework.util.ReflectionUtils.makeAccessible;
 import static org.springframework.util.ReflectionUtils.setField;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.HashSet;
+import java.util.Set;
+
+import org.springframework.util.ReflectionUtils.FieldCallback;
 
 /**
  * Utility class that assists the developer with reflection. There are many other frameworks that provide
@@ -48,44 +51,6 @@ public final class ReflectionUtils {
         return clazz.getAnnotation(annotationClass) != null;
     }
 
-    // Construction
-
-    /**
-     * Create a new instance of a class based on its nullary (no-arg) constructor. Invoking
-     * {@link #instantiate(Class)} will require the corresponding class to have defined a nullary
-     * constructor, can be marked private. In case a reflection exception occurs, it will be
-     * wrapped and thrown as {@link IllegalStateException}.
-     * 
-     * @param <T> type of instance to be instantiated
-     * @param clazz class of the object that should be instantiated
-     * @return new nullary instance of the specified class
-     */
-    public static <T> T instantiate(Class<T> clazz) {
-        try {
-            return instantiate(clazz.getDeclaredConstructor());
-        } catch (NoSuchMethodException e) {
-            throw new IllegalArgumentException(String.format("%s has not declared a nullary constructor.", clazz.getName()), e);
-        }
-    }
-
-    /**
-     * Create a new instance of a, potentially not accessible {@link Constructor}. In case a
-     * reflection exception occurs, it will be wrapped and thrown as {@link IllegalStateException}.
-     * 
-     * @param <T> type of instance to be instantiated
-     * @param constructor constructor being instantiated
-     * @param args construction arguments
-     * @return constructor instance
-     */
-    public static <T> T instantiate(Constructor<T> constructor, Object... args) {
-        makeAccessible(constructor);
-        try {
-            return constructor.newInstance(args);
-        } catch (Exception e) {
-            throw new IllegalStateException(e);
-        }
-    }
-
     // Methods
 
     /**
@@ -119,6 +84,19 @@ public final class ReflectionUtils {
 
     // Fields
 
+    public static Set<String> getFieldNames(Class<?> beanClass) {
+        final Set<String> propertyNames = new HashSet<String>();
+        org.springframework.util.ReflectionUtils.doWithFields(beanClass, new FieldCallback() {
+
+            @Override
+            public void doWith(Field field) throws IllegalArgumentException, IllegalAccessException {
+                propertyNames.add(field.getName());
+            }
+
+        });
+        return propertyNames;
+    }
+
     /**
      * Determine if an object has some field.
      * 
@@ -145,14 +123,14 @@ public final class ReflectionUtils {
      * Retrieve the field type of a certain {@link Object}. When the field name does not
      * exist inside the object, or its sub-classes, a runtime exception will be thrown.
      * 
-     * @param target instance of the object that should have its field type retrieved
+     * @param targetClass class that has defined the field
      * @param fieldName name of the field that should be read
      * @return type of the field
      */
-    public static Class<?> getFieldType(Object target, String fieldName) {
-        Field field = findField(target.getClass(), fieldName);
+    public static Class<?> getFieldType(Class<?> targetClass, String fieldName) {
+        Field field = findField(targetClass, fieldName);
         if (field == null) {
-            throw new IllegalArgumentException(String.format("%s has not declared a '%s' field", target.getClass().getName(), fieldName));
+            throw new IllegalArgumentException(String.format("%s has not declared a '%s' field", targetClass.getName(), fieldName));
         }
         return field.getType();
     }

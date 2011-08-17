@@ -1,6 +1,5 @@
 package org.jarb.utils;
 
-import org.jarb.utils.ReflectionUtils;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -24,12 +23,12 @@ public class ReflectionUtilsTest {
 
     @Test
     public void testGetFieldType() {
-        Assert.assertEquals(String.class, ReflectionUtils.getFieldType(this, "modifiable"));
+        Assert.assertEquals(String.class, ReflectionUtils.getFieldType(getClass(), "modifiable"));
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testGetFieldTypeUnknownField() {
-        Assert.assertEquals(String.class, ReflectionUtils.getFieldType(this, "unknownField"));
+        Assert.assertEquals(String.class, ReflectionUtils.getFieldType(getClass(), "unknownField"));
     }
 
     /**
@@ -68,53 +67,6 @@ public class ReflectionUtilsTest {
     @Test(expected = IllegalArgumentException.class)
     public void testSetFieldValueUnknownField() {
         ReflectionUtils.setFieldValue(this, "unknownField", null);
-    }
-
-    /**
-     * Construct a new nullary instance of {@link ReflectionUtil}, this constructor is
-     * marked private. During this test the constructor is also covered.
-     */
-    @Test
-    public void testInstantiateByClass() {
-        Assert.assertNotNull(ReflectionUtils.instantiate(ReflectionUtils.class));
-    }
-
-    /**
-     * Attempt to create an instance of {@link UnusedInterface}, which cannot be instantiated.
-     * During this process a {@link IllegalArgumentException}, is expected to be thrown.
-     */
-    @Test(expected = IllegalArgumentException.class)
-    public void testInstantiateByClassNoNullaryConstructor() {
-        ReflectionUtils.instantiate(UnusedInterface.class);
-    }
-
-    /**
-     * Simple interface declaration, used for testing.
-     */
-    private interface UnusedInterface {
-        // Purely used for testing purposes
-    }
-
-    /**
-     * Attempt to constructor {@link ErrorClass} using its no argument constructor. But during
-     * the construction, a runtime exception will be thrown, leading to the reflection exception
-     * "InvocationTargetException". This reflection exception should be caught, and wrapped inside
-     * an illegal state exception, which is then thrown as output.
-     * 
-     * @throws NoSuchMethodException
-     */
-    @Test(expected = IllegalStateException.class)
-    public void testInstantiateByConstructor() throws NoSuchMethodException {
-        ReflectionUtils.instantiate(ErrorClass.class.getConstructor());
-    }
-
-    /**
-     * Simple class which throws an exception during construction.
-     */
-    public static class ErrorClass {
-        public ErrorClass() {
-            throw new RuntimeException();
-        }
     }
 
     /**

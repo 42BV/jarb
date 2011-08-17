@@ -58,7 +58,7 @@ public final class StoreColumn {
      * @param cellValue Value of the field that is to be saved
      */
     private static void setExcelRowFieldValue(Object excelRow, String fieldName, Object cellValue) {
-        final Class<?> fieldType = ReflectionUtils.getFieldType(excelRow, fieldName);
+        final Class<?> fieldType = ReflectionUtils.getFieldType(excelRow.getClass(), fieldName);
         try {
             Object fieldValue = new ValueConversionService().convert(cellValue, fieldType);
             ReflectionUtils.setFieldValue(excelRow, fieldName, fieldValue);
