@@ -9,7 +9,8 @@ import javax.persistence.metamodel.EntityType;
 import javax.persistence.metamodel.Metamodel;
 
 import org.jarb.populator.excel.metamodel.EntityDefinition;
-import org.jarb.utils.orm.JpaMetaModelUtils;
+import org.jarb.utils.orm.JpaHibernateSchemaMapper;
+import org.jarb.utils.orm.SchemaMapper;
 
 /**
  * Class which is responsible for generating a list of ready-to-be-used ClassDefinitions containing columns, a persistent class, etc.
@@ -42,7 +43,7 @@ public class ClassDefinitionsGenerator {
             subClassEntities = SubclassRetriever.getSubClassEntities(entity, entities);
         }
 
-        return createClassDefinitionFromEntity(entity, entities, subClassEntities);
+        return createClassDefinitionFromEntity(entityManagerFactory, entity, entities, subClassEntities);
     }
 
     /**
@@ -56,23 +57,20 @@ public class ClassDefinitionsGenerator {
      * @throws IllegalAccessException Thrown when function does not have access to the definition of the specified class, field, method or constructor 
      */
     @SuppressWarnings("unchecked")
-    private static <T> EntityDefinition<T> createClassDefinitionFromEntity(EntityType<T> entity, Set<EntityType<?>> entities, Set<EntityType<?>> subClassEntities)
-            throws ClassNotFoundException, InstantiationException, IllegalAccessException {
+    private static <T> EntityDefinition<T> createClassDefinitionFromEntity(EntityManagerFactory entityManagerFactory, EntityType<T> entity,
+            Set<EntityType<?>> entities, Set<EntityType<?>> subClassEntities) throws ClassNotFoundException, InstantiationException, IllegalAccessException {
         final Class<T> entityClass = entity.getJavaType();
         EntityDefinition.Builder<T> builder = EntityDefinition.forClass(entityClass);
-        builder.setTableName(JpaMetaModelUtils.getTableName(entityClass));
+        SchemaMapper schemaMapper = new JpaHibernateSchemaMapper(entityManagerFactory);
+        builder.setTableName(schemaMapper.table(entityClass));
         builder.includeProperties(ColumnDefinitionsGenerator.createPropertyDefinitions(subClassEntities, entity, entityClass));
-        if(!subClassEntities.isEmpty()) {
+        if (!subClassEntities.isEmpty()) {
             builder.setDiscriminatorColumnName(DiscriminatorColumnGenerator.getDiscriminatorColumnName(entityClass));
-            for(Map.Entry<String, Class<?>> subClassMapping : SubclassRetriever.getSubClassMapping(subClassEntities).entrySet()) {
+            for (Map.Entry<String, Class<?>> subClassMapping : SubclassRetriever.getSubClassMapping(subClassEntities).entrySet()) {
                 builder.includeSubClass(subClassMapping.getKey(), (Class<? extends T>) subClassMapping.getValue());
             }
         }
         return builder.build();
-    }
-    
-    /** Private constructor. */
-    private ClassDefinitionsGenerator() {
     }
 
 }

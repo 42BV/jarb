@@ -2,7 +2,7 @@ package org.jarb.constraint.database.column;
 
 import javax.sql.DataSource;
 
-import org.springframework.util.Assert;
+import org.jarb.utils.orm.SchemaMapper;
 
 /**
  * Retrieves the database constraints for a specific entity.
@@ -11,10 +11,10 @@ import org.springframework.util.Assert;
  * @since 20-05-2011
  */
 public class EntityAwareColumnMetadataRepository {
-    /** Retrieves column metadata. **/
+    /** Retrieves column meta-data. **/
     private ColumnMetadataRepository columnMetadataRepository;
     /** Maps beans and properties to tables and columns. **/
-    private TableMapper tableMapper = new JpaTableMapper();
+    private SchemaMapper schemaMapper;
 
     /**
      * Construct a new {@link EntityAwareColumnMetadataRepository}.
@@ -26,20 +26,14 @@ public class EntityAwareColumnMetadataRepository {
 
     /**
      * Construct a new {@link EntityAwareColumnMetadataRepository}.
-     * @param columnMetadataRepository provided metadata for a specific column
+     * @param columnMetadataRepository provided meta-data for a specific column
      */
     public EntityAwareColumnMetadataRepository(ColumnMetadataRepository columnMetadataRepository) {
-        Assert.notNull(columnMetadataRepository, "Delegate column metadata repository is required.");
         this.columnMetadataRepository = columnMetadataRepository;
     }
 
-    /**
-     * Configure the table mapper that should be used to link beans and
-     * properties to the corresponding table and columns.
-     * @param tableMapper table mapper that should be used
-     */
-    public void setTableMapper(TableMapper tableMapper) {
-        this.tableMapper = tableMapper;
+    public void setSchemaMapper(SchemaMapper schemaMapper) {
+        this.schemaMapper = schemaMapper;
     }
 
     /**
@@ -52,11 +46,11 @@ public class EntityAwareColumnMetadataRepository {
      * @throws UnknownColumnException if we could not map the property to a column
      */
     public ColumnMetadata getColumnMetadata(Class<?> entityClass, String propertyName) {
-        String tableName = tableMapper.getTableName(entityClass);
+        String tableName = schemaMapper.table(entityClass);
         if (tableName == null) {
             throw new UnknownTableException("Could not resolve the table name of '" + entityClass.getSimpleName() + "'");
         }
-        String columnName = tableMapper.getColumnName(entityClass, propertyName);
+        String columnName = schemaMapper.column(entityClass, propertyName);
         if (columnName == null) {
             throw new UnknownColumnException("Could not resolve the column name of '" + propertyName + "' (" + entityClass.getSimpleName() + ")");
         }

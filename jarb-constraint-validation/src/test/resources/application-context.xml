@@ -25,7 +25,10 @@
     
     <!-- Provides access to column meta-data, using entity and property names -->
     <bean class="org.jarb.constraint.database.column.EntityAwareColumnMetadataRepository">
-        <constructor-arg ref="dataSource" />
+        <constructor-arg ref="dataSource"/>
+        <property name="schemaMapper">
+            <bean class="org.jarb.utils.orm.JpaHibernateSchemaMapper"/>
+        </property>
     </bean>
     
     <!-- Validates entities based on annotations and validator implementations -->

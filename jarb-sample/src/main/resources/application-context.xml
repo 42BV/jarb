@@ -80,6 +80,11 @@
 	<!-- Provides column metadata, required for validation and bean description -->
 	<bean id="columnMetadataRepository" class="org.jarb.constraint.database.column.EntityAwareColumnMetadataRepository">
         <constructor-arg ref="dataSource" />
+        <property name="schemaMapper">
+            <bean class="org.jarb.utils.orm.JpaHibernateSchemaMapper">
+                <constructor-arg ref="entityManagerFactory"/>
+            </bean>
+        </property>
     </bean>
     
     <!-- Provides a bean constraint metadata, required for front-end -->

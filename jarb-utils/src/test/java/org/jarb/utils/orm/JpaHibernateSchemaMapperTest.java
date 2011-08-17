@@ -170,4 +170,9 @@ public class JpaHibernateSchemaMapperTest {
 
     }
 
+    @Test(expected = NotAnEntityException.class)
+    public void testNotAnEntity() {
+        mapper.table(String.class);
+    }
+
 }

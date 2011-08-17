@@ -41,7 +41,7 @@ public class JpaMetaModelGenerator implements MetaModelGenerator {
         }
         return new MetaModel(entities);
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -54,7 +54,7 @@ public class JpaMetaModelGenerator implements MetaModelGenerator {
         }
         return new MetaModel(entities);
     }
-    
+
     /**
      * Generate the {@link EntityDefinition} of a specific entity type.
      * @param entityType type of entity being inspected

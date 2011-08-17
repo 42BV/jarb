@@ -11,11 +11,10 @@ import static org.jarb.utils.ReflectionUtils.getFieldType;
 import static org.springframework.beans.BeanUtils.instantiateClass;
 import static org.springframework.util.Assert.isInstanceOf;
 import static org.springframework.util.Assert.notNull;
-import static org.springframework.util.Assert.state;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
@@ -23,6 +22,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import org.hibernate.cfg.DefaultNamingStrategy;
 import org.hibernate.cfg.NamingStrategy;
 
 /**
@@ -33,18 +33,27 @@ import org.hibernate.cfg.NamingStrategy;
  */
 public class JpaHibernateSchemaMapper implements SchemaMapper {
     private static final String NAMING_STRATEGY_KEY = "hibernate.ejb.naming_strategy";
+
+    /** Naming strategy used to determine the eventual mapping. **/
     private final NamingStrategy namingStrategy;
+
+    public JpaHibernateSchemaMapper() {
+        this(new DefaultNamingStrategy());
+    }
 
     public JpaHibernateSchemaMapper(NamingStrategy namingStrategy) {
         notNull(namingStrategy, "Naming strategy property is required");
         this.namingStrategy = namingStrategy;
     }
 
-    public JpaHibernateSchemaMapper(EntityManager entityManager) {
-        Object namingStrategy = entityManager.getProperties().get(NAMING_STRATEGY_KEY);
-        notNull(namingStrategy, "Naming strategy property (" + NAMING_STRATEGY_KEY + ") was not set");
-        isInstanceOf(Class.class, namingStrategy, "Naming strategy has to be a class");
-        this.namingStrategy = instantiateClass((Class<? extends NamingStrategy>) namingStrategy);
+    public JpaHibernateSchemaMapper(EntityManagerFactory entityManagerFactory) {
+        Object namingStrategy = entityManagerFactory.getProperties().get(NAMING_STRATEGY_KEY);
+        if (namingStrategy == null) {
+            this.namingStrategy = new DefaultNamingStrategy();
+        } else {
+            isInstanceOf(Class.class, namingStrategy, "Naming strategy needs to be a class");
+            this.namingStrategy = instantiateClass((Class<? extends NamingStrategy>) namingStrategy);
+        }
     }
 
     @Override
@@ -60,7 +69,9 @@ public class JpaHibernateSchemaMapper implements SchemaMapper {
     }
 
     private void assertIsEntity(Class<?> beanClass) {
-        state(beanClass.getAnnotation(Entity.class) != null, "Bean class '" + beanClass.getName() + "' is not an @Entity.");
+        if (beanClass.getAnnotation(Entity.class) == null) {
+            throw new NotAnEntityException("Bean class '" + beanClass.getName() + "' is not an @Entity.");
+        }
     }
 
     private String extractEntityName(Class<?> entityClass) {

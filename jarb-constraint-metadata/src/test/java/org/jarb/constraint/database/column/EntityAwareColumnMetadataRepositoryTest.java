@@ -5,6 +5,7 @@ import static org.junit.Assert.fail;
 
 import org.easymock.EasyMock;
 import org.jarb.constraint.domain.Person;
+import org.jarb.utils.orm.SchemaMapper;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -18,14 +19,14 @@ public class EntityAwareColumnMetadataRepositoryTest {
     private EntityAwareColumnMetadataRepository columnConstraints;
 
     private ColumnMetadataRepository columnConstraintsMock;
-    private TableMapper tableMapperMock;
+    private SchemaMapper schemaMapperMock;
 
     @Before
     public void setUp() {
         columnConstraintsMock = EasyMock.createMock(ColumnMetadataRepository.class);
-        tableMapperMock = EasyMock.createMock(TableMapper.class);
+        schemaMapperMock = EasyMock.createMock(SchemaMapper.class);
         columnConstraints = new EntityAwareColumnMetadataRepository(columnConstraintsMock);
-        columnConstraints.setTableMapper(tableMapperMock);
+        columnConstraints.setSchemaMapper(schemaMapperMock);
     }
 
     /**
@@ -33,16 +34,16 @@ public class EntityAwareColumnMetadataRepositoryTest {
      */
     @Test
     public void testForProperty() {
-        EasyMock.expect(tableMapperMock.getTableName(Person.class)).andReturn("persons");
-        EasyMock.expect(tableMapperMock.getColumnName(Person.class, "name")).andReturn("name");
+        EasyMock.expect(schemaMapperMock.table(Person.class)).andReturn("persons");
+        EasyMock.expect(schemaMapperMock.column(Person.class, "name")).andReturn("name");
         ColumnReference columnReference = new ColumnReference("my_schema", "my_table", "my_column");
         ColumnMetadata columnConstraint = new ColumnMetadata(columnReference);
         EasyMock.expect(columnConstraintsMock.getColumnMetadata("persons", "name")).andReturn(columnConstraint);
-        EasyMock.replay(tableMapperMock, columnConstraintsMock);
+        EasyMock.replay(schemaMapperMock, columnConstraintsMock);
 
         ColumnMetadata result = columnConstraints.getColumnMetadata(Person.class, "name");
 
-        EasyMock.verify(tableMapperMock, columnConstraintsMock);
+        EasyMock.verify(schemaMapperMock, columnConstraintsMock);
 
         assertEquals(columnConstraint, result);
     }
@@ -52,8 +53,8 @@ public class EntityAwareColumnMetadataRepositoryTest {
      */
     @Test
     public void testForPropertyNoMappedTable() {
-        EasyMock.expect(tableMapperMock.getTableName(Person.class)).andReturn(null);
-        EasyMock.replay(tableMapperMock, columnConstraintsMock);
+        EasyMock.expect(schemaMapperMock.table(Person.class)).andReturn(null);
+        EasyMock.replay(schemaMapperMock, columnConstraintsMock);
 
         try {
             columnConstraints.getColumnMetadata(Person.class, "name");
@@ -62,7 +63,7 @@ public class EntityAwareColumnMetadataRepositoryTest {
             assertEquals("Could not resolve the table name of 'Person'", e.getMessage());
         }
 
-        EasyMock.verify(tableMapperMock, columnConstraintsMock);
+        EasyMock.verify(schemaMapperMock, columnConstraintsMock);
     }
 
     /**
@@ -70,9 +71,9 @@ public class EntityAwareColumnMetadataRepositoryTest {
      */
     @Test
     public void testForPropertyNoMappedColumn() {
-        EasyMock.expect(tableMapperMock.getTableName(Person.class)).andReturn("persons");
-        EasyMock.expect(tableMapperMock.getColumnName(Person.class, "name")).andReturn(null);
-        EasyMock.replay(tableMapperMock, columnConstraintsMock);
+        EasyMock.expect(schemaMapperMock.table(Person.class)).andReturn("persons");
+        EasyMock.expect(schemaMapperMock.column(Person.class, "name")).andReturn(null);
+        EasyMock.replay(schemaMapperMock, columnConstraintsMock);
 
         try {
             columnConstraints.getColumnMetadata(Person.class, "name");
@@ -81,7 +82,7 @@ public class EntityAwareColumnMetadataRepositoryTest {
             assertEquals("Could not resolve the column name of 'name' (Person)", e.getMessage());
         }
 
-        EasyMock.verify(tableMapperMock, columnConstraintsMock);
+        EasyMock.verify(schemaMapperMock, columnConstraintsMock);
     }
 
 }
