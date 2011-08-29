@@ -2,7 +2,7 @@ package org.jarb.violation.integration;
 
 import java.util.Map;
 
-import org.jarb.utils.SingletonFactoryBean;
+import org.jarb.utils.spring.SingletonFactoryBean;
 import org.jarb.violation.ConstraintViolationExceptionTranslator;
 import org.jarb.violation.factory.ConfigurableConstraintViolationExceptionFactory;
 import org.jarb.violation.factory.ConstraintViolationExceptionFactory;

@@ -2,7 +2,7 @@ package org.jarb.populator.excel;
 
 import javax.persistence.EntityManagerFactory;
 
-import org.jarb.utils.SingletonFactoryBean;
+import org.jarb.utils.spring.SingletonFactoryBean;
 import org.springframework.util.Assert;
 
 /**

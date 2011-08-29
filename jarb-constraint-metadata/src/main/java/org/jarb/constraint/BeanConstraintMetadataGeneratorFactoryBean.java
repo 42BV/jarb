@@ -10,7 +10,7 @@ import org.jarb.constraint.jsr303.DigitsPropertyConstraintMetadataEnhancer;
 import org.jarb.constraint.jsr303.LengthPropertyConstraintMetadataEnhancer;
 import org.jarb.constraint.jsr303.NotEmptyPropertyConstraintMetadataEnhancer;
 import org.jarb.constraint.jsr303.NotNullPropertyConstraintMetadataEnhancer;
-import org.jarb.utils.SingletonFactoryBean;
+import org.jarb.utils.spring.SingletonFactoryBean;
 import org.springframework.util.Assert;
 
 /**
