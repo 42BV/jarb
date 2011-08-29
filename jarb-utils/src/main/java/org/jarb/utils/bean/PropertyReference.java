@@ -1,9 +1,10 @@
 /*
  * (C) 2011 Nidera (www.nidera.com). All rights reserved.
  */
-package org.jarb.utils.orm;
+package org.jarb.utils.bean;
 
 import static org.jarb.utils.ConditionChecker.hasText;
+import static org.jarb.utils.ConditionChecker.notNull;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -11,27 +12,26 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
 /**
- * References a column in the database.
+ * References a bean property.
  *
  * @author Jeroen van Schagen
  * @date Aug 29, 2011
  */
-public class ColumnReference {
+public class PropertyReference {
+    private final String name;
+    private final Class<?> beanClass;
 
-    private String tableName;
-    private String columnName;
-
-    public ColumnReference(String tableName, String columnName) {
-        this.tableName = hasText(tableName, "Table name is required");
-        this.columnName = hasText(columnName, "Column name is required");
+    public PropertyReference(String name, Class<?> beanClass) {
+        this.name = hasText(name, "Property name is required");
+        this.beanClass = notNull(beanClass, "Bean class is required");
     }
 
-    public String getTableName() {
-        return tableName;
+    public String getName() {
+        return name;
     }
 
-    public String getColumnName() {
-        return columnName;
+    public Class<?> getBeanClass() {
+        return beanClass;
     }
 
     @Override

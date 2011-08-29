@@ -3,6 +3,8 @@
  */
 package org.jarb.utils.orm;
 
+import org.jarb.utils.bean.PropertyReference;
+
 /**
  * Maps bean (properties) to database tables and columns.
  *
@@ -20,10 +22,9 @@ public interface SchemaMapper {
 
     /**
      * Retrieve the column that a property maps to.
-     * @param entityClass type of entity that holds the property
-     * @param propertyName name of the property
-     * @return reference to the column, if any
+     * @param propertyReference property reference
+     * @return column reference, if any
      */
-    ColumnReference column(Class<?> entityClass, String propertyName);
+    ColumnReference column(PropertyReference propertyReference);
 
 }

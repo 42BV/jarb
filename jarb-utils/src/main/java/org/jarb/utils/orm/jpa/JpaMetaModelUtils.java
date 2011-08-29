@@ -6,11 +6,9 @@ import java.util.Set;
 
 import javax.persistence.Embeddable;
 import javax.persistence.Entity;
-import javax.persistence.Id;
 import javax.persistence.metamodel.EntityType;
 import javax.persistence.metamodel.Metamodel;
 
-import org.jarb.utils.BeanAnnotationUtils;
 import org.jarb.utils.orm.NotAnEntityException;
 
 /**
@@ -86,10 +84,6 @@ public class JpaMetaModelUtils {
             }
         } while ((currentClass = currentClass.getSuperclass()) != null);
         return entityClass;
-    }
-
-    public static String getIdentifierPropertyName(Class<?> entityClass) {
-        return BeanAnnotationUtils.findPropertyWithAnnotation(entityClass, Id.class);
     }
 
 }

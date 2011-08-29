@@ -5,6 +5,7 @@ import static org.junit.Assert.fail;
 
 import org.easymock.EasyMock;
 import org.jarb.constraint.domain.Person;
+import org.jarb.utils.bean.PropertyReference;
 import org.jarb.utils.orm.ColumnReference;
 import org.jarb.utils.orm.SchemaMapper;
 import org.junit.Before;
@@ -36,7 +37,7 @@ public class EntityAwareColumnMetadataRepositoryTest {
     @Test
     public void testForProperty() {
         ColumnReference columnReference = new ColumnReference("persons", "name");
-        EasyMock.expect(schemaMapperMock.column(Person.class, "name")).andReturn(columnReference);
+        EasyMock.expect(schemaMapperMock.column(new PropertyReference("name", Person.class))).andReturn(columnReference);
         ColumnMetadata columnConstraint = new ColumnMetadata(columnReference);
         EasyMock.expect(columnConstraintsMock.getColumnMetadata("persons", "name")).andReturn(columnConstraint);
         EasyMock.replay(schemaMapperMock, columnConstraintsMock);
@@ -53,7 +54,7 @@ public class EntityAwareColumnMetadataRepositoryTest {
      */
     @Test
     public void testForPropertyNoMappedColumn() {
-        EasyMock.expect(schemaMapperMock.column(Person.class, "name")).andReturn(null);
+        EasyMock.expect(schemaMapperMock.column(new PropertyReference("name", Person.class))).andReturn(null);
         EasyMock.replay(schemaMapperMock, columnConstraintsMock);
 
         try {

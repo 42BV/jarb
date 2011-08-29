@@ -18,6 +18,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import org.hibernate.cfg.ImprovedNamingStrategy;
+import org.jarb.utils.bean.PropertyReference;
 import org.jarb.utils.orm.ColumnReference;
 import org.jarb.utils.orm.NotAnEntityException;
 import org.junit.Before;
@@ -143,49 +144,49 @@ public class JpaHibernateSchemaMapperTest {
 
     @Test
     public void testColumnByPropertyName() {
-        ColumnReference columnReference = mapper.column(EntityWithColumns.class, "simpleProperty");
+        ColumnReference columnReference = mapper.column(new PropertyReference("simpleProperty", EntityWithColumns.class));
         assertEquals("ctbl_entity_with_columns", columnReference.getTableName());
         assertEquals("prop_simple_property", columnReference.getColumnName());
     }
 
     @Test
     public void testColumnWithEmptyAnnotation() {
-        ColumnReference columnReference = mapper.column(EntityWithColumns.class, "annotatedProperty");
+        ColumnReference columnReference = mapper.column(new PropertyReference("annotatedProperty", EntityWithColumns.class));
         assertEquals("ctbl_entity_with_columns", columnReference.getTableName());
         assertEquals("prop_annotated_property", columnReference.getColumnName());
     }
 
     @Test
     public void testColumnByAnnotation() {
-        ColumnReference columnReference = mapper.column(EntityWithColumns.class, "propertyWithCustomName");
+        ColumnReference columnReference = mapper.column(new PropertyReference("propertyWithCustomName", EntityWithColumns.class));
         assertEquals("ctbl_entity_with_columns", columnReference.getTableName());
         assertEquals("col_custom_property", columnReference.getColumnName());
     }
 
     @Test
     public void testColumnWithManyToOne() {
-        ColumnReference columnReference = mapper.column(EntityWithColumns.class, "manyToOneProperty");
+        ColumnReference columnReference = mapper.column(new PropertyReference("manyToOneProperty", EntityWithColumns.class));
         assertEquals("ctbl_entity_with_columns", columnReference.getTableName());
         assertEquals("fk_many_to_one_property", columnReference.getColumnName());
     }
 
     @Test
     public void testColumnWithManyToOneAndColumnAnnotation() {
-        ColumnReference columnReference = mapper.column(EntityWithColumns.class, "customManyToOneProperty");
+        ColumnReference columnReference = mapper.column(new PropertyReference("customManyToOneProperty", EntityWithColumns.class));
         assertEquals("ctbl_entity_with_columns", columnReference.getTableName());
         assertEquals("col_custom_many_to_one_property", columnReference.getColumnName());
     }
 
     @Test
     public void testColumnWithJoinedInheritanceSuper() {
-        ColumnReference columnReference = mapper.column(SubJoined.class, "superProperty");
+        ColumnReference columnReference = mapper.column(new PropertyReference("superProperty", SubJoined.class));
         assertEquals("ctbl_super_joined", columnReference.getTableName());
         assertEquals("prop_super_property", columnReference.getColumnName());
     }
 
     @Test
     public void testColumnWithJoinedInheritanceSub() {
-        ColumnReference columnReference = mapper.column(SubJoined.class, "subProperty");
+        ColumnReference columnReference = mapper.column(new PropertyReference("subProperty", SubJoined.class));
         assertEquals("ctbl_sub_joined", columnReference.getTableName());
         assertEquals("prop_sub_property", columnReference.getColumnName());
     }
@@ -203,13 +204,13 @@ public class JpaHibernateSchemaMapperTest {
 
     @Test
     public void testNotAColumn() {
-        assertNull(mapper.column(EntityWithColumns.class, "oneToManyProperty"));
-        assertNull(mapper.column(EntityWithColumns.class, "manyToManyProperty"));
+        assertNull(mapper.column(new PropertyReference("oneToManyProperty", EntityWithColumns.class)));
+        assertNull(mapper.column(new PropertyReference("manyToManyProperty", EntityWithColumns.class)));
     }
 
     @Test(expected = NotAnEntityException.class)
     public void testColumnNotAnEntity() {
-        mapper.column(String.class, "value");
+        mapper.column(new PropertyReference("value", String.class));
     }
 
     @Entity

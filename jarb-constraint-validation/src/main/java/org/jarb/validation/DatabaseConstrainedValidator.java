@@ -1,7 +1,5 @@
 package org.jarb.validation;
 
-import static org.jarb.utils.BeanAnnotationUtils.hasAnnotation;
-
 import java.beans.PropertyDescriptor;
 import java.math.BigDecimal;
 
@@ -14,6 +12,9 @@ import org.jarb.constraint.database.column.ColumnMetadata;
 import org.jarb.constraint.database.column.EntityAwareColumnMetadataRepository;
 import org.jarb.constraint.database.column.UnknownColumnException;
 import org.jarb.utils.FlexiblePropertyAccessor;
+import org.jarb.utils.bean.BeanAnnotationScanner;
+import org.jarb.utils.bean.BeanAnnotationScannerImpl;
+import org.jarb.utils.bean.PropertyReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -55,6 +56,8 @@ public class DatabaseConstrainedValidator implements ConstraintValidator<Databas
     private static final String NOT_NULL_TEMPLATE = "{javax.validation.constraints.NotNull.message}";
     private static final String LENGTH_TEMPLATE = "{org.jarb.validation.DatabaseConstraint.Length.message}";
     private static final String FRACTION_LENGTH_TEMPLATE = "{org.jarb.validation.DatabaseConstraint.FractionLength.message}";
+
+    private final BeanAnnotationScanner annotationScanner = new BeanAnnotationScannerImpl(true, true);
 
     /** Used to retrieve column meta-data repository during initialization **/
     private ApplicationContext applicationContext;
@@ -118,7 +121,7 @@ public class DatabaseConstrainedValidator implements ConstraintValidator<Databas
      */
     private boolean isValidValue(Object bean, String propertyName, Object propertyValue, ColumnMetadata columnMetadata, ConstraintValidatorContext context) {
         boolean valueIsValid = true;
-        if (notNullViolated(bean, propertyName, propertyValue, columnMetadata)) {
+        if (notNullViolated(new PropertyReference(propertyName, bean.getClass()), propertyValue, columnMetadata)) {
             context.buildConstraintViolationWithTemplate(NOT_NULL_TEMPLATE).addNode(propertyName).addConstraintViolation();
             valueIsValid = false;
         }
@@ -143,12 +146,12 @@ public class DatabaseConstrainedValidator implements ConstraintValidator<Databas
      * @param columnMetadata provides column information
      * @return {@code true} if the not null constraint was violated, else {@code false}
      */
-    protected boolean notNullViolated(Object bean, String propertyName, Object propertyValue, ColumnMetadata columnMetadata) {
-        return propertyValue == null && columnMetadata.isRequired() && !isGeneratable(bean, propertyName, columnMetadata);
+    protected boolean notNullViolated(PropertyReference propertyReference, Object propertyValue, ColumnMetadata columnMetadata) {
+        return propertyValue == null && columnMetadata.isRequired() && !isGeneratable(propertyReference, columnMetadata);
     }
 
-    private boolean isGeneratable(Object bean, String propertyName, ColumnMetadata columnMetadata) {
-        return columnMetadata.isGeneratable() || hasAnnotation(bean.getClass(), propertyName, annotation.autoIncrementalClass());
+    private boolean isGeneratable(PropertyReference propertyReference, ColumnMetadata columnMetadata) {
+        return columnMetadata.isGeneratable() || annotationScanner.hasAnnotation(propertyReference, annotation.autoIncrementalClass());
     }
 
     /**
