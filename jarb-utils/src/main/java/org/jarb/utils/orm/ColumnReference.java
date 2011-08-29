@@ -1,4 +1,7 @@
-package org.jarb.constraint.database.column;
+/*
+ * (C) 2011 Nidera (www.nidera.com). All rights reserved.
+ */
+package org.jarb.utils.orm;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -6,24 +9,19 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
 /**
- * References a specific column inside a database type.
- * 
+ * References a column in the database.
+ *
  * @author Jeroen van Schagen
- * @since 20-05-2011
+ * @date Aug 29, 2011
  */
 public class ColumnReference {
-    private final String schemaName;
-    private final String tableName;
-    private final String columnName;
 
-    public ColumnReference(String schemaName, String tableName, String columnName) {
-        this.schemaName = schemaName;
+    private String tableName;
+    private String columnName;
+
+    public ColumnReference(String tableName, String columnName) {
         this.tableName = tableName;
         this.columnName = columnName;
-    }
-
-    public String getSchemaName() {
-        return schemaName;
     }
 
     public String getTableName() {
@@ -34,27 +32,19 @@ public class ColumnReference {
         return columnName;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean equals(Object obj) {
         return EqualsBuilder.reflectionEquals(this, obj);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public int hashCode() {
         return HashCodeBuilder.reflectionHashCode(this);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String toString() {
         return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
     }
+
 }

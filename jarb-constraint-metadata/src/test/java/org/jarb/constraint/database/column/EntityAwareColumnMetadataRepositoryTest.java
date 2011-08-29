@@ -5,6 +5,7 @@ import static org.junit.Assert.fail;
 
 import org.easymock.EasyMock;
 import org.jarb.constraint.domain.Person;
+import org.jarb.utils.orm.ColumnReference;
 import org.jarb.utils.orm.SchemaMapper;
 import org.junit.Before;
 import org.junit.Test;
@@ -34,9 +35,8 @@ public class EntityAwareColumnMetadataRepositoryTest {
      */
     @Test
     public void testForProperty() {
-        EasyMock.expect(schemaMapperMock.table(Person.class)).andReturn("persons");
-        EasyMock.expect(schemaMapperMock.column(Person.class, "name")).andReturn("name");
-        ColumnReference columnReference = new ColumnReference("my_schema", "my_table", "my_column");
+        ColumnReference columnReference = new ColumnReference("persons", "name");
+        EasyMock.expect(schemaMapperMock.column(Person.class, "name")).andReturn(columnReference);
         ColumnMetadata columnConstraint = new ColumnMetadata(columnReference);
         EasyMock.expect(columnConstraintsMock.getColumnMetadata("persons", "name")).andReturn(columnConstraint);
         EasyMock.replay(schemaMapperMock, columnConstraintsMock);
@@ -53,7 +53,7 @@ public class EntityAwareColumnMetadataRepositoryTest {
      */
     @Test
     public void testForPropertyNoMappedTable() {
-        EasyMock.expect(schemaMapperMock.table(Person.class)).andReturn(null);
+        EasyMock.expect(schemaMapperMock.column(Person.class, "name")).andReturn(new ColumnReference(null, null));
         EasyMock.replay(schemaMapperMock, columnConstraintsMock);
 
         try {
@@ -71,8 +71,7 @@ public class EntityAwareColumnMetadataRepositoryTest {
      */
     @Test
     public void testForPropertyNoMappedColumn() {
-        EasyMock.expect(schemaMapperMock.table(Person.class)).andReturn("persons");
-        EasyMock.expect(schemaMapperMock.column(Person.class, "name")).andReturn(null);
+        EasyMock.expect(schemaMapperMock.column(Person.class, "name")).andReturn(new ColumnReference("persons", null));
         EasyMock.replay(schemaMapperMock, columnConstraintsMock);
 
         try {

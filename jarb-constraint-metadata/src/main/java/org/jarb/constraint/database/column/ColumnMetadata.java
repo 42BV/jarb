@@ -2,6 +2,7 @@ package org.jarb.constraint.database.column;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
+import org.jarb.utils.orm.ColumnReference;
 
 /**
  * Describes that database constraints of a specific column.
@@ -40,10 +41,6 @@ public class ColumnMetadata {
      */
     public ColumnReference getColumnReference() {
         return columnReference;
-    }
-
-    public String getSchemaName() {
-        return columnReference.getSchemaName();
     }
 
     public String getTableName() {

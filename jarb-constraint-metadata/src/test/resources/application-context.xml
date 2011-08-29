@@ -27,7 +27,7 @@
     <bean class="org.jarb.constraint.database.column.EntityAwareColumnMetadataRepository">
         <constructor-arg ref="dataSource"/>
         <property name="schemaMapper">
-            <bean class="org.jarb.utils.orm.JpaHibernateSchemaMapper"/>
+            <bean class="org.jarb.utils.orm.jpa.JpaHibernateSchemaMapper"/>
         </property>
     </bean>
     

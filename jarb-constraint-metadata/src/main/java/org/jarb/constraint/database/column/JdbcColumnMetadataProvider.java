@@ -11,6 +11,7 @@ import javax.sql.DataSource;
 
 import org.apache.commons.lang3.StringUtils;
 import org.jarb.utils.JdbcUtils;
+import org.jarb.utils.orm.ColumnReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.Assert;
@@ -73,10 +74,9 @@ public class JdbcColumnMetadataProvider implements ColumnMetadataProvider {
      * @throws SQLException if any exception occurs
      */
     private ColumnMetadata mapToColumnMetadata(ResultSet resultSet) throws SQLException {
-        String schemaName = resultSet.getString("TABLE_SCHEM");
         String tableName = resultSet.getString("TABLE_NAME");
         String columnName = resultSet.getString("COLUMN_NAME");
-        ColumnReference columnReference = new ColumnReference(schemaName, tableName, columnName);
+        ColumnReference columnReference = new ColumnReference(tableName, columnName);
         ColumnMetadata columnMetadata = new ColumnMetadata(columnReference);
         columnMetadata.setDefaultValue(resultSet.getString("COLUMN_DEF"));
         columnMetadata.setMaximumLength(getValueAsInteger(resultSet, "COLUMN_SIZE"));

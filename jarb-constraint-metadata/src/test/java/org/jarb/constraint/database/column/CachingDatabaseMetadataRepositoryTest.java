@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.easymock.EasyMock;
+import org.jarb.utils.orm.ColumnReference;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -31,7 +32,7 @@ public class CachingDatabaseMetadataRepositoryTest {
      */
     @Test
     public void testCache() {
-        ColumnReference columnReference = new ColumnReference("my_schema", "my_table", "my_column");
+        ColumnReference columnReference = new ColumnReference("my_table", "my_column");
         ColumnMetadata columnConstraint = new ColumnMetadata(columnReference);
         Set<ColumnMetadata> columnConstraintSet = new HashSet<ColumnMetadata>();
         columnConstraintSet.add(columnConstraint);
@@ -54,7 +55,7 @@ public class CachingDatabaseMetadataRepositoryTest {
      */
     @Test
     public void testGetColumnConstraintsByUnknownTable() {
-        ColumnReference columnReference = new ColumnReference("my_schema", "my_table", "my_column");
+        ColumnReference columnReference = new ColumnReference("my_table", "my_column");
         Set<ColumnMetadata> columnConstraintSet = new HashSet<ColumnMetadata>();
         columnConstraintSet.add(new ColumnMetadata(columnReference));
         EasyMock.expect(constraintsProviderMock.all()).andReturn(columnConstraintSet);
@@ -70,7 +71,7 @@ public class CachingDatabaseMetadataRepositoryTest {
      */
     @Test
     public void testGetColumnConstraintsByUnknownColumn() {
-        ColumnReference columnReference = new ColumnReference("my_schema", "my_table", "my_column");
+        ColumnReference columnReference = new ColumnReference("my_table", "my_column");
         Set<ColumnMetadata> columnConstraintSet = new HashSet<ColumnMetadata>();
         columnConstraintSet.add(new ColumnMetadata(columnReference));
         EasyMock.expect(constraintsProviderMock.all()).andReturn(columnConstraintSet);

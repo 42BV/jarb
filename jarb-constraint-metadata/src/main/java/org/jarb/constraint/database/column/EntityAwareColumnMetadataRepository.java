@@ -2,6 +2,7 @@ package org.jarb.constraint.database.column;
 
 import javax.sql.DataSource;
 
+import org.jarb.utils.orm.ColumnReference;
 import org.jarb.utils.orm.SchemaMapper;
 
 /**
@@ -46,11 +47,12 @@ public class EntityAwareColumnMetadataRepository {
      * @throws UnknownColumnException if we could not map the property to a column
      */
     public ColumnMetadata getColumnMetadata(Class<?> entityClass, String propertyName) {
-        String tableName = schemaMapper.table(entityClass);
+        ColumnReference columnReference = schemaMapper.column(entityClass, propertyName);
+        String tableName = columnReference.getTableName();
         if (tableName == null) {
             throw new UnknownTableException("Could not resolve the table name of '" + entityClass.getSimpleName() + "'");
         }
-        String columnName = schemaMapper.column(entityClass, propertyName);
+        String columnName = columnReference.getColumnName();
         if (columnName == null) {
             throw new UnknownColumnException("Could not resolve the column name of '" + propertyName + "' (" + entityClass.getSimpleName() + ")");
         }

@@ -12,18 +12,18 @@ package org.jarb.utils.orm;
 public interface SchemaMapper {
 
     /**
-     * Retrieve the table name of a bean.
-     * @param beanClass bean class
-     * @return table name, if any
+     * Retrieve the table name of a entity.
+     * @param entityClass type of entity
+     * @return name of the table
      */
-    String table(Class<?> beanClass);
+    String table(Class<?> entityClass);
 
     /**
-     * Retrieve the column of a bean property.
-     * @param beanClass bean class
-     * @param propertyName property name
-     * @return column name, if any
+     * Retrieve the column that a property maps to.
+     * @param entityClass type of entity that holds the property
+     * @param propertyName name of the property
+     * @return reference to the column, if any
      */
-    String column(Class<?> beanClass, String propertyName);
+    ColumnReference column(Class<?> entityClass, String propertyName);
 
 }

@@ -8,7 +8,7 @@ import javax.persistence.metamodel.EntityType;
 
 import org.jarb.populator.excel.metamodel.EntityDefinition;
 import org.jarb.populator.excel.metamodel.MetaModel;
-import org.jarb.utils.orm.JpaMetaModelUtils;
+import org.jarb.utils.orm.jpa.JpaMetaModelUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

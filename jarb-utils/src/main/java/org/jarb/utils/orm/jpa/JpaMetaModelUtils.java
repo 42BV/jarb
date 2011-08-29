@@ -1,4 +1,4 @@
-package org.jarb.utils.orm;
+package org.jarb.utils.orm.jpa;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -6,8 +6,12 @@ import java.util.Set;
 
 import javax.persistence.Embeddable;
 import javax.persistence.Entity;
+import javax.persistence.Id;
 import javax.persistence.metamodel.EntityType;
 import javax.persistence.metamodel.Metamodel;
+
+import org.jarb.utils.BeanAnnotationUtils;
+import org.jarb.utils.orm.NotAnEntityException;
 
 /**
  * Table mapper that works using Java Persistence API (JPA) annotations.
@@ -43,7 +47,7 @@ public class JpaMetaModelUtils {
     public static Collection<EntityType<?>> getRootEntities(Metamodel metamodel) {
         Set<EntityType<?>> entityTypes = new HashSet<EntityType<?>>();
         for (EntityType<?> entityType : metamodel.getEntities()) {
-            if (!hasEntitySuperClass(entityType.getJavaType())) {
+            if (!hasEntitySuperclass(entityType.getJavaType())) {
                 entityTypes.add(entityType);
             }
         }
@@ -51,22 +55,42 @@ public class JpaMetaModelUtils {
     }
 
     /**
-     * Determine if an entity has a one or more entity super classes.
+     * Determine if an entity has a parent entity.
      * @param entityClass class of the entity to check
-     * @return {@code true} if one or more entity super classes were found, else {@code false}
+     * @return {@code true} if a parent entity was found, else {@code false}
      */
-    private static boolean hasEntitySuperClass(Class<?> entityClass) {
-        boolean found = false;
+    private static boolean hasEntitySuperclass(Class<?> entityClass) {
         Class<?> currentClass = entityClass;
         while (currentClass.getSuperclass() != null) {
-            final Class<?> superClass = currentClass.getSuperclass();
-            if (isEntity(superClass)) {
-                found = true;
-                break;
+            currentClass = currentClass.getSuperclass();
+            if (isEntity(currentClass)) {
+                return true;
             }
-            currentClass = superClass;
         }
-        return found;
+        return false;
+    }
+
+    public static String getIdentifierPropertyName(Class<?> entityClass) {
+        return BeanAnnotationUtils.findPropertyWithAnnotation(entityClass, Id.class);
+    }
+
+    public static Class<?> getRootEntityClass(Class<?> entityClass) {
+        assertIsEntity(entityClass);
+
+        Class<?> currentClass = entityClass;
+        while (currentClass.getSuperclass() != null) {
+            currentClass = currentClass.getSuperclass();
+            if (isEntity(currentClass)) {
+                entityClass = currentClass;
+            }
+        }
+        return entityClass;
+    }
+
+    public static void assertIsEntity(Class<?> beanClass) {
+        if (!isEntity(beanClass)) {
+            throw new NotAnEntityException("Bean class '" + beanClass.getName() + "' is not an @Entity.");
+        }
     }
 
 }

@@ -3,10 +3,14 @@
  */
 package org.jarb.utils;
 
+import static org.jarb.utils.ReflectionUtils.getFieldNames;
+
 import java.beans.PropertyDescriptor;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+
+import javax.persistence.Id;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.util.ReflectionUtils;
@@ -76,6 +80,15 @@ public class BeanAnnotationUtils {
     public static boolean hasAnnotation(Class<?> beanClass, String propertyName, Class<? extends Annotation> annotationType, boolean includeGetter,
             boolean includeSetter) {
         return getAnnotation(beanClass, propertyName, annotationType, includeGetter, includeSetter) != null;
+    }
+
+    public static String findPropertyWithAnnotation(Class<?> beanClass, Class<? extends Annotation> annotationType) {
+        for (String fieldName : getFieldNames(beanClass)) {
+            if (hasAnnotation(beanClass, fieldName, Id.class)) {
+                return fieldName;
+            }
+        }
+        throw new IllegalStateException("Bean '" + beanClass + "' does not have a property annotated as @" + annotationType.getClass().getSimpleName() + ".");
     }
 
 }

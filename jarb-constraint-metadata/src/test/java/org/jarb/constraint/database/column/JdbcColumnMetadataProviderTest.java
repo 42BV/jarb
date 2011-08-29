@@ -33,7 +33,6 @@ public class JdbcColumnMetadataProviderTest {
     @Test
     public void testGetColumnConstraints() {
         ColumnMetadata licenseNumberConstraint = findColumnMetadata("CARS", "LICENSE_NUMBER");
-        assertEquals("PUBLIC", licenseNumberConstraint.getSchemaName());
         assertEquals("CARS", licenseNumberConstraint.getTableName());
         assertEquals("LICENSE_NUMBER", licenseNumberConstraint.getColumnName());
         assertTrue(licenseNumberConstraint.isRequired());
