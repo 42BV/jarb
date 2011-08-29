@@ -5,7 +5,6 @@ import org.jarb.constraint.PropertyConstraintMetadataEnhancer;
 import org.jarb.constraint.database.column.ColumnMetadata;
 import org.jarb.constraint.database.column.EntityAwareColumnMetadataRepository;
 import org.jarb.constraint.database.column.UnknownColumnException;
-import org.jarb.constraint.database.column.UnknownTableException;
 import org.jarb.utils.orm.NotAnEntityException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,9 +45,6 @@ public class DatabasePropertyConstraintDescriptionEnhancer implements PropertyCo
         } catch (NotAnEntityException e) {
             // Property has no corresponding column, skip this step
             LOGGER.debug("Could not enhance property description with column metadata, because {} is not an entity", beanClass.getSimpleName());
-        } catch (UnknownTableException e) {
-            // Entity has no corresponding table, skip this step
-            LOGGER.debug("Could not enhance property description with column metadata, because {} has no table", beanClass.getSimpleName());
         } catch (UnknownColumnException e) {
             // Property has no corresponding column, skip this step
             LOGGER.debug("Could not enhance property description with column metadata, because {} has no column", propertyName);

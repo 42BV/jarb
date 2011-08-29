@@ -48,14 +48,9 @@ public class EntityAwareColumnMetadataRepository {
      */
     public ColumnMetadata getColumnMetadata(Class<?> entityClass, String propertyName) {
         ColumnReference columnReference = schemaMapper.column(entityClass, propertyName);
-        String tableName = columnReference.getTableName();
-        if (tableName == null) {
-            throw new UnknownTableException("Could not resolve the table name of '" + entityClass.getSimpleName() + "'");
-        }
-        String columnName = columnReference.getColumnName();
-        if (columnName == null) {
+        if (columnReference == null) {
             throw new UnknownColumnException("Could not resolve the column name of '" + propertyName + "' (" + entityClass.getSimpleName() + ")");
         }
-        return columnMetadataRepository.getColumnMetadata(tableName, columnName);
+        return columnMetadataRepository.getColumnMetadata(columnReference.getTableName(), columnReference.getColumnName());
     }
 }

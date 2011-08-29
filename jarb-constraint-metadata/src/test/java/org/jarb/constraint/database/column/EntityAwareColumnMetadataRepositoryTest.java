@@ -49,29 +49,11 @@ public class EntityAwareColumnMetadataRepositoryTest {
     }
 
     /**
-     * Table name could not be retrieved, thus an exception is thrown.
-     */
-    @Test
-    public void testForPropertyNoMappedTable() {
-        EasyMock.expect(schemaMapperMock.column(Person.class, "name")).andReturn(new ColumnReference(null, null));
-        EasyMock.replay(schemaMapperMock, columnConstraintsMock);
-
-        try {
-            columnConstraints.getColumnMetadata(Person.class, "name");
-            fail("Should throw an illegal argument exception");
-        } catch (UnknownTableException e) {
-            assertEquals("Could not resolve the table name of 'Person'", e.getMessage());
-        }
-
-        EasyMock.verify(schemaMapperMock, columnConstraintsMock);
-    }
-
-    /**
      * Column name could not be retrieved, thus an exception is thrown.
      */
     @Test
     public void testForPropertyNoMappedColumn() {
-        EasyMock.expect(schemaMapperMock.column(Person.class, "name")).andReturn(new ColumnReference("persons", null));
+        EasyMock.expect(schemaMapperMock.column(Person.class, "name")).andReturn(null);
         EasyMock.replay(schemaMapperMock, columnConstraintsMock);
 
         try {
