@@ -9,8 +9,8 @@ import static org.jarb.utils.BeanAnnotationUtils.getAnnotation;
 import static org.jarb.utils.BeanAnnotationUtils.hasAnnotation;
 import static org.jarb.utils.ReflectionUtils.getFieldType;
 import static org.jarb.utils.orm.jpa.JpaMetaModelUtils.assertIsEntity;
+import static org.jarb.utils.orm.jpa.JpaMetaModelUtils.findRootEntityClass;
 import static org.jarb.utils.orm.jpa.JpaMetaModelUtils.getIdentifierPropertyName;
-import static org.jarb.utils.orm.jpa.JpaMetaModelUtils.getRootEntityClass;
 import static org.springframework.beans.BeanUtils.instantiateClass;
 
 import java.lang.reflect.Field;
@@ -19,7 +19,6 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
@@ -80,7 +79,7 @@ public class JpaHibernateSchemaMapper implements SchemaMapper {
         assertIsEntity(entityClass);
 
         Class<?> tableClass = entityClass;
-        Class<?> rootEntityClass = getRootEntityClass(entityClass);
+        Class<?> rootEntityClass = findRootEntityClass(entityClass);
         Inheritance inheritance = rootEntityClass.getAnnotation(Inheritance.class);
         if (inheritance != null && inheritance.strategy() == SINGLE_TABLE) {
             tableClass = rootEntityClass;
@@ -124,15 +123,22 @@ public class JpaHibernateSchemaMapper implements SchemaMapper {
      * @return name of the table
      */
     private String tableForProperty(Class<?> entityClass, String propertyName) {
-        Class<?> rootEntityClass = getRootEntityClass(entityClass);
+        Class<?> tableClass = entityClass;
+        Class<?> rootEntityClass = findRootEntityClass(entityClass);
         Inheritance inheritance = rootEntityClass.getAnnotation(Inheritance.class);
-        if (inheritance != null && inheritance.strategy() == InheritanceType.JOINED) {
-            Field field = ReflectionUtils.findField(entityClass, propertyName);
-            Assert.notNull(field, "Could not find property '" + propertyName + "' for " + entityClass.getClass().getSimpleName());
-            return readTableName(field.getDeclaringClass());
-        } else {
-            return table(entityClass);
+        if (inheritance != null) {
+            switch (inheritance.strategy()) {
+            case SINGLE_TABLE:
+                tableClass = rootEntityClass;
+                break;
+            case JOINED:
+                Field field = ReflectionUtils.findField(entityClass, propertyName);
+                Assert.notNull(field, "Could not find property '" + propertyName + "' for " + entityClass.getClass().getSimpleName());
+                tableClass = field.getDeclaringClass();
+                break;
+            }
         }
+        return readTableName(tableClass);
     }
 
     private String readTableName(Class<?> entityClass) {

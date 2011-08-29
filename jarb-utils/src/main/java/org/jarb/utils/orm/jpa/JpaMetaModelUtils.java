@@ -21,6 +21,12 @@ import org.jarb.utils.orm.NotAnEntityException;
  */
 public class JpaMetaModelUtils {
 
+    public static void assertIsEntity(Class<?> beanClass) {
+        if (!isEntity(beanClass)) {
+            throw new NotAnEntityException("Bean class '" + beanClass.getName() + "' is not an @Entity.");
+        }
+    }
+
     /**
      * Determine if a bean class is annotated with @Entity.
      * @param beanClass class of the bean
@@ -54,43 +60,36 @@ public class JpaMetaModelUtils {
         return entityTypes;
     }
 
-    /**
-     * Determine if an entity has a parent entity.
-     * @param entityClass class of the entity to check
-     * @return {@code true} if a parent entity was found, else {@code false}
-     */
     private static boolean hasEntitySuperclass(Class<?> entityClass) {
-        Class<?> currentClass = entityClass;
-        while (currentClass.getSuperclass() != null) {
-            currentClass = currentClass.getSuperclass();
-            if (isEntity(currentClass)) {
-                return true;
-            }
-        }
-        return false;
+        return findParentEntityClass(entityClass) != null;
     }
 
-    public static String getIdentifierPropertyName(Class<?> entityClass) {
-        return BeanAnnotationUtils.findPropertyWithAnnotation(entityClass, Id.class);
-    }
-
-    public static Class<?> getRootEntityClass(Class<?> entityClass) {
-        assertIsEntity(entityClass);
-
-        Class<?> currentClass = entityClass;
+    public static Class<?> findParentEntityClass(Class<?> beanClass) {
+        Class<?> entityClass = null;
+        Class<?> currentClass = beanClass;
         while (currentClass.getSuperclass() != null) {
             currentClass = currentClass.getSuperclass();
             if (isEntity(currentClass)) {
                 entityClass = currentClass;
+                break;
             }
         }
         return entityClass;
     }
 
-    public static void assertIsEntity(Class<?> beanClass) {
-        if (!isEntity(beanClass)) {
-            throw new NotAnEntityException("Bean class '" + beanClass.getName() + "' is not an @Entity.");
-        }
+    public static Class<?> findRootEntityClass(Class<?> beanClass) {
+        Class<?> entityClass = null;
+        Class<?> currentClass = beanClass;
+        do {
+            if (isEntity(currentClass)) {
+                entityClass = currentClass;
+            }
+        } while ((currentClass = currentClass.getSuperclass()) != null);
+        return entityClass;
+    }
+
+    public static String getIdentifierPropertyName(Class<?> entityClass) {
+        return BeanAnnotationUtils.findPropertyWithAnnotation(entityClass, Id.class);
     }
 
 }
