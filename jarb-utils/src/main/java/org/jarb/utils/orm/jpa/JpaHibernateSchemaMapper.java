@@ -180,13 +180,13 @@ public class JpaHibernateSchemaMapper implements SchemaMapper {
         if (joinColumn != null && isNotBlank(joinColumn.name())) {
             return namingStrategy.columnName(joinColumn.name());
         } else {
-            Class<?> referenceClass = getReferencedEntity(entityClass, propertyName);
-            ColumnReference referenceColumn = column(entityClass, getIdentifierPropertyName(entityClass));
-            return namingStrategy.foreignKeyColumnName(propertyName, referenceClass.getName(), referenceColumn.getTableName(), referenceColumn.getColumnName());
+            Class<?> targetClass = getTargetEntityClass(entityClass, propertyName);
+            ColumnReference targetColumn = column(targetClass, getIdentifierPropertyName(targetClass));
+            return namingStrategy.foreignKeyColumnName(propertyName, targetClass.getName(), targetColumn.getTableName(), targetColumn.getColumnName());
         }
     }
 
-    private Class<?> getReferencedEntity(Class<?> entityClass, String propertyName) {
+    private Class<?> getTargetEntityClass(Class<?> entityClass, String propertyName) {
         ManyToOne manyToOne = getAnnotation(entityClass, propertyName, ManyToOne.class);
         if (manyToOne.targetEntity() != void.class) {
             return manyToOne.targetEntity();
