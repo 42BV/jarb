@@ -152,7 +152,7 @@ public class JpaHibernateSchemaMapper implements SchemaMapper {
 
     private String tableForProperty(PropertyReference propertyReference) {
         Class<?> tableClass = propertyReference.getBeanClass();
-        Class<?> rootEntityClass = findRootEntityClass(tableClass);
+        Class<?> rootEntityClass = findRootEntityClass(propertyReference.getBeanClass());
         Inheritance inheritance = rootEntityClass.getAnnotation(Inheritance.class);
         if (inheritance != null) {
             switch (inheritance.strategy()) {
@@ -211,7 +211,7 @@ public class JpaHibernateSchemaMapper implements SchemaMapper {
                 break;
             }
         }
-        return hasText(identifierPropertyName, "Could not find an identifier column.");
+        return hasText(identifierPropertyName, "Could not find an identifier column for '" + entityClass + "'.");
     }
 
     private String readColumnName(PropertyReference propertyReference) {
