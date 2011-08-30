@@ -29,7 +29,7 @@ public class BeanAnnotationScannerImplTest {
 
     @Test
     public void testFindForField() {
-        PropertyReference propertyReference = new PropertyReference("hiddenProperty", ClassWithAnnotatedProperties.class);
+        PropertyReference propertyReference = new PropertyReference(ClassWithAnnotatedProperties.class, "hiddenProperty");
         assertTrue(scanner.hasAnnotation(propertyReference, Column.class));
         Column columnAnnotation = scanner.findAnnotation(propertyReference, Column.class);
         assertNotNull(columnAnnotation);
@@ -38,7 +38,7 @@ public class BeanAnnotationScannerImplTest {
 
     @Test
     public void testFindForGetter() {
-        PropertyReference propertyReference = new PropertyReference("readableProperty", ClassWithAnnotatedProperties.class);
+        PropertyReference propertyReference = new PropertyReference(ClassWithAnnotatedProperties.class, "readableProperty");
         assertTrue(scanner.hasAnnotation(propertyReference, Column.class));
         Column columnAnnotation = scanner.findAnnotation(propertyReference, Column.class);
         assertNotNull(columnAnnotation);
@@ -47,7 +47,7 @@ public class BeanAnnotationScannerImplTest {
 
     @Test
     public void testFindForSetter() {
-        PropertyReference propertyReference = new PropertyReference("writableProperty", ClassWithAnnotatedProperties.class);
+        PropertyReference propertyReference = new PropertyReference(ClassWithAnnotatedProperties.class, "writableProperty");
         assertTrue(scanner.hasAnnotation(propertyReference, Column.class));
         Column columnAnnotation = scanner.findAnnotation(propertyReference, Column.class);
         assertNotNull(columnAnnotation);

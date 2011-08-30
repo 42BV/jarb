@@ -24,10 +24,10 @@ public interface BeanAnnotationScanner {
     /**
      * Check if a specific annotation is declared on the class.
      * @param beanClass bean that should contain the annotation
-     * @param annotationType type of annotation that should be looked for
+     * @param annotationTypes type of annotations that should be looked for
      * @return {@code true} if an annotation could be found, else {@code false}
      */
-    boolean hasAnnotation(Class<?> beanClass, Class<? extends Annotation> annotationType);
+    boolean hasAnnotation(Class<?> beanClass, Class<? extends Annotation>... annotationTypes);
 
     /**
      * Find a specific annotation on the property declaration.
@@ -40,9 +40,9 @@ public interface BeanAnnotationScanner {
     /**
      * Check if a specific property is declared on the property.
      * @param propertyReference property that should contain the annotation
-     * @param annotationType type of annotation that should be looked for
+     * @param annotationTypse type of annotations that should be looked for
      * @return {@code true} if an annotation could be found, else {@code false}
      */
-    boolean hasAnnotation(PropertyReference propertyReference, Class<? extends Annotation> annotationType);
+    boolean hasAnnotation(PropertyReference propertyReference, Class<? extends Annotation>... annotationTypes);
 
 }

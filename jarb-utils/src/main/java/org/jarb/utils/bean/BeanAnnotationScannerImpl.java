@@ -35,8 +35,15 @@ public class BeanAnnotationScannerImpl implements BeanAnnotationScanner {
     }
 
     @Override
-    public boolean hasAnnotation(Class<?> beanClass, Class<? extends Annotation> annotationType) {
-        return findAnnotation(beanClass, annotationType) != null;
+    public boolean hasAnnotation(Class<?> beanClass, Class<? extends Annotation>... annotationTypes) {
+        boolean found = false;
+        for (Class<? extends Annotation> annotationType : annotationTypes) {
+            if (findAnnotation(beanClass, annotationType) != null) {
+                found = true;
+                break;
+            }
+        }
+        return found;
     }
 
     @Override
@@ -61,8 +68,15 @@ public class BeanAnnotationScannerImpl implements BeanAnnotationScanner {
     }
 
     @Override
-    public boolean hasAnnotation(PropertyReference propertyReference, Class<? extends Annotation> annotationType) {
-        return findAnnotation(propertyReference, annotationType) != null;
+    public boolean hasAnnotation(PropertyReference propertyReference, Class<? extends Annotation>... annotationTypes) {
+        boolean found = false;
+        for (Class<? extends Annotation> annotationType : annotationTypes) {
+            if (findAnnotation(propertyReference, annotationType) != null) {
+                found = true;
+                break;
+            }
+        }
+        return found;
     }
 
 }

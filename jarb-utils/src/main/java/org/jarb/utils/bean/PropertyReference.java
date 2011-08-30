@@ -21,7 +21,7 @@ public class PropertyReference {
     private final String name;
     private final Class<?> beanClass;
 
-    public PropertyReference(String name, Class<?> beanClass) {
+    public PropertyReference(Class<?> beanClass, String name) {
         this.name = hasText(name, "Property name is required");
         this.beanClass = notNull(beanClass, "Bean class is required");
     }

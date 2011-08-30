@@ -37,7 +37,7 @@ public class EntityAwareColumnMetadataRepositoryTest {
     @Test
     public void testForProperty() {
         ColumnReference columnReference = new ColumnReference("persons", "name");
-        EasyMock.expect(schemaMapperMock.column(new PropertyReference("name", Person.class))).andReturn(columnReference);
+        EasyMock.expect(schemaMapperMock.column(new PropertyReference(Person.class, "name"))).andReturn(columnReference);
         ColumnMetadata columnConstraint = new ColumnMetadata(columnReference);
         EasyMock.expect(columnConstraintsMock.getColumnMetadata("persons", "name")).andReturn(columnConstraint);
         EasyMock.replay(schemaMapperMock, columnConstraintsMock);
@@ -54,7 +54,7 @@ public class EntityAwareColumnMetadataRepositoryTest {
      */
     @Test
     public void testForPropertyNoMappedColumn() {
-        EasyMock.expect(schemaMapperMock.column(new PropertyReference("name", Person.class))).andReturn(null);
+        EasyMock.expect(schemaMapperMock.column(new PropertyReference(Person.class, "name"))).andReturn(null);
         EasyMock.replay(schemaMapperMock, columnConstraintsMock);
 
         try {

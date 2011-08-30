@@ -48,7 +48,7 @@ public class EntityAwareColumnMetadataRepository {
      * @throws UnknownColumnException if we could not map the property to a column
      */
     public ColumnMetadata getColumnMetadata(Class<?> entityClass, String propertyName) {
-        ColumnReference columnReference = schemaMapper.column(new PropertyReference(propertyName, entityClass));
+        ColumnReference columnReference = schemaMapper.column(new PropertyReference(entityClass, propertyName));
         if (columnReference == null) {
             throw new UnknownColumnException("Could not resolve the column name of '" + propertyName + "' (" + entityClass.getSimpleName() + ")");
         }

@@ -121,7 +121,7 @@ public class DatabaseConstrainedValidator implements ConstraintValidator<Databas
      */
     private boolean isValidValue(Object bean, String propertyName, Object propertyValue, ColumnMetadata columnMetadata, ConstraintValidatorContext context) {
         boolean valueIsValid = true;
-        if (notNullViolated(new PropertyReference(propertyName, bean.getClass()), propertyValue, columnMetadata)) {
+        if (notNullViolated(new PropertyReference(bean.getClass(), propertyName), propertyValue, columnMetadata)) {
             context.buildConstraintViolationWithTemplate(NOT_NULL_TEMPLATE).addNode(propertyName).addConstraintViolation();
             valueIsValid = false;
         }

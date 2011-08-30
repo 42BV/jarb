@@ -8,15 +8,15 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static org.jarb.utils.Conditions.hasText;
 import static org.jarb.utils.Conditions.instanceOf;
 import static org.jarb.utils.Conditions.notNull;
+import static org.jarb.utils.bean.BeanProperties.getDeclaringClass;
 import static org.jarb.utils.bean.BeanProperties.getPropertyNames;
 import static org.jarb.utils.bean.BeanProperties.getPropertyType;
 import static org.jarb.utils.orm.jpa.JpaMetaModelUtils.assertIsEntity;
 import static org.jarb.utils.orm.jpa.JpaMetaModelUtils.findRootEntityClass;
 import static org.springframework.beans.BeanUtils.instantiateClass;
 
-import java.lang.reflect.Field;
-
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Id;
@@ -25,6 +25,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
@@ -35,7 +36,6 @@ import org.jarb.utils.bean.BeanAnnotationScannerImpl;
 import org.jarb.utils.bean.PropertyReference;
 import org.jarb.utils.orm.ColumnReference;
 import org.jarb.utils.orm.SchemaMapper;
-import org.springframework.util.ReflectionUtils;
 
 /**
  * Hibernate JPA implementation of {@link SchemaMapper}.
@@ -83,19 +83,26 @@ public class JpaHibernateSchemaMapper implements SchemaMapper {
         return (NamingStrategy) instantiateClass(namingStrategyClass);
     }
 
-    // Table naming
+    //
+    // Table
+    //
 
     @Override
     public String table(Class<?> entityClass) {
         assertIsEntity(entityClass);
 
+        Class<?> tableClass = determineTableClass(entityClass);
+        return readTableName(tableClass);
+    }
+
+    private Class<?> determineTableClass(Class<?> entityClass) {
         Class<?> tableClass = entityClass;
         Class<?> rootEntityClass = findRootEntityClass(entityClass);
         Inheritance inheritance = rootEntityClass.getAnnotation(Inheritance.class);
         if (inheritance != null && inheritance.strategy() == SINGLE_TABLE) {
             tableClass = rootEntityClass;
         }
-        return readTableName(tableClass);
+        return tableClass;
     }
 
     private String readTableName(Class<?> entityClass) {
@@ -118,7 +125,9 @@ public class JpaHibernateSchemaMapper implements SchemaMapper {
         return namingStrategy.classToTableName(entityName);
     }
 
-    // Column naming
+    //
+    // Column
+    //
 
     @Override
     public ColumnReference column(PropertyReference propertyReference) {
@@ -133,28 +142,14 @@ public class JpaHibernateSchemaMapper implements SchemaMapper {
         return columnReference;
     }
 
-    /**
-     * Determine if the bean property should map to a database column.
-     * Whenever the property is annotated as @Transient, or is a collection
-     * based reference, we return {@code false}.
-     * @param entityClass type of entity that holds the property
-     * @param propertyName name of the property, as declared
-     * @return {@code true} if a column is expected, else {@code false}
-     */
     private boolean hasColumn(PropertyReference propertyReference) {
         return !(annotationScanner.hasAnnotation(propertyReference, Transient.class) || isCollectionReference(propertyReference));
     }
 
     private boolean isCollectionReference(PropertyReference propertyReference) {
-        return annotationScanner.hasAnnotation(propertyReference, OneToMany.class) || annotationScanner.hasAnnotation(propertyReference, ManyToMany.class);
+        return annotationScanner.hasAnnotation(propertyReference, OneToMany.class, ManyToMany.class, ElementCollection.class);
     }
 
-    /**
-     * Retrieve the table name for a specific bean property.
-     * @param entityClass type of entity that holds the property
-     * @param propertyName name of the property, as declared
-     * @return name of the table
-     */
     private String tableForProperty(PropertyReference propertyReference) {
         Class<?> tableClass = propertyReference.getBeanClass();
         Class<?> rootEntityClass = findRootEntityClass(tableClass);
@@ -165,37 +160,45 @@ public class JpaHibernateSchemaMapper implements SchemaMapper {
                 tableClass = rootEntityClass;
                 break;
             case JOINED:
-                Field field = ReflectionUtils.findField(propertyReference.getBeanClass(), propertyReference.getName());
-                tableClass = notNull(field, "Could not find property '" + propertyReference + "'.").getDeclaringClass();
+                tableClass = getDeclaringClass(propertyReference);
                 break;
             }
         }
         return readTableName(tableClass);
     }
 
-    /**
-     * Retrieve the column name for a specific bean property.
-     * @param entityClass type of entity that holds the property
-     * @param propertyName name of the property, as declared
-     * @return name of the column
-     */
     private String columnName(PropertyReference propertyReference) {
-        if (annotationScanner.hasAnnotation(propertyReference, ManyToOne.class)) {
-            return readReferenceColumnName(propertyReference);
+        String columnName;
+        if (annotationScanner.hasAnnotation(propertyReference, OneToOne.class)) {
+            columnName = readOneToOne(propertyReference);
+        } else if (annotationScanner.hasAnnotation(propertyReference, ManyToOne.class)) {
+            columnName = readManyToOne(propertyReference);
         } else {
-            return readColumnName(propertyReference);
+            columnName = readColumnName(propertyReference);
         }
+        return columnName;
     }
 
-    private String readReferenceColumnName(PropertyReference propertyReference) {
+    private String readOneToOne(PropertyReference propertyReference) {
+        OneToOne oneToOne = annotationScanner.findAnnotation(propertyReference, OneToOne.class);
+        Class<?> referencedClass = oneToOne.targetEntity() != void.class ? oneToOne.targetEntity() : getPropertyType(propertyReference);
+        return readReferenceColumnName(propertyReference, referencedClass);
+    }
+
+    private String readManyToOne(PropertyReference propertyReference) {
+        ManyToOne manyToOne = annotationScanner.findAnnotation(propertyReference, ManyToOne.class);
+        Class<?> referencedClass = manyToOne.targetEntity() != void.class ? manyToOne.targetEntity() : getPropertyType(propertyReference);
+        return readReferenceColumnName(propertyReference, referencedClass);
+    }
+
+    private String readReferenceColumnName(PropertyReference propertyReference, Class<?> referencedClass) {
         JoinColumn joinColumn = annotationScanner.findAnnotation(propertyReference, JoinColumn.class);
         if (joinColumn != null && isNotBlank(joinColumn.name())) {
             return namingStrategy.columnName(joinColumn.name());
         } else {
-            Class<?> referencedEntityClass = getTargetEntityClass(propertyReference);
-            String referencedPropertyName = getIdentifierPropertyName(referencedEntityClass);
-            ColumnReference referencedColumn = column(new PropertyReference(referencedPropertyName, referencedEntityClass));
-            return namingStrategy.foreignKeyColumnName(propertyReference.getName(), referencedEntityClass.getName(), referencedColumn.getTableName(),
+            String referencedProperty = getIdentifierPropertyName(referencedClass);
+            ColumnReference referencedColumn = column(new PropertyReference(referencedClass, referencedProperty));
+            return namingStrategy.foreignKeyColumnName(propertyReference.getName(), referencedClass.getName(), referencedColumn.getTableName(),
                     referencedColumn.getColumnName());
         }
     }
@@ -203,21 +206,12 @@ public class JpaHibernateSchemaMapper implements SchemaMapper {
     private String getIdentifierPropertyName(Class<?> entityClass) {
         String identifierPropertyName = null;
         for (String propertyName : getPropertyNames(entityClass)) {
-            if (annotationScanner.hasAnnotation(new PropertyReference(propertyName, entityClass), Id.class)) {
+            if (annotationScanner.hasAnnotation(new PropertyReference(entityClass, propertyName), Id.class)) {
                 identifierPropertyName = propertyName;
                 break;
             }
         }
         return hasText(identifierPropertyName, "Could not find an identifier column.");
-    }
-
-    private Class<?> getTargetEntityClass(PropertyReference propertyReference) {
-        ManyToOne manyToOne = annotationScanner.findAnnotation(propertyReference, ManyToOne.class);
-        if (manyToOne.targetEntity() != void.class) {
-            return manyToOne.targetEntity();
-        } else {
-            return getPropertyType(propertyReference.getBeanClass(), propertyReference.getName());
-        }
     }
 
     private String readColumnName(PropertyReference propertyReference) {
