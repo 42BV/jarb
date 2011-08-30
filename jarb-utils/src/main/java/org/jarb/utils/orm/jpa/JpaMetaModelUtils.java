@@ -12,12 +12,12 @@ import javax.persistence.metamodel.Metamodel;
 import org.jarb.utils.orm.NotAnEntityException;
 
 /**
- * Table mapper that works using Java Persistence API (JPA) annotations.
+ * Provides support for JPA meta model.
  * 
  * @author Jeroen van Schagen
  * @since 20-05-2011
  */
-public abstract class JpaMetaModelUtils {
+public final class JpaMetaModelUtils {
 
     public static void assertIsEntity(Class<?> beanClass) {
         if (!isEntity(beanClass)) {
@@ -84,6 +84,9 @@ public abstract class JpaMetaModelUtils {
             }
         } while ((currentClass = currentClass.getSuperclass()) != null);
         return entityClass;
+    }
+
+    private JpaMetaModelUtils() {
     }
 
 }

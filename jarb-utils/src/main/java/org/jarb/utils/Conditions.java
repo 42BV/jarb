@@ -13,7 +13,7 @@ import org.hamcrest.Matcher;
  * @author Jeroen van Schagen
  * @date Aug 29, 2011
  */
-public class Conditions {
+public final class Conditions {
 
     public static void state(boolean expression, String message) {
         if (!expression) {
@@ -39,6 +39,9 @@ public class Conditions {
     public static <T> T matches(T object, Matcher<? super T> matcher, String message) {
         state(notNull(matcher, "Matcher cannot be null").matches(object), message);
         return object;
+    }
+
+    private Conditions() {
     }
 
 }

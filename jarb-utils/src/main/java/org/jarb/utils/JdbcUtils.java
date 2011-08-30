@@ -13,7 +13,7 @@ import java.sql.Statement;
 public final class JdbcUtils {
 
     /**
-     * Commit the connection whenever it does not autocommit.
+     * Commit the connection whenever it does not auto-commit.
      * @param connection our connection to commit
      */
     public static void commitSafely(Connection connection) {
@@ -51,7 +51,6 @@ public final class JdbcUtils {
     }
 
     private JdbcUtils() {
-        // Prevent initialization
     }
 
 }
