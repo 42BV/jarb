@@ -103,7 +103,7 @@ public final class PropertyPath implements Iterable<PropertyNode> {
             if (value == null) {
                 break; // Quit looping whenever null, as we cannot go any deeper
             }
-            value = new ModifiableBean(value).getPropertyValue(propertyNode.getName());
+            value = new ModifiableBean<Object>(value).getPropertyValue(propertyNode.getName());
         }
         return value;
     }

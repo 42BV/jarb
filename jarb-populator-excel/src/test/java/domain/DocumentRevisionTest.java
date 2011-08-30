@@ -24,7 +24,7 @@ public class DocumentRevisionTest {
     @Test
     public void testSetGetID() {
         Long id = new Long("1");
-        new ModifiableBean(documentRevision).setPropertyValue("id", id);
+        new ModifiableBean<DocumentRevision>(documentRevision).setPropertyValue("id", id);
         assertEquals(id, documentRevision.getId());
     }
 

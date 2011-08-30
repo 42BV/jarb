@@ -10,65 +10,63 @@ import org.springframework.beans.NotReadablePropertyException;
 import org.springframework.beans.NotWritablePropertyException;
 
 public class ModifiableBeanTest {
-    private SomeBean bean;
-    private ModifiableBean accessor;
+    private ModifiableBean<SomeBean> modifiableBean;
 
     @Before
     public void setUp() {
-        bean = new SomeBean();
-        accessor = new ModifiableBean(bean);
+        modifiableBean = new ModifiableBean<SomeBean>(SomeBean.class);
     }
 
     @Test
     public void testGetValueFromField() {
-        bean.hiddenProperty = "test";
-        assertEquals("test", accessor.getPropertyValue("hiddenProperty"));
-    }
-
-    @Test
-    public void testGetValueFromMethod() {
-        bean.readableProperty = "test";
-        assertEquals("test(from getter)", accessor.getPropertyValue("readableProperty"));
-    }
-
-    @Test(expected = NotReadablePropertyException.class)
-    public void testGetNonExistingProperty() {
-        accessor.getPropertyValue("unknownProperty");
+        modifiableBean.getWrappedBean().hiddenProperty = "test";
+        assertEquals("test", modifiableBean.getPropertyValue("hiddenProperty"));
     }
 
     @Test
     public void testSetValueOnField() {
-        accessor.setPropertyValue("hiddenProperty", "test");
-        assertEquals("test", bean.hiddenProperty);
+        modifiableBean.setPropertyValue("hiddenProperty", "test");
+        assertEquals("test", modifiableBean.getWrappedBean().hiddenProperty);
+    }
+
+    @Test
+    public void testGetValueFromMethod() {
+        modifiableBean.getWrappedBean().readableProperty = "test";
+        assertEquals("test(from getter)", modifiableBean.getPropertyValue("readableProperty"));
     }
 
     @Test
     public void testSetValueByMethod() {
-        accessor.setPropertyValue("writableProperty", "test");
-        assertEquals("test(from setter)", bean.writableProperty);
+        modifiableBean.setPropertyValue("writableProperty", "test");
+        assertEquals("test(from setter)", modifiableBean.getWrappedBean().writableProperty);
+    }
+
+    @Test(expected = NotReadablePropertyException.class)
+    public void testGetNonExistingProperty() {
+        modifiableBean.getPropertyValue("unknownProperty");
     }
 
     @Test(expected = NotWritablePropertyException.class)
     public void testSetNonExistingProperty() {
-        accessor.setPropertyValue("unknownProperty", "value");
+        modifiableBean.setPropertyValue("unknownProperty", "value");
     }
 
     @Test
     public void testHasPropertyByField() {
-        assertTrue(accessor.isReadableProperty("hiddenProperty"));
-        assertTrue(accessor.isWritableProperty("hiddenProperty"));
+        assertTrue(modifiableBean.isReadableProperty("hiddenProperty"));
+        assertTrue(modifiableBean.isWritableProperty("hiddenProperty"));
     }
 
     @Test
     public void testHasPropertyByMethod() {
-        assertTrue(accessor.isReadableProperty("readableProperty"));
-        assertTrue(accessor.isWritableProperty("writableProperty"));
+        assertTrue(modifiableBean.isReadableProperty("readableProperty"));
+        assertTrue(modifiableBean.isWritableProperty("writableProperty"));
     }
 
     @Test
     public void testDoesNotHaveProperty() {
-        assertFalse(accessor.isReadableProperty("unknownProperty"));
-        assertFalse(accessor.isWritableProperty("unknownProperty"));
+        assertFalse(modifiableBean.isReadableProperty("unknownProperty"));
+        assertFalse(modifiableBean.isWritableProperty("unknownProperty"));
     }
 
     public static class SomeBean {

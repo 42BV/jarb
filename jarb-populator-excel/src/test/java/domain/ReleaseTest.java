@@ -21,20 +21,20 @@ public class ReleaseTest {
 
     @Test
     public void testSetGetNumber() {
-        new ModifiableBean(release).setPropertyValue("number", 3);
+        new ModifiableBean<Release>(release).setPropertyValue("number", 3);
         assertEquals((Integer) 3, release.getNumber());
     }
 
     @Test
     public void testSetGetDate() {
         Date date = new Date();
-        new ModifiableBean(release).setPropertyValue("releaseDate", date);
+        new ModifiableBean<Release>(release).setPropertyValue("releaseDate", date);
         assertEquals(date, release.getDate());
     }
 
     @Test
     public void testSetGetType() {
-        new ModifiableBean(release).setPropertyValue("type", 'A');
+        new ModifiableBean<Release>(release).setPropertyValue("type", 'A');
         assertEquals((Character) 'A', release.getType());
     }
 }

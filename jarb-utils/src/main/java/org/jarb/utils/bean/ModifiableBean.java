@@ -5,9 +5,9 @@ package org.jarb.utils.bean;
 
 import static org.jarb.utils.Conditions.notNull;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.BeanWrapperImpl;
-import org.springframework.beans.BeansException;
 import org.springframework.beans.DirectFieldAccessor;
 import org.springframework.beans.NotReadablePropertyException;
 import org.springframework.beans.NotWritablePropertyException;
@@ -21,23 +21,27 @@ import org.springframework.beans.PropertyAccessor;
  * @author Jeroen van Schagen
  * @date Aug 16, 2011
  */
-public class ModifiableBean {
-    private final Object bean;
+public class ModifiableBean<T> {
+    private final T bean;
 
     private final BeanWrapper beanWrapper;
     private final PropertyAccessor fieldAccessor;
 
-    public ModifiableBean(Object bean) {
+    public ModifiableBean(T bean) {
         this.bean = notNull(bean, "Wrapped bean cannot be null.");
         this.beanWrapper = new BeanWrapperImpl(bean);
         this.fieldAccessor = new DirectFieldAccessor(bean);
+    }
+
+    public ModifiableBean(Class<? extends T> beanClass) {
+        this(BeanUtils.instantiateClass(beanClass));
     }
 
     public boolean isReadableProperty(String propertyName) {
         return beanWrapper.isReadableProperty(propertyName) || fieldAccessor.isReadableProperty(propertyName);
     }
 
-    public Object getPropertyValue(String propertyName) throws BeansException {
+    public Object getPropertyValue(String propertyName) {
         try {
             return beanWrapper.getPropertyValue(propertyName);
         } catch (NotReadablePropertyException e) {
@@ -49,20 +53,16 @@ public class ModifiableBean {
         return beanWrapper.isWritableProperty(propertyName) || fieldAccessor.isWritableProperty(propertyName);
     }
 
-    public void setPropertyValue(String propertyName, Object value) throws BeansException {
+    public ModifiableBean<T> setPropertyValue(String propertyName, Object value) {
         try {
             beanWrapper.setPropertyValue(propertyName, value);
         } catch (NotWritablePropertyException e) {
             fieldAccessor.setPropertyValue(propertyName, value);
         }
+        return this;
     }
 
-    public Object getBean() {
+    public T getWrappedBean() {
         return bean;
     }
-
-    public Class<?> getBeanClass() {
-        return bean.getClass();
-    }
-
 }

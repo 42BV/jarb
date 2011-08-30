@@ -21,7 +21,7 @@ public class WorkspaceTest {
     @Test
     public void testGetId() {
         final Long id = 1L;
-        new ModifiableBean(workspace).setPropertyValue("id", id);
+        new ModifiableBean<Workspace>(workspace).setPropertyValue("id", id);
         assertEquals(id, workspace.getId());
     }
 

@@ -99,8 +99,7 @@ public class DatabaseConstrainedValidator implements ConstraintValidator<Databas
             final Class<?> beanClass = bean.getClass();
             ColumnMetadata columnMetadata = columnMetadataRepository.getColumnMetadata(beanClass, property.getName());
             if (columnMetadata != null) {
-                ModifiableBean propertyAccessor = new ModifiableBean(bean);
-                final Object propertyValue = propertyAccessor.getPropertyValue(property.getName());
+                final Object propertyValue = new ModifiableBean<Object>(bean).getPropertyValue(property.getName());
                 propertyIsValid = isValidValue(bean, property.getName(), propertyValue, columnMetadata, context);
             } else {
                 LOGGER.warn("No column meta data has been defined for '{}' ({})", new Object[] { property.getName(), beanClass.getSimpleName() });

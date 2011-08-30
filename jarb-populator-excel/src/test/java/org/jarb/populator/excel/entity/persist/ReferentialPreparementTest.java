@@ -53,7 +53,7 @@ public class ReferentialPreparementTest extends DefaultExcelTestDataCase {
 
         entityTransaction.begin();
         employeeObject = ReferentialPreparement.prepareEntityReferences(employeeObject, entityManager, new HashSet<Object>());
-        assertNotNull(pUUtil.getIdentifier(new ModifiableBean(employeeObject).getPropertyValue("vehicle")));
+        assertNotNull(pUUtil.getIdentifier(new ModifiableBean<Object>(employeeObject).getPropertyValue("vehicle")));
         entityTransaction.commit();
     }
 }

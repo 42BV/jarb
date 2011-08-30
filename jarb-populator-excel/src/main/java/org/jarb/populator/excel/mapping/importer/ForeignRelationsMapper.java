@@ -41,7 +41,7 @@ public final class ForeignRelationsMapper {
 
             // Check if the field is really in THIS excelRow. Thus the parents set is empty.
             Object foreignEntity = ForeignExcelRowGrabber.getInstanceValue(key, objectModel.get(classDefinition));
-            ModifiableBean propertyAccessor = new ModifiableBean(excelRow.getCreatedInstance());
+            ModifiableBean<Object> propertyAccessor = new ModifiableBean<Object>(excelRow.getCreatedInstance());
             if (propertyAccessor.isWritableProperty(entry.getKey().getName())) {
                 propertyAccessor.setPropertyValue(entry.getKey().getName(), foreignEntity);
             }

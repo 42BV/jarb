@@ -28,7 +28,7 @@ public final class EmployeeTest {
     @Test
     public void testGetId() {
         final Integer id = 1;
-        new ModifiableBean(employee).setPropertyValue("id", id);
+        new ModifiableBean<Employee>(employee).setPropertyValue("id", id);
         assertEquals(id, employee.getId());
     }
 
@@ -48,13 +48,13 @@ public final class EmployeeTest {
 
     @Test
     public void testSetGetProjects() {
-        final Project project1 = new Project();
-        new ModifiableBean(project1).setPropertyValue("id", 1L);
-        final Project project2 = new Project();
-        new ModifiableBean(project2).setPropertyValue("id", 2L);
+        ModifiableBean<Project> project1 = new ModifiableBean<Project>(Project.class);
+        project1.setPropertyValue("id", 1L);
+        ModifiableBean<Project> project2 = new ModifiableBean<Project>(Project.class);
+        project2.setPropertyValue("id", 2L);
         final Set<Project> projects = new HashSet<Project>();
-        projects.add(project1);
-        projects.add(project2);
+        projects.add(project1.getWrappedBean());
+        projects.add(project2.getWrappedBean());
         employee.setProjects(projects);
         assertEquals(projects, employee.getProjects());
     }
