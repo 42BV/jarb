@@ -1,4 +1,4 @@
-package org.jarb.utils;
+package org.jarb.utils.bean;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -9,14 +9,14 @@ import org.junit.Test;
 import org.springframework.beans.NotReadablePropertyException;
 import org.springframework.beans.NotWritablePropertyException;
 
-public class FlexiblePropertyAccessorTest {
+public class ModifiableBeanTest {
     private SomeBean bean;
-    private FlexiblePropertyAccessor accessor;
+    private ModifiableBean accessor;
 
     @Before
     public void setUp() {
         bean = new SomeBean();
-        accessor = new FlexiblePropertyAccessor(bean);
+        accessor = new ModifiableBean(bean);
     }
 
     @Test

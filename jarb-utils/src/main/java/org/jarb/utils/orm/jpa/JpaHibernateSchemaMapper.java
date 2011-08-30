@@ -5,11 +5,11 @@ package org.jarb.utils.orm.jpa;
 
 import static javax.persistence.InheritanceType.SINGLE_TABLE;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
-import static org.jarb.utils.ConditionChecker.hasText;
-import static org.jarb.utils.ConditionChecker.instanceOf;
-import static org.jarb.utils.ConditionChecker.notNull;
-import static org.jarb.utils.ReflectionUtils.getFieldNames;
-import static org.jarb.utils.ReflectionUtils.getFieldType;
+import static org.jarb.utils.Conditions.hasText;
+import static org.jarb.utils.Conditions.instanceOf;
+import static org.jarb.utils.Conditions.notNull;
+import static org.jarb.utils.bean.BeanProperties.getPropertyNames;
+import static org.jarb.utils.bean.BeanProperties.getPropertyType;
 import static org.jarb.utils.orm.jpa.JpaMetaModelUtils.assertIsEntity;
 import static org.jarb.utils.orm.jpa.JpaMetaModelUtils.findRootEntityClass;
 import static org.springframework.beans.BeanUtils.instantiateClass;
@@ -202,7 +202,7 @@ public class JpaHibernateSchemaMapper implements SchemaMapper {
 
     private String getIdentifierPropertyName(Class<?> entityClass) {
         String identifierPropertyName = null;
-        for (String propertyName : getFieldNames(entityClass)) {
+        for (String propertyName : getPropertyNames(entityClass)) {
             if (annotationScanner.hasAnnotation(new PropertyReference(propertyName, entityClass), Id.class)) {
                 identifierPropertyName = propertyName;
                 break;
@@ -216,7 +216,7 @@ public class JpaHibernateSchemaMapper implements SchemaMapper {
         if (manyToOne.targetEntity() != void.class) {
             return manyToOne.targetEntity();
         } else {
-            return getFieldType(propertyReference.getBeanClass(), propertyReference.getName());
+            return getPropertyType(propertyReference.getBeanClass(), propertyReference.getName());
         }
     }
 

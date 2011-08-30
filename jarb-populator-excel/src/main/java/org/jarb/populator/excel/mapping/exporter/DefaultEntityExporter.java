@@ -11,7 +11,7 @@ import org.jarb.populator.excel.workbook.Row;
 import org.jarb.populator.excel.workbook.Sheet;
 import org.jarb.populator.excel.workbook.StringValue;
 import org.jarb.populator.excel.workbook.Workbook;
-import org.jarb.utils.FlexiblePropertyAccessor;
+import org.jarb.utils.bean.ModifiableBean;
 
 /**
  * Default implementation of {@link EntityExporter}.
@@ -135,13 +135,13 @@ public class DefaultEntityExporter implements EntityExporter {
      */
     private Object getPropertyValue(Object entity, PropertyDefinition propertyDefinition) {
         Object value = null;
-        FlexiblePropertyAccessor propertyAccessor = new FlexiblePropertyAccessor(entity);
+        ModifiableBean propertyAccessor = new ModifiableBean(entity);
         if (propertyDefinition.isEmbeddedAttribute()) {
             // Whenever our property is embedded, retrieve the container
             final PropertyPath embeddablePath = propertyDefinition.getEmbeddablePath();
             if (propertyAccessor.isReadableProperty(embeddablePath.getStart().getName())) {
                 Object leafEmbeddable = embeddablePath.traverse(entity);
-                FlexiblePropertyAccessor leafAccessor = new FlexiblePropertyAccessor(leafEmbeddable);
+                ModifiableBean leafAccessor = new ModifiableBean(leafEmbeddable);
                 value = leafAccessor.getPropertyValue(propertyDefinition.getName());
             }
         } else if (propertyAccessor.isReadableProperty(propertyDefinition.getName())) {

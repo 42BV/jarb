@@ -17,7 +17,7 @@ import org.jarb.utils.orm.NotAnEntityException;
  * @author Jeroen van Schagen
  * @since 20-05-2011
  */
-public class JpaMetaModelUtils {
+public abstract class JpaMetaModelUtils {
 
     public static void assertIsEntity(Class<?> beanClass) {
         if (!isEntity(beanClass)) {

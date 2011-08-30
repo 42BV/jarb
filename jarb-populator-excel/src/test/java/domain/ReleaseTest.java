@@ -4,7 +4,7 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.Date;
 
-import org.jarb.utils.ReflectionUtils;
+import org.jarb.utils.bean.ModifiableBean;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -21,20 +21,20 @@ public class ReleaseTest {
 
     @Test
     public void testSetGetNumber() {
-        ReflectionUtils.setFieldValue(release, "number", 3);
+        new ModifiableBean(release).setPropertyValue("number", 3);
         assertEquals((Integer) 3, release.getNumber());
     }
 
     @Test
     public void testSetGetDate() {
         Date date = new Date();
-        ReflectionUtils.setFieldValue(release, "releaseDate", date);
+        new ModifiableBean(release).setPropertyValue("releaseDate", date);
         assertEquals(date, release.getDate());
     }
 
     @Test
     public void testSetGetType() {
-        ReflectionUtils.setFieldValue(release, "type", 'A');
+        new ModifiableBean(release).setPropertyValue("type", 'A');
         assertEquals((Character) 'A', release.getType());
     }
 }

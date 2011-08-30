@@ -6,7 +6,7 @@ import java.sql.Date;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.jarb.utils.ReflectionUtils;
+import org.jarb.utils.bean.ModifiableBean;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -28,7 +28,7 @@ public final class EmployeeTest {
     @Test
     public void testGetId() {
         final Integer id = 1;
-        ReflectionUtils.setFieldValue(employee, "id", id);
+        new ModifiableBean(employee).setPropertyValue("id", id);
         assertEquals(id, employee.getId());
     }
 
@@ -49,9 +49,9 @@ public final class EmployeeTest {
     @Test
     public void testSetGetProjects() {
         final Project project1 = new Project();
-        ReflectionUtils.setFieldValue(project1, "id", 1L);
+        new ModifiableBean(project1).setPropertyValue("id", 1L);
         final Project project2 = new Project();
-        ReflectionUtils.setFieldValue(project2, "id", 2L);
+        new ModifiableBean(project2).setPropertyValue("id", 2L);
         final Set<Project> projects = new HashSet<Project>();
         projects.add(project1);
         projects.add(project2);

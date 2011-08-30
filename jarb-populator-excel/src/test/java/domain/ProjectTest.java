@@ -5,7 +5,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.sql.Date;
 
-import org.jarb.utils.ReflectionUtils;
+import org.jarb.utils.bean.ModifiableBean;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -25,7 +25,7 @@ public final class ProjectTest {
     @Test
     public void testGetId() {
         final Long id = 1L;
-        ReflectionUtils.setFieldValue(project, "id", id);
+        new ModifiableBean(project).setPropertyValue("id", id);
         assertEquals(id, project.getId());
     }
 

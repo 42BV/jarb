@@ -1,7 +1,9 @@
 /*
  * (C) 2011 Nidera (www.nidera.com). All rights reserved.
  */
-package org.jarb.utils;
+package org.jarb.utils.bean;
+
+import static org.jarb.utils.Conditions.notNull;
 
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.BeanWrapperImpl;
@@ -19,13 +21,20 @@ import org.springframework.beans.PropertyAccessor;
  * @author Jeroen van Schagen
  * @date Aug 16, 2011
  */
-public class FlexiblePropertyAccessor {
+public class ModifiableBean {
+    private final Object bean;
+
     private final BeanWrapper beanWrapper;
     private final PropertyAccessor fieldAccessor;
 
-    public FlexiblePropertyAccessor(Object bean) {
+    public ModifiableBean(Object bean) {
+        this.bean = notNull(bean, "Wrapped bean cannot be null.");
         this.beanWrapper = new BeanWrapperImpl(bean);
         this.fieldAccessor = new DirectFieldAccessor(bean);
+    }
+
+    public boolean isReadableProperty(String propertyName) {
+        return beanWrapper.isReadableProperty(propertyName) || fieldAccessor.isReadableProperty(propertyName);
     }
 
     public Object getPropertyValue(String propertyName) throws BeansException {
@@ -36,6 +45,10 @@ public class FlexiblePropertyAccessor {
         }
     }
 
+    public boolean isWritableProperty(String propertyName) {
+        return beanWrapper.isWritableProperty(propertyName) || fieldAccessor.isWritableProperty(propertyName);
+    }
+
     public void setPropertyValue(String propertyName, Object value) throws BeansException {
         try {
             beanWrapper.setPropertyValue(propertyName, value);
@@ -44,12 +57,12 @@ public class FlexiblePropertyAccessor {
         }
     }
 
-    public boolean isReadableProperty(String propertyName) {
-        return beanWrapper.isReadableProperty(propertyName) || fieldAccessor.isReadableProperty(propertyName);
+    public Object getBean() {
+        return bean;
     }
 
-    public boolean isWritableProperty(String propertyName) {
-        return beanWrapper.isWritableProperty(propertyName) || fieldAccessor.isWritableProperty(propertyName);
+    public Class<?> getBeanClass() {
+        return bean.getClass();
     }
 
 }

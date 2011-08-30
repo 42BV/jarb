@@ -2,7 +2,7 @@ package domain;
 
 import static org.junit.Assert.assertEquals;
 
-import org.jarb.utils.ReflectionUtils;
+import org.jarb.utils.bean.ModifiableBean;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -20,7 +20,7 @@ public class BusinessRelationshipGiftTest {
     @Test
     public void testGetId() {
         final Long id = 1L;
-        ReflectionUtils.setFieldValue(gift, "id", id);
+        new ModifiableBean(gift).setPropertyValue("id", id);
         assertEquals(id, gift.getId());
     }
 

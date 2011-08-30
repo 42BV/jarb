@@ -6,8 +6,8 @@ import org.jarb.populator.excel.metamodel.EntityDefinition;
 import org.jarb.populator.excel.metamodel.PropertyDefinition;
 import org.jarb.populator.excel.workbook.Sheet;
 import org.jarb.populator.excel.workbook.Workbook;
-import org.jarb.utils.FlexiblePropertyAccessor;
-import org.jarb.utils.ReflectionUtils;
+import org.jarb.utils.bean.BeanProperties;
+import org.jarb.utils.bean.ModifiableBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,7 +42,7 @@ public final class StoreColumn {
         Object cellValue = getCellValue(sheet, rowPosition, columnPosition);
         logger.debug("field: " + columnDefinition.getName() + " column: " + columnDefinition.getColumnName() + " value:[" + cellValue + "]");
 
-        FlexiblePropertyAccessor propertyAccessor = new FlexiblePropertyAccessor(excelRow.getCreatedInstance());
+        ModifiableBean propertyAccessor = new ModifiableBean(excelRow.getCreatedInstance());
         if (propertyAccessor.isWritableProperty(columnDefinition.getName())) {
             setExcelRowFieldValue(excelRow.getCreatedInstance(), columnDefinition.getName(), cellValue);
         } else if (columnDefinition.isEmbeddedAttribute()) {
@@ -58,10 +58,10 @@ public final class StoreColumn {
      * @param cellValue Value of the field that is to be saved
      */
     private static void setExcelRowFieldValue(Object excelRow, String fieldName, Object cellValue) {
-        final Class<?> fieldType = ReflectionUtils.getFieldType(excelRow.getClass(), fieldName);
+        final Class<?> fieldType = BeanProperties.getPropertyType(excelRow.getClass(), fieldName);
         try {
             Object fieldValue = new ValueConversionService().convert(cellValue, fieldType);
-            ReflectionUtils.setFieldValue(excelRow, fieldName, fieldValue);
+            new ModifiableBean(excelRow).setPropertyValue(fieldName, fieldValue);
         } catch (CouldNotConvertException e) {
             logger.warn("Could not convert '{}' into a {}, thus '{}' will remain unchanged.", new Object[] { cellValue, fieldType, fieldName });
         }

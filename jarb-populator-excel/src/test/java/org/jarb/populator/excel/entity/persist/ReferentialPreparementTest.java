@@ -12,7 +12,7 @@ import javax.persistence.EntityTransaction;
 import javax.persistence.PersistenceUnitUtil;
 
 import org.jarb.populator.excel.DefaultExcelTestDataCase;
-import org.jarb.utils.ReflectionUtils;
+import org.jarb.utils.bean.ModifiableBean;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -53,7 +53,7 @@ public class ReferentialPreparementTest extends DefaultExcelTestDataCase {
 
         entityTransaction.begin();
         employeeObject = ReferentialPreparement.prepareEntityReferences(employeeObject, entityManager, new HashSet<Object>());
-        assertNotNull(pUUtil.getIdentifier(ReflectionUtils.getFieldValue(employeeObject, "vehicle")));
+        assertNotNull(pUUtil.getIdentifier(new ModifiableBean(employeeObject).getPropertyValue("vehicle")));
         entityTransaction.commit();
     }
 }

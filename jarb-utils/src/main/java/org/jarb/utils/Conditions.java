@@ -13,7 +13,7 @@ import org.hamcrest.Matcher;
  * @author Jeroen van Schagen
  * @date Aug 29, 2011
  */
-public class ConditionChecker {
+public class Conditions {
 
     public static void state(boolean expression, String message) {
         if (!expression) {

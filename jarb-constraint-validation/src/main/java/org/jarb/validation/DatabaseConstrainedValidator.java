@@ -11,9 +11,9 @@ import org.apache.commons.lang3.StringUtils;
 import org.jarb.constraint.database.column.ColumnMetadata;
 import org.jarb.constraint.database.column.EntityAwareColumnMetadataRepository;
 import org.jarb.constraint.database.column.UnknownColumnException;
-import org.jarb.utils.FlexiblePropertyAccessor;
 import org.jarb.utils.bean.BeanAnnotationScanner;
 import org.jarb.utils.bean.BeanAnnotationScannerImpl;
+import org.jarb.utils.bean.ModifiableBean;
 import org.jarb.utils.bean.PropertyReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -99,7 +99,7 @@ public class DatabaseConstrainedValidator implements ConstraintValidator<Databas
             final Class<?> beanClass = bean.getClass();
             ColumnMetadata columnMetadata = columnMetadataRepository.getColumnMetadata(beanClass, property.getName());
             if (columnMetadata != null) {
-                FlexiblePropertyAccessor propertyAccessor = new FlexiblePropertyAccessor(bean);
+                ModifiableBean propertyAccessor = new ModifiableBean(bean);
                 final Object propertyValue = propertyAccessor.getPropertyValue(property.getName());
                 propertyIsValid = isValidValue(bean, property.getName(), propertyValue, columnMetadata, context);
             } else {

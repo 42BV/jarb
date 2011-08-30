@@ -13,8 +13,10 @@ import java.lang.reflect.Field;
 import org.springframework.core.annotation.AnnotationUtils;
 
 /**
- * Default implementation of {@link BeanAnnotationScanner}.
- *
+ * Default implementation of {@link BeanAnnotationScanner}. Capable of
+ * scanning annotations on both the property field, read- and write method.
+ * Annotation scanning traverses the entire class hierarchy.
+ * 
  * @author Jeroen van Schagen
  * @date Aug 29, 2011
  */

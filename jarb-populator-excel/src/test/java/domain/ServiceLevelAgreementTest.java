@@ -2,7 +2,7 @@ package domain;
 
 import static org.junit.Assert.assertEquals;
 
-import org.jarb.utils.ReflectionUtils;
+import org.jarb.utils.bean.ModifiableBean;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -20,7 +20,7 @@ public class ServiceLevelAgreementTest {
 
     @Test
     public void testGetID() {
-        ReflectionUtils.setFieldValue(sla, "id", new Long("1"));
+        new ModifiableBean(sla).setPropertyValue("id", 1L);
         assertEquals(new Long("1"), sla.getId());
     }
 

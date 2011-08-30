@@ -4,7 +4,7 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.Date;
 
-import org.jarb.utils.ReflectionUtils;
+import org.jarb.utils.bean.ModifiableBean;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -26,7 +26,7 @@ public class EmployeeProjectWorkspaceTest {
     @Test
     public void testGetId() {
         final Long id = 1L;
-        ReflectionUtils.setFieldValue(employeeProjectWorkspace, "id", id);
+        new ModifiableBean(employeeProjectWorkspace).setPropertyValue("id", id);
         assertEquals(id, employeeProjectWorkspace.getId());
     }
 
