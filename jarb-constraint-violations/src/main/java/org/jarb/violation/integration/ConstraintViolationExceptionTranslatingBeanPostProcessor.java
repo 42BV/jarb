@@ -54,7 +54,7 @@ public class ConstraintViolationExceptionTranslatingBeanPostProcessor extends Ad
      * Construct a new translating bean post processor.
      */
     public ConstraintViolationExceptionTranslatingBeanPostProcessor() {
-        setAdvisorPosition(0); // Put translation advisor up front
+        setAddUpFront(true); // Put translation advisor up front
     }
 
     /**

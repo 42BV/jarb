@@ -25,7 +25,7 @@ public abstract class AdvisorAddingBeanPostProcessor extends ProxyConfig impleme
     /** The advisor that should be added **/
     private Advisor advisor = null;
     /** Position of the advisor to add (<b>optional</b>) **/
-    private Integer advisorPosition = null;
+    private boolean addUpFront = false;
 
     /**
      * {@inheritDoc}
@@ -35,18 +35,12 @@ public abstract class AdvisorAddingBeanPostProcessor extends ProxyConfig impleme
         this.beanClassLoader = classLoader;
     }
 
-    /**
-     * @param advisor the advisor to set
-     */
     public void setAdvisor(Advisor advisor) {
         this.advisor = advisor;
     }
 
-    /**
-     * @param advisorPosition the position to set
-     */
-    public void setAdvisorPosition(Integer advisorPosition) {
-        this.advisorPosition = advisorPosition;
+    public void setAddUpFront(boolean addUpFront) {
+        this.addUpFront = addUpFront;
     }
 
     /**
@@ -69,8 +63,8 @@ public abstract class AdvisorAddingBeanPostProcessor extends ProxyConfig impleme
             if (AopUtils.canApply(advisor, AopUtils.getTargetClass(bean))) {
                 if (bean instanceof Advised) {
                     // Bean already has advisors, append new advisor on the desired position
-                    if (advisorPosition != null) {
-                        ((Advised) bean).addAdvisor(advisorPosition, advisor);
+                    if (addUpFront) {
+                        ((Advised) bean).addAdvisor(0, advisor);
                     } else {
                         ((Advised) bean).addAdvisor(advisor);
                     }

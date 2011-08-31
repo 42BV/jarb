@@ -5,8 +5,6 @@ package org.jarb.utils;
 
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
-import org.hamcrest.Matcher;
-
 /**
  * Used to perform assertions in code.
  *
@@ -33,11 +31,6 @@ public final class Conditions {
 
     public static String hasText(String object, String message) {
         state(isNotBlank(object), message);
-        return object;
-    }
-
-    public static <T> T matches(T object, Matcher<? super T> matcher, String message) {
-        state(notNull(matcher, "Matcher cannot be null").matches(object), message);
         return object;
     }
 
