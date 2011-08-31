@@ -7,10 +7,10 @@ import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 import javax.validation.ValidatorFactory;
 
-import org.apache.commons.lang3.StringUtils;
 import org.jarb.constraint.database.column.ColumnMetadata;
 import org.jarb.constraint.database.column.EntityAwareColumnMetadataRepository;
 import org.jarb.constraint.database.column.UnknownColumnException;
+import org.jarb.utils.BeanAccessor;
 import org.jarb.utils.bean.BeanAnnotationScanner;
 import org.jarb.utils.bean.BeanAnnotationScannerImpl;
 import org.jarb.utils.bean.ModifiableBean;
@@ -19,7 +19,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.util.Assert;
@@ -60,7 +59,7 @@ public class DatabaseConstrainedValidator implements ConstraintValidator<Databas
     private final BeanAnnotationScanner annotationScanner = new BeanAnnotationScannerImpl(true, true);
 
     /** Used to retrieve column meta-data repository during initialization **/
-    private ApplicationContext applicationContext;
+    private BeanAccessor beanAccessor;
 
     /** Provides the meta-data of columns in our database **/
     private EntityAwareColumnMetadataRepository columnMetadataRepository;
@@ -213,39 +212,13 @@ public class DatabaseConstrainedValidator implements ConstraintValidator<Databas
      */
     @Override
     public void initialize(DatabaseConstrained annotation) {
-        Assert.notNull(applicationContext, "Application context cannot be null.");
+        Assert.notNull(beanAccessor, "Bean accessor cannot be null.");
         if (columnMetadataRepository == null) {
-            columnMetadataRepository = getBeanFromContext(annotation.repository(), EntityAwareColumnMetadataRepository.class);
-            ValidatorFactory validatorFactory = getValidatorFactoryFromContext(annotation);
+            columnMetadataRepository = beanAccessor.findBean(EntityAwareColumnMetadataRepository.class, annotation.repository());
+            ValidatorFactory validatorFactory = beanAccessor.findBean(ValidatorFactory.class, annotation.factory(), DEFAULT_VALIDATOR_FACTORY_ID);
             messageBuilder = new ViolationMessageBuilder(validatorFactory.getMessageInterpolator());
         }
         this.annotation = annotation;
-    }
-
-    private ValidatorFactory getValidatorFactoryFromContext(DatabaseConstrained annotation) {
-        final String identifier = annotation.factory();
-        if (StringUtils.isNotBlank(identifier)) {
-            return applicationContext.getBean(identifier, ValidatorFactory.class);
-        } else {
-            try {
-                return applicationContext.getBean(ValidatorFactory.class);
-            } catch (NoSuchBeanDefinitionException intialException) {
-                // Whenever we find multiple validator factory, try using the default identifier
-                try {
-                    return getBeanFromContext(DEFAULT_VALIDATOR_FACTORY_ID, ValidatorFactory.class);
-                } catch (NoSuchBeanDefinitionException conventionException) {
-                    throw intialException; // Change back to initial exception
-                }
-            }
-        }
-    }
-
-    private <T> T getBeanFromContext(String identifier, Class<T> beanClass) {
-        if (StringUtils.isNotBlank(identifier)) {
-            return applicationContext.getBean(identifier, beanClass);
-        } else {
-            return applicationContext.getBean(beanClass);
-        }
     }
 
     /**
@@ -253,7 +226,7 @@ public class DatabaseConstrainedValidator implements ConstraintValidator<Databas
      */
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-        this.applicationContext = applicationContext;
+        this.beanAccessor = new BeanAccessor(applicationContext);
     }
 
 }
