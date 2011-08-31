@@ -20,7 +20,7 @@ public class BusinessRelationshipGiftTest {
     @Test
     public void testGetId() {
         final Long id = 1L;
-        new ModifiableBean<BusinessRelationshipGift>(gift).setPropertyValue("id", id);
+        ModifiableBean.wrap(gift).setPropertyValue("id", id);
         assertEquals(id, gift.getId());
     }
 

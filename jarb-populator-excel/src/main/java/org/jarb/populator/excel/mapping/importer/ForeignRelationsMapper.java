@@ -4,8 +4,8 @@ import static org.jarb.populator.excel.mapping.importer.ClassDefinitionFinder.fi
 import static org.jarb.populator.excel.metamodel.generator.SuperclassRetriever.getListOfSuperClasses;
 
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
+import java.util.Map.Entry;
 
 import org.jarb.populator.excel.metamodel.EntityDefinition;
 import org.jarb.populator.excel.metamodel.PropertyDefinition;
@@ -41,7 +41,7 @@ public final class ForeignRelationsMapper {
 
             // Check if the field is really in THIS excelRow. Thus the parents set is empty.
             Object foreignEntity = ForeignExcelRowGrabber.getInstanceValue(key, objectModel.get(classDefinition));
-            ModifiableBean<Object> propertyAccessor = new ModifiableBean<Object>(excelRow.getCreatedInstance());
+            ModifiableBean<Object> propertyAccessor = ModifiableBean.wrap(excelRow.getCreatedInstance());
             if (propertyAccessor.isWritableProperty(entry.getKey().getName())) {
                 propertyAccessor.setPropertyValue(entry.getKey().getName(), foreignEntity);
             }

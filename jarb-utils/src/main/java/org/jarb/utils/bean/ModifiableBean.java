@@ -27,14 +27,30 @@ public class ModifiableBean<T> {
     private final BeanWrapper beanWrapper;
     private final PropertyAccessor fieldAccessor;
 
-    public ModifiableBean(T bean) {
+    private ModifiableBean(T bean) {
         this.bean = notNull(bean, "Wrapped bean cannot be null.");
         this.beanWrapper = new BeanWrapperImpl(bean);
         this.fieldAccessor = new DirectFieldAccessor(bean);
     }
-
-    public ModifiableBean(Class<? extends T> beanClass) {
-        this(BeanUtils.instantiateClass(beanClass));
+    
+    /**
+     * Wrap an existing bean with property modification behaviour.
+     * @param <T> type of bean
+     * @param bean the bean being wrapped
+     * @return modifiable bean, wrapping the specified bean
+     */
+    public static <T> ModifiableBean<T> wrap(T bean) {
+        return new ModifiableBean<T>(bean);
+    }
+    
+    /**
+     * Build a new bean with property modification behaviour.
+     * @param <T> type of bean
+     * @param beanClass class of the bean being created and wrapped
+     * @return modifiable bean, wrapping a new bean instance
+     */
+    public static <T> ModifiableBean<T> instantiate(Class<T> beanClass) {
+        return wrap(BeanUtils.instantiateClass(beanClass));
     }
 
     public boolean isReadableProperty(String propertyName) {

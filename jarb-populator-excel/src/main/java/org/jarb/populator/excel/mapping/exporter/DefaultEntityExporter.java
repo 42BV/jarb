@@ -135,13 +135,13 @@ public class DefaultEntityExporter implements EntityExporter {
      */
     private Object getPropertyValue(Object entity, PropertyDefinition propertyDefinition) {
         Object value = null;
-        ModifiableBean<Object> propertyAccessor = new ModifiableBean<Object>(entity);
+        ModifiableBean<Object> propertyAccessor = ModifiableBean.wrap(entity);
         if (propertyDefinition.isEmbeddedAttribute()) {
             // Whenever our property is embedded, retrieve the container
             final PropertyPath embeddablePath = propertyDefinition.getEmbeddablePath();
             if (propertyAccessor.isReadableProperty(embeddablePath.getStart().getName())) {
                 Object leafEmbeddable = embeddablePath.traverse(entity);
-                ModifiableBean<Object> leafAccessor = new ModifiableBean<Object>(leafEmbeddable);
+                ModifiableBean<Object> leafAccessor = ModifiableBean.wrap(leafEmbeddable);
                 value = leafAccessor.getPropertyValue(propertyDefinition.getName());
             }
         } else if (propertyAccessor.isReadableProperty(propertyDefinition.getName())) {

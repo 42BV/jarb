@@ -12,9 +12,9 @@ import org.junit.Test;
 
 import domain.entities.Address;
 import domain.entities.CompanyCar;
-import domain.entities.CompanyVehicle.Gearbox;
 import domain.entities.Employee;
 import domain.entities.Project;
+import domain.entities.CompanyVehicle.Gearbox;
 
 public final class EmployeeTest {
 
@@ -28,7 +28,7 @@ public final class EmployeeTest {
     @Test
     public void testGetId() {
         final Integer id = 1;
-        new ModifiableBean<Employee>(employee).setPropertyValue("id", id);
+        ModifiableBean.wrap(employee).setPropertyValue("id", id);
         assertEquals(id, employee.getId());
     }
 
@@ -48,13 +48,9 @@ public final class EmployeeTest {
 
     @Test
     public void testSetGetProjects() {
-        ModifiableBean<Project> project1 = new ModifiableBean<Project>(Project.class);
-        project1.setPropertyValue("id", 1L);
-        ModifiableBean<Project> project2 = new ModifiableBean<Project>(Project.class);
-        project2.setPropertyValue("id", 2L);
-        final Set<Project> projects = new HashSet<Project>();
-        projects.add(project1.getWrappedBean());
-        projects.add(project2.getWrappedBean());
+        Set<Project> projects = new HashSet<Project>();
+        projects.add(ModifiableBean.instantiate(Project.class).setPropertyValue("id", 1L).getWrappedBean());
+        projects.add(ModifiableBean.instantiate(Project.class).setPropertyValue("id", 2L).getWrappedBean());
         employee.setProjects(projects);
         assertEquals(projects, employee.getProjects());
     }

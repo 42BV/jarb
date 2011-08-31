@@ -20,7 +20,7 @@ public class ServiceLevelAgreementTest {
 
     @Test
     public void testGetID() {
-        new ModifiableBean<ServiceLevelAgreement>(sla).setPropertyValue("id", 1L);
+        ModifiableBean.wrap(sla).setPropertyValue("id", 1L);
         assertEquals(new Long("1"), sla.getId());
     }
 

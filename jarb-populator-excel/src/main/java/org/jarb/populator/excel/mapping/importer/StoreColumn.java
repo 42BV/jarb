@@ -43,7 +43,7 @@ public final class StoreColumn {
         Object cellValue = getCellValue(sheet, rowPosition, columnPosition);
         logger.debug("field: " + columnDefinition.getName() + " column: " + columnDefinition.getColumnName() + " value:[" + cellValue + "]");
 
-        ModifiableBean<Object> propertyAccessor = new ModifiableBean<Object>(excelRow.getCreatedInstance());
+        ModifiableBean<Object> propertyAccessor = ModifiableBean.wrap(excelRow.getCreatedInstance());
         if (propertyAccessor.isWritableProperty(columnDefinition.getName())) {
             setExcelRowFieldValue(excelRow.getCreatedInstance(), columnDefinition.getName(), cellValue);
         } else if (columnDefinition.isEmbeddedAttribute()) {
@@ -62,7 +62,7 @@ public final class StoreColumn {
         final Class<?> fieldType = BeanProperties.getPropertyType(new PropertyReference(excelRow.getClass(), fieldName));
         try {
             Object fieldValue = new ValueConversionService().convert(cellValue, fieldType);
-            new ModifiableBean<Object>(excelRow).setPropertyValue(fieldName, fieldValue);
+            ModifiableBean.wrap(excelRow).setPropertyValue(fieldName, fieldValue);
         } catch (CouldNotConvertException e) {
             logger.warn("Could not convert '{}' into a {}, thus '{}' will remain unchanged.", new Object[] { cellValue, fieldType, fieldName });
         }

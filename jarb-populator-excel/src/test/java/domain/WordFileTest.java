@@ -26,7 +26,7 @@ public class WordFileTest {
     @Test
     public void testGetID() {
         Long id = new Long(1);
-        new ModifiableBean<WordFile>(wordFile).setPropertyValue("id", id);
+        ModifiableBean.wrap(wordFile).setPropertyValue("id", id);
         assertEquals(id, wordFile.getId());
     }
 

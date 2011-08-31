@@ -26,7 +26,7 @@ public class CustomerTest {
     @Test
     public void testGetId() {
         final Long id = 1L;
-        new ModifiableBean<Customer>(customer).setPropertyValue("id", id);
+        ModifiableBean.wrap(customer).setPropertyValue("id", id);
         assertEquals(id, customer.getId());
     }
 

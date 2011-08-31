@@ -9,9 +9,9 @@ import java.util.Set;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.metamodel.Attribute;
-import javax.persistence.metamodel.Attribute.PersistentAttributeType;
 import javax.persistence.metamodel.EntityType;
 import javax.persistence.metamodel.Metamodel;
+import javax.persistence.metamodel.Attribute.PersistentAttributeType;
 
 import org.jarb.populator.excel.metamodel.generator.SuperclassRetriever;
 import org.jarb.populator.excel.util.JpaUtils;
@@ -72,7 +72,7 @@ public final class ReferentialPreparement {
             if (!CascadeAnnotationChecker.hasNecessaryCascadeAnnotations(annotation)) {
                 retrieveReferencesForAttribute(entity, entityManager, attribute, cascadedObjectsInThisInteration);
             } else {
-                Object referencedObject = new ModifiableBean<Object>(entity).getPropertyValue(attribute.getName());
+                Object referencedObject = ModifiableBean.wrap(entity).getPropertyValue(attribute.getName());
                 if (!cascadedObjectsInThisInteration.contains(referencedObject)) {
                     cascadedObjectsInThisInteration.add(referencedObject);
                     secondaryReferenceCheck(referencedObject, entityManager, cascadedObjectsInThisInteration);
@@ -110,7 +110,7 @@ public final class ReferentialPreparement {
      */
     private static void retrieveReferencesForAttribute(Object entity, EntityManager entityManager, Attribute<?, ?> attribute,
             Set<Object> cascadedObjectsInThisInteration) {
-        Object referencedObject = new ModifiableBean<Object>(entity).getPropertyValue(attribute.getName());
+        Object referencedObject = ModifiableBean.wrap(entity).getPropertyValue(attribute.getName());
         if (referencedObject instanceof Collection<?>) {
             prepareEntitiesFromSet(entityManager, referencedObject, cascadedObjectsInThisInteration);
         } else {
@@ -159,7 +159,7 @@ public final class ReferentialPreparement {
                 Object retrievenObject = entityManager.find(referencedObject.getClass(), identifier);
                 if (retrievenObject != null) {
                     // Entity has already been persisted, couple to persisted value
-                    new ModifiableBean<Object>(entity).setPropertyValue(attributeName, retrievenObject);
+                    ModifiableBean.wrap(entity).setPropertyValue(attributeName, retrievenObject);
                 } else {
                     // Entity claimed to have an identifier, but is not known in database
                     cascadeReferencedObject(entity, entityManager, attributeName, referencedObject, cascadedObjectsInThisInteration);
@@ -192,7 +192,7 @@ public final class ReferentialPreparement {
         if (!cascadingHasLooped(referencedObject, cascadedObjectsInThisInteration)) {
             referencedObject = prepareEntityReferences(referencedObject, entityManager, cascadedObjectsInThisInteration);
             LOGGER.info("Cascading Excelrow of class: " + referencedObject.getClass());
-            new ModifiableBean<Object>(entity).setPropertyValue(attributeName, entityManager.merge(referencedObject));
+            ModifiableBean.wrap(entity).setPropertyValue(attributeName, entityManager.merge(referencedObject));
         } else {
             resolveCircularReferencing(entity, entityManager, referencedObject, cascadedObjectsInThisInteration);
         }
@@ -246,12 +246,12 @@ public final class ReferentialPreparement {
         if (!cascadedObjectsInThisInteration.contains(entity)) {
             LOGGER.info("Cascading Excelrow of class: " + referencedObject.getClass());
             referencedObject = prepareEntityReferences(referencedObject, entityManager, cascadedObjectsInThisInteration);
-            new ModifiableBean<Object>(entity).setPropertyValue(refName, entityManager.merge(referencedObject));
+            ModifiableBean.wrap(entity).setPropertyValue(refName, entityManager.merge(referencedObject));
             cascadedObjectsInThisInteration.add(entity);
         }
         if (temporaryObject != null) {
             temporaryObject = prepareEntityReferences(temporaryObject, entityManager, new HashSet<Object>());
-            new ModifiableBean<Object>(entity).setPropertyValue(refName, entityManager.merge(temporaryObject));
+            ModifiableBean.wrap(entity).setPropertyValue(refName, entityManager.merge(temporaryObject));
         }
     }
 
@@ -268,7 +268,7 @@ public final class ReferentialPreparement {
     private static Object createTemporaryObject(Object entity, Metamodel metamodel, String refName) {
         Object temporaryObject = null;
         if (metamodel.entity(entity.getClass()).getSingularAttribute(refName).isOptional()) {
-            ModifiableBean<Object> modifiableEntity = new ModifiableBean<Object>(entity);
+            ModifiableBean<Object> modifiableEntity = ModifiableBean.wrap(entity);
             temporaryObject = modifiableEntity.getPropertyValue(refName);
             modifiableEntity.setPropertyValue(refName, null);
         }

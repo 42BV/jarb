@@ -6,10 +6,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
-import org.jarb.populator.excel.metamodel.PropertyPath.PropertyNode;
 import org.jarb.utils.bean.ModifiableBean;
-import org.springframework.util.Assert;
 import org.springframework.util.ReflectionUtils;
 
 /**
@@ -103,7 +100,7 @@ public final class PropertyPath implements Iterable<PropertyNode> {
             if (value == null) {
                 break; // Quit looping whenever null, as we cannot go any deeper
             }
-            value = new ModifiableBean<Object>(value).getPropertyValue(propertyNode.getName());
+            value = ModifiableBean.wrap(value).getPropertyValue(propertyNode.getName());
         }
         return value;
     }
@@ -132,69 +129,6 @@ public final class PropertyPath implements Iterable<PropertyNode> {
         return nodes.iterator();
     }
 
-    /**
-     * Specific node in our path.
-     */
-    public static final class PropertyNode {
-        private final Field field;
-
-        /**
-         * Construct a new {@link 
-         * @param field the field being represented
-         */
-        private PropertyNode(Field field) {
-            Assert.notNull(field, "Field cannot be null");
-            this.field = field;
-        }
-
-        /**
-         * Retrieve the actual field.
-         * @return field
-         */
-        public Field getField() {
-            return field;
-        }
-
-        /**
-         * Retrieve the property name.
-         * @return property name
-         */
-        public String getName() {
-            return field.getName();
-        }
-
-        /**
-         * Retrieve the property type.
-         * @return property type
-         */
-        public Class<?> getType() {
-            return field.getType();
-        }
-
-        /**
-         * Retrieve the class declaring our property.
-         * @return property declaring class
-         */
-        public Class<?> getDeclaringClass() {
-            return field.getDeclaringClass();
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public boolean equals(Object obj) {
-            return EqualsBuilder.reflectionEquals(this, obj);
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public int hashCode() {
-            return HashCodeBuilder.reflectionHashCode(this);
-        }
-    }
 
     /**
      * {@inheritDoc}

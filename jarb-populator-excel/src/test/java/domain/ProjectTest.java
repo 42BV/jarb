@@ -25,7 +25,7 @@ public final class ProjectTest {
     @Test
     public void testGetId() {
         final Long id = 1L;
-        new ModifiableBean<Project>(project).setPropertyValue("id", id);
+        ModifiableBean.wrap(project).setPropertyValue("id", id);
         assertEquals(id, project.getId());
     }
 

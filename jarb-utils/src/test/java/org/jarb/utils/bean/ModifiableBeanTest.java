@@ -14,7 +14,7 @@ public class ModifiableBeanTest {
 
     @Before
     public void setUp() {
-        modifiableBean = new ModifiableBean<SomeBean>(SomeBean.class);
+        modifiableBean = ModifiableBean.instantiate(SomeBean.class);
     }
 
     @Test

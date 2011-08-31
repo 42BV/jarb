@@ -26,7 +26,7 @@ public class EmployeeProjectWorkspaceTest {
     @Test
     public void testGetId() {
         final Long id = 1L;
-        new ModifiableBean<EmployeeProjectWorkspace>(employeeProjectWorkspace).setPropertyValue("id", id);
+        ModifiableBean.wrap(employeeProjectWorkspace).setPropertyValue("id", id);
         assertEquals(id, employeeProjectWorkspace.getId());
     }
 

@@ -62,7 +62,7 @@ public class StoreColumnTest extends DefaultExcelTestDataCase {
 
         rowPosition = 1;
         StoreExcelRecordValue.storeValue(excel, classDefinition, column, rowPosition, excelRow);
-        assertEquals("Customer1", new ModifiableBean<Object>(excelRow.getCreatedInstance()).getPropertyValue("name"));
+        assertEquals("Customer1", ModifiableBean.wrap(excelRow.getCreatedInstance()).getPropertyValue("name"));
     }
 
 }

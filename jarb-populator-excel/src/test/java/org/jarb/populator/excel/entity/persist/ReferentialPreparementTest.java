@@ -19,8 +19,8 @@ import org.junit.Test;
 import domain.entities.Address;
 import domain.entities.CompanyCar;
 import domain.entities.CompanyVehicle;
-import domain.entities.CompanyVehicle.Gearbox;
 import domain.entities.Employee;
+import domain.entities.CompanyVehicle.Gearbox;
 
 public class ReferentialPreparementTest extends DefaultExcelTestDataCase {
 
@@ -53,7 +53,7 @@ public class ReferentialPreparementTest extends DefaultExcelTestDataCase {
 
         entityTransaction.begin();
         employeeObject = ReferentialPreparement.prepareEntityReferences(employeeObject, entityManager, new HashSet<Object>());
-        assertNotNull(pUUtil.getIdentifier(new ModifiableBean<Object>(employeeObject).getPropertyValue("vehicle")));
+        assertNotNull(pUUtil.getIdentifier(ModifiableBean.wrap(employeeObject).getPropertyValue("vehicle")));
         entityTransaction.commit();
     }
 }
