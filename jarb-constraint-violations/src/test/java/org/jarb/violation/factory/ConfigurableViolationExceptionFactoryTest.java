@@ -10,12 +10,12 @@ import org.jarb.violation.domain.LicenseNumberAlreadyExistsException;
 import org.junit.Before;
 import org.junit.Test;
 
-public class ConfigurableConstraintViolationExceptionFactoryTest {
-    private ConfigurableConstraintViolationExceptionFactory factory;
+public class ConfigurableViolationExceptionFactoryTest {
+    private ConfigurableViolationExceptionFactory factory;
 
     @Before
     public void setUp() {
-        factory = new ConfigurableConstraintViolationExceptionFactory();
+        factory = new ConfigurableViolationExceptionFactory();
     }
 
     /**

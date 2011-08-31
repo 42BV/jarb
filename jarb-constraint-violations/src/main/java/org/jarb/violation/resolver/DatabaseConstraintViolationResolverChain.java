@@ -14,14 +14,14 @@ import org.jarb.violation.DatabaseConstraintViolation;
  * @author Jeroen van Schagen
  * @since 16-05-2011
  */
-public class ConstraintViolationResolverChain implements ConstraintViolationResolver {
-    private final List<ConstraintViolationResolver> violationResolvers;
+public class DatabaseConstraintViolationResolverChain implements DatabaseConstraintViolationResolver {
+    private final List<DatabaseConstraintViolationResolver> violationResolvers;
 
     /**
-     * Construct a new {@link ConstraintViolationResolverChain}.
+     * Construct a new {@link DatabaseConstraintViolationResolverChain}.
      */
-    public ConstraintViolationResolverChain() {
-        violationResolvers = new ArrayList<ConstraintViolationResolver>();
+    public DatabaseConstraintViolationResolverChain() {
+        violationResolvers = new ArrayList<DatabaseConstraintViolationResolver>();
     }
 
     /**
@@ -29,7 +29,7 @@ public class ConstraintViolationResolverChain implements ConstraintViolationReso
      */
     @Override
     public DatabaseConstraintViolation resolve(Throwable throwable) {
-        for (ConstraintViolationResolver violationResolver : violationResolvers) {
+        for (DatabaseConstraintViolationResolver violationResolver : violationResolvers) {
             DatabaseConstraintViolation violation = violationResolver.resolve(throwable);
             if (violation != null) {
                 return violation;
@@ -43,7 +43,7 @@ public class ConstraintViolationResolverChain implements ConstraintViolationReso
      * @param violationResolver violation resolver instance we are adding
      * @return  this instance, enabling the use of method chaining
      */
-    public ConstraintViolationResolverChain addToChain(ConstraintViolationResolver violationResolver) {
+    public DatabaseConstraintViolationResolverChain addToChain(DatabaseConstraintViolationResolver violationResolver) {
         violationResolvers.add(violationResolver);
         return this;
     }

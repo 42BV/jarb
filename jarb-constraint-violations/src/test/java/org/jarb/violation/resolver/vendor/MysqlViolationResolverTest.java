@@ -8,12 +8,12 @@ import org.jarb.violation.DatabaseConstraintViolationType;
 import org.junit.Before;
 import org.junit.Test;
 
-public class MysqlConstraintViolationResolverTest {
-    private MysqlConstraintViolationResolver resolver;
+public class MysqlViolationResolverTest {
+    private MysqlViolationResolver resolver;
 
     @Before
     public void setUp() {
-        resolver = new MysqlConstraintViolationResolver();
+        resolver = new MysqlViolationResolver();
     }
 
     @Test

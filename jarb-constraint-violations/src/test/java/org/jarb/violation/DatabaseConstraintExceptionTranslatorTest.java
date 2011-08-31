@@ -10,8 +10,8 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceException;
 
 import org.jarb.violation.domain.Car;
-import org.jarb.violation.resolver.ConstraintViolationResolver;
-import org.jarb.violation.resolver.ConstraintViolationResolverFactory;
+import org.jarb.violation.resolver.DatabaseConstraintViolationResolver;
+import org.jarb.violation.resolver.DatabaseConstraintViolationResolverFactory;
 import org.jarb.violation.resolver.database.DatabaseResolver;
 import org.jarb.violation.resolver.database.HibernateJpaDatabaseResolver;
 import org.junit.Before;
@@ -30,8 +30,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "classpath:hsql-context.xml" })
-public class ConstraintViolationExceptionTranslatorTest {
-    private ConstraintViolationExceptionTranslator translator;
+public class DatabaseConstraintExceptionTranslatorTest {
+    private DatabaseConstraintExceptionTranslator translator;
 
     @PersistenceContext
     private EntityManager entityManager;
@@ -39,8 +39,8 @@ public class ConstraintViolationExceptionTranslatorTest {
     @Before
     public void setUpResolver() {
         DatabaseResolver databaseResolver = HibernateJpaDatabaseResolver.forEntityManager(entityManager);
-        ConstraintViolationResolver violationResolver = ConstraintViolationResolverFactory.build(databaseResolver);
-        translator = new ConstraintViolationExceptionTranslator(violationResolver);
+        DatabaseConstraintViolationResolver violationResolver = DatabaseConstraintViolationResolverFactory.build(databaseResolver);
+        translator = new DatabaseConstraintExceptionTranslator(violationResolver);
     }
 
     /**

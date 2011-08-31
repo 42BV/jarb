@@ -8,12 +8,12 @@ import org.jarb.violation.DatabaseConstraintViolationType;
 import org.junit.Before;
 import org.junit.Test;
 
-public class OracleConstraintViolationResolverTest {
-    private OracleConstraintViolationResolver resolver;
+public class OracleViolationResolverTest {
+    private OracleViolationResolver resolver;
 
     @Before
     public void setUp() {
-        resolver = new OracleConstraintViolationResolver();
+        resolver = new OracleViolationResolver();
     }
 
     @Test

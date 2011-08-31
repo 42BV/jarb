@@ -1,8 +1,8 @@
 package org.jarb.violation;
 
-import org.jarb.violation.factory.ConstraintViolationExceptionFactory;
-import org.jarb.violation.factory.SimpleConstraintViolationExceptionFactory;
-import org.jarb.violation.resolver.ConstraintViolationResolver;
+import org.jarb.violation.factory.DatabaseConstraintViolationExceptionFactory;
+import org.jarb.violation.factory.DefaultViolationExceptionFactory;
+import org.jarb.violation.resolver.DatabaseConstraintViolationResolver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.Assert;
@@ -15,28 +15,28 @@ import org.springframework.util.Assert;
  * @author Jeroen van Schagen
  * @since 17-05-2011
  */
-public class ConstraintViolationExceptionTranslator {
-    private final Logger logger = LoggerFactory.getLogger(ConstraintViolationExceptionTranslator.class);
+public class DatabaseConstraintExceptionTranslator {
+    private final Logger logger = LoggerFactory.getLogger(DatabaseConstraintExceptionTranslator.class);
 
     /** Resolves the constraint violation from an exception. **/
-    private final ConstraintViolationResolver violationResolver;
+    private final DatabaseConstraintViolationResolver violationResolver;
     /** Creates an exception for some constraint violation. **/
-    private final ConstraintViolationExceptionFactory exceptionFactory;
+    private final DatabaseConstraintViolationExceptionFactory exceptionFactory;
 
     /**
-     * Construct a new {@link ConstraintViolationExceptionTranslator}.
+     * Construct a new {@link DatabaseConstraintExceptionTranslator}.
      * @param violationResolver resolves the constraint violation from an exception
      */
-    public ConstraintViolationExceptionTranslator(ConstraintViolationResolver violationResolver) {
-        this(violationResolver, new SimpleConstraintViolationExceptionFactory());
+    public DatabaseConstraintExceptionTranslator(DatabaseConstraintViolationResolver violationResolver) {
+        this(violationResolver, new DefaultViolationExceptionFactory());
     }
 
     /**
-     * Construct a new {@link ConstraintViolationExceptionTranslator}.
+     * Construct a new {@link DatabaseConstraintExceptionTranslator}.
      * @param violationResolver resolves the constraint violation from an exception
      * @param exceptionFactory creates an exception for some constraint violation
      */
-    public ConstraintViolationExceptionTranslator(ConstraintViolationResolver violationResolver, ConstraintViolationExceptionFactory exceptionFactory) {
+    public DatabaseConstraintExceptionTranslator(DatabaseConstraintViolationResolver violationResolver, DatabaseConstraintViolationExceptionFactory exceptionFactory) {
         Assert.notNull(violationResolver, "Property 'violation resolver' cannot be null");
         Assert.notNull(exceptionFactory, "Property 'exception factory' cannot be null");
         this.violationResolver = violationResolver;

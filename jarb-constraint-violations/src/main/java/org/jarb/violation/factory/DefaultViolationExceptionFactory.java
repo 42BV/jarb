@@ -15,7 +15,7 @@ import org.jarb.violation.UniqueKeyViolationException;
  * @author Jeroen van Schagen
  * @since 12-05-2011
  */
-public class SimpleConstraintViolationExceptionFactory implements ConstraintViolationExceptionFactory {
+public class DefaultViolationExceptionFactory implements DatabaseConstraintViolationExceptionFactory {
 
     /**
      * {@inheritDoc}

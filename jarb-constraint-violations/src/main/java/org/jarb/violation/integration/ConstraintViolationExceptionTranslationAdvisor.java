@@ -3,7 +3,7 @@ package org.jarb.violation.integration;
 import org.aopalliance.aop.Advice;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
-import org.jarb.violation.ConstraintViolationExceptionTranslator;
+import org.jarb.violation.DatabaseConstraintExceptionTranslator;
 import org.springframework.aop.Pointcut;
 import org.springframework.aop.support.AbstractPointcutAdvisor;
 
@@ -17,7 +17,7 @@ public class ConstraintViolationExceptionTranslationAdvisor extends AbstractPoin
     private static final long serialVersionUID = -462142297188191739L;
 
     /** Describes how exceptions should be translated **/
-    private final ConstraintViolationExceptionTranslator exceptionTranslator;
+    private final DatabaseConstraintExceptionTranslator exceptionTranslator;
     /** Describes when the translation process should be triggered **/
     private final Pointcut pointcut;
 
@@ -27,7 +27,7 @@ public class ConstraintViolationExceptionTranslationAdvisor extends AbstractPoin
      * @param exceptionTranslator translates the exceptions into constraint violation exceptions
      * @param pointcut aspect oriented pointcut, describes which methods should be intercepted
      */
-    public ConstraintViolationExceptionTranslationAdvisor(ConstraintViolationExceptionTranslator exceptionTranslator, Pointcut pointcut) {
+    public ConstraintViolationExceptionTranslationAdvisor(DatabaseConstraintExceptionTranslator exceptionTranslator, Pointcut pointcut) {
         this.pointcut = pointcut;
         this.exceptionTranslator = exceptionTranslator;
     }

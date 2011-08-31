@@ -9,7 +9,7 @@ import org.jarb.violation.DatabaseConstraintViolation;
  * @author Jeroen van Schagen
  * @since 16-05-2011
  */
-public abstract class RootCauseMessageConstraintViolationResolver implements ConstraintViolationResolver {
+public abstract class RootCauseMessageViolationResolver implements DatabaseConstraintViolationResolver {
 
     /**
      * {@inheritDoc}

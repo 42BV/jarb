@@ -7,7 +7,7 @@ import org.jarb.violation.DatabaseConstraintViolation;
  * @author Jeroen van Schagen
  * @since 12-05-2011
  */
-public interface ConstraintViolationExceptionFactory {
+public interface DatabaseConstraintViolationExceptionFactory {
 
     /**
      * Build the exception for some constraint violation.

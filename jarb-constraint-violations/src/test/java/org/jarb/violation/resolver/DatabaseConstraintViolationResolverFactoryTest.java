@@ -31,8 +31,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "classpath:hsql-context.xml" })
-public class ConstraintViolationResolverFactoryTest {
-    private ConstraintViolationResolver resolver;
+public class DatabaseConstraintViolationResolverFactoryTest {
+    private DatabaseConstraintViolationResolver resolver;
 
     @PersistenceContext
     private EntityManager entityManager;
@@ -40,7 +40,7 @@ public class ConstraintViolationResolverFactoryTest {
     @Before
     public void setUpResolver() {
         DatabaseResolver databaseResolver = HibernateJpaDatabaseResolver.forEntityManager(entityManager);
-        resolver = ConstraintViolationResolverFactory.build(databaseResolver);
+        resolver = DatabaseConstraintViolationResolverFactory.build(databaseResolver);
     }
 
     /**

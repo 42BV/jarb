@@ -8,12 +8,12 @@ import org.jarb.violation.DatabaseConstraintViolationType;
 import org.junit.Before;
 import org.junit.Test;
 
-public class HsqlConstraintViolationResolverTest {
-    private HsqlConstraintViolationResolver resolver;
+public class HsqlViolationResolverTest {
+    private HsqlViolationResolver resolver;
 
     @Before
     public void setUp() {
-        resolver = new HsqlConstraintViolationResolver();
+        resolver = new HsqlViolationResolver();
     }
 
     @Test

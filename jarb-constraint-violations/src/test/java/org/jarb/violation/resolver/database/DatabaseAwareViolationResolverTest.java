@@ -1,4 +1,4 @@
-package org.jarb.violation.resolver;
+package org.jarb.violation.resolver.database;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -8,15 +8,12 @@ import java.sql.SQLException;
 
 import org.jarb.violation.DatabaseConstraintViolation;
 import org.jarb.violation.DatabaseConstraintViolationType;
-import org.jarb.violation.resolver.database.Database;
-import org.jarb.violation.resolver.database.DatabaseResolver;
-import org.jarb.violation.resolver.database.DatabaseSpecificConstraintViolationResolver;
-import org.jarb.violation.resolver.vendor.MysqlConstraintViolationResolver;
+import org.jarb.violation.resolver.vendor.MysqlViolationResolver;
 import org.junit.Before;
 import org.junit.Test;
 
-public class DatabaseSpecificConstraintViolationResolverTest {
-    private DatabaseSpecificConstraintViolationResolver resolver;
+public class DatabaseAwareViolationResolverTest {
+    private DatabaseAwareViolationResolver resolver;
 
     @Before
     public void setUp() {
@@ -28,7 +25,7 @@ public class DatabaseSpecificConstraintViolationResolverTest {
             }
 
         };
-        resolver = new DatabaseSpecificConstraintViolationResolver(mysqlDatabaseResolver);
+        resolver = new DatabaseAwareViolationResolver(mysqlDatabaseResolver);
     }
 
     /**
@@ -36,7 +33,7 @@ public class DatabaseSpecificConstraintViolationResolverTest {
      */
     @Test
     public void testDelegate() {
-        resolver.register(Database.MYSQL, new MysqlConstraintViolationResolver());
+        resolver.registerResolver(Database.MYSQL, new MysqlViolationResolver());
         Throwable mysqlException = new SQLException("Column 'name' cannot be null");
         DatabaseConstraintViolation violation = resolver.resolve(mysqlException);
         assertNotNull(violation);

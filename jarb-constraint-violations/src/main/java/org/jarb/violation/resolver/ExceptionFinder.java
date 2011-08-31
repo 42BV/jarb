@@ -41,7 +41,6 @@ public class ExceptionFinder {
     }
 
     private ExceptionFinder() {
-        // Prevent initialization
     }
 
 }

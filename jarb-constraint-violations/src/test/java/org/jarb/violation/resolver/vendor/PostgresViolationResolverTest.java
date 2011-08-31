@@ -8,12 +8,12 @@ import org.jarb.violation.DatabaseConstraintViolationType;
 import org.junit.Before;
 import org.junit.Test;
 
-public class PostgresConstraintViolationResolverTest {
-    private PostgresConstraintViolationResolver resolver;
+public class PostgresViolationResolverTest {
+    private PostgresViolationResolver resolver;
 
     @Before
     public void setUp() {
-        resolver = new PostgresConstraintViolationResolver();
+        resolver = new PostgresViolationResolver();
     }
 
     @Test

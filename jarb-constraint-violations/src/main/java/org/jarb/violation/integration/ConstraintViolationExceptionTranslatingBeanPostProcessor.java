@@ -1,7 +1,7 @@
 package org.jarb.violation.integration;
 
 import org.jarb.utils.spring.AdvisorAddingBeanPostProcessor;
-import org.jarb.violation.ConstraintViolationExceptionTranslator;
+import org.jarb.violation.DatabaseConstraintExceptionTranslator;
 import org.springframework.aop.Pointcut;
 import org.springframework.aop.support.annotation.AnnotationMatchingPointcut;
 import org.springframework.beans.factory.InitializingBean;
@@ -48,7 +48,7 @@ public class ConstraintViolationExceptionTranslatingBeanPostProcessor extends Ad
     /** Indicates where exception translation should be plugged into. */
     private Pointcut pointcut = new AnnotationMatchingPointcut(Repository.class, true);
     /** Converted into a persistence exception translator. */
-    private ConstraintViolationExceptionTranslator translator;
+    private DatabaseConstraintExceptionTranslator translator;
 
     /**
      * Construct a new translating bean post processor.
@@ -80,7 +80,7 @@ public class ConstraintViolationExceptionTranslatingBeanPostProcessor extends Ad
      * Configure the exception translator instance. Exceptions will be translated with this instance.
      * @param translator the translator that will translate our instances
      */
-    public void setTranslator(ConstraintViolationExceptionTranslator translator) {
+    public void setTranslator(DatabaseConstraintExceptionTranslator translator) {
         this.translator = translator;
     }
 

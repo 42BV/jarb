@@ -8,7 +8,7 @@ import org.jarb.violation.DatabaseConstraintViolation;
  * @author Jeroen van Schagen
  * @since 12-05-2011
  */
-public interface ConstraintViolationResolver {
+public interface DatabaseConstraintViolationResolver {
 
     /**
      * Retrieve the constraint violation from a throwable instance.

@@ -21,12 +21,12 @@ import org.jarb.violation.UniqueKeyViolationException;
 import org.junit.Before;
 import org.junit.Test;
 
-public class SimpleConstraintViolationExceptionFactoryTest {
-    private SimpleConstraintViolationExceptionFactory factory;
+public class DefaultViolationExceptionFactoryTest {
+    private DefaultViolationExceptionFactory factory;
 
     @Before
     public void setUp() {
-        factory = new SimpleConstraintViolationExceptionFactory();
+        factory = new DefaultViolationExceptionFactory();
     }
 
     @Test

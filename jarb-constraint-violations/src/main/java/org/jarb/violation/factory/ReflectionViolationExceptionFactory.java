@@ -18,14 +18,14 @@ import org.springframework.util.Assert;
  * @author Jeroen van Schagen
  * @since 18-05-2011
  */
-public class ReflectionConstraintViolationExceptionFactory implements ConstraintViolationExceptionFactory {
+public class ReflectionViolationExceptionFactory implements DatabaseConstraintViolationExceptionFactory {
     private final Constructor<? extends Throwable> exceptionConstructor;
     
     /**
-     * Construct a new {@link ReflectionConstraintViolationExceptionFactory}.
+     * Construct a new {@link ReflectionViolationExceptionFactory}.
      * @param exceptionConstructor exception constructor, should consist of only supported parameter types
      */
-    public ReflectionConstraintViolationExceptionFactory(Constructor<? extends Throwable> exceptionConstructor) {
+    public ReflectionViolationExceptionFactory(Constructor<? extends Throwable> exceptionConstructor) {
         Assert.notNull(exceptionConstructor, "Exception constructor cannot be null");
         if(!supportsConstructor(exceptionConstructor)) {
             throw new IllegalArgumentException("Constructor contains unsupported parameter types");
@@ -34,12 +34,12 @@ public class ReflectionConstraintViolationExceptionFactory implements Constraint
     }
 
     /**
-     * Construct a new {@link ReflectionConstraintViolationExceptionFactory}. When using
+     * Construct a new {@link ReflectionViolationExceptionFactory}. When using
      * this constructor we will use the first exception constructor that has only supported
      * parameter types. If we cannot find a supported constructor, a runtime excepion is thrown.
      * @param exceptionClass class of the exception that should be created.
      */
-    public ReflectionConstraintViolationExceptionFactory(Class<? extends Throwable> exceptionClass) {
+    public ReflectionViolationExceptionFactory(Class<? extends Throwable> exceptionClass) {
         this(findBestSupportedConstructor(exceptionClass));
     }
 
@@ -56,7 +56,7 @@ public class ReflectionConstraintViolationExceptionFactory implements Constraint
                 arguments[parameterIndex] = violation;
             } else if(Throwable.class.isAssignableFrom(parameterTypes[parameterIndex])) {
                 arguments[parameterIndex] = cause;
-            } else if(parameterTypes[parameterIndex].isAssignableFrom(ReflectionConstraintViolationExceptionFactory.class)) {
+            } else if(parameterTypes[parameterIndex].isAssignableFrom(ReflectionViolationExceptionFactory.class)) {
                 arguments[parameterIndex] = this;
             }
         }
@@ -116,7 +116,7 @@ public class ReflectionConstraintViolationExceptionFactory implements Constraint
             // Throwable (subclass) argument
             Throwable.class.isAssignableFrom(parameterType) ||
             // (Reflection) constraint violation exception factory argument
-            parameterType.isAssignableFrom(ReflectionConstraintViolationExceptionFactory.class);
+            parameterType.isAssignableFrom(ReflectionViolationExceptionFactory.class);
     }
     
     /**
