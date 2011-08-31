@@ -10,7 +10,7 @@ public class NotNullViolationExceptionTest {
     private final DatabaseConstraintViolation notNullConstraintViolation;
 
     public NotNullViolationExceptionTest() {
-        notNullConstraintViolation = violation(NOT_NULL).setColumnName("column_name").build();
+        notNullConstraintViolation = violation(NOT_NULL).column("column_name").build();
     }
 
     @Test

@@ -10,7 +10,7 @@ public class UniqueKeyViolationExceptionTest {
     private final DatabaseConstraintViolation uniqueConstraintViolation;
 
     public UniqueKeyViolationExceptionTest() {
-        uniqueConstraintViolation = violation(UNIQUE_KEY).setConstraintName("uk_persons_name").build();
+        uniqueConstraintViolation = violation(UNIQUE_KEY).named("uk_persons_name").build();
     }
 
     @Test

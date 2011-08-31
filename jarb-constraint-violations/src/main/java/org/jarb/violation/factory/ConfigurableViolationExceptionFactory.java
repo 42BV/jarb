@@ -24,6 +24,8 @@ public class ConfigurableViolationExceptionFactory implements DatabaseConstraint
     private Map<String, DatabaseConstraintViolationExceptionFactory> factories;
     /** Factory used whenever no custom factory could be determined. **/
     private DatabaseConstraintViolationExceptionFactory defaultFactory;
+    /** Matches the constraint names against registered expressions. **/
+    private ConstraintExpressionMatcher constraintMatcher;
 
     /**
      * Construct a new {@link ConfigurableViolationExceptionFactory}.
@@ -31,6 +33,7 @@ public class ConfigurableViolationExceptionFactory implements DatabaseConstraint
     public ConfigurableViolationExceptionFactory() {
         factories = new HashMap<String, DatabaseConstraintViolationExceptionFactory>();
         defaultFactory = new DefaultViolationExceptionFactory();
+        constraintMatcher = new RegexConstraintExpressionMatcher();
     }
 
     /**
@@ -48,7 +51,15 @@ public class ConfigurableViolationExceptionFactory implements DatabaseConstraint
      * @return factory capable of building a violation exception for our constraint
      */
     private DatabaseConstraintViolationExceptionFactory findFactoryFor(DatabaseConstraintViolation violation) {
-        DatabaseConstraintViolationExceptionFactory factory = factories.get(lowerCase(violation.getConstraintName()));
+        DatabaseConstraintViolationExceptionFactory factory = null;
+        // Attempt to find a custom factory that matches the constraint name
+        String constraintName = lowerCase(violation.getConstraintName());
+        for(String constraintExpression : factories.keySet()) {
+            if(constraintMatcher.matches(constraintName, constraintExpression)) {
+                factory = factories.get(constraintExpression);
+            }
+        }
+        // Otherwise use the default factory
         if (factory == null) {
             factory = defaultFactory;
         }

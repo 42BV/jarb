@@ -10,7 +10,7 @@ public class CheckFailedExceptionTest {
     private final DatabaseConstraintViolation checkConstraintViolation;
 
     public CheckFailedExceptionTest() {
-        checkConstraintViolation = violation(CHECK_FAILED).setConstraintName("ck_person_birth_before_now").build();
+        checkConstraintViolation = violation(CHECK_FAILED).named("ck_person_birth_before_now").build();
     }
 
     @Test

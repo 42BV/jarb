@@ -23,7 +23,7 @@ public class ReflectionViolationExceptionFactoryTest {
     @Test
     public void testInstantiateWithBestConstructor() {
         DatabaseConstraintViolationExceptionFactory factory = new ReflectionViolationExceptionFactory(LicenseNumberAlreadyExistsException.class);
-        DatabaseConstraintViolation violation = violation(UNIQUE_KEY).setConstraintName("uk_cars_license_number").build();
+        DatabaseConstraintViolation violation = violation(UNIQUE_KEY).named("uk_cars_license_number").build();
         final Throwable cause = new SQLException("Database exception 'uk_cars_license_number' violated !");
         Throwable exception = factory.createException(violation, cause);
         // Ensure we created an instance of the correct type
@@ -40,7 +40,7 @@ public class ReflectionViolationExceptionFactoryTest {
     @Test
     public void testInstantiateThirdPartyException() {
         DatabaseConstraintViolationExceptionFactory factory = new ReflectionViolationExceptionFactory(IllegalStateException.class);
-        DatabaseConstraintViolation violation = violation(UNIQUE_KEY).setConstraintName("uk_cars_license_number").build();
+        DatabaseConstraintViolation violation = violation(UNIQUE_KEY).named("uk_cars_license_number").build();
         final Throwable cause = new SQLException("Database exception 'uk_cars_license_number' violated !");
         Throwable exception = factory.createException(violation, cause);
         // The only supported constructor is (Throwable)

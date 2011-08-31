@@ -56,7 +56,7 @@ public class MysqlViolationResolver extends RootCauseMessageViolationResolver {
         DatabaseConstraintViolation.DatabaseConstraintViolationBuilder violationBuilder = violation(DatabaseConstraintViolationType.NOT_NULL);
         Matcher matcher = Pattern.compile(CANNOT_BE_NULL_PATTERN).matcher(message);
         Assert.isTrue(matcher.matches()); // Retrieve group information
-        violationBuilder.setColumnName(matcher.group(1));
+        violationBuilder.column(matcher.group(1));
         return violationBuilder.build();
     }
 
@@ -64,8 +64,8 @@ public class MysqlViolationResolver extends RootCauseMessageViolationResolver {
         DatabaseConstraintViolation.DatabaseConstraintViolationBuilder violationBuilder = violation(DatabaseConstraintViolationType.UNIQUE_KEY);
         Matcher matcher = Pattern.compile(UNIQUE_VIOLATION_PATTERN).matcher(message);
         Assert.isTrue(matcher.matches()); // Retrieve group information
-        violationBuilder.setValue(matcher.group(1));
-        violationBuilder.setConstraintName(matcher.group(2));
+        violationBuilder.value(matcher.group(1));
+        violationBuilder.named(matcher.group(2));
         return violationBuilder.build();
     }
 
@@ -73,7 +73,7 @@ public class MysqlViolationResolver extends RootCauseMessageViolationResolver {
         DatabaseConstraintViolation.DatabaseConstraintViolationBuilder violationBuilder = violation(DatabaseConstraintViolationType.LENGTH_EXCEEDED);
         Matcher matcher = Pattern.compile(LENGTH_EXCEEDED_PATTERN).matcher(message);
         Assert.isTrue(matcher.matches()); // Retrieve group information
-        violationBuilder.setColumnName(matcher.group(1));
+        violationBuilder.column(matcher.group(1));
         return violationBuilder.build();
     }
 
@@ -81,9 +81,9 @@ public class MysqlViolationResolver extends RootCauseMessageViolationResolver {
         DatabaseConstraintViolation.DatabaseConstraintViolationBuilder violationBuilder = violation(DatabaseConstraintViolationType.INVALID_TYPE);
         Matcher matcher = Pattern.compile(INVALID_TYPE_PATTERN).matcher(message);
         Assert.isTrue(matcher.matches()); // Retrieve group information
-        violationBuilder.setExpectedType(matcher.group(1));
-        violationBuilder.setValue(matcher.group(2));
-        violationBuilder.setColumnName(matcher.group(3));
+        violationBuilder.expectedType(matcher.group(1));
+        violationBuilder.value(matcher.group(2));
+        violationBuilder.column(matcher.group(3));
         return violationBuilder.build();
     }
 }

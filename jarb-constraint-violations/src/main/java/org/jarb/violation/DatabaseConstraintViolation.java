@@ -89,37 +89,37 @@ public final class DatabaseConstraintViolation {
             this.type = notNull(type, "Violation type cannot be null");
         }
 
-        public DatabaseConstraintViolationBuilder setConstraintName(String constraintName) {
+        public DatabaseConstraintViolationBuilder named(String constraintName) {
             this.constraintName = constraintName;
             return this;
         }
 
-        public DatabaseConstraintViolationBuilder setTableName(String tableName) {
+        public DatabaseConstraintViolationBuilder table(String tableName) {
             this.tableName = tableName;
             return this;
         }
 
-        public DatabaseConstraintViolationBuilder setColumnName(String columnName) {
+        public DatabaseConstraintViolationBuilder column(String columnName) {
             this.columnName = columnName;
             return this;
         }
 
-        public DatabaseConstraintViolationBuilder setValue(Object value) {
+        public DatabaseConstraintViolationBuilder value(Object value) {
             this.value = value;
             return this;
         }
 
-        public DatabaseConstraintViolationBuilder setValueType(String valueType) {
+        public DatabaseConstraintViolationBuilder valueType(String valueType) {
             this.valueType = valueType;
             return this;
         }
 
-        public DatabaseConstraintViolationBuilder setExpectedType(String expectedType) {
+        public DatabaseConstraintViolationBuilder expectedType(String expectedType) {
             this.expectedType = expectedType;
             return this;
         }
 
-        public DatabaseConstraintViolationBuilder setMaximumLength(Long maximumLength) {
+        public DatabaseConstraintViolationBuilder maximumLength(Long maximumLength) {
             this.maximumLength = maximumLength;
             return this;
         }

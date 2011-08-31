@@ -31,7 +31,7 @@ public class DefaultViolationExceptionFactoryTest {
 
     @Test
     public void testCheckFailed() {
-        DatabaseConstraintViolation violation = violation(CHECK_FAILED).setConstraintName("ck_name_cannot_be_henk").build();
+        DatabaseConstraintViolation violation = violation(CHECK_FAILED).named("ck_name_cannot_be_henk").build();
         DatabaseConstraintViolationException exception = factory.createException(violation, null);
         assertTrue(exception instanceof CheckFailedException);
         assertEquals("Check 'ck_name_cannot_be_henk' failed.", exception.getMessage());
@@ -40,7 +40,7 @@ public class DefaultViolationExceptionFactoryTest {
 
     @Test
     public void testUniqueKeyViolated() {
-        DatabaseConstraintViolation violation = violation(UNIQUE_KEY).setConstraintName("uk_persons_name").build();
+        DatabaseConstraintViolation violation = violation(UNIQUE_KEY).named("uk_persons_name").build();
         DatabaseConstraintViolationException exception = factory.createException(violation, null);
         assertTrue(exception instanceof UniqueKeyViolationException);
         assertEquals("Unique key 'uk_persons_name' was violated.", exception.getMessage());
@@ -49,7 +49,7 @@ public class DefaultViolationExceptionFactoryTest {
 
     @Test
     public void testForeignKeyViolated() {
-        DatabaseConstraintViolation violation = violation(FOREIGN_KEY).setConstraintName("fk_persons_parent").build();
+        DatabaseConstraintViolation violation = violation(FOREIGN_KEY).named("fk_persons_parent").build();
         DatabaseConstraintViolationException exception = factory.createException(violation, null);
         assertTrue(exception instanceof ForeignKeyViolationException);
         assertEquals("Foreign key 'fk_persons_parent' was violated.", exception.getMessage());
@@ -58,7 +58,7 @@ public class DefaultViolationExceptionFactoryTest {
 
     @Test
     public void testNotNullViolated() {
-        DatabaseConstraintViolation violation = violation(NOT_NULL).setColumnName("name").build();
+        DatabaseConstraintViolation violation = violation(NOT_NULL).column("name").build();
         DatabaseConstraintViolationException exception = factory.createException(violation, null);
         assertTrue(exception instanceof NotNullViolationException);
         assertEquals("Column 'name' cannot be null.", exception.getMessage());

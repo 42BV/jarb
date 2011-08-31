@@ -63,8 +63,8 @@ public class PostgresViolationResolver extends RootCauseMessageViolationResolver
         DatabaseConstraintViolation.DatabaseConstraintViolationBuilder violationBuilder = violation(DatabaseConstraintViolationType.CHECK_FAILED);
         Matcher matcher = Pattern.compile(CHECK_FAILED_PATTERN).matcher(message);
         Assert.isTrue(matcher.matches()); // Retrieve group information
-        violationBuilder.setTableName(matcher.group(1));
-        violationBuilder.setConstraintName(matcher.group(2));
+        violationBuilder.table(matcher.group(1));
+        violationBuilder.named(matcher.group(2));
         return violationBuilder.build();
     }
 
@@ -72,7 +72,7 @@ public class PostgresViolationResolver extends RootCauseMessageViolationResolver
         DatabaseConstraintViolation.DatabaseConstraintViolationBuilder violationBuilder = violation(DatabaseConstraintViolationType.NOT_NULL);
         Matcher matcher = Pattern.compile(CANNOT_BE_NULL_PATTERN).matcher(message);
         Assert.isTrue(matcher.matches()); // Retrieve group information
-        violationBuilder.setColumnName(matcher.group(1));
+        violationBuilder.column(matcher.group(1));
         return violationBuilder.build();
     }
 
@@ -80,9 +80,9 @@ public class PostgresViolationResolver extends RootCauseMessageViolationResolver
         DatabaseConstraintViolation.DatabaseConstraintViolationBuilder violationBuilder = violation(DatabaseConstraintViolationType.UNIQUE_KEY);
         Matcher matcher = Pattern.compile(UNIQUE_VIOLATION_PATTERN).matcher(message);
         Assert.isTrue(matcher.matches()); // Retrieve group information
-        violationBuilder.setConstraintName(matcher.group(1));
-        violationBuilder.setColumnName(matcher.group(2));
-        violationBuilder.setValue(matcher.group(3));
+        violationBuilder.named(matcher.group(1));
+        violationBuilder.column(matcher.group(2));
+        violationBuilder.value(matcher.group(3));
         return violationBuilder.build();
     }
 
@@ -92,9 +92,9 @@ public class PostgresViolationResolver extends RootCauseMessageViolationResolver
         Assert.isTrue(matcher.matches()); // Retrieve group information
         final String columnDefinition = matcher.group(1); // For example: varchar(255)
         String columnType = StringUtils.substringBefore(columnDefinition, "(");
-        violationBuilder.setExpectedType(columnType);
+        violationBuilder.expectedType(columnType);
         String columnLength = StringUtils.substringBetween(columnDefinition, "(", ")");
-        violationBuilder.setMaximumLength(Long.valueOf(columnLength));
+        violationBuilder.maximumLength(Long.valueOf(columnLength));
         return violationBuilder.build();
     }
 
@@ -102,9 +102,9 @@ public class PostgresViolationResolver extends RootCauseMessageViolationResolver
         DatabaseConstraintViolation.DatabaseConstraintViolationBuilder violationBuilder = violation(DatabaseConstraintViolationType.INVALID_TYPE);
         Matcher matcher = Pattern.compile(INVALID_TYPE_PATTERN).matcher(message);
         Assert.isTrue(matcher.matches()); // Retrieve group information
-        violationBuilder.setColumnName(matcher.group(1));
-        violationBuilder.setExpectedType(matcher.group(2));
-        violationBuilder.setValueType(matcher.group(3));
+        violationBuilder.column(matcher.group(1));
+        violationBuilder.expectedType(matcher.group(2));
+        violationBuilder.valueType(matcher.group(3));
         return violationBuilder.build();
     }
 

@@ -15,7 +15,7 @@ public class ConstraintViolationTest {
     @Test
     public void testToString() {
         DatabaseConstraintViolation.DatabaseConstraintViolationBuilder violationBuilder = violation(CHECK_FAILED);
-        violationBuilder.setConstraintName("ck_name_cannot_be_henk");
+        violationBuilder.named("ck_name_cannot_be_henk");
         DatabaseConstraintViolation violation = violationBuilder.build();
         final String toString = violation.toString();
         assertNotNull(toString);
