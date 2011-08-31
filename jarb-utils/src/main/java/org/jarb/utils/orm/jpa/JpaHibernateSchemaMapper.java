@@ -147,7 +147,10 @@ public class JpaHibernateSchemaMapper implements SchemaMapper {
     }
 
     private boolean isCollectionReference(PropertyReference propertyReference) {
-        return annotationScanner.hasAnnotation(propertyReference, OneToMany.class, ManyToMany.class, ElementCollection.class);
+        return
+            annotationScanner.hasAnnotation(propertyReference, OneToMany.class) ||
+            annotationScanner.hasAnnotation(propertyReference, ManyToMany.class) ||
+            annotationScanner.hasAnnotation(propertyReference, ElementCollection.class) ;
     }
 
     private String tableForProperty(PropertyReference propertyReference) {
@@ -203,6 +206,7 @@ public class JpaHibernateSchemaMapper implements SchemaMapper {
         }
     }
 
+    // TODO: Figure out what to do with @EmbeddedId
     private String getIdentifierPropertyName(Class<?> entityClass) {
         String identifierPropertyName = null;
         for (String propertyName : getPropertyNames(entityClass)) {

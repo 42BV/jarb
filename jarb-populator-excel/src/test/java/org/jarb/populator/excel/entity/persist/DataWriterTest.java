@@ -99,7 +99,6 @@ public class DataWriterTest extends DefaultExcelTestDataCase {
     private EntityRegistry toRegistry(Map<EntityDefinition<?>, Map<Object, ExcelRow>> entitiesMap) {
         EntityRegistry registry = new EntityRegistry();
         for (Map.Entry<EntityDefinition<?>, Map<Object, ExcelRow>> entitiesEntry : entitiesMap.entrySet()) {
-            @SuppressWarnings("rawtypes")
             final Class entityClass = entitiesEntry.getKey().getEntityClass();
             EntityTable<Object> table = new EntityTable<Object>(entityClass);
             for (Map.Entry<Object, ExcelRow> excelRowEntry : entitiesEntry.getValue().entrySet()) {

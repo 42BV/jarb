@@ -258,8 +258,7 @@ public class EntityDefinition<T> {
     public boolean equals(Object obj) {
         if (obj == this) {
             return true;
-        }
-        if (obj instanceof EntityDefinition) {
+        } else if (obj instanceof EntityDefinition<?>) {
             return entityClass.equals(((EntityDefinition<?>) obj).entityClass);
         } else {
             return false;

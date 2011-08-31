@@ -4,13 +4,13 @@
 package org.jarb.utils.bean;
 
 import static org.springframework.beans.BeanUtils.getPropertyDescriptor;
-import static org.springframework.util.ReflectionUtils.findField;
 
 import java.beans.PropertyDescriptor;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 
 import org.springframework.core.annotation.AnnotationUtils;
+import org.springframework.util.ReflectionUtils;
 
 /**
  * Default implementation of {@link BeanAnnotationScanner}. Capable of
@@ -35,22 +35,15 @@ public class BeanAnnotationScannerImpl implements BeanAnnotationScanner {
     }
 
     @Override
-    public boolean hasAnnotation(Class<?> beanClass, Class<? extends Annotation>... annotationTypes) {
-        boolean found = false;
-        for (Class<? extends Annotation> annotationType : annotationTypes) {
-            if (findAnnotation(beanClass, annotationType) != null) {
-                found = true;
-                break;
-            }
-        }
-        return found;
+    public boolean hasAnnotation(Class<?> beanClass, Class<? extends Annotation> annotationType) {
+        return findAnnotation(beanClass, annotationType) != null;
     }
 
     @Override
     public <T extends Annotation> T findAnnotation(PropertyReference propertyReference, Class<T> annotationType) {
         T annotation = null;
         // Extract annotation from field declaration
-        Field field = findField(propertyReference.getBeanClass(), propertyReference.getName());
+        Field field = ReflectionUtils.findField(propertyReference.getBeanClass(), propertyReference.getName());
         if (field != null) {
             annotation = field.getAnnotation(annotationType);
         }
@@ -68,15 +61,8 @@ public class BeanAnnotationScannerImpl implements BeanAnnotationScanner {
     }
 
     @Override
-    public boolean hasAnnotation(PropertyReference propertyReference, Class<? extends Annotation>... annotationTypes) {
-        boolean found = false;
-        for (Class<? extends Annotation> annotationType : annotationTypes) {
-            if (findAnnotation(propertyReference, annotationType) != null) {
-                found = true;
-                break;
-            }
-        }
-        return found;
+    public boolean hasAnnotation(PropertyReference propertyReference, Class<? extends Annotation> annotationType) {
+        return findAnnotation(propertyReference, annotationType) != null;
     }
 
 }

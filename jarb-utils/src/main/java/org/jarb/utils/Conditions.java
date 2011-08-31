@@ -19,6 +19,7 @@ public final class Conditions {
         }
     }
 
+    @SuppressWarnings("unchecked")
     public static <T> T instanceOf(Object object, Class<? extends T> type, String message) {
         state(notNull(type, "Instance-of type cannot be null").isInstance(object), message);
         return (T) object;
