@@ -1,6 +1,6 @@
 package org.jarb.violation.factory;
 
-import org.jarb.violation.ConstraintViolation;
+import org.jarb.violation.DatabaseConstraintViolation;
 
 /**
  * Builds the exception for constraint violations.
@@ -15,6 +15,6 @@ public interface ConstraintViolationExceptionFactory {
      * @param cause origional exception that triggered our violation
      * @return exception that describes our violation
      */
-    Throwable createException(ConstraintViolation violation, Throwable cause);
+    Throwable createException(DatabaseConstraintViolation violation, Throwable cause);
 
 }

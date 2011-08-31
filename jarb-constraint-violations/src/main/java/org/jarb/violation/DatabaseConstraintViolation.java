@@ -1,8 +1,9 @@
 package org.jarb.violation;
 
+import static org.jarb.utils.Conditions.notNull;
+
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
-import org.springframework.util.Assert;
 
 /**
  * Representation of the constraint violation that occurred.
@@ -10,8 +11,8 @@ import org.springframework.util.Assert;
  * @author Jeroen van Schagen
  * @since 16-05-2011
  */
-public final class ConstraintViolation {
-    private final ConstraintViolationType type;
+public final class DatabaseConstraintViolation {
+    private final DatabaseConstraintViolationType violationType;
     private String constraintName;
     private String tableName;
     private String columnName;
@@ -21,21 +22,21 @@ public final class ConstraintViolation {
     private String expectedType;
     private Long maximumLength;
 
-    private ConstraintViolation(ConstraintViolationType type) {
-        this.type = type;
+    private DatabaseConstraintViolation(DatabaseConstraintViolationType violationType) {
+        this.violationType = violationType;
     }
 
     /**
-     * Start building a new {@link ConstraintViolation}.
-     * @param type the type of constraint violation
+     * Start building a new {@link DatabaseConstraintViolation}.
+     * @param violationType the type of constraint violation
      * @return new constraint violation builder
      */
-    public static ConstraintViolation.Builder createViolation(ConstraintViolationType type) {
-        return new ConstraintViolation.Builder(type);
+    public static DatabaseConstraintViolationBuilder violation(DatabaseConstraintViolationType violationType) {
+        return new DatabaseConstraintViolationBuilder(violationType);
     }
 
-    public ConstraintViolationType getType() {
-        return type;
+    public DatabaseConstraintViolationType getViolationType() {
+        return violationType;
     }
 
     public String getConstraintName() {
@@ -67,14 +68,13 @@ public final class ConstraintViolation {
     }
 
     /**
-     * Responsible for building {@link ConstraintViolation} instances.
-     * During construction, the violation instance will be validated.
+     * Capable of build new violation instances.
      *
      * @author Jeroen van Schagen
      * @date Aug 5, 2011
      */
-    public static final class Builder {
-        private final ConstraintViolationType type;
+    public static final class DatabaseConstraintViolationBuilder {
+        private final DatabaseConstraintViolationType type;
 
         private String constraintName;
         private String tableName;
@@ -85,48 +85,47 @@ public final class ConstraintViolation {
         private String expectedType;
         private Long maximumLength;
 
-        private Builder(ConstraintViolationType type) {
-            Assert.notNull(type, "Violation type cannot be null");
-            this.type = type;
+        private DatabaseConstraintViolationBuilder(DatabaseConstraintViolationType type) {
+            this.type = notNull(type, "Violation type cannot be null");
         }
 
-        public Builder setConstraintName(String constraintName) {
+        public DatabaseConstraintViolationBuilder setConstraintName(String constraintName) {
             this.constraintName = constraintName;
             return this;
         }
 
-        public Builder setTableName(String tableName) {
+        public DatabaseConstraintViolationBuilder setTableName(String tableName) {
             this.tableName = tableName;
             return this;
         }
 
-        public Builder setColumnName(String columnName) {
+        public DatabaseConstraintViolationBuilder setColumnName(String columnName) {
             this.columnName = columnName;
             return this;
         }
 
-        public Builder setValue(Object value) {
+        public DatabaseConstraintViolationBuilder setValue(Object value) {
             this.value = value;
             return this;
         }
 
-        public Builder setValueType(String valueType) {
+        public DatabaseConstraintViolationBuilder setValueType(String valueType) {
             this.valueType = valueType;
             return this;
         }
 
-        public Builder setExpectedType(String expectedType) {
+        public DatabaseConstraintViolationBuilder setExpectedType(String expectedType) {
             this.expectedType = expectedType;
             return this;
         }
 
-        public Builder setMaximumLength(Long maximumLength) {
+        public DatabaseConstraintViolationBuilder setMaximumLength(Long maximumLength) {
             this.maximumLength = maximumLength;
             return this;
         }
 
-        public ConstraintViolation build() {
-            ConstraintViolation violation = new ConstraintViolation(type);
+        public DatabaseConstraintViolation build() {
+            DatabaseConstraintViolation violation = new DatabaseConstraintViolation(type);
             violation.constraintName = constraintName;
             violation.tableName = tableName;
             violation.columnName = columnName;

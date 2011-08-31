@@ -7,7 +7,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import org.jarb.violation.ConstraintViolation;
+import org.jarb.violation.DatabaseConstraintViolation;
 import org.springframework.beans.BeanUtils;
 import org.springframework.util.Assert;
 
@@ -47,12 +47,12 @@ public class ReflectionConstraintViolationExceptionFactory implements Constraint
      * {@inheritDoc}
      */
     @Override
-    public Throwable createException(ConstraintViolation violation, Throwable cause) {
+    public Throwable createException(DatabaseConstraintViolation violation, Throwable cause) {
         // Build an array of construction arguments
         final Class<?>[] parameterTypes = exceptionConstructor.getParameterTypes();
         Object[] arguments = new Object[parameterTypes.length];
         for(int parameterIndex = 0; parameterIndex < parameterTypes.length; parameterIndex++) {
-            if(ConstraintViolation.class.equals(parameterTypes[parameterIndex])) {
+            if(DatabaseConstraintViolation.class.equals(parameterTypes[parameterIndex])) {
                 arguments[parameterIndex] = violation;
             } else if(Throwable.class.isAssignableFrom(parameterTypes[parameterIndex])) {
                 arguments[parameterIndex] = cause;
@@ -112,7 +112,7 @@ public class ReflectionConstraintViolationExceptionFactory implements Constraint
     private static boolean supportsParameterType(Class<?> parameterType) {
         return
             // We support a constraint violation argument
-            ConstraintViolation.class.equals(parameterType) ||
+            DatabaseConstraintViolation.class.equals(parameterType) ||
             // Throwable (subclass) argument
             Throwable.class.isAssignableFrom(parameterType) ||
             // (Reflection) constraint violation exception factory argument

@@ -3,7 +3,7 @@ package org.jarb.violation.resolver.database;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.jarb.violation.ConstraintViolation;
+import org.jarb.violation.DatabaseConstraintViolation;
 import org.jarb.violation.resolver.ConstraintViolationResolver;
 
 /**
@@ -31,7 +31,7 @@ public class DatabaseSpecificConstraintViolationResolver implements ConstraintVi
      * {@inheritDoc}
      */
     @Override
-    public ConstraintViolation resolve(Throwable throwable) {
+    public DatabaseConstraintViolation resolve(Throwable throwable) {
         final Database database = databaseResolver.resolve();
         ConstraintViolationResolver violationResolver = violationResolvers.get(database);
         if (violationResolver == null) {

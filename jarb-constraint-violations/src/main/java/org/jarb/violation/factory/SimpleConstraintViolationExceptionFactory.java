@@ -1,8 +1,8 @@
 package org.jarb.violation.factory;
 
 import org.jarb.violation.CheckFailedException;
-import org.jarb.violation.ConstraintViolation;
-import org.jarb.violation.ConstraintViolationException;
+import org.jarb.violation.DatabaseConstraintViolation;
+import org.jarb.violation.DatabaseConstraintViolationException;
 import org.jarb.violation.ForeignKeyViolationException;
 import org.jarb.violation.InvalidTypeException;
 import org.jarb.violation.LengthExceededException;
@@ -21,9 +21,9 @@ public class SimpleConstraintViolationExceptionFactory implements ConstraintViol
      * {@inheritDoc}
      */
     @Override
-    public ConstraintViolationException createException(ConstraintViolation violation, Throwable cause) {
-        ConstraintViolationException exception = null;
-        switch (violation.getType()) {
+    public DatabaseConstraintViolationException createException(DatabaseConstraintViolation violation, Throwable cause) {
+        DatabaseConstraintViolationException exception = null;
+        switch (violation.getViolationType()) {
         case NOT_NULL:
             exception = new NotNullViolationException(violation, cause);
             break;

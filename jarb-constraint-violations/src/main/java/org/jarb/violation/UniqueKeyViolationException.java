@@ -1,6 +1,7 @@
 package org.jarb.violation;
 
-import static org.springframework.util.Assert.state;
+import static org.jarb.utils.Conditions.state;
+import static org.jarb.violation.DatabaseConstraintViolationType.UNIQUE_KEY;
 
 /**
  * Thrown whenever a unique key value already exists.
@@ -8,14 +9,14 @@ import static org.springframework.util.Assert.state;
  * @author Jeroen van Schagen
  * @since 27-05-2011
  */
-public class UniqueKeyViolationException extends ConstraintViolationException {
+public class UniqueKeyViolationException extends DatabaseConstraintViolationException {
     private static final long serialVersionUID = -5771965201756493983L;
 
     /**
      * Construct a new {@link UniqueKeyViolationException}.
      * @param violation constraint violation that triggered this exception
      */
-    public UniqueKeyViolationException(ConstraintViolation violation) {
+    public UniqueKeyViolationException(DatabaseConstraintViolation violation) {
         this(violation, (Throwable) null);
     }
 
@@ -24,7 +25,7 @@ public class UniqueKeyViolationException extends ConstraintViolationException {
      * @param violation constraint violation that triggered this exception
      * @param message exception message that should be shown
      */
-    public UniqueKeyViolationException(ConstraintViolation violation, String message) {
+    public UniqueKeyViolationException(DatabaseConstraintViolation violation, String message) {
         this(violation, message, null);
     }
 
@@ -33,7 +34,7 @@ public class UniqueKeyViolationException extends ConstraintViolationException {
      * @param violation constraint violation that triggered this exception
      * @param cause the cause of this constraint violation exception, can be {@code null}
      */
-    public UniqueKeyViolationException(ConstraintViolation violation, Throwable cause) {
+    public UniqueKeyViolationException(DatabaseConstraintViolation violation, Throwable cause) {
         this(violation, "Unique key '" + violation.getConstraintName() + "' was violated.", cause);
     }
 
@@ -43,8 +44,8 @@ public class UniqueKeyViolationException extends ConstraintViolationException {
      * @param message exception message that should be shown
      * @param cause the cause of this constraint violation exception, can be {@code null}
      */
-    public UniqueKeyViolationException(ConstraintViolation violation, String message, Throwable cause) {
+    public UniqueKeyViolationException(DatabaseConstraintViolation violation, String message, Throwable cause) {
         super(violation, message, cause);
-        state(violation.getType() == ConstraintViolationType.UNIQUE_KEY, "Unique key exception can only occur for unique key violations");
+        state(violation.getViolationType() == UNIQUE_KEY, "Unique key exception can only occur for unique key violations.");
     }
 }

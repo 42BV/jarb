@@ -1,16 +1,16 @@
 package org.jarb.violation;
 
-import static org.jarb.violation.ConstraintViolation.createViolation;
-import static org.jarb.violation.ConstraintViolationType.UNIQUE_KEY;
+import static org.jarb.violation.DatabaseConstraintViolation.violation;
+import static org.jarb.violation.DatabaseConstraintViolationType.UNIQUE_KEY;
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
 public class UniqueKeyViolationExceptionTest {
-    private final ConstraintViolation uniqueConstraintViolation;
+    private final DatabaseConstraintViolation uniqueConstraintViolation;
 
     public UniqueKeyViolationExceptionTest() {
-        uniqueConstraintViolation = createViolation(UNIQUE_KEY).setConstraintName("uk_persons_name").build();
+        uniqueConstraintViolation = violation(UNIQUE_KEY).setConstraintName("uk_persons_name").build();
     }
 
     @Test

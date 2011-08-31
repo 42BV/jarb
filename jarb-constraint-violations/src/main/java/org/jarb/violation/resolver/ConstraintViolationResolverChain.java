@@ -3,7 +3,7 @@ package org.jarb.violation.resolver;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jarb.violation.ConstraintViolation;
+import org.jarb.violation.DatabaseConstraintViolation;
 
 /**
  * Chain of responsiblity for constraint violation resolvers. Whenever a violation
@@ -28,9 +28,9 @@ public class ConstraintViolationResolverChain implements ConstraintViolationReso
      * {@inheritDoc}
      */
     @Override
-    public ConstraintViolation resolve(Throwable throwable) {
+    public DatabaseConstraintViolation resolve(Throwable throwable) {
         for (ConstraintViolationResolver violationResolver : violationResolvers) {
-            ConstraintViolation violation = violationResolver.resolve(throwable);
+            DatabaseConstraintViolation violation = violationResolver.resolve(throwable);
             if (violation != null) {
                 return violation;
             }

@@ -1,6 +1,7 @@
 package org.jarb.violation;
 
-import static org.springframework.util.Assert.state;
+import static org.jarb.utils.Conditions.state;
+import static org.jarb.violation.DatabaseConstraintViolationType.CHECK_FAILED;
 
 /**
  * Exception thrown whenever a database check fails.
@@ -8,14 +9,14 @@ import static org.springframework.util.Assert.state;
  * @author Jeroen van Schagen
  * @since 27-05-2011
  */
-public class CheckFailedException extends ConstraintViolationException {
+public class CheckFailedException extends DatabaseConstraintViolationException {
     private static final long serialVersionUID = -1855882672284167793L;
 
     /**
      * Construct a new {@link CheckFailedException}.
      * @param violation constraint violation that triggered this exception
      */
-    public CheckFailedException(ConstraintViolation violation) {
+    public CheckFailedException(DatabaseConstraintViolation violation) {
         this(violation, (Throwable) null);
     }
 
@@ -24,7 +25,7 @@ public class CheckFailedException extends ConstraintViolationException {
      * @param violation constraint violation that triggered this exception
      * @param message exception message that should be shown
      */
-    public CheckFailedException(ConstraintViolation violation, String message) {
+    public CheckFailedException(DatabaseConstraintViolation violation, String message) {
         this(violation, message, null);
     }
 
@@ -33,7 +34,7 @@ public class CheckFailedException extends ConstraintViolationException {
      * @param violation constraint violation that triggered this exception
      * @param cause the cause of this constraint violation exception, can be {@code null}
      */
-    public CheckFailedException(ConstraintViolation violation, Throwable cause) {
+    public CheckFailedException(DatabaseConstraintViolation violation, Throwable cause) {
         this(violation, "Check '" + violation.getConstraintName() + "' failed.", cause);
     }
 
@@ -43,8 +44,8 @@ public class CheckFailedException extends ConstraintViolationException {
      * @param message exception message that should be shown
      * @param cause the cause of this constraint violation exception, can be {@code null}
      */
-    public CheckFailedException(ConstraintViolation violation, String message, Throwable cause) {
+    public CheckFailedException(DatabaseConstraintViolation violation, String message, Throwable cause) {
         super(violation, message, cause);
-        state(violation.getType() == ConstraintViolationType.CHECK_FAILED, "Check failed exception can only occur for check violations");
+        state(violation.getViolationType() == CHECK_FAILED, "Check failed exception can only occur for check violations.");
     }
 }

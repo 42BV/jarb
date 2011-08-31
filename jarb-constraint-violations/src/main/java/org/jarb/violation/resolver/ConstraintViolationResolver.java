@@ -1,6 +1,6 @@
 package org.jarb.violation.resolver;
 
-import org.jarb.violation.ConstraintViolation;
+import org.jarb.violation.DatabaseConstraintViolation;
 
 /**
  * Attempts to resolve the constraint violation that caused an exception.
@@ -15,6 +15,6 @@ public interface ConstraintViolationResolver {
      * @param throwable exception that should be inspected
      * @return constraint violation, if found in the throwable
      */
-    ConstraintViolation resolve(Throwable throwable);
+    DatabaseConstraintViolation resolve(Throwable throwable);
 
 }

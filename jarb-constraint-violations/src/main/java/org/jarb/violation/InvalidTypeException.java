@@ -1,6 +1,7 @@
 package org.jarb.violation;
 
-import static org.springframework.util.Assert.state;
+import static org.jarb.utils.Conditions.state;
+import static org.jarb.violation.DatabaseConstraintViolationType.INVALID_TYPE;
 
 /**
  * Thrown whenever the expression type does not match the column type.
@@ -8,14 +9,14 @@ import static org.springframework.util.Assert.state;
  * @author Jeroen van Schagen
  * @since 27-05-2011
  */
-public class InvalidTypeException extends ConstraintViolationException {
+public class InvalidTypeException extends DatabaseConstraintViolationException {
     private static final long serialVersionUID = -4828293558481913477L;
 
     /**
      * Construct a new {@link InvalidTypeException}.
      * @param violation constraint violation that triggered this exception
      */
-    public InvalidTypeException(ConstraintViolation violation) {
+    public InvalidTypeException(DatabaseConstraintViolation violation) {
         this(violation, (Throwable) null);
     }
 
@@ -24,7 +25,7 @@ public class InvalidTypeException extends ConstraintViolationException {
      * @param violation constraint violation that triggered this exception
      * @param message exception message that should be shown
      */
-    public InvalidTypeException(ConstraintViolation violation, String message) {
+    public InvalidTypeException(DatabaseConstraintViolation violation, String message) {
         this(violation, message, null);
     }
 
@@ -33,7 +34,7 @@ public class InvalidTypeException extends ConstraintViolationException {
      * @param violation constraint violation that triggered this exception
      * @param cause the cause of this constraint violation exception, can be {@code null}
      */
-    public InvalidTypeException(ConstraintViolation violation, Throwable cause) {
+    public InvalidTypeException(DatabaseConstraintViolation violation, Throwable cause) {
         this(violation, "Column is of an invalid type.", cause);
     }
 
@@ -43,8 +44,8 @@ public class InvalidTypeException extends ConstraintViolationException {
      * @param message exception message that should be shown
      * @param cause the cause of this constraint violation exception, can be {@code null}
      */
-    public InvalidTypeException(ConstraintViolation violation, String message, Throwable cause) {
+    public InvalidTypeException(DatabaseConstraintViolation violation, String message, Throwable cause) {
         super(violation, message, cause);
-        state(violation.getType() == ConstraintViolationType.INVALID_TYPE, "Invalid type exception can only occur for invalid type violations");
+        state(violation.getViolationType() == INVALID_TYPE, "Invalid type exception can only occur for invalid type violations.");
     }
 }

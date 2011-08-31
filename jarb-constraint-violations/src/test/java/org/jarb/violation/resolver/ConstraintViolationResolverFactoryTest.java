@@ -7,8 +7,8 @@ import static org.junit.Assert.fail;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
-import org.jarb.violation.ConstraintViolation;
-import org.jarb.violation.ConstraintViolationType;
+import org.jarb.violation.DatabaseConstraintViolation;
+import org.jarb.violation.DatabaseConstraintViolationType;
 import org.jarb.violation.domain.Car;
 import org.jarb.violation.domain.Person;
 import org.jarb.violation.resolver.database.DatabaseResolver;
@@ -53,8 +53,8 @@ public class ConstraintViolationResolverFactoryTest {
             entityManager.persist(car);
             fail("Expected a runtime exception");
         } catch (RuntimeException e) {
-            ConstraintViolation violation = resolver.resolve(e);
-            assertEquals(ConstraintViolationType.NOT_NULL, violation.getType());
+            DatabaseConstraintViolation violation = resolver.resolve(e);
+            assertEquals(DatabaseConstraintViolationType.NOT_NULL, violation.getViolationType());
             assertTrue(violation.getConstraintName().startsWith("sys_ct_"));
             assertEquals("cars", violation.getTableName());
             assertEquals("license_number", violation.getColumnName());
@@ -75,8 +75,8 @@ public class ConstraintViolationResolverFactoryTest {
             entityManager.persist(another);
             fail("Expected a runtime exception");
         } catch (RuntimeException e) {
-            ConstraintViolation violation = resolver.resolve(e);
-            assertEquals(ConstraintViolationType.UNIQUE_KEY, violation.getType());
+            DatabaseConstraintViolation violation = resolver.resolve(e);
+            assertEquals(DatabaseConstraintViolationType.UNIQUE_KEY, violation.getViolationType());
             assertEquals("uk_cars_license_number", violation.getConstraintName());
             assertEquals("cars", violation.getTableName());
         }
@@ -93,8 +93,8 @@ public class ConstraintViolationResolverFactoryTest {
             entityManager.persist(car);
             fail("Expected a runtime exception");
         } catch (RuntimeException e) {
-            ConstraintViolation violation = resolver.resolve(e);
-            assertEquals(ConstraintViolationType.LENGTH_EXCEEDED, violation.getType());
+            DatabaseConstraintViolation violation = resolver.resolve(e);
+            assertEquals(DatabaseConstraintViolationType.LENGTH_EXCEEDED, violation.getViolationType());
         }
     }
 
@@ -110,8 +110,8 @@ public class ConstraintViolationResolverFactoryTest {
             entityManager.persist(jeroen);
             fail("Expected a runtime exception");
         } catch (RuntimeException e) {
-            ConstraintViolation violation = resolver.resolve(e);
-            assertEquals(ConstraintViolationType.INVALID_TYPE, violation.getType());
+            DatabaseConstraintViolation violation = resolver.resolve(e);
+            assertEquals(DatabaseConstraintViolationType.INVALID_TYPE, violation.getViolationType());
         }
     }
 

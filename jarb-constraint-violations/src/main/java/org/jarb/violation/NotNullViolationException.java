@@ -1,6 +1,7 @@
 package org.jarb.violation;
 
-import static org.springframework.util.Assert.state;
+import static org.jarb.utils.Conditions.state;
+import static org.jarb.violation.DatabaseConstraintViolationType.NOT_NULL;
 
 /**
  * Thrown whenever a {@code null} value was provided for a not nullable column.
@@ -8,14 +9,14 @@ import static org.springframework.util.Assert.state;
  * @author Jeroen van Schagen
  * @since 27-05-2011
  */
-public class NotNullViolationException extends ConstraintViolationException {
+public class NotNullViolationException extends DatabaseConstraintViolationException {
     private static final long serialVersionUID = -2973693606821549440L;
 
     /**
      * Construct a new {@link NotNullViolationException}.
      * @param violation constraint violation that triggered this exception
      */
-    public NotNullViolationException(ConstraintViolation violation) {
+    public NotNullViolationException(DatabaseConstraintViolation violation) {
         this(violation, (Throwable) null);
     }
 
@@ -24,7 +25,7 @@ public class NotNullViolationException extends ConstraintViolationException {
      * @param violation constraint violation that triggered this exception
      * @param message exception message that should be shown
      */
-    public NotNullViolationException(ConstraintViolation violation, String message) {
+    public NotNullViolationException(DatabaseConstraintViolation violation, String message) {
         this(violation, message, null);
     }
 
@@ -33,7 +34,7 @@ public class NotNullViolationException extends ConstraintViolationException {
      * @param violation constraint violation that triggered this exception
      * @param cause the cause of this constraint violation exception, can be {@code null}
      */
-    public NotNullViolationException(ConstraintViolation violation, Throwable cause) {
+    public NotNullViolationException(DatabaseConstraintViolation violation, Throwable cause) {
         this(violation, "Column '" + violation.getColumnName() + "' cannot be null.", cause);
     }
 
@@ -43,8 +44,8 @@ public class NotNullViolationException extends ConstraintViolationException {
      * @param message exception message that should be shown
      * @param cause the cause of this constraint violation exception, can be {@code null}
      */
-    public NotNullViolationException(ConstraintViolation violation, String message, Throwable cause) {
+    public NotNullViolationException(DatabaseConstraintViolation violation, String message, Throwable cause) {
         super(violation, message, cause);
-        state(violation.getType() == ConstraintViolationType.NOT_NULL, "Not null exception can only occur for not null violations");
+        state(violation.getViolationType() == NOT_NULL, "Not null exception can only occur for not null violations");
     }
 }

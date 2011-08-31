@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
-import org.jarb.violation.ConstraintViolation;
+import org.jarb.violation.DatabaseConstraintViolation;
 import org.springframework.util.Assert;
 
 /**
@@ -33,7 +33,7 @@ public class ConfigurableConstraintViolationExceptionFactory implements Constrai
      * {@inheritDoc}
      */
     @Override
-    public Throwable createException(ConstraintViolation violation, Throwable cause) {
+    public Throwable createException(DatabaseConstraintViolation violation, Throwable cause) {
         return findFactoryFor(violation).createException(violation, cause);
     }
 
@@ -43,7 +43,7 @@ public class ConfigurableConstraintViolationExceptionFactory implements Constrai
      * @param violation reference to our constraint violation
      * @return factory capable of building a violation exception for our constraint
      */
-    private ConstraintViolationExceptionFactory findFactoryFor(ConstraintViolation violation) {
+    private ConstraintViolationExceptionFactory findFactoryFor(DatabaseConstraintViolation violation) {
         // Constraints are always registered in lower case, so we also lookup in lower case
         final String lowerCaseConstraintName = StringUtils.lowerCase(violation.getConstraintName());
         ConstraintViolationExceptionFactory factory = factories.get(lowerCaseConstraintName);

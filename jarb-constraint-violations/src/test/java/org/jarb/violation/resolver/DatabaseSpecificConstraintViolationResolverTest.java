@@ -6,8 +6,8 @@ import static org.junit.Assert.fail;
 
 import java.sql.SQLException;
 
-import org.jarb.violation.ConstraintViolation;
-import org.jarb.violation.ConstraintViolationType;
+import org.jarb.violation.DatabaseConstraintViolation;
+import org.jarb.violation.DatabaseConstraintViolationType;
 import org.jarb.violation.resolver.database.Database;
 import org.jarb.violation.resolver.database.DatabaseResolver;
 import org.jarb.violation.resolver.database.DatabaseSpecificConstraintViolationResolver;
@@ -38,9 +38,9 @@ public class DatabaseSpecificConstraintViolationResolverTest {
     public void testDelegate() {
         resolver.register(Database.MYSQL, new MysqlConstraintViolationResolver());
         Throwable mysqlException = new SQLException("Column 'name' cannot be null");
-        ConstraintViolation violation = resolver.resolve(mysqlException);
+        DatabaseConstraintViolation violation = resolver.resolve(mysqlException);
         assertNotNull(violation);
-        assertEquals(ConstraintViolationType.NOT_NULL, violation.getType());
+        assertEquals(DatabaseConstraintViolationType.NOT_NULL, violation.getViolationType());
         assertEquals("name", violation.getColumnName());
     }
 

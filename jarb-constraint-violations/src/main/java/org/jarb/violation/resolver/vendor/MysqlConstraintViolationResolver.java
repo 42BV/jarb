@@ -1,12 +1,12 @@
 package org.jarb.violation.resolver.vendor;
 
-import static org.jarb.violation.ConstraintViolation.createViolation;
+import static org.jarb.violation.DatabaseConstraintViolation.violation;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.jarb.violation.ConstraintViolation;
-import org.jarb.violation.ConstraintViolationType;
+import org.jarb.violation.DatabaseConstraintViolation;
+import org.jarb.violation.DatabaseConstraintViolationType;
 import org.jarb.violation.resolver.RootCauseMessageConstraintViolationResolver;
 import org.springframework.util.Assert;
 
@@ -38,8 +38,8 @@ public class MysqlConstraintViolationResolver extends RootCauseMessageConstraint
      * {@inheritDoc}
      */
     @Override
-    protected ConstraintViolation resolveByMessage(String message) {
-        ConstraintViolation violation = null;
+    protected DatabaseConstraintViolation resolveByMessage(String message) {
+        DatabaseConstraintViolation violation = null;
         if (message.matches(CANNOT_BE_NULL_PATTERN)) {
             violation = resolveNotNullViolation(message);
         } else if (message.matches(UNIQUE_VIOLATION_PATTERN)) {
@@ -52,16 +52,16 @@ public class MysqlConstraintViolationResolver extends RootCauseMessageConstraint
         return violation;
     }
 
-    private ConstraintViolation resolveNotNullViolation(String message) {
-        ConstraintViolation.Builder violationBuilder = createViolation(ConstraintViolationType.NOT_NULL);
+    private DatabaseConstraintViolation resolveNotNullViolation(String message) {
+        DatabaseConstraintViolation.DatabaseConstraintViolationBuilder violationBuilder = violation(DatabaseConstraintViolationType.NOT_NULL);
         Matcher matcher = Pattern.compile(CANNOT_BE_NULL_PATTERN).matcher(message);
         Assert.isTrue(matcher.matches()); // Retrieve group information
         violationBuilder.setColumnName(matcher.group(1));
         return violationBuilder.build();
     }
 
-    private ConstraintViolation resolveUniqueKeyViolation(String message) {
-        ConstraintViolation.Builder violationBuilder = createViolation(ConstraintViolationType.UNIQUE_KEY);
+    private DatabaseConstraintViolation resolveUniqueKeyViolation(String message) {
+        DatabaseConstraintViolation.DatabaseConstraintViolationBuilder violationBuilder = violation(DatabaseConstraintViolationType.UNIQUE_KEY);
         Matcher matcher = Pattern.compile(UNIQUE_VIOLATION_PATTERN).matcher(message);
         Assert.isTrue(matcher.matches()); // Retrieve group information
         violationBuilder.setValue(matcher.group(1));
@@ -69,16 +69,16 @@ public class MysqlConstraintViolationResolver extends RootCauseMessageConstraint
         return violationBuilder.build();
     }
 
-    private ConstraintViolation resolveLengthViolation(String message) {
-        ConstraintViolation.Builder violationBuilder = createViolation(ConstraintViolationType.LENGTH_EXCEEDED);
+    private DatabaseConstraintViolation resolveLengthViolation(String message) {
+        DatabaseConstraintViolation.DatabaseConstraintViolationBuilder violationBuilder = violation(DatabaseConstraintViolationType.LENGTH_EXCEEDED);
         Matcher matcher = Pattern.compile(LENGTH_EXCEEDED_PATTERN).matcher(message);
         Assert.isTrue(matcher.matches()); // Retrieve group information
         violationBuilder.setColumnName(matcher.group(1));
         return violationBuilder.build();
     }
 
-    private ConstraintViolation resolveTypeViolation(String message) {
-        ConstraintViolation.Builder violationBuilder = createViolation(ConstraintViolationType.INVALID_TYPE);
+    private DatabaseConstraintViolation resolveTypeViolation(String message) {
+        DatabaseConstraintViolation.DatabaseConstraintViolationBuilder violationBuilder = violation(DatabaseConstraintViolationType.INVALID_TYPE);
         Matcher matcher = Pattern.compile(INVALID_TYPE_PATTERN).matcher(message);
         Assert.isTrue(matcher.matches()); // Retrieve group information
         violationBuilder.setExpectedType(matcher.group(1));

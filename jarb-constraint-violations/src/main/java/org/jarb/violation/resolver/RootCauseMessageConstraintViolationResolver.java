@@ -1,7 +1,7 @@
 package org.jarb.violation.resolver;
 
 import org.apache.commons.lang3.StringUtils;
-import org.jarb.violation.ConstraintViolation;
+import org.jarb.violation.DatabaseConstraintViolation;
 
 /**
  * Looks at the message of our root cause to determine the constraint violation.
@@ -15,8 +15,8 @@ public abstract class RootCauseMessageConstraintViolationResolver implements Con
      * {@inheritDoc}
      */
     @Override
-    public final ConstraintViolation resolve(Throwable throwable) {
-        ConstraintViolation violation = null;
+    public final DatabaseConstraintViolation resolve(Throwable throwable) {
+        DatabaseConstraintViolation violation = null;
         String rootMessage = ExceptionFinder.getRootCause(throwable).getMessage();
         if (StringUtils.isNotBlank(rootMessage)) {
             violation = resolveByMessage(rootMessage);
@@ -29,6 +29,6 @@ public abstract class RootCauseMessageConstraintViolationResolver implements Con
      * @param message root cause exception message
      * @return constraint violation
      */
-    protected abstract ConstraintViolation resolveByMessage(String message);
+    protected abstract DatabaseConstraintViolation resolveByMessage(String message);
 
 }

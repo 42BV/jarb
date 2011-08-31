@@ -1,6 +1,6 @@
 package org.jarb.sample.domain;
 
-import org.jarb.violation.ConstraintViolation;
+import org.jarb.violation.DatabaseConstraintViolation;
 import org.jarb.violation.UniqueKeyViolationException;
 
 /**
@@ -16,7 +16,7 @@ public class PostTitleAlreadyExistsException extends UniqueKeyViolationException
      * @param violation constraint violation reference
      * @param cause the actual cause
      */
-    public PostTitleAlreadyExistsException(ConstraintViolation violation, Throwable cause) {
+    public PostTitleAlreadyExistsException(DatabaseConstraintViolation violation, Throwable cause) {
         super(violation, cause);
     }
 }

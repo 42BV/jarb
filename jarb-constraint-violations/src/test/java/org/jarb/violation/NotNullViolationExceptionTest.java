@@ -1,16 +1,16 @@
 package org.jarb.violation;
 
-import static org.jarb.violation.ConstraintViolation.createViolation;
-import static org.jarb.violation.ConstraintViolationType.NOT_NULL;
+import static org.jarb.violation.DatabaseConstraintViolation.violation;
+import static org.jarb.violation.DatabaseConstraintViolationType.NOT_NULL;
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
 public class NotNullViolationExceptionTest {
-    private final ConstraintViolation notNullConstraintViolation;
+    private final DatabaseConstraintViolation notNullConstraintViolation;
 
     public NotNullViolationExceptionTest() {
-        notNullConstraintViolation = createViolation(NOT_NULL).setColumnName("column_name").build();
+        notNullConstraintViolation = violation(NOT_NULL).setColumnName("column_name").build();
     }
 
     @Test

@@ -3,8 +3,8 @@ package org.jarb.violation.integration;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
-import org.jarb.violation.ConstraintViolation;
-import org.jarb.violation.ConstraintViolationType;
+import org.jarb.violation.DatabaseConstraintViolation;
+import org.jarb.violation.DatabaseConstraintViolationType;
 import org.jarb.violation.NotNullViolationException;
 import org.jarb.violation.domain.Car;
 import org.jarb.violation.domain.CarRepository;
@@ -47,8 +47,8 @@ public class ConstraintViolationExceptionTranslatingBeanPostProcessorTest {
             cars.add(carWithSameLicenseNumber);
             fail("Expected a license number already exists exception");
         } catch (LicenseNumberAlreadyExistsException e) {
-            ConstraintViolation violation = e.getViolation();
-            assertEquals(ConstraintViolationType.UNIQUE_KEY, violation.getType());
+            DatabaseConstraintViolation violation = e.getViolation();
+            assertEquals(DatabaseConstraintViolationType.UNIQUE_KEY, violation.getViolationType());
             assertEquals("uk_cars_license_number", violation.getConstraintName());
         }
     }
@@ -65,8 +65,8 @@ public class ConstraintViolationExceptionTranslatingBeanPostProcessorTest {
             fail("Expected a not null exception");
         } catch (NotNullViolationException e) {
             assertEquals("Column 'license_number' cannot be null.", e.getMessage());
-            ConstraintViolation violation = e.getViolation();
-            assertEquals(ConstraintViolationType.NOT_NULL, violation.getType());
+            DatabaseConstraintViolation violation = e.getViolation();
+            assertEquals(DatabaseConstraintViolationType.NOT_NULL, violation.getViolationType());
             assertEquals("license_number", violation.getColumnName());
         }
     }

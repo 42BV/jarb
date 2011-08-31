@@ -49,7 +49,7 @@ public class ConstraintViolationExceptionTranslator {
      */
     public Throwable translateExceptionIfPossible(Throwable throwable) {
         Throwable translatedException = null;
-        ConstraintViolation violation = violationResolver.resolve(throwable);
+        DatabaseConstraintViolation violation = violationResolver.resolve(throwable);
         if (violation != null) {
             translatedException = exceptionFactory.createException(violation, throwable);
             logger.info("Translated '{}' into '{}'.", throwable.getClass().getSimpleName(), translatedException.getClass().getSimpleName());

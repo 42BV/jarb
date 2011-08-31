@@ -6,7 +6,7 @@ package org.jarb.violation;
  * @author Jeroen van Schagen
  * @since 16-05-2011
  */
-public enum ConstraintViolationType {
+public enum DatabaseConstraintViolationType {
 
     /**
      * Unique key already exists in database.

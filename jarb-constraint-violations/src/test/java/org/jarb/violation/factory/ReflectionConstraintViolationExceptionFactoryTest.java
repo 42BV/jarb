@@ -1,7 +1,7 @@
 package org.jarb.violation.factory;
 
-import static org.jarb.violation.ConstraintViolation.createViolation;
-import static org.jarb.violation.ConstraintViolationType.UNIQUE_KEY;
+import static org.jarb.violation.DatabaseConstraintViolation.violation;
+import static org.jarb.violation.DatabaseConstraintViolationType.UNIQUE_KEY;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -10,7 +10,7 @@ import java.lang.reflect.Constructor;
 import java.math.BigDecimal;
 import java.sql.SQLException;
 
-import org.jarb.violation.ConstraintViolation;
+import org.jarb.violation.DatabaseConstraintViolation;
 import org.jarb.violation.domain.LicenseNumberAlreadyExistsException;
 import org.junit.Test;
 
@@ -23,7 +23,7 @@ public class ReflectionConstraintViolationExceptionFactoryTest {
     @Test
     public void testInstantiateWithBestConstructor() {
         ConstraintViolationExceptionFactory factory = new ReflectionConstraintViolationExceptionFactory(LicenseNumberAlreadyExistsException.class);
-        ConstraintViolation violation = createViolation(UNIQUE_KEY).setConstraintName("uk_cars_license_number").build();
+        DatabaseConstraintViolation violation = violation(UNIQUE_KEY).setConstraintName("uk_cars_license_number").build();
         final Throwable cause = new SQLException("Database exception 'uk_cars_license_number' violated !");
         Throwable exception = factory.createException(violation, cause);
         // Ensure we created an instance of the correct type
@@ -40,7 +40,7 @@ public class ReflectionConstraintViolationExceptionFactoryTest {
     @Test
     public void testInstantiateThirdPartyException() {
         ConstraintViolationExceptionFactory factory = new ReflectionConstraintViolationExceptionFactory(IllegalStateException.class);
-        ConstraintViolation violation = createViolation(UNIQUE_KEY).setConstraintName("uk_cars_license_number").build();
+        DatabaseConstraintViolation violation = violation(UNIQUE_KEY).setConstraintName("uk_cars_license_number").build();
         final Throwable cause = new SQLException("Database exception 'uk_cars_license_number' violated !");
         Throwable exception = factory.createException(violation, cause);
         // The only supported constructor is (Throwable)
@@ -54,7 +54,7 @@ public class ReflectionConstraintViolationExceptionFactoryTest {
     @Test
     public void testInstantiateNullary() {
         ConstraintViolationExceptionFactory factory = new ReflectionConstraintViolationExceptionFactory(ExceptionWithOnlyNullaryConstructor.class);
-        ConstraintViolation violation = createViolation(UNIQUE_KEY).build();
+        DatabaseConstraintViolation violation = violation(UNIQUE_KEY).build();
         final Throwable cause = new SQLException("Database exception 'uk_cars_license_number' violated !");
         Throwable exception = factory.createException(violation, cause);
         assertTrue(exception instanceof ExceptionWithOnlyNullaryConstructor);

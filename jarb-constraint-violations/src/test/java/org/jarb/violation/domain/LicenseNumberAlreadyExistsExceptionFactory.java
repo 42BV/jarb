@@ -1,7 +1,7 @@
 package org.jarb.violation.domain;
 
-import org.jarb.violation.ConstraintViolation;
-import org.jarb.violation.ConstraintViolationException;
+import org.jarb.violation.DatabaseConstraintViolation;
+import org.jarb.violation.DatabaseConstraintViolationException;
 import org.jarb.violation.factory.ConstraintViolationExceptionFactory;
 
 /**
@@ -15,7 +15,7 @@ public class LicenseNumberAlreadyExistsExceptionFactory implements ConstraintVio
      * {@inheritDoc}
      */
     @Override
-    public ConstraintViolationException createException(ConstraintViolation violation, Throwable cause) {
+    public DatabaseConstraintViolationException createException(DatabaseConstraintViolation violation, Throwable cause) {
         return new LicenseNumberAlreadyExistsException(violation, cause, this);
     }
 
