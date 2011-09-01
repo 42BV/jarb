@@ -26,17 +26,14 @@ import org.jarb.populator.excel.workbook.writer.WorkbookWriter;
 import org.springframework.core.io.Resource;
 
 /**
- * Allows an Excel workbook to be used to insert entities into the database.
- * 
- * <p>
- * 
- * Below are some examples of usage:
+ * Allows an Excel workbook to be used to insert entities into
+ * the database. Below are some examples of usage:
  * 
  * <p>
  * 
  * <code>
- *  excelDataManager.loadWorkbook("book.xls").persist();
- *  excelDataManager.buildWorkbook().includeAllEntities().write("book.xls");
+ *  manager.persist(manager.loadWorkbook("input.xls"));<br>
+ *  manager.newWorkbook().readAndIncludeAll().write("output.xls");
  * </code>
  * 
  * @author Jeroen van Schagen
