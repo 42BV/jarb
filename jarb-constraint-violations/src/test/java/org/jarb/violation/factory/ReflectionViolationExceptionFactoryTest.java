@@ -82,7 +82,7 @@ public class ReflectionViolationExceptionFactoryTest {
         try {
             new ReflectionViolationExceptionFactory(unsupportedConstructor);
             fail("Expected an illegal argument exception, as an unsupported constructor was provided!");
-        } catch (IllegalArgumentException e) {
+        } catch (IllegalStateException e) {
             assertEquals("Constructor contains unsupported parameter types", e.getMessage());
         }
     }
