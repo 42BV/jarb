@@ -57,6 +57,7 @@ public class ConfigurableViolationExceptionFactory implements DatabaseConstraint
         for (String constraintExpression : factories.keySet()) {
             if (constraintMatcher.matches(constraintName, constraintExpression)) {
                 factory = factories.get(constraintExpression);
+                break;
             }
         }
         // Otherwise use the default factory
