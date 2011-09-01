@@ -15,7 +15,7 @@ import org.springframework.util.Assert;
 public class ExcelDatabasePopulator implements DatabasePopulator {
     private EntityManagerFactory entityManagerFactory;
     private Resource excelResource;
-    
+
     public void setExcelResource(Resource excelResource) {
         this.excelResource = excelResource;
     }
@@ -23,7 +23,7 @@ public class ExcelDatabasePopulator implements DatabasePopulator {
     public void setEntityManagerFactory(EntityManagerFactory entityManagerFactory) {
         this.entityManagerFactory = entityManagerFactory;
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -31,11 +31,11 @@ public class ExcelDatabasePopulator implements DatabasePopulator {
     public void populate() throws Exception {
         Assert.state(excelResource != null, "Excel resource cannot be null");
         Assert.state(entityManagerFactory != null, "Entity manager factory cannot be null");
-        
+
         ExcelDataManager excelDataManager = new ExcelDataManagerFactory(entityManagerFactory).build();
-        excelDataManager.loadWorkbook(excelResource).persist();
+        excelDataManager.persist(excelDataManager.loadWorkbook(excelResource));
     }
-    
+
     /**
      * {@inheritDoc}
      */

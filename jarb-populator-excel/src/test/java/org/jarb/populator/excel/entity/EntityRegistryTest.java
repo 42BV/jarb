@@ -53,7 +53,7 @@ public class EntityRegistryTest {
         final Employee jeroen = new Employee();
         registry.add(Employee.class, 1L, bas);
         registry.add(Employee.class, 2L, jeroen);
-        List<Employee> employees = registry.forClass(Employee.class).list();
+        List<Employee> employees = registry.withClass(Employee.class).list();
         assertEquals(Arrays.asList(bas, jeroen), employees);
     }
 
@@ -62,7 +62,7 @@ public class EntityRegistryTest {
      */
     @Test
     public void testGetAllNonExisting() {
-        assertTrue(registry.forClass(Employee.class).isEmpty());
+        assertTrue(registry.withClass(Employee.class).isEmpty());
     }
 
     /**

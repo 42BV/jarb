@@ -64,7 +64,7 @@ public class DefaultEntityExporter implements EntityExporter {
      */
     private <T> void exportEntities(EntityRegistry registry, EntityDefinition<T> classDefinition, Workbook workbook) {
         Sheet sheet = workbook.getSheet(classDefinition.getTableName());
-        for (T entity : registry.forClass(classDefinition.getEntityClass())) {
+        for (T entity : registry.withClass(classDefinition.getEntityClass())) {
             exportEntity(entity, classDefinition, sheet);
         }
     }
