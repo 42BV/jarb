@@ -5,7 +5,7 @@ import static org.apache.commons.lang3.StringUtils.lowerCase;
 import static org.jarb.utils.Conditions.hasText;
 import static org.jarb.utils.Conditions.notNull;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.jarb.violation.DatabaseConstraintViolation;
@@ -31,7 +31,7 @@ public class ConfigurableViolationExceptionFactory implements DatabaseConstraint
      * Construct a new {@link ConfigurableViolationExceptionFactory}.
      */
     public ConfigurableViolationExceptionFactory() {
-        factories = new HashMap<String, DatabaseConstraintViolationExceptionFactory>();
+        factories = new LinkedHashMap<String, DatabaseConstraintViolationExceptionFactory>();
         defaultFactory = new DefaultViolationExceptionFactory();
         constraintMatcher = new RegexConstraintExpressionMatcher();
     }
@@ -54,8 +54,8 @@ public class ConfigurableViolationExceptionFactory implements DatabaseConstraint
         DatabaseConstraintViolationExceptionFactory factory = null;
         // Attempt to find a custom factory that matches the constraint name
         String constraintName = lowerCase(violation.getConstraintName());
-        for(String constraintExpression : factories.keySet()) {
-            if(constraintMatcher.matches(constraintName, constraintExpression)) {
+        for (String constraintExpression : factories.keySet()) {
+            if (constraintMatcher.matches(constraintName, constraintExpression)) {
                 factory = factories.get(constraintExpression);
             }
         }

@@ -32,9 +32,9 @@ public class ModifiableBean<T> {
         this.beanWrapper = new BeanWrapperImpl(bean);
         this.fieldAccessor = new DirectFieldAccessor(bean);
     }
-    
+
     /**
-     * Wrap an existing bean with property modification behaviour.
+     * Wrap an existing bean with property modification behavior.
      * @param <T> type of bean
      * @param bean the bean being wrapped
      * @return modifiable bean, wrapping the specified bean
@@ -42,9 +42,9 @@ public class ModifiableBean<T> {
     public static <T> ModifiableBean<T> wrap(T bean) {
         return new ModifiableBean<T>(bean);
     }
-    
+
     /**
-     * Build a new bean with property modification behaviour.
+     * Build a new bean with property modification behavior.
      * @param <T> type of bean
      * @param beanClass class of the bean being created and wrapped
      * @return modifiable bean, wrapping a new bean instance
