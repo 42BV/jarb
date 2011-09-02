@@ -1,7 +1,6 @@
 package org.jarb.violation.factory;
 
 import static java.util.Collections.unmodifiableMap;
-import static org.apache.commons.lang3.StringUtils.lowerCase;
 import static org.jarb.utils.Conditions.hasText;
 import static org.jarb.utils.Conditions.notNull;
 
@@ -25,7 +24,7 @@ public class ConfigurableViolationExceptionFactory implements DatabaseConstraint
     /** Factory used whenever no custom factory could be determined. **/
     private DatabaseConstraintViolationExceptionFactory defaultFactory;
     /** Matches the constraint names against registered expressions. **/
-    private ConstraintExpressionMatcher constraintMatcher;
+    private ViolationMatchingStrategy violationMatcher;
 
     /**
      * Construct a new {@link ConfigurableViolationExceptionFactory}.
@@ -33,7 +32,7 @@ public class ConfigurableViolationExceptionFactory implements DatabaseConstraint
     public ConfigurableViolationExceptionFactory() {
         factories = new LinkedHashMap<String, DatabaseConstraintViolationExceptionFactory>();
         defaultFactory = new DefaultViolationExceptionFactory();
-        constraintMatcher = new RegexConstraintExpressionMatcher();
+        violationMatcher = new RegexViolationMatchingStrategy();
     }
 
     /**
@@ -53,10 +52,9 @@ public class ConfigurableViolationExceptionFactory implements DatabaseConstraint
     private DatabaseConstraintViolationExceptionFactory findFactoryFor(DatabaseConstraintViolation violation) {
         DatabaseConstraintViolationExceptionFactory factory = null;
         // Attempt to find a custom factory that matches the constraint name
-        String constraintName = lowerCase(violation.getConstraintName());
-        for (String constraintExpression : factories.keySet()) {
-            if (constraintMatcher.matches(constraintName, constraintExpression)) {
-                factory = factories.get(constraintExpression);
+        for (String expression : factories.keySet()) {
+            if (violationMatcher.matches(violation, expression)) {
+                factory = factories.get(expression);
                 break;
             }
         }
