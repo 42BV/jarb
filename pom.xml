@@ -32,15 +32,15 @@
     
     <distributionManagement>
         <snapshotRepository>
-<id>snapshot.nidera</id>
+            <id>snapshot.nidera</id>
             <url>http://nidrtd58.nidera.nl:8081/nexus/content/repositories/snapshots/</url>
         </snapshotRepository>
     </distributionManagement>
 
 	<scm>
-		<url>https://github.com/42BV/jarb.git</url>
-		<connection>scm:git:https://git@github.com/42BV/jarb.git</connection>
-		<developerConnection>scm:git:https://git@github.com/42BV/jarb.git</developerConnection>
+		<url>https://github.com/42BV/jarb</url>
+		<connection>scm:git@github.com:42BV/jarb.git</connection>
+		<developerConnection>scm:git@github.com:42BV/jarb.git</developerConnection>
 	</scm>
 
 	<properties>
