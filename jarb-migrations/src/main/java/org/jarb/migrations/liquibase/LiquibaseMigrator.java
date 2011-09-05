@@ -1,4 +1,4 @@
-package org.jarb.migrations;
+package org.jarb.migrations.liquibase;
 
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
@@ -17,6 +17,7 @@ import liquibase.exception.LiquibaseException;
 import liquibase.resource.FileSystemResourceAccessor;
 import liquibase.resource.ResourceAccessor;
 
+import org.jarb.migrations.DatabaseMigrator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
