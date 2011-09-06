@@ -1,0 +1,122 @@
+<xs:schema id="beans" targetNamespace="http://www.springframework.org/schema/beans" xmlns:mstns="http://www.springframework.org/schema/beans" xmlns="http://www.springframework.org/schema/beans" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" attributeFormDefault="qualified" elementFormDefault="qualified" xmlns:app1="http://org.jarb/0.1" msdata:schemafragmentcount="2">
+<!-- Generated using Flame-Ware Solutions XML-2-XSD v2.0 at http://www.flame-ware.com/Products/XML-2-XSD/ -->
+  <xs:import namespace="http://org.jarb/0.1" />
+  <xs:element name="bean">
+    <xs:complexType>
+      <xs:attribute name="class" form="unqualified" type="xs:string" />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="beans" msdata:IsDataSet="true" msdata:UseCurrentLocale="true">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element ref="bean" />
+        <xs:element ref="app1:populator" />
+        <xs:element ref="app1:violation-translator" />
+        <xs:element ref="app1:db-metadata-repository" />
+        <xs:element ref="app1:metadata-provider" />
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>
+<xs:schema targetNamespace="http://org.jarb/0.1" xmlns:mstns="http://www.springframework.org/schema/beans" xmlns="http://org.jarb/0.1" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" attributeFormDefault="qualified" elementFormDefault="qualified" xmlns:app1="http://org.jarb/0.1">
+  <xs:import namespace="http://www.springframework.org/schema/beans" />
+  <xs:element name="populator" msdata:Prefix="jarb">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="sql" msdata:Prefix="jarb" minOccurs="0" maxOccurs="unbounded">
+          <xs:complexType>
+            <xs:attribute name="resource" form="unqualified" type="xs:string" />
+            <xs:attribute name="ignoreIfMissing" form="unqualified" type="xs:string" />
+            <xs:attribute name="dataSource-ref" form="unqualified" type="xs:string" />
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="excel" msdata:Prefix="jarb" minOccurs="0" maxOccurs="unbounded">
+          <xs:complexType>
+            <xs:attribute name="resource" form="unqualified" type="xs:string" />
+            <xs:attribute name="ignoreIfMissing" form="unqualified" type="xs:string" />
+            <xs:attribute name="entityManagerFactory-ref" form="unqualified" type="xs:string" />
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="violation-translator" msdata:Prefix="jarb">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="violation-resolver" msdata:Prefix="jarb" minOccurs="0" maxOccurs="unbounded">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="jpa-violation-resolver" msdata:Prefix="jarb" minOccurs="0" maxOccurs="unbounded">
+                <xs:complexType>
+                  <xs:attribute name="entityManagerFactory-ref" form="unqualified" type="xs:string" />
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="custom-exceptions" msdata:Prefix="jarb" minOccurs="0" maxOccurs="unbounded">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="custom-exception-class" msdata:Prefix="jarb" minOccurs="0" maxOccurs="unbounded">
+                <xs:complexType>
+                  <xs:attribute name="constraintName" form="unqualified" type="xs:string" />
+                  <xs:attribute name="exceptionClass" form="unqualified" type="xs:string" />
+                </xs:complexType>
+              </xs:element>
+              <xs:element name="custom-exception-factory" msdata:Prefix="jarb" minOccurs="0" maxOccurs="unbounded">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element ref="mstns:bean" />
+                  </xs:sequence>
+                  <xs:attribute name="constraintName" form="unqualified" type="xs:string" />
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+            <xs:attribute name="matching" form="unqualified" type="xs:string" />
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+      <xs:attribute name="defaultExceptionFactory-ref" form="unqualified" type="xs:string" />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="db-metadata-repository" msdata:Prefix="jarb">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="schema-mapper" msdata:Prefix="jarb" minOccurs="0" maxOccurs="unbounded">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="jpa-schema-mapper" msdata:Prefix="jarb" minOccurs="0" maxOccurs="unbounded">
+                <xs:complexType>
+                  <xs:attribute name="entityManagerFactory-ref" form="unqualified" type="xs:string" />
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+      <xs:attribute name="id" form="unqualified" type="xs:string" />
+      <xs:attribute name="caching" form="unqualified" type="xs:string" />
+      <xs:attribute name="dataSource-ref" form="unqualified" type="xs:string" />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="metadata-provider" msdata:Prefix="jarb">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="metadata-enhancers" msdata:Prefix="jarb" minOccurs="0" maxOccurs="unbounded">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="jsr303-metadata" msdata:Prefix="jarb" type="xs:string" minOccurs="0" />
+              <xs:element name="db-metadata" msdata:Prefix="jarb" minOccurs="0" maxOccurs="unbounded">
+                <xs:complexType>
+                  <xs:attribute name="metadataRepository-ref" form="unqualified" type="xs:string" />
+                </xs:complexType>
+              </xs:element>
+              <xs:element ref="mstns:bean" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+      <xs:attribute name="id" form="unqualified" type="xs:string" />
+    </xs:complexType>
+  </xs:element>
+</xs:schema>
