@@ -3,7 +3,6 @@
  */
 package org.jarb.utils.orm.jpa;
 
-import static javax.persistence.InheritanceType.SINGLE_TABLE;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static org.jarb.utils.Conditions.hasText;
 import static org.jarb.utils.Conditions.instanceOf;
@@ -21,6 +20,7 @@ import javax.persistence.Entity;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
@@ -32,10 +32,11 @@ import javax.persistence.Transient;
 import org.hibernate.cfg.DefaultNamingStrategy;
 import org.hibernate.cfg.NamingStrategy;
 import org.jarb.utils.bean.BeanAnnotationScanner;
-import org.jarb.utils.bean.BeanAnnotationScanner;
 import org.jarb.utils.bean.PropertyReference;
 import org.jarb.utils.orm.ColumnReference;
 import org.jarb.utils.orm.SchemaMapper;
+
+// TODO: Provide support for @EmbeddedId
 
 /**
  * Hibernate JPA implementation of {@link SchemaMapper}.
@@ -46,14 +47,10 @@ import org.jarb.utils.orm.SchemaMapper;
 public class JpaHibernateSchemaMapper implements SchemaMapper {
     private static final String NAMING_STRATEGY_PROP_KEY = "hibernate.ejb.naming_strategy";
 
-    /**
-     * Retrieves the annotations of a bean class.
-     */
-    private final BeanAnnotationScanner annotationScanner = new BeanAnnotationScanner(true, false);
-
-    /**
-     * Naming strategy used to determine the eventual mapping.
-     */
+    /** Retrieves the annotations of a bean class. */
+    private final BeanAnnotationScanner annotationScanner = BeanAnnotationScanner.fieldOrGetter();
+    
+    /** Naming strategy used to determine the eventual mapping. */
     private final NamingStrategy namingStrategy;
 
     public JpaHibernateSchemaMapper() {
@@ -99,7 +96,7 @@ public class JpaHibernateSchemaMapper implements SchemaMapper {
         Class<?> tableClass = entityClass;
         Class<?> rootEntityClass = findRootEntityClass(entityClass);
         Inheritance inheritance = rootEntityClass.getAnnotation(Inheritance.class);
-        if (inheritance != null && inheritance.strategy() == SINGLE_TABLE) {
+        if (inheritance != null && inheritance.strategy() == InheritanceType.SINGLE_TABLE) {
             tableClass = rootEntityClass;
         }
         return tableClass;
@@ -201,21 +198,19 @@ public class JpaHibernateSchemaMapper implements SchemaMapper {
         } else {
             String referencedProperty = getIdentifierPropertyName(referencedClass);
             ColumnReference referencedColumn = column(new PropertyReference(referencedClass, referencedProperty));
-            return namingStrategy.foreignKeyColumnName(propertyReference.getName(), referencedClass.getName(), referencedColumn.getTableName(),
-                    referencedColumn.getColumnName());
+            return namingStrategy.foreignKeyColumnName(propertyReference.getName(), referencedClass.getName(), referencedColumn.getTableName(), referencedColumn.getColumnName());
         }
     }
 
-    // TODO: Figure out what to do with @EmbeddedId
     private String getIdentifierPropertyName(Class<?> entityClass) {
-        String identifierPropertyName = null;
+        String identifierProperty = null;
         for (String propertyName : getPropertyNames(entityClass)) {
             if (annotationScanner.hasAnnotation(new PropertyReference(entityClass, propertyName), Id.class)) {
-                identifierPropertyName = propertyName;
+                identifierProperty = propertyName;
                 break;
             }
         }
-        return hasText(identifierPropertyName, "Could not find an identifier column for '" + entityClass + "'.");
+        return hasText(identifierProperty, "Could not find an identifier column for '" + entityClass + "'.");
     }
 
     private String readColumnName(PropertyReference propertyReference) {
