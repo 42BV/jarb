@@ -22,7 +22,7 @@ public class DigitsPropertyConstraintEnhancer implements PropertyConstraintEnhan
      */
     @Override
     public PropertyConstraintDescription enhance(PropertyConstraintDescription propertyConstraints) {
-        Collection<Digits> digitsAnnotations = fieldOrGetter().collectAnnotations(propertyConstraints.getPropertyReference(), Digits.class);
+        Collection<Digits> digitsAnnotations = fieldOrGetter().collectAnnotations(propertyConstraints.toPropertyReference(), Digits.class);
         Integer maximumLength = propertyConstraints.getMaximumLength();
         Integer fractionLength = propertyConstraints.getFractionLength();
         for (Digits digitsAnnotation : digitsAnnotations) {

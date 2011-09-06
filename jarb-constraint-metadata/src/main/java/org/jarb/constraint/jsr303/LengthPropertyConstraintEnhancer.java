@@ -21,7 +21,7 @@ public class LengthPropertyConstraintEnhancer implements PropertyConstraintEnhan
      */
     @Override
     public PropertyConstraintDescription enhance(PropertyConstraintDescription propertyConstraints) {
-        Collection<Length> lengthAnnotations = fieldOrGetter().collectAnnotations(propertyConstraints.getPropertyReference(), Length.class);
+        Collection<Length> lengthAnnotations = fieldOrGetter().collectAnnotations(propertyConstraints.toPropertyReference(), Length.class);
         Integer minimumLength = propertyConstraints.getMinimumLength();
         Integer maximumLength = propertyConstraints.getMaximumLength();
         for (Length lengthAnnotation : lengthAnnotations) {

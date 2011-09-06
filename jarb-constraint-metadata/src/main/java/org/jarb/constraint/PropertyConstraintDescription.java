@@ -44,16 +44,8 @@ public class PropertyConstraintDescription {
         this.propertyClass = notNull(propertyClass, "Property class cannot be null");
     }
 
-    public PropertyReference getPropertyReference() {
-        return propertyReference;
-    }
-
     public String getName() {
         return propertyReference.getName();
-    }
-
-    public Class<?> getBeanClass() {
-        return propertyReference.getBeanClass();
     }
 
     public Class<?> getJavaType() {
@@ -144,4 +136,9 @@ public class PropertyConstraintDescription {
     public String toString() {
         return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
     }
+    
+    public PropertyReference toPropertyReference() {
+        return propertyReference;
+    }
+    
 }

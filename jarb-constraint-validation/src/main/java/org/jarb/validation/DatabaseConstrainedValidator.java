@@ -12,7 +12,6 @@ import org.jarb.constraint.database.DatabaseConstraintRepository;
 import org.jarb.constraint.database.column.ColumnMetadata;
 import org.jarb.utils.BeanAccessor;
 import org.jarb.utils.bean.BeanAnnotationScanner;
-import org.jarb.utils.bean.BeanAnnotationScanner;
 import org.jarb.utils.bean.ModifiableBean;
 import org.jarb.utils.bean.PropertyReference;
 import org.slf4j.Logger;

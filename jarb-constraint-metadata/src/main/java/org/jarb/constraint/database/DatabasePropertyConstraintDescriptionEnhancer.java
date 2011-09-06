@@ -5,6 +5,7 @@ import static org.jarb.utils.Conditions.notNull;
 import org.jarb.constraint.PropertyConstraintDescription;
 import org.jarb.constraint.PropertyConstraintEnhancer;
 import org.jarb.constraint.database.column.ColumnMetadata;
+import org.jarb.utils.bean.PropertyReference;
 import org.jarb.utils.orm.NotAnEntityException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,24 +30,27 @@ public class DatabasePropertyConstraintDescriptionEnhancer implements PropertyCo
      * {@inheritDoc}
      */
     @Override
-    public PropertyConstraintDescription enhance(PropertyConstraintDescription propertyMetadata) {
-        final String propertyName = propertyMetadata.getName();
+    public PropertyConstraintDescription enhance(PropertyConstraintDescription propertyConstraints) {
+        PropertyReference propertyReference = propertyConstraints.toPropertyReference();
         try {
-            ColumnMetadata columnMetadata = databaseConstraintRepository.getColumnMetadata(propertyMetadata.getPropertyReference());
+            ColumnMetadata columnMetadata = databaseConstraintRepository.getColumnMetadata(propertyReference);
             if (columnMetadata != null) {
-                propertyMetadata.setRequired(columnMetadata.isRequired() && !columnMetadata.isGeneratable());
-                propertyMetadata.setMaximumLength(columnMetadata.getMaximumLength());
-                propertyMetadata.setFractionLength(columnMetadata.getFractionLength());
-                propertyMetadata.setRadix(columnMetadata.getRadix());
+                propertyConstraints.setRequired(columnMetadata.isRequired() && !columnMetadata.isGeneratable());
+                propertyConstraints.setMaximumLength(columnMetadata.getMaximumLength());
+                propertyConstraints.setFractionLength(columnMetadata.getFractionLength());
+                propertyConstraints.setRadix(columnMetadata.getRadix());
             } else {
-                logger.debug("Could not resolve column metadata {} ({}).", new Object[] { propertyName, propertyMetadata.getBeanClass().getSimpleName() });
+                logger.debug("Could not resolve column metadata {} ({}).", new Object[] {
+                        propertyReference.getName(),
+                        propertyReference.getBeanClass().getSimpleName()
+                });
             }
         } catch (NotAnEntityException e) {
-            logger.debug("Could not enhance with column metadata, because {} is not an entity", propertyMetadata.getBeanClass().getSimpleName());
+            logger.debug("Could not enhance with column metadata, because {} is not an entity", propertyReference.getBeanClass().getSimpleName());
         } catch (CouldNotBeMappedToColumnException e) {
-            logger.debug("Could not enhance with column metadata, because {} has no column", propertyName);
+            logger.debug("Could not enhance with column metadata, because {} has no column", propertyReference.getName());
         }
-        return propertyMetadata;
+        return propertyConstraints;
     }
 
 }

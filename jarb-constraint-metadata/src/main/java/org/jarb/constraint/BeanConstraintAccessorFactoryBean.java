@@ -26,17 +26,19 @@ public class BeanConstraintAccessorFactoryBean extends SingletonFactoryBean<Bean
 
     @Override
     protected BeanConstraintAccessor createObject() throws Exception {
-        BeanConstraintAccessorImpl descriptor = new BeanConstraintAccessorImpl();
-        descriptor.registerEnhancer(new DatabasePropertyConstraintDescriptionEnhancer(databaseConstraintRepository));
-        descriptor.registerEnhancer(new LengthPropertyConstraintEnhancer());
-        descriptor.registerEnhancer(new DigitsPropertyConstraintEnhancer());
-        descriptor.registerEnhancer(new NotNullPropertyConstraintEnhancer());
-        descriptor.registerEnhancer(new NotEmptyPropertyConstraintEnhancer());
-        // Property type recognition
-        descriptor.registerEnhancer(new BasicTypesPropertyConstraintEnhancer());
-        descriptor.registerEnhancer(new AnnotationTypePropertyConstraintEnhancer(CreditCardNumber.class, "credid_card"));
-        descriptor.registerEnhancer(new AnnotationTypePropertyConstraintEnhancer(Email.class, "email"));
-        return descriptor;
+        BeanConstraintAccessorImpl accessor = new BeanConstraintAccessorImpl();
+        accessor.registerEnhancer(new DatabasePropertyConstraintDescriptionEnhancer(databaseConstraintRepository));
+        accessor.registerEnhancer(new AutoIncrementalPropertyEnhancer());
+        // Basic constraint annotations
+        accessor.registerEnhancer(new LengthPropertyConstraintEnhancer());
+        accessor.registerEnhancer(new DigitsPropertyConstraintEnhancer());
+        accessor.registerEnhancer(new NotNullPropertyConstraintEnhancer());
+        accessor.registerEnhancer(new NotEmptyPropertyConstraintEnhancer());
+        // Type recognition
+        accessor.registerEnhancer(new BasicTypesPropertyConstraintEnhancer());
+        accessor.registerEnhancer(new AnnotationTypePropertyConstraintEnhancer(Email.class, "email"));
+        accessor.registerEnhancer(new AnnotationTypePropertyConstraintEnhancer(CreditCardNumber.class, "credid_card"));
+        return accessor;
     }
 
 }

@@ -20,7 +20,7 @@ public class NotNullPropertyConstraintEnhancer implements PropertyConstraintEnha
      */
     @Override
     public PropertyConstraintDescription enhance(PropertyConstraintDescription propertyConstraints) {
-        if (fieldOrGetter().hasAnnotation(propertyConstraints.getPropertyReference(), NotNull.class)) {
+        if (fieldOrGetter().hasAnnotation(propertyConstraints.toPropertyReference(), NotNull.class)) {
             propertyConstraints.setRequired(true);
         }
         return propertyConstraints;
