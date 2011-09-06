@@ -1,11 +1,12 @@
 package org.jarb.populator;
 
+import static org.springframework.util.StringUtils.collectionToDelimitedString;
+
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.jarb.populator.condition.ConditionCheckResult;
 import org.jarb.populator.condition.ConditionChecker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.util.StringUtils;
 
 /**
  * Database populator that only executes whenever a desired condition is met.
@@ -14,8 +15,9 @@ import org.springframework.util.StringUtils;
  * @since 17-06-2011
  */
 public class ConditionalDatabasePopulator implements DatabasePopulator {
-    private static final Logger LOGGER = LoggerFactory.getLogger(ConditionalDatabasePopulator.class);
-    /** Delgate database populator, invoked if condition is satisfied. **/
+    private final Logger logger = LoggerFactory.getLogger(ConditionalDatabasePopulator.class);
+
+    /** Delegate database populator, invoked if condition is satisfied. **/
     private final DatabasePopulator populator;
     /** Checks if the desired condition has been satisfied **/
     private final ConditionChecker conditionChecker;
@@ -24,7 +26,7 @@ public class ConditionalDatabasePopulator implements DatabasePopulator {
 
     /**
      * Construct a new {@link ConditionalDatabasePopulator}.
-     * @param populator delgate database populator, invoked if condition is satisfied
+     * @param populator delegate database populator, invoked if condition is satisfied
      * @param conditionChecker checks if the desired condition is met
      */
     public ConditionalDatabasePopulator(DatabasePopulator populator, ConditionChecker conditionChecker) {
@@ -48,18 +50,18 @@ public class ConditionalDatabasePopulator implements DatabasePopulator {
      */
     @Override
     public void populate() throws Exception {
-        ConditionCheckResult result = conditionChecker.checkCondition();
-        if (result.isSatisfied()) {
+        ConditionCheckResult conditionCheck = conditionChecker.checkCondition();
+        if (conditionCheck.isSatisfied()) {
             populator.populate();
         } else {
             StringBuilder failureMessageBuilder = new StringBuilder();
             failureMessageBuilder.append("Database populator (").append(populator).append(") was not executed, because:");
-            failureMessageBuilder.append("\n - ").append(StringUtils.collectionToDelimitedString(result.getFailures(), "\n - "));
+            failureMessageBuilder.append("\n - ").append(collectionToDelimitedString(conditionCheck.getFailures(), "\n - "));
             final String failureMessage = failureMessageBuilder.toString();
             if (throwErrorIfUnsupported) {
                 throw new IllegalStateException(failureMessage);
             } else {
-                LOGGER.info(failureMessage);
+                logger.info(failureMessage);
             }
         }
     }

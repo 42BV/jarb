@@ -1,7 +1,8 @@
 package org.jarb.populator.condition;
 
+import static java.util.Collections.unmodifiableList;
+
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -24,31 +25,11 @@ public class ConditionCheckResult {
     }
 
     /**
-     * Create an empty (succesful) result.
-     * @return sucesful result
-     */
-    public static ConditionCheckResult success() {
-        return new ConditionCheckResult();
-    }
-    
-    /**
-     * Whenever the specified state is {@code false}, include
-     * the specified failure message.
-     * @param state the state that should evaluate {@code true}
-     * @param message failure message if state is {@code false}
-     * @return same result, for chaining
-     */
-    public ConditionCheckResult checkState(boolean state, String message) {
-        if(!state) { addFailure(message); }
-        return this;
-    }
-
-    /**
      * Include a failure, causing {@link #isSatisfied()} to fail.
      * @param failure state failure that should be included
      * @return same result, for chaining
      */
-    public ConditionCheckResult addFailure(String failure) {
+    public ConditionCheckResult fail(String failure) {
         failures.add(failure);
         return this;
     }
@@ -56,7 +37,7 @@ public class ConditionCheckResult {
     /**
      * Determine if this condition is supported. Returns {@code true}
      * whenever there are no failure messages.
-     * @return {@code true} if succesful, else {@code false}
+     * @return {@code true} if successful, else {@code false}
      */
     public boolean isSatisfied() {
         return failures.isEmpty();
@@ -67,6 +48,7 @@ public class ConditionCheckResult {
      * @return failure messages
      */
     public List<String> getFailures() {
-        return Collections.unmodifiableList(failures);
+        return unmodifiableList(failures);
     }
+
 }
