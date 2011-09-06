@@ -6,7 +6,7 @@ package org.jarb.constraint;
  * @author Jeroen van Schagen
  * @since 4-6-2011
  */
-public interface PropertyConstraintMetadataEnhancer {
+public interface PropertyConstraintEnhancer {
 
     /**
      * Enhance a property constraint meta-data object.
@@ -14,6 +14,6 @@ public interface PropertyConstraintMetadataEnhancer {
      * @param propertyMetadata modifiable property meta-data object
      * @return (modified) property meta-data object
      */
-    <T> PropertyConstraintMetadata<T> enhance(PropertyConstraintMetadata<T> propertyMetadata);
+    PropertyConstraintDescription enhance(PropertyConstraintDescription propertyMetadata);
 
 }

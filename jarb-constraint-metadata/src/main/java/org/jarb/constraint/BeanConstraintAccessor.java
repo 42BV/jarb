@@ -14,6 +14,6 @@ public interface BeanConstraintAccessor {
      * @param beanClass class of the bean
      * @return bean constraint metadata
      */
-    <T> BeanConstraintMetadata<T> describe(Class<T> beanClass);
+    <T> BeanConstraintDescription<T> describe(Class<T> beanClass);
 
 }

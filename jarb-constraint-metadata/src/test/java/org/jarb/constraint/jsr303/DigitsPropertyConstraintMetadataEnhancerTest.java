@@ -3,7 +3,7 @@ package org.jarb.constraint.jsr303;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
-import org.jarb.constraint.PropertyConstraintMetadata;
+import org.jarb.constraint.PropertyConstraintDescription;
 import org.jarb.constraint.domain.Car;
 import org.jarb.utils.bean.PropertyReference;
 import org.junit.Before;
@@ -11,13 +11,13 @@ import org.junit.Test;
 
 public class DigitsPropertyConstraintMetadataEnhancerTest {
     private DigitsPropertyConstraintMetadataEnhancer enhancer;
-    private PropertyConstraintMetadata<Double> priceMetadata;
+    private PropertyConstraintDescription priceMetadata;
 
     @Before
     public void setUp() {
         enhancer = new DigitsPropertyConstraintMetadataEnhancer();
         PropertyReference reference = new PropertyReference(Car.class, "price");
-        priceMetadata = new PropertyConstraintMetadata<Double>(reference, Double.class);
+        priceMetadata = new PropertyConstraintDescription(reference, Double.class);
     }
 
     @Test
@@ -32,7 +32,7 @@ public class DigitsPropertyConstraintMetadataEnhancerTest {
     @Test
     public void testSkipUnmarkedProperties() {
         PropertyReference reference = new PropertyReference(Car.class, "licenseNumber");
-        PropertyConstraintMetadata<String> licenseMetadata = new PropertyConstraintMetadata<String>(reference, String.class);
+        PropertyConstraintDescription licenseMetadata = new PropertyConstraintDescription(reference, String.class);
         enhancer.enhance(licenseMetadata);
         assertNull(licenseMetadata.getMaximumLength());
         assertNull(licenseMetadata.getFractionLength());

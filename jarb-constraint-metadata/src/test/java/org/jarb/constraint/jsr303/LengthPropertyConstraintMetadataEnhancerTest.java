@@ -3,7 +3,7 @@ package org.jarb.constraint.jsr303;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
-import org.jarb.constraint.PropertyConstraintMetadata;
+import org.jarb.constraint.PropertyConstraintDescription;
 import org.jarb.constraint.domain.Car;
 import org.jarb.utils.bean.PropertyReference;
 import org.junit.Before;
@@ -11,13 +11,13 @@ import org.junit.Test;
 
 public class LengthPropertyConstraintMetadataEnhancerTest {
     private LengthPropertyConstraintMetadataEnhancer enhancer;
-    private PropertyConstraintMetadata<String> licenseMetadata;
+    private PropertyConstraintDescription licenseMetadata;
 
     @Before
     public void setUp() {
         enhancer = new LengthPropertyConstraintMetadataEnhancer();
         PropertyReference reference = new PropertyReference(Car.class, "licenseNumber");
-        licenseMetadata = new PropertyConstraintMetadata<String>(reference, String.class);
+        licenseMetadata = new PropertyConstraintDescription(reference, String.class);
     }
 
     /**
@@ -53,7 +53,7 @@ public class LengthPropertyConstraintMetadataEnhancerTest {
     @Test
     public void testNoLength() {
         PropertyReference reference = new PropertyReference(Car.class, "price");
-        PropertyConstraintMetadata<Double> priceMetadata = new PropertyConstraintMetadata<Double>(reference, Double.class);
+        PropertyConstraintDescription priceMetadata = new PropertyConstraintDescription(reference, Double.class);
         priceMetadata.setMaximumLength(9);
         enhancer.enhance(priceMetadata);
         // No minimum length is specified, so it should remain null

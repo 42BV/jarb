@@ -6,8 +6,8 @@ import java.util.Map;
 
 import org.hibernate.validator.constraints.CreditCardNumber;
 import org.hibernate.validator.constraints.Email;
-import org.jarb.constraint.PropertyConstraintMetadata;
-import org.jarb.constraint.PropertyConstraintMetadataEnhancer;
+import org.jarb.constraint.PropertyConstraintDescription;
+import org.jarb.constraint.PropertyConstraintEnhancer;
 import org.jarb.constraint.PropertyType;
 
 /**
@@ -18,7 +18,7 @@ import org.jarb.constraint.PropertyType;
  * @author Jeroen van Schagen
  * @since 10-06-2011
  */
-public class AnnotationPropertyConstraintMetadataTypeEnhancer implements PropertyConstraintMetadataEnhancer {
+public class AnnotationPropertyConstraintMetadataTypeEnhancer implements PropertyConstraintEnhancer {
     private static final Map<Class<? extends Annotation>, PropertyType> TYPE_MAPPINGS;
 
     static {
@@ -31,7 +31,7 @@ public class AnnotationPropertyConstraintMetadataTypeEnhancer implements Propert
      * {@inheritDoc}
      */
     @Override
-    public <T> PropertyConstraintMetadata<T> enhance(PropertyConstraintMetadata<T> propertyMetadata) {
+    public PropertyConstraintDescription enhance(PropertyConstraintDescription propertyMetadata) {
         for (Map.Entry<Class<? extends Annotation>, PropertyType> mappingEntry : TYPE_MAPPINGS.entrySet()) {
             if (ConstraintAnnotationScanner.isPropertyAnnotated(propertyMetadata.getPropertyReference(), mappingEntry.getKey())) {
                 propertyMetadata.addType(mappingEntry.getValue());

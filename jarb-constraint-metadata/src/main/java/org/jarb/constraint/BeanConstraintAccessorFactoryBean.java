@@ -26,21 +26,18 @@ public class BeanConstraintAccessorFactoryBean extends SingletonFactoryBean<Bean
         this.databaseConstraintRepository = databaseConstraintRepository;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected BeanConstraintAccessor createObject() throws Exception {
         Assert.state(databaseConstraintRepository != null, "Database constraint repository is required");
         BeanConstraintAccessorImpl descriptor = new BeanConstraintAccessorImpl();
-        List<PropertyConstraintMetadataEnhancer> propertyMetadataEnhancers = new ArrayList<PropertyConstraintMetadataEnhancer>();
-        propertyMetadataEnhancers.add(new DatabasePropertyConstraintDescriptionEnhancer(databaseConstraintRepository));
-        propertyMetadataEnhancers.add(new LengthPropertyConstraintMetadataEnhancer());
-        propertyMetadataEnhancers.add(new DigitsPropertyConstraintMetadataEnhancer());
-        propertyMetadataEnhancers.add(new NotNullPropertyConstraintMetadataEnhancer());
-        propertyMetadataEnhancers.add(new NotEmptyPropertyConstraintMetadataEnhancer());
-        propertyMetadataEnhancers.add(new AnnotationPropertyConstraintMetadataTypeEnhancer());
-        descriptor.setPropertyMetadataEnhancers(propertyMetadataEnhancers);
+        List<PropertyConstraintEnhancer> propertyConstraintEnhancers = new ArrayList<PropertyConstraintEnhancer>();
+        propertyConstraintEnhancers.add(new DatabasePropertyConstraintDescriptionEnhancer(databaseConstraintRepository));
+        propertyConstraintEnhancers.add(new LengthPropertyConstraintMetadataEnhancer());
+        propertyConstraintEnhancers.add(new DigitsPropertyConstraintMetadataEnhancer());
+        propertyConstraintEnhancers.add(new NotNullPropertyConstraintMetadataEnhancer());
+        propertyConstraintEnhancers.add(new NotEmptyPropertyConstraintMetadataEnhancer());
+        propertyConstraintEnhancers.add(new AnnotationPropertyConstraintMetadataTypeEnhancer());
+        descriptor.setPropertyConstraintEnhancers(propertyConstraintEnhancers);
         return descriptor;
     }
 

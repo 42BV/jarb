@@ -1,7 +1,7 @@
 package org.jarb.constraint.database;
 
-import org.jarb.constraint.PropertyConstraintMetadata;
-import org.jarb.constraint.PropertyConstraintMetadataEnhancer;
+import org.jarb.constraint.PropertyConstraintDescription;
+import org.jarb.constraint.PropertyConstraintEnhancer;
 import org.jarb.constraint.database.column.ColumnMetadata;
 import org.jarb.utils.orm.NotAnEntityException;
 import org.slf4j.Logger;
@@ -13,7 +13,7 @@ import org.slf4j.LoggerFactory;
  * @author Jeroen van Schagen
  * @since 31-05-2011
  */
-public class DatabasePropertyConstraintDescriptionEnhancer implements PropertyConstraintMetadataEnhancer {
+public class DatabasePropertyConstraintDescriptionEnhancer implements PropertyConstraintEnhancer {
     private final Logger logger = LoggerFactory.getLogger(DatabasePropertyConstraintDescriptionEnhancer.class);
 
     /** Repository used to access column meta-data. **/
@@ -27,7 +27,7 @@ public class DatabasePropertyConstraintDescriptionEnhancer implements PropertyCo
      * {@inheritDoc}
      */
     @Override
-    public <T> PropertyConstraintMetadata<T> enhance(PropertyConstraintMetadata<T> propertyMetadata) {
+    public PropertyConstraintDescription enhance(PropertyConstraintDescription propertyMetadata) {
         final String propertyName = propertyMetadata.getName();
         try {
             ColumnMetadata columnMetadata = databaseConstraintRepository.getColumnMetadata(propertyMetadata.getPropertyReference());

@@ -7,21 +7,21 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.hibernate.validator.constraints.Email;
-import org.jarb.constraint.PropertyConstraintMetadata;
+import org.jarb.constraint.PropertyConstraintDescription;
 import org.jarb.constraint.PropertyType;
 import org.jarb.utils.bean.PropertyReference;
 import org.junit.Before;
 import org.junit.Test;
 
 public class AnnotationPropertyConstraintMetadataTypeEnhancerTest {
-    private PropertyConstraintMetadata<String> emailMetadata;
+    private PropertyConstraintDescription emailMetadata;
     private AnnotationPropertyConstraintMetadataTypeEnhancer enhancer;
 
     @Before
     public void setUp() {
         enhancer = new AnnotationPropertyConstraintMetadataTypeEnhancer();
         PropertyReference reference = new PropertyReference(UserBean.class, "email");
-        emailMetadata = new PropertyConstraintMetadata<String>(reference, String.class);
+        emailMetadata = new PropertyConstraintDescription(reference, String.class);
     }
 
     /**

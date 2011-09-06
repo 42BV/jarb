@@ -15,33 +15,28 @@ import org.apache.commons.lang3.builder.ToStringStyle;
  *
  * @param <T> type of bean being described
  */
-public class BeanConstraintMetadata<T> {
+public class BeanConstraintDescription<T> {
     private final Class<T> beanClass;
-    private Map<String, PropertyConstraintMetadata<?>> propertyMetadataMap;
+    private Map<String, PropertyConstraintDescription> propertyMetadataMap;
 
     /**
-     * Construct a new {@link BeanConstraintMetadata}.
+     * Construct a new {@link BeanConstraintDescription}.
      * @param beanClass class of the bean being described
      */
-    public BeanConstraintMetadata(Class<T> beanClass) {
+    public BeanConstraintDescription(Class<T> beanClass) {
         this.beanClass = beanClass;
-        propertyMetadataMap = new HashMap<String, PropertyConstraintMetadata<?>>();
+        propertyMetadataMap = new HashMap<String, PropertyConstraintDescription>();
     }
 
     public Class<T> getBeanType() {
         return beanClass;
     }
 
-    public PropertyConstraintMetadata<?> getPropertyMetadata(String propertyName) {
+    public PropertyConstraintDescription getPropertyMetadata(String propertyName) {
         return propertyMetadataMap.get(propertyName);
     }
 
-    @SuppressWarnings("unchecked")
-    public <X> PropertyConstraintMetadata<X> getPropertyMetadata(String propertyName, Class<X> propertyClass) {
-        return (PropertyConstraintMetadata<X>) propertyMetadataMap.get(propertyName);
-    }
-
-    public Collection<PropertyConstraintMetadata<?>> getPropertiesMetadata() {
+    public Collection<PropertyConstraintDescription> getPropertiesMetadata() {
         return propertyMetadataMap.values();
     }
 
@@ -49,7 +44,7 @@ public class BeanConstraintMetadata<T> {
      * Attach the description of a property to this bean description.
      * @param propertyMetadata description of the property constraints
      */
-    public void addPropertyMetadata(PropertyConstraintMetadata<?> propertyMetadata) {
+    public void addPropertyDescription(PropertyConstraintDescription propertyMetadata) {
         propertyMetadataMap.put(propertyMetadata.getName(), propertyMetadata);
     }
 

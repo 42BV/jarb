@@ -2,7 +2,7 @@ package org.jarb.sample.controller;
 
 import javax.validation.Valid;
 
-import org.jarb.constraint.BeanConstraintMetadata;
+import org.jarb.constraint.BeanConstraintDescription;
 import org.jarb.constraint.BeanConstraintAccessor;
 import org.jarb.sample.domain.Post;
 import org.jarb.sample.domain.PostTitleAlreadyExistsException;
@@ -68,7 +68,7 @@ public class PostingController {
     }
     
     @RequestMapping(value = "structure", method = RequestMethod.GET)
-    public BeanConstraintMetadata<Post> structure() {
+    public BeanConstraintDescription<Post> structure() {
         return constraintMetadataGenerator.describe(Post.class);
     }
 

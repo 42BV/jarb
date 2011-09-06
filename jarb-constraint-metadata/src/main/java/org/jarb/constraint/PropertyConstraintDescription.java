@@ -18,9 +18,9 @@ import org.springframework.util.Assert;
  *
  * @param <T> type of property
  */
-public class PropertyConstraintMetadata<T> {
+public class PropertyConstraintDescription {
     private final PropertyReference propertyReference;
-    private final Class<T> propertyClass;
+    private final Class<?> propertyClass;
 
     private Set<PropertyType> types;
 
@@ -34,11 +34,11 @@ public class PropertyConstraintMetadata<T> {
     private Integer radix;
 
     /**
-     * Construct a new {@link PropertyConstraintMetadata}.
+     * Construct a new {@link PropertyConstraintDescription}.
      * @param propertyName name of the property
      * @param propertyClass class of the property
      */
-    public PropertyConstraintMetadata(PropertyReference propertyReference, Class<T> propertyClass) {
+    public PropertyConstraintDescription(PropertyReference propertyReference, Class<?> propertyClass) {
         Assert.notNull(propertyReference);
         Assert.notNull(propertyClass);
         this.propertyReference = propertyReference;
@@ -59,7 +59,7 @@ public class PropertyConstraintMetadata<T> {
         return propertyReference.getBeanClass();
     }
 
-    public Class<T> getJavaType() {
+    public Class<?> getJavaType() {
         return propertyClass;
     }
 
@@ -67,7 +67,7 @@ public class PropertyConstraintMetadata<T> {
         return Collections.unmodifiableSet(types);
     }
 
-    public PropertyConstraintMetadata<T> addType(PropertyType type) {
+    public PropertyConstraintDescription addType(PropertyType type) {
         types.add(type);
         return this;
     }
@@ -76,7 +76,7 @@ public class PropertyConstraintMetadata<T> {
         return required;
     }
 
-    public PropertyConstraintMetadata<T> setRequired(boolean required) {
+    public PropertyConstraintDescription setRequired(boolean required) {
         this.required = required;
         return this;
     }
@@ -85,7 +85,7 @@ public class PropertyConstraintMetadata<T> {
         return minimumLength;
     }
 
-    public PropertyConstraintMetadata<T> setMinimumLength(Integer minimumLength) {
+    public PropertyConstraintDescription setMinimumLength(Integer minimumLength) {
         if (minimumLength != null && minimumLength < 0) {
             throw new IllegalStateException("Minimum length cannot be negative.");
         }
@@ -102,7 +102,7 @@ public class PropertyConstraintMetadata<T> {
         return maximumLength;
     }
 
-    public PropertyConstraintMetadata<T> setMaximumLength(Integer maximumLength) {
+    public PropertyConstraintDescription setMaximumLength(Integer maximumLength) {
         if (maximumLength != null && maximumLength < 0) {
             throw new IllegalStateException("Maximum length cannot be negative.");
         }
@@ -123,7 +123,7 @@ public class PropertyConstraintMetadata<T> {
         return fractionLength;
     }
 
-    public PropertyConstraintMetadata<T> setFractionLength(Integer fractionLength) {
+    public PropertyConstraintDescription setFractionLength(Integer fractionLength) {
         if (fractionLength != null && fractionLength < 0) {
             throw new IllegalStateException("Fraction length cannot be negative.");
         }
@@ -135,7 +135,7 @@ public class PropertyConstraintMetadata<T> {
         return radix;
     }
 
-    public PropertyConstraintMetadata<T> setRadix(Integer radix) {
+    public PropertyConstraintDescription setRadix(Integer radix) {
         this.radix = radix;
         return this;
     }

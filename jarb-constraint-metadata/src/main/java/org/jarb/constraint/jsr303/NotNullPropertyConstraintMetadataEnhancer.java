@@ -2,8 +2,8 @@ package org.jarb.constraint.jsr303;
 
 import javax.validation.constraints.NotNull;
 
-import org.jarb.constraint.PropertyConstraintMetadata;
-import org.jarb.constraint.PropertyConstraintMetadataEnhancer;
+import org.jarb.constraint.PropertyConstraintDescription;
+import org.jarb.constraint.PropertyConstraintEnhancer;
 
 /**
  * Whenever a property is annotated as @NotNull , it is required.
@@ -11,13 +11,13 @@ import org.jarb.constraint.PropertyConstraintMetadataEnhancer;
  * @author Jeroen van Schagen
  * @since 31-05-2011
  */
-public class NotNullPropertyConstraintMetadataEnhancer implements PropertyConstraintMetadataEnhancer {
+public class NotNullPropertyConstraintMetadataEnhancer implements PropertyConstraintEnhancer {
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public <T> PropertyConstraintMetadata<T> enhance(PropertyConstraintMetadata<T> propertyMetadata) {
+    public PropertyConstraintDescription enhance(PropertyConstraintDescription propertyMetadata) {
         if (ConstraintAnnotationScanner.isPropertyAnnotated(propertyMetadata.getPropertyReference(), NotNull.class)) {
             propertyMetadata.setRequired(true);
         }

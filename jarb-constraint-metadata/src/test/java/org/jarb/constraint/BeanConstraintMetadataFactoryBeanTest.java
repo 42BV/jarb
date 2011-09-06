@@ -32,8 +32,8 @@ public class BeanConstraintMetadataFactoryBeanTest {
     @Test
     public void testGeneratedObject() throws Exception {
         BeanConstraintAccessor descriptor = factoryBean.getObject();
-        BeanConstraintMetadata<Car> carDescription = descriptor.describe(Car.class);
-        PropertyConstraintMetadata<String> licenseDescription = carDescription.getPropertyMetadata("licenseNumber", String.class);
+        BeanConstraintDescription<Car> carDescription = descriptor.describe(Car.class);
+        PropertyConstraintDescription licenseDescription = carDescription.getPropertyMetadata("licenseNumber");
         assertEquals(String.class, licenseDescription.getJavaType()); // Retrieved by introspection
         assertTrue(licenseDescription.isRequired()); // Retrieved from database
         assertEquals(Integer.valueOf(6), licenseDescription.getMinimumLength()); // Retrieved from @Length

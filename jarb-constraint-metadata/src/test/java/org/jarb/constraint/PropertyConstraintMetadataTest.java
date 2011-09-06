@@ -13,12 +13,12 @@ import org.junit.Test;
  * @since 03-06-2011
  */
 public class PropertyConstraintMetadataTest {
-    private PropertyConstraintMetadata<String> description;
+    private PropertyConstraintDescription description;
 
     @Before
     public void setUp() {
         PropertyReference reference = new PropertyReference(Car.class, "name");
-        description = new PropertyConstraintMetadata<String>(reference, String.class);
+        description = new PropertyConstraintDescription(reference, String.class);
     }
 
     @Test

@@ -3,8 +3,8 @@ package org.jarb.constraint.jsr303;
 import java.util.List;
 
 import org.hibernate.validator.constraints.Length;
-import org.jarb.constraint.PropertyConstraintMetadata;
-import org.jarb.constraint.PropertyConstraintMetadataEnhancer;
+import org.jarb.constraint.PropertyConstraintDescription;
+import org.jarb.constraint.PropertyConstraintEnhancer;
 
 /**
  * Enhance the property constraint descriptor with @Length information.
@@ -12,25 +12,25 @@ import org.jarb.constraint.PropertyConstraintMetadataEnhancer;
  * @author Jeroen van Schagen
  * @since 31-05-2011
  */
-public class LengthPropertyConstraintMetadataEnhancer implements PropertyConstraintMetadataEnhancer {
+public class LengthPropertyConstraintMetadataEnhancer implements PropertyConstraintEnhancer {
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public <T> PropertyConstraintMetadata<T> enhance(PropertyConstraintMetadata<T> propertyMetadata) {
+    public PropertyConstraintDescription enhance(PropertyConstraintDescription propertyMetadata) {
         List<Length> lengthAnnotations = ConstraintAnnotationScanner.getPropertyAnnotations(propertyMetadata.getPropertyReference(), Length.class);
         Integer minimumLength = propertyMetadata.getMinimumLength();
         Integer maximumLength = propertyMetadata.getMaximumLength();
         for (Length lengthAnnotation : lengthAnnotations) {
             if (minimumLength != null) {
-                // Store the highest minimum length, as this will cause both lenght restrictions to pass
+                // Store the highest minimum length, as this will cause both length restrictions to pass
                 minimumLength = Math.max(minimumLength, lengthAnnotation.min());
             } else {
                 minimumLength = lengthAnnotation.min();
             }
             if (maximumLength != null) {
-                // Store the lowest maximum length, as this will cause both lenght restrictions to pass
+                // Store the lowest maximum length, as this will cause both length restrictions to pass
                 maximumLength = Math.min(maximumLength, lengthAnnotation.max());
             } else {
                 maximumLength = lengthAnnotation.max();
