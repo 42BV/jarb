@@ -7,9 +7,9 @@ import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 import javax.validation.ValidatorFactory;
 
+import org.jarb.constraint.database.CouldNotBeMappedToColumnException;
+import org.jarb.constraint.database.DatabaseConstraintRepository;
 import org.jarb.constraint.database.column.ColumnMetadata;
-import org.jarb.constraint.database.column.EntityAwareColumnMetadataRepository;
-import org.jarb.constraint.database.column.UnknownColumnException;
 import org.jarb.utils.BeanAccessor;
 import org.jarb.utils.bean.BeanAnnotationScanner;
 import org.jarb.utils.bean.BeanAnnotationScannerImpl;
@@ -47,9 +47,9 @@ import org.springframework.util.Assert;
  * @since 23-05-2011
  */
 public class DatabaseConstrainedValidator implements ConstraintValidator<DatabaseConstrained, Object>, ApplicationContextAware {
-    private static final Logger LOGGER = LoggerFactory.getLogger(DatabaseConstrainedValidator.class);
-
     public static final String DEFAULT_VALIDATOR_FACTORY_ID = "validator";
+
+    private final Logger logger = LoggerFactory.getLogger(DatabaseConstrainedValidator.class);
 
     // Violation message templates
     private static final String NOT_NULL_TEMPLATE = "{javax.validation.constraints.NotNull.message}";
@@ -62,7 +62,7 @@ public class DatabaseConstrainedValidator implements ConstraintValidator<Databas
     private BeanAccessor beanAccessor;
 
     /** Provides the meta-data of columns in our database **/
-    private EntityAwareColumnMetadataRepository columnMetadataRepository;
+    private DatabaseConstraintRepository databaseConstraintRepository;
     /** Allows custom violation messages to be build **/
     private ViolationMessageBuilder messageBuilder;
 
@@ -95,15 +95,14 @@ public class DatabaseConstrainedValidator implements ConstraintValidator<Databas
     private boolean isValidProperty(Object bean, PropertyDescriptor property, ConstraintValidatorContext context) {
         boolean propertyIsValid = true;
         try {
-            final Class<?> beanClass = bean.getClass();
-            ColumnMetadata columnMetadata = columnMetadataRepository.getColumnMetadata(beanClass, property.getName());
+            ColumnMetadata columnMetadata = databaseConstraintRepository.getColumnMetadata(bean.getClass(), property.getName());
             if (columnMetadata != null) {
                 final Object propertyValue = ModifiableBean.wrap(bean).getPropertyValue(property.getName());
                 propertyIsValid = isValidValue(bean, property.getName(), propertyValue, columnMetadata, context);
             } else {
-                LOGGER.warn("No column meta data has been defined for '{}' ({})", new Object[] { property.getName(), beanClass.getSimpleName() });
+                logger.warn("No column meta data has been defined for '{}' ({})", new Object[] { property.getName(), bean.getClass().getSimpleName() });
             }
-        } catch (UnknownColumnException e) {
+        } catch (CouldNotBeMappedToColumnException e) {
             // Property has no matching column, and thus will not be validated
         }
         return propertyIsValid;
@@ -213,8 +212,8 @@ public class DatabaseConstrainedValidator implements ConstraintValidator<Databas
     @Override
     public void initialize(DatabaseConstrained annotation) {
         Assert.notNull(beanAccessor, "Bean accessor cannot be null.");
-        if (columnMetadataRepository == null) {
-            columnMetadataRepository = beanAccessor.findBean(EntityAwareColumnMetadataRepository.class, annotation.repository());
+        if (databaseConstraintRepository == null) {
+            databaseConstraintRepository = beanAccessor.findBean(DatabaseConstraintRepository.class, annotation.repository());
             ValidatorFactory validatorFactory = beanAccessor.findBean(ValidatorFactory.class, annotation.factory(), DEFAULT_VALIDATOR_FACTORY_ID);
             messageBuilder = new ViolationMessageBuilder(validatorFactory.getMessageInterpolator());
         }

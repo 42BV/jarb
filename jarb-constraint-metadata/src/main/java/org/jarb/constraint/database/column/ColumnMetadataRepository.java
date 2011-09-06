@@ -1,7 +1,9 @@
 package org.jarb.constraint.database.column;
 
+import org.jarb.utils.orm.ColumnReference;
+
 /**
- * Provides access to the metadata of a specific database column.
+ * Provides access to the meta-data of a specific database column.
  * 
  * @author Jeroen van Schagen
  * @since 30-05-2011
@@ -9,11 +11,10 @@ package org.jarb.constraint.database.column;
 public interface ColumnMetadataRepository {
 
     /**
-     * Retrieve the metadata of a specific database column.
-     * @param tableName name of the table that contains our column (case insensitive)
-     * @param columnName name of the column (case insensitive)
+     * Retrieve the meta-data of a specific database column.
+     * @param columnReference reference to a column
      * @return constraint of the column, or {@code null}
      */
-    ColumnMetadata getColumnMetadata(String tableName, String columnName);
+    ColumnMetadata getColumnMetadata(ColumnReference columnReference);
 
 }

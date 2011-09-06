@@ -3,8 +3,8 @@ package org.jarb.constraint;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.jarb.constraint.database.DatabaseConstraintRepository;
 import org.jarb.constraint.database.DatabasePropertyConstraintDescriptionEnhancer;
-import org.jarb.constraint.database.column.EntityAwareColumnMetadataRepository;
 import org.jarb.constraint.jsr303.AnnotationPropertyConstraintMetadataTypeEnhancer;
 import org.jarb.constraint.jsr303.DigitsPropertyConstraintMetadataEnhancer;
 import org.jarb.constraint.jsr303.LengthPropertyConstraintMetadataEnhancer;
@@ -20,10 +20,10 @@ import org.springframework.util.Assert;
  * @since 8-6-2011
  */
 public class BeanConstraintMetadataGeneratorFactoryBean extends SingletonFactoryBean<BeanConstraintMetadataGenerator> {
-    private EntityAwareColumnMetadataRepository columnMetadataRepository;
+    private DatabaseConstraintRepository databaseConstraintRepository;
 
-    public void setColumnMetadataRepository(EntityAwareColumnMetadataRepository columnMetadataRepository) {
-        this.columnMetadataRepository = columnMetadataRepository;
+    public void setDatabaseConstraintRepository(DatabaseConstraintRepository databaseConstraintRepository) {
+        this.databaseConstraintRepository = databaseConstraintRepository;
     }
 
     /**
@@ -31,10 +31,10 @@ public class BeanConstraintMetadataGeneratorFactoryBean extends SingletonFactory
      */
     @Override
     protected BeanConstraintMetadataGenerator createObject() throws Exception {
-        Assert.state(columnMetadataRepository != null, "Column metadata repository is required");
+        Assert.state(databaseConstraintRepository != null, "Database constraint repository is required");
         DefaultBeanConstraintMetadataGenerator descriptor = new DefaultBeanConstraintMetadataGenerator();
         List<PropertyConstraintMetadataEnhancer> propertyMetadataEnhancers = new ArrayList<PropertyConstraintMetadataEnhancer>();
-        propertyMetadataEnhancers.add(new DatabasePropertyConstraintDescriptionEnhancer(columnMetadataRepository));
+        propertyMetadataEnhancers.add(new DatabasePropertyConstraintDescriptionEnhancer(databaseConstraintRepository));
         propertyMetadataEnhancers.add(new LengthPropertyConstraintMetadataEnhancer());
         propertyMetadataEnhancers.add(new DigitsPropertyConstraintMetadataEnhancer());
         propertyMetadataEnhancers.add(new NotNullPropertyConstraintMetadataEnhancer());

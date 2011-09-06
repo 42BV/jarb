@@ -3,8 +3,7 @@ package org.jarb.constraint.database;
 import org.jarb.constraint.MutablePropertyConstraintMetadata;
 import org.jarb.constraint.PropertyConstraintMetadataEnhancer;
 import org.jarb.constraint.database.column.ColumnMetadata;
-import org.jarb.constraint.database.column.EntityAwareColumnMetadataRepository;
-import org.jarb.constraint.database.column.UnknownColumnException;
+import org.jarb.utils.bean.PropertyReference;
 import org.jarb.utils.orm.NotAnEntityException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,12 +15,13 @@ import org.slf4j.LoggerFactory;
  * @since 31-05-2011
  */
 public class DatabasePropertyConstraintDescriptionEnhancer implements PropertyConstraintMetadataEnhancer {
-    private static final Logger LOGGER = LoggerFactory.getLogger(DatabasePropertyConstraintDescriptionEnhancer.class);
-    /** Repository used to access column metadata. **/
-    private final EntityAwareColumnMetadataRepository columnMetadataRepository;
+    private final Logger logger = LoggerFactory.getLogger(DatabasePropertyConstraintDescriptionEnhancer.class);
 
-    public DatabasePropertyConstraintDescriptionEnhancer(EntityAwareColumnMetadataRepository columnMetadataRepository) {
-        this.columnMetadataRepository = columnMetadataRepository;
+    /** Repository used to access column meta-data. **/
+    private final DatabaseConstraintRepository databaseConstraintRepository;
+
+    public DatabasePropertyConstraintDescriptionEnhancer(DatabaseConstraintRepository columnMetadataRepository) {
+        this.databaseConstraintRepository = columnMetadataRepository;
     }
 
     /**
@@ -31,7 +31,8 @@ public class DatabasePropertyConstraintDescriptionEnhancer implements PropertyCo
     public <T> MutablePropertyConstraintMetadata<T> enhance(MutablePropertyConstraintMetadata<T> propertyMetadata, Class<?> beanClass) {
         final String propertyName = propertyMetadata.getName();
         try {
-            ColumnMetadata columnMetadata = columnMetadataRepository.getColumnMetadata(beanClass, propertyName);
+            PropertyReference propertyReference = new PropertyReference(beanClass, propertyName);
+            ColumnMetadata columnMetadata = databaseConstraintRepository.getColumnMetadata(propertyReference);
             if (columnMetadata != null) {
                 // Properties are required if they cannot be null, and the database cannot generate their value
                 propertyMetadata.setRequired(columnMetadata.isRequired() && !columnMetadata.isGeneratable());
@@ -40,14 +41,14 @@ public class DatabasePropertyConstraintDescriptionEnhancer implements PropertyCo
                 propertyMetadata.setRadix(columnMetadata.getRadix());
             } else {
                 // Could not resolve column meta information
-                LOGGER.debug("Could not resolve column metadata {} ({}).", new Object[] { propertyName, beanClass.getSimpleName() });
+                logger.debug("Could not resolve column metadata {} ({}).", new Object[] { propertyName, beanClass.getSimpleName() });
             }
         } catch (NotAnEntityException e) {
             // Property has no corresponding column, skip this step
-            LOGGER.debug("Could not enhance property description with column metadata, because {} is not an entity", beanClass.getSimpleName());
-        } catch (UnknownColumnException e) {
+            logger.debug("Could not enhance property description with column metadata, because {} is not an entity", beanClass.getSimpleName());
+        } catch (CouldNotBeMappedToColumnException e) {
             // Property has no corresponding column, skip this step
-            LOGGER.debug("Could not enhance property description with column metadata, because {} has no column", propertyName);
+            logger.debug("Could not enhance property description with column metadata, because {} has no column", propertyName);
         }
         return propertyMetadata;
     }
