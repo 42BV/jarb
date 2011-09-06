@@ -6,7 +6,7 @@ import java.util.Map;
 
 import org.hibernate.validator.constraints.CreditCardNumber;
 import org.hibernate.validator.constraints.Email;
-import org.jarb.constraint.MutablePropertyConstraintMetadata;
+import org.jarb.constraint.PropertyConstraintMetadata;
 import org.jarb.constraint.PropertyConstraintMetadataEnhancer;
 import org.jarb.constraint.PropertyType;
 
@@ -18,11 +18,11 @@ import org.jarb.constraint.PropertyType;
  * @author Jeroen van Schagen
  * @since 10-06-2011
  */
-public class AnnotationPropertyConstraintMetadataTypeEnhancer implements PropertyConstraintMetadataEnhancer  {
+public class AnnotationPropertyConstraintMetadataTypeEnhancer implements PropertyConstraintMetadataEnhancer {
     private static final Map<Class<? extends Annotation>, PropertyType> TYPE_MAPPINGS;
-    
+
     static {
-        TYPE_MAPPINGS = new HashMap<Class<? extends Annotation>, PropertyType>(); 
+        TYPE_MAPPINGS = new HashMap<Class<? extends Annotation>, PropertyType>();
         TYPE_MAPPINGS.put(CreditCardNumber.class, PropertyType.CREDID_CARD);
         TYPE_MAPPINGS.put(Email.class, PropertyType.EMAIL);
     }
@@ -31,13 +31,13 @@ public class AnnotationPropertyConstraintMetadataTypeEnhancer implements Propert
      * {@inheritDoc}
      */
     @Override
-    public <T> MutablePropertyConstraintMetadata<T> enhance(MutablePropertyConstraintMetadata<T> propertyMetadata, Class<?> beanClass) {
-        for(Map.Entry<Class<? extends Annotation>, PropertyType> mappingEntry : TYPE_MAPPINGS.entrySet()) {
-            if(ConstraintAnnotationScanner.isPropertyAnnotated(beanClass, propertyMetadata.getName(), mappingEntry.getKey())) {
+    public <T> PropertyConstraintMetadata<T> enhance(PropertyConstraintMetadata<T> propertyMetadata) {
+        for (Map.Entry<Class<? extends Annotation>, PropertyType> mappingEntry : TYPE_MAPPINGS.entrySet()) {
+            if (ConstraintAnnotationScanner.isPropertyAnnotated(propertyMetadata.getPropertyReference(), mappingEntry.getKey())) {
                 propertyMetadata.addType(mappingEntry.getValue());
             }
         }
         return propertyMetadata;
     }
-    
+
 }

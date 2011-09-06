@@ -19,7 +19,7 @@ import org.springframework.util.Assert;
  * @author Jeroen van Schagen
  * @since 8-6-2011
  */
-public class BeanConstraintMetadataGeneratorFactoryBean extends SingletonFactoryBean<BeanConstraintMetadataGenerator> {
+public class BeanConstraintAccessorFactoryBean extends SingletonFactoryBean<BeanConstraintAccessor> {
     private DatabaseConstraintRepository databaseConstraintRepository;
 
     public void setDatabaseConstraintRepository(DatabaseConstraintRepository databaseConstraintRepository) {
@@ -30,9 +30,9 @@ public class BeanConstraintMetadataGeneratorFactoryBean extends SingletonFactory
      * {@inheritDoc}
      */
     @Override
-    protected BeanConstraintMetadataGenerator createObject() throws Exception {
+    protected BeanConstraintAccessor createObject() throws Exception {
         Assert.state(databaseConstraintRepository != null, "Database constraint repository is required");
-        DefaultBeanConstraintMetadataGenerator descriptor = new DefaultBeanConstraintMetadataGenerator();
+        BeanConstraintAccessorImpl descriptor = new BeanConstraintAccessorImpl();
         List<PropertyConstraintMetadataEnhancer> propertyMetadataEnhancers = new ArrayList<PropertyConstraintMetadataEnhancer>();
         propertyMetadataEnhancers.add(new DatabasePropertyConstraintDescriptionEnhancer(databaseConstraintRepository));
         propertyMetadataEnhancers.add(new LengthPropertyConstraintMetadataEnhancer());

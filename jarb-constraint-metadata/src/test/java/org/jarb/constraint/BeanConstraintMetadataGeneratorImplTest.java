@@ -10,12 +10,12 @@ import org.jarb.constraint.jsr303.LengthPropertyConstraintMetadataEnhancer;
 import org.junit.Before;
 import org.junit.Test;
 
-public class DefaultBeanConstraintMetadataTest {
-    private DefaultBeanConstraintMetadataGenerator beanDescriptor;
+public class BeanConstraintMetadataGeneratorImplTest {
+    private BeanConstraintAccessorImpl describtor;
 
     @Before
     public void setUp() {
-        beanDescriptor = new DefaultBeanConstraintMetadataGenerator();
+        describtor = new BeanConstraintAccessorImpl();
     }
 
     /**
@@ -23,7 +23,7 @@ public class DefaultBeanConstraintMetadataTest {
      */
     @Test
     public void testPropertiesAreDescribed() {
-        BeanConstraintMetadata<Car> carDescription = beanDescriptor.describe(Car.class);
+        BeanConstraintMetadata<Car> carDescription = describtor.describe(Car.class);
         assertEquals(Long.class, carDescription.getPropertyMetadata("id").getJavaType());
         assertEquals(String.class, carDescription.getPropertyMetadata("licenseNumber").getJavaType());
         assertEquals(Double.class, carDescription.getPropertyMetadata("price").getJavaType());
@@ -37,8 +37,8 @@ public class DefaultBeanConstraintMetadataTest {
     @Test
     public void testPropertyDescriptionEnhancers() {
         PropertyConstraintMetadataEnhancer lengthAnnotationEnhancer = new LengthPropertyConstraintMetadataEnhancer();
-        beanDescriptor.setPropertyMetadataEnhancers(Arrays.asList(lengthAnnotationEnhancer));
-        BeanConstraintMetadata<Car> carDescription = beanDescriptor.describe(Car.class);
+        describtor.setPropertyMetadataEnhancers(Arrays.asList(lengthAnnotationEnhancer));
+        BeanConstraintMetadata<Car> carDescription = describtor.describe(Car.class);
         PropertyConstraintMetadata<String> licenseDescription = carDescription.getPropertyMetadata("licenseNumber", String.class);
         // Length description enhancer reads the annotations to determine minimum- and maximum length
         assertEquals(Integer.valueOf(6), licenseDescription.getMinimumLength());

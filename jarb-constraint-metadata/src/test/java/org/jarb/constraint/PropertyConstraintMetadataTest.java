@@ -2,6 +2,8 @@ package org.jarb.constraint;
 
 import static org.junit.Assert.assertEquals;
 
+import org.jarb.constraint.domain.Car;
+import org.jarb.utils.bean.PropertyReference;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -11,11 +13,12 @@ import org.junit.Test;
  * @since 03-06-2011
  */
 public class PropertyConstraintMetadataTest {
-    private MutablePropertyConstraintMetadata<String> description;
+    private PropertyConstraintMetadata<String> description;
 
     @Before
     public void setUp() {
-        description = new MutablePropertyConstraintMetadata<String>("name", String.class);
+        PropertyReference reference = new PropertyReference(Car.class, "name");
+        description = new PropertyConstraintMetadata<String>(reference, String.class);
     }
 
     @Test

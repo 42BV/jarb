@@ -4,7 +4,7 @@ import java.util.List;
 
 import javax.validation.constraints.Digits;
 
-import org.jarb.constraint.MutablePropertyConstraintMetadata;
+import org.jarb.constraint.PropertyConstraintMetadata;
 import org.jarb.constraint.PropertyConstraintMetadataEnhancer;
 
 /**
@@ -19,11 +19,11 @@ public class DigitsPropertyConstraintMetadataEnhancer implements PropertyConstra
      * {@inheritDoc}
      */
     @Override
-    public <T> MutablePropertyConstraintMetadata<T> enhance(MutablePropertyConstraintMetadata<T> propertyMetadata, Class<?> beanClass) {
-        List<Digits> digitsAnnotations = ConstraintAnnotationScanner.getPropertyAnnotations(beanClass, propertyMetadata.getName(), Digits.class);
+    public <T> PropertyConstraintMetadata<T> enhance(PropertyConstraintMetadata<T> propertyMetadata) {
+        List<Digits> digitsAnnotations = ConstraintAnnotationScanner.getPropertyAnnotations(propertyMetadata.getPropertyReference(), Digits.class);
         Integer maximumLength = propertyMetadata.getMaximumLength();
         Integer fractionLength = propertyMetadata.getFractionLength();
-        for(Digits digitsAnnotation : digitsAnnotations) {
+        for (Digits digitsAnnotation : digitsAnnotations) {
             if (maximumLength != null) {
                 // Store the lowest maximum length, as this will cause both lenght restrictions to pass
                 maximumLength = Math.min(maximumLength, digitsAnnotation.integer());

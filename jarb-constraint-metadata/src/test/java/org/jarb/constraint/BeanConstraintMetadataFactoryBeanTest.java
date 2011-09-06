@@ -15,14 +15,14 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "classpath:application-context.xml" })
 public class BeanConstraintMetadataFactoryBeanTest {
-    private BeanConstraintMetadataGeneratorFactoryBean factoryBean;
+    private BeanConstraintAccessorFactoryBean factoryBean;
 
     @Autowired
     private DatabaseConstraintRepository databaseConstraintRepository;
 
     @Before
     public void setUp() throws Exception {
-        factoryBean = new BeanConstraintMetadataGeneratorFactoryBean();
+        factoryBean = new BeanConstraintAccessorFactoryBean();
         factoryBean.setDatabaseConstraintRepository(databaseConstraintRepository);
     }
 
@@ -31,7 +31,7 @@ public class BeanConstraintMetadataFactoryBeanTest {
      */
     @Test
     public void testGeneratedObject() throws Exception {
-        BeanConstraintMetadataGenerator descriptor = factoryBean.getObject();
+        BeanConstraintAccessor descriptor = factoryBean.getObject();
         BeanConstraintMetadata<Car> carDescription = descriptor.describe(Car.class);
         PropertyConstraintMetadata<String> licenseDescription = carDescription.getPropertyMetadata("licenseNumber", String.class);
         assertEquals(String.class, licenseDescription.getJavaType()); // Retrieved by introspection

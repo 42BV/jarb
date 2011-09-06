@@ -4,19 +4,20 @@ import java.beans.PropertyDescriptor;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.jarb.utils.bean.PropertyReference;
 import org.springframework.beans.BeanUtils;
 import org.springframework.util.Assert;
 
 /**
- * Default implementation of {@link BeanConstraintMetadataGenerator}.
+ * Default implementation of {@link BeanConstraintAccessor}.
  * 
  * @author Jeroen van Schagen
  * @since 31-05-2011
  */
-public class DefaultBeanConstraintMetadataGenerator implements BeanConstraintMetadataGenerator {
+public class BeanConstraintAccessorImpl implements BeanConstraintAccessor {
     private List<PropertyConstraintMetadataEnhancer> propertyMetadataEnhancers;
 
-    public DefaultBeanConstraintMetadataGenerator() {
+    public BeanConstraintAccessorImpl() {
         propertyMetadataEnhancers = new ArrayList<PropertyConstraintMetadataEnhancer>();
     }
 
@@ -30,7 +31,7 @@ public class DefaultBeanConstraintMetadataGenerator implements BeanConstraintMet
      */
     @Override
     public <T> BeanConstraintMetadata<T> describe(Class<T> beanClass) {
-        MutableBeanConstraintMetadata<T> entityDescription = new MutableBeanConstraintMetadata<T>(beanClass);
+        BeanConstraintMetadata<T> entityDescription = new BeanConstraintMetadata<T>(beanClass);
         for (PropertyDescriptor property : BeanUtils.getPropertyDescriptors(beanClass)) {
             entityDescription.addPropertyMetadata(describeProperty(property, beanClass));
         }
@@ -43,22 +44,23 @@ public class DefaultBeanConstraintMetadataGenerator implements BeanConstraintMet
      * @return property constraint description
      */
     private PropertyConstraintMetadata<?> describeProperty(PropertyDescriptor property, Class<?> beanClass) {
-        MutablePropertyConstraintMetadata<?> propertyDescription = createPropertyDescription(property.getName(), property.getPropertyType());
+        PropertyReference propertyReference = new PropertyReference(beanClass, property.getName());
+        PropertyConstraintMetadata<?> propertyDescription = createPropertyDescription(propertyReference, property.getPropertyType());
         for (PropertyConstraintMetadataEnhancer propertyDescriptionEnhancer : propertyMetadataEnhancers) {
-            propertyDescription = propertyDescriptionEnhancer.enhance(propertyDescription, beanClass);
+            propertyDescription = propertyDescriptionEnhancer.enhance(propertyDescription);
         }
         return propertyDescription;
     }
 
     /**
-     * Construct a new {@link MutablePropertyConstraintMetadata} for some property.
+     * Construct a new {@link PropertyConstraintMetadata} for some property.
      * @param <T> type of property being described
      * @param propertyName name of the property being described
      * @param propertyClass class of the property being described
      * @return new plain property description
      */
-    private <T> MutablePropertyConstraintMetadata<T> createPropertyDescription(String propertyName, Class<T> propertyClass) {
-        return new MutablePropertyConstraintMetadata<T>(propertyName, propertyClass);
+    private <T> PropertyConstraintMetadata<T> createPropertyDescription(PropertyReference propertyReference, Class<T> propertyClass) {
+        return new PropertyConstraintMetadata<T>(propertyReference, propertyClass);
     }
 
 }

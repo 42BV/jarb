@@ -1,43 +1,63 @@
 package org.jarb.constraint;
 
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 
 /**
- * Describes the constraints of a bean.
+ * Describes the constraints of a baen.
  * 
  * @author Jeroen van Schagen
- * @since 8-6-2011
+ * @since 31-05-2011
  *
- * @param <T> type of bean
+ * @param <T> type of bean being described
  */
-public interface BeanConstraintMetadata<T> {
+public class BeanConstraintMetadata<T> {
+    private final Class<T> beanClass;
+    private Map<String, PropertyConstraintMetadata<?>> propertyMetadataMap;
 
     /**
-     * Retrieve the bean type.
-     * @return bean type
+     * Construct a new {@link BeanConstraintMetadata}.
+     * @param beanClass class of the bean being described
      */
-    Class<T> getBeanType();
-    
+    public BeanConstraintMetadata(Class<T> beanClass) {
+        this.beanClass = beanClass;
+        propertyMetadataMap = new HashMap<String, PropertyConstraintMetadata<?>>();
+    }
+
+    public Class<T> getBeanType() {
+        return beanClass;
+    }
+
+    public PropertyConstraintMetadata<?> getPropertyMetadata(String propertyName) {
+        return propertyMetadataMap.get(propertyName);
+    }
+
+    @SuppressWarnings("unchecked")
+    public <X> PropertyConstraintMetadata<X> getPropertyMetadata(String propertyName, Class<X> propertyClass) {
+        return (PropertyConstraintMetadata<X>) propertyMetadataMap.get(propertyName);
+    }
+
+    public Collection<PropertyConstraintMetadata<?>> getPropertiesMetadata() {
+        return propertyMetadataMap.values();
+    }
+
     /**
-     * Retrieve all property descriptions.
-     * @return immutable collection of all property descriptions
+     * Attach the description of a property to this bean description.
+     * @param propertyMetadata description of the property constraints
      */
-    Collection<PropertyConstraintMetadata<?>> getPropertiesMetadata();
-    
+    public void addPropertyMetadata(PropertyConstraintMetadata<?> propertyMetadata) {
+        propertyMetadataMap.put(propertyMetadata.getName(), propertyMetadata);
+    }
+
     /**
-     * Retrieve the description of a property.
-     * @param propertyName property name
-     * @return property description
+     * {@inheritDoc}
      */
-    PropertyConstraintMetadata<?> getPropertyMetadata(String propertyName);
-    
-    /**
-     * Retrieve the description of a property.
-     * @param <X> type of property
-     * @param propertyName property name
-     * @param propertyClass class of the property
-     * @return type safe property description
-     */
-    <X> PropertyConstraintMetadata<X> getPropertyMetadata(String propertyName, Class<X> propertyClass);
-    
+    @Override
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
+    }
 }

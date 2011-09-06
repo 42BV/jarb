@@ -3,7 +3,7 @@ package org.jarb.sample.controller;
 import javax.validation.Valid;
 
 import org.jarb.constraint.BeanConstraintMetadata;
-import org.jarb.constraint.BeanConstraintMetadataGenerator;
+import org.jarb.constraint.BeanConstraintAccessor;
 import org.jarb.sample.domain.Post;
 import org.jarb.sample.domain.PostTitleAlreadyExistsException;
 import org.jarb.sample.service.PostingService;
@@ -22,7 +22,7 @@ public class PostingController {
     private PostingService postingService;
     
     @Autowired
-    private BeanConstraintMetadataGenerator constraintMetadataGenerator;
+    private BeanConstraintAccessor constraintMetadataGenerator;
 
     @RequestMapping(method = RequestMethod.GET)
     public ModelAndView index() {

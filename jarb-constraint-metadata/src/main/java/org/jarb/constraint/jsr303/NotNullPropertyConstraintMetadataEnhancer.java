@@ -2,7 +2,7 @@ package org.jarb.constraint.jsr303;
 
 import javax.validation.constraints.NotNull;
 
-import org.jarb.constraint.MutablePropertyConstraintMetadata;
+import org.jarb.constraint.PropertyConstraintMetadata;
 import org.jarb.constraint.PropertyConstraintMetadataEnhancer;
 
 /**
@@ -17,8 +17,8 @@ public class NotNullPropertyConstraintMetadataEnhancer implements PropertyConstr
      * {@inheritDoc}
      */
     @Override
-    public <T> MutablePropertyConstraintMetadata<T> enhance(MutablePropertyConstraintMetadata<T> propertyMetadata, Class<?> beanClass) {
-        if(ConstraintAnnotationScanner.isPropertyAnnotated(beanClass, propertyMetadata.getName(), NotNull.class)) {
+    public <T> PropertyConstraintMetadata<T> enhance(PropertyConstraintMetadata<T> propertyMetadata) {
+        if (ConstraintAnnotationScanner.isPropertyAnnotated(propertyMetadata.getPropertyReference(), NotNull.class)) {
             propertyMetadata.setRequired(true);
         }
         return propertyMetadata;

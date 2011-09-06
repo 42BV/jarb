@@ -3,21 +3,23 @@ package org.jarb.constraint.jsr303;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
-import org.jarb.constraint.MutablePropertyConstraintMetadata;
+import org.jarb.constraint.PropertyConstraintMetadata;
 import org.jarb.constraint.domain.Car;
+import org.jarb.utils.bean.PropertyReference;
 import org.junit.Before;
 import org.junit.Test;
 
 public class NotEmptyPropertyConstraintMetadataEnhancerTest {
     private NotEmptyPropertyConstraintMetadataEnhancer enhancer;
-    private MutablePropertyConstraintMetadata<String> licenseMetadata;
+    private PropertyConstraintMetadata<String> licenseMetadata;
 
     @Before
     public void setUp() {
         enhancer = new NotEmptyPropertyConstraintMetadataEnhancer();
-        licenseMetadata = new MutablePropertyConstraintMetadata<String>("licenseNumber", String.class);
+        PropertyReference reference = new PropertyReference(Car.class, "licenseNumber");
+        licenseMetadata = new PropertyConstraintMetadata<String>(reference, String.class);
     }
-    
+
     /**
      * Whenever our described minimum length is null, and the property is @NotEmpty,
      * we should change the minimum length to one. This is because we require atleast
@@ -26,10 +28,10 @@ public class NotEmptyPropertyConstraintMetadataEnhancerTest {
     @Test
     public void testEnhanceIfNull() {
         assertNull(licenseMetadata.getMinimumLength());
-        enhancer.enhance(licenseMetadata, Car.class);
+        enhancer.enhance(licenseMetadata);
         assertEquals(Integer.valueOf(1), licenseMetadata.getMinimumLength());
     }
-    
+
     /**
      * If our described minimum length is zero, but the property is @NotEmpty,
      * we should also change the minimum length to one.
@@ -37,10 +39,10 @@ public class NotEmptyPropertyConstraintMetadataEnhancerTest {
     @Test
     public void testEnhanceIfZero() {
         licenseMetadata.setMinimumLength(0);
-        enhancer.enhance(licenseMetadata, Car.class);
+        enhancer.enhance(licenseMetadata);
         assertEquals(Integer.valueOf(1), licenseMetadata.getMinimumLength());
     }
-    
+
     /**
      * Whenever our minimum length is already configured, above zero, we do
      * nothing. That is because some other, more specific, enhancer already
@@ -49,18 +51,19 @@ public class NotEmptyPropertyConstraintMetadataEnhancerTest {
     @Test
     public void testSkipIfAlreadyHasPositiveMin() {
         licenseMetadata.setMinimumLength(42);
-        enhancer.enhance(licenseMetadata, Car.class);
+        enhancer.enhance(licenseMetadata);
         assertEquals(Integer.valueOf(42), licenseMetadata.getMinimumLength());
     }
-    
+
     /**
      * Properties that are not annotated with @NotEmpty should not be altered.
      */
     @Test
     public void testSkipUnmarkedProperty() {
-        MutablePropertyConstraintMetadata<String> priceMetadata = new MutablePropertyConstraintMetadata<String>("price", String.class);
-        enhancer.enhance(priceMetadata, Car.class);
+        PropertyReference reference = new PropertyReference(Car.class, "price");
+        PropertyConstraintMetadata<String> priceMetadata = new PropertyConstraintMetadata<String>(reference, String.class);
+        enhancer.enhance(priceMetadata);
         assertNull(priceMetadata.getMinimumLength());
     }
-    
+
 }

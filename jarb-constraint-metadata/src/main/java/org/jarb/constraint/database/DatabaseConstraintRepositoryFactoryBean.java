@@ -33,7 +33,7 @@ public class DatabaseConstraintRepositoryFactoryBean extends SingletonFactoryBea
     @Override
     protected DatabaseConstraintRepository createObject() throws Exception {
         Assert.notNull(dataSource, "Data source cannot be null");
-        DatabaseConstraintRepository databaseConstraintRepository = new DatabaseConstraintRepository();
+        DatabaseConstraintRepositoryImpl databaseConstraintRepository = new DatabaseConstraintRepositoryImpl();
         databaseConstraintRepository.setColumnMetadataRepository(new CachingColumnMetadataRepository(new JdbcColumnMetadataProvider(dataSource)));
         databaseConstraintRepository.setSchemaMapper(schemaMapper);
         return databaseConstraintRepository;
