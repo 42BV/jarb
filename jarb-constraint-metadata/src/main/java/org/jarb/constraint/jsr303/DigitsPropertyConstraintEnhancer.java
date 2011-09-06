@@ -15,16 +15,16 @@ import org.jarb.constraint.PropertyConstraintEnhancer;
  * @author Jeroen van Schagen
  * @since 31-05-2011
  */
-public class DigitsPropertyConstraintMetadataEnhancer implements PropertyConstraintEnhancer {
+public class DigitsPropertyConstraintEnhancer implements PropertyConstraintEnhancer {
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public PropertyConstraintDescription enhance(PropertyConstraintDescription propertyMetadata) {
-        Collection<Digits> digitsAnnotations = fieldOrGetter().collectAnnotations(propertyMetadata.getPropertyReference(), Digits.class);
-        Integer maximumLength = propertyMetadata.getMaximumLength();
-        Integer fractionLength = propertyMetadata.getFractionLength();
+    public PropertyConstraintDescription enhance(PropertyConstraintDescription propertyConstraints) {
+        Collection<Digits> digitsAnnotations = fieldOrGetter().collectAnnotations(propertyConstraints.getPropertyReference(), Digits.class);
+        Integer maximumLength = propertyConstraints.getMaximumLength();
+        Integer fractionLength = propertyConstraints.getFractionLength();
         for (Digits digitsAnnotation : digitsAnnotations) {
             if (maximumLength != null) {
                 // Store the lowest maximum length, as this will cause both length restrictions to pass
@@ -39,9 +39,9 @@ public class DigitsPropertyConstraintMetadataEnhancer implements PropertyConstra
                 fractionLength = digitsAnnotation.fraction();
             }
         }
-        propertyMetadata.setMaximumLength(maximumLength);
-        propertyMetadata.setFractionLength(fractionLength);
-        return propertyMetadata;
+        propertyConstraints.setMaximumLength(maximumLength);
+        propertyConstraints.setFractionLength(fractionLength);
+        return propertyConstraints;
     }
 
 }

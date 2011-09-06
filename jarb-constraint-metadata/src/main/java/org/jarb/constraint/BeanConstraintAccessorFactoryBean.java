@@ -1,17 +1,15 @@
 package org.jarb.constraint;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import org.hibernate.validator.constraints.CreditCardNumber;
+import org.hibernate.validator.constraints.Email;
 import org.jarb.constraint.database.DatabaseConstraintRepository;
 import org.jarb.constraint.database.DatabasePropertyConstraintDescriptionEnhancer;
-import org.jarb.constraint.jsr303.AnnotationPropertyConstraintMetadataTypeEnhancer;
-import org.jarb.constraint.jsr303.DigitsPropertyConstraintMetadataEnhancer;
-import org.jarb.constraint.jsr303.LengthPropertyConstraintMetadataEnhancer;
-import org.jarb.constraint.jsr303.NotEmptyPropertyConstraintMetadataEnhancer;
-import org.jarb.constraint.jsr303.NotNullPropertyConstraintMetadataEnhancer;
+import org.jarb.constraint.jsr303.AnnotationTypePropertyConstraintEnhancer;
+import org.jarb.constraint.jsr303.DigitsPropertyConstraintEnhancer;
+import org.jarb.constraint.jsr303.LengthPropertyConstraintEnhancer;
+import org.jarb.constraint.jsr303.NotEmptyPropertyConstraintEnhancer;
+import org.jarb.constraint.jsr303.NotNullPropertyConstraintEnhancer;
 import org.jarb.utils.spring.SingletonFactoryBean;
-import org.springframework.util.Assert;
 
 /**
  * Builds a default bean constraint metadata generator.
@@ -28,16 +26,16 @@ public class BeanConstraintAccessorFactoryBean extends SingletonFactoryBean<Bean
 
     @Override
     protected BeanConstraintAccessor createObject() throws Exception {
-        Assert.state(databaseConstraintRepository != null, "Database constraint repository is required");
         BeanConstraintAccessorImpl descriptor = new BeanConstraintAccessorImpl();
-        List<PropertyConstraintEnhancer> propertyConstraintEnhancers = new ArrayList<PropertyConstraintEnhancer>();
-        propertyConstraintEnhancers.add(new DatabasePropertyConstraintDescriptionEnhancer(databaseConstraintRepository));
-        propertyConstraintEnhancers.add(new LengthPropertyConstraintMetadataEnhancer());
-        propertyConstraintEnhancers.add(new DigitsPropertyConstraintMetadataEnhancer());
-        propertyConstraintEnhancers.add(new NotNullPropertyConstraintMetadataEnhancer());
-        propertyConstraintEnhancers.add(new NotEmptyPropertyConstraintMetadataEnhancer());
-        propertyConstraintEnhancers.add(new AnnotationPropertyConstraintMetadataTypeEnhancer());
-        descriptor.setPropertyConstraintEnhancers(propertyConstraintEnhancers);
+        descriptor.registerEnhancer(new DatabasePropertyConstraintDescriptionEnhancer(databaseConstraintRepository));
+        descriptor.registerEnhancer(new LengthPropertyConstraintEnhancer());
+        descriptor.registerEnhancer(new DigitsPropertyConstraintEnhancer());
+        descriptor.registerEnhancer(new NotNullPropertyConstraintEnhancer());
+        descriptor.registerEnhancer(new NotEmptyPropertyConstraintEnhancer());
+        // Property type recognition
+        descriptor.registerEnhancer(new BasicTypesPropertyConstraintEnhancer());
+        descriptor.registerEnhancer(new AnnotationTypePropertyConstraintEnhancer(CreditCardNumber.class, "credid_card"));
+        descriptor.registerEnhancer(new AnnotationTypePropertyConstraintEnhancer(Email.class, "email"));
         return descriptor;
     }
 

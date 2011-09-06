@@ -10,12 +10,12 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class DigitsPropertyConstraintMetadataEnhancerTest {
-    private DigitsPropertyConstraintMetadataEnhancer enhancer;
+    private DigitsPropertyConstraintEnhancer enhancer;
     private PropertyConstraintDescription priceMetadata;
 
     @Before
     public void setUp() {
-        enhancer = new DigitsPropertyConstraintMetadataEnhancer();
+        enhancer = new DigitsPropertyConstraintEnhancer();
         PropertyReference reference = new PropertyReference(Car.class, "price");
         priceMetadata = new PropertyConstraintDescription(reference, Double.class);
     }

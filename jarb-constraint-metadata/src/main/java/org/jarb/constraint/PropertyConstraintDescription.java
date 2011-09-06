@@ -1,14 +1,15 @@
 package org.jarb.constraint;
 
+import static java.util.Collections.unmodifiableSet;
+import static org.jarb.utils.Conditions.notNull;
+
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import org.jarb.utils.bean.PropertyReference;
-import org.springframework.util.Assert;
 
 /**
  * Describes a bean property.
@@ -21,8 +22,8 @@ import org.springframework.util.Assert;
 public class PropertyConstraintDescription {
     private final PropertyReference propertyReference;
     private final Class<?> propertyClass;
-
-    private Set<PropertyType> types;
+    
+    private final Set<String> types = new HashSet<String>();
 
     // Global requirements
     private boolean required;
@@ -35,16 +36,12 @@ public class PropertyConstraintDescription {
 
     /**
      * Construct a new {@link PropertyConstraintDescription}.
-     * @param propertyName name of the property
+     * @param propertyReference reference to the property
      * @param propertyClass class of the property
      */
     public PropertyConstraintDescription(PropertyReference propertyReference, Class<?> propertyClass) {
-        Assert.notNull(propertyReference);
-        Assert.notNull(propertyClass);
-        this.propertyReference = propertyReference;
-        this.propertyClass = propertyClass;
-        types = new HashSet<PropertyType>();
-        types.add(PropertyType.forClass(propertyClass));
+        this.propertyReference = notNull(propertyReference, "Property reference cannot be null");
+        this.propertyClass = notNull(propertyClass, "Property class cannot be null");
     }
 
     public PropertyReference getPropertyReference() {
@@ -63,11 +60,11 @@ public class PropertyConstraintDescription {
         return propertyClass;
     }
 
-    public Collection<PropertyType> getTypes() {
-        return Collections.unmodifiableSet(types);
+    public Collection<String> getTypes() {
+        return unmodifiableSet(types);
     }
 
-    public PropertyConstraintDescription addType(PropertyType type) {
+    public PropertyConstraintDescription addType(String type) {
         types.add(type);
         return this;
     }

@@ -17,7 +17,7 @@ import org.apache.commons.lang3.builder.ToStringStyle;
  */
 public class BeanConstraintDescription<T> {
     private final Class<T> beanClass;
-    private Map<String, PropertyConstraintDescription> propertyMetadataMap;
+    private Map<String, PropertyConstraintDescription> properties;
 
     /**
      * Construct a new {@link BeanConstraintDescription}.
@@ -25,27 +25,27 @@ public class BeanConstraintDescription<T> {
      */
     public BeanConstraintDescription(Class<T> beanClass) {
         this.beanClass = beanClass;
-        propertyMetadataMap = new HashMap<String, PropertyConstraintDescription>();
+        properties = new HashMap<String, PropertyConstraintDescription>();
     }
 
     public Class<T> getBeanType() {
         return beanClass;
     }
 
-    public PropertyConstraintDescription getPropertyMetadata(String propertyName) {
-        return propertyMetadataMap.get(propertyName);
+    public PropertyConstraintDescription getProperty(String propertyName) {
+        return properties.get(propertyName);
     }
 
-    public Collection<PropertyConstraintDescription> getPropertiesMetadata() {
-        return propertyMetadataMap.values();
+    public Collection<PropertyConstraintDescription> getProperties() {
+        return properties.values();
     }
 
     /**
      * Attach the description of a property to this bean description.
      * @param propertyMetadata description of the property constraints
      */
-    public void addPropertyDescription(PropertyConstraintDescription propertyMetadata) {
-        propertyMetadataMap.put(propertyMetadata.getName(), propertyMetadata);
+    void addPropertyDescription(PropertyConstraintDescription propertyMetadata) {
+        properties.put(propertyMetadata.getName(), propertyMetadata);
     }
 
     /**
@@ -55,4 +55,5 @@ public class BeanConstraintDescription<T> {
     public String toString() {
         return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
     }
+    
 }

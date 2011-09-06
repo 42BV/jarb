@@ -10,12 +10,12 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class NotEmptyPropertyConstraintMetadataEnhancerTest {
-    private NotEmptyPropertyConstraintMetadataEnhancer enhancer;
+    private NotEmptyPropertyConstraintEnhancer enhancer;
     private PropertyConstraintDescription licenseMetadata;
 
     @Before
     public void setUp() {
-        enhancer = new NotEmptyPropertyConstraintMetadataEnhancer();
+        enhancer = new NotEmptyPropertyConstraintEnhancer();
         PropertyReference reference = new PropertyReference(Car.class, "licenseNumber");
         licenseMetadata = new PropertyConstraintDescription(reference, String.class);
     }

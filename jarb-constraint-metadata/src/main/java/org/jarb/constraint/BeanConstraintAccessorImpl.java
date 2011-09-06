@@ -1,5 +1,7 @@
 package org.jarb.constraint;
 
+import static org.jarb.utils.Conditions.notNull;
+
 import java.beans.PropertyDescriptor;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,16 +16,13 @@ import org.springframework.beans.BeanUtils;
  * @since 31-05-2011
  */
 public class BeanConstraintAccessorImpl implements BeanConstraintAccessor {
-    private List<PropertyConstraintEnhancer> propertyConstraintEnhancers;
+    private final List<PropertyConstraintEnhancer> propertyConstraintEnhancers = new ArrayList<PropertyConstraintEnhancer>();
 
-    public BeanConstraintAccessorImpl() {
-        propertyConstraintEnhancers = new ArrayList<PropertyConstraintEnhancer>();
+    public BeanConstraintAccessorImpl registerEnhancer(PropertyConstraintEnhancer propertyConstraintEnhancer) {
+        propertyConstraintEnhancers.add(notNull(propertyConstraintEnhancer, "Cannot add a null property constraint enhancer"));
+        return this;
     }
-
-    public void setPropertyConstraintEnhancers(List<PropertyConstraintEnhancer> propertyConstraintEnhancers) {
-        this.propertyConstraintEnhancers = propertyConstraintEnhancers;
-    }
-
+    
     /**
      * {@inheritDoc}
      */

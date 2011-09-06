@@ -1,7 +1,7 @@
 package org.jarb.constraint;
 
 /**
- * Enhances property constraint meta-data with additional information.
+ * Enhances property constraint description with additional information.
  * 
  * @author Jeroen van Schagen
  * @since 4-6-2011
@@ -9,11 +9,11 @@ package org.jarb.constraint;
 public interface PropertyConstraintEnhancer {
 
     /**
-     * Enhance a property constraint meta-data object.
+     * Enhance a property constraint description object.
      * @param <T> type of property being described
-     * @param propertyMetadata modifiable property meta-data object
-     * @return (modified) property meta-data object
+     * @param propertyConstraints describes the constraints of a property
+     * @return (enhanced) property constraint description
      */
-    PropertyConstraintDescription enhance(PropertyConstraintDescription propertyMetadata);
+    PropertyConstraintDescription enhance(PropertyConstraintDescription propertyConstraints);
 
 }

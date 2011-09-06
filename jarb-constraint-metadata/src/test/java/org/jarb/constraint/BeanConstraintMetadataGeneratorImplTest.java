@@ -1,11 +1,10 @@
 package org.jarb.constraint;
 
-import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
 
 import org.jarb.constraint.domain.Car;
 import org.jarb.constraint.domain.Person;
-import org.jarb.constraint.jsr303.LengthPropertyConstraintMetadataEnhancer;
+import org.jarb.constraint.jsr303.LengthPropertyConstraintEnhancer;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -23,11 +22,11 @@ public class BeanConstraintMetadataGeneratorImplTest {
     @Test
     public void testPropertiesAreDescribed() {
         BeanConstraintDescription<Car> carDescription = describtor.describe(Car.class);
-        assertEquals(Long.class, carDescription.getPropertyMetadata("id").getJavaType());
-        assertEquals(String.class, carDescription.getPropertyMetadata("licenseNumber").getJavaType());
-        assertEquals(Double.class, carDescription.getPropertyMetadata("price").getJavaType());
-        assertEquals(Person.class, carDescription.getPropertyMetadata("owner").getJavaType());
-        assertEquals(Class.class, carDescription.getPropertyMetadata("class").getJavaType());
+        assertEquals(Long.class, carDescription.getProperty("id").getJavaType());
+        assertEquals(String.class, carDescription.getProperty("licenseNumber").getJavaType());
+        assertEquals(Double.class, carDescription.getProperty("price").getJavaType());
+        assertEquals(Person.class, carDescription.getProperty("owner").getJavaType());
+        assertEquals(Class.class, carDescription.getProperty("class").getJavaType());
     }
 
     /**
@@ -35,11 +34,9 @@ public class BeanConstraintMetadataGeneratorImplTest {
      */
     @Test
     public void testPropertyDescriptionEnhancers() {
-        PropertyConstraintEnhancer lengthAnnotationEnhancer = new LengthPropertyConstraintMetadataEnhancer();
-        describtor.setPropertyConstraintEnhancers(asList(lengthAnnotationEnhancer));
+        describtor.registerEnhancer(new LengthPropertyConstraintEnhancer());
         BeanConstraintDescription<Car> carDescription = describtor.describe(Car.class);
-        PropertyConstraintDescription licenseDescription = carDescription.getPropertyMetadata("licenseNumber");
-        // Length description enhancer reads the annotations to determine minimum- and maximum length
+        PropertyConstraintDescription licenseDescription = carDescription.getProperty("licenseNumber");
         assertEquals(Integer.valueOf(6), licenseDescription.getMinimumLength());
     }
 

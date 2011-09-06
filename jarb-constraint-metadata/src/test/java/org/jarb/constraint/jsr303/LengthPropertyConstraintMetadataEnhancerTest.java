@@ -10,12 +10,12 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class LengthPropertyConstraintMetadataEnhancerTest {
-    private LengthPropertyConstraintMetadataEnhancer enhancer;
+    private LengthPropertyConstraintEnhancer enhancer;
     private PropertyConstraintDescription licenseMetadata;
 
     @Before
     public void setUp() {
-        enhancer = new LengthPropertyConstraintMetadataEnhancer();
+        enhancer = new LengthPropertyConstraintEnhancer();
         PropertyReference reference = new PropertyReference(Car.class, "licenseNumber");
         licenseMetadata = new PropertyConstraintDescription(reference, String.class);
     }

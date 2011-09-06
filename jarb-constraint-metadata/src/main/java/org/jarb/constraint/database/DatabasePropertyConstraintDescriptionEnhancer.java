@@ -1,5 +1,7 @@
 package org.jarb.constraint.database;
 
+import static org.jarb.utils.Conditions.notNull;
+
 import org.jarb.constraint.PropertyConstraintDescription;
 import org.jarb.constraint.PropertyConstraintEnhancer;
 import org.jarb.constraint.database.column.ColumnMetadata;
@@ -16,11 +18,11 @@ import org.slf4j.LoggerFactory;
 public class DatabasePropertyConstraintDescriptionEnhancer implements PropertyConstraintEnhancer {
     private final Logger logger = LoggerFactory.getLogger(DatabasePropertyConstraintDescriptionEnhancer.class);
 
-    /** Repository used to access column meta-data. **/
+    /** Repository used to access database constraint information. **/
     private final DatabaseConstraintRepository databaseConstraintRepository;
 
-    public DatabasePropertyConstraintDescriptionEnhancer(DatabaseConstraintRepository columnMetadataRepository) {
-        this.databaseConstraintRepository = columnMetadataRepository;
+    public DatabasePropertyConstraintDescriptionEnhancer(DatabaseConstraintRepository databaseConstraintRepository) {
+        this.databaseConstraintRepository = notNull(databaseConstraintRepository, "Database constraint repository cannot be null");
     }
 
     /**
