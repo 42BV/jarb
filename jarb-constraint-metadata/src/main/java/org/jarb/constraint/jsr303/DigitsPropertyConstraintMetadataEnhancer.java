@@ -1,6 +1,8 @@
 package org.jarb.constraint.jsr303;
 
-import java.util.List;
+import static org.jarb.utils.bean.BeanAnnotationScanner.fieldOrGetter;
+
+import java.util.Collection;
 
 import javax.validation.constraints.Digits;
 
@@ -20,7 +22,7 @@ public class DigitsPropertyConstraintMetadataEnhancer implements PropertyConstra
      */
     @Override
     public PropertyConstraintDescription enhance(PropertyConstraintDescription propertyMetadata) {
-        List<Digits> digitsAnnotations = ConstraintAnnotationScanner.getPropertyAnnotations(propertyMetadata.getPropertyReference(), Digits.class);
+        Collection<Digits> digitsAnnotations = fieldOrGetter().collectAnnotations(propertyMetadata.getPropertyReference(), Digits.class);
         Integer maximumLength = propertyMetadata.getMaximumLength();
         Integer fractionLength = propertyMetadata.getFractionLength();
         for (Digits digitsAnnotation : digitsAnnotations) {

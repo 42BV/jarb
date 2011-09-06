@@ -32,7 +32,7 @@ import javax.persistence.Transient;
 import org.hibernate.cfg.DefaultNamingStrategy;
 import org.hibernate.cfg.NamingStrategy;
 import org.jarb.utils.bean.BeanAnnotationScanner;
-import org.jarb.utils.bean.BeanAnnotationScannerImpl;
+import org.jarb.utils.bean.BeanAnnotationScanner;
 import org.jarb.utils.bean.PropertyReference;
 import org.jarb.utils.orm.ColumnReference;
 import org.jarb.utils.orm.SchemaMapper;
@@ -49,7 +49,7 @@ public class JpaHibernateSchemaMapper implements SchemaMapper {
     /**
      * Retrieves the annotations of a bean class.
      */
-    private final BeanAnnotationScanner annotationScanner = new BeanAnnotationScannerImpl(true, false);
+    private final BeanAnnotationScanner annotationScanner = new BeanAnnotationScanner(true, false);
 
     /**
      * Naming strategy used to determine the eventual mapping.

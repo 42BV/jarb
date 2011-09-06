@@ -1,6 +1,8 @@
 package org.jarb.constraint.jsr303;
 
-import java.util.List;
+import static org.jarb.utils.bean.BeanAnnotationScanner.fieldOrGetter;
+
+import java.util.Collection;
 
 import org.hibernate.validator.constraints.Length;
 import org.jarb.constraint.PropertyConstraintDescription;
@@ -19,7 +21,7 @@ public class LengthPropertyConstraintMetadataEnhancer implements PropertyConstra
      */
     @Override
     public PropertyConstraintDescription enhance(PropertyConstraintDescription propertyMetadata) {
-        List<Length> lengthAnnotations = ConstraintAnnotationScanner.getPropertyAnnotations(propertyMetadata.getPropertyReference(), Length.class);
+        Collection<Length> lengthAnnotations = fieldOrGetter().collectAnnotations(propertyMetadata.getPropertyReference(), Length.class);
         Integer minimumLength = propertyMetadata.getMinimumLength();
         Integer maximumLength = propertyMetadata.getMaximumLength();
         for (Length lengthAnnotation : lengthAnnotations) {

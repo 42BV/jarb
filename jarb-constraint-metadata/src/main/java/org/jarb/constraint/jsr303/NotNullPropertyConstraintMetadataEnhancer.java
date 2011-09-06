@@ -1,5 +1,7 @@
 package org.jarb.constraint.jsr303;
 
+import static org.jarb.utils.bean.BeanAnnotationScanner.fieldOrGetter;
+
 import javax.validation.constraints.NotNull;
 
 import org.jarb.constraint.PropertyConstraintDescription;
@@ -18,7 +20,7 @@ public class NotNullPropertyConstraintMetadataEnhancer implements PropertyConstr
      */
     @Override
     public PropertyConstraintDescription enhance(PropertyConstraintDescription propertyMetadata) {
-        if (ConstraintAnnotationScanner.isPropertyAnnotated(propertyMetadata.getPropertyReference(), NotNull.class)) {
+        if (fieldOrGetter().hasAnnotation(propertyMetadata.getPropertyReference(), NotNull.class)) {
             propertyMetadata.setRequired(true);
         }
         return propertyMetadata;

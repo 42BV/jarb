@@ -12,7 +12,7 @@ import org.jarb.constraint.database.DatabaseConstraintRepository;
 import org.jarb.constraint.database.column.ColumnMetadata;
 import org.jarb.utils.BeanAccessor;
 import org.jarb.utils.bean.BeanAnnotationScanner;
-import org.jarb.utils.bean.BeanAnnotationScannerImpl;
+import org.jarb.utils.bean.BeanAnnotationScanner;
 import org.jarb.utils.bean.ModifiableBean;
 import org.jarb.utils.bean.PropertyReference;
 import org.slf4j.Logger;
@@ -56,7 +56,7 @@ public class DatabaseConstrainedValidator implements ConstraintValidator<Databas
     private static final String LENGTH_TEMPLATE = "{org.jarb.validation.DatabaseConstraint.Length.message}";
     private static final String FRACTION_LENGTH_TEMPLATE = "{org.jarb.validation.DatabaseConstraint.FractionLength.message}";
 
-    private final BeanAnnotationScanner annotationScanner = new BeanAnnotationScannerImpl(true, true);
+    private final BeanAnnotationScanner annotationScanner = new BeanAnnotationScanner(true, true);
 
     /** Used to retrieve column meta-data repository during initialization **/
     private BeanAccessor beanAccessor;

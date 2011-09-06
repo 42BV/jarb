@@ -1,5 +1,7 @@
 package org.jarb.constraint.jsr303;
 
+import static org.jarb.utils.bean.BeanAnnotationScanner.fieldOrGetter;
+
 import java.lang.annotation.Annotation;
 import java.util.HashMap;
 import java.util.Map;
@@ -33,7 +35,7 @@ public class AnnotationPropertyConstraintMetadataTypeEnhancer implements Propert
     @Override
     public PropertyConstraintDescription enhance(PropertyConstraintDescription propertyMetadata) {
         for (Map.Entry<Class<? extends Annotation>, PropertyType> mappingEntry : TYPE_MAPPINGS.entrySet()) {
-            if (ConstraintAnnotationScanner.isPropertyAnnotated(propertyMetadata.getPropertyReference(), mappingEntry.getKey())) {
+            if (fieldOrGetter().hasAnnotation(propertyMetadata.getPropertyReference(), mappingEntry.getKey())) {
                 propertyMetadata.addType(mappingEntry.getValue());
             }
         }

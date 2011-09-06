@@ -13,12 +13,12 @@ import javax.persistence.Entity;
 import org.junit.Before;
 import org.junit.Test;
 
-public class BeanAnnotationScannerImplTest {
+public class BeanAnnotationScannerTest {
     private BeanAnnotationScanner scanner;
 
     @Before
     public void setUp() {
-        scanner = new BeanAnnotationScannerImpl(true, true);
+        scanner = new BeanAnnotationScanner(true, true);
     }
 
     @Test
