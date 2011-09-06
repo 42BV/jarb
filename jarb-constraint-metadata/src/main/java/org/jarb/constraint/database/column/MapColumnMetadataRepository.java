@@ -5,6 +5,7 @@ import static org.apache.commons.lang3.StringUtils.lowerCase;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.jarb.utils.orm.ColumnReference;
 import org.springframework.util.Assert;
 
 /**
@@ -53,10 +54,10 @@ public class MapColumnMetadataRepository implements ColumnMetadataRepository {
      * {@inheritDoc}
      */
     @Override
-    public ColumnMetadata getColumnMetadata(String tableName, String columnName) {
+    public ColumnMetadata getColumnMetadata(ColumnReference columnReference) {
         ColumnMetadata columnMetadata = null;
-        if (columnMetadataMap.containsKey(lowerCase(tableName))) {
-            columnMetadata = columnMetadataMap.get(lowerCase(tableName)).get(lowerCase(columnName));
+        if (columnMetadataMap.containsKey(lowerCase(columnReference.getTableName()))) {
+            columnMetadata = columnMetadataMap.get(lowerCase(columnReference.getTableName())).get(lowerCase(columnReference.getColumnName()));
         }
         return columnMetadata;
     }

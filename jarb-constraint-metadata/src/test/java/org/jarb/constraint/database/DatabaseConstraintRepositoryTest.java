@@ -1,9 +1,11 @@
-package org.jarb.constraint.database.column;
+package org.jarb.constraint.database;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 import org.easymock.EasyMock;
+import org.jarb.constraint.database.column.ColumnMetadata;
+import org.jarb.constraint.database.column.ColumnMetadataRepository;
 import org.jarb.constraint.domain.Person;
 import org.jarb.utils.bean.PropertyReference;
 import org.jarb.utils.orm.ColumnReference;
@@ -17,8 +19,8 @@ import org.junit.Test;
  * @author Jeroen van Schagen
  * @since 20-05-2011
  */
-public class EntityAwareColumnMetadataRepositoryTest {
-    private EntityAwareColumnMetadataRepository columnConstraints;
+public class DatabaseConstraintRepositoryTest {
+    private DatabaseConstraintRepository columnConstraints;
 
     private ColumnMetadataRepository columnConstraintsMock;
     private SchemaMapper schemaMapperMock;
@@ -27,7 +29,8 @@ public class EntityAwareColumnMetadataRepositoryTest {
     public void setUp() {
         columnConstraintsMock = EasyMock.createMock(ColumnMetadataRepository.class);
         schemaMapperMock = EasyMock.createMock(SchemaMapper.class);
-        columnConstraints = new EntityAwareColumnMetadataRepository(columnConstraintsMock);
+        columnConstraints = new DatabaseConstraintRepository();
+        columnConstraints.setColumnMetadataRepository(columnConstraintsMock);
         columnConstraints.setSchemaMapper(schemaMapperMock);
     }
 
@@ -39,10 +42,10 @@ public class EntityAwareColumnMetadataRepositoryTest {
         ColumnReference columnReference = new ColumnReference("persons", "name");
         EasyMock.expect(schemaMapperMock.column(new PropertyReference(Person.class, "name"))).andReturn(columnReference);
         ColumnMetadata columnConstraint = new ColumnMetadata(columnReference);
-        EasyMock.expect(columnConstraintsMock.getColumnMetadata("persons", "name")).andReturn(columnConstraint);
+        EasyMock.expect(columnConstraintsMock.getColumnMetadata(new ColumnReference("persons", "name"))).andReturn(columnConstraint);
         EasyMock.replay(schemaMapperMock, columnConstraintsMock);
 
-        ColumnMetadata result = columnConstraints.getColumnMetadata(Person.class, "name");
+        ColumnMetadata result = columnConstraints.getColumnMetadata(new PropertyReference(Person.class, "name"));
 
         EasyMock.verify(schemaMapperMock, columnConstraintsMock);
 
@@ -58,13 +61,12 @@ public class EntityAwareColumnMetadataRepositoryTest {
         EasyMock.replay(schemaMapperMock, columnConstraintsMock);
 
         try {
-            columnConstraints.getColumnMetadata(Person.class, "name");
+            columnConstraints.getColumnMetadata(new PropertyReference(Person.class, "name"));
             fail("Should throw an illegal argument exception");
-        } catch (UnknownColumnException e) {
-            assertEquals("Could not resolve the column name of 'name' (Person)", e.getMessage());
+        } catch (CouldNotBeMappedToColumnException e) {
+            assertEquals("Property 'Person.name' could not be mapped to a column.", e.getMessage());
         }
 
         EasyMock.verify(schemaMapperMock, columnConstraintsMock);
     }
-
 }

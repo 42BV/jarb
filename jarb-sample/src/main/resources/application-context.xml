@@ -78,8 +78,8 @@
     </bean>
     
 	<!-- Provides column meta-data, required for validation and bean description -->
-	<bean id="columnMetadataRepository" class="org.jarb.constraint.database.column.EntityAwareColumnMetadataRepository">
-        <constructor-arg ref="dataSource" />
+    <bean id="databaseConstraintRepository" class="org.jarb.constraint.database.DatabaseConstraintRepositoryFactoryBean">
+        <property name="dataSource" ref="dataSource"/>
         <property name="schemaMapper">
             <bean class="org.jarb.utils.orm.jpa.JpaHibernateSchemaMapper">
                 <constructor-arg ref="entityManagerFactory"/>
@@ -89,7 +89,7 @@
     
     <!-- Provides a bean constraint meta-data, required for front-end -->
     <bean id="constraintMetadataGenerator" class="org.jarb.constraint.BeanConstraintMetadataGeneratorFactoryBean">
-    	<property name="columnMetadataRepository" ref="columnMetadataRepository"/>
+    	<property name="databaseConstraintRepository" ref="databaseConstraintRepository"/>
     </bean>
     
     <!-- Translate JDBC driver exceptions into Java exceptions -->

@@ -3,7 +3,7 @@ package org.jarb.constraint;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import org.jarb.constraint.database.column.EntityAwareColumnMetadataRepository;
+import org.jarb.constraint.database.DatabaseConstraintRepository;
 import org.jarb.constraint.domain.Car;
 import org.junit.Before;
 import org.junit.Test;
@@ -18,12 +18,12 @@ public class BeanConstraintMetadataFactoryBeanTest {
     private BeanConstraintMetadataGeneratorFactoryBean factoryBean;
 
     @Autowired
-    private EntityAwareColumnMetadataRepository columnMetadataRepository;
+    private DatabaseConstraintRepository databaseConstraintRepository;
 
     @Before
     public void setUp() throws Exception {
         factoryBean = new BeanConstraintMetadataGeneratorFactoryBean();
-        factoryBean.setColumnMetadataRepository(columnMetadataRepository);
+        factoryBean.setDatabaseConstraintRepository(databaseConstraintRepository);
     }
 
     /**

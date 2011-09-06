@@ -40,12 +40,12 @@ public class CachingDatabaseMetadataRepositoryTest {
         EasyMock.replay(constraintsProviderMock);
 
         for (int i = 0; i < 10; i++) {
-            Assert.assertEquals(columnConstraint, columnConstraints.getColumnMetadata("my_table", "my_column"));
+            Assert.assertEquals(columnConstraint, columnConstraints.getColumnMetadata(new ColumnReference("my_table", "my_column")));
         }
 
         columnConstraints.clearCache();
 
-        Assert.assertEquals(columnConstraint, columnConstraints.getColumnMetadata("my_table", "my_column"));
+        Assert.assertEquals(columnConstraint, columnConstraints.getColumnMetadata(new ColumnReference("my_table", "my_column")));
 
         EasyMock.verify(constraintsProviderMock); // Once initially, once after clearing cache
     }
@@ -61,7 +61,7 @@ public class CachingDatabaseMetadataRepositoryTest {
         EasyMock.expect(constraintsProviderMock.all()).andReturn(columnConstraintSet);
         EasyMock.replay(constraintsProviderMock);
 
-        assertNull(columnConstraints.getColumnMetadata("unknown_table", "my_column"));
+        assertNull(columnConstraints.getColumnMetadata(new ColumnReference("unknown_table", "my_column")));
 
         EasyMock.verify(constraintsProviderMock);
     }
@@ -77,7 +77,7 @@ public class CachingDatabaseMetadataRepositoryTest {
         EasyMock.expect(constraintsProviderMock.all()).andReturn(columnConstraintSet);
         EasyMock.replay(constraintsProviderMock);
 
-        assertNull(columnConstraints.getColumnMetadata("my_table", "unknown_column"));
+        assertNull(columnConstraints.getColumnMetadata(new ColumnReference("my_table", "unknown_column")));
 
         EasyMock.verify(constraintsProviderMock);
     }

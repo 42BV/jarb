@@ -1,9 +1,10 @@
 package org.jarb.constraint.database.column;
 
+import org.jarb.utils.orm.ColumnReference;
 import org.springframework.util.Assert;
 
 /**
- * Repository that loads all constraint metadata in memory, minimizing database
+ * Repository that loads all constraint meta-data in memory, minimizing database
  * connectivity. With a caching constraint repository, the retrieval of constraint
  * metadata should be significantly faster.
  * 
@@ -11,16 +12,16 @@ import org.springframework.util.Assert;
  * @since 24-05-2011
  */
 public class CachingColumnMetadataRepository implements ColumnMetadataRepository {
-    /** Maintains all constraint metadata in memory **/
+    /** Maintains all constraint meta-data in memory **/
     private final MapColumnMetadataRepository columnMetadataCache = new MapColumnMetadataRepository();
-    /** Capable of filling our cache with constraint metadata **/
+    /** Capable of filling our cache with constraint meta-data **/
     private final ColumnMetadataProvider columnMetadataProvider;
     /** Describes whether our cache has been filled yet, or not **/
     private boolean metadataCached = false;
 
     /**
      * Construct a new {@link CachingColumnMetadataRepository}.
-     * @param columnMetadataProvider provides column medata for our cache
+     * @param columnMetadataProvider provides column meta-data for our cache
      */
     public CachingColumnMetadataRepository(ColumnMetadataProvider columnMetadataProvider) {
         Assert.notNull(columnMetadataProvider, "Property 'column metadata provider' cannot be null");
@@ -31,9 +32,9 @@ public class CachingColumnMetadataRepository implements ColumnMetadataRepository
      * {@inheritDoc}
      */
     @Override
-    public synchronized ColumnMetadata getColumnMetadata(String tableName, String columnName) {
+    public synchronized ColumnMetadata getColumnMetadata(ColumnReference columnReference) {
         checkCache(); // Ensure our cache is filled
-        return columnMetadataCache.getColumnMetadata(tableName, columnName);
+        return columnMetadataCache.getColumnMetadata(columnReference);
     }
 
     /**

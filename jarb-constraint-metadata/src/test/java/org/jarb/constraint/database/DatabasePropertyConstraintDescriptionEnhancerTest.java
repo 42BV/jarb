@@ -6,7 +6,6 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import org.jarb.constraint.MutablePropertyConstraintMetadata;
-import org.jarb.constraint.database.column.EntityAwareColumnMetadataRepository;
 import org.jarb.constraint.domain.Car;
 import org.junit.Before;
 import org.junit.Test;
@@ -21,15 +20,15 @@ public class DatabasePropertyConstraintDescriptionEnhancerTest {
     private DatabasePropertyConstraintDescriptionEnhancer enhancer;
 
     @Autowired
-    private EntityAwareColumnMetadataRepository columnMetadataRepository;
+    private DatabaseConstraintRepository databaseConstraintRepository;
 
     @Before
     public void setUp() {
-        enhancer = new DatabasePropertyConstraintDescriptionEnhancer(columnMetadataRepository);
+        enhancer = new DatabasePropertyConstraintDescriptionEnhancer(databaseConstraintRepository);
     }
 
     /**
-     * Database metadata should be enhancing the property description.
+     * Database meta-data should be enhancing the property description.
      */
     @Test
     public void testEnhance() {
@@ -50,7 +49,7 @@ public class DatabasePropertyConstraintDescriptionEnhancerTest {
         idDescription = enhancer.enhance(idDescription, Car.class);
         assertFalse(idDescription.isRequired());
     }
-    
+
     /**
      * Properties without column metadata should be skipped.
      * Our property has no metadata because it only exists in the mapping,
@@ -62,7 +61,7 @@ public class DatabasePropertyConstraintDescriptionEnhancerTest {
         unmappedPropertyDescription = enhancer.enhance(unmappedPropertyDescription, Car.class);
         assertNull(unmappedPropertyDescription.getMaximumLength());
     }
-    
+
     /**
      * Properties that cannot be mapped to a column should be skipped.
      * Unknown properties can never be mapped to a column.
