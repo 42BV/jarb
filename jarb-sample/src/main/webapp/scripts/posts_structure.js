@@ -7,18 +7,16 @@
 
 $.getJSON('posts/structure.json', function(data) {
 
-	$.each(data.beanConstraintMetadata.propertiesMetadata, function(index, propertyMetadata) {
-		var inputField = $('input[name=' + propertyMetadata.name + ']');
-		inputField.attr('minlength', propertyMetadata.minimumLength);
-		inputField.attr('length', propertyMetadata.maximumLength);
-		if(propertyMetadata.required) {
-			$('label[for=' + propertyMetadata.name + "]").append(" (*)");
+	$.each(data.beanConstraintDescription.properties, function(index, property) {
+		var inputField = $('input[name=' + property.name + ']');
+		inputField.attr('minlength', property.minimumLength);
+		inputField.attr('length', property.maximumLength);
+		if(property.required) {
+			$('label[for=' + property.name + "]").append(" (*)");
 			inputField.addClass('required');
 		}
-		$.each(propertyMetadata.types, function(index, propertyType) {
-			if(propertyType == 'EMAIL') {
-				inputField.addClass('email');
-			}
+		$.each(property.types, function(index, propertyType) {
+			inputField.addClass(propertyType);
 		});
 	});
 

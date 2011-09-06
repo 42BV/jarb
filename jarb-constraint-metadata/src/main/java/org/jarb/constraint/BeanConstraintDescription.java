@@ -16,8 +16,10 @@ import org.apache.commons.lang3.builder.ToStringStyle;
  * @param <T> type of bean being described
  */
 public class BeanConstraintDescription<T> {
+    /** Provides a description of all property constraints. **/
+    private final Map<String, PropertyConstraintDescription> properties = new HashMap<String, PropertyConstraintDescription>();
+
     private final Class<T> beanClass;
-    private Map<String, PropertyConstraintDescription> properties;
 
     /**
      * Construct a new {@link BeanConstraintDescription}.
@@ -25,10 +27,9 @@ public class BeanConstraintDescription<T> {
      */
     public BeanConstraintDescription(Class<T> beanClass) {
         this.beanClass = beanClass;
-        properties = new HashMap<String, PropertyConstraintDescription>();
     }
 
-    public Class<T> getBeanType() {
+    public Class<T> getJavaType() {
         return beanClass;
     }
 
