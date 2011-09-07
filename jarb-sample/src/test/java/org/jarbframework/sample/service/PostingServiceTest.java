@@ -1,4 +1,4 @@
-package org.jarb.sample.service;
+package org.jarbframework.sample.service;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -9,8 +9,9 @@ import java.util.List;
 import javax.annotation.Resource;
 import javax.persistence.PersistenceException;
 
-import org.jarb.sample.domain.Post;
-import org.jarb.sample.domain.PostTitleAlreadyExistsException;
+import org.jarbframework.sample.domain.Post;
+import org.jarbframework.sample.domain.PostTitleAlreadyExistsException;
+import org.jarbframework.sample.service.PostingService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;

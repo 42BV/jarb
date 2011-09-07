@@ -1,4 +1,4 @@
-package org.jarb.sample.domain;
+package org.jarbframework.sample.domain;
 
 import java.util.Date;
 

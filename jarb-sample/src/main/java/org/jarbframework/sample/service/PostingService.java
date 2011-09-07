@@ -1,9 +1,9 @@
-package org.jarb.sample.service;
+package org.jarbframework.sample.service;
 
 import java.util.List;
 
-import org.jarb.sample.domain.Post;
-import org.jarb.sample.repository.PostRepository;
+import org.jarbframework.sample.domain.Post;
+import org.jarbframework.sample.repository.PostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

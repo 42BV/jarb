@@ -1,11 +1,11 @@
-package org.jarb.sample.repository;
+package org.jarbframework.sample.repository;
 
 import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
-import org.jarb.sample.domain.Post;
+import org.jarbframework.sample.domain.Post;
 import org.springframework.stereotype.Repository;
 
 @Repository

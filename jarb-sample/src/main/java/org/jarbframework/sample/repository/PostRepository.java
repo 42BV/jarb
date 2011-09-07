@@ -1,8 +1,8 @@
-package org.jarb.sample.repository;
+package org.jarbframework.sample.repository;
 
 import java.util.List;
 
-import org.jarb.sample.domain.Post;
+import org.jarbframework.sample.domain.Post;
 
 public interface PostRepository {
 

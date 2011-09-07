@@ -11,8 +11,8 @@
 	        http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.1.xsd
 	        http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-3.1.xsd">
 
-    <!-- Scans the classpath of this application for @Components to deploy as beans -->
-    <context:component-scan base-package="org.jarb.sample"/>
+    <!-- Scans the class path of this application for @Components to deploy as beans -->
+    <context:component-scan base-package="org.jarbframework.sample"/>
 
 	<!-- Create a connection to our in-memory database and upgrade it to the latest version -->
 	<bean id="dataSource" class="org.jarbframework.migrations.MigratingDataSource">
@@ -51,11 +51,10 @@
     <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
         <property name="jpaPropertyMap">
             <map>
-            	<!-- Ensure the spring aware validation factory is used -->
-				<entry key="javax.persistence.validation.factory" value-ref="validator" />               
-				<entry key="hibernate.dialect" value="org.hibernate.dialect.HSQLDialect"/>
-				<!-- Schema creation is done by migration, but we still validate the result -->
+                <entry key="hibernate.dialect" value="org.hibernate.dialect.HSQLDialect"/>
                 <entry key="hibernate.hbm2ddl.auto" value="validate"/>
+                <!-- Ensure the spring aware validation factory is used -->
+                <entry key="javax.persistence.validation.factory" value-ref="validator"/>
             </map>
         </property>
         <property name="dataSource" ref="dataSource"/>
@@ -100,7 +99,7 @@
                 <!-- Custom exception classes, these are optional -->
                 <property name="exceptionClasses">
                     <map>
-                        <entry key="uk_posts_title" value="org.jarb.sample.domain.PostTitleAlreadyExistsException"/>
+                        <entry key="uk_posts_title" value="org.jarbframework.sample.domain.PostTitleAlreadyExistsException"/>
                     </map>
                 </property>
             </bean>
