@@ -18,14 +18,6 @@ import org.springframework.beans.BeanUtils;
 public class BeanConstraintAccessorImpl implements BeanConstraintAccessor {
     private final List<PropertyConstraintEnhancer> propertyConstraintEnhancers = new ArrayList<PropertyConstraintEnhancer>();
 
-    public BeanConstraintAccessorImpl registerEnhancer(PropertyConstraintEnhancer propertyConstraintEnhancer) {
-        propertyConstraintEnhancers.add(notNull(propertyConstraintEnhancer, "Cannot add a null property constraint enhancer"));
-        return this;
-    }
-    
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public <T> BeanConstraintDescription<T> describe(Class<T> beanClass) {
         BeanConstraintDescription<T> beanDescription = new BeanConstraintDescription<T>(beanClass);
@@ -55,9 +47,14 @@ public class BeanConstraintAccessorImpl implements BeanConstraintAccessor {
      * @param propertyClass class of the property being described
      * @return new plain property description
      */
-    private <T> PropertyConstraintDescription createPropertyDescription(Class<?> beanClass, PropertyDescriptor propertyDescriptor) {
+    private PropertyConstraintDescription createPropertyDescription(Class<?> beanClass, PropertyDescriptor propertyDescriptor) {
         PropertyReference propertyReference = new PropertyReference(beanClass, propertyDescriptor.getName());
         return new PropertyConstraintDescription(propertyReference, propertyDescriptor.getPropertyType());
+    }
+
+    public BeanConstraintAccessorImpl registerEnhancer(PropertyConstraintEnhancer propertyConstraintEnhancer) {
+        propertyConstraintEnhancers.add(notNull(propertyConstraintEnhancer, "Cannot add a null property constraint enhancer"));
+        return this;
     }
 
 }
