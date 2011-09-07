@@ -7,12 +7,12 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>org.jarb</groupId>
+		<groupId>org.jarbframework</groupId>
 		<artifactId>jarb-parent</artifactId>
 		<version>1.1-SNAPSHOT</version>
 	</parent>
 	
-	<groupId>org.jarb</groupId>
+	<groupId>org.jarbframework</groupId>
 	<artifactId>jarb-populator-excel</artifactId>
 	<packaging>jar</packaging>
 	<description>Database population with Excel</description>
@@ -41,12 +41,12 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>org.jarb</groupId>
+			<groupId>org.jarbframework</groupId>
 			<artifactId>jarb-populator</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>org.jarb</groupId>
+			<groupId>org.jarbframework</groupId>
 			<artifactId>jarb-utils</artifactId>
 			<version>${project.version}</version>
 		</dependency>

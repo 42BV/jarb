@@ -3,6 +3,8 @@ Java Repository Bridge (JaRB)
 
 JaRB aims to improve database usage in Java enterprise applications.
 
+http://www.jarbframework.org
+
 Features
 --------
  * Database initialization

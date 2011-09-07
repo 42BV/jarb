@@ -7,26 +7,24 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>org.jarb</groupId>
+		<groupId>org.jarbframework</groupId>
 		<artifactId>jarb-parent</artifactId>
 		<version>1.1-SNAPSHOT</version>
 	</parent>
 	
-	<groupId>org.jarb</groupId>
+	<groupId>org.jarbframework</groupId>
 	<artifactId>jarb-constraint-violations</artifactId>
 	<packaging>jar</packaging>
 	<description>Translates constraint violation exceptions</description>
 
 	<dependencies>
         <dependency>
-            <!-- Retrieve named constraint metadata -->
-            <groupId>org.jarb</groupId>
+            <groupId>org.jarbframework</groupId>
             <artifactId>jarb-constraint-metadata</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
-			<!-- Spring support (post processor, factory) -->
-			<groupId>org.jarb</groupId>
+			<groupId>org.jarbframework</groupId>
 			<artifactId>jarb-utils</artifactId>
 			<version>${project.version}</version>
 		</dependency>
@@ -49,7 +47,7 @@
 		<!-- Testing -->
 		<dependency>
 	    	<!-- Used to create our schema during testing -->
-            <groupId>org.jarb</groupId>
+            <groupId>org.jarbframework</groupId>
             <artifactId>jarb-migrations</artifactId>
             <version>${project.version}</version>
             <scope>test</scope>

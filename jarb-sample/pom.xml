@@ -7,12 +7,12 @@
 	<modelVersion>4.0.0</modelVersion>
 	
 	<parent>
-		<groupId>org.jarb</groupId>
+		<groupId>org.jarbframework</groupId>
 		<artifactId>jarb-parent</artifactId>
 		<version>1.1-SNAPSHOT</version>
 	</parent>
 	
-	<groupId>org.jarb</groupId>
+	<groupId>org.jarbframework</groupId>
 	<artifactId>jarb-sample</artifactId>
 	<packaging>jar</packaging>
 	<description>Sample application that demonstrates all modules.</description>
@@ -20,32 +20,27 @@
 	<dependencies>   
 		<!-- Components being demonstrated -->
         <dependency>
-            <!-- Automatic database migrations -->
-            <groupId>org.jarb</groupId>
+            <groupId>org.jarbframework</groupId>
             <artifactId>jarb-migrations</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <!-- Database popupation -->
-            <groupId>org.jarb</groupId>
+            <groupId>org.jarbframework</groupId>
             <artifactId>jarb-populator</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <!-- Database popupation by excel -->
-            <groupId>org.jarb</groupId>
+            <groupId>org.jarbframework</groupId>
             <artifactId>jarb-populator-excel</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <!-- Constraint annotation based on database metadata -->
-            <groupId>org.jarb</groupId>
+            <groupId>org.jarbframework</groupId>
             <artifactId>jarb-constraint-validation</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <!-- Translates constraint violation exceptions -->
-            <groupId>org.jarb</groupId>
+            <groupId>org.jarbframework</groupId>
             <artifactId>jarb-constraint-violations</artifactId>
             <version>${project.version}</version>
         </dependency>
