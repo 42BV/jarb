@@ -1,11 +1,12 @@
 package org.jarbframework.populator;
 
+import static org.jarbframework.utils.Conditions.notNull;
+
 import java.sql.Connection;
 
 import javax.sql.DataSource;
 
 import org.jarbframework.utils.JdbcUtils;
-import org.springframework.util.Assert;
 
 /**
  * Database populator that works on the JDBC interface. Whenever
@@ -41,12 +42,9 @@ public abstract class JdbcDatabasePopulator implements DatabasePopulator {
      */
     @Override
     public final void populate() throws Exception {
-        Assert.state(dataSource != null, "Data source cannot be null");
-        
         Connection connection = null;
         try {
-            connection = dataSource.getConnection();
-            // Use connection to populate database
+            connection = notNull(dataSource, "Data source cannot be null.").getConnection();
             populateInConnection(connection);
         } finally {
             JdbcUtils.closeQuietly(connection);

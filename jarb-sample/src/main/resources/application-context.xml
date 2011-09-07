@@ -94,9 +94,8 @@
     <!-- Translate JDBC driver exceptions into Java exceptions -->
 	<bean class="org.jarbframework.violation.integration.ConstraintViolationExceptionTranslatingBeanPostProcessor">
         <property name="translator">
-            <bean class="org.jarbframework.violation.integration.JpaConstraintViolationExceptionTranslatorFactoryBean">
-                <property name="entityManagerFactory" ref="entityManagerFactory"/>
-                <!-- Custom exception classes, these are optional -->
+            <bean class="org.jarbframework.violation.integration.ConstraintViolationExceptionTranslatorFactoryBean">
+                <property name="dataSource" ref="dataSource"/>
                 <property name="exceptionClasses">
                     <map>
                         <entry key="uk_posts_title" value="org.jarbframework.sample.domain.PostTitleAlreadyExistsException"/>

@@ -10,10 +10,10 @@ import javax.validation.ValidatorFactory;
 import org.jarbframework.constraint.database.CouldNotBeMappedToColumnException;
 import org.jarbframework.constraint.database.DatabaseConstraintRepository;
 import org.jarbframework.constraint.database.column.ColumnMetadata;
-import org.jarbframework.utils.BeanAccessor;
 import org.jarbframework.utils.bean.BeanAnnotationScanner;
 import org.jarbframework.utils.bean.ModifiableBean;
 import org.jarbframework.utils.bean.PropertyReference;
+import org.jarbframework.utils.spring.BeanFactoryScanner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -58,7 +58,7 @@ public class DatabaseConstrainedValidator implements ConstraintValidator<Databas
     private final BeanAnnotationScanner annotationScanner = new BeanAnnotationScanner(true, true);
 
     /** Used to retrieve column meta-data repository during initialization **/
-    private BeanAccessor beanAccessor;
+    private BeanFactoryScanner beanAccessor;
 
     /** Provides the meta-data of columns in our database **/
     private DatabaseConstraintRepository databaseConstraintRepository;
@@ -224,7 +224,7 @@ public class DatabaseConstrainedValidator implements ConstraintValidator<Databas
      */
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-        this.beanAccessor = new BeanAccessor(applicationContext);
+        this.beanAccessor = new BeanFactoryScanner(applicationContext);
     }
 
 }

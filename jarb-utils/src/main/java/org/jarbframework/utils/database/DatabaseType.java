@@ -1,4 +1,4 @@
-package org.jarbframework.violation.resolver.database;
+package org.jarbframework.utils.database;
 
 /**
  * Type of databases.

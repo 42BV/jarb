@@ -6,7 +6,7 @@ import static org.junit.Assert.assertTrue;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.persistence.EntityManagerFactory;
+import javax.sql.DataSource;
 
 import org.jarbframework.violation.DatabaseConstraintExceptionTranslator;
 import org.jarbframework.violation.UniqueKeyViolationException;
@@ -14,7 +14,6 @@ import org.jarbframework.violation.domain.LicenseNumberAlreadyExistsException;
 import org.jarbframework.violation.domain.LicenseNumberAlreadyExistsExceptionFactory;
 import org.jarbframework.violation.factory.DatabaseConstraintViolationExceptionFactory;
 import org.jarbframework.violation.factory.DefaultViolationExceptionFactory;
-import org.jarbframework.violation.integration.JpaConstraintViolationExceptionTranslatorFactoryBean;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -30,18 +29,18 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "classpath:hsql-context.xml" })
-public class ConstraintViolationExceptionTranslatorJpaFactoryBeanTest {
+public class ConstraintViolationExceptionTranslatorFactoryBeanTest {
     private static final String UNIQUE_KEY_EXCEPTION_MESSAGE = "integrity constraint violation: unique constraint or index violation; uk_cars_license table: cars";
 
     @Autowired
-    private EntityManagerFactory entityManagerFactory;
+    private DataSource dataSource;
 
-    private JpaConstraintViolationExceptionTranslatorFactoryBean factory;
+    private ConstraintViolationExceptionTranslatorFactoryBean factory;
 
     @Before
     public void setUp() throws Exception {
-        factory = new JpaConstraintViolationExceptionTranslatorFactoryBean();
-        factory.setEntityManagerFactory(entityManagerFactory);
+        factory = new ConstraintViolationExceptionTranslatorFactoryBean();
+        factory.setDataSource(dataSource);
     }
 
     /**

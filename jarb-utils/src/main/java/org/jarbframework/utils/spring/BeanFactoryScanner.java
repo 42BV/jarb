@@ -1,17 +1,17 @@
-package org.jarbframework.utils;
+package org.jarbframework.utils.spring;
 
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static org.jarbframework.utils.Conditions.notNull;
 
+import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
-import org.springframework.context.ApplicationContext;
 
-public class BeanAccessor {
-    private final ApplicationContext applicationContext;
+public class BeanFactoryScanner {
+    private final BeanFactory beanFactory;
     
-    public BeanAccessor(ApplicationContext applicationContext) {
-        this.applicationContext = notNull(applicationContext, "Application context cannot be null.");
+    public BeanFactoryScanner(BeanFactory beanFactory) {
+        this.beanFactory = notNull(beanFactory, "Bean factory cannot be null.");
     }
 
     public <T> T findBean(Class<T> beanClass, String identifier) {
@@ -25,18 +25,18 @@ public class BeanAccessor {
         if (isBlank(identifier)) {
             // Whenever no identifier is specified, look if the bean is unique
             try {
-                foundBean = applicationContext.getBean(beanClass);
+                foundBean = beanFactory.getBean(beanClass);
             } catch (NoSuchBeanDefinitionException noSuchBeanException) {
                 // Whenever we could not find a matching unique bean, attempt the default identifier
                 if(isNotBlank(defaultIdentifier)) {
-                    foundBean = applicationContext.getBean(defaultIdentifier, beanClass);
+                    foundBean = beanFactory.getBean(defaultIdentifier, beanClass);
                 } else {
                     throw noSuchBeanException;
                 }
             }
         } else {
             // Find the bean based on its specified non-blank identifier
-            foundBean = applicationContext.getBean(identifier, beanClass);
+            foundBean = beanFactory.getBean(identifier, beanClass);
         }
         return foundBean;
     }

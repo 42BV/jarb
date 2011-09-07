@@ -8,17 +8,15 @@ import static org.junit.Assert.fail;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceException;
+import javax.sql.DataSource;
 
-import org.jarbframework.violation.DatabaseConstraintExceptionTranslator;
-import org.jarbframework.violation.NotNullViolationException;
 import org.jarbframework.violation.domain.Car;
 import org.jarbframework.violation.resolver.DatabaseConstraintViolationResolver;
 import org.jarbframework.violation.resolver.DatabaseConstraintViolationResolverFactory;
-import org.jarbframework.violation.resolver.database.DatabaseTypeResolver;
-import org.jarbframework.violation.resolver.database.HibernateJpaDatabaseTypeResolver;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,13 +33,15 @@ import org.springframework.transaction.annotation.Transactional;
 public class DatabaseConstraintExceptionTranslatorTest {
     private DatabaseConstraintExceptionTranslator translator;
 
+    @Autowired
+    private DataSource dataSource;
+    
     @PersistenceContext
     private EntityManager entityManager;
 
     @Before
     public void setUpResolver() {
-        DatabaseTypeResolver databaseResolver = HibernateJpaDatabaseTypeResolver.forEntityManager(entityManager);
-        DatabaseConstraintViolationResolver violationResolver = DatabaseConstraintViolationResolverFactory.build(databaseResolver);
+        DatabaseConstraintViolationResolver violationResolver = new DatabaseConstraintViolationResolverFactory().build(dataSource);
         translator = new DatabaseConstraintExceptionTranslator(violationResolver);
     }
 

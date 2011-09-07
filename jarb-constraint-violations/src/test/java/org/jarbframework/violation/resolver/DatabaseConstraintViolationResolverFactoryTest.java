@@ -6,18 +6,16 @@ import static org.junit.Assert.fail;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.sql.DataSource;
 
 import org.jarbframework.violation.DatabaseConstraintViolation;
 import org.jarbframework.violation.DatabaseConstraintViolationType;
 import org.jarbframework.violation.domain.Car;
 import org.jarbframework.violation.domain.Person;
-import org.jarbframework.violation.resolver.DatabaseConstraintViolationResolver;
-import org.jarbframework.violation.resolver.DatabaseConstraintViolationResolverFactory;
-import org.jarbframework.violation.resolver.database.DatabaseTypeResolver;
-import org.jarbframework.violation.resolver.database.HibernateJpaDatabaseTypeResolver;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,15 +32,17 @@ import org.springframework.transaction.annotation.Transactional;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "classpath:hsql-context.xml" })
 public class DatabaseConstraintViolationResolverFactoryTest {
-    private DatabaseConstraintViolationResolver resolver;
+    private DatabaseConstraintViolationResolver violationResolver;
+    
+    @Autowired
+    private DataSource dataSource;
 
     @PersistenceContext
     private EntityManager entityManager;
 
     @Before
     public void setUpResolver() {
-        DatabaseTypeResolver databaseResolver = HibernateJpaDatabaseTypeResolver.forEntityManager(entityManager);
-        resolver = DatabaseConstraintViolationResolverFactory.build(databaseResolver);
+        violationResolver = new DatabaseConstraintViolationResolverFactory().build(dataSource);
     }
 
     /**
@@ -55,7 +55,7 @@ public class DatabaseConstraintViolationResolverFactoryTest {
             entityManager.persist(car);
             fail("Expected a runtime exception");
         } catch (RuntimeException e) {
-            DatabaseConstraintViolation violation = resolver.resolve(e);
+            DatabaseConstraintViolation violation = violationResolver.resolve(e);
             assertEquals(DatabaseConstraintViolationType.NOT_NULL, violation.getViolationType());
             assertTrue(violation.getConstraintName().startsWith("sys_ct_"));
             assertEquals("cars", violation.getTableName());
@@ -77,7 +77,7 @@ public class DatabaseConstraintViolationResolverFactoryTest {
             entityManager.persist(another);
             fail("Expected a runtime exception");
         } catch (RuntimeException e) {
-            DatabaseConstraintViolation violation = resolver.resolve(e);
+            DatabaseConstraintViolation violation = violationResolver.resolve(e);
             assertEquals(DatabaseConstraintViolationType.UNIQUE_KEY, violation.getViolationType());
             assertEquals("uk_cars_license_number", violation.getConstraintName());
             assertEquals("cars", violation.getTableName());
@@ -95,7 +95,7 @@ public class DatabaseConstraintViolationResolverFactoryTest {
             entityManager.persist(car);
             fail("Expected a runtime exception");
         } catch (RuntimeException e) {
-            DatabaseConstraintViolation violation = resolver.resolve(e);
+            DatabaseConstraintViolation violation = violationResolver.resolve(e);
             assertEquals(DatabaseConstraintViolationType.LENGTH_EXCEEDED, violation.getViolationType());
         }
     }
@@ -112,7 +112,7 @@ public class DatabaseConstraintViolationResolverFactoryTest {
             entityManager.persist(jeroen);
             fail("Expected a runtime exception");
         } catch (RuntimeException e) {
-            DatabaseConstraintViolation violation = resolver.resolve(e);
+            DatabaseConstraintViolation violation = violationResolver.resolve(e);
             assertEquals(DatabaseConstraintViolationType.INVALID_TYPE, violation.getViolationType());
         }
     }
