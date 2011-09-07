@@ -78,7 +78,7 @@
     </bean>
     
 	<!-- Provides column meta-data, required for validation and bean description -->
-    <bean id="databaseConstraintRepository" class="org.jarb.constraint.database.DatabaseConstraintRepositoryFactoryBean">
+    <bean id="databaseConstraintRepository" class="org.jarbframework.constraint.database.DatabaseConstraintRepositoryFactoryBean">
         <property name="dataSource" ref="dataSource"/>
         <property name="schemaMapper">
             <bean class="org.jarbframework.utils.orm.jpa.JpaHibernateSchemaMapper">
@@ -88,7 +88,7 @@
     </bean>
     
     <!-- Provides a bean constraint meta-data, required for front-end -->
-    <bean class="org.jarb.constraint.BeanConstraintAccessorFactoryBean">
+    <bean class="org.jarbframework.constraint.BeanConstraintAccessorFactoryBean">
     	<property name="databaseConstraintRepository" ref="databaseConstraintRepository"/>
     </bean>
     

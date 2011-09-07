@@ -16,7 +16,7 @@ import java.lang.annotation.Target;
 import javax.validation.Constraint;
 import javax.validation.Payload;
 
-import org.jarb.constraint.AutoIncremental;
+import org.jarbframework.constraint.AutoIncremental;
 
 @Documented
 @Target(TYPE)

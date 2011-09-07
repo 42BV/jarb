@@ -7,9 +7,9 @@ import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 import javax.validation.ValidatorFactory;
 
-import org.jarb.constraint.database.CouldNotBeMappedToColumnException;
-import org.jarb.constraint.database.DatabaseConstraintRepository;
-import org.jarb.constraint.database.column.ColumnMetadata;
+import org.jarbframework.constraint.database.CouldNotBeMappedToColumnException;
+import org.jarbframework.constraint.database.DatabaseConstraintRepository;
+import org.jarbframework.constraint.database.column.ColumnMetadata;
 import org.jarbframework.utils.BeanAccessor;
 import org.jarbframework.utils.bean.BeanAnnotationScanner;
 import org.jarbframework.utils.bean.ModifiableBean;

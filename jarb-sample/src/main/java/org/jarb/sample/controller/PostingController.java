@@ -2,11 +2,11 @@ package org.jarb.sample.controller;
 
 import javax.validation.Valid;
 
-import org.jarb.constraint.BeanConstraintDescription;
-import org.jarb.constraint.BeanConstraintAccessor;
 import org.jarb.sample.domain.Post;
 import org.jarb.sample.domain.PostTitleAlreadyExistsException;
 import org.jarb.sample.service.PostingService;
+import org.jarbframework.constraint.BeanConstraintAccessor;
+import org.jarbframework.constraint.BeanConstraintDescription;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
