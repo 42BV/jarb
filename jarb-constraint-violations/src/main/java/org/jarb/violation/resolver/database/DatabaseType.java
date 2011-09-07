@@ -6,7 +6,7 @@ package org.jarb.violation.resolver.database;
  * @author Jeroen van Schagen
  * @since 14-05-2011
  */
-public enum Database {
+public enum DatabaseType {
 
     /**
      * Hypersonic

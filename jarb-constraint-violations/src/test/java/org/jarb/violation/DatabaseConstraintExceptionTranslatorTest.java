@@ -12,8 +12,8 @@ import javax.persistence.PersistenceException;
 import org.jarb.violation.domain.Car;
 import org.jarb.violation.resolver.DatabaseConstraintViolationResolver;
 import org.jarb.violation.resolver.DatabaseConstraintViolationResolverFactory;
-import org.jarb.violation.resolver.database.DatabaseResolver;
-import org.jarb.violation.resolver.database.HibernateJpaDatabaseResolver;
+import org.jarb.violation.resolver.database.DatabaseTypeResolver;
+import org.jarb.violation.resolver.database.HibernateJpaDatabaseTypeResolver;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -38,7 +38,7 @@ public class DatabaseConstraintExceptionTranslatorTest {
 
     @Before
     public void setUpResolver() {
-        DatabaseResolver databaseResolver = HibernateJpaDatabaseResolver.forEntityManager(entityManager);
+        DatabaseTypeResolver databaseResolver = HibernateJpaDatabaseTypeResolver.forEntityManager(entityManager);
         DatabaseConstraintViolationResolver violationResolver = DatabaseConstraintViolationResolverFactory.build(databaseResolver);
         translator = new DatabaseConstraintExceptionTranslator(violationResolver);
     }

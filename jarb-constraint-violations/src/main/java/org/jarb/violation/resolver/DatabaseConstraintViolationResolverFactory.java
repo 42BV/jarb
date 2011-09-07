@@ -1,8 +1,8 @@
 package org.jarb.violation.resolver;
 
-import org.jarb.violation.resolver.database.Database;
-import org.jarb.violation.resolver.database.DatabaseResolver;
-import org.jarb.violation.resolver.database.DatabaseAwareViolationResolver;
+import org.jarb.violation.resolver.database.DatabaseType;
+import org.jarb.violation.resolver.database.DatabaseTypeResolver;
+import org.jarb.violation.resolver.database.DatabaseTypeAwareViolationResolver;
 import org.jarb.violation.resolver.vendor.HsqlViolationResolver;
 import org.jarb.violation.resolver.vendor.MysqlViolationResolver;
 import org.jarb.violation.resolver.vendor.OracleViolationResolver;
@@ -24,12 +24,12 @@ public final class DatabaseConstraintViolationResolverFactory {
      * @param databaseResolver capable of determining what database type is used
      * @return new "default" constraint violation resolver
      */
-    public static DatabaseConstraintViolationResolver build(DatabaseResolver databaseResolver) {
-        DatabaseAwareViolationResolver violationResolver = new DatabaseAwareViolationResolver(databaseResolver);
-        violationResolver.registerResolver(Database.HSQL, new HsqlViolationResolver());
-        violationResolver.registerResolver(Database.MYSQL, new MysqlViolationResolver());
-        violationResolver.registerResolver(Database.ORACLE, new OracleViolationResolver());
-        violationResolver.registerResolver(Database.POSTGRESQL, new PostgresViolationResolver());
+    public static DatabaseConstraintViolationResolver build(DatabaseTypeResolver databaseResolver) {
+        DatabaseTypeAwareViolationResolver violationResolver = new DatabaseTypeAwareViolationResolver(databaseResolver);
+        violationResolver.registerResolver(DatabaseType.HSQL, new HsqlViolationResolver());
+        violationResolver.registerResolver(DatabaseType.MYSQL, new MysqlViolationResolver());
+        violationResolver.registerResolver(DatabaseType.ORACLE, new OracleViolationResolver());
+        violationResolver.registerResolver(DatabaseType.POSTGRESQL, new PostgresViolationResolver());
         return violationResolver;
     }
     

@@ -13,19 +13,19 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class DatabaseAwareViolationResolverTest {
-    private DatabaseAwareViolationResolver resolver;
+    private DatabaseTypeAwareViolationResolver resolver;
 
     @Before
     public void setUp() {
-        DatabaseResolver mysqlDatabaseResolver = new DatabaseResolver() {
+        DatabaseTypeResolver mysqlDatabaseResolver = new DatabaseTypeResolver() {
 
             @Override
-            public Database resolve() {
-                return Database.MYSQL;
+            public DatabaseType resolve() {
+                return DatabaseType.MYSQL;
             }
 
         };
-        resolver = new DatabaseAwareViolationResolver(mysqlDatabaseResolver);
+        resolver = new DatabaseTypeAwareViolationResolver(mysqlDatabaseResolver);
     }
 
     /**
@@ -33,7 +33,7 @@ public class DatabaseAwareViolationResolverTest {
      */
     @Test
     public void testDelegate() {
-        resolver.registerResolver(Database.MYSQL, new MysqlViolationResolver());
+        resolver.registerResolver(DatabaseType.MYSQL, new MysqlViolationResolver());
         Throwable mysqlException = new SQLException("Column 'name' cannot be null");
         DatabaseConstraintViolation violation = resolver.resolve(mysqlException);
         assertNotNull(violation);

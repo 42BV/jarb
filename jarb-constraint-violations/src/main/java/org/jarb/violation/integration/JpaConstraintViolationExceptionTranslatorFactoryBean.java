@@ -2,7 +2,7 @@ package org.jarb.violation.integration;
 
 import javax.persistence.EntityManagerFactory;
 
-import org.jarb.violation.resolver.database.HibernateJpaDatabaseResolver;
+import org.jarb.violation.resolver.database.HibernateJpaDatabaseTypeResolver;
 
 /**
  * Constructs an exception translator that uses the hibernate dialect, inside our entity
@@ -20,7 +20,7 @@ public class JpaConstraintViolationExceptionTranslatorFactoryBean extends Constr
      * @see #setViolationResolver(org.jarb.violation.resolver.ConstraintViolationResolver)
      */
     public void setEntityManagerFactory(EntityManagerFactory entityManagerFactory) {
-        setDatabaseResolver(new HibernateJpaDatabaseResolver(entityManagerFactory));
+        setDatabaseResolver(new HibernateJpaDatabaseTypeResolver(entityManagerFactory));
     }
 
 }

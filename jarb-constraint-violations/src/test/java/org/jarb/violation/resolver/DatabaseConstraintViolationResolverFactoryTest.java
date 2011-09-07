@@ -11,8 +11,8 @@ import org.jarb.violation.DatabaseConstraintViolation;
 import org.jarb.violation.DatabaseConstraintViolationType;
 import org.jarb.violation.domain.Car;
 import org.jarb.violation.domain.Person;
-import org.jarb.violation.resolver.database.DatabaseResolver;
-import org.jarb.violation.resolver.database.HibernateJpaDatabaseResolver;
+import org.jarb.violation.resolver.database.DatabaseTypeResolver;
+import org.jarb.violation.resolver.database.HibernateJpaDatabaseTypeResolver;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -39,7 +39,7 @@ public class DatabaseConstraintViolationResolverFactoryTest {
 
     @Before
     public void setUpResolver() {
-        DatabaseResolver databaseResolver = HibernateJpaDatabaseResolver.forEntityManager(entityManager);
+        DatabaseTypeResolver databaseResolver = HibernateJpaDatabaseTypeResolver.forEntityManager(entityManager);
         resolver = DatabaseConstraintViolationResolverFactory.build(databaseResolver);
     }
 

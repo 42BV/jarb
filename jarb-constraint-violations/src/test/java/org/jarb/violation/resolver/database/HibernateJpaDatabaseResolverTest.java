@@ -21,30 +21,28 @@ public class HibernateJpaDatabaseResolverTest {
 
     @Test
     public void testResolveDatabase() {
-        assertEquals(Database.HSQL, new HibernateJpaDatabaseResolver(entityManagerFactory).resolve());
+        assertEquals(DatabaseType.HSQL, new HibernateJpaDatabaseTypeResolver(entityManagerFactory).resolve());
     }
 
     @Test
     public void testResolveDatabaseByInheritance() {
-        assertEquals(Database.HSQL, HibernateDialectDatabaseResolver.resolveByDialect(MyHsqlDialect.class.getName()));
+        assertEquals(DatabaseType.HSQL, new HibernateDialectDatabaseTypeResolver(MyHsqlDialect.class).resolve());
     }
 
-    @Test(expected = UnsupportedOperationException.class)
+    @Test(expected = IllegalStateException.class)
     public void testUnsupportedDialect() {
-        HibernateDialectDatabaseResolver.resolveByDialect(CustomUnmappedDialect.class.getName());
+        new HibernateDialectDatabaseTypeResolver(CustomUnmappedDialect.class).resolve();
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testUnknownDialectClass() {
-        HibernateDialectDatabaseResolver.resolveByDialect("some.unknown.DialectClass");
+        HibernateDialectDatabaseTypeResolver.forName("some.unknown.DialectClass");
     }
 
     public static class MyHsqlDialect extends HSQLDialect {
-        // No implementation
     }
 
     public static class CustomUnmappedDialect extends Dialect {
-        // No implementation
     }
 
 }
