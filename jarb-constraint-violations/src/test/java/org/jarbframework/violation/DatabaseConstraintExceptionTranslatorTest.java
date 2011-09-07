@@ -1,0 +1,74 @@
+package org.jarbframework.violation;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.PersistenceException;
+
+import org.jarbframework.violation.DatabaseConstraintExceptionTranslator;
+import org.jarbframework.violation.NotNullViolationException;
+import org.jarbframework.violation.domain.Car;
+import org.jarbframework.violation.resolver.DatabaseConstraintViolationResolver;
+import org.jarbframework.violation.resolver.DatabaseConstraintViolationResolverFactory;
+import org.jarbframework.violation.resolver.database.DatabaseTypeResolver;
+import org.jarbframework.violation.resolver.database.HibernateJpaDatabaseTypeResolver;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.transaction.annotation.Transactional;
+
+/**
+ * Translate exceptions thrown by an actual HSQL database.
+ * 
+ * @author Jeroen van Schagen
+ * @since 18-05-2011
+ */
+@Transactional
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations = { "classpath:hsql-context.xml" })
+public class DatabaseConstraintExceptionTranslatorTest {
+    private DatabaseConstraintExceptionTranslator translator;
+
+    @PersistenceContext
+    private EntityManager entityManager;
+
+    @Before
+    public void setUpResolver() {
+        DatabaseTypeResolver databaseResolver = HibernateJpaDatabaseTypeResolver.forEntityManager(entityManager);
+        DatabaseConstraintViolationResolver violationResolver = DatabaseConstraintViolationResolverFactory.build(databaseResolver);
+        translator = new DatabaseConstraintExceptionTranslator(violationResolver);
+    }
+
+    /**
+     * Enforce a 'null-null' violation on our HSQL database. The exception should be
+     * translated into a {@link NotNullViolationException}, containing all error info.
+     */
+    @Test
+    public void testClean() {
+        Car car = new Car();
+        try {
+            entityManager.persist(car);
+            fail("Expected a runtime exception");
+        } catch (final PersistenceException exception) {
+            Throwable violationException = translator.translateExceptionIfPossible(exception);
+            assertTrue(violationException instanceof NotNullViolationException);
+            assertEquals("Column 'license_number' cannot be null.", violationException.getMessage());
+        }
+    }
+
+    /**
+     * Exceptions that have nothing to do with constraint violations should result in {@link null}.
+     */
+    @Test
+    public void testDoNothing() {
+        final IllegalArgumentException exception = new IllegalArgumentException("Something went wrong!");
+        assertNull(translator.translateExceptionIfPossible(exception));
+    }
+
+}

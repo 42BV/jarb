@@ -93,9 +93,9 @@
     </bean>
     
     <!-- Translate JDBC driver exceptions into Java exceptions -->
-	<bean class="org.jarb.violation.integration.ConstraintViolationExceptionTranslatingBeanPostProcessor">
+	<bean class="org.jarbframework.violation.integration.ConstraintViolationExceptionTranslatingBeanPostProcessor">
         <property name="translator">
-            <bean class="org.jarb.violation.integration.JpaConstraintViolationExceptionTranslatorFactoryBean">
+            <bean class="org.jarbframework.violation.integration.JpaConstraintViolationExceptionTranslatorFactoryBean">
                 <property name="entityManagerFactory" ref="entityManagerFactory"/>
                 <!-- Custom exception classes, these are optional -->
                 <property name="exceptionClasses">

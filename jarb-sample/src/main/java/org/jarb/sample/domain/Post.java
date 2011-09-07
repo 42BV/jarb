@@ -11,7 +11,7 @@ import javax.persistence.Table;
 
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotEmpty;
-import org.jarb.validation.DatabaseConstrained;
+import org.jarbframework.validation.DatabaseConstrained;
 
 @Entity
 @Table(name = "posts")

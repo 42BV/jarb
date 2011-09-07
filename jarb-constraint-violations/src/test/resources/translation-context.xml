@@ -10,14 +10,14 @@
         http://www.springframework.org/schema/context/spring-context-3.0.xsd">
 
     <!-- Attempts to translate exceptions into more "obvious" constraint violation exceptions -->
-    <bean class="org.jarb.violation.integration.ConstraintViolationExceptionTranslatingBeanPostProcessor">
+    <bean class="org.jarbframework.violation.integration.ConstraintViolationExceptionTranslatingBeanPostProcessor">
         <property name="translator">
-            <bean class="org.jarb.violation.integration.JpaConstraintViolationExceptionTranslatorFactoryBean">
+            <bean class="org.jarbframework.violation.integration.JpaConstraintViolationExceptionTranslatorFactoryBean">
                 <property name="entityManagerFactory" ref="entityManagerFactory"/>
                 <!-- Custom exception classes, these are optional -->
                 <property name="exceptionClasses">
                     <map>
-                        <entry key="uk_cars_license_number" value="org.jarb.violation.domain.LicenseNumberAlreadyExistsException"/>
+                        <entry key="uk_cars_license_number" value="org.jarbframework.violation.domain.LicenseNumberAlreadyExistsException"/>
                     </map>
                 </property>
             </bean>
@@ -25,6 +25,6 @@
     </bean>
  
     <!-- Repository used for testing -->
-    <bean class="org.jarb.violation.domain.JpaCarRepository"/>
+    <bean class="org.jarbframework.violation.domain.JpaCarRepository"/>
 
 </beans>
