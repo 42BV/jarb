@@ -9,7 +9,7 @@ import static org.jarb.utils.bean.BeanAnnotationScanner.fieldOrGetter;
  * @author Jeroen van Schagen
  * @since 6 September 2011
  */
-public class AutoIncrementalPropertyEnhancer implements PropertyConstraintEnhancer {
+public class AutoIncrementalPropertyConstraintEnhancer implements PropertyConstraintEnhancer {
 
     @Override
     public PropertyConstraintDescription enhance(PropertyConstraintDescription propertyConstraints) {

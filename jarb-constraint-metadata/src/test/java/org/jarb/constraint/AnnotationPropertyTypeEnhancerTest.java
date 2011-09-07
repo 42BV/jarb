@@ -1,24 +1,25 @@
-package org.jarb.constraint.jsr303;
+package org.jarb.constraint;
 
 import static org.hamcrest.Matchers.contains;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 import org.hibernate.validator.constraints.Email;
+import org.jarb.constraint.AnnotationPropertyTypeEnhancer;
 import org.jarb.constraint.PropertyConstraintDescription;
 import org.jarb.constraint.PropertyConstraintEnhancer;
 import org.jarb.utils.bean.PropertyReference;
 import org.junit.Before;
 import org.junit.Test;
 
-public class AnnotationTypePropertyConstraintEnhancerTest {
+public class AnnotationPropertyTypeEnhancerTest {
     private PropertyConstraintDescription description;
     private PropertyConstraintEnhancer enhancer;
     
     @Before
     public void setUp() {
         description = new PropertyConstraintDescription(new PropertyReference(UserBean.class, "email"), String.class);
-        enhancer = new AnnotationTypePropertyConstraintEnhancer(Email.class, "email");
+        enhancer = new AnnotationPropertyTypeEnhancer(Email.class, "email");
     }
     
     /**

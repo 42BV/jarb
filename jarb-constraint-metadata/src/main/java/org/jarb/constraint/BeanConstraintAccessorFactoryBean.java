@@ -1,10 +1,11 @@
 package org.jarb.constraint;
 
+import java.util.Date;
+
 import org.hibernate.validator.constraints.CreditCardNumber;
 import org.hibernate.validator.constraints.Email;
 import org.jarb.constraint.database.DatabaseConstraintRepository;
 import org.jarb.constraint.database.DatabasePropertyConstraintDescriptionEnhancer;
-import org.jarb.constraint.jsr303.AnnotationTypePropertyConstraintEnhancer;
 import org.jarb.constraint.jsr303.DigitsPropertyConstraintEnhancer;
 import org.jarb.constraint.jsr303.LengthPropertyConstraintEnhancer;
 import org.jarb.constraint.jsr303.NotEmptyPropertyConstraintEnhancer;
@@ -28,16 +29,18 @@ public class BeanConstraintAccessorFactoryBean extends SingletonFactoryBean<Bean
     protected BeanConstraintAccessor createObject() throws Exception {
         BeanConstraintAccessorImpl accessor = new BeanConstraintAccessorImpl();
         accessor.registerEnhancer(new DatabasePropertyConstraintDescriptionEnhancer(databaseConstraintRepository));
-        accessor.registerEnhancer(new AutoIncrementalPropertyEnhancer());
+        accessor.registerEnhancer(new AutoIncrementalPropertyConstraintEnhancer());
         // Basic constraint annotations
         accessor.registerEnhancer(new LengthPropertyConstraintEnhancer());
         accessor.registerEnhancer(new DigitsPropertyConstraintEnhancer());
         accessor.registerEnhancer(new NotNullPropertyConstraintEnhancer());
         accessor.registerEnhancer(new NotEmptyPropertyConstraintEnhancer());
         // Type recognition
-        accessor.registerEnhancer(new BasicTypesPropertyConstraintEnhancer());
-        accessor.registerEnhancer(new AnnotationTypePropertyConstraintEnhancer(Email.class, "email"));
-        accessor.registerEnhancer(new AnnotationTypePropertyConstraintEnhancer(CreditCardNumber.class, "credid_card"));
+        accessor.registerEnhancer(new ClassPropertyTypeEnhancer(String.class, "text"));
+        accessor.registerEnhancer(new ClassPropertyTypeEnhancer(Date.class, "date"));
+        accessor.registerEnhancer(new ClassPropertyTypeEnhancer(Number.class, "number"));
+        accessor.registerEnhancer(new AnnotationPropertyTypeEnhancer(Email.class, "email"));
+        accessor.registerEnhancer(new AnnotationPropertyTypeEnhancer(CreditCardNumber.class, "credid_card"));
         return accessor;
     }
 

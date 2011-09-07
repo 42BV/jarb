@@ -28,8 +28,7 @@ public class ColumnMetadata {
 
     /**
      * Construct a new {@link ColumnMetadata}.
-     * @param tableName name of the table containing our column
-     * @param columnName name of the column
+     * @param columnReference reference to the column
      */
     public ColumnMetadata(ColumnReference columnReference) {
         this.columnReference = columnReference;

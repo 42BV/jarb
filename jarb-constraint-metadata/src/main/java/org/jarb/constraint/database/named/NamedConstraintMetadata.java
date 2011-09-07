@@ -1,11 +1,13 @@
 package org.jarb.constraint.database.named;
 
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
-import org.springframework.util.Assert;
+import static org.jarb.utils.Conditions.hasText;
+import static org.jarb.utils.Conditions.notNull;
+
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 /**
- * Metadata of a named database constraint.
+ * Named constraint description.
  * 
  * @author Jeroen van Schagen
  * @since 6-6-2011
@@ -14,58 +16,31 @@ public class NamedConstraintMetadata {
     private final String name;
     private final NamedConstraintType type;
 
-    /**
-     * Construct a new {@link NamedConstraintMetadata}.
-     * @param name constraint name
-     * @param type constraint type
-     */
     public NamedConstraintMetadata(String name, NamedConstraintType type) {
-        Assert.hasText(name);
-        this.name = name;
-        this.type = type;
+        this.name = hasText(name, "Constraint name cannot be empty.");
+        this.type = notNull(type, "Constraint type cannot be null.");
     }
 
-    /**
-     * Retrieve the constraint name.
-     * @return constraint name
-     */
     public String getName() {
         return name;
     }
 
-    /**
-     * Retrieve the constraint type.
-     * @return constraint type
-     */
     public NamedConstraintType getType() {
         return type;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean equals(Object obj) {
-        boolean equals = false;
-        if (obj instanceof NamedConstraintMetadata) {
-            equals = name.equals(((NamedConstraintMetadata) obj).getName());
-        }
-        return equals;
+        return EqualsBuilder.reflectionEquals(this, obj);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public int hashCode() {
-        return name.hashCode();
+        return HashCodeBuilder.reflectionHashCode(this);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String toString() {
-        return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
+        return name + " (" + type + ")";
     }
 }

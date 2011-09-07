@@ -8,7 +8,7 @@ import org.jarb.constraint.jsr303.LengthPropertyConstraintEnhancer;
 import org.junit.Before;
 import org.junit.Test;
 
-public class BeanConstraintMetadataGeneratorImplTest {
+public class BeanConstraintAccessorImplTest {
     private BeanConstraintAccessorImpl describtor;
 
     @Before
