@@ -29,6 +29,7 @@ public class BeanConstraintAccessorImpl implements BeanConstraintAccessor {
 
     /**
      * Describe the constraints of a specific property.
+     * @param beanClass type of bean that contains the property
      * @param propertyDescriptor plain property description from java
      * @return property constraint description
      */
@@ -42,16 +43,21 @@ public class BeanConstraintAccessorImpl implements BeanConstraintAccessor {
 
     /**
      * Construct a new {@link PropertyConstraintDescription} for some property.
-     * @param <T> type of property being described
-     * @param propertyName name of the property being described
-     * @param propertyClass class of the property being described
-     * @return new plain property description
+     * @param beanClass type of bean that contains the property
+     * @param propertyDescriptor plain property description from java
+     * @return new property constraint description
      */
     private PropertyConstraintDescription createPropertyDescription(Class<?> beanClass, PropertyDescriptor propertyDescriptor) {
         PropertyReference propertyReference = new PropertyReference(beanClass, propertyDescriptor.getName());
         return new PropertyConstraintDescription(propertyReference, propertyDescriptor.getPropertyType());
     }
 
+    /**
+     * Register a property constraint enhancer to this bean constraint accessor.
+     * Whenever a new bean is described, the provided enhancer will be used.
+     * @param propertyConstraintEnhancer enhancer used to improve property constraint descriptions
+     * @return the same bean constraint accessor, used for chaining
+     */
     public BeanConstraintAccessorImpl registerEnhancer(PropertyConstraintEnhancer propertyConstraintEnhancer) {
         propertyConstraintEnhancers.add(notNull(propertyConstraintEnhancer, "Cannot add a null property constraint enhancer"));
         return this;
