@@ -15,7 +15,7 @@
     <context:component-scan base-package="org.jarb.sample"/>
 
 	<!-- Create a connection to our in-memory database and upgrade it to the latest version -->
-	<bean id="dataSource" class="org.jarb.migrations.MigratingDataSource">
+	<bean id="dataSource" class="org.jarbframework.migrations.MigratingDataSource">
 	    <property name="delegate">
 			<bean class="org.springframework.jdbc.datasource.DriverManagerDataSource">
 			    <property name="driverClassName" value="org.hsqldb.jdbcDriver"/>
@@ -25,7 +25,7 @@
 			</bean>
 		</property>
 	    <property name="migrator">
-	    	<bean class="org.jarb.migrations.liquibase.LiquibaseMigrator"/>
+	    	<bean class="org.jarbframework.migrations.liquibase.LiquibaseMigrator"/>
 	    </property>
 	</bean>
 	

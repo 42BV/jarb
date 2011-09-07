@@ -1,4 +1,4 @@
-package org.jarb.migrations;
+package org.jarbframework.migrations;
 
 import java.sql.Connection;
 

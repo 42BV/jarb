@@ -1,4 +1,4 @@
-package org.jarb.migrations;
+package org.jarbframework.migrations;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -11,6 +11,7 @@ import java.sql.SQLException;
 import javax.sql.DataSource;
 
 import org.easymock.EasyMock;
+import org.jarbframework.migrations.DataSourceDelegate;
 import org.junit.Before;
 import org.junit.Test;
 

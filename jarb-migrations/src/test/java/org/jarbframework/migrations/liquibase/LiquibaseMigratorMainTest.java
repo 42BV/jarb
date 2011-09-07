@@ -1,10 +1,11 @@
-package org.jarb.migrations.liquibase;
+package org.jarbframework.migrations.liquibase;
 
 import static junit.framework.Assert.assertTrue;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 
+import org.jarbframework.migrations.liquibase.LiquibaseMigratorMain;
 import org.junit.Test;
 
 public class LiquibaseMigratorMainTest {

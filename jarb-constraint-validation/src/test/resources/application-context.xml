@@ -8,7 +8,7 @@
         http://www.springframework.org/schema/context
         http://www.springframework.org/schema/context/spring-context-3.0.xsd">
 
-    <bean id="dataSource" class="org.jarb.migrations.MigratingDataSource">
+    <bean id="dataSource" class="org.jarbframework.migrations.MigratingDataSource">
         <property name="delegate">
             <bean class="org.springframework.jdbc.datasource.DriverManagerDataSource">
                 <property name="driverClassName" value="org.hsqldb.jdbcDriver"/>
@@ -17,7 +17,7 @@
             </bean>
         </property>
         <property name="migrator">
-            <bean class="org.jarb.migrations.liquibase.LiquibaseMigrator">
+            <bean class="org.jarbframework.migrations.liquibase.LiquibaseMigrator">
                 <property name="changeLogPath" value="src/test/resources/create-schema.groovy"/>
             </bean>
         </property>

@@ -1,4 +1,4 @@
-package org.jarb.migrations.liquibase;
+package org.jarbframework.migrations.liquibase;
 
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
@@ -9,7 +9,7 @@ import java.sql.SQLException;
 import liquibase.resource.FileSystemResourceAccessor;
 import liquibase.resource.ResourceAccessor;
 
-import org.jarb.migrations.DatabaseMigrator;
+import org.jarbframework.migrations.DatabaseMigrator;
 import org.jarbframework.utils.JdbcUtils;
 
 import com.beust.jcommander.JCommander;

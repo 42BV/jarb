@@ -48,7 +48,7 @@
         
         <dependency>
             <!-- Database schema setup -->
-            <groupId>org.jarb</groupId>
+            <groupId>org.jarbframework</groupId>
             <artifactId>jarb-migrations</artifactId>
             <version>${project.version}</version>
             <scope>test</scope>
