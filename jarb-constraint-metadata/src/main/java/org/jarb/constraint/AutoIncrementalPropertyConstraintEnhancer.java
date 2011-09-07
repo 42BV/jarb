@@ -1,6 +1,6 @@
 package org.jarb.constraint;
 
-import static org.jarb.utils.bean.BeanAnnotationScanner.fieldOrGetter;
+import static org.jarbframework.utils.bean.BeanAnnotationScanner.fieldOrGetter;
 
 /**
  * Whenever a property is annotated as @AutoIncremental a value

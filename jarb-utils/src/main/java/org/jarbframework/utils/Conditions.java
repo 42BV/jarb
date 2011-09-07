@@ -1,7 +1,7 @@
 /*
  * (C) 2011 Nidera (www.nidera.com). All rights reserved.
  */
-package org.jarb.utils;
+package org.jarbframework.utils;
 
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 

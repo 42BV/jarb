@@ -4,7 +4,7 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.Date;
 
-import org.jarb.utils.bean.ModifiableBean;
+import org.jarbframework.utils.bean.ModifiableBean;
 import org.junit.Before;
 import org.junit.Test;
 

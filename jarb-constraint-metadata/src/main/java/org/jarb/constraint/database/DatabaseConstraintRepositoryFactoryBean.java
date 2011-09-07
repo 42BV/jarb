@@ -7,9 +7,9 @@ import javax.sql.DataSource;
 
 import org.jarb.constraint.database.column.CachingColumnMetadataRepository;
 import org.jarb.constraint.database.column.JdbcColumnMetadataProvider;
-import org.jarb.utils.orm.SchemaMapper;
-import org.jarb.utils.orm.jpa.JpaHibernateSchemaMapper;
-import org.jarb.utils.spring.SingletonFactoryBean;
+import org.jarbframework.utils.orm.SchemaMapper;
+import org.jarbframework.utils.orm.jpa.JpaHibernateSchemaMapper;
+import org.jarbframework.utils.spring.SingletonFactoryBean;
 import org.springframework.util.Assert;
 
 /**

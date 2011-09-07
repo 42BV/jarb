@@ -8,7 +8,7 @@ import org.hibernate.validator.constraints.Email;
 import org.jarb.constraint.AnnotationPropertyTypeEnhancer;
 import org.jarb.constraint.PropertyConstraintDescription;
 import org.jarb.constraint.PropertyConstraintEnhancer;
-import org.jarb.utils.bean.PropertyReference;
+import org.jarbframework.utils.bean.PropertyReference;
 import org.junit.Before;
 import org.junit.Test;
 

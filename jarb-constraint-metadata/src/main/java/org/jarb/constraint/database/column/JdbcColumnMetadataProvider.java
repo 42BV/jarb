@@ -10,8 +10,8 @@ import java.util.Set;
 import javax.sql.DataSource;
 
 import org.apache.commons.lang3.StringUtils;
-import org.jarb.utils.JdbcUtils;
-import org.jarb.utils.orm.ColumnReference;
+import org.jarbframework.utils.JdbcUtils;
+import org.jarbframework.utils.orm.ColumnReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.Assert;

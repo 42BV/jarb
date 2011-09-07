@@ -1,7 +1,7 @@
 package org.jarb.violation.factory;
 
-import static org.jarb.utils.Conditions.notNull;
-import static org.jarb.utils.Conditions.state;
+import static org.jarbframework.utils.Conditions.notNull;
+import static org.jarbframework.utils.Conditions.state;
 import static org.springframework.beans.BeanUtils.instantiateClass;
 
 import java.lang.reflect.Constructor;

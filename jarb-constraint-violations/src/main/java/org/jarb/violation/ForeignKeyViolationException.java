@@ -3,8 +3,8 @@
  */
 package org.jarb.violation;
 
-import static org.jarb.utils.Conditions.state;
 import static org.jarb.violation.DatabaseConstraintViolationType.FOREIGN_KEY;
+import static org.jarbframework.utils.Conditions.state;
 
 /**
  * Thrown whenever a foreign key constraint has been violated.

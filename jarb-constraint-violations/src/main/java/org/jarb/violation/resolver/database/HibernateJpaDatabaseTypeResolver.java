@@ -1,6 +1,6 @@
 package org.jarb.violation.resolver.database;
 
-import static org.jarb.utils.Conditions.notNull;
+import static org.jarbframework.utils.Conditions.notNull;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;

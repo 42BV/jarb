@@ -11,7 +11,7 @@ import org.jarb.populator.excel.workbook.Row;
 import org.jarb.populator.excel.workbook.Sheet;
 import org.jarb.populator.excel.workbook.StringValue;
 import org.jarb.populator.excel.workbook.Workbook;
-import org.jarb.utils.bean.ModifiableBean;
+import org.jarbframework.utils.bean.ModifiableBean;
 
 /**
  * Default implementation of {@link EntityExporter}.

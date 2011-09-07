@@ -6,7 +6,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.easymock.EasyMock;
-import org.jarb.utils.orm.ColumnReference;
+import org.jarbframework.utils.orm.ColumnReference;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;

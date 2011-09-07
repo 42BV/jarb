@@ -1,6 +1,6 @@
 package org.jarb.violation;
 
-import static org.jarb.utils.Conditions.notNull;
+import static org.jarbframework.utils.Conditions.notNull;
 
 import org.jarb.violation.factory.DatabaseConstraintViolationExceptionFactory;
 import org.jarb.violation.factory.DefaultViolationExceptionFactory;

@@ -6,9 +6,9 @@ import org.jarb.populator.excel.metamodel.EntityDefinition;
 import org.jarb.populator.excel.metamodel.PropertyDefinition;
 import org.jarb.populator.excel.workbook.Sheet;
 import org.jarb.populator.excel.workbook.Workbook;
-import org.jarb.utils.bean.BeanProperties;
-import org.jarb.utils.bean.ModifiableBean;
-import org.jarb.utils.bean.PropertyReference;
+import org.jarbframework.utils.bean.BeanProperties;
+import org.jarbframework.utils.bean.ModifiableBean;
+import org.jarbframework.utils.bean.PropertyReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

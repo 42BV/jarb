@@ -1,8 +1,8 @@
-package org.jarb.utils;
+package org.jarbframework.utils;
 
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
-import static org.jarb.utils.Conditions.notNull;
+import static org.jarbframework.utils.Conditions.notNull;
 
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.context.ApplicationContext;

@@ -4,7 +4,7 @@ import java.lang.reflect.Field;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
-import org.jarb.utils.Conditions;
+import org.jarbframework.utils.Conditions;
 
 /**
  * Specific node in our path.

@@ -1,12 +1,12 @@
 package org.jarb.constraint;
 
-import static org.jarb.utils.Conditions.notNull;
+import static org.jarbframework.utils.Conditions.notNull;
 
 import java.beans.PropertyDescriptor;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jarb.utils.bean.PropertyReference;
+import org.jarbframework.utils.bean.PropertyReference;
 import org.springframework.beans.BeanUtils;
 
 /**

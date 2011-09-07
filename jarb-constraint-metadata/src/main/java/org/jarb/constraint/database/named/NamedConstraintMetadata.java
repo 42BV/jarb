@@ -1,7 +1,7 @@
 package org.jarb.constraint.database.named;
 
-import static org.jarb.utils.Conditions.hasText;
-import static org.jarb.utils.Conditions.notNull;
+import static org.jarbframework.utils.Conditions.hasText;
+import static org.jarbframework.utils.Conditions.notNull;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;

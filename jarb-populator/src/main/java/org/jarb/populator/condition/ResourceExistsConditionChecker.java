@@ -1,6 +1,6 @@
 package org.jarb.populator.condition;
 
-import static org.jarb.utils.Conditions.notNull;
+import static org.jarbframework.utils.Conditions.notNull;
 
 import org.springframework.core.io.Resource;
 

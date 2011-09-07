@@ -12,7 +12,7 @@ import javax.persistence.EntityTransaction;
 import javax.persistence.PersistenceUnitUtil;
 
 import org.jarb.populator.excel.DefaultExcelTestDataCase;
-import org.jarb.utils.bean.ModifiableBean;
+import org.jarbframework.utils.bean.ModifiableBean;
 import org.junit.Before;
 import org.junit.Test;
 

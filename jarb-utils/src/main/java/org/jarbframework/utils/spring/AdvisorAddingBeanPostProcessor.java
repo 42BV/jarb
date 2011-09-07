@@ -1,4 +1,4 @@
-package org.jarb.utils.spring;
+package org.jarbframework.utils.spring;
 
 import org.springframework.aop.Advisor;
 import org.springframework.aop.framework.Advised;

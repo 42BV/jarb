@@ -1,4 +1,4 @@
-package org.jarb.utils.orm.jpa;
+package org.jarbframework.utils.orm.jpa;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -9,7 +9,7 @@ import javax.persistence.Entity;
 import javax.persistence.metamodel.EntityType;
 import javax.persistence.metamodel.Metamodel;
 
-import org.jarb.utils.orm.NotAnEntityException;
+import org.jarbframework.utils.orm.NotAnEntityException;
 
 /**
  * Provides support for JPA meta model.

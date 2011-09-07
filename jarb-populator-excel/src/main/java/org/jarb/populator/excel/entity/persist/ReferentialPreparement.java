@@ -15,7 +15,7 @@ import javax.persistence.metamodel.Attribute.PersistentAttributeType;
 
 import org.jarb.populator.excel.metamodel.generator.SuperclassRetriever;
 import org.jarb.populator.excel.util.JpaUtils;
-import org.jarb.utils.bean.ModifiableBean;
+import org.jarbframework.utils.bean.ModifiableBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

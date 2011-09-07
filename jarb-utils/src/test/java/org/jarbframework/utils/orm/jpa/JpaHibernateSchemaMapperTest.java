@@ -1,7 +1,7 @@
 /*
  * (C) 2011 Nidera (www.nidera.com). All rights reserved.
  */
-package org.jarb.utils.orm.jpa;
+package org.jarbframework.utils.orm.jpa;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -23,9 +23,10 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import org.hibernate.cfg.ImprovedNamingStrategy;
-import org.jarb.utils.bean.PropertyReference;
-import org.jarb.utils.orm.ColumnReference;
-import org.jarb.utils.orm.NotAnEntityException;
+import org.jarbframework.utils.bean.PropertyReference;
+import org.jarbframework.utils.orm.ColumnReference;
+import org.jarbframework.utils.orm.NotAnEntityException;
+import org.jarbframework.utils.orm.jpa.JpaHibernateSchemaMapper;
 import org.junit.Before;
 import org.junit.Test;
 

@@ -1,6 +1,6 @@
 package org.jarb.violation;
 
-import static org.jarb.utils.Conditions.notNull;
+import static org.jarbframework.utils.Conditions.notNull;
 
 /**
  * Thrown whenever a database constraint violation has occured.

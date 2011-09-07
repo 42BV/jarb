@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.jarb.utils.bean.ModifiableBean;
+import org.jarbframework.utils.bean.ModifiableBean;
 import org.junit.Before;
 import org.junit.Test;
 

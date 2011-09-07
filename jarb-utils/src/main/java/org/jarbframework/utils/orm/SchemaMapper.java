@@ -1,9 +1,11 @@
 /*
  * (C) 2011 Nidera (www.nidera.com). All rights reserved.
  */
-package org.jarb.utils.orm;
+package org.jarbframework.utils.orm;
 
-import org.jarb.utils.bean.PropertyReference;
+import org.jarbframework.utils.bean.PropertyReference;
+import org.jarbframework.utils.orm.ColumnReference;
+import org.jarbframework.utils.orm.NotAnEntityException;
 
 /**
  * Maps bean (properties) to database tables and columns.

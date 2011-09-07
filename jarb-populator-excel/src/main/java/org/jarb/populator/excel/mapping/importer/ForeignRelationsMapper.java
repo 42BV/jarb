@@ -9,7 +9,7 @@ import java.util.Map.Entry;
 
 import org.jarb.populator.excel.metamodel.EntityDefinition;
 import org.jarb.populator.excel.metamodel.PropertyDefinition;
-import org.jarb.utils.bean.ModifiableBean;
+import org.jarbframework.utils.bean.ModifiableBean;
 
 /**
  * Used to map foreign relationships between ExcelRows.

@@ -1,12 +1,12 @@
 package org.jarb.constraint.database;
 
-import static org.jarb.utils.Conditions.notNull;
+import static org.jarbframework.utils.Conditions.notNull;
 
 import org.jarb.constraint.PropertyConstraintDescription;
 import org.jarb.constraint.PropertyConstraintEnhancer;
 import org.jarb.constraint.database.column.ColumnMetadata;
-import org.jarb.utils.bean.PropertyReference;
-import org.jarb.utils.orm.NotAnEntityException;
+import org.jarbframework.utils.bean.PropertyReference;
+import org.jarbframework.utils.orm.NotAnEntityException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

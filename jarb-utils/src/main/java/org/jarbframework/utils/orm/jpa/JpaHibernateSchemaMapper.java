@@ -1,17 +1,17 @@
 /*
  * (C) 2011 Nidera (www.nidera.com). All rights reserved.
  */
-package org.jarb.utils.orm.jpa;
+package org.jarbframework.utils.orm.jpa;
 
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
-import static org.jarb.utils.Conditions.hasText;
-import static org.jarb.utils.Conditions.instanceOf;
-import static org.jarb.utils.Conditions.notNull;
-import static org.jarb.utils.bean.BeanProperties.getDeclaringClass;
-import static org.jarb.utils.bean.BeanProperties.getPropertyNames;
-import static org.jarb.utils.bean.BeanProperties.getPropertyType;
-import static org.jarb.utils.orm.jpa.JpaMetaModelUtils.assertIsEntity;
-import static org.jarb.utils.orm.jpa.JpaMetaModelUtils.findRootEntityClass;
+import static org.jarbframework.utils.Conditions.hasText;
+import static org.jarbframework.utils.Conditions.instanceOf;
+import static org.jarbframework.utils.Conditions.notNull;
+import static org.jarbframework.utils.bean.BeanProperties.getDeclaringClass;
+import static org.jarbframework.utils.bean.BeanProperties.getPropertyNames;
+import static org.jarbframework.utils.bean.BeanProperties.getPropertyType;
+import static org.jarbframework.utils.orm.jpa.JpaMetaModelUtils.assertIsEntity;
+import static org.jarbframework.utils.orm.jpa.JpaMetaModelUtils.findRootEntityClass;
 import static org.springframework.beans.BeanUtils.instantiateClass;
 
 import javax.persistence.Column;
@@ -31,10 +31,10 @@ import javax.persistence.Transient;
 
 import org.hibernate.cfg.DefaultNamingStrategy;
 import org.hibernate.cfg.NamingStrategy;
-import org.jarb.utils.bean.BeanAnnotationScanner;
-import org.jarb.utils.bean.PropertyReference;
-import org.jarb.utils.orm.ColumnReference;
-import org.jarb.utils.orm.SchemaMapper;
+import org.jarbframework.utils.bean.BeanAnnotationScanner;
+import org.jarbframework.utils.bean.PropertyReference;
+import org.jarbframework.utils.orm.ColumnReference;
+import org.jarbframework.utils.orm.SchemaMapper;
 
 // TODO: Provide support for @EmbeddedId
 

@@ -1,10 +1,10 @@
 /*
  * (C) 2011 Nidera (www.nidera.com). All rights reserved.
  */
-package org.jarb.utils.bean;
+package org.jarbframework.utils.bean;
 
-import static org.jarb.utils.Conditions.hasText;
-import static org.jarb.utils.Conditions.notNull;
+import static org.jarbframework.utils.Conditions.hasText;
+import static org.jarbframework.utils.Conditions.notNull;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;

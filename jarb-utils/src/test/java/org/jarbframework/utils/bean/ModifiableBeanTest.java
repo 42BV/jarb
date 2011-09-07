@@ -1,9 +1,10 @@
-package org.jarb.utils.bean;
+package org.jarbframework.utils.bean;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import org.jarbframework.utils.bean.ModifiableBean;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.NotReadablePropertyException;

@@ -4,8 +4,8 @@
 package org.jarb.constraint.database;
 
 import org.jarb.constraint.database.column.ColumnMetadata;
-import org.jarb.utils.bean.PropertyReference;
-import org.jarb.utils.orm.ColumnReference;
+import org.jarbframework.utils.bean.PropertyReference;
+import org.jarbframework.utils.orm.ColumnReference;
 
 /**
  * Provides access to the constraint meta-data of a database.

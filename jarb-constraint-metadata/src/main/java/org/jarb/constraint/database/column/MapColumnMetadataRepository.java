@@ -5,7 +5,7 @@ import static org.apache.commons.lang3.StringUtils.lowerCase;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.jarb.utils.orm.ColumnReference;
+import org.jarbframework.utils.orm.ColumnReference;
 import org.springframework.util.Assert;
 
 /**

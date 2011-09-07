@@ -7,7 +7,7 @@ import static org.junit.Assert.assertTrue;
 
 import org.jarb.constraint.PropertyConstraintDescription;
 import org.jarb.constraint.domain.Car;
-import org.jarb.utils.bean.PropertyReference;
+import org.jarbframework.utils.bean.PropertyReference;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

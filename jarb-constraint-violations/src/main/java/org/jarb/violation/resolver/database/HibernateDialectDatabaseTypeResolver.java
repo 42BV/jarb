@@ -1,8 +1,8 @@
 package org.jarb.violation.resolver.database;
 
-import static org.jarb.utils.Conditions.hasText;
-import static org.jarb.utils.Conditions.notNull;
-import static org.jarb.utils.Conditions.state;
+import static org.jarbframework.utils.Conditions.hasText;
+import static org.jarbframework.utils.Conditions.notNull;
+import static org.jarbframework.utils.Conditions.state;
 
 import java.util.HashMap;
 import java.util.Map;

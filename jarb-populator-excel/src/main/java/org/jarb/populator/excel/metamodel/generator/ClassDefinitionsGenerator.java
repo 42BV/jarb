@@ -9,8 +9,8 @@ import javax.persistence.metamodel.EntityType;
 import javax.persistence.metamodel.Metamodel;
 
 import org.jarb.populator.excel.metamodel.EntityDefinition;
-import org.jarb.utils.orm.SchemaMapper;
-import org.jarb.utils.orm.jpa.JpaHibernateSchemaMapper;
+import org.jarbframework.utils.orm.SchemaMapper;
+import org.jarbframework.utils.orm.jpa.JpaHibernateSchemaMapper;
 
 /**
  * Class which is responsible for generating a list of ready-to-be-used ClassDefinitions containing columns, a persistent class, etc.

@@ -1,7 +1,7 @@
 /*
  * (C) 2011 Nidera (www.nidera.com). All rights reserved.
  */
-package org.jarb.utils.bean;
+package org.jarbframework.utils.bean;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -10,6 +10,8 @@ import static org.junit.Assert.assertTrue;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 
+import org.jarbframework.utils.bean.BeanAnnotationScanner;
+import org.jarbframework.utils.bean.PropertyReference;
 import org.junit.Before;
 import org.junit.Test;
 

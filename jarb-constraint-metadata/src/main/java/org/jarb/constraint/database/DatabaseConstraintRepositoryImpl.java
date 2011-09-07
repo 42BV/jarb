@@ -5,9 +5,9 @@ package org.jarb.constraint.database;
 
 import org.jarb.constraint.database.column.ColumnMetadata;
 import org.jarb.constraint.database.column.ColumnMetadataRepository;
-import org.jarb.utils.bean.PropertyReference;
-import org.jarb.utils.orm.ColumnReference;
-import org.jarb.utils.orm.SchemaMapper;
+import org.jarbframework.utils.bean.PropertyReference;
+import org.jarbframework.utils.orm.ColumnReference;
+import org.jarbframework.utils.orm.SchemaMapper;
 
 /**
  * Default implementation of {@link DatabaseConstraintRepository}.

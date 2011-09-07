@@ -10,7 +10,7 @@ import liquibase.resource.FileSystemResourceAccessor;
 import liquibase.resource.ResourceAccessor;
 
 import org.jarb.migrations.DatabaseMigrator;
-import org.jarb.utils.JdbcUtils;
+import org.jarbframework.utils.JdbcUtils;
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;

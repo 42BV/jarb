@@ -1,6 +1,6 @@
 package org.jarb.constraint.database.column;
 
-import org.jarb.utils.orm.ColumnReference;
+import org.jarbframework.utils.orm.ColumnReference;
 import org.springframework.util.Assert;
 
 /**

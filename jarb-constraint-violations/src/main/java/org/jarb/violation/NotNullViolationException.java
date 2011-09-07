@@ -1,7 +1,7 @@
 package org.jarb.violation;
 
-import static org.jarb.utils.Conditions.state;
 import static org.jarb.violation.DatabaseConstraintViolationType.NOT_NULL;
+import static org.jarbframework.utils.Conditions.state;
 
 /**
  * Thrown whenever a {@code null} value was provided for a not nullable column.

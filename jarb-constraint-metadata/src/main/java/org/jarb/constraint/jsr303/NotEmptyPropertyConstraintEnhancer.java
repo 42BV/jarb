@@ -1,6 +1,6 @@
 package org.jarb.constraint.jsr303;
 
-import static org.jarb.utils.bean.BeanAnnotationScanner.fieldOrGetter;
+import static org.jarbframework.utils.bean.BeanAnnotationScanner.fieldOrGetter;
 
 import org.hibernate.validator.constraints.NotEmpty;
 import org.jarb.constraint.PropertyConstraintDescription;

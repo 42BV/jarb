@@ -5,7 +5,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.sql.Date;
 
-import org.jarb.utils.bean.ModifiableBean;
+import org.jarbframework.utils.bean.ModifiableBean;
 import org.junit.Before;
 import org.junit.Test;
 

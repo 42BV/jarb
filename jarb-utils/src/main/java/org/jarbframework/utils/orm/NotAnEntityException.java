@@ -1,7 +1,7 @@
 /*
  * (C) 2011 Nidera (www.nidera.com). All rights reserved.
  */
-package org.jarb.utils.orm;
+package org.jarbframework.utils.orm;
 
 /**
  * Exception thrown when the specified bean class is not an entity.

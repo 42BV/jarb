@@ -10,7 +10,7 @@ import org.jarb.constraint.jsr303.DigitsPropertyConstraintEnhancer;
 import org.jarb.constraint.jsr303.LengthPropertyConstraintEnhancer;
 import org.jarb.constraint.jsr303.NotEmptyPropertyConstraintEnhancer;
 import org.jarb.constraint.jsr303.NotNullPropertyConstraintEnhancer;
-import org.jarb.utils.spring.SingletonFactoryBean;
+import org.jarbframework.utils.spring.SingletonFactoryBean;
 
 /**
  * Builds a default bean constraint metadata generator.

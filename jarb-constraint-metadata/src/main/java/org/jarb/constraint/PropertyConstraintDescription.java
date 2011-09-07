@@ -1,7 +1,7 @@
 package org.jarb.constraint;
 
 import static java.util.Collections.unmodifiableSet;
-import static org.jarb.utils.Conditions.notNull;
+import static org.jarbframework.utils.Conditions.notNull;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -9,7 +9,7 @@ import java.util.Set;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
-import org.jarb.utils.bean.PropertyReference;
+import org.jarbframework.utils.bean.PropertyReference;
 
 /**
  * Describes a bean property.

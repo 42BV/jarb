@@ -3,7 +3,7 @@ package org.jarb.constraint;
 import static org.junit.Assert.assertEquals;
 
 import org.jarb.constraint.domain.Car;
-import org.jarb.utils.bean.PropertyReference;
+import org.jarbframework.utils.bean.PropertyReference;
 import org.junit.Before;
 import org.junit.Test;
 

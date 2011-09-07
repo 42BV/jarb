@@ -2,13 +2,13 @@ package org.jarb.violation.integration;
 
 import java.util.Map;
 
-import org.jarb.utils.spring.SingletonFactoryBean;
 import org.jarb.violation.DatabaseConstraintExceptionTranslator;
 import org.jarb.violation.factory.ConfigurableViolationExceptionFactory;
 import org.jarb.violation.factory.DatabaseConstraintViolationExceptionFactory;
 import org.jarb.violation.resolver.DatabaseConstraintViolationResolver;
 import org.jarb.violation.resolver.DatabaseConstraintViolationResolverFactory;
 import org.jarb.violation.resolver.database.DatabaseTypeResolver;
+import org.jarbframework.utils.spring.SingletonFactoryBean;
 import org.springframework.util.Assert;
 
 /**

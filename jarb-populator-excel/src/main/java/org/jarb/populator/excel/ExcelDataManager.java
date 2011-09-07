@@ -1,7 +1,7 @@
 package org.jarb.populator.excel;
 
-import static org.jarb.utils.Conditions.hasText;
-import static org.jarb.utils.Conditions.notNull;
+import static org.jarbframework.utils.Conditions.hasText;
+import static org.jarbframework.utils.Conditions.notNull;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;

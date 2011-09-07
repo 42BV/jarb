@@ -1,9 +1,9 @@
 /*
  * (C) 2011 Nidera (www.nidera.com). All rights reserved.
  */
-package org.jarb.utils.bean;
+package org.jarbframework.utils.bean;
 
-import static org.jarb.utils.Conditions.state;
+import static org.jarbframework.utils.Conditions.state;
 
 import java.beans.PropertyDescriptor;
 import java.lang.annotation.Annotation;
@@ -11,6 +11,8 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import org.jarbframework.utils.bean.BeanAnnotationScanner;
+import org.jarbframework.utils.bean.PropertyReference;
 import org.springframework.beans.BeanUtils;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.util.ReflectionUtils;

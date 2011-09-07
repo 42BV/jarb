@@ -1,7 +1,7 @@
 package org.jarb.violation;
 
-import static org.jarb.utils.Conditions.state;
 import static org.jarb.violation.DatabaseConstraintViolationType.CHECK_FAILED;
+import static org.jarbframework.utils.Conditions.state;
 
 /**
  * Exception thrown whenever a database check fails.

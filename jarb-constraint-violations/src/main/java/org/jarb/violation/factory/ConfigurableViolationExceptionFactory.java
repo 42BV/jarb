@@ -1,8 +1,8 @@
 package org.jarb.violation.factory;
 
 import static java.util.Collections.unmodifiableMap;
-import static org.jarb.utils.Conditions.hasText;
-import static org.jarb.utils.Conditions.notNull;
+import static org.jarbframework.utils.Conditions.hasText;
+import static org.jarbframework.utils.Conditions.notNull;
 
 import java.util.LinkedHashMap;
 import java.util.Map;

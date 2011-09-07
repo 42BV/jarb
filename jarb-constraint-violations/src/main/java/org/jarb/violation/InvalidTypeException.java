@@ -1,7 +1,7 @@
 package org.jarb.violation;
 
-import static org.jarb.utils.Conditions.state;
 import static org.jarb.violation.DatabaseConstraintViolationType.INVALID_TYPE;
+import static org.jarbframework.utils.Conditions.state;
 
 /**
  * Thrown whenever the expression type does not match the column type.

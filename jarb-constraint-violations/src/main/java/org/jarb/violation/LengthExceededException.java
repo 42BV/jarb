@@ -1,7 +1,7 @@
 package org.jarb.violation;
 
-import static org.jarb.utils.Conditions.state;
 import static org.jarb.violation.DatabaseConstraintViolationType.LENGTH_EXCEEDED;
+import static org.jarbframework.utils.Conditions.state;
 
 /**
  * Thrown whenever the expression value is longer than our column length.
