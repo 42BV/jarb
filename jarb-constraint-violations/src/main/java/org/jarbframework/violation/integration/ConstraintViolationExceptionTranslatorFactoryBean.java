@@ -4,11 +4,11 @@ import java.util.Map;
 
 import javax.sql.DataSource;
 
-import org.jarbframework.utils.database.JdbcMetadataDatabaseTypeResolver;
 import org.jarbframework.utils.spring.SingletonFactoryBean;
 import org.jarbframework.violation.DatabaseConstraintExceptionTranslator;
 import org.jarbframework.violation.factory.ConfigurableViolationExceptionFactory;
 import org.jarbframework.violation.factory.DatabaseConstraintViolationExceptionFactory;
+import org.jarbframework.violation.resolver.DatabaseConstraintViolationResolver;
 import org.jarbframework.violation.resolver.DatabaseConstraintViolationResolverFactory;
 
 /**
@@ -34,23 +34,20 @@ public class ConstraintViolationExceptionTranslatorFactoryBean extends Singleton
      */
     @Override
     protected DatabaseConstraintExceptionTranslator createObject() throws Exception {
-        DatabaseConstraintViolationResolverFactory violationResolverFactory = new DatabaseConstraintViolationResolverFactory();
-        violationResolverFactory.setDatabaseTypeResolver(new JdbcMetadataDatabaseTypeResolver());
-        return new DatabaseConstraintExceptionTranslator(violationResolverFactory.build(dataSource), createCustomExceptionFactory());
+        return new DatabaseConstraintExceptionTranslator(buildViolationResolver(), buildExceptionFactory());
     }
 
-    /**
-     * Build the exception factory with all configured custom factories, and exception classes.
-     * @return new constraint violation exception factory
-     */
-    private DatabaseConstraintViolationExceptionFactory createCustomExceptionFactory() {
+    private DatabaseConstraintViolationResolver buildViolationResolver() {
+        return new DatabaseConstraintViolationResolverFactory().build(dataSource);
+    }
+    
+    private DatabaseConstraintViolationExceptionFactory buildExceptionFactory() {
         ConfigurableViolationExceptionFactory exceptionFactory = new ConfigurableViolationExceptionFactory();
         if (exceptionClasses != null) {
             for (Map.Entry<String, Class<? extends Throwable>> exceptionClassEntry : exceptionClasses.entrySet()) {
                 exceptionFactory.registerException(exceptionClassEntry.getKey(), exceptionClassEntry.getValue());
             }
         }
-        // Custom factories are registered last, potentially overwriting custom exception classes
         if (exceptionFactories != null) {
             for (Map.Entry<String, DatabaseConstraintViolationExceptionFactory> exceptionFactoryEntry : exceptionFactories.entrySet()) {
                 exceptionFactory.registerFactory(exceptionFactoryEntry.getKey(), exceptionFactoryEntry.getValue());
