@@ -12,13 +12,16 @@ import javax.persistence.metamodel.Metamodel;
 import org.jarbframework.utils.orm.NotAnEntityException;
 
 /**
- * Provides support for JPA meta model.
- * 
+ * JPA meta model support functionality.
  * @author Jeroen van Schagen
  * @since 20-05-2011
  */
 public final class JpaMetaModelUtils {
 
+    /**
+     * Ensure that a bean class is recognized as @Entity.
+     * @param beanClass class of the bean
+     */
     public static void assertIsEntity(Class<?> beanClass) {
         if (!isEntity(beanClass)) {
             throw new NotAnEntityException("Bean class '" + beanClass.getName() + "' is not an @Entity.");
@@ -58,23 +61,23 @@ public final class JpaMetaModelUtils {
         return entityTypes;
     }
 
-    private static boolean hasEntitySuperclass(Class<?> entityClass) {
-        return findParentEntityClass(entityClass) != null;
-    }
-
-    public static Class<?> findParentEntityClass(Class<?> beanClass) {
-        Class<?> entityClass = null;
+    private static boolean hasEntitySuperclass(Class<?> beanClass) {
+        boolean entitySuperClassFound = false;
         Class<?> currentClass = beanClass;
-        while (currentClass.getSuperclass() != null) {
-            currentClass = currentClass.getSuperclass();
+        while ((currentClass = currentClass.getSuperclass()) != null) {
             if (isEntity(currentClass)) {
-                entityClass = currentClass;
+                entitySuperClassFound = true;
                 break;
             }
         }
-        return entityClass;
+        return entitySuperClassFound;
     }
 
+    /**
+     * Retrieve the root entity class of a bean.
+     * @param beanClass class of the bean
+     * @return root entity class, if any could be found
+     */
     public static Class<?> findRootEntityClass(Class<?> beanClass) {
         Class<?> entityClass = null;
         Class<?> currentClass = beanClass;

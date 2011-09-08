@@ -1,7 +1,5 @@
 package org.jarbframework.violation.resolver;
 
-import static org.jarbframework.utils.Conditions.notNull;
-
 import javax.sql.DataSource;
 
 import org.jarbframework.utils.database.DatabaseType;
@@ -35,7 +33,7 @@ public class DatabaseConstraintViolationResolverFactory {
      */
     public DatabaseConstraintViolationResolver build(DataSource dataSource) {
         DatabaseConstraintViolationResolver resolver = null;
-        DatabaseType databaseType = notNull(databaseTypeResolver.resolve(dataSource), "Could not resolve database type");
+        DatabaseType databaseType = databaseTypeResolver.resolve(dataSource);
         switch (databaseType) {
         case HSQL:
             resolver = new HsqlViolationResolver();

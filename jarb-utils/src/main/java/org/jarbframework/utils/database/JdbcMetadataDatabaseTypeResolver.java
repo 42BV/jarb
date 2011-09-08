@@ -1,8 +1,7 @@
 package org.jarbframework.utils.database;
 
-import static org.jarbframework.utils.Conditions.notNull;
+import static org.apache.commons.lang3.StringUtils.startsWithIgnoreCase;
 import static org.jarbframework.utils.JdbcUtils.doWithMetaData;
-import static org.springframework.util.StringUtils.startsWithIgnoreCase;
 
 import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
@@ -12,10 +11,9 @@ import javax.sql.DataSource;
 import org.jarbframework.utils.JdbcMetadataCallback;
 
 /**
- * Determines the database type based on JDBC meta data.
- *
+ * Determines the database type using our JDBC meta data.
  * @author Jeroen van Schagen
- * @date Sep 8, 2011
+ * @since Sep 8, 2011
  */
 public class JdbcMetadataDatabaseTypeResolver implements DatabaseTypeResolver {
 
@@ -29,7 +27,11 @@ public class JdbcMetadataDatabaseTypeResolver implements DatabaseTypeResolver {
             }
 
         });
-        return notNull(lookupDatabaseType(databaseProductName), "Could not determine database type for '" + databaseProductName + "'");
+        DatabaseType databaseType = lookupDatabaseType(databaseProductName);
+        if (databaseType == null) {
+            throw new UnrecognizedDatabaseException("Could not determine database type for '" + databaseProductName + "'");
+        }
+        return databaseType;
     }
 
     /**

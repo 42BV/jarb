@@ -1,25 +1,24 @@
 package org.jarbframework.utils.database;
 
 /**
- * Type of databases.
- * 
+ * Enumeration of the various recognized database types.
  * @author Jeroen van Schagen
  * @since 14-05-2011
  */
 public enum DatabaseType {
 
     /**
-     * Hypersonic
+     * HyperSQL
      */
     HSQL,
 
     /**
-     * Postgres
+     * PostgreSQL
      */
     POSTGRESQL,
 
     /**
-     * Mysql
+     * MySQL
      */
     MYSQL,
 
