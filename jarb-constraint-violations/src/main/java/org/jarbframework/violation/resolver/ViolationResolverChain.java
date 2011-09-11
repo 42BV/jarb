@@ -14,13 +14,13 @@ import org.jarbframework.violation.DatabaseConstraintViolation;
  * @author Jeroen van Schagen
  * @since 16-05-2011
  */
-public class DatabaseConstraintViolationResolverChain implements DatabaseConstraintViolationResolver {
+public class ViolationResolverChain implements DatabaseConstraintViolationResolver {
     private final List<DatabaseConstraintViolationResolver> violationResolvers;
 
     /**
-     * Construct a new {@link DatabaseConstraintViolationResolverChain}.
+     * Construct a new {@link ViolationResolverChain}.
      */
-    public DatabaseConstraintViolationResolverChain() {
+    public ViolationResolverChain() {
         violationResolvers = new ArrayList<DatabaseConstraintViolationResolver>();
     }
 
@@ -43,7 +43,7 @@ public class DatabaseConstraintViolationResolverChain implements DatabaseConstra
      * @param violationResolver violation resolver instance we are adding
      * @return  this instance, enabling the use of method chaining
      */
-    public DatabaseConstraintViolationResolverChain addToChain(DatabaseConstraintViolationResolver violationResolver) {
+    public ViolationResolverChain addToChain(DatabaseConstraintViolationResolver violationResolver) {
         violationResolvers.add(violationResolver);
         return this;
     }
