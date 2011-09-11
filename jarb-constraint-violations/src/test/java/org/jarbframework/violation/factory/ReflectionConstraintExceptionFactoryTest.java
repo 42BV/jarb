@@ -16,7 +16,7 @@ import org.jarbframework.violation.factory.DatabaseConstraintExceptionFactory;
 import org.jarbframework.violation.factory.ReflectionConstraintExceptionFactory;
 import org.junit.Test;
 
-public class ReflectionViolationExceptionFactoryTest {
+public class ReflectionConstraintExceptionFactoryTest {
 
     /**
      * Custom exception classes should be initialized using the best available constructor.

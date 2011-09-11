@@ -9,7 +9,7 @@ import org.jarbframework.violation.domain.LicenseNumberAlreadyExistsException;
 import org.junit.Before;
 import org.junit.Test;
 
-public class ConfigurableViolationExceptionFactoryTest {
+public class ConfigurableConstraintExceptionFactoryTest {
     private ConfigurableConstraintExceptionFactory factory;
 
     @Before
@@ -22,7 +22,7 @@ public class ConfigurableViolationExceptionFactoryTest {
      */
     @Test
     public void testCustomException() {
-        factory.registerFactory("uk_cars_license", new ReflectionConstraintExceptionFactory(LicenseNumberAlreadyExistsException.class));
+        factory.registerException("uk_cars_license", LicenseNumberAlreadyExistsException.class);
         Throwable exception = factory.createException(violation(UNIQUE_KEY).named("uk_cars_license").build(), null);
         assertTrue(exception instanceof LicenseNumberAlreadyExistsException);
     }   

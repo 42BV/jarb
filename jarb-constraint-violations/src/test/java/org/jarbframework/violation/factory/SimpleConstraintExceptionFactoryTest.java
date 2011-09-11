@@ -22,7 +22,7 @@ import org.jarbframework.violation.factory.SimpleConstraintExceptionFactory;
 import org.junit.Before;
 import org.junit.Test;
 
-public class SimpleViolationExceptionFactoryTest {
+public class SimpleConstraintExceptionFactoryTest {
     private SimpleConstraintExceptionFactory factory;
 
     @Before

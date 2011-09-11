@@ -36,7 +36,8 @@ public class ConfigurableConstraintExceptionFactory implements DatabaseConstrain
      */
     @Override
     public Throwable createException(DatabaseConstraintViolation violation, Throwable cause) {
-        return findFactoryFor(notNull(violation, "Cannot create exception for a null violation.")).createException(violation, cause);
+        notNull(violation, "Cannot create exception for a null violation.");
+        return findFactoryFor(violation).createException(violation, cause);
     }
 
     /**
@@ -46,23 +47,36 @@ public class ConfigurableConstraintExceptionFactory implements DatabaseConstrain
      * @return factory capable of building a violation exception for our constraint
      */
     private DatabaseConstraintExceptionFactory findFactoryFor(DatabaseConstraintViolation violation) {
-        DatabaseConstraintExceptionFactory factory = null;
-        // Attempt to find a custom factory that matches the constraint name
+        DatabaseConstraintExceptionFactory factory = defaultFactory;
         for (Map.Entry<ConstraintViolationMatcher, DatabaseConstraintExceptionFactory> customFactoryEntry : customFactories.entrySet()) {
             if (customFactoryEntry.getKey().matches(violation)) {
                 factory = customFactoryEntry.getValue();
                 break;
             }
         }
-        // Otherwise use the default factory
-        if (factory == null) {
-            factory = defaultFactory;
-        }
         return factory;
+    }
+    
+    /**
+     * Register a custom exception class for a specific constraint.
+     * @param expression name of the constraint that our factory applies to
+     * @param exceptionClass class of the exception that should be thrown
+     */
+    public void registerException(String expression, Class<? extends Throwable> exceptionClass) {
+        registerException(new ConstraintViolationMatcher(expression), exceptionClass);
     }
 
     /**
-     * Register a custom exception factory, for a specific constraint.
+     * Register a custom exception class for a specific constraint.
+     * @param matcher describes the constraint(s) that our factory applies to
+     * @param exceptionClass class of the exception that should be thrown
+     */
+    public void registerException(ConstraintViolationMatcher matcher, Class<? extends Throwable> exceptionClass) {
+        registerFactory(matcher, new ReflectionConstraintExceptionFactory(exceptionClass));
+    }
+
+    /**
+     * Register a custom exception factory for a specific constraint.
      * @param expression name of the constraint that our factory applies to
      * @param factory reference to the factory that should be used
      */
@@ -71,7 +85,7 @@ public class ConfigurableConstraintExceptionFactory implements DatabaseConstrain
     }
 
     /**
-     * Register a custom exception factory, for a specific constraint.
+     * Register a custom exception factory for a specific constraint.
      * @param matcher describes the constraint(s) that our factory applies to
      * @param factory reference to the factory that should be used
      */

@@ -52,6 +52,7 @@ public final class Conditions {
      * @param message the error message shown whenever our state is not satisfied
      * @return provided object, used for chaining
      */
+    @SuppressWarnings("unchecked")
     public static <T> T instanceOf(Object object, Class<T> type, String message) {
         state(notNull(type, "Expected type cannot be null").isInstance(object), message);
         return (T) object;
