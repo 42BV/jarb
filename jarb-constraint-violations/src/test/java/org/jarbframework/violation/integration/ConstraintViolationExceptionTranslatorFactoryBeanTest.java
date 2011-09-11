@@ -12,8 +12,9 @@ import org.jarbframework.violation.DatabaseConstraintExceptionTranslator;
 import org.jarbframework.violation.UniqueKeyViolationException;
 import org.jarbframework.violation.domain.LicenseNumberAlreadyExistsException;
 import org.jarbframework.violation.domain.LicenseNumberAlreadyExistsExceptionFactory;
-import org.jarbframework.violation.factory.DatabaseConstraintViolationExceptionFactory;
-import org.jarbframework.violation.factory.DefaultViolationExceptionFactory;
+import org.jarbframework.violation.factory.DatabaseConstraintExceptionFactory;
+import org.jarbframework.violation.factory.SimpleConstraintExceptionFactory;
+import org.jarbframework.violation.factory.mapping.ConstraintViolationMatcher;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -49,7 +50,7 @@ public class ConstraintViolationExceptionTranslatorFactoryBeanTest {
      */
     @Test
     public void testTranslator() throws Exception {
-        factory.setDefaultExceptionFactory(new DefaultViolationExceptionFactory());
+        factory.setDefaultExceptionFactory(new SimpleConstraintExceptionFactory());
         DatabaseConstraintExceptionTranslator translator = factory.getObject();
         RuntimeException hsqlException = new RuntimeException(UNIQUE_KEY_EXCEPTION_MESSAGE);
         Throwable resultException = translator.translateExceptionIfPossible(hsqlException);
@@ -58,29 +59,15 @@ public class ConstraintViolationExceptionTranslatorFactoryBeanTest {
     }
 
     /**
-     * Construct a translator that recognizes "uk_cars_license" constraint violations and
-     * translates them into a custom license number already exists exception.
-     */
-    @Test
-    public void testCustomExceptionIsRegistered() throws Exception {
-        Map<String, Class<? extends Throwable>> exceptionClasses = new HashMap<String, Class<? extends Throwable>>();
-        exceptionClasses.put("uk_cars_license", LicenseNumberAlreadyExistsException.class);
-        factory.setExceptionClasses(exceptionClasses);
-        DatabaseConstraintExceptionTranslator translator = factory.getObject();
-        RuntimeException hsqlException = new RuntimeException(UNIQUE_KEY_EXCEPTION_MESSAGE);
-        Throwable resultException = translator.translateExceptionIfPossible(hsqlException);
-        assertTrue(resultException instanceof LicenseNumberAlreadyExistsException);
-    }
-
-    /**
      * Our license number already exists exception can also be thrown by a custom factory.
      */
     @Test
     public void testCustomFactoryIsRegistered() throws Exception {
-        Map<String, DatabaseConstraintViolationExceptionFactory> exceptionFactories = new HashMap<String, DatabaseConstraintViolationExceptionFactory>();
-        final DatabaseConstraintViolationExceptionFactory exceptionFactory = new LicenseNumberAlreadyExistsExceptionFactory();
-        exceptionFactories.put("uk_cars_license", exceptionFactory);
-        factory.setExceptionFactories(exceptionFactories);
+        Map<ConstraintViolationMatcher, DatabaseConstraintExceptionFactory> factories;
+        factories = new HashMap<ConstraintViolationMatcher, DatabaseConstraintExceptionFactory>();
+        DatabaseConstraintExceptionFactory exceptionFactory = new LicenseNumberAlreadyExistsExceptionFactory();
+        factories.put(new ConstraintViolationMatcher("uk_cars_license"), exceptionFactory);
+        factory.setCustomExceptionFactories(factories);
         DatabaseConstraintExceptionTranslator translator = factory.getObject();
         RuntimeException hsqlException = new RuntimeException(UNIQUE_KEY_EXCEPTION_MESSAGE);
         Throwable resultException = translator.translateExceptionIfPossible(hsqlException);

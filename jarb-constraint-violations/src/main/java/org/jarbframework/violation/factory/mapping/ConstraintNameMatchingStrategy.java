@@ -1,7 +1,7 @@
 /*
  * (C) 2011 Nidera (www.nidera.com). All rights reserved.
  */
-package org.jarbframework.violation.factory;
+package org.jarbframework.violation.factory.mapping;
 
 import static org.jarbframework.utils.Conditions.notNull;
 
@@ -14,7 +14,7 @@ import org.jarbframework.violation.DatabaseConstraintViolation;
  * @author Jeroen van Schagen
  * @date Sep 2, 2011
  */
-public abstract class ConstraintNameMatchingStrategy implements ViolationMatchingStrategy {
+public abstract class ConstraintNameMatchingStrategy implements ConstraintViolationMatchingStrategy {
 
     @Override
     public final boolean matches(DatabaseConstraintViolation violation, String expression) {

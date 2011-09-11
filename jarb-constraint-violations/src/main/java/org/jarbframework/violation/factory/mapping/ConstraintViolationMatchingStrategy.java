@@ -1,4 +1,4 @@
-package org.jarbframework.violation.factory;
+package org.jarbframework.violation.factory.mapping;
 
 import org.jarbframework.violation.DatabaseConstraintViolation;
 
@@ -7,7 +7,7 @@ import org.jarbframework.violation.DatabaseConstraintViolation;
  * @author Jeroen van Schagen
  * @since Aug 31, 2011
  */
-public interface ViolationMatchingStrategy {
+public interface ConstraintViolationMatchingStrategy {
 
     /**
      * Determine if a specific constraint name matches a constraint expression.

@@ -1,11 +1,11 @@
-package org.jarbframework.violation.factory;
+package org.jarbframework.violation.factory.mapping;
 
 /**
  * Constraint name has to match the expression exactly.
  * @author Jeroen van Schagen
  * @since Aug 31, 2011
  */
-public class ExactViolationMatchingStrategy extends ConstraintNameMatchingStrategy {
+public class ExactConstraintNameMatchingStrategy extends ConstraintNameMatchingStrategy {
     private boolean caseSensitive = false;
 
     public void setCaseSensitive(boolean caseSensitive) {

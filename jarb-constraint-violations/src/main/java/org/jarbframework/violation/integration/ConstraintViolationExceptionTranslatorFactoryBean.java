@@ -6,25 +6,22 @@ import javax.sql.DataSource;
 
 import org.jarbframework.utils.spring.SingletonFactoryBean;
 import org.jarbframework.violation.DatabaseConstraintExceptionTranslator;
-import org.jarbframework.violation.factory.ConfigurableViolationExceptionFactory;
-import org.jarbframework.violation.factory.DatabaseConstraintViolationExceptionFactory;
+import org.jarbframework.violation.factory.ConfigurableConstraintExceptionFactory;
+import org.jarbframework.violation.factory.DatabaseConstraintExceptionFactory;
+import org.jarbframework.violation.factory.mapping.ConstraintViolationMatcher;
 import org.jarbframework.violation.resolver.DatabaseConstraintViolationResolver;
 import org.jarbframework.violation.resolver.DatabaseConstraintViolationResolverFactory;
 
 /**
- * Factory bean for {@link DatabaseConstraintExceptionTranslator}. Using this factory
- * bean should make the initialization of exception translators significantly easier.
- * 
+ * Factory bean for {@link DatabaseConstraintExceptionTranslator}.
  * @author Jeroen van Schagen
  * @since 18-05-2011
  */
 public class ConstraintViolationExceptionTranslatorFactoryBean extends SingletonFactoryBean<DatabaseConstraintExceptionTranslator> {
-    /** Mapping of custom exception classes **/
-    private Map<String, Class<? extends Throwable>> exceptionClasses;
     /** Mapping of custom exception factories **/
-    private Map<String, DatabaseConstraintViolationExceptionFactory> exceptionFactories;
+    private Map<ConstraintViolationMatcher, DatabaseConstraintExceptionFactory> customExceptionFactories;
     /** Default exception factory **/
-    private DatabaseConstraintViolationExceptionFactory defaultExceptionFactory;
+    private DatabaseConstraintExceptionFactory defaultExceptionFactory;
 
     /** Data source from which exceptions are retrieved **/
     private DataSource dataSource;
@@ -41,16 +38,11 @@ public class ConstraintViolationExceptionTranslatorFactoryBean extends Singleton
         return new DatabaseConstraintViolationResolverFactory().build(dataSource);
     }
     
-    private DatabaseConstraintViolationExceptionFactory buildExceptionFactory() {
-        ConfigurableViolationExceptionFactory exceptionFactory = new ConfigurableViolationExceptionFactory();
-        if (exceptionClasses != null) {
-            for (Map.Entry<String, Class<? extends Throwable>> exceptionClassEntry : exceptionClasses.entrySet()) {
-                exceptionFactory.registerException(exceptionClassEntry.getKey(), exceptionClassEntry.getValue());
-            }
-        }
-        if (exceptionFactories != null) {
-            for (Map.Entry<String, DatabaseConstraintViolationExceptionFactory> exceptionFactoryEntry : exceptionFactories.entrySet()) {
-                exceptionFactory.registerFactory(exceptionFactoryEntry.getKey(), exceptionFactoryEntry.getValue());
+    private DatabaseConstraintExceptionFactory buildExceptionFactory() {
+        ConfigurableConstraintExceptionFactory exceptionFactory = new ConfigurableConstraintExceptionFactory();
+        if (customExceptionFactories != null) {
+            for (Map.Entry<ConstraintViolationMatcher, DatabaseConstraintExceptionFactory> factoriesEntry : customExceptionFactories.entrySet()) {
+                exceptionFactory.registerFactory(factoriesEntry.getKey(), factoriesEntry.getValue());
             }
         }
         if (defaultExceptionFactory != null) {
@@ -59,15 +51,11 @@ public class ConstraintViolationExceptionTranslatorFactoryBean extends Singleton
         return exceptionFactory;
     }
 
-    public void setExceptionClasses(Map<String, Class<? extends Throwable>> exceptionClasses) {
-        this.exceptionClasses = exceptionClasses;
+    public void setCustomExceptionFactories(Map<ConstraintViolationMatcher, DatabaseConstraintExceptionFactory> customExceptionFactories) {
+        this.customExceptionFactories = customExceptionFactories;
     }
 
-    public void setExceptionFactories(Map<String, DatabaseConstraintViolationExceptionFactory> exceptionFactories) {
-        this.exceptionFactories = exceptionFactories;
-    }
-
-    public void setDefaultExceptionFactory(DatabaseConstraintViolationExceptionFactory defaultExceptionFactory) {
+    public void setDefaultExceptionFactory(DatabaseConstraintExceptionFactory defaultExceptionFactory) {
         this.defaultExceptionFactory = defaultExceptionFactory;
     }
 

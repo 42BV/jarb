@@ -20,26 +20,26 @@ import org.jarbframework.violation.DatabaseConstraintViolation;
  * @author Jeroen van Schagen
  * @since 18-05-2011
  */
-public class ReflectionViolationExceptionFactory implements DatabaseConstraintViolationExceptionFactory {
+public class ReflectionConstraintExceptionFactory implements DatabaseConstraintExceptionFactory {
     private final Constructor<? extends Throwable> exceptionConstructor;
 
     /**
-     * Construct a new {@link ReflectionViolationExceptionFactory}.
+     * Construct a new {@link ReflectionConstraintExceptionFactory}.
      * @param exceptionConstructor exception constructor, should consist of only supported parameter types
      */
-    public ReflectionViolationExceptionFactory(Constructor<? extends Throwable> exceptionConstructor) {
+    public ReflectionConstraintExceptionFactory(Constructor<? extends Throwable> exceptionConstructor) {
         notNull(exceptionConstructor, "Exception constructor cannot be null");
         state(supportsConstructor(exceptionConstructor), "Constructor contains unsupported parameter types");
         this.exceptionConstructor = exceptionConstructor;
     }
 
     /**
-     * Construct a new {@link ReflectionViolationExceptionFactory}. When using
+     * Construct a new {@link ReflectionConstraintExceptionFactory}. When using
      * this constructor we will use the first exception constructor that has only supported
      * parameter types. If we cannot find a supported constructor, a runtime exception is thrown.
      * @param exceptionClass class of the exception that should be created.
      */
-    public ReflectionViolationExceptionFactory(Class<? extends Throwable> exceptionClass) {
+    public ReflectionConstraintExceptionFactory(Class<? extends Throwable> exceptionClass) {
         this(findBestSupportedConstructor(exceptionClass));
     }
 
@@ -56,7 +56,7 @@ public class ReflectionViolationExceptionFactory implements DatabaseConstraintVi
                 arguments[parameterIndex] = violation;
             } else if (Throwable.class.isAssignableFrom(parameterTypes[parameterIndex])) {
                 arguments[parameterIndex] = cause;
-            } else if (parameterTypes[parameterIndex].isAssignableFrom(ReflectionViolationExceptionFactory.class)) {
+            } else if (parameterTypes[parameterIndex].isAssignableFrom(ReflectionConstraintExceptionFactory.class)) {
                 arguments[parameterIndex] = this;
             }
         }
@@ -111,7 +111,7 @@ public class ReflectionViolationExceptionFactory implements DatabaseConstraintVi
     private static boolean supportsParameterType(Class<?> parameterType) {
         return DatabaseConstraintViolation.class.equals(parameterType)
                 || Throwable.class.isAssignableFrom(parameterType)
-                || parameterType.isAssignableFrom(ReflectionViolationExceptionFactory.class);
+                || parameterType.isAssignableFrom(ReflectionConstraintExceptionFactory.class);
     }
 
     /**

@@ -18,16 +18,16 @@ import org.jarbframework.violation.InvalidTypeException;
 import org.jarbframework.violation.LengthExceededException;
 import org.jarbframework.violation.NotNullViolationException;
 import org.jarbframework.violation.UniqueKeyViolationException;
-import org.jarbframework.violation.factory.DefaultViolationExceptionFactory;
+import org.jarbframework.violation.factory.SimpleConstraintExceptionFactory;
 import org.junit.Before;
 import org.junit.Test;
 
-public class DefaultViolationExceptionFactoryTest {
-    private DefaultViolationExceptionFactory factory;
+public class SimpleViolationExceptionFactoryTest {
+    private SimpleConstraintExceptionFactory factory;
 
     @Before
     public void setUp() {
-        factory = new DefaultViolationExceptionFactory();
+        factory = new SimpleConstraintExceptionFactory();
     }
 
     @Test

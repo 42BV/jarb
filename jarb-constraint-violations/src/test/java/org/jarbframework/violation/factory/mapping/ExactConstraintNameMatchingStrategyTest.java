@@ -1,22 +1,22 @@
 /*
  * (C) 2011 Nidera (www.nidera.com). All rights reserved.
  */
-package org.jarbframework.violation.factory;
+package org.jarbframework.violation.factory.mapping;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import org.jarbframework.violation.factory.ExactViolationMatchingStrategy;
+import org.jarbframework.violation.factory.mapping.ExactConstraintNameMatchingStrategy;
 import org.junit.Before;
 import org.junit.Test;
 
-public class ExactViolationMatchingStrategyTest {
+public class ExactConstraintNameMatchingStrategyTest {
 
-    private ExactViolationMatchingStrategy strategy;
+    private ExactConstraintNameMatchingStrategy strategy;
 
     @Before
     public void setUp() {
-        strategy = new ExactViolationMatchingStrategy();
+        strategy = new ExactConstraintNameMatchingStrategy();
     }
 
     @Test

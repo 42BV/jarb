@@ -1,22 +1,22 @@
 /*
  * (C) 2011 Nidera (www.nidera.com). All rights reserved.
  */
-package org.jarbframework.violation.factory;
+package org.jarbframework.violation.factory.mapping;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import org.jarbframework.violation.factory.RegexViolationMatchingStrategy;
+import org.jarbframework.violation.factory.mapping.RegexConstraintNameMatchingStrategy;
 import org.junit.Before;
 import org.junit.Test;
 
-public class RegexViolationMatchingStrategyTest {
+public class RegexConstraintNameMatchingStrategyTest {
 
-    private RegexViolationMatchingStrategy strategy;
+    private RegexConstraintNameMatchingStrategy strategy;
 
     @Before
     public void setUp() {
-        strategy = new RegexViolationMatchingStrategy();
+        strategy = new RegexConstraintNameMatchingStrategy();
     }
 
     @Test

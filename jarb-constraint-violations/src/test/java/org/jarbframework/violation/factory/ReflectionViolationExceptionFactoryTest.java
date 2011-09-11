@@ -12,8 +12,8 @@ import java.sql.SQLException;
 
 import org.jarbframework.violation.DatabaseConstraintViolation;
 import org.jarbframework.violation.domain.LicenseNumberAlreadyExistsException;
-import org.jarbframework.violation.factory.DatabaseConstraintViolationExceptionFactory;
-import org.jarbframework.violation.factory.ReflectionViolationExceptionFactory;
+import org.jarbframework.violation.factory.DatabaseConstraintExceptionFactory;
+import org.jarbframework.violation.factory.ReflectionConstraintExceptionFactory;
 import org.junit.Test;
 
 public class ReflectionViolationExceptionFactoryTest {
@@ -24,7 +24,7 @@ public class ReflectionViolationExceptionFactoryTest {
      */
     @Test
     public void testInstantiateWithBestConstructor() {
-        DatabaseConstraintViolationExceptionFactory factory = new ReflectionViolationExceptionFactory(LicenseNumberAlreadyExistsException.class);
+        DatabaseConstraintExceptionFactory factory = new ReflectionConstraintExceptionFactory(LicenseNumberAlreadyExistsException.class);
         DatabaseConstraintViolation violation = violation(UNIQUE_KEY).named("uk_cars_license_number").build();
         final Throwable cause = new SQLException("Database exception 'uk_cars_license_number' violated !");
         Throwable exception = factory.createException(violation, cause);
@@ -41,7 +41,7 @@ public class ReflectionViolationExceptionFactoryTest {
      */
     @Test
     public void testInstantiateThirdPartyException() {
-        DatabaseConstraintViolationExceptionFactory factory = new ReflectionViolationExceptionFactory(IllegalStateException.class);
+        DatabaseConstraintExceptionFactory factory = new ReflectionConstraintExceptionFactory(IllegalStateException.class);
         DatabaseConstraintViolation violation = violation(UNIQUE_KEY).named("uk_cars_license_number").build();
         final Throwable cause = new SQLException("Database exception 'uk_cars_license_number' violated !");
         Throwable exception = factory.createException(violation, cause);
@@ -55,7 +55,7 @@ public class ReflectionViolationExceptionFactoryTest {
      */
     @Test
     public void testInstantiateNullary() {
-        DatabaseConstraintViolationExceptionFactory factory = new ReflectionViolationExceptionFactory(ExceptionWithOnlyNullaryConstructor.class);
+        DatabaseConstraintExceptionFactory factory = new ReflectionConstraintExceptionFactory(ExceptionWithOnlyNullaryConstructor.class);
         DatabaseConstraintViolation violation = violation(UNIQUE_KEY).build();
         final Throwable cause = new SQLException("Database exception 'uk_cars_license_number' violated !");
         Throwable exception = factory.createException(violation, cause);
@@ -68,7 +68,7 @@ public class ReflectionViolationExceptionFactoryTest {
     @Test
     public void testNoMatchingConstructor() {
         try {
-            new ReflectionViolationExceptionFactory(ExceptionWithUnsupportedConstructor.class);
+            new ReflectionConstraintExceptionFactory(ExceptionWithUnsupportedConstructor.class);
             fail("Expected an illegal state exception, as no supported constructor could be found!");
         } catch (IllegalStateException e) {
             assertEquals("Could not find a supported constructor in 'ExceptionWithUnsupportedConstructor'.", e.getMessage());
@@ -82,7 +82,7 @@ public class ReflectionViolationExceptionFactoryTest {
     public void testUnsupportedConstructor() throws SecurityException, NoSuchMethodException {
         Constructor<? extends Throwable> unsupportedConstructor = ExceptionWithUnsupportedConstructor.class.getConstructor(BigDecimal.class);
         try {
-            new ReflectionViolationExceptionFactory(unsupportedConstructor);
+            new ReflectionConstraintExceptionFactory(unsupportedConstructor);
             fail("Expected an illegal argument exception, as an unsupported constructor was provided!");
         } catch (IllegalStateException e) {
             assertEquals("Constructor contains unsupported parameter types", e.getMessage());

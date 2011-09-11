@@ -12,7 +12,6 @@ import org.jarbframework.violation.resolver.vendor.PostgresViolationResolver;
 
 /**
  * Capable of building a default constraint violation resolver.
- * 
  * @author Jeroen van Schagen
  * @since 16-05-2011
  */

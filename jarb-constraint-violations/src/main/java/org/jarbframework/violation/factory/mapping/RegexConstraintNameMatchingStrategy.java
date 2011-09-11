@@ -1,4 +1,4 @@
-package org.jarbframework.violation.factory;
+package org.jarbframework.violation.factory.mapping;
 
 import static org.apache.commons.lang3.StringUtils.lowerCase;
 
@@ -7,7 +7,7 @@ import static org.apache.commons.lang3.StringUtils.lowerCase;
  * @author Jeroen van Schagen
  * @since Aug 31, 2011
  */
-public class RegexViolationMatchingStrategy extends ConstraintNameMatchingStrategy {
+public class RegexConstraintNameMatchingStrategy extends ConstraintNameMatchingStrategy {
     private boolean caseSensitive = false;
 
     public void setCaseSensitive(boolean caseSensitive) {

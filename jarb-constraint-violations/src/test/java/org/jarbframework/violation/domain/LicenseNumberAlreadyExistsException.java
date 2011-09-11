@@ -2,7 +2,7 @@ package org.jarbframework.violation.domain;
 
 import org.jarbframework.violation.DatabaseConstraintViolation;
 import org.jarbframework.violation.UniqueKeyViolationException;
-import org.jarbframework.violation.factory.DatabaseConstraintViolationExceptionFactory;
+import org.jarbframework.violation.factory.DatabaseConstraintExceptionFactory;
 
 /**
  * Car license number can only be used once.
@@ -12,7 +12,7 @@ import org.jarbframework.violation.factory.DatabaseConstraintViolationExceptionF
  */
 public class LicenseNumberAlreadyExistsException extends UniqueKeyViolationException {
     private static final long serialVersionUID = 8122213238219945641L;
-    private DatabaseConstraintViolationExceptionFactory factory;
+    private DatabaseConstraintExceptionFactory factory;
     
     public LicenseNumberAlreadyExistsException(DatabaseConstraintViolation violation) {
         super(violation);
@@ -22,7 +22,7 @@ public class LicenseNumberAlreadyExistsException extends UniqueKeyViolationExcep
         super(violation, cause);
     }
 
-    public LicenseNumberAlreadyExistsException(DatabaseConstraintViolation violation, Throwable cause, DatabaseConstraintViolationExceptionFactory factory) {
+    public LicenseNumberAlreadyExistsException(DatabaseConstraintViolation violation, Throwable cause, DatabaseConstraintExceptionFactory factory) {
         super(violation, cause);
         this.factory = factory;
     }
@@ -31,7 +31,7 @@ public class LicenseNumberAlreadyExistsException extends UniqueKeyViolationExcep
      * Retrieve the factory that generated this exception.
      * @return exception factory
      */
-    public DatabaseConstraintViolationExceptionFactory getExceptionFactory() {
+    public DatabaseConstraintExceptionFactory getExceptionFactory() {
         return factory;
     }
 
