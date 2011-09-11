@@ -1,16 +1,9 @@
 package org.jarbframework.migrations;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
-
-import java.sql.Connection;
-import java.sql.SQLException;
 
 import javax.sql.DataSource;
 
-import org.easymock.EasyMock;
-import org.jarbframework.migrations.DatabaseMigrator;
-import org.jarbframework.migrations.MigratingDataSource;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -57,61 +50,4 @@ public class MigratingDataSourceTest {
         assertEquals("henk", jdbcTemplate.queryForObject("SELECT name FROM persons WHERE id = 1", String.class));
     }
 
-    // Mocked test scenarios
-
-    /**
-     * Assert that a runtime exception is thrown, whenever a connection could not be opened.
-     * @throws SQLException the connection failure exception
-     */
-    public void testMigrateWithoutConnection() throws SQLException {
-        DataSource dataSourceMock = EasyMock.createMock(DataSource.class);
-        MigratingDataSource migratingDataSource = new MigratingDataSource();
-        migratingDataSource.setDelegate(dataSourceMock);
-
-        // Enforce our data source to throw an exception during connection retrieval
-        final Throwable invalidConnectionException = new SQLException("No connection");
-        EasyMock.expect(dataSourceMock.getConnection()).andThrow(invalidConnectionException);
-        EasyMock.replay(dataSourceMock);
-
-        try {
-            migratingDataSource.migrate();
-            fail("Expection a runtime exception, whenever the connection could not be opened");
-        } catch (RuntimeException e) {
-            assertEquals(invalidConnectionException, e.getCause());
-        }
-
-        EasyMock.verify(dataSourceMock);
-    }
-
-    /**
-     * Assert that a runtime exception is thrown, whenever a connection could not be closed.
-     * @throws SQLException the connection failure exception
-     */
-    @Test
-    public void testMigrateWithUnclosableConnection() throws SQLException {
-        DataSource dataSourceMock = EasyMock.createMock(DataSource.class);
-        DatabaseMigrator migratorMock = EasyMock.createMock(DatabaseMigrator.class);
-        MigratingDataSource migratingDataSource = new MigratingDataSource();
-        migratingDataSource.setDelegate(dataSourceMock);
-        migratingDataSource.setMigrator(migratorMock);
-
-        // Enforce our connection to throw an exception during closure
-        Connection connectionMock = EasyMock.createMock(Connection.class);
-        EasyMock.expect(dataSourceMock.getConnection()).andReturn(connectionMock);
-        migratorMock.migrate(connectionMock);
-        EasyMock.expectLastCall();
-        connectionMock.close();
-        final Throwable unclosableConnectionException = new SQLException("Stubborn connection");
-        EasyMock.expectLastCall().andThrow(unclosableConnectionException);
-        EasyMock.replay(dataSourceMock, migratorMock, connectionMock);
-
-        try {
-            migratingDataSource.migrate();
-            fail("Expecting a runtime exception, whenever the connection could not be closed");
-        } catch (RuntimeException e) {
-            assertEquals(unclosableConnectionException, e.getCause());
-        }
-
-        EasyMock.verify(dataSourceMock, migratorMock, connectionMock);
-    }
 }

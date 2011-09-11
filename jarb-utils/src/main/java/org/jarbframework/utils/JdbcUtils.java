@@ -49,6 +49,13 @@ public final class JdbcUtils {
             throw new RuntimeException(e);
         }
     }
-
+    
+    public static void commitSafely(Connection connection) {
+        try {
+            if (!connection.getAutoCommit()) connection.commit();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
     
 }
