@@ -1,41 +1,53 @@
 package org.jarbframework.utils.database;
 
+import static org.apache.commons.lang3.StringUtils.startsWithIgnoreCase;
 import static org.jarbframework.utils.JdbcUtils.doWithMetaData;
 
 import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.Map;
 
 import javax.sql.DataSource;
 
 import org.jarbframework.utils.JdbcMetadataCallback;
 
+/**
+ * Determines the database type using our JDBC meta data.
+ * @author Jeroen van Schagen
+ * @since Sep 8, 2011
+ */
 public class JdbcMetadataDatabaseTypeResolver implements DatabaseTypeResolver {
-    private static final Map<String, DatabaseType> PRODUCT_NAMES = new HashMap<String, DatabaseType>();
-    
-    static {
-        PRODUCT_NAMES.put("HSQL Database Engine", DatabaseType.HSQL);
-        PRODUCT_NAMES.put("MySQL Database Engine", DatabaseType.MYSQL);
-        PRODUCT_NAMES.put("Oracle Database Engine", DatabaseType.ORACLE);
-        PRODUCT_NAMES.put("PostgreSQL Database Engine", DatabaseType.POSTGRESQL);
-    }
 
     @Override
     public DatabaseType resolve(DataSource dataSource) {
         String databaseProductName = doWithMetaData(dataSource, new JdbcMetadataCallback<String>() {
-            
+
             @Override
             public String doWith(DatabaseMetaData databaseMetaData) throws SQLException {
                 return databaseMetaData.getDatabaseProductName();
             }
-            
+
         });
-        return lookupDatabaseType(databaseProductName);
+        DatabaseType databaseType = lookupDatabaseType(databaseProductName);
+        if (databaseType == null) {
+            throw new UnrecognizedDatabaseException("Could not determine database type for '" + databaseProductName + "'");
+        }
+        return databaseType;
     }
 
+    /**
+     * Resolve the database type for a specific product name.
+     * @param databaseProductName name of the database product
+     * @return matching database type, if it could be resolved
+     */
     private DatabaseType lookupDatabaseType(String databaseProductName) {
-        return PRODUCT_NAMES.get(databaseProductName);
+        DatabaseType databaseType = null;
+        for (DatabaseType supportedType : DatabaseType.values()) {
+            if (startsWithIgnoreCase(databaseProductName, supportedType.name())) {
+                databaseType = supportedType;
+                break;
+            }
+        }
+        return databaseType;
     }
 
 }

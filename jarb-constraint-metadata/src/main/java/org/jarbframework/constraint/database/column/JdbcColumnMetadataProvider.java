@@ -10,10 +10,10 @@ import java.util.Set;
 import javax.sql.DataSource;
 
 import org.apache.commons.lang3.StringUtils;
+import org.jarbframework.utils.JdbcUtils;
 import org.jarbframework.utils.orm.ColumnReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.jdbc.support.JdbcUtils;
 import org.springframework.util.Assert;
 
 /**
@@ -49,7 +49,7 @@ public class JdbcColumnMetadataProvider implements ColumnMetadataProvider {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         } finally {
-            JdbcUtils.closeConnection(connection);
+            JdbcUtils.closeQuietly(connection);
         }
     }
 

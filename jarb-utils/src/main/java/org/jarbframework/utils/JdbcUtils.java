@@ -11,7 +11,6 @@ import javax.sql.DataSource;
 
 /**
  * Java Database Connectivity (JDBC) utility class.
- * 
  * @author Jeroen van Schagen
  * @since 08-05-2011
  */
@@ -30,13 +29,13 @@ public final class JdbcUtils {
         Connection connection = notNull(getConnection(dataSource), "Could not open connection");
         try {
             return callback.doWith(connection.getMetaData());
-        } catch(SQLException e) {
+        } catch (SQLException e) {
             throw new RuntimeException("Could not open connection to access meta data.", e);
         } finally {
             releaseConnection(connection, dataSource);
         }
     }
-    
+
     /**
      * Close the connection, whenever it isn't {@code null}, and
      * wrap any SQL exceptions into a runtime exception.
@@ -57,5 +56,4 @@ public final class JdbcUtils {
             throw new RuntimeException(e);
         }
     }
-    
 }

@@ -18,7 +18,7 @@ import org.jarbframework.violation.resolver.vendor.PostgresViolationResolver;
  */
 public class DatabaseConstraintViolationResolverFactory {
     private DatabaseTypeResolver databaseTypeResolver = new JdbcMetadataDatabaseTypeResolver();
-    
+
     public void setDatabaseTypeResolver(DatabaseTypeResolver databaseTypeResolver) {
         this.databaseTypeResolver = databaseTypeResolver;
     }
@@ -34,19 +34,19 @@ public class DatabaseConstraintViolationResolverFactory {
     public DatabaseConstraintViolationResolver build(DataSource dataSource) {
         DatabaseConstraintViolationResolver resolver = null;
         DatabaseType databaseType = databaseTypeResolver.resolve(dataSource);
-        switch(databaseType) {
+        switch (databaseType) {
         case HSQL:
             resolver = new HsqlViolationResolver();
             break;
         case MYSQL:
             resolver = new MysqlViolationResolver();
-            break;        
+            break;
         case ORACLE:
             resolver = new OracleViolationResolver();
-            break;    
+            break;
         case POSTGRESQL:
             resolver = new PostgresViolationResolver();
-            break;    
+            break;
         }
         return resolver;
     }
