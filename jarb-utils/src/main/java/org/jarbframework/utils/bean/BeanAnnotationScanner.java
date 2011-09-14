@@ -3,7 +3,7 @@
  */
 package org.jarbframework.utils.bean;
 
-import static org.jarbframework.utils.Conditions.state;
+import static org.jarbframework.utils.Asserts.state;
 
 import java.beans.PropertyDescriptor;
 import java.lang.annotation.Annotation;

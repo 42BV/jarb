@@ -3,7 +3,7 @@
  */
 package org.jarbframework.utils.orm;
 
-import static org.jarbframework.utils.Conditions.hasText;
+import static org.jarbframework.utils.Asserts.hasText;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;

@@ -1,6 +1,6 @@
 package org.jarbframework.violation;
 
-import static org.jarbframework.utils.Conditions.notNull;
+import static org.jarbframework.utils.Asserts.notNull;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;

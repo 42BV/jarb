@@ -1,12 +1,13 @@
 package org.jarbframework.populator;
 
+import static org.jarbframework.utils.Asserts.notNull;
+
 import java.util.HashSet;
 import java.util.Set;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.util.Assert;
 
 /**
  * Database populator that can skip exceptions from a delegate populator.
@@ -16,7 +17,7 @@ import org.springframework.util.Assert;
  * @since 17-06-2011
  */
 public class FailSafeDatabasePopulator implements DatabasePopulator {
-    private static final Logger LOGGER = LoggerFactory.getLogger(FailSafeDatabasePopulator.class);
+    private final Logger logger = LoggerFactory.getLogger(FailSafeDatabasePopulator.class);
 
     /** Populator that might throw an exception. **/
     private final DatabasePopulator populator;
@@ -40,8 +41,7 @@ public class FailSafeDatabasePopulator implements DatabasePopulator {
      * @param skippingExceptionClass exception class being skipped
      */
     public FailSafeDatabasePopulator(DatabasePopulator populator, Class<? extends Exception> skippingExceptionClass) {
-        Assert.notNull(populator, "Delegate populator cannot be null");
-        this.populator = populator;
+        this.populator = notNull(populator, "Populator cannot be null");
         skippingExceptionClasses = new HashSet<Class<? extends Exception>>();
         skippingExceptionClasses.add(skippingExceptionClass);
     }
@@ -99,7 +99,7 @@ public class FailSafeDatabasePopulator implements DatabasePopulator {
      */
     private void logIfNeeded(Exception e) {
         if (logError) {
-            LOGGER.info("An error occured while executing database populator (" + populator + ").", e);
+            logger.info("An error occured while executing database populator (" + populator + ").", e);
         }
     }
 

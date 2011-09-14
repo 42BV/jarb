@@ -3,7 +3,7 @@
  */
 package org.jarbframework.violation.factory.mapping;
 
-import static org.jarbframework.utils.Conditions.notNull;
+import static org.jarbframework.utils.Asserts.notNull;
 
 import org.apache.commons.lang3.StringUtils;
 import org.jarbframework.violation.DatabaseConstraintViolation;

@@ -1,6 +1,6 @@
 package org.jarbframework.violation.factory.mapping;
 
-import static org.jarbframework.utils.Conditions.notNull;
+import static org.jarbframework.utils.Asserts.notNull;
 
 import org.jarbframework.violation.DatabaseConstraintViolation;
 

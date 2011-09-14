@@ -1,7 +1,7 @@
 package org.jarbframework.utils.spring;
 
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
-import static org.jarbframework.utils.Conditions.notNull;
+import static org.jarbframework.utils.Asserts.notNull;
 
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;

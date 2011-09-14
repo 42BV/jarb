@@ -1,23 +1,22 @@
 package org.jarbframework.populator.condition;
 
-import static org.jarbframework.utils.Conditions.notNull;
+import static org.jarbframework.utils.Asserts.notNull;
 
 import org.springframework.core.io.Resource;
 
 /**
  * Verifies whether the specified resource exists.
- * 
  * @author Jeroen van Schagen
  * @since 21-06-2011
  */
-public class ResourceExistsConditionChecker implements ConditionChecker {
+public class ResourceExistsCondition implements Condition {
     private final Resource resource;
 
     /**
-     * Construct a new {@link ResourceExistsConditionChecker}.
+     * Construct a new {@link ResourceExistsCondition}.
      * @param resource the resource being checked on existence
      */
-    public ResourceExistsConditionChecker(Resource resource) {
+    public ResourceExistsCondition(Resource resource) {
         this.resource = notNull(resource, "Cannot check the existence of a null resource");
     }
 
@@ -25,12 +24,12 @@ public class ResourceExistsConditionChecker implements ConditionChecker {
      * {@inheritDoc}
      */
     @Override
-    public ConditionCheckResult checkCondition() {
-        ConditionCheckResult conditionCheck = new ConditionCheckResult();
+    public ConditionCheckResult check() {
+        ConditionCheckResult result = new ConditionCheckResult();
         if (!resource.exists()) {
-            conditionCheck.fail("Resource '" + resource + "' does not exist.");
+            result.fail("Resource '" + resource + "' does not exist.");
         }
-        return conditionCheck;
+        return result;
     }
 
 }

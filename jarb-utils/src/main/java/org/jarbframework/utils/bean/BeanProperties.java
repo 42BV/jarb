@@ -3,7 +3,7 @@
  */
 package org.jarbframework.utils.bean;
 
-import static org.jarbframework.utils.Conditions.notNull;
+import static org.jarbframework.utils.Asserts.notNull;
 import static org.springframework.beans.BeanUtils.getPropertyDescriptors;
 
 import java.beans.PropertyDescriptor;

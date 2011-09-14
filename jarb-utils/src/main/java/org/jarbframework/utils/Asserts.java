@@ -10,7 +10,7 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
  * @author Jeroen van Schagen
  * @date Aug 29, 2011
  */
-public final class Conditions {
+public final class Asserts {
 
     /**
      * Assert that an expression evaluates {@code true}.
@@ -58,7 +58,7 @@ public final class Conditions {
         return (T) object;
     }
 
-    private Conditions() {
+    private Asserts() {
     }
 
 }

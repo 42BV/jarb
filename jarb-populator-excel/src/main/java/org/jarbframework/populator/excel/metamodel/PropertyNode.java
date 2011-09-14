@@ -4,7 +4,7 @@ import java.lang.reflect.Field;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
-import org.jarbframework.utils.Conditions;
+import org.jarbframework.utils.Asserts;
 
 /**
  * Specific node in our path.
@@ -17,7 +17,7 @@ public class PropertyNode {
      * @param field the field being represented
      */
     PropertyNode(Field field) {
-        this.field = Conditions.notNull(field, "Field cannot be null");
+        this.field = Asserts.notNull(field, "Field cannot be null");
     }
 
     /**

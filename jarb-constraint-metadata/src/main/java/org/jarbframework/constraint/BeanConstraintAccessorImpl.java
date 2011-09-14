@@ -1,6 +1,6 @@
 package org.jarbframework.constraint;
 
-import static org.jarbframework.utils.Conditions.notNull;
+import static org.jarbframework.utils.Asserts.notNull;
 
 import java.beans.PropertyDescriptor;
 import java.util.ArrayList;

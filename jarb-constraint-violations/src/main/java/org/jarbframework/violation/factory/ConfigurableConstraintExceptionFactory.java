@@ -1,6 +1,6 @@
 package org.jarbframework.violation.factory;
 
-import static org.jarbframework.utils.Conditions.notNull;
+import static org.jarbframework.utils.Asserts.notNull;
 
 import java.util.HashMap;
 import java.util.Map;

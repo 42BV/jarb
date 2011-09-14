@@ -25,30 +25,38 @@ public class MigratingDataSource extends DataSourceDelegate {
     
     @Override
     public Connection getConnection() throws SQLException {
-        migrate();
+        migrateOnDemand();
         return super.getConnection();
     }
     
     @Override
     public Connection getConnection(String username, String password) throws SQLException {
-        migrate();
+        migrateOnDemand();
         return super.getConnection(username, password);
     }
     
     /**
      * Run the database migration, whenever it hasn't been executed yet.
      */
-    private void migrate() throws SQLException {
-        if(!migrated) {
-            Connection connection = getMigrationConnection();
-            migrator.migrate(connection);
-            commitSafely(connection);
-            closeQuietly(connection);
+    private void migrateOnDemand() throws SQLException {
+        if(shouldMigrate()) {
+            doMigrate();
             migrated = true;
         }
     }
     
-    private Connection getMigrationConnection() throws SQLException {
+    private boolean shouldMigrate() {
+        return !migrated;
+    }
+    
+    private void doMigrate() throws SQLException {
+        Connection connection = openMigrationConnection();
+        migrator.migrate(connection);
+        commitSafely(connection);
+        closeQuietly(connection);
+    }
+    
+    private Connection openMigrationConnection() throws SQLException {
         return isBlank(username) ? super.getConnection() : super.getConnection(username, password);
     }
     

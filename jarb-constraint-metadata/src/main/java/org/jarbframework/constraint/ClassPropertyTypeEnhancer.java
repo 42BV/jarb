@@ -3,8 +3,8 @@
  */
 package org.jarbframework.constraint;
 
-import static org.jarbframework.utils.Conditions.hasText;
-import static org.jarbframework.utils.Conditions.notNull;
+import static org.jarbframework.utils.Asserts.hasText;
+import static org.jarbframework.utils.Asserts.notNull;
 
 /**
  * Enhances the property with a type whenever a specific

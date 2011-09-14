@@ -1,6 +1,6 @@
 package org.jarbframework.constraint.database;
 
-import static org.jarbframework.utils.Conditions.notNull;
+import static org.jarbframework.utils.Asserts.notNull;
 
 import org.jarbframework.constraint.PropertyConstraintDescription;
 import org.jarbframework.constraint.PropertyConstraintEnhancer;

@@ -1,10 +1,10 @@
 package org.jarbframework.populator;
 
+import static org.jarbframework.utils.Asserts.notNull;
+
 import java.util.Collection;
 
 import javax.annotation.PostConstruct;
-
-import org.springframework.util.Assert;
 
 /**
  * Perform database populating post construct.
@@ -23,8 +23,7 @@ public final class DatabasePopulatorExecutor {
      * @param populator database populator being invoked
      */
     public DatabasePopulatorExecutor(DatabasePopulator populator) {
-        Assert.notNull(populator, "Database populator cannot be null");
-        this.populator = populator;
+        this.populator = notNull(populator, "Populator cannot be null");
     }
     
     /**
