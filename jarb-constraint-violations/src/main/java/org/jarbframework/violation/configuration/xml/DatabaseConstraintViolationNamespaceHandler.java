@@ -6,8 +6,7 @@ public class DatabaseConstraintViolationNamespaceHandler extends NamespaceHandle
 
     @Override
     public void init() {
-        // TODO Auto-generated method stub
-        // registerBeanDefinitionParser("job", new JobParser());
+        registerBeanDefinitionParser("translate-exceptions", new TranslateExceptionsBeanDefinitionParser());
     }
 
 }
