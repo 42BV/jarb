@@ -1,4 +1,4 @@
-package org.jarbframework.violation.integration;
+package org.jarbframework.violation.configuration;
 
 import org.jarbframework.utils.spring.AdvisorAddingBeanPostProcessor;
 import org.jarbframework.violation.DatabaseConstraintExceptionTranslator;
@@ -6,7 +6,6 @@ import org.springframework.aop.Pointcut;
 import org.springframework.aop.support.annotation.AnnotationMatchingPointcut;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.stereotype.Repository;
-import org.springframework.util.Assert;
 
 /**
  * Wraps @Repository annotated beans with exception translation logic. Whenever possible,
@@ -42,9 +41,7 @@ import org.springframework.util.Assert;
  * @author Jeroen van Schagen
  * @since 17-05-2011
  */
-public class ConstraintViolationExceptionTranslatingBeanPostProcessor extends AdvisorAddingBeanPostProcessor implements InitializingBean {
-    private static final long serialVersionUID = -292839286392224628L;
-
+public class DatabaseConstraintExceptionTranslatingBeanPostProcessor extends AdvisorAddingBeanPostProcessor implements InitializingBean {
     /** Indicates where exception translation should be plugged into. */
     private Pointcut pointcut = new AnnotationMatchingPointcut(Repository.class, true);
     /** Converted into a persistence exception translator. */
@@ -53,8 +50,8 @@ public class ConstraintViolationExceptionTranslatingBeanPostProcessor extends Ad
     /**
      * Construct a new translating bean post processor.
      */
-    public ConstraintViolationExceptionTranslatingBeanPostProcessor() {
-        setAddUpFront(true); // Put translation advisor up front
+    public DatabaseConstraintExceptionTranslatingBeanPostProcessor() {
+        setAddUpFront(true);
     }
 
     /**
@@ -62,10 +59,7 @@ public class ConstraintViolationExceptionTranslatingBeanPostProcessor extends Ad
      */
     @Override
     public void afterPropertiesSet() throws Exception {
-        Assert.state(translator != null, "Exception translator cannot be null");
-        Assert.state(pointcut != null, "Pointcut cannot be null");
-
-        setAdvisor(new ConstraintViolationExceptionTranslationAdvisor(translator, pointcut));
+        setAdvisor(new DatabaseConstraintExceptionTranslationAdvisor(pointcut, translator));
     }
 
     /**

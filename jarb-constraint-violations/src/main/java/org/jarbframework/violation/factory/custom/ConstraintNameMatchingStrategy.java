@@ -1,7 +1,7 @@
 /*
  * (C) 2011 Nidera (www.nidera.com). All rights reserved.
  */
-package org.jarbframework.violation.factory.mapping;
+package org.jarbframework.violation.factory.custom;
 
 import static org.jarbframework.utils.Asserts.notNull;
 

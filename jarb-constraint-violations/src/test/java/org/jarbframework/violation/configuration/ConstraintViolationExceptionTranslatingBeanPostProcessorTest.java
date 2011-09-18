@@ -1,4 +1,4 @@
-package org.jarbframework.violation.integration;
+package org.jarbframework.violation.configuration;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;

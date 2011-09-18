@@ -1,5 +1,6 @@
-package org.jarbframework.violation.integration;
+package org.jarbframework.violation.configuration;
 
+import static org.jarbframework.violation.factory.custom.ConstraintViolationMatcher.name;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -10,11 +11,12 @@ import javax.sql.DataSource;
 
 import org.jarbframework.violation.DatabaseConstraintExceptionTranslator;
 import org.jarbframework.violation.UniqueKeyViolationException;
+import org.jarbframework.violation.configuration.DatabaseConstraintExceptionTranslatorFactoryBean;
 import org.jarbframework.violation.domain.LicenseNumberAlreadyExistsException;
 import org.jarbframework.violation.domain.LicenseNumberAlreadyExistsExceptionFactory;
 import org.jarbframework.violation.factory.DatabaseConstraintExceptionFactory;
 import org.jarbframework.violation.factory.SimpleConstraintExceptionFactory;
-import org.jarbframework.violation.factory.mapping.ConstraintViolationMatcher;
+import org.jarbframework.violation.factory.custom.ConstraintViolationMatcher;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -36,11 +38,11 @@ public class ConstraintViolationExceptionTranslatorFactoryBeanTest {
     @Autowired
     private DataSource dataSource;
 
-    private ConstraintViolationExceptionTranslatorFactoryBean factory;
+    private DatabaseConstraintExceptionTranslatorFactoryBean factory;
 
     @Before
     public void setUp() throws Exception {
-        factory = new ConstraintViolationExceptionTranslatorFactoryBean();
+        factory = new DatabaseConstraintExceptionTranslatorFactoryBean();
         factory.setDataSource(dataSource);
     }
 
@@ -66,7 +68,7 @@ public class ConstraintViolationExceptionTranslatorFactoryBeanTest {
         Map<ConstraintViolationMatcher, DatabaseConstraintExceptionFactory> factories;
         factories = new HashMap<ConstraintViolationMatcher, DatabaseConstraintExceptionFactory>();
         DatabaseConstraintExceptionFactory exceptionFactory = new LicenseNumberAlreadyExistsExceptionFactory();
-        factories.put(new ConstraintViolationMatcher("uk_cars_license"), exceptionFactory);
+        factories.put(name("uk_cars_license"), exceptionFactory);
         factory.setCustomExceptionFactories(factories);
         DatabaseConstraintExceptionTranslator translator = factory.getObject();
         RuntimeException hsqlException = new RuntimeException(UNIQUE_KEY_EXCEPTION_MESSAGE);

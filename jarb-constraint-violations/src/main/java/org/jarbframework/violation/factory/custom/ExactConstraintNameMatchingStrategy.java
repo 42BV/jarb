@@ -1,4 +1,4 @@
-package org.jarbframework.violation.factory.mapping;
+package org.jarbframework.violation.factory.custom;
 
 /**
  * Constraint name has to match the expression exactly.
@@ -16,5 +16,4 @@ public class ExactConstraintNameMatchingStrategy extends ConstraintNameMatchingS
     protected boolean nameMatches(String constraintName, String expression) {
         return caseSensitive ? constraintName.equals(expression) : constraintName.equalsIgnoreCase(expression);
     }
-
 }

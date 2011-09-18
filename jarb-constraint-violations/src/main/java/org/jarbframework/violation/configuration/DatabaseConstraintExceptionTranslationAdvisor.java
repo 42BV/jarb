@@ -1,4 +1,6 @@
-package org.jarbframework.violation.integration;
+package org.jarbframework.violation.configuration;
+
+import static org.jarbframework.utils.Asserts.notNull;
 
 import org.aopalliance.aop.Advice;
 import org.aopalliance.intercept.MethodInterceptor;
@@ -13,23 +15,20 @@ import org.springframework.aop.support.AbstractPointcutAdvisor;
  * @author Jeroen van Schagen
  * @since 19-05-2011
  */
-public class ConstraintViolationExceptionTranslationAdvisor extends AbstractPointcutAdvisor {
-    private static final long serialVersionUID = -462142297188191739L;
-
+public class DatabaseConstraintExceptionTranslationAdvisor extends AbstractPointcutAdvisor {
     /** Describes how exceptions should be translated **/
-    private final DatabaseConstraintExceptionTranslator exceptionTranslator;
+    private final DatabaseConstraintExceptionTranslator translator;
     /** Describes when the translation process should be triggered **/
     private final Pointcut pointcut;
 
     /**
-     * Construct a new {@link ConstraintViolationExceptionTranslationAdvisor}.
-     * 
-     * @param exceptionTranslator translates the exceptions into constraint violation exceptions
+     * Construct a new {@link DatabaseConstraintExceptionTranslationAdvisor}.
      * @param pointcut aspect oriented pointcut, describes which methods should be intercepted
+     * @param translator translates the exceptions into constraint violation exceptions
      */
-    public ConstraintViolationExceptionTranslationAdvisor(DatabaseConstraintExceptionTranslator exceptionTranslator, Pointcut pointcut) {
-        this.pointcut = pointcut;
-        this.exceptionTranslator = exceptionTranslator;
+    public DatabaseConstraintExceptionTranslationAdvisor(Pointcut pointcut, DatabaseConstraintExceptionTranslator translator) {
+        this.pointcut = notNull(pointcut, "Pointcut cannot be null.");
+        this.translator = notNull(translator, "Translator cannot be null.");
     }
 
     /**
@@ -62,7 +61,7 @@ public class ConstraintViolationExceptionTranslationAdvisor extends AbstractPoin
             try {
                 return invocation.proceed();
             } catch (RuntimeException exception) {
-                Throwable translatedException = exceptionTranslator.translateExceptionIfPossible(exception);
+                Throwable translatedException = translator.translateExceptionIfPossible(exception);
                 if (translatedException != null) {
                     // If a translation could be made, throw the translated exception instead
                     throw translatedException;

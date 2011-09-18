@@ -1,4 +1,4 @@
-package org.jarbframework.violation.factory;
+package org.jarbframework.violation.factory.custom;
 
 import static org.jarbframework.violation.DatabaseConstraintViolation.violation;
 import static org.jarbframework.violation.DatabaseConstraintViolationType.UNIQUE_KEY;
@@ -6,6 +6,7 @@ import static org.junit.Assert.assertTrue;
 
 import org.jarbframework.violation.UniqueKeyViolationException;
 import org.jarbframework.violation.domain.LicenseNumberAlreadyExistsException;
+import org.jarbframework.violation.factory.custom.ConfigurableConstraintExceptionFactory;
 import org.junit.Before;
 import org.junit.Test;
 

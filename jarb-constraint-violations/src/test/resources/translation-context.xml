@@ -10,16 +10,16 @@
         http://www.springframework.org/schema/context/spring-context-3.0.xsd">
 
     <!-- Attempts to translate exceptions into more "obvious" constraint violation exceptions -->
-    <bean class="org.jarbframework.violation.integration.ConstraintViolationExceptionTranslatingBeanPostProcessor">
+    <bean class="org.jarbframework.violation.configuration.DatabaseConstraintExceptionTranslatingBeanPostProcessor">
         <property name="translator">
-            <bean class="org.jarbframework.violation.integration.ConstraintViolationExceptionTranslatorFactoryBean">
+            <bean class="org.jarbframework.violation.configuration.DatabaseConstraintExceptionTranslatorFactoryBean">
                 <property name="dataSource" ref="dataSource"/>
                 <!-- Custom exception classes, these are optional -->
                 <property name="customExceptionFactories">
                     <map>
 	                    <entry>
 	                        <key>
-	                            <bean class="org.jarbframework.violation.factory.mapping.ConstraintViolationMatcher">
+	                            <bean class="org.jarbframework.violation.factory.custom.ConstraintViolationMatcher" factory-method="name">
 	                                <constructor-arg value="uk_cars_license_number"/>
 	                            </bean>
 	                        </key>

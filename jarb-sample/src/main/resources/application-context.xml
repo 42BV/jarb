@@ -92,24 +92,25 @@
     </bean>
     
     <!-- Translate JDBC driver exceptions into Java exceptions -->
-	<bean class="org.jarbframework.violation.integration.ConstraintViolationExceptionTranslatingBeanPostProcessor">
+    <bean class="org.jarbframework.violation.configuration.DatabaseConstraintExceptionTranslatingBeanPostProcessor">
         <property name="translator">
-            <bean class="org.jarbframework.violation.integration.ConstraintViolationExceptionTranslatorFactoryBean">
+            <bean class="org.jarbframework.violation.configuration.DatabaseConstraintExceptionTranslatorFactoryBean">
                 <property name="dataSource" ref="dataSource"/>
+                <!-- Custom exception classes, these are optional -->
                 <property name="customExceptionFactories">
-	              <map>
-		              <entry>
-		                  <key>
-		                      <bean class="org.jarbframework.violation.factory.mapping.ConstraintViolationMatcher">
-		                          <constructor-arg value="uk_posts_title"/>
-		                      </bean>
-		                  </key>
-		                  <bean class="org.jarbframework.violation.factory.ReflectionConstraintExceptionFactory">
-		                      <constructor-arg value="org.jarbframework.sample.domain.PostTitleAlreadyExistsException"/>
-		                  </bean>
-		              </entry>
-	              </map>
-	          </property>
+                    <map>
+                        <entry>
+							<key>
+								<bean class="org.jarbframework.violation.factory.custom.ConstraintViolationMatcher" factory-method="name">
+							        <constructor-arg value="uk_posts_title"/>
+								</bean>
+							</key>
+							<bean class="org.jarbframework.violation.factory.ReflectionConstraintExceptionFactory">
+							    <constructor-arg value="org.jarbframework.sample.domain.PostTitleAlreadyExistsException"/>
+							</bean>
+                        </entry>
+                    </map>
+                </property>
             </bean>
         </property>
     </bean>

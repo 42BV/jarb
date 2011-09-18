@@ -1,12 +1,12 @@
 /*
  * (C) 2011 Nidera (www.nidera.com). All rights reserved.
  */
-package org.jarbframework.violation.factory.mapping;
+package org.jarbframework.violation.factory.custom;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import org.jarbframework.violation.factory.mapping.ExactConstraintNameMatchingStrategy;
+import org.jarbframework.violation.factory.custom.ExactConstraintNameMatchingStrategy;
 import org.junit.Before;
 import org.junit.Test;
 

@@ -1,4 +1,4 @@
-package org.jarbframework.violation.factory.mapping;
+package org.jarbframework.violation.factory.custom;
 
 import static org.apache.commons.lang3.StringUtils.lowerCase;
 
@@ -22,5 +22,4 @@ public class RegexConstraintNameMatchingStrategy extends ConstraintNameMatchingS
         }
         return constraintName.matches(expression);
     }
-
 }
