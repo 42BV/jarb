@@ -18,7 +18,7 @@ import org.jarbframework.utils.spring.SingletonFactoryBean;
  * @author Jeroen van Schagen
  * @since 8-6-2011
  */
-public class BeanConstraintAccessorFactoryBean extends SingletonFactoryBean<BeanConstraintAccessor> {
+public class BeanConstraintDescriptorFactoryBean extends SingletonFactoryBean<BeanConstraintDescriptor> {
     private DatabaseConstraintRepository databaseConstraintRepository;
 
     public void setDatabaseConstraintRepository(DatabaseConstraintRepository databaseConstraintRepository) {
@@ -26,8 +26,8 @@ public class BeanConstraintAccessorFactoryBean extends SingletonFactoryBean<Bean
     }
 
     @Override
-    protected BeanConstraintAccessor createObject() throws Exception {
-        BeanConstraintAccessorImpl accessor = new BeanConstraintAccessorImpl();
+    protected BeanConstraintDescriptor createObject() throws Exception {
+        BeanConstraintDescriptorImpl accessor = new BeanConstraintDescriptorImpl();
         accessor.registerEnhancer(new DatabasePropertyConstraintDescriptionEnhancer(databaseConstraintRepository));
         accessor.registerEnhancer(new AutoIncrementalPropertyConstraintEnhancer());
         // Basic constraint annotations

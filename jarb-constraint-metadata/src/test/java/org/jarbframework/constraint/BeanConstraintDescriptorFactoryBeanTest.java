@@ -3,8 +3,8 @@ package org.jarbframework.constraint;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import org.jarbframework.constraint.BeanConstraintAccessor;
-import org.jarbframework.constraint.BeanConstraintAccessorFactoryBean;
+import org.jarbframework.constraint.BeanConstraintDescriptor;
+import org.jarbframework.constraint.BeanConstraintDescriptorFactoryBean;
 import org.jarbframework.constraint.BeanConstraintDescription;
 import org.jarbframework.constraint.PropertyConstraintDescription;
 import org.jarbframework.constraint.database.DatabaseConstraintRepository;
@@ -18,15 +18,15 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "classpath:application-context.xml" })
-public class BeanConstraintAccessorFactoryBeanTest {
-    private BeanConstraintAccessorFactoryBean factoryBean;
+public class BeanConstraintDescriptorFactoryBeanTest {
+    private BeanConstraintDescriptorFactoryBean factoryBean;
 
     @Autowired
     private DatabaseConstraintRepository databaseConstraintRepository;
 
     @Before
     public void setUp() throws Exception {
-        factoryBean = new BeanConstraintAccessorFactoryBean();
+        factoryBean = new BeanConstraintDescriptorFactoryBean();
         factoryBean.setDatabaseConstraintRepository(databaseConstraintRepository);
     }
 
@@ -35,7 +35,7 @@ public class BeanConstraintAccessorFactoryBeanTest {
      */
     @Test
     public void testGeneratedObject() throws Exception {
-        BeanConstraintAccessor descriptor = factoryBean.getObject();
+        BeanConstraintDescriptor descriptor = factoryBean.getObject();
         BeanConstraintDescription<Car> carDescription = descriptor.describe(Car.class);
         PropertyConstraintDescription licenseDescription = carDescription.getProperty("licenseNumber");
         assertEquals(String.class, licenseDescription.getJavaType()); // Retrieved by introspection

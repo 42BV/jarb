@@ -23,7 +23,7 @@ public class ConfigurableConstraintExceptionFactoryTest {
      */
     @Test
     public void testCustomException() {
-        factory.registerException("uk_cars_license", LicenseNumberAlreadyExistsException.class);
+        factory.register("uk_cars_license", LicenseNumberAlreadyExistsException.class);
         Throwable exception = factory.createException(violation(UNIQUE_KEY).named("uk_cars_license").build(), null);
         assertTrue(exception instanceof LicenseNumberAlreadyExistsException);
     }   

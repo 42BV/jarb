@@ -22,7 +22,7 @@ import org.jarbframework.violation.factory.SimpleConstraintExceptionFactory;
  */
 public class ConfigurableConstraintExceptionFactory implements DatabaseConstraintExceptionFactory {
     /** Registered custom exception factories. **/
-    private List<CustomExceptionMapping> customFactoryMappings;
+    private List<ExceptionFactoryMapping> customFactoryMappings;
     /** Factory used whenever no custom factory could be determined. **/
     private DatabaseConstraintExceptionFactory defaultFactory;
 
@@ -30,7 +30,7 @@ public class ConfigurableConstraintExceptionFactory implements DatabaseConstrain
      * Construct a new {@link ConfigurableConstraintExceptionFactory}.
      */
     public ConfigurableConstraintExceptionFactory() {
-        customFactoryMappings = new ArrayList<CustomExceptionMapping>();
+        customFactoryMappings = new ArrayList<ExceptionFactoryMapping>();
         defaultFactory = new SimpleConstraintExceptionFactory();
     }
 
@@ -51,7 +51,7 @@ public class ConfigurableConstraintExceptionFactory implements DatabaseConstrain
      */
     private DatabaseConstraintExceptionFactory findFactoryFor(DatabaseConstraintViolation violation) {
         DatabaseConstraintExceptionFactory factory = defaultFactory;
-        for (CustomExceptionMapping customFactoryMapping : customFactoryMappings) {
+        for (ExceptionFactoryMapping customFactoryMapping : customFactoryMappings) {
             if (customFactoryMapping.supports(violation)) {
                 factory = customFactoryMapping.getExceptionFactory();
                 break;
@@ -61,43 +61,52 @@ public class ConfigurableConstraintExceptionFactory implements DatabaseConstrain
     }
     
     /**
-     * Register a custom exception class for a specific constraint.
+     * Register a custom exception class for specific database constraints.
      * @param constraintName name of the constraint that our factory applies to
      * @param exceptionClass class of the exception that should be thrown
      * @return this factory instance for chaining
      */
-    public ConfigurableConstraintExceptionFactory registerException(String constraintName, Class<? extends Throwable> exceptionClass) {
-        return registerException(name(constraintName), exceptionClass);
+    public ConfigurableConstraintExceptionFactory register(String constraintName, Class<? extends Throwable> exceptionClass) {
+        return register(name(constraintName), exceptionClass);
     }
 
     /**
-     * Register a custom exception class for a specific constraint.
+     * Register a custom exception class for specific database constraints.
      * @param violationMatcher describes the constraint(s) that our factory applies to
      * @param exceptionClass class of the exception that should be thrown
      * @return this factory instance for chaining
      */
-    public ConfigurableConstraintExceptionFactory registerException(ConstraintViolationMatcher violationMatcher, Class<? extends Throwable> exceptionClass) {
-        return registerFactory(violationMatcher, new ReflectionConstraintExceptionFactory(exceptionClass));
+    public ConfigurableConstraintExceptionFactory register(ConstraintViolationMatcher violationMatcher, Class<? extends Throwable> exceptionClass) {
+        return register(violationMatcher, new ReflectionConstraintExceptionFactory(exceptionClass));
     }
     
     /**
-     * Register a custom exception factory for a specific constraint.
+     * Register a custom exception factory for specific database constraints.
      * @param constraintName name of the constraint that our factory applies to
      * @param exceptionFactory reference to the factory that should be used
      * @return this factory instance for chaining
      */
-    public ConfigurableConstraintExceptionFactory registerFactory(String constraintName, DatabaseConstraintExceptionFactory exceptionFactory) {
-        return registerFactory(name(constraintName), exceptionFactory);
+    public ConfigurableConstraintExceptionFactory register(String constraintName, DatabaseConstraintExceptionFactory exceptionFactory) {
+        return register(name(constraintName), exceptionFactory);
     }
 
     /**
-     * Register a custom exception factory for a specific constraint.
+     * Register a custom exception factory for specific database constraints.
      * @param violationMatcher describes the constraint(s) that our factory applies to
      * @param exceptionFactory reference to the factory that should be used
      * @return this factory instance for chaining
      */
-    public ConfigurableConstraintExceptionFactory registerFactory(ConstraintViolationMatcher violationMatcher, DatabaseConstraintExceptionFactory exceptionFactory) {
-        customFactoryMappings.add(new CustomExceptionMapping(violationMatcher, exceptionFactory));
+    public ConfigurableConstraintExceptionFactory register(ConstraintViolationMatcher violationMatcher, DatabaseConstraintExceptionFactory exceptionFactory) {
+        return register(new ExceptionFactoryMapping(violationMatcher, exceptionFactory));
+    }
+    
+    /**
+     * Register a custom exception factory for specific database constraints.
+     * @param exceptionFactoryMapping describes the mapping of an exception factory on constraint violations.
+     * @return this factory instance for chaining
+     */
+    public ConfigurableConstraintExceptionFactory register(ExceptionFactoryMapping exceptionFactoryMapping) {
+        customFactoryMappings.add(notNull(exceptionFactoryMapping, "Exception factory mapping cannot be null."));
         return this;
     }
 

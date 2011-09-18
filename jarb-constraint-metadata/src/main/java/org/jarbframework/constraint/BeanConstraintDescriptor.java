@@ -6,7 +6,7 @@ package org.jarbframework.constraint;
  * @author Jeroen van Schagen
  * @since 4-6-2011
  */
-public interface BeanConstraintAccessor {
+public interface BeanConstraintDescriptor {
 
     /**
      * Generate bean constraint metadata.

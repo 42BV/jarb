@@ -10,12 +10,12 @@ import org.jarbframework.utils.bean.PropertyReference;
 import org.springframework.beans.BeanUtils;
 
 /**
- * Default implementation of {@link BeanConstraintAccessor}.
+ * Default implementation of {@link BeanConstraintDescriptor}.
  * 
  * @author Jeroen van Schagen
  * @since 31-05-2011
  */
-public class BeanConstraintAccessorImpl implements BeanConstraintAccessor {
+public class BeanConstraintDescriptorImpl implements BeanConstraintDescriptor {
     private final List<PropertyConstraintEnhancer> propertyConstraintEnhancers = new ArrayList<PropertyConstraintEnhancer>();
 
     @Override
@@ -58,7 +58,7 @@ public class BeanConstraintAccessorImpl implements BeanConstraintAccessor {
      * @param propertyConstraintEnhancer enhancer used to improve property constraint descriptions
      * @return the same bean constraint accessor, used for chaining
      */
-    public BeanConstraintAccessorImpl registerEnhancer(PropertyConstraintEnhancer propertyConstraintEnhancer) {
+    public BeanConstraintDescriptorImpl registerEnhancer(PropertyConstraintEnhancer propertyConstraintEnhancer) {
         propertyConstraintEnhancers.add(notNull(propertyConstraintEnhancer, "Cannot add a null property constraint enhancer"));
         return this;
     }

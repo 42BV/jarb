@@ -42,7 +42,7 @@ public class DatabaseConstraintExceptionTranslatorFactoryBean extends SingletonF
         ConfigurableConstraintExceptionFactory exceptionFactory = new ConfigurableConstraintExceptionFactory();
         if (customExceptionFactories != null) {
             for (Map.Entry<ConstraintViolationMatcher, DatabaseConstraintExceptionFactory> factoriesEntry : customExceptionFactories.entrySet()) {
-                exceptionFactory.registerFactory(factoriesEntry.getKey(), factoriesEntry.getValue());
+                exceptionFactory.register(factoriesEntry.getKey(), factoriesEntry.getValue());
             }
         }
         if (defaultExceptionFactory != null) {

@@ -48,7 +48,11 @@ public class ReflectionConstraintExceptionFactory implements DatabaseConstraintE
      */
     @Override
     public Throwable createException(DatabaseConstraintViolation violation, Throwable cause) {
-        // Build an array of construction arguments
+        return instantiateClass(exceptionConstructor, buildArguments(violation, cause));
+    }
+    
+    // Build an array of construction arguments
+    private Object[] buildArguments(DatabaseConstraintViolation violation, Throwable cause) {
         final Class<?>[] parameterTypes = exceptionConstructor.getParameterTypes();
         Object[] arguments = new Object[parameterTypes.length];
         for (int parameterIndex = 0; parameterIndex < parameterTypes.length; parameterIndex++) {
@@ -60,8 +64,7 @@ public class ReflectionConstraintExceptionFactory implements DatabaseConstraintE
                 arguments[parameterIndex] = this;
             }
         }
-        // Return the created exception
-        return instantiateClass(exceptionConstructor, arguments);
+        return arguments;
     }
 
     /**
@@ -72,26 +75,22 @@ public class ReflectionConstraintExceptionFactory implements DatabaseConstraintE
      */
     @SuppressWarnings("unchecked")
     private static Constructor<? extends Throwable> findBestSupportedConstructor(Class<? extends Throwable> exceptionClass) {
-        // Retrieve a list of all constructors, sorted on the amount of parameters it receives
+        Constructor<? extends Throwable> supportedConstructor = null;
+        
+        // Return the first supported constructor, as this will automatically be the "best"
         List<Constructor<?>> declaredConstructors = new ArrayList<Constructor<?>>();
         declaredConstructors.addAll(Arrays.asList(exceptionClass.getDeclaredConstructors()));
         Collections.sort(declaredConstructors, ConstructorParameterTypeLengthComparator.INSTANCE);
         for (Constructor<?> constructor : declaredConstructors) {
-            // Return the first supported constructor, as this will automatically be the "best"
             if (supportsConstructor(constructor)) {
-                return (Constructor<? extends Throwable>) constructor;
+                supportedConstructor = (Constructor<? extends Throwable>) constructor;
+                break;
             }
         }
-        // We expect a matching constructor be found
-        throw new IllegalStateException("Could not find a supported constructor in '" + exceptionClass.getSimpleName() + "'.");
+        
+        return notNull(supportedConstructor, "Could not find a supported constructor in '" + exceptionClass.getSimpleName() + "'.");
     }
 
-    /**
-     * Determine if we support a constructor. Constructors are only supported when
-     * all parameter types are supported.
-     * @param constructor the constructor being checked
-     * @return {@code true} if the constructor is supported, else {@code false}
-     */
     private static boolean supportsConstructor(Constructor<?> constructor) {
         boolean supported = true;
         for (Class<?> parameterType : constructor.getParameterTypes()) {
@@ -103,11 +102,6 @@ public class ReflectionConstraintExceptionFactory implements DatabaseConstraintE
         return supported;
     }
 
-    /**
-     * Determine if a parameter type is supported.
-     * @param parameterType class of the parameter
-     * @return {@code true} if the parameter type is supported, else {@code false}
-     */
     private static boolean supportsParameterType(Class<?> parameterType) {
         return DatabaseConstraintViolation.class.equals(parameterType)
                 || Throwable.class.isAssignableFrom(parameterType)
@@ -137,7 +131,6 @@ public class ReflectionConstraintExceptionFactory implements DatabaseConstraintE
         private Integer numberOfParameterTypes(Constructor<?> constructor) {
             return Integer.valueOf(constructor.getParameterTypes().length);
         }
-
     }
 
 }

@@ -2,7 +2,7 @@ package org.jarbframework.constraint;
 
 import static org.junit.Assert.assertEquals;
 
-import org.jarbframework.constraint.BeanConstraintAccessorImpl;
+import org.jarbframework.constraint.BeanConstraintDescriptorImpl;
 import org.jarbframework.constraint.BeanConstraintDescription;
 import org.jarbframework.constraint.PropertyConstraintDescription;
 import org.jarbframework.constraint.domain.Car;
@@ -11,12 +11,12 @@ import org.jarbframework.constraint.jsr303.LengthPropertyConstraintEnhancer;
 import org.junit.Before;
 import org.junit.Test;
 
-public class BeanConstraintAccessorImplTest {
-    private BeanConstraintAccessorImpl describtor;
+public class BeanConstraintDescriptorImplTest {
+    private BeanConstraintDescriptorImpl describtor;
 
     @Before
     public void setUp() {
-        describtor = new BeanConstraintAccessorImpl();
+        describtor = new BeanConstraintDescriptorImpl();
     }
 
     /**

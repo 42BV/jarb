@@ -87,7 +87,7 @@
     </bean>
     
     <!-- Provides a bean constraint meta-data, required for front-end -->
-    <bean class="org.jarbframework.constraint.BeanConstraintAccessorFactoryBean">
+    <bean class="org.jarbframework.constraint.BeanConstraintDescriptorFactoryBean">
     	<property name="databaseConstraintRepository" ref="databaseConstraintRepository"/>
     </bean>
     
