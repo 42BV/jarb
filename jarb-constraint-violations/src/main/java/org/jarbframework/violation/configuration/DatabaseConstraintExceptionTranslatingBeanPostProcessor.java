@@ -1,8 +1,14 @@
 package org.jarbframework.violation.configuration;
 
+import static org.jarbframework.utils.Asserts.notNull;
+
+import org.aopalliance.aop.Advice;
+import org.aopalliance.intercept.MethodInterceptor;
+import org.aopalliance.intercept.MethodInvocation;
 import org.jarbframework.utils.spring.AdvisorAddingBeanPostProcessor;
 import org.jarbframework.violation.DatabaseConstraintExceptionTranslator;
 import org.springframework.aop.Pointcut;
+import org.springframework.aop.support.AbstractPointcutAdvisor;
 import org.springframework.aop.support.annotation.AnnotationMatchingPointcut;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.stereotype.Repository;
@@ -51,15 +57,14 @@ public class DatabaseConstraintExceptionTranslatingBeanPostProcessor extends Adv
      * Construct a new translating bean post processor.
      */
     public DatabaseConstraintExceptionTranslatingBeanPostProcessor() {
+        setAdvisor(new ExceptionTranslatingAdvisor());
         setAddUpFront(true);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void afterPropertiesSet() throws Exception {
-        setAdvisor(new DatabaseConstraintExceptionTranslationAdvisor(pointcut, translator));
+        notNull(pointcut, "Pointcut cannot be null.");
+        notNull(translator, "Translator cannot be null.");
     }
 
     /**
@@ -76,6 +81,31 @@ public class DatabaseConstraintExceptionTranslatingBeanPostProcessor extends Adv
      */
     public void setTranslator(DatabaseConstraintExceptionTranslator translator) {
         this.translator = translator;
+    }
+    
+    private class ExceptionTranslatingAdvisor extends AbstractPointcutAdvisor {
+
+        @Override
+        public Pointcut getPointcut() {
+            return pointcut;
+        }
+
+        @Override
+        public Advice getAdvice() {
+            return new MethodInterceptor() {
+                
+                @Override
+                public Object invoke(MethodInvocation invocation) throws Throwable {
+                    try {
+                        return invocation.proceed();
+                    } catch (RuntimeException exception) {
+                        Throwable translatedException = translator.translateExceptionIfPossible(exception);
+                        throw translatedException != null ? translatedException : exception;
+                    }
+                }
+                
+            };
+        }
     }
 
 }

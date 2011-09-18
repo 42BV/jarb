@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema version="2.0"
+    xmlns="http://www.jarbframework.org/schema/violations"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    xmlns:beans="http://www.springframework.org/schema/beans"
+    xmlns:tool="http://www.springframework.org/schema/tool"
+    targetNamespace="http://www.jarbframework.org/schema/violations"
+    elementFormDefault="qualified"
+    attributeFormDefault="unqualified">
+
+    <xsd:import namespace="http://www.springframework.org/schema/beans" />
+    <xsd:import namespace="http://www.springframework.org/schema/tool" />
+
+    <xsd:annotation>
+        <xsd:documentation><![CDATA[Defines the configuration elements for JaRB's constraint violation module.]]></xsd:documentation>
+    </xsd:annotation>
+
+    <xsd:element name="enable-exception-translation">
+        <xsd:annotation>
+            <xsd:documentation>
+                Enable database constraint violation exception translation.
+            </xsd:documentation>
+        </xsd:annotation>
+    </xsd:element>
+    
+</xsd:schema>
