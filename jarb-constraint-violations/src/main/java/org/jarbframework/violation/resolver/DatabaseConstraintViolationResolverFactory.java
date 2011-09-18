@@ -1,5 +1,7 @@
 package org.jarbframework.violation.resolver;
 
+import static org.jarbframework.utils.Asserts.notNull;
+
 import javax.sql.DataSource;
 
 import org.jarbframework.utils.database.DatabaseType;
@@ -16,10 +18,14 @@ import org.jarbframework.violation.resolver.vendor.PostgresViolationResolver;
  * @since 16-05-2011
  */
 public class DatabaseConstraintViolationResolverFactory {
-    private DatabaseTypeResolver databaseTypeResolver = new JdbcMetadataDatabaseTypeResolver();
-
-    public void setDatabaseTypeResolver(DatabaseTypeResolver databaseTypeResolver) {
-        this.databaseTypeResolver = databaseTypeResolver;
+    private DatabaseTypeResolver databaseTypeResolver;
+    
+    public DatabaseConstraintViolationResolverFactory() {
+        this(new JdbcMetadataDatabaseTypeResolver());
+    }
+    
+    public DatabaseConstraintViolationResolverFactory(DatabaseTypeResolver databaseTypeResolver) {
+        this.databaseTypeResolver = notNull(databaseTypeResolver, "Database type resolver cannot be null.");
     }
 
     /**

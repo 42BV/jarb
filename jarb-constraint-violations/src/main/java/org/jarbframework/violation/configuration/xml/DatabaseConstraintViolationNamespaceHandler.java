@@ -6,7 +6,8 @@ public class DatabaseConstraintViolationNamespaceHandler extends NamespaceHandle
 
     @Override
     public void init() {
-        registerBeanDefinitionParser("translate-exceptions", new TranslateExceptionsBeanDefinitionParser());
+        registerBeanDefinitionParser("enable-translations", new EnableTranslationsBeanDefinitionParser());
+        registerBeanDefinitionParser("translator", new ExceptionTranslatorBeanDefinitionParser());
     }
 
 }

@@ -12,8 +12,8 @@ import org.w3c.dom.Element;
  * @author Jeroen van Schagen
  * @since 18-09-2011
  */
-public class TranslateExceptionsBeanDefinitionParser extends AbstractBeanDefinitionParser {
-    public static final String TRANSLATOR_REF = "translator-ref";
+public class EnableTranslationsBeanDefinitionParser extends AbstractBeanDefinitionParser {
+    public static final String TRANSLATOR_REF = "translator";
     
     @Override
     protected AbstractBeanDefinition parseInternal(Element element, ParserContext parserContext) {
