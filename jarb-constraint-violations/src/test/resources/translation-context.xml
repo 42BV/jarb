@@ -11,9 +11,7 @@
     
     <violations:translator id="translator">
         <violations:resolver>
-            <bean class="org.jarbframework.violation.configuration.DatabaseConstraintViolationResolverFactoryBean">
-                <property name="dataSource" ref="dataSource"/>
-            </bean>
+            <ref bean="resolver"/>
         </violations:resolver>
         <violations:exception-factory>
             <bean class="org.jarbframework.violation.configuration.ConfigurableConstraintExceptionFactoryFactoryBean">
@@ -25,6 +23,10 @@
             </bean>
         </violations:exception-factory>
     </violations:translator>
+
+	<bean id="resolver" class="org.jarbframework.violation.configuration.DatabaseConstraintViolationResolverFactoryBean">
+	    <property name="dataSource" ref="dataSource"/>
+	</bean>
 
     <violations:enable-translations translator="translator"/>
     

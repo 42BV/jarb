@@ -13,7 +13,7 @@ import org.jarbframework.constraint.database.column.ColumnMetadata;
 import org.jarbframework.utils.bean.BeanAnnotationScanner;
 import org.jarbframework.utils.bean.ModifiableBean;
 import org.jarbframework.utils.bean.PropertyReference;
-import org.jarbframework.utils.spring.BeanFactoryScanner;
+import org.jarbframework.utils.spring.BeanSearcher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -58,7 +58,7 @@ public class DatabaseConstrainedValidator implements ConstraintValidator<Databas
     private final BeanAnnotationScanner annotationScanner = new BeanAnnotationScanner(true, true);
 
     /** Used to retrieve column meta-data repository during initialization **/
-    private BeanFactoryScanner beanAccessor;
+    private BeanSearcher beanAccessor;
 
     /** Provides the meta-data of columns in our database **/
     private DatabaseConstraintRepository databaseConstraintRepository;
@@ -224,7 +224,7 @@ public class DatabaseConstrainedValidator implements ConstraintValidator<Databas
      */
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-        this.beanAccessor = new BeanFactoryScanner(applicationContext);
+        this.beanAccessor = new BeanSearcher(applicationContext);
     }
 
 }

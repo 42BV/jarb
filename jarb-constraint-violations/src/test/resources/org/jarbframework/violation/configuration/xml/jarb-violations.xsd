@@ -72,6 +72,7 @@
     <xsd:group name="beanElementGroup">
 		<xsd:choice>
 			<xsd:element ref="beans:bean"/>
+			<xsd:element ref="beans:ref"/>
 		</xsd:choice>
 	</xsd:group>
     

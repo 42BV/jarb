@@ -1,9 +1,7 @@
 package org.jarbframework.violation.configuration.xml;
 
-import java.util.List;
-
+import org.jarbframework.utils.spring.xml.BeanParsingHelper;
 import org.jarbframework.violation.DatabaseConstraintExceptionTranslator;
-import org.springframework.beans.factory.config.BeanDefinitionHolder;
 import org.springframework.beans.factory.support.AbstractBeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.xml.AbstractBeanDefinitionParser;
@@ -24,35 +22,30 @@ public class ExceptionTranslatorBeanDefinitionParser extends AbstractBeanDefinit
     protected AbstractBeanDefinition parseInternal(Element element, ParserContext parserContext) {
         BeanDefinitionBuilder translatorBuilder = BeanDefinitionBuilder.genericBeanDefinition(DatabaseConstraintExceptionTranslator.class);
         translatorBuilder.addConstructorArgValue(parseResolver(element, parserContext));
-        BeanDefinitionHolder exceptionFactoryDefinition = parseExceptionFactory(element, parserContext);
-        if(exceptionFactoryDefinition != null) {
-            translatorBuilder.addConstructorArgValue(exceptionFactoryDefinition);
+        Object exceptionFactory = parseExceptionFactory(element, parserContext);
+        if(exceptionFactory != null) {
+            translatorBuilder.addConstructorArgValue(exceptionFactory);
         }
         return translatorBuilder.getBeanDefinition();
     }
     
-    private BeanDefinitionHolder parseResolver(Element translatorElement, ParserContext parserContext) {
+    private Object parseResolver(Element translatorElement, ParserContext parserContext) {
         return parseBeanFromCustomTag(translatorElement, RESOLVER_PROPERTY, true, parserContext);
     }
     
-    private BeanDefinitionHolder parseExceptionFactory(Element translatorElement, ParserContext parserContext) {
+    private Object parseExceptionFactory(Element translatorElement, ParserContext parserContext) {
         return parseBeanFromCustomTag(translatorElement, EXCEPTION_FACTORY_PROPERTY, false, parserContext);
     }
     
-    private BeanDefinitionHolder parseBeanFromCustomTag(Element containerElement, String tagName, boolean required, ParserContext parserContext) {
-        BeanDefinitionHolder beanDefinition = null;
+    private Object parseBeanFromCustomTag(Element containerElement, String tagName, boolean required, ParserContext parserContext) {
+        Object bean = null;
         Element resolverElement = DomUtils.getChildElementByTagName(containerElement, tagName);
         if(resolverElement != null) {
-            beanDefinition = parseUnderlyingBean(resolverElement, parserContext);
+            bean = BeanParsingHelper.parseBeanInsideCustomElement(resolverElement, parserContext, null);
         } else if(required) {
             parserContext.getReaderContext().error("The <" + containerElement.getNodeName() + "/> does not have a " + tagName + "tag.", containerElement);
         }
-        return beanDefinition;
+        return bean;
     }
-    
-    private BeanDefinitionHolder parseUnderlyingBean(Element containerElement, ParserContext parserContext) {
-        List<Element> childElements = DomUtils.getChildElements(containerElement);
-        return parserContext.getDelegate().parseBeanDefinitionElement(childElements.get(0));
-    }
-        
+
 }

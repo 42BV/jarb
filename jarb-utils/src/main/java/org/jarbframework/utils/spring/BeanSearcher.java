@@ -11,14 +11,14 @@ import org.springframework.beans.factory.NoSuchBeanDefinitionException;
  * @author Jeroen van Schagen
  * @since Sep 8, 2011
  */
-public class BeanFactoryScanner {
+public class BeanSearcher {
     private final BeanFactory beanFactory;
 
     /**
-     * Construct a new {@link BeanFactoryScanner}.
+     * Construct a new {@link BeanSearcher}.
      * @param beanFactory factory that contains the beans
      */
-    public BeanFactoryScanner(BeanFactory beanFactory) {
+    public BeanSearcher(BeanFactory beanFactory) {
         this.beanFactory = notNull(beanFactory, "Bean factory cannot be null.");
     }
 
