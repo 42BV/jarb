@@ -1,12 +1,14 @@
 package org.jarbframework.violation.configuration.xml;
 
-import org.jarbframework.utils.spring.xml.BeanParsingHelper;
+import static org.jarbframework.utils.spring.xml.BeanParsingHelper.parsePropertyFromAttributeOrChild;
+import static org.springframework.beans.factory.support.BeanDefinitionBuilder.genericBeanDefinition;
+
 import org.jarbframework.violation.DatabaseConstraintExceptionTranslator;
+import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.support.AbstractBeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.xml.AbstractBeanDefinitionParser;
 import org.springframework.beans.factory.xml.ParserContext;
-import org.springframework.util.xml.DomUtils;
 import org.w3c.dom.Element;
 
 /**
@@ -20,32 +22,21 @@ public class ExceptionTranslatorBeanDefinitionParser extends AbstractBeanDefinit
     
     @Override
     protected AbstractBeanDefinition parseInternal(Element element, ParserContext parserContext) {
-        BeanDefinitionBuilder translatorBuilder = BeanDefinitionBuilder.genericBeanDefinition(DatabaseConstraintExceptionTranslator.class);
-        translatorBuilder.addConstructorArgValue(parseResolver(element, parserContext));
-        Object exceptionFactory = parseExceptionFactory(element, parserContext);
+        BeanDefinitionBuilder translatorBuilder = genericBeanDefinition(DatabaseConstraintExceptionTranslator.class);
+        translatorBuilder.addConstructorArgValue(parseResolver(element, parserContext, translatorBuilder.getBeanDefinition()));
+        Object exceptionFactory = parseExceptionFactory(element, parserContext, translatorBuilder.getBeanDefinition());
         if(exceptionFactory != null) {
             translatorBuilder.addConstructorArgValue(exceptionFactory);
         }
         return translatorBuilder.getBeanDefinition();
     }
     
-    private Object parseResolver(Element translatorElement, ParserContext parserContext) {
-        return parseBeanFromCustomTag(translatorElement, RESOLVER_PROPERTY, true, parserContext);
+    private Object parseResolver(Element element, ParserContext parserContext, BeanDefinition translatorDefinition) {
+        return parsePropertyFromAttributeOrChild(element, RESOLVER_PROPERTY, parserContext, translatorDefinition);
     }
     
-    private Object parseExceptionFactory(Element translatorElement, ParserContext parserContext) {
-        return parseBeanFromCustomTag(translatorElement, EXCEPTION_FACTORY_PROPERTY, false, parserContext);
+    private Object parseExceptionFactory(Element element, ParserContext parserContext, BeanDefinition translatorDefinition) {
+        return parsePropertyFromAttributeOrChild(element, EXCEPTION_FACTORY_PROPERTY, parserContext, translatorDefinition);
     }
     
-    private Object parseBeanFromCustomTag(Element containerElement, String tagName, boolean required, ParserContext parserContext) {
-        Object bean = null;
-        Element resolverElement = DomUtils.getChildElementByTagName(containerElement, tagName);
-        if(resolverElement != null) {
-            bean = BeanParsingHelper.parseBeanInsideCustomElement(resolverElement, parserContext, null);
-        } else if(required) {
-            parserContext.getReaderContext().error("The <" + containerElement.getNodeName() + "/> does not have a " + tagName + "tag.", containerElement);
-        }
-        return bean;
-    }
-
 }
