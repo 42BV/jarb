@@ -22,16 +22,19 @@ import org.jarbframework.violation.factory.SimpleConstraintExceptionFactory;
  */
 public class ConfigurableConstraintExceptionFactory implements DatabaseConstraintExceptionFactory {
     /** Registered custom exception factories. **/
-    private List<ExceptionFactoryMapping> customFactoryMappings;
+    private final List<ExceptionFactoryMapping> customFactoryMappings = new ArrayList<ExceptionFactoryMapping>();
     /** Factory used whenever no custom factory could be determined. **/
-    private DatabaseConstraintExceptionFactory defaultFactory;
+    private final DatabaseConstraintExceptionFactory defaultFactory;
 
     /**
      * Construct a new {@link ConfigurableConstraintExceptionFactory}.
      */
     public ConfigurableConstraintExceptionFactory() {
-        customFactoryMappings = new ArrayList<ExceptionFactoryMapping>();
-        defaultFactory = new SimpleConstraintExceptionFactory();
+        this(new SimpleConstraintExceptionFactory());
+    }
+    
+    public ConfigurableConstraintExceptionFactory(DatabaseConstraintExceptionFactory defaultFactory) {
+        this.defaultFactory = notNull(defaultFactory, "Default violation exception factory cannot be null.");
     }
 
     /**
@@ -108,15 +111,6 @@ public class ConfigurableConstraintExceptionFactory implements DatabaseConstrain
     public ConfigurableConstraintExceptionFactory registerMapping(ExceptionFactoryMapping exceptionFactoryMapping) {
         customFactoryMappings.add(notNull(exceptionFactoryMapping, "Exception factory mapping cannot be null."));
         return this;
-    }
-
-    /**
-     * Register a different default factory. This default factory will be used whenever
-     * we cannot find a specific exception factory for our constraint.
-     * @param defaultFactory reference to the default factory that should be used, cannot be {@code null}
-     */
-    public void setDefaultFactory(DatabaseConstraintExceptionFactory defaultFactory) {
-        this.defaultFactory = notNull(defaultFactory, "Default violation exception factory cannot be null.");
     }
 
 }

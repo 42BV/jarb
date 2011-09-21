@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema version="2.0"
+    xmlns="http://www.jarbframework.org/schema/violations"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    xmlns:beans="http://www.springframework.org/schema/beans"
+    xmlns:tool="http://www.springframework.org/schema/tool"
+    targetNamespace="http://www.jarbframework.org/schema/violations"
+    elementFormDefault="qualified"
+    attributeFormDefault="unqualified">
+
+    <xsd:import namespace="http://www.springframework.org/schema/beans"/>
+    <xsd:import namespace="http://www.springframework.org/schema/tool"/>
+
+    <xsd:annotation>
+        <xsd:documentation>
+            <![CDATA[
+                Defines all configuration elements for the constraint violation module.
+            ]]>
+        </xsd:documentation>
+    </xsd:annotation>
+
+    <xsd:element name="enable-translations">
+        <xsd:annotation>
+            <xsd:documentation>
+                Enable database constraint violation exception translation.
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexType>
+            <xsd:attribute name="id" type="xsd:ID"/>
+            <xsd:attribute name="translator" use="required" type="xsd:string"/>
+        </xsd:complexType>
+    </xsd:element>
+    
+    <xsd:element name="translator">
+        <xsd:complexType>        
+            <xsd:all>               
+                <xsd:element name="resolver" minOccurs="0" maxOccurs="1">
+                    <xsd:complexType>
+                        <xsd:group ref="beanElementGroup" minOccurs="1" maxOccurs="1"/>
+                    </xsd:complexType>
+                </xsd:element>
+                <xsd:element name="exception-factory" minOccurs="0" maxOccurs="1">
+                    <xsd:complexType>
+                        <xsd:group ref="exceptionFactoryElementGroup" minOccurs="1" maxOccurs="1"/>
+                    </xsd:complexType>
+                </xsd:element>
+            </xsd:all>
+            <xsd:attribute name="id" type="xsd:ID"/>
+            <xsd:attribute name="resolve-by-data-source" type="xsd:string" default="dataSource"/>
+            <xsd:attribute name="resolver" type="xsd:string"/>
+            <xsd:attribute name="exception-factory" type="xsd:string"/>
+        </xsd:complexType>
+    </xsd:element>
+    
+    <xsd:element name="configurable-exception-factory">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element name="exception-mapping" minOccurs="0" maxOccurs="unbounded">
+                    <xsd:complexType>
+                        <xsd:all>
+                            <xsd:element name="matching-strategy" minOccurs="0" maxOccurs="1">
+								<xsd:complexType>
+								    <xsd:group ref="beanElementGroup" minOccurs="1" maxOccurs="1"/>
+								</xsd:complexType>
+                            </xsd:element>
+                            <xsd:element name="exception-factory" minOccurs="0" maxOccurs="1">
+                                <xsd:complexType>
+                                    <xsd:group ref="exceptionFactoryElementGroup" minOccurs="1" maxOccurs="1"/>
+                                </xsd:complexType>
+                            </xsd:element>
+                        </xsd:all>
+                        <xsd:attribute name="expression" use="required" type="xsd:string"/>
+                        <xsd:attribute name="matching-strategy" type="xsd:string"/>
+                        <xsd:attribute name="matching" default="name">
+                            <xsd:simpleType>
+                                <xsd:restriction base="xsd:string">
+                                    <xsd:enumeration value="name"/>
+                                    <xsd:enumeration value="regex"/>
+                                </xsd:restriction>
+                            </xsd:simpleType>
+                        </xsd:attribute>
+                        <xsd:attribute name="exception-class" type="xsd:string"/>
+                        <xsd:attribute name="exception-factory" type="xsd:string"/>
+                    </xsd:complexType>
+                </xsd:element>
+                <xsd:element name="default-factory" minOccurs="0" maxOccurs="1">
+                    <xsd:complexType>
+                        <xsd:group ref="exceptionFactoryElementGroup" minOccurs="1" maxOccurs="1"/>
+                    </xsd:complexType>
+                </xsd:element>
+            </xsd:sequence>
+            <xsd:attribute name="id" type="xsd:ID"/>
+            <xsd:attribute name="default-factory" type="xsd:string"/>
+        </xsd:complexType>
+    </xsd:element>
+    
+   <xsd:group name="beanElementGroup">
+        <xsd:choice>
+            <xsd:element ref="beans:bean"/>
+            <xsd:element ref="beans:ref"/>
+        </xsd:choice>
+    </xsd:group>
+    
+    <xsd:group name="exceptionFactoryElementGroup">
+        <xsd:choice>
+            <xsd:element ref="configurable-exception-factory"/>
+            <xsd:element ref="beans:bean"/>
+            <xsd:element ref="beans:ref"/>
+        </xsd:choice>
+    </xsd:group>
+    
+</xsd:schema>

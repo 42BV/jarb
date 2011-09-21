@@ -10,7 +10,6 @@ import static org.jarbframework.violation.DatabaseConstraintViolationType.UNIQUE
  * @since 27-05-2011
  */
 public class UniqueKeyViolationException extends DatabaseConstraintViolationException {
-    private static final long serialVersionUID = -5771965201756493983L;
 
     /**
      * Construct a new {@link UniqueKeyViolationException}.

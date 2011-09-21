@@ -1,4 +1,4 @@
-package org.jarbframework.violation.configuration;
+package org.jarbframework.violation.configuration.xml;
 
 import javax.sql.DataSource;
 
@@ -7,7 +7,7 @@ import org.jarbframework.violation.resolver.DatabaseConstraintViolationResolver;
 import org.jarbframework.violation.resolver.DatabaseConstraintViolationResolverFactory;
 import org.springframework.beans.factory.annotation.Required;
 
-public class DatabaseConstraintViolationResolverFactoryBean extends SingletonFactoryBean<DatabaseConstraintViolationResolver> {
+class DatabaseConstraintViolationResolverParserFactoryBean extends SingletonFactoryBean<DatabaseConstraintViolationResolver> {
     private DataSource dataSource;
     
     @Required
@@ -19,5 +19,4 @@ public class DatabaseConstraintViolationResolverFactoryBean extends SingletonFac
     protected DatabaseConstraintViolationResolver createObject() throws Exception {
         return new DatabaseConstraintViolationResolverFactory().build(dataSource);
     }
-
 }

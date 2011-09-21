@@ -22,7 +22,7 @@ public class ExceptionFactoryMapping {
     }
     
     public boolean supports(DatabaseConstraintViolation violation) {
-        return violationMatcher.matches(violation);
+        return violationMatcher.supports(violation);
     }
     
     public DatabaseConstraintExceptionFactory getExceptionFactory() {

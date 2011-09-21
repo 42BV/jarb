@@ -7,26 +7,15 @@
     xsi:schemaLocation="
         http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
         http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
-        http://www.jarbframework.org/schema/violations org/jarbframework/violation/configuration/xml/jarb-violations.xsd">
+        http://www.jarbframework.org/schema/violations jarb-violations.xsd">
     
-    <violations:translator id="translator">
-        <violations:resolver>
-            <ref bean="resolver"/>
-        </violations:resolver>
+    <violations:translator id="translator" resolve-by-data-source="dataSource">
         <violations:exception-factory>
-            <bean class="org.jarbframework.violation.configuration.ConfigurableConstraintExceptionFactoryFactoryBean">
-                <property name="customExceptionClasses">
-                    <map>
-                        <entry key="uk_cars_license_number" value="org.jarbframework.violation.domain.LicenseNumberAlreadyExistsException"/>
-                    </map>
-                </property>
-            </bean>
+            <violations:configurable-exception-factory>
+                <violations:exception-mapping expression="uk_cars_license_number" exception-class="org.jarbframework.violation.domain.LicenseNumberAlreadyExistsException"/>
+            </violations:configurable-exception-factory>
         </violations:exception-factory>
     </violations:translator>
-
-	<bean id="resolver" class="org.jarbframework.violation.configuration.DatabaseConstraintViolationResolverFactoryBean">
-	    <property name="dataSource" ref="dataSource"/>
-	</bean>
 
     <violations:enable-translations translator="translator"/>
     

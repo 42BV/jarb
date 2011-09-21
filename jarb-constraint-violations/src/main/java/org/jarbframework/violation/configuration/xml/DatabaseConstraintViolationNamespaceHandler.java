@@ -8,6 +8,7 @@ public class DatabaseConstraintViolationNamespaceHandler extends NamespaceHandle
     public void init() {
         registerBeanDefinitionParser("enable-translations", new EnableTranslationsBeanDefinitionParser());
         registerBeanDefinitionParser("translator", new ExceptionTranslatorBeanDefinitionParser());
+        registerBeanDefinitionParser("configurable-exception-factory", new ConfigurableConstraintExceptionFactoryBeanDefinitionParser());
     }
 
 }

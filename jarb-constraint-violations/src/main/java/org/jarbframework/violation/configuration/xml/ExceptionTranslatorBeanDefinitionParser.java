@@ -11,32 +11,35 @@ import org.springframework.beans.factory.xml.AbstractBeanDefinitionParser;
 import org.springframework.beans.factory.xml.ParserContext;
 import org.w3c.dom.Element;
 
-/**
- * Parses a database constraint exception translator from XML.
- * @author Jeroen van Schagen
- * @since 18-09-2011
- */
 public class ExceptionTranslatorBeanDefinitionParser extends AbstractBeanDefinitionParser {
-    public static final String RESOLVER_PROPERTY = "resolver";
-    public static final String EXCEPTION_FACTORY_PROPERTY = "exception-factory";
+    public static final String RESOLVER_ATTRIBUTE = "resolver";
+    public static final String DATASOURCE_RESOLVER_ATTRIBUTE = "resolve-by-data-source";
+    public static final String EXCEPTION_FACTORY_ATTRIBUTE = "exception-factory";
     
     @Override
     protected AbstractBeanDefinition parseInternal(Element element, ParserContext parserContext) {
         BeanDefinitionBuilder translatorBuilder = genericBeanDefinition(DatabaseConstraintExceptionTranslator.class);
-        translatorBuilder.addConstructorArgValue(parseResolver(element, parserContext, translatorBuilder.getBeanDefinition()));
-        Object exceptionFactory = parseExceptionFactory(element, parserContext, translatorBuilder.getBeanDefinition());
+        BeanDefinition translatorDefinition = translatorBuilder.getRawBeanDefinition();
+        translatorBuilder.addConstructorArgValue(parseResolver(element, parserContext, translatorDefinition));
+        Object exceptionFactory = parseExceptionFactory(element, parserContext, translatorDefinition);
         if(exceptionFactory != null) {
             translatorBuilder.addConstructorArgValue(exceptionFactory);
         }
         return translatorBuilder.getBeanDefinition();
     }
     
-    private Object parseResolver(Element element, ParserContext parserContext, BeanDefinition translatorDefinition) {
-        return parsePropertyFromAttributeOrChild(element, RESOLVER_PROPERTY, parserContext, translatorDefinition);
+    private Object parseResolver(Element element, ParserContext parserContext, BeanDefinition parent) {
+        Object resolver = parsePropertyFromAttributeOrChild(element, RESOLVER_ATTRIBUTE, parserContext, parent);
+        if(resolver == null) {
+            BeanDefinitionBuilder resolverBuilder = genericBeanDefinition(DatabaseConstraintViolationResolverParserFactoryBean.class);
+            resolverBuilder.addPropertyReference("dataSource", element.getAttribute(DATASOURCE_RESOLVER_ATTRIBUTE));
+            resolver = resolverBuilder.getBeanDefinition();
+        }
+        return resolver;
     }
     
-    private Object parseExceptionFactory(Element element, ParserContext parserContext, BeanDefinition translatorDefinition) {
-        return parsePropertyFromAttributeOrChild(element, EXCEPTION_FACTORY_PROPERTY, parserContext, translatorDefinition);
+    private Object parseExceptionFactory(Element element, ParserContext parserContext, BeanDefinition parent) {
+        return parsePropertyFromAttributeOrChild(element, EXCEPTION_FACTORY_ATTRIBUTE, parserContext, parent);
     }
     
 }
