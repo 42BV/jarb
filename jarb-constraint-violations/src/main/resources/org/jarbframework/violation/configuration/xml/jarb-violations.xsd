@@ -201,7 +201,7 @@
             <xsd:attribute name="default-factory" type="xsd:string">
 	            <xsd:annotation>
 	                <xsd:documentation>
-                        Factory used to generate exceptions whenever there is no supported mapping.
+	                   Factory used to generate exceptions whenever there is no supported mapping.
 	                </xsd:documentation>
 	            </xsd:annotation>
             </xsd:attribute>
