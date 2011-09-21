@@ -117,14 +117,14 @@
                     <xsd:complexType>
                         <xsd:all>
                             <xsd:element name="matching-strategy" minOccurs="0" maxOccurs="1">
-			                    <xsd:annotation>
-			                        <xsd:documentation>
-			                            Determines whether a violation is supported by our mapping.
-			                        </xsd:documentation>
-			                    </xsd:annotation>
-								<xsd:complexType>
-								    <xsd:group ref="beanElementGroup" minOccurs="1" maxOccurs="1"/>
-								</xsd:complexType>
+                                <xsd:annotation>
+                                    <xsd:documentation>
+                                        Determines whether a violation is supported by our mapping.
+                                    </xsd:documentation>
+                                </xsd:annotation>
+                                <xsd:complexType>
+                                    <xsd:group ref="beanElementGroup" minOccurs="1" maxOccurs="1"/>
+                                </xsd:complexType>
                             </xsd:element>
                             <xsd:element name="exception-factory" minOccurs="0" maxOccurs="1">
                                 <xsd:annotation>
