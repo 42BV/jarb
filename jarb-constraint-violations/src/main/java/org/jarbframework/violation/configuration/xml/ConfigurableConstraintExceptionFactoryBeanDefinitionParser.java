@@ -20,6 +20,11 @@ import org.springframework.beans.factory.xml.AbstractBeanDefinitionParser;
 import org.springframework.beans.factory.xml.ParserContext;
 import org.w3c.dom.Element;
 
+/**
+ * Parses a {@link ConfigurableConstraintExceptionFactory} from XML.
+ * @author Jeroen van Schagen
+ * @since 22-09-2011
+ */
 public class ConfigurableConstraintExceptionFactoryBeanDefinitionParser extends AbstractBeanDefinitionParser {
 
     @Override
@@ -27,7 +32,7 @@ public class ConfigurableConstraintExceptionFactoryBeanDefinitionParser extends 
         BeanDefinitionBuilder factoryBuilder = genericBeanDefinition(ConfigurableConstraintExceptionFactoryParserFactoryBean.class);
         BeanDefinition factoryDefinition = factoryBuilder.getRawBeanDefinition();
         factoryBuilder.addPropertyValue("defaultFactory", parseDefaultExceptionFactory(element, parserContext, factoryDefinition));
-        factoryBuilder.addPropertyValue("customFactoryMappings", parseExceptionMappings(element, parserContext, factoryDefinition));
+        factoryBuilder.addPropertyValue("exceptionMappings", parseExceptionMappings(element, parserContext, factoryDefinition));
         return factoryBuilder.getBeanDefinition();
     }
     
@@ -48,30 +53,33 @@ public class ConfigurableConstraintExceptionFactoryBeanDefinitionParser extends 
     }
     
     static final class ConfigurableConstraintExceptionFactoryParserFactoryBean extends SingletonFactoryBean<ConfigurableConstraintExceptionFactory> {
-        private Collection<ExceptionFactoryMapping> customFactoryMappings;
         private DatabaseConstraintExceptionFactory defaultFactory;
-        
-        @Required
-        public void setCustomFactoryMappings(Collection<ExceptionFactoryMapping> customFactoryMappings) {
-            this.customFactoryMappings = customFactoryMappings;
-        }
+        private Collection<ExceptionFactoryMapping> exceptionMappings;
         
         public void setDefaultFactory(DatabaseConstraintExceptionFactory defaultFactory) {
             this.defaultFactory = defaultFactory;
         }
+        
+        @Required
+        public void setExceptionMappings(Collection<ExceptionFactoryMapping> exceptionMappings) {
+            this.exceptionMappings = exceptionMappings;
+        }
 
         @Override
         protected ConfigurableConstraintExceptionFactory createObject() throws Exception {
-            ConfigurableConstraintExceptionFactory configurableFactory;
-            if(defaultFactory != null) {
-                configurableFactory = new ConfigurableConstraintExceptionFactory(defaultFactory);
-            } else {
-                configurableFactory = new ConfigurableConstraintExceptionFactory();
+            ConfigurableConstraintExceptionFactory factory = instantateFactory();
+            return registerMappings(factory);
+        }
+        
+        private ConfigurableConstraintExceptionFactory instantateFactory() {
+            return defaultFactory != null ? new ConfigurableConstraintExceptionFactory(defaultFactory) : new ConfigurableConstraintExceptionFactory();
+        }
+        
+        private ConfigurableConstraintExceptionFactory registerMappings(ConfigurableConstraintExceptionFactory factory) {
+            for(ExceptionFactoryMapping exceptionMapping : exceptionMappings) {
+                factory.registerMapping(exceptionMapping);
             }
-            for(ExceptionFactoryMapping customFactoryMapping : customFactoryMappings) {
-                configurableFactory.registerMapping(customFactoryMapping);
-            }
-            return configurableFactory;
+            return factory;
         }
         
     }

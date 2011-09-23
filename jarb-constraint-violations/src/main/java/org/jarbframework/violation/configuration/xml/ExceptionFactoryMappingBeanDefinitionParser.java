@@ -12,6 +12,11 @@ import org.springframework.beans.factory.xml.BeanDefinitionParser;
 import org.springframework.beans.factory.xml.ParserContext;
 import org.w3c.dom.Element;
 
+/**
+ * Parses a {@link ExceptionFactoryMapping} from XML.
+ * @author Jeroen van Schagen
+ * @since 22-09-2011
+ */
 public class ExceptionFactoryMappingBeanDefinitionParser implements BeanDefinitionParser {    
     private final BeanDefinition parentDefinition;
     

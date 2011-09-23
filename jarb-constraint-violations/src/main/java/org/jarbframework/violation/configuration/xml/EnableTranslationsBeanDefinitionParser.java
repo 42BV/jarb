@@ -13,6 +13,11 @@ import org.springframework.beans.factory.xml.AbstractBeanDefinitionParser;
 import org.springframework.beans.factory.xml.ParserContext;
 import org.w3c.dom.Element;
 
+/**
+ * Parses a {@link DatabaseConstraintExceptionTranslatingBeanPostProcessor} from XML.
+ * @author Jeroen van Schagen
+ * @since 22-09-2011
+ */
 public class EnableTranslationsBeanDefinitionParser extends AbstractBeanDefinitionParser {
     
     @Override

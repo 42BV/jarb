@@ -18,7 +18,12 @@ import org.springframework.beans.factory.xml.AbstractBeanDefinitionParser;
 import org.springframework.beans.factory.xml.ParserContext;
 import org.w3c.dom.Element;
 
-public class ExceptionTranslatorBeanDefinitionParser extends AbstractBeanDefinitionParser {
+/**
+ * Parses a {@link DatabaseConstraintExceptionTranslator} from XML.
+ * @author Jeroen van Schagen
+ * @since 22-09-2011
+ */
+public class DatabaseConstraintExceptionTranslatorBeanDefinitionParser extends AbstractBeanDefinitionParser {
     
     @Override
     protected AbstractBeanDefinition parseInternal(Element element, ParserContext parserContext) {
