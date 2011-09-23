@@ -2,27 +2,29 @@ package org.jarbframework.violation.configuration.xml;
 
 import static org.jarbframework.utils.spring.xml.BeanParsingHelper.parsePropertyFromAttributeOrChild;
 import static org.springframework.beans.factory.support.BeanDefinitionBuilder.genericBeanDefinition;
+import static org.springframework.util.xml.DomUtils.getChildElementByTagName;
 
+import javax.sql.DataSource;
+
+import org.jarbframework.utils.spring.SingletonFactoryBean;
 import org.jarbframework.violation.DatabaseConstraintExceptionTranslator;
+import org.jarbframework.violation.resolver.DatabaseConstraintViolationResolver;
+import org.jarbframework.violation.resolver.DatabaseConstraintViolationResolverFactory;
+import org.springframework.beans.factory.annotation.Required;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.support.AbstractBeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.xml.AbstractBeanDefinitionParser;
 import org.springframework.beans.factory.xml.ParserContext;
-import org.springframework.util.xml.DomUtils;
 import org.w3c.dom.Element;
 
 public class ExceptionTranslatorBeanDefinitionParser extends AbstractBeanDefinitionParser {
-    public static final String RESOLVER_ATTRIBUTE = "resolver";
-    public static final String DATA_SOURCE_ATTRIBUTE = "data-source";
-    public static final String EXCEPTION_FACTORY_ATTRIBUTE = "exception-factory";
-    public static final String CONFIGURABLE_EXCEPTION_FACTORY_ELEMENT = "configurable-exception-factory";
     
     @Override
     protected AbstractBeanDefinition parseInternal(Element element, ParserContext parserContext) {
         BeanDefinitionBuilder translatorBuilder = genericBeanDefinition(DatabaseConstraintExceptionTranslator.class);
         BeanDefinition translatorDefinition = translatorBuilder.getRawBeanDefinition();
-        translatorBuilder.addConstructorArgValue(parseResolver(element, parserContext, translatorDefinition));
+        translatorBuilder.addConstructorArgValue(parseViolationResolver(element, parserContext, translatorDefinition));
         Object exceptionFactory = parseExceptionFactory(element, parserContext, translatorDefinition);
         if(exceptionFactory != null) {
             translatorBuilder.addConstructorArgValue(exceptionFactory);
@@ -30,10 +32,10 @@ public class ExceptionTranslatorBeanDefinitionParser extends AbstractBeanDefinit
         return translatorBuilder.getBeanDefinition();
     }
     
-    private Object parseResolver(Element element, ParserContext parserContext, BeanDefinition parent) {
-        Object resolver = parsePropertyFromAttributeOrChild(element, RESOLVER_ATTRIBUTE, parserContext, parent);
+    private Object parseViolationResolver(Element element, ParserContext parserContext, BeanDefinition parentDefinition) {
+        Object resolver = parsePropertyFromAttributeOrChild(element, "resolver", parserContext, parentDefinition);
         if(resolver == null) {
-            resolver = createDefaultViolationResolver(element.getAttribute(DATA_SOURCE_ATTRIBUTE));
+            resolver = createDefaultViolationResolver(element.getAttribute("data-source"));
         }
         return resolver;
     }
@@ -44,15 +46,40 @@ public class ExceptionTranslatorBeanDefinitionParser extends AbstractBeanDefinit
         return resolverBuilder.getBeanDefinition();
     }
     
-    private Object parseExceptionFactory(Element element, ParserContext parserContext, BeanDefinition parent) {
-        Object exceptionFactory = parsePropertyFromAttributeOrChild(element, EXCEPTION_FACTORY_ATTRIBUTE, parserContext, parent);
+    private Object parseExceptionFactory(Element element, ParserContext parserContext, BeanDefinition parentDefinition) {
+        Object exceptionFactory = parsePropertyFromAttributeOrChild(element, "exception-factory", parserContext, parentDefinition);
         if(exceptionFactory == null) {
-            Element configurableFactoryElement = DomUtils.getChildElementByTagName(element, CONFIGURABLE_EXCEPTION_FACTORY_ELEMENT);
-            if(configurableFactoryElement != null) {
-                exceptionFactory = parserContext.getDelegate().parsePropertySubElement(configurableFactoryElement, parent);
-            }
+            exceptionFactory = parseConfigurableExceptionFactory(element, parserContext, parentDefinition);
         }
         return exceptionFactory;
+    }
+    
+    private Object parseConfigurableExceptionFactory(Element element, ParserContext parserContext, BeanDefinition parentDefinition) {
+        Object exceptionFactory = null;
+        Element configurableFactoryElement = getChildElementByTagName(element, "configurable-exception-factory");
+        if(configurableFactoryElement != null) {
+            exceptionFactory = parserContext.getDelegate().parsePropertySubElement(configurableFactoryElement, parentDefinition);
+        }
+        return exceptionFactory;
+    }
+    
+    static final class DatabaseConstraintViolationResolverParserFactoryBean extends SingletonFactoryBean<DatabaseConstraintViolationResolver> {
+        private DataSource dataSource;
+        
+        @Required
+        public void setDataSource(DataSource dataSource) {
+            this.dataSource = dataSource;
+        }
+
+        @Override
+        protected DatabaseConstraintViolationResolver createObject() throws Exception {
+            return new DatabaseConstraintViolationResolverFactory().build(dataSource);
+        }
+    }
+
+    @Override
+    protected boolean shouldGenerateIdAsFallback() {
+        return true;
     }
     
 }

@@ -1,5 +1,6 @@
 package org.jarbframework.violation.configuration.xml;
 
+import static org.jarbframework.utils.spring.xml.BeanParsingHelper.parsePropertyFromAttributeOrChild;
 import static org.springframework.beans.factory.support.BeanDefinitionBuilder.genericBeanDefinition;
 
 import org.jarbframework.violation.configuration.DatabaseConstraintExceptionTranslatingBeanPostProcessor;
@@ -13,17 +14,19 @@ import org.springframework.beans.factory.xml.ParserContext;
 import org.w3c.dom.Element;
 
 public class EnableTranslationsBeanDefinitionParser extends AbstractBeanDefinitionParser {
-    private static final String TRANSLATOR_ATTRIBUTE = "translator";
-    private static final String POINTCUT_ATTRIBUTE = "pointcut";
     
     @Override
     protected AbstractBeanDefinition parseInternal(Element element, ParserContext parserContext) {
         BeanDefinitionBuilder builder = genericBeanDefinition(DatabaseConstraintExceptionTranslatingBeanPostProcessor.class);
-        builder.addPropertyReference("translator", element.getAttribute(TRANSLATOR_ATTRIBUTE));
-        if(element.hasAttribute(POINTCUT_ATTRIBUTE)) {
-            builder.addPropertyValue("pointcut", createPointcut(element.getAttribute(POINTCUT_ATTRIBUTE)));
+        builder.addPropertyValue("translator", parseTranslator(element, parserContext, builder.getBeanDefinition()));
+        if(element.hasAttribute("pointcut")) {
+            builder.addPropertyValue("pointcut", createPointcut(element.getAttribute("pointcut")));
         }
         return builder.getBeanDefinition();
+    }
+    
+    private Object parseTranslator(Element element, ParserContext parserContext, BeanDefinition parentDefinition) {
+        return parsePropertyFromAttributeOrChild(element, "translator", parserContext, parentDefinition);
     }
     
     private BeanDefinition createPointcut(String expression) {
