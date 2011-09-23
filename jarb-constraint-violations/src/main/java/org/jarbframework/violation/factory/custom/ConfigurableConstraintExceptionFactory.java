@@ -1,7 +1,7 @@
 package org.jarbframework.violation.factory.custom;
 
 import static org.jarbframework.utils.Asserts.notNull;
-import static org.jarbframework.violation.factory.custom.ConstraintViolationMatcher.name;
+import static org.jarbframework.violation.factory.custom.ConstraintNameMatcher.exact;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -70,7 +70,7 @@ public class ConfigurableConstraintExceptionFactory implements DatabaseConstrain
      * @return this factory instance for chaining
      */
     public ConfigurableConstraintExceptionFactory registerException(String constraintName, Class<? extends Throwable> exceptionClass) {
-        return registerException(name(constraintName), exceptionClass);
+        return registerException(exact(constraintName), exceptionClass);
     }
 
     /**
@@ -90,7 +90,7 @@ public class ConfigurableConstraintExceptionFactory implements DatabaseConstrain
      * @return this factory instance for chaining
      */
     public ConfigurableConstraintExceptionFactory registerFactory(String constraintName, DatabaseConstraintExceptionFactory exceptionFactory) {
-        return registerFactory(name(constraintName), exceptionFactory);
+        return registerFactory(exact(constraintName), exceptionFactory);
     }
 
     /**

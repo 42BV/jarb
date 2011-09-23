@@ -94,12 +94,10 @@
     </bean>
     
     <!-- Translate JDBC driver exceptions into Java exceptions -->
-    <violations:translator id="translator" resolve-by-data-source="dataSource">
-        <violations:exception-factory>
-            <violations:configurable-exception-factory>
-                <violations:exception-mapping expression="uk_posts_title" exception-class="org.jarbframework.sample.domain.PostTitleAlreadyExistsException"/>
-            </violations:configurable-exception-factory>
-        </violations:exception-factory>
+    <violations:translator id="translator" data-source="dataSource">
+	    <violations:configurable-exception-factory>
+	        <violations:exception-mapping constraint="uk_posts_title" exception="org.jarbframework.sample.domain.PostTitleAlreadyExistsException"/>
+	    </violations:configurable-exception-factory>
     </violations:translator>
 
     <violations:enable-translations translator="translator"/>

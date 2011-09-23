@@ -38,6 +38,13 @@
 	                </xsd:documentation>
 	            </xsd:annotation>
             </xsd:attribute>
+            <xsd:attribute name="pointcut" type="xsd:string">
+                <xsd:annotation>
+                    <xsd:documentation>
+                        Pointcut expression that declares where to attempt translations.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:attribute>
         </xsd:complexType>
     </xsd:element>
     
@@ -49,28 +56,31 @@
             </xsd:documentation>
         </xsd:annotation>
         <xsd:complexType>        
-            <xsd:all>               
-                <xsd:element name="resolver" minOccurs="0" maxOccurs="1">
+            <xsd:sequence>  
+                <xsd:element name="resolver" minOccurs="0">
                     <xsd:annotation>
                         <xsd:documentation>
                             Resolver used to extract violation details from an exception.
                         </xsd:documentation>
                     </xsd:annotation>
                     <xsd:complexType>
-                        <xsd:group ref="beanElementGroup" minOccurs="1" maxOccurs="1"/>
+                        <xsd:group ref="beanElementGroup"/>
                     </xsd:complexType>
                 </xsd:element>
-                <xsd:element name="exception-factory" minOccurs="0" maxOccurs="1">
-                    <xsd:annotation>
-                        <xsd:documentation>
-                            Factory used to generate exceptions for a violation.
-                        </xsd:documentation>
-                    </xsd:annotation>
-                    <xsd:complexType>
-                        <xsd:group ref="exceptionFactoryElementGroup" minOccurs="1" maxOccurs="1"/>
-                    </xsd:complexType>
-                </xsd:element>
-            </xsd:all>
+		        <xsd:choice minOccurs="0">
+		            <xsd:element name="exception-factory" minOccurs="0">
+		                <xsd:annotation>
+		                    <xsd:documentation>
+		                        Factory used to generate exceptions for a violation.
+		                    </xsd:documentation>
+		                </xsd:annotation>
+		                <xsd:complexType>
+		                    <xsd:group ref="beanElementGroup"/>
+		                </xsd:complexType>
+		            </xsd:element>
+		            <xsd:element ref="configurable-exception-factory"/>
+		        </xsd:choice>
+            </xsd:sequence>
             <xsd:attribute name="id" type="xsd:ID">
                 <xsd:annotation>
                     <xsd:documentation>
@@ -78,7 +88,7 @@
                     </xsd:documentation>
                 </xsd:annotation>
             </xsd:attribute>
-            <xsd:attribute name="resolve-by-data-source" type="xsd:string" default="dataSource">
+            <xsd:attribute name="data-source" type="xsd:string" default="dataSource">
 	            <xsd:annotation>
 	                <xsd:documentation>
 	                   Whenever no custom resolver is defined, the exception is resolved
@@ -116,42 +126,42 @@
                 <xsd:element name="exception-mapping" minOccurs="0" maxOccurs="unbounded">
                     <xsd:complexType>
                         <xsd:all>
-                            <xsd:element name="matching-strategy" minOccurs="0" maxOccurs="1">
+                            <xsd:element name="matcher" minOccurs="0">
                                 <xsd:annotation>
                                     <xsd:documentation>
                                         Determines whether a violation is supported by our mapping.
                                     </xsd:documentation>
                                 </xsd:annotation>
                                 <xsd:complexType>
-                                    <xsd:group ref="beanElementGroup" minOccurs="1" maxOccurs="1"/>
+                                    <xsd:group ref="beanElementGroup"/>
                                 </xsd:complexType>
                             </xsd:element>
-                            <xsd:element name="exception-factory" minOccurs="0" maxOccurs="1">
+                            <xsd:element name="exception-factory" minOccurs="0">
                                 <xsd:annotation>
                                     <xsd:documentation>
                                         Factory used to generate exceptions whenever a supported violation occurs.
                                     </xsd:documentation>
                                 </xsd:annotation>
                                 <xsd:complexType>
-                                    <xsd:group ref="exceptionFactoryElementGroup" minOccurs="1" maxOccurs="1"/>
+                                    <xsd:group ref="beanElementGroup"/>
                                 </xsd:complexType>
                             </xsd:element>
                         </xsd:all>
-                        <xsd:attribute name="expression" use="required" type="xsd:string">
-	                        <xsd:annotation>
-	                            <xsd:documentation>
-	                               Constraint expression, this can e.g. be the constraint name.
-	                            </xsd:documentation>
-	                        </xsd:annotation>
-                        </xsd:attribute>
-                        <xsd:attribute name="matching-strategy" type="xsd:string">
+                        <xsd:attribute name="matcher" type="xsd:string">
                             <xsd:annotation>
                                 <xsd:documentation>
                                     Determines whether a violation is supported by our mapping.
                                 </xsd:documentation>
                             </xsd:annotation>
                         </xsd:attribute>
-                        <xsd:attribute name="matching" default="name">
+                        <xsd:attribute name="constraint" type="xsd:string">
+                            <xsd:annotation>
+                                <xsd:documentation>
+                                   Constraint expression, this can e.g. be the constraint name.
+                                </xsd:documentation>
+                            </xsd:annotation>
+                        </xsd:attribute>
+                        <xsd:attribute name="name-matching" default="exact">
                             <xsd:annotation>
                                 <xsd:documentation>
                                    Determines how constraint expressions are matched.
@@ -159,12 +169,19 @@
                             </xsd:annotation>
                             <xsd:simpleType>
                                 <xsd:restriction base="xsd:string">
-                                    <xsd:enumeration value="name"/>
+                                    <xsd:enumeration value="exact"/>
                                     <xsd:enumeration value="regex"/>
                                 </xsd:restriction>
                             </xsd:simpleType>
                         </xsd:attribute>
-                        <xsd:attribute name="exception-class" type="xsd:string">
+                        <xsd:attribute name="ignore-case" default="true" type="xsd:boolean">
+                            <xsd:annotation>
+                                <xsd:documentation>
+                                   Determines how constraint expressions are matched.
+                                </xsd:documentation>
+                            </xsd:annotation>
+                        </xsd:attribute>
+                        <xsd:attribute name="exception" type="xsd:string">
                             <xsd:annotation>
                                 <xsd:documentation>
                                    Exception that should be thrown whenever a violation occurs.
@@ -180,14 +197,14 @@
                         </xsd:attribute>
                     </xsd:complexType>
                 </xsd:element>
-                <xsd:element name="default-factory" minOccurs="0" maxOccurs="1">
+                <xsd:element name="default-factory" minOccurs="0">
                     <xsd:annotation>
                         <xsd:documentation>
                             Factory used to generate exceptions whenever there is no supported mapping.
                         </xsd:documentation>
                     </xsd:annotation>
                     <xsd:complexType>
-                        <xsd:group ref="exceptionFactoryElementGroup" minOccurs="1" maxOccurs="1"/>
+                        <xsd:group ref="beanElementGroup"/>
                     </xsd:complexType>
                 </xsd:element>
             </xsd:sequence>
@@ -210,14 +227,6 @@
     
    <xsd:group name="beanElementGroup">
         <xsd:choice>
-            <xsd:element ref="beans:bean"/>
-            <xsd:element ref="beans:ref"/>
-        </xsd:choice>
-    </xsd:group>
-    
-    <xsd:group name="exceptionFactoryElementGroup">
-        <xsd:choice>
-            <xsd:element ref="configurable-exception-factory"/>
             <xsd:element ref="beans:bean"/>
             <xsd:element ref="beans:ref"/>
         </xsd:choice>

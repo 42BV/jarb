@@ -8,9 +8,9 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-public class RegexConstraintNameMatchingStrategyTest {
-    private ConstraintNameMatcher matcher = ConstraintNameMatcher.regex("uk_.+_name");
-
+public class ExactConstraintNameMatcherTest {
+    private ConstraintNameMatcher matcher = ConstraintNameMatcher.exact("uk_persons_name");
+    
     @Test
     public void testMatch() {
         assertTrue(matcher.matches("uk_persons_name"));
@@ -18,7 +18,7 @@ public class RegexConstraintNameMatchingStrategyTest {
 
     @Test
     public void testMismatch() {
-        assertFalse(matcher.matches("fk_persons_parent_id"));
+        assertFalse(matcher.matches("uk_countries_name"));
     }
 
     @Test
@@ -27,4 +27,5 @@ public class RegexConstraintNameMatchingStrategyTest {
         matcher.setIgnoreCase(false);
         assertFalse(matcher.matches("UK_PERSONS_NAME"));
     }
+
 }

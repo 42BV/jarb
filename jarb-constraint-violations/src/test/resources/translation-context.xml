@@ -9,12 +9,10 @@
         http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
         http://www.jarbframework.org/schema/violations jarb-violations.xsd">
     
-    <violations:translator id="translator" resolve-by-data-source="dataSource">
-        <violations:exception-factory>
-            <violations:configurable-exception-factory>
-                <violations:exception-mapping expression="uk_cars_license_number" exception-class="org.jarbframework.violation.domain.LicenseNumberAlreadyExistsException"/>
-            </violations:configurable-exception-factory>
-        </violations:exception-factory>
+    <violations:translator id="translator">
+	    <violations:configurable-exception-factory>
+	        <violations:exception-mapping constraint="uk_cars_license_number" exception="org.jarbframework.violation.domain.LicenseNumberAlreadyExistsException"/>
+	    </violations:configurable-exception-factory>
     </violations:translator>
 
     <violations:enable-translations translator="translator"/>

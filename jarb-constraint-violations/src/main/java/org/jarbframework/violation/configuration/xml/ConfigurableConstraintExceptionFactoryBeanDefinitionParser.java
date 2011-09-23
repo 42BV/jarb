@@ -5,9 +5,8 @@ import static org.springframework.beans.factory.support.BeanDefinitionBuilder.ge
 
 import java.util.List;
 
-import org.apache.commons.lang3.StringUtils;
 import org.jarbframework.violation.factory.ReflectionConstraintExceptionFactory;
-import org.jarbframework.violation.factory.custom.ConstraintViolationMatcher;
+import org.jarbframework.violation.factory.custom.ConstraintNameMatcher;
 import org.jarbframework.violation.factory.custom.ExceptionFactoryMapping;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.support.AbstractBeanDefinition;
@@ -22,22 +21,25 @@ public class ConfigurableConstraintExceptionFactoryBeanDefinitionParser extends 
     private static final String DEFAULT_FACTORY_ATTRIBUTE = "default-factory";
     
     private static final String EXCEPTION_MAPPING_ATTRIBUTE = "exception-mapping";
-    private static final String EXPRESSION_ATTRIBUTE = "expression";
-    private static final String MATCHING_TYPE_ATTRIBUTE = "matching";
-    private static final String MATCHING_STRATEGY_ATTRIBUTE = "matching-strategy";
+    
+    private static final String MATCHER_ATTRIBUTE = "matcher";
+    private static final String CONSTRAINT_EXPRESSION_ATTRIBUTE = "constraint";
+    private static final String NAME_MATCHING_ATTRIBUTE = "name-matching";
+    private static final String IGNORE_CASE_ATTRIBUTE = "ignore-case";
+    
     private static final String EXCEPTION_FACTORY_ATTRIBUTE = "exception-factory";
-    private static final String EXCEPTION_CLASS_ATTRIBUTE = "exception-class";
+    private static final String EXCEPTION_CLASS_ATTRIBUTE = "exception";
     
     @Override
     protected AbstractBeanDefinition parseInternal(Element element, ParserContext parserContext) {
         BeanDefinitionBuilder factoryBuilder = genericBeanDefinition(ConfigurableConstraintExceptionFactoryParserFactoryBean.class);
         BeanDefinition factoryDefinition = factoryBuilder.getRawBeanDefinition();
-        factoryBuilder.addPropertyValue("defaultFactory", parseExceptionFactory(element, parserContext, factoryDefinition));
+        factoryBuilder.addPropertyValue("defaultFactory", parseDefaultExceptionFactory(element, parserContext, factoryDefinition));
         factoryBuilder.addPropertyValue("customFactoryMappings", parseExceptionMappings(element, parserContext, factoryDefinition));
         return factoryBuilder.getBeanDefinition();
     }
     
-    private Object parseExceptionFactory(Element element, ParserContext parserContext, BeanDefinition parent) {
+    private Object parseDefaultExceptionFactory(Element element, ParserContext parserContext, BeanDefinition parent) {
         return parsePropertyFromAttributeOrChild(element, DEFAULT_FACTORY_ATTRIBUTE, parserContext, parent);
     }
     
@@ -59,35 +61,34 @@ public class ConfigurableConstraintExceptionFactoryBeanDefinitionParser extends 
         return mappingBuilder.getBeanDefinition();
     }
 
-    private BeanDefinition parseViolationMatcher(Element mappingElement, ParserContext parserContext, BeanDefinition parent) {
-        BeanDefinitionBuilder violationMatcher = genericBeanDefinition(ConstraintViolationMatcher.class);
-        String expression = mappingElement.getAttribute(EXPRESSION_ATTRIBUTE);
-        Object matchingStrategy = parseMatchingStrategy(mappingElement, parserContext, parent);
-        if(matchingStrategy != null) {
-            violationMatcher.addConstructorArgValue(expression);
-            violationMatcher.addConstructorArgValue(matchingStrategy);
-        } else {
-            violationMatcher.setFactoryMethod(mappingElement.getAttribute(MATCHING_TYPE_ATTRIBUTE));
-            violationMatcher.addConstructorArgValue(expression);
+    private Object parseViolationMatcher(Element mappingElement, ParserContext parserContext, BeanDefinition parent) {
+        Object matcher = parsePropertyFromAttributeOrChild(mappingElement, MATCHER_ATTRIBUTE, parserContext, parent);
+        if(matcher == null) {
+            matcher = createConstraintNameMatcher(mappingElement, parserContext, parent);
         }
-        return violationMatcher.getBeanDefinition();
-    }
-
-    private Object parseMatchingStrategy(Element mappingElement, ParserContext parserContext, BeanDefinition parent) {
-        return parsePropertyFromAttributeOrChild(mappingElement, MATCHING_STRATEGY_ATTRIBUTE, parserContext, parent);
+        return matcher;
     }
     
+    private BeanDefinition createConstraintNameMatcher(Element mappingElement, ParserContext parserContext, BeanDefinition parent) {
+        BeanDefinitionBuilder matcherBuilder = genericBeanDefinition(ConstraintNameMatcher.class);
+        matcherBuilder.setFactoryMethod(mappingElement.getAttribute(NAME_MATCHING_ATTRIBUTE));
+        matcherBuilder.addConstructorArgValue(mappingElement.getAttribute(CONSTRAINT_EXPRESSION_ATTRIBUTE));
+        matcherBuilder.addPropertyValue("ignoreCase", mappingElement.getAttribute(IGNORE_CASE_ATTRIBUTE));
+        return matcherBuilder.getBeanDefinition();
+    }
+
     private Object parseMappedExceptionFactory(Element mappingElement, ParserContext parserContext, BeanDefinition parent) {
         Object exceptionFactory = parsePropertyFromAttributeOrChild(mappingElement, EXCEPTION_FACTORY_ATTRIBUTE, parserContext, parent);
-        if(exceptionFactory == null) {
-            String exceptionClass = mappingElement.getAttribute(EXCEPTION_CLASS_ATTRIBUTE);
-            if(StringUtils.isNotBlank(exceptionClass)) {
-                BeanDefinitionBuilder exceptionFactoryBuilder = genericBeanDefinition(ReflectionConstraintExceptionFactory.class);
-                exceptionFactoryBuilder.addConstructorArgValue(exceptionClass);
-                exceptionFactory = exceptionFactoryBuilder.getBeanDefinition();
-            }
+        if(exceptionFactory == null && mappingElement.hasAttribute(EXCEPTION_CLASS_ATTRIBUTE)) {
+            exceptionFactory = createReflectionExceptionFactory(mappingElement, parserContext, parent);
         }
         return exceptionFactory;
+    }
+    
+    private BeanDefinition createReflectionExceptionFactory(Element mappingElement, ParserContext parserContext, BeanDefinition parent) {
+        BeanDefinitionBuilder exceptionFactoryBuilder = genericBeanDefinition(ReflectionConstraintExceptionFactory.class);
+        exceptionFactoryBuilder.addConstructorArgValue(mappingElement.getAttribute(EXCEPTION_CLASS_ATTRIBUTE));
+        return exceptionFactoryBuilder.getBeanDefinition();
     }
 
 }
