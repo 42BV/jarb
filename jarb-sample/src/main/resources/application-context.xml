@@ -57,11 +57,11 @@
     <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
         <property name="jpaPropertyMap">
             <map>
+                <entry key="hibernate.ejb.naming_strategy" value="org.hibernate.cfg.ImprovedNamingStrategy"/>
                 <entry key="hibernate.dialect" value="org.hibernate.dialect.HSQLDialect"/>
                 <entry key="hibernate.hbm2ddl.auto" value="validate"/>
                 <!-- Ensure the spring aware validation factory is used -->
                 <entry key="javax.persistence.validation.factory" value-ref="validator"/>
-                <entry key="hibernate.ejb.naming_strategy" value="org.hibernate.cfg.ImprovedNamingStrategy"/>
             </map>
         </property>
         <property name="dataSource" ref="dataSource"/>
