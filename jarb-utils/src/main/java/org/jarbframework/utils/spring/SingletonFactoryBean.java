@@ -13,15 +13,8 @@ import org.springframework.core.GenericTypeResolver;
  * @param <T> type of singleton instance
  */
 public abstract class SingletonFactoryBean<T> implements FactoryBean<T> {
-    /** Type of instance returned by this bean. **/
-    private final Class<?> objectType;
     /** Singleton instance, initially {@code null} **/
     private T instance;
-
-    public SingletonFactoryBean() {
-        // Retrieve object type from the type parameter in our factory bean interface
-        this.objectType = GenericTypeResolver.resolveTypeArgument(getClass(), FactoryBean.class);
-    }
 
     /**
      * {@inheritDoc}
@@ -46,7 +39,7 @@ public abstract class SingletonFactoryBean<T> implements FactoryBean<T> {
      */
     @Override
     public Class<?> getObjectType() {
-        return objectType;
+        return GenericTypeResolver.resolveTypeArgument(getClass(), FactoryBean.class);
     }
 
     /**

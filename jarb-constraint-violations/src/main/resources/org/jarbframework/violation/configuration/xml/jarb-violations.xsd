@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema version="2.0"
+    xmlns="http://www.jarbframework.org/schema/violations"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    xmlns:beans="http://www.springframework.org/schema/beans"
+    xmlns:tool="http://www.springframework.org/schema/tool"
+    targetNamespace="http://www.jarbframework.org/schema/violations"
+    elementFormDefault="qualified"
+    attributeFormDefault="unqualified">
+
+    <xsd:import namespace="http://www.springframework.org/schema/beans"/>
+    <xsd:import namespace="http://www.springframework.org/schema/tool"/>
+
+    <xsd:annotation>
+        <xsd:documentation>
+            Defines all configuration elements for the constraint violation module.
+        </xsd:documentation>
+    </xsd:annotation>
+
+    <xsd:element name="enable-translations">
+        <xsd:annotation>
+            <xsd:documentation>
+                Enable database constraint violation exception translation.
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexType>
+            <xsd:attribute name="id" type="xsd:ID">
+	            <xsd:annotation>
+	                <xsd:documentation>
+	                   Identifier of the generated bean post processor.
+	                </xsd:documentation>
+	            </xsd:annotation>
+            </xsd:attribute>
+            <xsd:attribute name="translator" use="required" type="xsd:string">
+	            <xsd:annotation>
+	                <xsd:documentation>
+	                    Reference to the exception translator.
+	                </xsd:documentation>
+	            </xsd:annotation>
+            </xsd:attribute>
+            <xsd:attribute name="pointcut" type="xsd:string">
+                <xsd:annotation>
+                    <xsd:documentation>
+                        Pointcut expression that declares where to attempt translations.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:attribute>
+        </xsd:complexType>
+    </xsd:element>
+    
+    <xsd:element name="translator">
+        <xsd:annotation>
+            <xsd:documentation>
+                Define a translator that can translate exceptions into database
+                constraint aware exceptions.
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexType>        
+            <xsd:sequence>  
+                <xsd:element name="resolver" minOccurs="0">
+                    <xsd:annotation>
+                        <xsd:documentation>
+                            Resolver used to extract violation details from an exception.
+                        </xsd:documentation>
+                    </xsd:annotation>
+                    <xsd:complexType>
+                        <xsd:group ref="beanElementGroup"/>
+                    </xsd:complexType>
+                </xsd:element>
+		        <xsd:choice minOccurs="0">
+		            <xsd:element name="exception-factory" minOccurs="0">
+		                <xsd:annotation>
+		                    <xsd:documentation>
+		                        Factory used to generate exceptions for a violation.
+		                    </xsd:documentation>
+		                </xsd:annotation>
+		                <xsd:complexType>
+		                    <xsd:group ref="beanElementGroup"/>
+		                </xsd:complexType>
+		            </xsd:element>
+		            <xsd:element ref="configurable-exception-factory"/>
+		        </xsd:choice>
+            </xsd:sequence>
+            <xsd:attribute name="id" type="xsd:ID">
+                <xsd:annotation>
+                    <xsd:documentation>
+                       Identifier of the generated translator.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:attribute>
+            <xsd:attribute name="data-source" type="xsd:string" default="dataSource">
+	            <xsd:annotation>
+	                <xsd:documentation>
+	                   Whenever no custom resolver is defined, the exception is resolved
+	                   based on driver specific exception message analysis. The provided
+	                   data source is used to determine our database- and driver type.
+	                </xsd:documentation>
+	            </xsd:annotation>
+            </xsd:attribute>
+            <xsd:attribute name="resolver" type="xsd:string">
+	            <xsd:annotation>
+	                <xsd:documentation>
+                        Resolver used to extract violation details from an exception.
+	                </xsd:documentation>
+	            </xsd:annotation>
+            </xsd:attribute>
+            <xsd:attribute name="exception-factory" type="xsd:string">
+	            <xsd:annotation>
+	                <xsd:documentation>
+                        Factory used to generate exceptions for a violation.
+	                </xsd:documentation>
+	            </xsd:annotation>
+            </xsd:attribute>
+        </xsd:complexType>
+    </xsd:element>
+    
+    <xsd:element name="configurable-exception-factory">
+        <xsd:annotation>
+            <xsd:documentation>
+                Define a customisable exception factory, allowing database constraint
+                violations to be mapped on specific exceptions.
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element name="exception-mapping" minOccurs="0" maxOccurs="unbounded">
+                    <xsd:complexType>
+                        <xsd:all>
+                            <xsd:element name="matcher" minOccurs="0">
+                                <xsd:annotation>
+                                    <xsd:documentation>
+                                        Determines whether a violation is supported by our mapping.
+                                    </xsd:documentation>
+                                </xsd:annotation>
+                                <xsd:complexType>
+                                    <xsd:group ref="beanElementGroup"/>
+                                </xsd:complexType>
+                            </xsd:element>
+                            <xsd:element name="exception-factory" minOccurs="0">
+                                <xsd:annotation>
+                                    <xsd:documentation>
+                                        Factory used to generate exceptions whenever a supported violation occurs.
+                                    </xsd:documentation>
+                                </xsd:annotation>
+                                <xsd:complexType>
+                                    <xsd:group ref="beanElementGroup"/>
+                                </xsd:complexType>
+                            </xsd:element>
+                        </xsd:all>
+                        <xsd:attribute name="matcher" type="xsd:string">
+                            <xsd:annotation>
+                                <xsd:documentation>
+                                    Determines whether a violation is supported by our mapping.
+                                </xsd:documentation>
+                            </xsd:annotation>
+                        </xsd:attribute>
+                        <xsd:attribute name="constraint" type="xsd:string">
+                            <xsd:annotation>
+                                <xsd:documentation>
+                                   Constraint expression, this can e.g. be the constraint name.
+                                </xsd:documentation>
+                            </xsd:annotation>
+                        </xsd:attribute>
+                        <xsd:attribute name="name-matching" default="exact">
+                            <xsd:annotation>
+                                <xsd:documentation>
+                                   Determines how constraint expressions are matched.
+                                </xsd:documentation>
+                            </xsd:annotation>
+                            <xsd:simpleType>
+                                <xsd:restriction base="xsd:string">
+                                    <xsd:enumeration value="exact"/>
+                                    <xsd:enumeration value="regex"/>
+                                </xsd:restriction>
+                            </xsd:simpleType>
+                        </xsd:attribute>
+                        <xsd:attribute name="ignore-case" default="true" type="xsd:boolean">
+                            <xsd:annotation>
+                                <xsd:documentation>
+                                   Determines how constraint expressions are matched.
+                                </xsd:documentation>
+                            </xsd:annotation>
+                        </xsd:attribute>
+                        <xsd:attribute name="exception" type="xsd:string">
+                            <xsd:annotation>
+                                <xsd:documentation>
+                                   Exception that should be thrown whenever a violation occurs.
+                                </xsd:documentation>
+                            </xsd:annotation>
+                        </xsd:attribute>
+                        <xsd:attribute name="exception-factory" type="xsd:string">
+                            <xsd:annotation>
+                                <xsd:documentation>
+                                    Factory used to generate exceptions whenever a supported violation occurs.
+                                </xsd:documentation>
+                            </xsd:annotation>
+                        </xsd:attribute>
+                    </xsd:complexType>
+                </xsd:element>
+                <xsd:element name="default-factory" minOccurs="0">
+                    <xsd:annotation>
+                        <xsd:documentation>
+                            Factory used to generate exceptions whenever there is no supported mapping.
+                        </xsd:documentation>
+                    </xsd:annotation>
+                    <xsd:complexType>
+                        <xsd:group ref="beanElementGroup"/>
+                    </xsd:complexType>
+                </xsd:element>
+            </xsd:sequence>
+            <xsd:attribute name="id" type="xsd:ID">
+                <xsd:annotation>
+                    <xsd:documentation>
+                       Identifier of the generated exception factory.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:attribute>
+            <xsd:attribute name="default-factory" type="xsd:string">
+	            <xsd:annotation>
+	                <xsd:documentation>
+	                   Factory used to generate exceptions whenever there is no supported mapping.
+	                </xsd:documentation>
+	            </xsd:annotation>
+            </xsd:attribute>
+        </xsd:complexType>
+    </xsd:element>
+    
+   <xsd:group name="beanElementGroup">
+        <xsd:choice>
+            <xsd:element ref="beans:bean"/>
+            <xsd:element ref="beans:ref"/>
+        </xsd:choice>
+    </xsd:group>
+    
+</xsd:schema>

@@ -1,7 +1,7 @@
 package org.jarbframework.constraint;
 
 import static java.util.Collections.unmodifiableSet;
-import static org.jarbframework.utils.Conditions.notNull;
+import static org.jarbframework.utils.Asserts.notNull;
 
 import java.util.Collection;
 import java.util.HashSet;

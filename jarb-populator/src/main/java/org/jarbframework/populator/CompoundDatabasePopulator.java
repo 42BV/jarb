@@ -15,11 +15,10 @@ import org.slf4j.LoggerFactory;
  * @since 01-06-2011
  */
 public class CompoundDatabasePopulator implements DatabasePopulator {
-    private static final Logger LOGGER = LoggerFactory.getLogger(CompoundDatabasePopulator.class);
+    private final Logger logger = LoggerFactory.getLogger(CompoundDatabasePopulator.class);
 
     /** Ordered collection of delegate populator. **/
     private final List<DatabasePopulator> populators;
-
     /** Determine if we should continue after an exception. **/
     private boolean continueOnException = false;
 
@@ -58,9 +57,9 @@ public class CompoundDatabasePopulator implements DatabasePopulator {
      */
     @Override
     public void populate() throws Exception {
-        LOGGER.info("Starting to execute {} database populators.", populators.size());
+        logger.info("Starting to execute {} database populators.", populators.size());
         for (DatabasePopulator populator : populators) {
-            LOGGER.info("Executing {}...", populator);
+            logger.info("Executing {}...", populator);
             if (continueOnException) {
                 populator = new FailSafeDatabasePopulator(populator);
             }

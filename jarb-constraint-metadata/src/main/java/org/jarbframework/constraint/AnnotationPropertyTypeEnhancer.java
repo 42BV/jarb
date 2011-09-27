@@ -1,7 +1,7 @@
 package org.jarbframework.constraint;
 
-import static org.jarbframework.utils.Conditions.hasText;
-import static org.jarbframework.utils.Conditions.notNull;
+import static org.jarbframework.utils.Asserts.hasText;
+import static org.jarbframework.utils.Asserts.notNull;
 import static org.jarbframework.utils.bean.BeanAnnotationScanner.fieldOrGetter;
 
 import java.lang.annotation.Annotation;

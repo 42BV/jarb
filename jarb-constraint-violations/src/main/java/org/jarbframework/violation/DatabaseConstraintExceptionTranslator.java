@@ -1,9 +1,9 @@
 package org.jarbframework.violation;
 
-import static org.jarbframework.utils.Conditions.notNull;
+import static org.jarbframework.utils.Asserts.notNull;
 
-import org.jarbframework.violation.factory.DatabaseConstraintViolationExceptionFactory;
-import org.jarbframework.violation.factory.DefaultViolationExceptionFactory;
+import org.jarbframework.violation.factory.DatabaseConstraintExceptionFactory;
+import org.jarbframework.violation.factory.SimpleConstraintExceptionFactory;
 import org.jarbframework.violation.resolver.DatabaseConstraintViolationResolver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,14 +22,14 @@ public class DatabaseConstraintExceptionTranslator {
     /** Resolves the constraint violation from an exception. **/
     private final DatabaseConstraintViolationResolver violationResolver;
     /** Creates an exception for some constraint violation. **/
-    private final DatabaseConstraintViolationExceptionFactory exceptionFactory;
+    private final DatabaseConstraintExceptionFactory exceptionFactory;
 
     /**
      * Construct a new {@link DatabaseConstraintExceptionTranslator}.
      * @param resolver resolves the constraint violation from an exception
      */
     public DatabaseConstraintExceptionTranslator(DatabaseConstraintViolationResolver resolver) {
-        this(resolver, new DefaultViolationExceptionFactory());
+        this(resolver, new SimpleConstraintExceptionFactory());
     }
 
     /**
@@ -37,7 +37,7 @@ public class DatabaseConstraintExceptionTranslator {
      * @param resolver resolves the constraint violation from an exception
      * @param exceptionFactory creates an exception for some constraint violation
      */
-    public DatabaseConstraintExceptionTranslator(DatabaseConstraintViolationResolver resolver, DatabaseConstraintViolationExceptionFactory exceptionFactory) {
+    public DatabaseConstraintExceptionTranslator(DatabaseConstraintViolationResolver resolver, DatabaseConstraintExceptionFactory exceptionFactory) {
         this.violationResolver = notNull(resolver, "Violation resolver cannot be null");
         this.exceptionFactory = notNull(exceptionFactory, "Exception factory cannot be null");
     }

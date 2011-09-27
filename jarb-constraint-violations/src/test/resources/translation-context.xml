@@ -3,27 +3,20 @@
     xmlns="http://www.springframework.org/schema/beans"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:violations="http://www.jarbframework.org/schema/violations"
     xsi:schemaLocation="
-        http://www.springframework.org/schema/beans
-        http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
-        http://www.springframework.org/schema/context
-        http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
+        http://www.jarbframework.org/schema/violations http://www.jarbframework.org/schema/violations/jarb-violations.xsd">
+    
+    <violations:translator id="translator">
+	    <violations:configurable-exception-factory>
+	        <violations:exception-mapping constraint="uk_cars_license_number" exception="org.jarbframework.violation.domain.LicenseNumberAlreadyExistsException"/>
+	    </violations:configurable-exception-factory>
+    </violations:translator>
 
-    <!-- Attempts to translate exceptions into more "obvious" constraint violation exceptions -->
-    <bean class="org.jarbframework.violation.integration.ConstraintViolationExceptionTranslatingBeanPostProcessor">
-        <property name="translator">
-            <bean class="org.jarbframework.violation.integration.ConstraintViolationExceptionTranslatorFactoryBean">
-                <property name="dataSource" ref="dataSource"/>
-                <!-- Custom exception classes, these are optional -->
-                <property name="exceptionClasses">
-                    <map>
-                        <entry key="uk_cars_license_number" value="org.jarbframework.violation.domain.LicenseNumberAlreadyExistsException"/>
-                    </map>
-                </property>
-            </bean>
-        </property>
-    </bean>
- 
+    <violations:enable-translations translator="translator"/>
+    
     <!-- Repository used for testing -->
     <bean class="org.jarbframework.violation.domain.JpaCarRepository"/>
 

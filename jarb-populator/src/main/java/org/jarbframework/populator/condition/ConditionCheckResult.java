@@ -6,11 +6,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Result of {@link ConditionChecker#checkCondition()}. The
- * condition has been accepted whenever {@link #isSatisfied()}
- * evaluates into {@code true}. If the condition is not satisfied,
- * look at {@link #getFailures()}.
- * 
+ * Result type from {@link Condition#check()}. The condition has been
+ * met whenever {@link #isSatisfied()} evaluates into {@code true}. If
+ * the condition is not satisfied, look at {@link #getFailures()}.
  * @author Jeroen van Schagen
  * @since 21-06-2011
  */
@@ -35,8 +33,7 @@ public class ConditionCheckResult {
     }
 
     /**
-     * Determine if this condition is supported. Returns {@code true}
-     * whenever there are no failure messages.
+     * Determine if the checked condition is satisfied.
      * @return {@code true} if successful, else {@code false}
      */
     public boolean isSatisfied() {
@@ -44,7 +41,7 @@ public class ConditionCheckResult {
     }
 
     /**
-     * Retrieve an unmodifiable list of failure messages.
+     * Failure messages that describe why the condition was not satisfied.
      * @return failure messages
      */
     public List<String> getFailures() {

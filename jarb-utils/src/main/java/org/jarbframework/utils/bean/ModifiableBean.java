@@ -3,7 +3,7 @@
  */
 package org.jarbframework.utils.bean;
 
-import static org.jarbframework.utils.Conditions.notNull;
+import static org.jarbframework.utils.Asserts.notNull;
 
 import org.jarbframework.utils.bean.ModifiableBean;
 import org.springframework.beans.BeanUtils;

@@ -1,14 +1,14 @@
 package org.jarbframework.utils.database;
 
 import static org.apache.commons.lang3.StringUtils.startsWithIgnoreCase;
-import static org.jarbframework.utils.JdbcUtils.doWithMetaData;
+import static org.jarbframework.utils.JdbcUtils.doWithConnection;
 
-import java.sql.DatabaseMetaData;
+import java.sql.Connection;
 import java.sql.SQLException;
 
 import javax.sql.DataSource;
 
-import org.jarbframework.utils.JdbcMetadataCallback;
+import org.jarbframework.utils.JdbcConnectionCallback;
 
 /**
  * Determines the database type using our JDBC meta data.
@@ -19,11 +19,11 @@ public class JdbcMetadataDatabaseTypeResolver implements DatabaseTypeResolver {
 
     @Override
     public DatabaseType resolve(DataSource dataSource) {
-        String databaseProductName = doWithMetaData(dataSource, new JdbcMetadataCallback<String>() {
+        String databaseProductName = doWithConnection(dataSource, new JdbcConnectionCallback<String>() {
 
             @Override
-            public String doWith(DatabaseMetaData databaseMetaData) throws SQLException {
-                return databaseMetaData.getDatabaseProductName();
+            public String doWork(Connection connection) throws SQLException {
+                return connection.getMetaData().getDatabaseProductName();
             }
 
         });

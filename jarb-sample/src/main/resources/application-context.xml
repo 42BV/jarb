@@ -5,11 +5,15 @@
         xmlns:context="http://www.springframework.org/schema/context"
         xmlns:tx="http://www.springframework.org/schema/tx"
         xmlns:jee="http://www.springframework.org/schema/jee"
+        xmlns:violations="http://www.jarbframework.org/schema/violations"
+        xmlns:jpa="http://www.springframework.org/schema/data/jpa"
         xsi:schemaLocation="
+            http://www.jarbframework.org/schema/violations http://www.jarbframework.org/schema/violations/jarb-violations.xsd
 	        http://www.springframework.org/schema/beans	http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
 	        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.1.xsd
 	        http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.1.xsd
-	        http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-3.1.xsd">
+	        http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-3.1.xsd
+	        http://www.springframework.org/schema/data/jpa http://www.springframework.org/schema/data/jpa/spring-jpa.xsd">
 
     <!-- Scans the class path of this application for @Components to deploy as beans -->
     <context:component-scan base-package="org.jarbframework.sample"/>
@@ -25,7 +29,9 @@
 			</bean>
 		</property>
 	    <property name="migrator">
-	    	<bean class="org.jarbframework.migrations.liquibase.LiquibaseMigrator"/>
+	    	<bean class="org.jarbframework.migrations.liquibase.LiquibaseMigrator">
+	    	  <property name="changeLogPath" value="src/main/db/changelog.groovy"/>
+	    	</bean>
 	    </property>
 	</bean>
 	
@@ -51,6 +57,7 @@
     <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
         <property name="jpaPropertyMap">
             <map>
+                <entry key="hibernate.ejb.naming_strategy" value="org.hibernate.cfg.ImprovedNamingStrategy"/>
                 <entry key="hibernate.dialect" value="org.hibernate.dialect.HSQLDialect"/>
                 <entry key="hibernate.hbm2ddl.auto" value="validate"/>
                 <!-- Ensure the spring aware validation factory is used -->
@@ -87,24 +94,20 @@
     </bean>
     
     <!-- Provides a bean constraint meta-data, required for front-end -->
-    <bean class="org.jarbframework.constraint.BeanConstraintAccessorFactoryBean">
+    <bean class="org.jarbframework.constraint.BeanConstraintDescriptorFactoryBean">
     	<property name="databaseConstraintRepository" ref="databaseConstraintRepository"/>
     </bean>
     
     <!-- Translate JDBC driver exceptions into Java exceptions -->
-	<bean class="org.jarbframework.violation.integration.ConstraintViolationExceptionTranslatingBeanPostProcessor">
-        <property name="translator">
-            <bean class="org.jarbframework.violation.integration.ConstraintViolationExceptionTranslatorFactoryBean">
-                <property name="dataSource" ref="dataSource"/>
-                <property name="exceptionClasses">
-                    <map>
-                        <entry key="uk_posts_title" value="org.jarbframework.sample.domain.PostTitleAlreadyExistsException"/>
-                    </map>
-                </property>
-            </bean>
-        </property>
-    </bean>
-    
+    <violations:translator id="translator" data-source="dataSource">
+	    <violations:configurable-exception-factory>
+	        <violations:exception-mapping constraint="uk_posts_title" exception="org.jarbframework.sample.PostTitleAlreadyExistsException"/>
+	    </violations:configurable-exception-factory>
+    </violations:translator>
+
+    <violations:enable-translations translator="translator"/>
+
+    <jpa:repositories base-package="org.jarbframework.sample"/>
     <import resource="mvc-context.xml"/>
 
 </beans>

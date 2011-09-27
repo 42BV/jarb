@@ -18,8 +18,6 @@ import org.springframework.util.ClassUtils;
  * @since 17-05-2011
  */
 public abstract class AdvisorAddingBeanPostProcessor extends ProxyConfig implements BeanPostProcessor, BeanClassLoaderAware {
-    private static final long serialVersionUID = 912342245657548924L;
-
     private ClassLoader beanClassLoader = ClassUtils.getDefaultClassLoader();
 
     /** The advisor that should be added **/

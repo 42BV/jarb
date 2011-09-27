@@ -8,8 +8,8 @@ import static org.junit.Assert.fail;
 import org.easymock.EasyMock;
 import org.jarbframework.populator.ConditionalDatabasePopulator;
 import org.jarbframework.populator.DatabasePopulator;
-import org.jarbframework.populator.condition.ConditionChecker;
-import org.jarbframework.populator.condition.ResourceExistsConditionChecker;
+import org.jarbframework.populator.condition.Condition;
+import org.jarbframework.populator.condition.ResourceExistsCondition;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.core.io.ClassPathResource;
@@ -27,8 +27,8 @@ public class ConditionalDatabasePopulatorTest {
      */
     @Test
     public void testSupported() throws Exception {
-        final ConditionChecker existingResourceExists = new ResourceExistsConditionChecker(new ClassPathResource("create-schema.sql"));
-        assertTrue(existingResourceExists.checkCondition().isSatisfied()); // Resource 'create-schema.sql' exists on our classpath
+        final Condition existingResourceExists = new ResourceExistsCondition(new ClassPathResource("create-schema.sql"));
+        assertTrue(existingResourceExists.check().isSatisfied()); // Resource 'create-schema.sql' exists on our classpath
         
         ConditionalDatabasePopulator conditionalPopulator = new ConditionalDatabasePopulator(populatorMock, existingResourceExists);
 
@@ -46,8 +46,8 @@ public class ConditionalDatabasePopulatorTest {
      */
     @Test
     public void testUnsupported() throws Exception {
-        final ConditionChecker unknownResourceDoesNotExists = new ResourceExistsConditionChecker(new ClassPathResource("unknown.sql"));
-        assertFalse(unknownResourceDoesNotExists.checkCondition().isSatisfied()); // Resource 'unknown.sql' does not exist on our classpath
+        final Condition unknownResourceDoesNotExists = new ResourceExistsCondition(new ClassPathResource("unknown.sql"));
+        assertFalse(unknownResourceDoesNotExists.check().isSatisfied()); // Resource 'unknown.sql' does not exist on our classpath
         
         ConditionalDatabasePopulator conditionalPopulator = new ConditionalDatabasePopulator(populatorMock, unknownResourceDoesNotExists);
 

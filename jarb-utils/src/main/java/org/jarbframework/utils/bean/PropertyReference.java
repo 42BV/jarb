@@ -3,8 +3,8 @@
  */
 package org.jarbframework.utils.bean;
 
-import static org.jarbframework.utils.Conditions.hasText;
-import static org.jarbframework.utils.Conditions.notNull;
+import static org.jarbframework.utils.Asserts.hasText;
+import static org.jarbframework.utils.Asserts.notNull;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;

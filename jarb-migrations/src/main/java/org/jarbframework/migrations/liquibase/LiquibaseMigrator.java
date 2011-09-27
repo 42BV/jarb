@@ -27,11 +27,11 @@ import org.slf4j.LoggerFactory;
  * @since 28-04-2011
  */
 public class LiquibaseMigrator implements DatabaseMigrator {
-    private static final Logger LOGGER = LoggerFactory.getLogger(LiquibaseMigrator.class);
+    private final Logger logger = LoggerFactory.getLogger(LiquibaseMigrator.class);
 
     // Required liquibase information
-    private String changeLogPath = "src/main/db/changelog.groovy";
-    private ResourceAccessor resourceAccessor = new FileSystemResourceAccessor();
+    private String changeLogPath = "changelog.groovy";
+    private ResourceAccessor resourceAccessor;
 
     // Optional migration details
     private boolean dropFirst = false;
@@ -42,6 +42,29 @@ public class LiquibaseMigrator implements DatabaseMigrator {
 
     /** Configure this property whenever an output file should be created. **/
     private String outputFilePath;
+    
+    /**
+     * Construct a new {@link LiquibaseMigrator} that runs from the current working directory.
+     */
+    public LiquibaseMigrator() {
+        this(new FileSystemResourceAccessor());
+    }
+    
+    /**
+     * Construct a new {@link LiquibaseMigrator} from a specific base path.
+     * @param basePath the base path to run from
+     */
+    public LiquibaseMigrator(String basePath) {
+        this(new FileSystemResourceAccessor(basePath));
+    }
+    
+    /**
+     * Construct a new {@link LiquibaseMigrator} with a specific resource accessor.
+     * @param resourceAccessor the resource accessor that should be applied
+     */
+    public LiquibaseMigrator(ResourceAccessor resourceAccessor) {
+        this.resourceAccessor = resourceAccessor;
+    }
 
     /**
      * {@inheritDoc}
@@ -116,14 +139,14 @@ public class LiquibaseMigrator implements DatabaseMigrator {
         try {
             writer = newSqlOutputWriter();
         } catch (IOException e) {
-            LOGGER.error("Could not construct a writer for our generated change-set SQL.", e);
+            logger.error("Could not construct a writer for our generated change-set SQL.", e);
             return; // Continue running, SQL file generation is not critical
         }
-        LOGGER.info("Writing the generated change-set SQL to '{}'...", outputFilePath);
+        logger.info("Writing the generated change-set SQL to '{}'...", outputFilePath);
         try {
             doWriteSqlOutput(liquibase, writer);
         } catch (LiquibaseException e) {
-            LOGGER.error("Could not write out the generated change-set SQL.", e);
+            logger.error("Could not write out the generated change-set SQL.", e);
             return; // Continue running, SQL file generation is not critical
         }
     }

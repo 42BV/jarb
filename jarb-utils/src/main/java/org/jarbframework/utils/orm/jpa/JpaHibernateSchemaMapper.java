@@ -4,9 +4,9 @@
 package org.jarbframework.utils.orm.jpa;
 
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
-import static org.jarbframework.utils.Conditions.hasText;
-import static org.jarbframework.utils.Conditions.instanceOf;
-import static org.jarbframework.utils.Conditions.notNull;
+import static org.jarbframework.utils.Asserts.hasText;
+import static org.jarbframework.utils.Asserts.instanceOf;
+import static org.jarbframework.utils.Asserts.notNull;
 import static org.jarbframework.utils.bean.BeanProperties.getDeclaringClass;
 import static org.jarbframework.utils.bean.BeanProperties.getPropertyNames;
 import static org.jarbframework.utils.bean.BeanProperties.getPropertyType;

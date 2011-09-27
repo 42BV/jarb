@@ -1,9 +1,5 @@
 package org.jarbframework.utils;
 
-import static org.jarbframework.utils.Conditions.notNull;
-import static org.springframework.jdbc.datasource.DataSourceUtils.getConnection;
-import static org.springframework.jdbc.datasource.DataSourceUtils.releaseConnection;
-
 import java.sql.Connection;
 import java.sql.SQLException;
 
@@ -17,22 +13,23 @@ import javax.sql.DataSource;
 public final class JdbcUtils {
 
     /**
-     * Provides callback functionality on the meta data of a data source.
-     * Before the callback gets invoked, a connection is acquired, and
-     * after execution the connection is released.
+     * Open a data source connection and provide callback functionality
+     * on that connection. After the callback has been invoked, the newly
+     * created connection will be closed.
      * @param <T> type of object returned by callback
      * @param dataSource the data source that we should use
      * @param callback the callback functionality being invoked
      * @return result of the callback, if any
      */
-    public static <T> T doWithMetaData(DataSource dataSource, JdbcMetadataCallback<T> callback) {
-        Connection connection = notNull(getConnection(dataSource), "Could not open connection");
+    public static <T> T doWithConnection(DataSource dataSource, JdbcConnectionCallback<T> callback) {
+        Connection connection = null;
         try {
-            return callback.doWith(connection.getMetaData());
+            connection = dataSource.getConnection();
+            return callback.doWork(connection);
         } catch (SQLException e) {
-            throw new RuntimeException("Could not open connection to access meta data.", e);
+            throw new RuntimeException(e);
         } finally {
-            releaseConnection(connection, dataSource);
+            closeQuietly(connection);
         }
     }
 
@@ -48,5 +45,17 @@ public final class JdbcUtils {
             throw new RuntimeException(e);
         }
     }
-
+    
+    /**
+     * Commits the connection whenver auto commit has been disabled.
+     * @param connection our connection to commit
+     */
+    public static void commitSafely(Connection connection) {
+        try {
+            if (!connection.getAutoCommit()) connection.commit();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    
 }

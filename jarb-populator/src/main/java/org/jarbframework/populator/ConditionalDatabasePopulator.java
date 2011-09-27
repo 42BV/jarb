@@ -3,8 +3,8 @@ package org.jarbframework.populator;
 import static org.springframework.util.StringUtils.collectionToDelimitedString;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.jarbframework.populator.condition.Condition;
 import org.jarbframework.populator.condition.ConditionCheckResult;
-import org.jarbframework.populator.condition.ConditionChecker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,18 +20,18 @@ public class ConditionalDatabasePopulator implements DatabasePopulator {
     /** Delegate database populator, invoked if condition is satisfied. **/
     private final DatabasePopulator populator;
     /** Checks if the desired condition has been satisfied **/
-    private final ConditionChecker conditionChecker;
+    private final Condition condition;
     /** Determine if an exception should be thrown if the condition is not satisfied. **/
     private boolean throwErrorIfUnsupported = false;
 
     /**
      * Construct a new {@link ConditionalDatabasePopulator}.
-     * @param populator delegate database populator, invoked if condition is satisfied
-     * @param conditionChecker checks if the desired condition is met
+     * @param populator delegate database populator, invoked if the condition is satisfied
+     * @param condition describes the condition that should be met to perform population
      */
-    public ConditionalDatabasePopulator(DatabasePopulator populator, ConditionChecker conditionChecker) {
+    public ConditionalDatabasePopulator(DatabasePopulator populator, Condition condition) {
         this.populator = populator;
-        this.conditionChecker = conditionChecker;
+        this.condition = condition;
     }
 
     /**
@@ -50,13 +50,13 @@ public class ConditionalDatabasePopulator implements DatabasePopulator {
      */
     @Override
     public void populate() throws Exception {
-        ConditionCheckResult conditionCheck = conditionChecker.checkCondition();
-        if (conditionCheck.isSatisfied()) {
+        ConditionCheckResult conditionResult = condition.check();
+        if (conditionResult.isSatisfied()) {
             populator.populate();
         } else {
             StringBuilder failureMessageBuilder = new StringBuilder();
             failureMessageBuilder.append("Database populator (").append(populator).append(") was not executed, because:");
-            failureMessageBuilder.append("\n - ").append(collectionToDelimitedString(conditionCheck.getFailures(), "\n - "));
+            failureMessageBuilder.append("\n - ").append(collectionToDelimitedString(conditionResult.getFailures(), "\n - "));
             final String failureMessage = failureMessageBuilder.toString();
             if (throwErrorIfUnsupported) {
                 throw new IllegalStateException(failureMessage);
