@@ -53,8 +53,8 @@
 
 	<scm>
 		<url>https://github.com/42BV/jarb</url>
-		<connection>scm:git@github.com:42BV/jarb.git</connection>
-		<developerConnection>scm:git@github.com:42BV/jarb.git</developerConnection>
+		<connection>scm:git:git@github.com:42BV/jarb.git</connection>
+		<developerConnection>scm:git:git@github.com:42BV/jarb.git</developerConnection>
 	</scm>
 
 	<properties>
