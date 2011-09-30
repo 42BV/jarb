@@ -3,6 +3,12 @@
 
 	<modelVersion>4.0.0</modelVersion>
 
+	<parent>
+	<groupId>org.sonatype.oss</groupId>
+	<artifactId>oss-parent</artifactId>
+	<version>7</version>
+	</parent>
+
 	<groupId>org.jarbframework</groupId>
 	<artifactId>jarb-parent</artifactId>
 	<packaging>pom</packaging>
@@ -11,6 +17,14 @@
 	<description>Provides support for databases</description>
 	<url>http://www.jarbframework.org</url>
 	<inceptionYear>2011</inceptionYear>
+	
+	<licenses>
+	<license>
+    <name>Apache 2</name>
+    <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+    <distribution>repo</distribution>
+	</license>
+	</licenses>
 
 	<modules>
 		<module>jarb-constraint-metadata</module>
