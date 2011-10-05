@@ -1,6 +1,3 @@
-/*
- * (C) 2011 Nidera (www.nidera.com). All rights reserved.
- */
 package org.jarbframework.utils.bean;
 
 import static org.jarbframework.utils.Asserts.state;
@@ -11,8 +8,6 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import org.jarbframework.utils.bean.BeanAnnotationScanner;
-import org.jarbframework.utils.bean.PropertyReference;
 import org.springframework.beans.BeanUtils;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.util.ReflectionUtils;
@@ -98,11 +93,15 @@ public class BeanAnnotationScanner {
      */
     public <T extends Annotation> Collection<T> collectAnnotations(PropertyReference propertyReference, Class<T> annotationType) {
         Collection<T> annotations = new ArrayList<T>();
+        
+        propertyReference = BeanProperties.lastPropertyIn(propertyReference);
+        
         // Attempt to extract annotation from field declaration
         Field field = ReflectionUtils.findField(propertyReference.getBeanClass(), propertyReference.getName());
         if (field != null) {
             addIfNotNull(field.getAnnotation(annotationType), annotations);
         }
+        
         // Attempt to extract annotation from getter and setter methods, whenever desired
         PropertyDescriptor propertyDescriptor = BeanUtils.getPropertyDescriptor(propertyReference.getBeanClass(), propertyReference.getName());
         if (propertyDescriptor != null) {
@@ -113,6 +112,7 @@ public class BeanAnnotationScanner {
                 addIfNotNull(AnnotationUtils.findAnnotation(propertyDescriptor.getWriteMethod(), annotationType), annotations);
             }
         }
+        
         return annotations;
     }
     

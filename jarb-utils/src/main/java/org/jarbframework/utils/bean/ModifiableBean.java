@@ -1,11 +1,7 @@
-/*
- * (C) 2011 Nidera (www.nidera.com). All rights reserved.
- */
 package org.jarbframework.utils.bean;
 
 import static org.jarbframework.utils.Asserts.notNull;
 
-import org.jarbframework.utils.bean.ModifiableBean;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.BeanWrapperImpl;

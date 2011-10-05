@@ -35,7 +35,7 @@ public class DatabaseConstraintRepositoryImpl implements DatabaseConstraintRepos
 
     @Override
     public ColumnMetadata getColumnMetadata(PropertyReference propertyReference) {
-        ColumnReference columnReference = schemaMapper.column(propertyReference);
+        ColumnReference columnReference = schemaMapper.columnOf(propertyReference);
         if (columnReference == null) {
             throw new CouldNotBeMappedToColumnException("Property '" + propertyReference + "' could not be mapped to a column.");
         }

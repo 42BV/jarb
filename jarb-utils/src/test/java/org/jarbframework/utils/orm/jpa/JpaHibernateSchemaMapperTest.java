@@ -8,8 +8,12 @@ import static org.junit.Assert.assertNull;
 
 import java.util.Collection;
 
+import javax.persistence.AttributeOverride;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
+import javax.persistence.Embeddable;
+import javax.persistence.Embedded;
+import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
@@ -26,7 +30,6 @@ import org.hibernate.cfg.ImprovedNamingStrategy;
 import org.jarbframework.utils.bean.PropertyReference;
 import org.jarbframework.utils.orm.ColumnReference;
 import org.jarbframework.utils.orm.NotAnEntityException;
-import org.jarbframework.utils.orm.jpa.JpaHibernateSchemaMapper;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -69,15 +72,12 @@ public class JpaHibernateSchemaMapperTest {
      */
     @Test
     public void testTableByClassName() {
-        assertEquals("ctbl_simple_entity", mapper.table(SimpleEntity.class));
+        assertEquals("ctbl_simple_entity", mapper.tableNameOf(SimpleEntity.class));
     }
 
     @Entity
     static class SimpleEntity {
-
-        @Id
-        Long id;
-
+        @Id Long id;
     }
 
     /**
@@ -85,7 +85,7 @@ public class JpaHibernateSchemaMapperTest {
      */
     @Test
     public void testTableByEntityName() {
-        assertEquals("ctbl_custom", mapper.table(CustomEntity.class));
+        assertEquals("ctbl_custom", mapper.tableNameOf(CustomEntity.class));
     }
 
     @Entity(name = "custom")
@@ -98,13 +98,12 @@ public class JpaHibernateSchemaMapperTest {
      */
     @Test
     public void testTableByEntityNameWithTableEmptyAnnotation() {
-        assertEquals("ctbl_custom", mapper.table(CustomEntityWithTable.class));
+        assertEquals("ctbl_custom", mapper.tableNameOf(CustomEntityWithTable.class));
     }
 
     @Entity(name = "custom")
     @Table
     static class CustomEntityWithTable {
-
     }
 
     /**
@@ -113,7 +112,7 @@ public class JpaHibernateSchemaMapperTest {
      */
     @Test
     public void testTableByTableAnnotation() {
-        assertEquals("tbl_custom_table", mapper.table(CustomTable.class));
+        assertEquals("tbl_custom_table", mapper.tableNameOf(CustomTable.class));
     }
 
     @Entity(name = "custom")
@@ -121,24 +120,24 @@ public class JpaHibernateSchemaMapperTest {
     static class CustomTable {
     }
 
+    // Inheritance
+    
     /**
      * A single table inheritance strategy causes sub-classes to have the same
      * table name as their parent class.
      */
     @Test
     public void testTableBySingleTableInheritance() {
-        assertEquals("ctbl_super_single_table", mapper.table(SubSingleTable.class));
+        assertEquals("ctbl_super_single_table", mapper.tableNameOf(SubSingleTable.class));
     }
 
     @Entity
     @Inheritance
     static abstract class SuperSingleTable {
-
     }
 
     @Entity
     static abstract class SubSingleTable extends SuperSingleTable {
-
     }
 
     /**
@@ -147,37 +146,26 @@ public class JpaHibernateSchemaMapperTest {
      */
     @Test
     public void testTableByTablePerClassInheritance() {
-        assertEquals("ctbl_sub_table_per_class", mapper.table(SubTablePerClass.class));
+        assertEquals("ctbl_sub_table_per_class", mapper.tableNameOf(SubTablePerClass.class));
     }
 
     @Entity
     @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
     static abstract class SuperTablePerClass {
-
     }
 
     @Entity
     static abstract class SubTablePerClass extends SuperTablePerClass {
-
     }
 
-    /**
-     * Can only request table names for entity classes.
-     */
-    @Test(expected = NotAnEntityException.class)
-    public void testTableForNotAnEntity() {
-        mapper.table(String.class);
-    }
-
-    // Column
+    // Basic column
 
     /**
-     * Whenever a property has no @Column annotation, the property name
-     * should be used as column name.
+     * Whenever a property has no @Column annotation, the property name should be used as column name.
      */
     @Test
     public void testColumnByPropertyName() {
-        ColumnReference columnReference = mapper.column(new PropertyReference(EntityWithProperties.class, "simpleProperty"));
+        ColumnReference columnReference = mapper.columnOf(new PropertyReference(EntityWithProperties.class, "simpleProperty"));
         assertEquals("ctbl_entity_with_properties", columnReference.getTableName());
         assertEquals("prop_simple_property", columnReference.getColumnName());
     }
@@ -187,7 +175,7 @@ public class JpaHibernateSchemaMapperTest {
      */
     @Test
     public void testColumnWithEmptyAnnotation() {
-        ColumnReference columnReference = mapper.column(new PropertyReference(EntityWithProperties.class, "annotatedProperty"));
+        ColumnReference columnReference = mapper.columnOf(new PropertyReference(EntityWithProperties.class, "annotatedProperty"));
         assertEquals("ctbl_entity_with_properties", columnReference.getTableName());
         assertEquals("prop_annotated_property", columnReference.getColumnName());
     }
@@ -197,17 +185,50 @@ public class JpaHibernateSchemaMapperTest {
      */
     @Test
     public void testColumnByAnnotation() {
-        ColumnReference columnReference = mapper.column(new PropertyReference(EntityWithProperties.class, "propertyWithCustomName"));
+        ColumnReference columnReference = mapper.columnOf(new PropertyReference(EntityWithProperties.class, "propertyWithCustomName"));
         assertEquals("ctbl_entity_with_properties", columnReference.getTableName());
         assertEquals("col_custom_property", columnReference.getColumnName());
     }
+    
+    // Embedded properties
 
+    @Test
+    public void testEmbeddedColumn() {
+        ColumnReference columnReference = mapper.columnOf(new PropertyReference(EntityWithProperties.class, "embeddedProperty.embeddableProperty"));
+        assertEquals("ctbl_entity_with_properties", columnReference.getTableName());
+        assertEquals("prop_embeddable_property", columnReference.getColumnName());
+    }
+    
+    @Test
+    public void testEmbeddedColumnWithCustomName() {
+        ColumnReference columnReference = mapper.columnOf(new PropertyReference(EntityWithProperties.class, "embeddedProperty.embeddablePropertyWithCustomName"));
+        assertEquals("ctbl_entity_with_properties", columnReference.getTableName());
+        assertEquals("col_custom_embeddable", columnReference.getColumnName());
+    }
+
+// TODO: Uncomment this when feature is implemented
+//    @Test
+//    public void testEmbeddedColumnWithOverwrittenName() {
+//        ColumnReference columnReference = mapper.columnOf(new PropertyReference(EntityWithProperties.class, "embeddedProperty.overwrittenEmbeddableProperty"));
+//        assertEquals("ctbl_entity_with_properties", columnReference.getTableName());
+//        assertEquals("col_custom_overwritten_embeddable", columnReference.getColumnName());
+//    }
+        
+    @Test
+    public void testEmbeddedId() {
+        ColumnReference columnReference = mapper.columnOf(new PropertyReference(EntityWithProperties.class, "embeddedIdProperty.embeddableIdProperty"));
+        assertEquals("ctbl_entity_with_properties", columnReference.getTableName());
+        assertEquals("prop_embeddable_id_property", columnReference.getColumnName());
+    }
+
+    // Reference properties
+    
     /**
      * With @OneToOne we also use the property name.
      */
     @Test
-    public void testColumnWithOneToOne() {
-        ColumnReference columnReference = mapper.column(new PropertyReference(EntityWithProperties.class, "oneToOneProperty"));
+    public void testOneToOne() {
+        ColumnReference columnReference = mapper.columnOf(new PropertyReference(EntityWithProperties.class, "oneToOneProperty"));
         assertEquals("ctbl_entity_with_properties", columnReference.getTableName());
         assertEquals("fk_one_to_one_property", columnReference.getColumnName());
     }
@@ -216,8 +237,8 @@ public class JpaHibernateSchemaMapperTest {
      * With @ManyToOne we also use the property name.
      */
     @Test
-    public void testColumnWithManyToOne() {
-        ColumnReference columnReference = mapper.column(new PropertyReference(EntityWithProperties.class, "manyToOneProperty"));
+    public void testManyToOne() {
+        ColumnReference columnReference = mapper.columnOf(new PropertyReference(EntityWithProperties.class, "manyToOneProperty"));
         assertEquals("ctbl_entity_with_properties", columnReference.getTableName());
         assertEquals("fk_many_to_one_property", columnReference.getColumnName());
     }
@@ -226,69 +247,38 @@ public class JpaHibernateSchemaMapperTest {
      * Unless a @JoinColumn is provided.
      */
     @Test
-    public void testColumnWithManyToOneAndColumnAnnotation() {
-        ColumnReference columnReference = mapper.column(new PropertyReference(EntityWithProperties.class, "customManyToOneProperty"));
+    public void testManyToOneWithJoinColumn() {
+        ColumnReference columnReference = mapper.columnOf(new PropertyReference(EntityWithProperties.class, "customManyToOneProperty"));
         assertEquals("ctbl_entity_with_properties", columnReference.getTableName());
         assertEquals("col_custom_reference", columnReference.getColumnName());
     }
+    
+    // Not columns
 
     /**
-     * Joined inheritance causes properties to be placed inside the
-     * table of their declaring class. Thus, properties defined inside
-     * the super class, are placed inside the super's table.
-     */
-    @Test
-    public void testColumnWithJoinedInheritanceSuper() {
-        ColumnReference columnReference = mapper.column(new PropertyReference(SubJoined.class, "superProperty"));
-        assertEquals("ctbl_super_joined", columnReference.getTableName());
-        assertEquals("prop_super_property", columnReference.getColumnName());
-    }
-
-    /**
-     * While properties defined inside the sub class, are placed inside
-     * the sub class's table.
-     */
-    @Test
-    public void testColumnWithJoinedInheritanceSub() {
-        ColumnReference columnReference = mapper.column(new PropertyReference(SubJoined.class, "subProperty"));
-        assertEquals("ctbl_sub_joined", columnReference.getTableName());
-        assertEquals("prop_sub_property", columnReference.getColumnName());
-    }
-
-    @Entity
-    @Inheritance(strategy = InheritanceType.JOINED)
-    static abstract class SuperJoined {
-        String superProperty;
-    }
-
-    @Entity
-    static abstract class SubJoined extends SuperJoined {
-        String subProperty;
-    }
-
-    /**
-     * Various properties do not map to a (single) column, meaning
-     * they will be ignored. This includes:
-     * @OneToMany @ManyToMany and @Transient
+     * Various properties do not map to a (single) column, meaning they will be ignored.
      */
     @Test
     public void testNotAColumn() {
-        assertNull(mapper.column(new PropertyReference(EntityWithProperties.class, "oneToManyProperty")));
-        assertNull(mapper.column(new PropertyReference(EntityWithProperties.class, "manyToManyProperty")));
-        assertNull(mapper.column(new PropertyReference(EntityWithProperties.class, "elementCollectionProperty")));
-        assertNull(mapper.column(new PropertyReference(EntityWithProperties.class, "transientProperty")));
+        assertNull(mapper.columnOf(new PropertyReference(EntityWithProperties.class, "oneToManyProperty")));
+        assertNull(mapper.columnOf(new PropertyReference(EntityWithProperties.class, "manyToManyProperty")));
+        assertNull(mapper.columnOf(new PropertyReference(EntityWithProperties.class, "elementCollectionProperty")));
+        assertNull(mapper.columnOf(new PropertyReference(EntityWithProperties.class, "transientProperty")));
     }
 
     @Test(expected = NotAnEntityException.class)
     public void testColumnNotAnEntity() {
-        mapper.column(new PropertyReference(String.class, "value"));
+        mapper.columnOf(new PropertyReference(String.class, "value"));
     }
 
     @Entity
     static class EntityWithProperties {
 
         @Id
-        Long id;
+        Long idProperty;
+        
+        @EmbeddedId
+        EmbeddableIdClass embeddedIdProperty; 
 
         String simpleProperty;
 
@@ -319,7 +309,61 @@ public class JpaHibernateSchemaMapperTest {
 
         @Transient
         String transientProperty;
+        
+        @Embedded
+        @AttributeOverride(name = "overwrittenEmbeddableProperty", column = @Column(name="custom_overwritten_embeddable"))
+        EmbeddableClass embeddedProperty;
 
+    }
+    
+    @Embeddable
+    static class EmbeddableClass {
+        String embeddableProperty;
+        
+        @Column(name = "custom_embeddable")
+        String embeddablePropertyWithCustomName;
+        
+        String overwrittenEmbeddableProperty;
+    }
+    
+    @Embeddable
+    static class EmbeddableIdClass {
+        @Id Long embeddableIdProperty;
+    }
+    
+    // Joined inheritance properties
+    
+    /**
+     * Joined inheritance causes properties to be placed inside the
+     * table of their declaring class. Thus, properties defined inside
+     * the super class, are placed inside the super's table.
+     */
+    @Test
+    public void testColumnWithJoinedInheritanceSuper() {
+        ColumnReference columnReference = mapper.columnOf(new PropertyReference(SubJoined.class, "superProperty"));
+        assertEquals("ctbl_super_joined", columnReference.getTableName());
+        assertEquals("prop_super_property", columnReference.getColumnName());
+    }
+
+    /**
+     * While properties defined inside the sub class, are placed inside the sub class's table.
+     */
+    @Test
+    public void testColumnWithJoinedInheritanceSub() {
+        ColumnReference columnReference = mapper.columnOf(new PropertyReference(SubJoined.class, "subProperty"));
+        assertEquals("ctbl_sub_joined", columnReference.getTableName());
+        assertEquals("prop_sub_property", columnReference.getColumnName());
+    }
+
+    @Entity
+    @Inheritance(strategy = InheritanceType.JOINED)
+    static abstract class SuperJoined {
+        String superProperty;
+    }
+
+    @Entity
+    static abstract class SubJoined extends SuperJoined {
+        String subProperty;
     }
 
 }

@@ -1,11 +1,6 @@
-/*
- * (C) 2011 Nidera (www.nidera.com). All rights reserved.
- */
 package org.jarbframework.utils.orm;
 
 import org.jarbframework.utils.bean.PropertyReference;
-import org.jarbframework.utils.orm.ColumnReference;
-import org.jarbframework.utils.orm.NotAnEntityException;
 
 /**
  * Maps bean (properties) to database tables and columns.
@@ -16,21 +11,34 @@ import org.jarbframework.utils.orm.NotAnEntityException;
 public interface SchemaMapper {
 
     /**
-     * Retrieve the table name of a entity.
-     * @param entityClass type of entity
+     * Retrieve the table name of an entity class.
+     * @param clazz type of entity
      * @return name of the table
-     * @throws NotAnEntityException whenever the specified bean
-     * class could not be recognized as entity.
+     * @throws NotAnEntityException whenever the specified bean class could not be recognized as entity
      */
-    String table(Class<?> entityClass);
+    String tableNameOf(Class<?> clazz);
 
     /**
      * Retrieve the column that a property maps to, if any.
-     * @param propertyReference property reference
+     * @param property reference to the property
      * @return column reference, if any
-     * @throws NotAnEntityException whenever the specified bean
-     * class could not be recognized as entity.
+     * @throws NotAnEntityException whenever the specified bean class could not be recognized as entity
      */
-    ColumnReference column(PropertyReference propertyReference);
+    ColumnReference columnOf(PropertyReference property);
+    
+    /**
+     * Determine if a class could be recognized as entity.
+     * @param clazz type of bean that should be checked
+     * @return {@code true} whenever the class is recognized as entity, else {@code false}
+     */
+    boolean isEntity(Class<?> clazz);
+    
+    /**
+     * Determine if a class could be recognized as embeddable. Embeddable beans can contain properties
+     * that actually belong inside the entity's database table.
+     * @param clazz type of bean that should be checked
+     * @return {@code true} whenever the class is recognized as embeddable, else {@code false}
+     */
+    boolean isEmbeddable(Class<?> clazz);
 
 }

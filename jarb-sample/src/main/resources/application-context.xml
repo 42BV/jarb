@@ -87,7 +87,7 @@
     <bean id="databaseConstraintRepository" class="org.jarbframework.constraint.database.DatabaseConstraintRepositoryFactoryBean">
         <property name="dataSource" ref="dataSource"/>
         <property name="schemaMapper">
-            <bean class="org.jarbframework.utils.orm.jpa.JpaHibernateSchemaMapper">
+            <bean class="org.jarbframework.utils.orm.jpa.JpaHibernateSchemaMapper" factory-method="usingNamingStrategyOf">
                 <constructor-arg ref="entityManagerFactory"/>
             </bean>
         </property>

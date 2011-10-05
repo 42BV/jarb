@@ -1,6 +1,3 @@
-/*
- * (C) 2011 Nidera (www.nidera.com). All rights reserved.
- */
 package org.jarbframework.utils.bean;
 
 import static org.jarbframework.utils.Asserts.notNull;
@@ -11,7 +8,7 @@ import java.lang.reflect.Field;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.jarbframework.utils.bean.PropertyReference;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.util.ReflectionUtils.FieldCallback;
 
@@ -22,6 +19,7 @@ import org.springframework.util.ReflectionUtils.FieldCallback;
  * @date Aug 29, 2011
  */
 public final class BeanProperties {
+    public static final String PROPERTY_SEPARATOR = ".";
 
     public static Set<String> getPropertyNames(Class<?> beanClass) {
         Set<String> propertyNames = new HashSet<String>();
@@ -43,6 +41,16 @@ public final class BeanProperties {
         return fieldNames;
     }
 
+    public static PropertyReference lastPropertyIn(PropertyReference propertyReference) {
+        while(propertyReference.getName().contains(PROPERTY_SEPARATOR)) {
+            String unqualifiedPropertyName = StringUtils.substringBefore(propertyReference.getName(), PROPERTY_SEPARATOR);
+            Class<?> propertyType = getPropertyType(new PropertyReference(propertyReference.getBeanClass(), unqualifiedPropertyName));
+            String propertyNameRemainder = StringUtils.substringAfter(propertyReference.getName(), PROPERTY_SEPARATOR);
+            propertyReference = new PropertyReference(propertyType, propertyNameRemainder);
+        }
+        return propertyReference;
+    }
+    
     public static Class<?> getPropertyType(PropertyReference propertyReference) {
         return findPropertyField(propertyReference).getType();
     }
@@ -52,8 +60,9 @@ public final class BeanProperties {
     }
 
     private static Field findPropertyField(PropertyReference propertyReference) {
+        propertyReference = lastPropertyIn(propertyReference);
         Field field = ReflectionUtils.findField(propertyReference.getBeanClass(), propertyReference.getName());
-        return notNull(field, "Could not find property '" + propertyReference.getName() + "' in " + propertyReference.getBeanClass().getName());
+        return notNull(field, "Could not find field '" + propertyReference.getName() + "' in '" + propertyReference.getBeanClass().getName() + "'.");
     }
 
     private BeanProperties() {

@@ -9,24 +9,12 @@ import javax.persistence.Entity;
 import javax.persistence.metamodel.EntityType;
 import javax.persistence.metamodel.Metamodel;
 
-import org.jarbframework.utils.orm.NotAnEntityException;
-
 /**
  * JPA meta model support functionality.
  * @author Jeroen van Schagen
  * @since 20-05-2011
  */
 public final class JpaMetaModelUtils {
-
-    /**
-     * Ensure that a bean class is recognized as @Entity.
-     * @param beanClass class of the bean
-     */
-    public static void assertIsEntity(Class<?> beanClass) {
-        if (!isEntity(beanClass)) {
-            throw new NotAnEntityException("Bean class '" + beanClass.getName() + "' is not an @Entity.");
-        }
-    }
 
     /**
      * Determine if a bean class is annotated with @Entity.

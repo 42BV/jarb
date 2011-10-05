@@ -6,25 +6,5 @@ package org.jarbframework.utils.database;
  * @since 14-05-2011
  */
 public enum DatabaseType {
-
-    /**
-     * HyperSQL
-     */
-    HSQL,
-
-    /**
-     * PostgreSQL
-     */
-    POSTGRESQL,
-
-    /**
-     * MySQL
-     */
-    MYSQL,
-
-    /**
-     * Oracle
-     */
-    ORACLE
-
+    HSQL, POSTGRESQL, MYSQL, ORACLE;
 }

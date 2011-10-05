@@ -1,16 +1,14 @@
-/*
- * (C) 2011 Nidera (www.nidera.com). All rights reserved.
- */
 package org.jarbframework.utils.orm.jpa;
 
+import static java.lang.String.format;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static org.jarbframework.utils.Asserts.hasText;
 import static org.jarbframework.utils.Asserts.instanceOf;
 import static org.jarbframework.utils.Asserts.notNull;
+import static org.jarbframework.utils.bean.BeanAnnotationScanner.fieldOrGetter;
 import static org.jarbframework.utils.bean.BeanProperties.getDeclaringClass;
 import static org.jarbframework.utils.bean.BeanProperties.getPropertyNames;
 import static org.jarbframework.utils.bean.BeanProperties.getPropertyType;
-import static org.jarbframework.utils.orm.jpa.JpaMetaModelUtils.assertIsEntity;
 import static org.jarbframework.utils.orm.jpa.JpaMetaModelUtils.findRootEntityClass;
 import static org.springframework.beans.BeanUtils.instantiateClass;
 
@@ -34,9 +32,8 @@ import org.hibernate.cfg.NamingStrategy;
 import org.jarbframework.utils.bean.BeanAnnotationScanner;
 import org.jarbframework.utils.bean.PropertyReference;
 import org.jarbframework.utils.orm.ColumnReference;
+import org.jarbframework.utils.orm.NotAnEntityException;
 import org.jarbframework.utils.orm.SchemaMapper;
-
-// TODO: Provide support for @EmbeddedId
 
 /**
  * Hibernate JPA implementation of {@link SchemaMapper}.
@@ -45,12 +42,9 @@ import org.jarbframework.utils.orm.SchemaMapper;
  * @date Aug 16, 2011
  */
 public class JpaHibernateSchemaMapper implements SchemaMapper {
-    private static final String NAMING_STRATEGY_PROP_KEY = "hibernate.ejb.naming_strategy";
-
-    /** Retrieves the annotations of a bean class. */
-    private final BeanAnnotationScanner annotationScanner = BeanAnnotationScanner.fieldOrGetter();
+    private static final String NAMING_STRATEGY_KEY = "hibernate.ejb.naming_strategy";
     
-    /** Naming strategy used to determine the eventual mapping. */
+    private final BeanAnnotationScanner annotationScanner = fieldOrGetter();
     private final NamingStrategy namingStrategy;
 
     public JpaHibernateSchemaMapper() {
@@ -61,16 +55,17 @@ public class JpaHibernateSchemaMapper implements SchemaMapper {
         this.namingStrategy = notNull(namingStrategy, "Naming strategy property is required.");
     }
 
-    public JpaHibernateSchemaMapper(EntityManagerFactory entityManagerFactory) {
-        Object namingStrategyClassName = entityManagerFactory.getProperties().get(NAMING_STRATEGY_PROP_KEY);
-        if (namingStrategyClassName == null) {
-            namingStrategy = new DefaultNamingStrategy();
+    public static JpaHibernateSchemaMapper usingNamingStrategyOf(EntityManagerFactory entityManagerFactory) {
+        Object namingStrategyProperty = entityManagerFactory.getProperties().get(NAMING_STRATEGY_KEY);
+        if (namingStrategyProperty == null) {
+            return new JpaHibernateSchemaMapper();
         } else {
-            namingStrategy = instantiateStrategy(instanceOf(namingStrategyClassName, String.class, "Naming strategy property should be a string."));
+            String namingStrategyClass = instanceOf(namingStrategyProperty, String.class, format("Property '%s' should be a String.", NAMING_STRATEGY_KEY));
+            return new JpaHibernateSchemaMapper(instantiateStrategy(namingStrategyClass));
         }
     }
 
-    private NamingStrategy instantiateStrategy(String className) {
+    private static NamingStrategy instantiateStrategy(String className) {
         Class<?> namingStrategyClass;
         try {
             namingStrategyClass = Class.forName(className);
@@ -79,17 +74,27 @@ public class JpaHibernateSchemaMapper implements SchemaMapper {
         }
         return (NamingStrategy) instantiateClass(namingStrategyClass);
     }
-
-    //
-    // Table
-    //
+    
+    @Override
+    public boolean isEntity(Class<?> clazz) {
+        return JpaMetaModelUtils.isEntity(clazz);
+    }
+    
+    @Override
+    public boolean isEmbeddable(Class<?> clazz) {
+        return JpaMetaModelUtils.isEmbeddable(clazz);
+    }
+    
+    // Table mapping
 
     @Override
-    public String table(Class<?> entityClass) {
-        assertIsEntity(entityClass);
-
-        Class<?> tableClass = determineTableClass(entityClass);
-        return readTableName(tableClass);
+    public String tableNameOf(Class<?> entityClass) {
+        String tableName = null;
+        if(isEntity(entityClass)) {
+            Class<?> tableClass = determineTableClass(entityClass);
+            tableName = readTableName(tableClass);
+        }
+        return tableName;
     }
 
     private Class<?> determineTableClass(Class<?> entityClass) {
@@ -122,28 +127,28 @@ public class JpaHibernateSchemaMapper implements SchemaMapper {
         return namingStrategy.classToTableName(entityName);
     }
 
-    //
-    // Column
-    //
-
+    // Column mapping
+    
     @Override
-    public ColumnReference column(PropertyReference propertyReference) {
-        assertIsEntity(propertyReference.getBeanClass());
-
-        ColumnReference columnReference = null;
-        if (hasColumn(propertyReference)) {
-            String tableName = tableForProperty(propertyReference);
-            String columnName = columnName(propertyReference);
-            columnReference = new ColumnReference(tableName, columnName);
-        }
-        return columnReference;
+    public ColumnReference columnOf(PropertyReference propertyReference) {
+        if(isEntity(propertyReference.getBeanClass())) {
+            ColumnReference columnReference = null;
+            if (hasColumn(propertyReference)) {
+                String tableName = tableForProperty(propertyReference);
+                String columnName = columnName(propertyReference);
+                columnReference = new ColumnReference(tableName, columnName);
+            }
+            return columnReference;
+        } else {
+            throw new NotAnEntityException("Class '" + propertyReference.getBeanClass() + "' could not be recognized as entity.");
+        }        
     }
 
     private boolean hasColumn(PropertyReference propertyReference) {
-        return !(annotationScanner.hasAnnotation(propertyReference, Transient.class) || isCollectionReference(propertyReference));
+        return !(annotationScanner.hasAnnotation(propertyReference, Transient.class) || isCollection(propertyReference));
     }
 
-    private boolean isCollectionReference(PropertyReference propertyReference) {
+    private boolean isCollection(PropertyReference propertyReference) {
         return
             annotationScanner.hasAnnotation(propertyReference, OneToMany.class) ||
             annotationScanner.hasAnnotation(propertyReference, ManyToMany.class) ||
@@ -176,6 +181,11 @@ public class JpaHibernateSchemaMapper implements SchemaMapper {
         } else {
             columnName = readColumnName(propertyReference);
         }
+        return includeAttributeOverwrites(columnName, propertyReference);
+    }
+
+    private String includeAttributeOverwrites(String columnName, PropertyReference propertyReference) {
+        // TODO: Include @AttributeOverwrite column definitions
         return columnName;
     }
 
@@ -191,14 +201,14 @@ public class JpaHibernateSchemaMapper implements SchemaMapper {
         return readReferenceColumnName(propertyReference, referencedClass);
     }
 
-    private String readReferenceColumnName(PropertyReference propertyReference, Class<?> referencedClass) {
+    private String readReferenceColumnName(PropertyReference propertyReference, Class<?> referencingClass) {
         JoinColumn joinColumn = annotationScanner.findAnnotation(propertyReference, JoinColumn.class);
         if (joinColumn != null && isNotBlank(joinColumn.name())) {
             return namingStrategy.columnName(joinColumn.name());
         } else {
-            String referencedProperty = getIdentifierPropertyName(referencedClass);
-            ColumnReference referencedColumn = column(new PropertyReference(referencedClass, referencedProperty));
-            return namingStrategy.foreignKeyColumnName(propertyReference.getName(), referencedClass.getName(), referencedColumn.getTableName(), referencedColumn.getColumnName());
+            String referencedPropertyName = getIdentifierPropertyName(referencingClass);
+            ColumnReference referencedColumn = columnOf(new PropertyReference(referencingClass, referencedPropertyName));
+            return namingStrategy.foreignKeyColumnName(propertyReference.getName(), referencingClass.getName(), referencedColumn.getTableName(), referencedColumn.getColumnName());
         }
     }
 

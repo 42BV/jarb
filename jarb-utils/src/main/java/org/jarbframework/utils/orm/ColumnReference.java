@@ -1,6 +1,3 @@
-/*
- * (C) 2011 Nidera (www.nidera.com). All rights reserved.
- */
 package org.jarbframework.utils.orm;
 
 import static org.jarbframework.utils.Asserts.hasText;

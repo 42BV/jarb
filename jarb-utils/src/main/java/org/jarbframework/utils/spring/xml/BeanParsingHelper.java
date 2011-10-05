@@ -19,17 +19,13 @@ public final class BeanParsingHelper {
 
     /**
      * Parses the child of an element, for example:
-     * 
      * <p>
-     * 
      * <code>
      *  &lt;my-tag&gt;<br>
      *  &#160;&lt;bean class="myproject.MyBean"/&gt;<br>
      *  &lt;my-tag/&gt;
      * </code>
-     * 
      * <p>
-     * 
      * Results in a bean definition for <i>MyBean</i>.
      * 
      * @param element the element that should have its child parsed.
@@ -56,23 +52,15 @@ public final class BeanParsingHelper {
      * process we first look for a corresponding property attribute in our
      * element. Whenever no attribute is defined, we look for a child element
      * with a corresponding tag name.
-     * 
      * <p>
-     * 
      * Property definitions can be defined as reference on the attribute:
-     * 
      * <p>
-     * 
      * <code>
      * &lt;my-tag some-property="x"/&gt;<br>
      * </code>
-     * 
      * <p>
-     * 
      * Or as custom element, with a bean definition inside:
-     * 
      * <p>
-     * 
      * <code>
      * &lt;my-tag&gt;<br>
      * &#160;&lt;some-property&gt;<br>

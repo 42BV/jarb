@@ -61,8 +61,8 @@ public class ClassDefinitionsGenerator {
             Set<EntityType<?>> entities, Set<EntityType<?>> subClassEntities) throws ClassNotFoundException, InstantiationException, IllegalAccessException {
         final Class<T> entityClass = entity.getJavaType();
         EntityDefinition.Builder<T> builder = EntityDefinition.forClass(entityClass);
-        SchemaMapper schemaMapper = new JpaHibernateSchemaMapper(entityManagerFactory);
-        builder.setTableName(schemaMapper.table(entityClass));
+        SchemaMapper schemaMapper = JpaHibernateSchemaMapper.usingNamingStrategyOf(entityManagerFactory);
+        builder.setTableName(schemaMapper.tableNameOf(entityClass));
         builder.includeProperties(ColumnDefinitionsGenerator.createPropertyDefinitions(subClassEntities, entity, entityClass));
         if (!subClassEntities.isEmpty()) {
             builder.setDiscriminatorColumnName(DiscriminatorColumnGenerator.getDiscriminatorColumnName(entityClass));
