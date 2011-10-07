@@ -8,7 +8,6 @@ import java.lang.reflect.Field;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.util.ReflectionUtils.FieldCallback;
 
@@ -19,8 +18,6 @@ import org.springframework.util.ReflectionUtils.FieldCallback;
  * @date Aug 29, 2011
  */
 public final class BeanProperties {
-    public static final String PROPERTY_SEPARATOR = ".";
-
     public static Set<String> getPropertyNames(Class<?> beanClass) {
         Set<String> propertyNames = new HashSet<String>();
         for (PropertyDescriptor propertyDescriptor : getPropertyDescriptors(beanClass)) {
@@ -42,11 +39,9 @@ public final class BeanProperties {
     }
 
     public static PropertyReference lastPropertyIn(PropertyReference propertyReference) {
-        while(propertyReference.getName().contains(PROPERTY_SEPARATOR)) {
-            String unqualifiedPropertyName = StringUtils.substringBefore(propertyReference.getName(), PROPERTY_SEPARATOR);
-            Class<?> propertyType = getPropertyType(new PropertyReference(propertyReference.getBeanClass(), unqualifiedPropertyName));
-            String propertyNameRemainder = StringUtils.substringAfter(propertyReference.getName(), PROPERTY_SEPARATOR);
-            propertyReference = new PropertyReference(propertyType, propertyNameRemainder);
+        if(propertyReference.isNestedProperty()) {
+            Class<?> parentType = getPropertyType(propertyReference.getParent());
+            propertyReference = new PropertyReference(parentType, propertyReference.getSimpleName());
         }
         return propertyReference;
     }

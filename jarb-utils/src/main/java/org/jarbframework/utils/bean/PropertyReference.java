@@ -1,10 +1,13 @@
 package org.jarbframework.utils.bean;
 
+import static org.apache.commons.lang3.StringUtils.substringAfterLast;
 import static org.jarbframework.utils.Asserts.hasText;
 import static org.jarbframework.utils.Asserts.notNull;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.jarbframework.utils.Asserts;
 
 /**
  * References a bean property.
@@ -13,6 +16,8 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
  * @date Aug 29, 2011
  */
 public class PropertyReference {
+    private static final String PROPERTY_SEPARATOR = ".";
+    
     private final String name;
     private final Class<?> beanClass;
 
@@ -24,9 +29,23 @@ public class PropertyReference {
     public String getName() {
         return name;
     }
+    
+    public String getSimpleName() {
+        return isNestedProperty() ? substringAfterLast(name, PROPERTY_SEPARATOR) : name;
+    }
 
     public Class<?> getBeanClass() {
         return beanClass;
+    }
+    
+    public boolean isNestedProperty() {
+        return name.contains(PROPERTY_SEPARATOR);
+    }
+    
+    public PropertyReference getParent() {
+        Asserts.state(isNestedProperty(), "Can only retrieve the parent for a nested property.");
+        String parentName = StringUtils.substringBeforeLast(name, PROPERTY_SEPARATOR);
+        return new PropertyReference(beanClass, parentName);
     }
 
     @Override
