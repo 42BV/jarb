@@ -5,7 +5,6 @@ import static junit.framework.Assert.assertTrue;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 
-import org.jarbframework.migrations.liquibase.LiquibaseMigratorMain;
 import org.junit.Test;
 
 public class LiquibaseMigratorMainTest {
@@ -15,8 +14,14 @@ public class LiquibaseMigratorMainTest {
      */
     @Test
     public void testDbMigration() {
-        String[] args = { "-changeLogPath", "src/test/resources/changelog.groovy", "-dbPassword", "", "-dbUrl", "jdbc:hsqldb:mem:com.nidera.pcat", "-dbUser",
-                "sa", "-driverClass", "org.hsqldb.jdbcDriver", "-dropFirst" };
+        String[] args = { 
+                "-changeLogPath", "src/test/resources/changelog.groovy", 
+                "-dbPassword", "", 
+                "-dbUrl", "jdbc:hsqldb:mem:com.nidera.pcat", 
+                "-dbUser", "sa", 
+                "-driverClass", "org.hsqldb.jdbcDriver", 
+                "-dropFirst"
+            };
         LiquibaseMigratorMain.main(args);
     }
 
@@ -25,8 +30,15 @@ public class LiquibaseMigratorMainTest {
      */
     @Test
     public void testDbMigrationRelativePath() {
-        String[] args = { "-changeLogBaseDir", "src/test/resources", "-changeLogPath", "changelog.groovy", "-dbPassword", "", "-dbUrl",
-                "jdbc:hsqldb:mem:com.nidera.pcat", "-dbUser", "sa", "-driverClass", "org.hsqldb.jdbcDriver", "-dropFirst" };
+        String[] args = { 
+                "-changeLogBaseDir", "src/test/resources", 
+                "-changeLogPath", "changelog.groovy", 
+                "-dbPassword", "", 
+                "-dbUrl", "jdbc:hsqldb:mem:com.nidera.pcat", 
+                "-dbUser", "sa", 
+                "-driverClass", "org.hsqldb.jdbcDriver", 
+                "-dropFirst"
+            };
         LiquibaseMigratorMain.main(args);
     }
 
@@ -35,8 +47,15 @@ public class LiquibaseMigratorMainTest {
      */
     @Test(expected = RuntimeException.class)
     public void testInvalidDriverClass() {
-        String[] args = { "-changeLogPath", "src/main/db/changelog.groovy", "-dbPassword", "", "-dbUrl", "jdbc:hsqldb:mem:com.nidera.pcat", "-dbUser", "sa",
-                "-driverClass", "org.hsqldb.invalidDriver" };
+        String[] args = { 
+                "-changeLogBaseDir", "src/test/resources", 
+                "-changeLogPath", "changelog.groovy", 
+                "-dbPassword", "", 
+                "-dbUrl", "jdbc:hsqldb:mem:com.nidera.pcat", 
+                "-dbUser", "sa", 
+                "-driverClass", "org.invalid.Driver", 
+                "-dropFirst"
+            };
         LiquibaseMigratorMain.main(args);
     }
 
@@ -45,8 +64,15 @@ public class LiquibaseMigratorMainTest {
      */
     @Test(expected = RuntimeException.class)
     public void testConnectionCouldNotBeOpened() {
-        String[] args = { "-changeLogPath", "src/main/db/changelog.groovy", "-dbPassword", "", "-dbUrl", "jdbc:hsqldb:mem:com.nidera.pcat", "-dbUser",
-                "unknown", "-driverClass", "org.hsqldb.jdbcDriver" };
+        String[] args = { 
+                "-changeLogBaseDir", "src/test/resources", 
+                "-changeLogPath", "changelog.groovy", 
+                "-dbPassword", "", 
+                "-dbUrl", "jdbc:hsqldb:mem:com.nidera.pcat", 
+                "-dbUser", "unknown", 
+                "-driverClass", "org.hsqldb.jdbcDriver", 
+                "-dropFirst"
+            };
         LiquibaseMigratorMain.main(args);
     }
 
@@ -55,8 +81,15 @@ public class LiquibaseMigratorMainTest {
      */
     @Test(expected = RuntimeException.class)
     public void testChangeLogDoesNotExist() {
-        String[] args = { "-changeLogPath", "src/test/resources/failing-changelog.groovy", "-dbPassword", "", "-dbUrl", "jdbc:hsqldb:mem:com.nidera.pcat",
-                "-dbUser", "sa", "-driverClass", "org.hsqldb.jdbcDriver" };
+        String[] args = { 
+                "-changeLogBaseDir", "src/test/resources", 
+                "-changeLogPath", "non-existing-changelog.groovy", 
+                "-dbPassword", "", 
+                "-dbUrl", "jdbc:hsqldb:mem:com.nidera.pcat", 
+                "-dbUser", "sa", 
+                "-driverClass", "org.hsqldb.jdbcDriver", 
+                "-dropFirst"
+            };
         LiquibaseMigratorMain.main(args);
     }
 
@@ -65,17 +98,21 @@ public class LiquibaseMigratorMainTest {
      */
     @Test
     public void testInvalidUsage() {
+        PrintStream out = System.out;
+        PrintStream err = System.err;
+        
         ByteArrayOutputStream tmpOut = new ByteArrayOutputStream();
-        ByteArrayOutputStream tmpErr = new ByteArrayOutputStream();
         System.setOut(new PrintStream(tmpOut));
+        ByteArrayOutputStream tmpErr = new ByteArrayOutputStream();
         System.setErr(new PrintStream(tmpErr));
+        
         try {
             LiquibaseMigratorMain.main(new String[] { "" });
             assertTrue(tmpOut.toString().startsWith("Usage"));
             assertTrue(tmpErr.toString().indexOf("Exception") > 0);
         } finally {
-            System.setOut(System.out);
-            System.setErr(System.err);
+            System.setOut(out);
+            System.setErr(err);
         }
     }
 
