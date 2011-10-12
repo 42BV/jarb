@@ -89,7 +89,7 @@ public final class DatabaseConstraintViolation {
             this.type = notNull(type, "Violation type cannot be null");
         }
 
-        public DatabaseConstraintViolationBuilder named(String constraintName) {
+        public DatabaseConstraintViolationBuilder constraint(String constraintName) {
             this.constraintName = constraintName;
             return this;
         }

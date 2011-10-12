@@ -5,19 +5,13 @@ import static org.jarbframework.violation.DatabaseConstraintViolationType.CHECK_
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import org.jarbframework.violation.DatabaseConstraintViolation;
 import org.junit.Test;
 
 public class ConstraintViolationTest {
 
-    /**
-     * Constraint violations should have a string representation that shows its attributes.
-     */
     @Test
     public void testToString() {
-        DatabaseConstraintViolation.DatabaseConstraintViolationBuilder violationBuilder = violation(CHECK_FAILED);
-        violationBuilder.named("ck_name_cannot_be_henk");
-        DatabaseConstraintViolation violation = violationBuilder.build();
+        DatabaseConstraintViolation violation = violation(CHECK_FAILED).constraint("ck_name_cannot_be_henk").build();
         final String toString = violation.toString();
         assertNotNull(toString);
         assertTrue(toString.contains("CHECK_FAILED"));

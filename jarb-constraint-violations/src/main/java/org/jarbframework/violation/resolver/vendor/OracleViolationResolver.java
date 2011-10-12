@@ -68,7 +68,7 @@ public class OracleViolationResolver extends RootCauseMessageViolationResolver {
         DatabaseConstraintViolation.DatabaseConstraintViolationBuilder violationBuilder = violation(DatabaseConstraintViolationType.CHECK_FAILED);
         Matcher matcher = Pattern.compile(CHECK_FAILED_PATTERN).matcher(message);
         Assert.isTrue(matcher.matches()); // Retrieve group information
-        violationBuilder.named(matcher.group(3));
+        violationBuilder.constraint(matcher.group(3));
         return violationBuilder.build();
     }
 
@@ -76,7 +76,7 @@ public class OracleViolationResolver extends RootCauseMessageViolationResolver {
         DatabaseConstraintViolation.DatabaseConstraintViolationBuilder violationBuilder = violation(DatabaseConstraintViolationType.UNIQUE_KEY);
         Matcher matcher = Pattern.compile(UNIQUE_VIOLATION_PATTERN).matcher(message);
         Assert.isTrue(matcher.matches()); // Retrieve group information
-        violationBuilder.named(matcher.group(3));
+        violationBuilder.constraint(matcher.group(3));
         return violationBuilder.build();
     }
 
@@ -84,7 +84,7 @@ public class OracleViolationResolver extends RootCauseMessageViolationResolver {
         DatabaseConstraintViolation.DatabaseConstraintViolationBuilder violationBuilder = violation(DatabaseConstraintViolationType.FOREIGN_KEY);
         Matcher matcher = Pattern.compile(FK_VIOLATION_PATTERN).matcher(message);
         Assert.isTrue(matcher.matches()); // Retrieve group information
-        violationBuilder.named(matcher.group(3));
+        violationBuilder.constraint(matcher.group(3));
         return violationBuilder.build();
     }
 

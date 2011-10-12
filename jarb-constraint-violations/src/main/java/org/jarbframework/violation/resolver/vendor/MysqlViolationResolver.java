@@ -65,7 +65,7 @@ public class MysqlViolationResolver extends RootCauseMessageViolationResolver {
         Matcher matcher = Pattern.compile(UNIQUE_VIOLATION_PATTERN).matcher(message);
         Assert.isTrue(matcher.matches()); // Retrieve group information
         violationBuilder.value(matcher.group(1));
-        violationBuilder.named(matcher.group(2));
+        violationBuilder.constraint(matcher.group(2));
         return violationBuilder.build();
     }
 

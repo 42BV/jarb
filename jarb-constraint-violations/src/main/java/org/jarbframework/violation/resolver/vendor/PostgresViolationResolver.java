@@ -64,7 +64,7 @@ public class PostgresViolationResolver extends RootCauseMessageViolationResolver
         Matcher matcher = Pattern.compile(CHECK_FAILED_PATTERN).matcher(message);
         Assert.isTrue(matcher.matches()); // Retrieve group information
         violationBuilder.table(matcher.group(1));
-        violationBuilder.named(matcher.group(2));
+        violationBuilder.constraint(matcher.group(2));
         return violationBuilder.build();
     }
 
@@ -80,7 +80,7 @@ public class PostgresViolationResolver extends RootCauseMessageViolationResolver
         DatabaseConstraintViolation.DatabaseConstraintViolationBuilder violationBuilder = violation(DatabaseConstraintViolationType.UNIQUE_KEY);
         Matcher matcher = Pattern.compile(UNIQUE_VIOLATION_PATTERN).matcher(message);
         Assert.isTrue(matcher.matches()); // Retrieve group information
-        violationBuilder.named(matcher.group(1));
+        violationBuilder.constraint(matcher.group(1));
         violationBuilder.column(matcher.group(2));
         violationBuilder.value(matcher.group(3));
         return violationBuilder.build();

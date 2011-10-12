@@ -32,7 +32,7 @@ public class SimpleConstraintExceptionFactoryTest {
 
     @Test
     public void testCheckFailed() {
-        DatabaseConstraintViolation violation = violation(CHECK_FAILED).named("ck_name_cannot_be_henk").build();
+        DatabaseConstraintViolation violation = violation(CHECK_FAILED).constraint("ck_name_cannot_be_henk").build();
         DatabaseConstraintViolationException exception = factory.createException(violation, null);
         assertTrue(exception instanceof CheckFailedException);
         assertEquals("Check 'ck_name_cannot_be_henk' failed.", exception.getMessage());
@@ -41,7 +41,7 @@ public class SimpleConstraintExceptionFactoryTest {
 
     @Test
     public void testUniqueKeyViolated() {
-        DatabaseConstraintViolation violation = violation(UNIQUE_KEY).named("uk_persons_name").build();
+        DatabaseConstraintViolation violation = violation(UNIQUE_KEY).constraint("uk_persons_name").build();
         DatabaseConstraintViolationException exception = factory.createException(violation, null);
         assertTrue(exception instanceof UniqueKeyViolationException);
         assertEquals("Unique key 'uk_persons_name' was violated.", exception.getMessage());
@@ -50,7 +50,7 @@ public class SimpleConstraintExceptionFactoryTest {
 
     @Test
     public void testForeignKeyViolated() {
-        DatabaseConstraintViolation violation = violation(FOREIGN_KEY).named("fk_persons_parent").build();
+        DatabaseConstraintViolation violation = violation(FOREIGN_KEY).constraint("fk_persons_parent").build();
         DatabaseConstraintViolationException exception = factory.createException(violation, null);
         assertTrue(exception instanceof ForeignKeyViolationException);
         assertEquals("Foreign key 'fk_persons_parent' was violated.", exception.getMessage());

@@ -9,23 +9,23 @@ import org.jarbframework.violation.DatabaseConstraintViolation;
 import org.junit.Test;
 
 public class CheckFailedExceptionTest {
-    private final DatabaseConstraintViolation checkConstraintViolation;
+    private final DatabaseConstraintViolation violation;
 
     public CheckFailedExceptionTest() {
-        checkConstraintViolation = violation(CHECK_FAILED).named("ck_person_birth_before_now").build();
+        violation = violation(CHECK_FAILED).constraint("ck_person_birth_before_now").build();
     }
 
     @Test
     public void testDefaultMessage() {
-        CheckFailedException exception = new CheckFailedException(checkConstraintViolation);
-        assertEquals(checkConstraintViolation, exception.getViolation());
+        CheckFailedException exception = new CheckFailedException(violation);
+        assertEquals(violation, exception.getViolation());
         assertEquals("Check 'ck_person_birth_before_now' failed.", exception.getMessage());
     }
 
     @Test
     public void testCustomMessage() {
-        CheckFailedException exception = new CheckFailedException(checkConstraintViolation, "Custom message");
-        assertEquals(checkConstraintViolation, exception.getViolation());
+        CheckFailedException exception = new CheckFailedException(violation, "Custom message");
+        assertEquals(violation, exception.getViolation());
         assertEquals("Custom message", exception.getMessage());
     }
 
