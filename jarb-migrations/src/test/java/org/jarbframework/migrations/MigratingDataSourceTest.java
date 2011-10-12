@@ -4,27 +4,41 @@ import static org.junit.Assert.assertEquals;
 
 import javax.sql.DataSource;
 
+import org.jarbframework.migrations.liquibase.LiquibaseMigrator;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = "classpath:liquibase-context.xml")
+@ContextConfiguration(locations = "classpath:application-context.xml")
 public class MigratingDataSourceTest {
 
     @Autowired
-    @Qualifier("migratingDataSource")
     private DataSource dataSource;
+    
     private JdbcTemplate jdbcTemplate;
 
     @Before
-    public void buildTemplate() {
-        jdbcTemplate = new JdbcTemplate(dataSource);
+    public void migrateAndBuildTemplate() {
+        MigratingDataSource migratingDataSource = new MigratingDataSource();
+        migratingDataSource.setDelegate(dataSource);
+        
+        LiquibaseMigrator liquibaseMigrator = new LiquibaseMigrator("src/test/resources");
+        liquibaseMigrator.setChangeLogPath("create-schema.groovy");
+        migratingDataSource.setMigrator(liquibaseMigrator);
+        
+        jdbcTemplate = new JdbcTemplate(migratingDataSource);
+    }
+    
+    @After
+    public void dropCreatedTables() {
+        jdbcTemplate.execute("DROP TABLE persons");
+        jdbcTemplate.execute("DROP TABLE databasechangelog");
     }
 
     /**
@@ -34,7 +48,6 @@ public class MigratingDataSourceTest {
      * 
      * <p>
      * 
-     * Migration script (changelog.groovy):
      * <pre>
      *  createTable(tableName: "persons") {
      *      column(autoIncrement: true, name: "id", type: "BIGINT") {

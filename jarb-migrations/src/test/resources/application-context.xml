@@ -4,16 +4,11 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
     
-	<bean id="migratingDataSource" class="org.jarbframework.migrations.MigratingDataSource">
-	    <property name="delegate">
-			<bean class="org.springframework.jdbc.datasource.DriverManagerDataSource">
-			    <property name="driverClassName" value="org.hsqldb.jdbcDriver"/>
-			    <property name="url" value="jdbc:hsqldb:mem:jarb"/>
-			    <property name="username" value="sa"/>
-			    <property name="password" value=""/>
-			</bean>
-		</property>
-	    <property name="migrator" ref="migrator"/>
+	<bean class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+	    <property name="driverClassName" value="org.hsqldb.jdbcDriver"/>
+	    <property name="url" value="jdbc:hsqldb:mem:jarb"/>
+	    <property name="username" value="sa"/>
+	    <property name="password" value=""/>
 	</bean>
 
 </beans>
