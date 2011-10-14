@@ -29,15 +29,11 @@ public final class SubclassRetriever {
      */
     public static Set<EntityType<?>> getSubClassEntities(EntityType<?> superEntity, Set<EntityType<?>> entities) {
         Set<EntityType<?>> subEntities = new HashSet<EntityType<?>>();
-
-        if (entities == null) {
-            return subEntities;
+        if (entities != null) {
+            for (EntityType<?> entity : entities) {
+                subEntities.addAll(addSubclassEntities(superEntity, entities, entity));
+            }
         }
-
-        for (EntityType<?> entity : entities) {
-            subEntities.addAll(addSubclassEntities(superEntity, entities, entity));
-        }
-
         return subEntities;
     }
 
@@ -50,7 +46,7 @@ public final class SubclassRetriever {
     public static Map<String, Class<?>> getSubClassMapping(Set<EntityType<?>> subClassEntities) throws ClassNotFoundException {
         Map<String, Class<?>> subClassMap = new HashMap<String, Class<?>>();
         for (EntityType<?> subClassEntity : subClassEntities) {
-            Class<?> subClass = Class.forName(subClassEntity.getName());
+            Class<?> subClass = subClassEntity.getJavaType();
             String discriminatorValue = getDiscriminatorValue(subClass);
             subClassMap.put(discriminatorValue, subClass);
         }
