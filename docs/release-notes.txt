@@ -1,0 +1,8 @@
+1.1.5 (14-10-2011)
+    - Resolved multiple bugs in populator-excel module
+        * Class not found exception when an entity has sub-classes
+        * Attributes of super classes are now included
+        * Associations no longer require a @JoinColumn annotation to work (@JoinTable is still required)
+        * Naming strategies are now supported
+    - Added ignoreIfResourceMissing factory method to ExcelDatabasePopulator
+    - Code cleanup and performance enhancements in populator-excel
