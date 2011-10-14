@@ -40,34 +40,34 @@ class DataWriter {
     public static void saveEntity(EntityRegistry registry, EntityManagerFactory entityManagerFactory) {
         EntityManager entityManager = JpaUtils.createEntityManager(entityManagerFactory);
         EntityTransaction entityTransaction = entityManager.getTransaction();
-        
+
         List<Object> entities = new ArrayList<Object>(createInstanceSet(registry));
         Collections.sort(entities, new ObjectClassInstantationComparator());
-        
+
         entityTransaction.begin();
+        Set<Object> alreadySaved = new HashSet<Object>();
         for (Object entity : entities) {
-            Set<Object> cascadedObjectsInThisInteration = new HashSet<Object>();
-            cascadedObjectsInThisInteration.add(entity);
-            entity = ReferentialPreparement.prepareEntityReferences(entity, entityManager, cascadedObjectsInThisInteration);
+            entity = new ReferentialPreparement(entityManager).prepareEntityReferences(entity);
             Object identifier = JpaUtils.getIdentifier(entity, entityManagerFactory);
-            LOGGER.info("Persisting entity '{}' #{}.", new Object[] { entity.getClass(), identifier });
+            LOGGER.info("Persisting entity '{}'.", entity);
             if (identifier == null || entityManager.find(entity.getClass(), identifier) == null) {
+                alreadySaved.add(entity);
                 entityManager.merge(entity);
             }
         }
         entityTransaction.commit();
     }
-    
+
     private static Set<Object> createInstanceSet(EntityRegistry registry) {
         Set<Object> instanceSet = new HashSet<Object>();
-        for(EntityTable<?> entities : registry) {
-            for(Object entity : entities) {
+        for (EntityTable<?> entities : registry) {
+            for (Object entity : entities) {
                 instanceSet.add(entity);
             }
         }
         return instanceSet;
     }
-    
+
     // Compares two objects based on class name
     private static class ObjectClassInstantationComparator implements Comparator<Object> {
         /** {@inheritDoc} */
@@ -76,5 +76,5 @@ class DataWriter {
             return left.getClass().getName().compareTo(right.getClass().getName());
         }
     }
-    
+
 }
