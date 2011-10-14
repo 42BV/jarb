@@ -23,7 +23,7 @@ public final class SubclassRetriever {
 
     /**
      * Returns a set with the entity's subclasses.
-     * @param superEntity Superentity
+     * @param superEntity SuperEntity
      * @param entities A list with all entities from the metamodel
      * @return Set of Entity's subclass entities
      */

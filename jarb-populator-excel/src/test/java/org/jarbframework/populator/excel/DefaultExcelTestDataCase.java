@@ -10,8 +10,6 @@ import java.io.OutputStream;
 
 import javax.persistence.EntityManagerFactory;
 
-import org.jarbframework.populator.excel.ExcelDataManager;
-import org.jarbframework.populator.excel.ExcelDataManagerFactory;
 import org.jarbframework.populator.excel.metamodel.MetaModel;
 import org.jarbframework.populator.excel.workbook.Workbook;
 import org.junit.Before;
@@ -53,7 +51,7 @@ public abstract class DefaultExcelTestDataCase {
      * Create a new output stream to the generated file path.
      * @return output stream to "generated" file
      */
-    public OutputStream createFileOutputStream() {
+    public OutputStream createOutputStream() {
         try {
             File file = new File(GENERATED_FILE_PATH);
             if (!file.exists()) {
@@ -84,11 +82,9 @@ public abstract class DefaultExcelTestDataCase {
      * entity class inside our persistence context.
      * @return new "full" meta model
      */
-    public MetaModel generateMetamodel() {
+    public MetaModel metamodel() {
         return excelDataManagerFactory.buildMetamodelGenerator().generate();
     }
-
-    // Accessors
 
     public ExcelDataManager getExcelDataManager() {
         return excelDataManager;

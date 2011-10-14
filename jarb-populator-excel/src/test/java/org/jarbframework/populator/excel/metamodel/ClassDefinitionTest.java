@@ -26,7 +26,7 @@ public class ClassDefinitionTest extends DefaultExcelTestDataCase {
     @Before
     public void setUpClassDefinitions() throws InvalidFormatException, IOException {
         // Retrieve full customer definition from meta model generator
-        customerDefinition = generateMetamodel().entity(Customer.class);
+        customerDefinition = metamodel().entity(Customer.class);
         // Build a customer class definition
         classDefinitionBuilder = EntityDefinition.forClass(Customer.class).setTableName("customers");
     }
