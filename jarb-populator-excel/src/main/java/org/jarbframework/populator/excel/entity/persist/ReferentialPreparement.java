@@ -1,7 +1,5 @@
 package org.jarbframework.populator.excel.entity.persist;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Field;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -67,35 +65,16 @@ public final class ReferentialPreparement {
      * @param attribute Attribute from the Entity   
      */
     private void prepareAttribute(Object entity, Attribute<?, ?> attribute) {
-        Field field = (Field) attribute.getJavaMember();
-        for (Annotation annotation : field.getAnnotations()) {
-            if (!CascadeAnnotationChecker.hasNecessaryCascadeAnnotations(annotation)) {
-                retrieveReferencesForAttribute(entity, attribute);
-            } else {
-                Object referencedObject = ModifiableBean.wrap(entity).getPropertyValue(attribute.getName());
-                if (!cascadedObjects.contains(referencedObject)) {
-                    cascadedObjects.add(referencedObject);
-                    secondaryReferenceCheck(referencedObject);
+        if (!CascadeAnnotationChecker.hasNecessaryCascadeAnnotations(attribute)) {
+            retrieveReferencesForAttribute(entity, attribute);
+        } else {
+            Object referencedObject = ModifiableBean.wrap(entity).getPropertyValue(attribute.getName());
+            if (referencedObject != null && !cascadedObjects.contains(referencedObject)) {
+                if (referencedObject instanceof Iterable<?>) {
+                    prepareEntitiesFromSet((Iterable<?>) referencedObject);
+                } else {
+                    prepareEntityReferences(referencedObject);
                 }
-            }
-            break;
-        }
-    }
-
-    /**
-     * Checks if referenced objects in classes that DO have Cascade annotations also have cascade annotations.
-     * Otherwise it will still generate exceptions.
-     * @param referencedObject Referenced object to check.
-     * @param entityManagerFactory EntityManagerFactory needed to create the entityManager and PersistentUnitUtil from
-     * @param jpaDao Jpa data access object by Hactar
-     * @param cascadedObjectsInThisInteration List with objects already cascaded.
-     */
-    private void secondaryReferenceCheck(Object referencedObject) {
-        if (referencedObject != null) {
-            if (referencedObject instanceof Iterable<?>) {
-                prepareEntitiesFromSet((Iterable<?>) referencedObject);
-            } else {
-                prepareEntityReferences(referencedObject);
             }
         }
     }
