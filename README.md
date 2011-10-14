@@ -112,7 +112,8 @@ exception. It is even possible to map custom exceptions on to named constraints.
 
     <violations:translator id="translator" data-source="dataSource">
         <violations:configurable-exception-factory>
-            <violations:exception-mapping constraint="uk_posts_title" exception="org.jarbframework.sample.PostTitleAlreadyExistsException"/>
+            <violations:exception-mapping constraint="uk_posts_title"
+                exception="org.jarbframework.sample.PostTitleAlreadyExistsException"/>
         </violations:configurable-exception-factory>
     </violations:translator>
 
