@@ -85,14 +85,14 @@ public class DefaultEntityExporter implements EntityExporter {
                 // Retrieve the property value and store it as cell value
                 Object propertyValue = getPropertyValue(entity, propertyDefinition);
                 row.setCellValueAt(propertyDefinition.getColumnName(), cellValueGenerator.asCellValue(propertyValue));
-            } else if (type == PropertyDatabaseType.JOIN_COLUMN) {
+            } else if (type == PropertyDatabaseType.REFERENCE) {
                 // Retrieve the entity as property value and store its identifier
                 Object referenceEntity = getPropertyValue(entity, propertyDefinition);
                 if (referenceEntity != null) {
                     Object referenceIdentifier = entityRowIdResolver.resolveRowId(referenceEntity);
                     row.setCellValueAt(propertyDefinition.getColumnName(), cellValueGenerator.asCellValue(referenceIdentifier));
                 }
-            } else if (type == PropertyDatabaseType.JOIN_TABLE) {
+            } else if (type == PropertyDatabaseType.COLLECTION_REFERENCE) {
                 exportJoinTable(entity, propertyDefinition, sheet.getWorkbook());
             }
         }

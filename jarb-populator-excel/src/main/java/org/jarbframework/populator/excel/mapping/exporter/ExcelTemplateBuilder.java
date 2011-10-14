@@ -47,7 +47,7 @@ public class ExcelTemplateBuilder {
         Sheet sheet = workbook.createSheet(classDefinition.getTableName());
         storeColumnNames(sheet, classDefinition);
         for(PropertyDefinition propertyDefinition : classDefinition.properties()) {
-            if(propertyDefinition.getDatabaseType() == PropertyDatabaseType.JOIN_TABLE) {
+            if(propertyDefinition.getDatabaseType() == PropertyDatabaseType.COLLECTION_REFERENCE) {
                 createJoinSheet(propertyDefinition, workbook);
             }
         }

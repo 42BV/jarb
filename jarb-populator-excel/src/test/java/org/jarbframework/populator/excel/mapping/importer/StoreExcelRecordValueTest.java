@@ -18,6 +18,7 @@ import org.jarbframework.populator.excel.metamodel.generator.ClassDefinitionsGen
 import org.jarbframework.populator.excel.metamodel.generator.FieldAnalyzer;
 import org.jarbframework.populator.excel.workbook.Workbook;
 import org.jarbframework.populator.excel.workbook.reader.PoiWorkbookParser;
+import org.jarbframework.utils.bean.PropertyReference;
 import org.jarbframework.utils.orm.jpa.JpaHibernateSchemaMapper;
 import org.junit.Before;
 import org.junit.Test;
@@ -50,7 +51,7 @@ public class StoreExcelRecordValueTest extends DefaultExcelTestDataCase {
         rowPosition = 3;
 
         FieldAnalyzer fieldAnalyzer = new FieldAnalyzer(JpaHibernateSchemaMapper.usingNamingStrategyOf(getEntityManagerFactory()));
-        PropertyDefinition columnDefinition = fieldAnalyzer.analyzeField(Employee.class.getDeclaredField("projects"), Employee.class).build();
+        PropertyDefinition columnDefinition = fieldAnalyzer.analyzeField(new PropertyReference(Employee.class, "projects")).build();
         excelRow = new ExcelRow(Employee.class);
         StoreExcelRecordValue.storeValue(excel, classDefinition, columnDefinition, rowPosition, excelRow);
         assertTrue(excelRow.getValueMap().containsKey(columnDefinition));

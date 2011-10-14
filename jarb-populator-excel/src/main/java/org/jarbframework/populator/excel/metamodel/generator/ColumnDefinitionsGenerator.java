@@ -10,6 +10,7 @@ import javax.persistence.metamodel.EntityType;
 import javax.persistence.metamodel.IdentifiableType;
 
 import org.jarbframework.populator.excel.metamodel.PropertyDefinition;
+import org.jarbframework.utils.bean.PropertyReference;
 import org.jarbframework.utils.orm.SchemaMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,7 +42,7 @@ public final class ColumnDefinitionsGenerator {
         addAttributesAsColumnDefinitions(columnDefinitions, entity, persistentClass);
         createSuperTypeColumnDefinitions(columnDefinitions, entity, persistentClass);
         if (!subclassEntities.isEmpty()) {
-            createSubClassColumnDefinitions(columnDefinitions, subclassEntities, persistentClass);
+            createSubClassColumnDefinitions(columnDefinitions, subclassEntities);
         }
         return columnDefinitions;
     }
@@ -56,6 +57,20 @@ public final class ColumnDefinitionsGenerator {
         }
     }
 
+    private List<PropertyDefinition> createColumnsForField(Field field, Class<?> entityClass) {
+        List<PropertyDefinition> columnDefinitions = new ArrayList<PropertyDefinition>();
+        PropertyReference propertyReference = new PropertyReference(entityClass, field.getName());
+        if ((field.getAnnotation(javax.persistence.Embedded.class) != null)) {
+            columnDefinitions.addAll(embeddedColumnGenerator.createColumnDefinitionsForEmbeddedField(propertyReference));
+        } else {
+            PropertyDefinition columnDefinition = regularColumnGenerator.createColumnDefinitionForRegularField(propertyReference);
+            if (columnDefinition != null) {
+                columnDefinitions.add(columnDefinition);
+            }
+        }
+        return columnDefinitions;
+    }
+
     private void createSuperTypeColumnDefinitions(List<PropertyDefinition> columnDefinitions, IdentifiableType<?> type, Class<?> entityClass) {
         IdentifiableType<?> superType = type.getSupertype();
         if (superType != null) {
@@ -64,9 +79,9 @@ public final class ColumnDefinitionsGenerator {
         }
     }
 
-    private void createSubClassColumnDefinitions(List<PropertyDefinition> columnDefinitions, Set<EntityType<?>> subclassEntities, Class<?> persistentClass) {
+    private void createSubClassColumnDefinitions(List<PropertyDefinition> columnDefinitions, Set<EntityType<?>> subclassEntities) {
         for (EntityType<?> subEntity : subclassEntities) {
-            addAttributesAsColumnDefinitions(columnDefinitions, subEntity, persistentClass);
+            addAttributesAsColumnDefinitions(columnDefinitions, subEntity, subEntity.getJavaType());
         }
     }
 
@@ -90,19 +105,6 @@ public final class ColumnDefinitionsGenerator {
             }
         }
         return unique;
-    }
-
-    private List<PropertyDefinition> createColumnsForField(Field field, Class<?> entityClass) {
-        List<PropertyDefinition> columnDefinitions = new ArrayList<PropertyDefinition>();
-        if ((field.getAnnotation(javax.persistence.Embedded.class) != null)) {
-            columnDefinitions.addAll(embeddedColumnGenerator.createColumnDefinitionsForEmbeddedField(field, entityClass));
-        } else {
-            PropertyDefinition columnDefinition = regularColumnGenerator.createColumnDefinitionForRegularField(field, entityClass);
-            if (columnDefinition != null) {
-                columnDefinitions.add(columnDefinition);
-            }
-        }
-        return columnDefinitions;
     }
 
 }

@@ -39,13 +39,13 @@ public final class BeanProperties {
     }
 
     public static PropertyReference lastPropertyIn(PropertyReference propertyReference) {
-        if(propertyReference.isNestedProperty()) {
+        if (propertyReference.isNestedProperty()) {
             Class<?> parentType = getPropertyType(propertyReference.getParent());
             propertyReference = new PropertyReference(parentType, propertyReference.getSimpleName());
         }
         return propertyReference;
     }
-    
+
     public static Class<?> getPropertyType(PropertyReference propertyReference) {
         return findPropertyField(propertyReference).getType();
     }
@@ -54,7 +54,7 @@ public final class BeanProperties {
         return findPropertyField(propertyReference).getDeclaringClass();
     }
 
-    private static Field findPropertyField(PropertyReference propertyReference) {
+    public static Field findPropertyField(PropertyReference propertyReference) {
         propertyReference = lastPropertyIn(propertyReference);
         Field field = ReflectionUtils.findField(propertyReference.getBeanClass(), propertyReference.getName());
         return notNull(field, "Could not find field '" + propertyReference.getName() + "' in '" + propertyReference.getBeanClass().getName() + "'.");

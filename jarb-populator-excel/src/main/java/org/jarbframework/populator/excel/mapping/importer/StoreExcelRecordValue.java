@@ -32,10 +32,10 @@ public final class StoreExcelRecordValue {
         case COLUMN:
             StoreColumn.storeValue(excel, classDefinition, columnDefinition, rowPosition, excelRow);
             break;
-        case JOIN_TABLE:
+        case COLLECTION_REFERENCE:
             StoreJoinTable.storeValue(excel, classDefinition, columnDefinition, rowPosition, excelRow);
             break;
-        case JOIN_COLUMN:
+        case REFERENCE:
             StoreJoinColumn.storeValue(excel, classDefinition, columnDefinition, rowPosition, excelRow);
             break;
         }

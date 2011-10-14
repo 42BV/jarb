@@ -100,7 +100,7 @@ public class DefaultWorkbookValidator implements WorkbookValidator {
                     columnNames.add(entity.getDiscriminatorColumnName());
                 }
                 for(PropertyDefinition property : entity.properties()) {
-                    if(property.getDatabaseType() == PropertyDatabaseType.JOIN_TABLE) {
+                    if(property.getDatabaseType() == PropertyDatabaseType.COLLECTION_REFERENCE) {
                         // Join table properties got their own sheet
                         final String joinSheetName = property.getJoinTableName();
                         sheetNames.add(joinSheetName);

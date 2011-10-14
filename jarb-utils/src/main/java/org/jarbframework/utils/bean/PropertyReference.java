@@ -17,7 +17,7 @@ import org.jarbframework.utils.Asserts;
  */
 public class PropertyReference {
     private static final String PROPERTY_SEPARATOR = ".";
-    
+
     private final String name;
     private final Class<?> beanClass;
 
@@ -29,7 +29,7 @@ public class PropertyReference {
     public String getName() {
         return name;
     }
-    
+
     public String getSimpleName() {
         return isNestedProperty() ? substringAfterLast(name, PROPERTY_SEPARATOR) : name;
     }
@@ -37,15 +37,19 @@ public class PropertyReference {
     public Class<?> getBeanClass() {
         return beanClass;
     }
-    
+
     public boolean isNestedProperty() {
         return name.contains(PROPERTY_SEPARATOR);
     }
-    
+
     public PropertyReference getParent() {
         Asserts.state(isNestedProperty(), "Can only retrieve the parent for a nested property.");
         String parentName = StringUtils.substringBeforeLast(name, PROPERTY_SEPARATOR);
         return new PropertyReference(beanClass, parentName);
+    }
+
+    public PropertyReference createNestedProperty(String nestedName) {
+        return new PropertyReference(beanClass, name + PROPERTY_SEPARATOR + nestedName);
     }
 
     @Override

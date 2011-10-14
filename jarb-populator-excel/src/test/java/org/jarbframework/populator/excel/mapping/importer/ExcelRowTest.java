@@ -3,18 +3,18 @@ package org.jarbframework.populator.excel.mapping.importer;
 import static org.junit.Assert.assertEquals;
 
 import java.io.FileInputStream;
-import java.io.IOException;
+import java.io.FileNotFoundException;
 
 import javax.persistence.metamodel.EntityType;
 import javax.persistence.metamodel.Metamodel;
 
-import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.jarbframework.populator.excel.DefaultExcelTestDataCase;
 import org.jarbframework.populator.excel.metamodel.EntityDefinition;
 import org.jarbframework.populator.excel.metamodel.PropertyDefinition;
 import org.jarbframework.populator.excel.metamodel.generator.ClassDefinitionsGenerator;
 import org.jarbframework.populator.excel.metamodel.generator.FieldAnalyzer;
 import org.jarbframework.populator.excel.workbook.Workbook;
+import org.jarbframework.utils.bean.PropertyReference;
 import org.jarbframework.utils.orm.jpa.JpaHibernateSchemaMapper;
 import org.junit.Before;
 import org.junit.Test;
@@ -31,14 +31,12 @@ public class ExcelRowTest extends DefaultExcelTestDataCase {
     private Object retrievenKeyValue;
 
     @Before
-    public void setUpExcelRecordTest() throws InstantiationException, IllegalAccessException, SecurityException, NoSuchFieldException, InvalidFormatException,
-            IOException {
+    public void setUpExcelRecordTest() throws FileNotFoundException {
         excel = getExcelDataManagerFactory().buildExcelParser().parse(new FileInputStream("src/test/resources/ExcelUnitTesting.xls"));
     }
 
     @Test
-    public void testAddValueGetValueList() throws InvalidFormatException, IOException, InstantiationException, IllegalAccessException, SecurityException,
-            NoSuchFieldException, ClassNotFoundException {
+    public void testAddValueGetValueList() {
         persistentClass = domain.entities.Customer.class;
 
         Metamodel metamodel = getEntityManagerFactory().getMetamodel();
@@ -49,7 +47,7 @@ public class ExcelRowTest extends DefaultExcelTestDataCase {
         excelRow = new ExcelRow(classDefinition.getEntityClass());
 
         FieldAnalyzer fieldAnalyzer = new FieldAnalyzer(JpaHibernateSchemaMapper.usingNamingStrategyOf(getEntityManagerFactory()));
-        PropertyDefinition columnDefinition = fieldAnalyzer.analyzeField(persistentClass.getDeclaredField("id"), persistentClass).build();
+        PropertyDefinition columnDefinition = fieldAnalyzer.analyzeField(new PropertyReference(persistentClass, "id")).build();
 
         Double cellValue = (Double) excel.getSheet(classDefinition.getTableName()).getValueAt(2, 0);
         Key keyValue = new JoinColumnKey();
@@ -60,7 +58,7 @@ public class ExcelRowTest extends DefaultExcelTestDataCase {
     }
 
     @Test
-    public void testGetCreatedInstance() throws InstantiationException, IllegalAccessException, ClassNotFoundException {
+    public void testGetCreatedInstance() {
         persistentClass = domain.entities.Customer.class;
 
         Metamodel metamodel = getEntityManagerFactory().getMetamodel();

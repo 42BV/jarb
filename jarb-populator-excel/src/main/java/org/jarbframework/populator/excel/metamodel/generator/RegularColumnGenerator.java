@@ -1,8 +1,7 @@
 package org.jarbframework.populator.excel.metamodel.generator;
 
-import java.lang.reflect.Field;
-
 import org.jarbframework.populator.excel.metamodel.PropertyDefinition;
+import org.jarbframework.utils.bean.PropertyReference;
 import org.jarbframework.utils.orm.SchemaMapper;
 
 /**
@@ -23,8 +22,8 @@ public class RegularColumnGenerator {
      * @param entityClass 
      * @return ColumnDefinition
      */
-    public PropertyDefinition createColumnDefinitionForRegularField(Field field, Class<?> entityClass) {
-        PropertyDefinition.Builder columnDefinitionBuilder = fieldAnalyzer.analyzeField(field, entityClass);
+    public PropertyDefinition createColumnDefinitionForRegularField(PropertyReference propertyReference) {
+        PropertyDefinition.Builder columnDefinitionBuilder = fieldAnalyzer.analyzeField(propertyReference);
         return columnDefinitionBuilder != null ? columnDefinitionBuilder.build() : null;
     }
 }

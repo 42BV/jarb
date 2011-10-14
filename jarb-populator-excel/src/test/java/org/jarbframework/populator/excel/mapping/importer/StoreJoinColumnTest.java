@@ -5,7 +5,6 @@ import static org.junit.Assert.assertTrue;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 
 import javax.persistence.metamodel.EntityType;
@@ -19,6 +18,7 @@ import org.jarbframework.populator.excel.metamodel.generator.ClassDefinitionsGen
 import org.jarbframework.populator.excel.metamodel.generator.FieldAnalyzer;
 import org.jarbframework.populator.excel.workbook.Workbook;
 import org.jarbframework.populator.excel.workbook.reader.PoiWorkbookParser;
+import org.jarbframework.utils.bean.PropertyReference;
 import org.jarbframework.utils.orm.jpa.JpaHibernateSchemaMapper;
 import org.junit.Before;
 import org.junit.Test;
@@ -29,7 +29,6 @@ public class StoreJoinColumnTest extends DefaultExcelTestDataCase {
     private EntityDefinition<?> classDefinition;
     private Workbook excel;
     private ExcelRow excelRow;
-    private Field customerField;
     private Integer rowPosition;
 
     @Before
@@ -47,7 +46,6 @@ public class StoreJoinColumnTest extends DefaultExcelTestDataCase {
     public void testStoreJoinColumnValue() throws SecurityException, NoSuchFieldException, InstantiationException, IllegalAccessException,
             ClassNotFoundException {
         persistentClass = domain.entities.Project.class;
-        customerField = persistentClass.getDeclaredField("customer");
 
         Metamodel metamodel = getEntityManagerFactory().getMetamodel();
         EntityType<?> entity = metamodel.entity(domain.entities.Project.class);
@@ -59,7 +57,7 @@ public class StoreJoinColumnTest extends DefaultExcelTestDataCase {
 
         rowPosition = 1;
         FieldAnalyzer fieldAnalyzer = new FieldAnalyzer(JpaHibernateSchemaMapper.usingNamingStrategyOf(getEntityManagerFactory()));
-        PropertyDefinition joinColumn = fieldAnalyzer.analyzeField(customerField, persistentClass).build();
+        PropertyDefinition joinColumn = fieldAnalyzer.analyzeField(new PropertyReference(persistentClass, "customer")).build();
 
         StoreExcelRecordValue.storeValue(excel, classDefinition, joinColumn, rowPosition, excelRow);
         assertTrue(excelRow.getValueMap().containsKey(joinColumn));

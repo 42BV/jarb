@@ -53,7 +53,7 @@ public class PropertyDefinition {
 
     public boolean hasColumn() {
         // Join table properties have no column name, their content is in another table
-        return databaseType != PropertyDatabaseType.JOIN_TABLE;
+        return databaseType != PropertyDatabaseType.COLLECTION_REFERENCE;
     }
 
     public boolean isEmbeddedAttribute() {
@@ -132,7 +132,7 @@ public class PropertyDefinition {
 
         public PropertyDefinition build() {
             Assert.notNull(databaseType, "Database type cannot be null");
-            if (databaseType == PropertyDatabaseType.JOIN_TABLE) {
+            if (databaseType == PropertyDatabaseType.COLLECTION_REFERENCE) {
                 Assert.state(isBlank(columnName), "Join table property cannot have a column name");
                 Assert.state(isNotBlank(joinTableName), "Join table name cannot be blank");
                 Assert.state(isNotBlank(joinColumnName), "Join column name cannot be blank");
