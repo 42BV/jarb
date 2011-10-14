@@ -12,6 +12,8 @@ import static org.jarbframework.utils.bean.BeanProperties.getPropertyType;
 import static org.jarbframework.utils.orm.jpa.JpaMetaModelUtils.findRootEntityClass;
 import static org.springframework.beans.BeanUtils.instantiateClass;
 
+import javax.persistence.AttributeOverride;
+import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
@@ -43,7 +45,7 @@ import org.jarbframework.utils.orm.SchemaMapper;
  */
 public class JpaHibernateSchemaMapper implements SchemaMapper {
     private static final String NAMING_STRATEGY_KEY = "hibernate.ejb.naming_strategy";
-    
+
     private final BeanAnnotationScanner annotationScanner = fieldOrGetter();
     private final NamingStrategy namingStrategy;
 
@@ -74,23 +76,23 @@ public class JpaHibernateSchemaMapper implements SchemaMapper {
         }
         return (NamingStrategy) instantiateClass(namingStrategyClass);
     }
-    
+
     @Override
     public boolean isEntity(Class<?> clazz) {
         return JpaMetaModelUtils.isEntity(clazz);
     }
-    
+
     @Override
     public boolean isEmbeddable(Class<?> clazz) {
         return JpaMetaModelUtils.isEmbeddable(clazz);
     }
-    
+
     // Table mapping
 
     @Override
     public String tableNameOf(Class<?> entityClass) {
         String tableName = null;
-        if(isEntity(entityClass)) {
+        if (isEntity(entityClass)) {
             Class<?> tableClass = determineTableClass(entityClass);
             tableName = readTableName(tableClass);
         }
@@ -108,12 +110,16 @@ public class JpaHibernateSchemaMapper implements SchemaMapper {
     }
 
     private String readTableName(Class<?> entityClass) {
-        Table table = entityClass.getAnnotation(Table.class);
-        if (table != null && isNotBlank(table.name())) {
-            return namingStrategy.tableName(table.name());
+        Table tableAnnotation = entityClass.getAnnotation(Table.class);
+        if (hasTableName(tableAnnotation)) {
+            return namingStrategy.tableName(tableAnnotation.name());
         } else {
             return readEntityName(entityClass);
         }
+    }
+
+    private boolean hasTableName(Table tableAnnotation) {
+        return tableAnnotation != null && isNotBlank(tableAnnotation.name());
     }
 
     private String readEntityName(Class<?> entityClass) {
@@ -128,12 +134,12 @@ public class JpaHibernateSchemaMapper implements SchemaMapper {
     }
 
     // Column mapping
-    
+
     @Override
     public ColumnReference columnOf(PropertyReference propertyReference) {
-        if(isEntity(propertyReference.getBeanClass())) {
+        if (isEntity(propertyReference.getBeanClass())) {
             ColumnReference columnReference = null;
-            if (hasColumn(propertyReference)) {
+            if (isMappedToColumn(propertyReference)) {
                 String tableName = tableForProperty(propertyReference);
                 String columnName = columnName(propertyReference);
                 columnReference = new ColumnReference(tableName, columnName);
@@ -141,18 +147,20 @@ public class JpaHibernateSchemaMapper implements SchemaMapper {
             return columnReference;
         } else {
             throw new NotAnEntityException("Class '" + propertyReference.getBeanClass() + "' could not be recognized as entity.");
-        }        
+        }
     }
 
-    private boolean hasColumn(PropertyReference propertyReference) {
-        return !(annotationScanner.hasAnnotation(propertyReference, Transient.class) || isCollection(propertyReference));
+    private boolean isMappedToColumn(PropertyReference propertyReference) {
+        boolean mappedToColumn = false;
+        if (!isCollection(propertyReference)) {
+            mappedToColumn = !annotationScanner.hasAnnotation(propertyReference, Transient.class);
+        }
+        return mappedToColumn;
     }
 
     private boolean isCollection(PropertyReference propertyReference) {
-        return
-            annotationScanner.hasAnnotation(propertyReference, OneToMany.class) ||
-            annotationScanner.hasAnnotation(propertyReference, ManyToMany.class) ||
-            annotationScanner.hasAnnotation(propertyReference, ElementCollection.class) ;
+        return annotationScanner.hasAnnotation(propertyReference, OneToMany.class) || annotationScanner.hasAnnotation(propertyReference, ManyToMany.class)
+                || annotationScanner.hasAnnotation(propertyReference, ElementCollection.class);
     }
 
     private String tableForProperty(PropertyReference propertyReference) {
@@ -181,12 +189,32 @@ public class JpaHibernateSchemaMapper implements SchemaMapper {
         } else {
             columnName = readColumnName(propertyReference);
         }
-        return includeAttributeOverwrites(columnName, propertyReference);
+        if (propertyReference.isNestedProperty()) {
+            columnName = includeAttributeOverrides(columnName, propertyReference);
+        }
+        return columnName;
     }
 
-    private String includeAttributeOverwrites(String columnName, PropertyReference propertyReference) {
-        // TODO: Include @AttributeOverwrite column definitions
+    private String includeAttributeOverrides(String columnName, PropertyReference propertyReference) {
+        for (AttributeOverride attributeOverride : collectAttributeOverrides(propertyReference.getParent())) {
+            if (propertyReference.getSimpleName().equals(attributeOverride.name())) {
+                if (hasColumnName(attributeOverride.column())) {
+                    columnName = namingStrategy.columnName(attributeOverride.column().name());
+                }
+                break;
+            }
+        }
         return columnName;
+    }
+
+    private AttributeOverride[] collectAttributeOverrides(PropertyReference propertyReference) {
+        if (annotationScanner.hasAnnotation(propertyReference, AttributeOverrides.class)) {
+            return annotationScanner.findAnnotation(propertyReference, AttributeOverrides.class).value();
+        } else if (annotationScanner.hasAnnotation(propertyReference, AttributeOverride.class)) {
+            return new AttributeOverride[] { annotationScanner.findAnnotation(propertyReference, AttributeOverride.class) };
+        } else {
+            return new AttributeOverride[0];
+        }
     }
 
     private String readOneToOne(PropertyReference propertyReference) {
@@ -208,7 +236,8 @@ public class JpaHibernateSchemaMapper implements SchemaMapper {
         } else {
             String referencedPropertyName = getIdentifierPropertyName(referencingClass);
             ColumnReference referencedColumn = columnOf(new PropertyReference(referencingClass, referencedPropertyName));
-            return namingStrategy.foreignKeyColumnName(propertyReference.getName(), referencingClass.getName(), referencedColumn.getTableName(), referencedColumn.getColumnName());
+            return namingStrategy.foreignKeyColumnName(propertyReference.getName(), referencingClass.getName(), referencedColumn.getTableName(),
+                    referencedColumn.getColumnName());
         }
     }
 
@@ -224,12 +253,16 @@ public class JpaHibernateSchemaMapper implements SchemaMapper {
     }
 
     private String readColumnName(PropertyReference propertyReference) {
-        Column column = annotationScanner.findAnnotation(propertyReference, Column.class);
-        if (column != null && isNotBlank(column.name())) {
-            return namingStrategy.columnName(column.name());
+        Column columnAnnotation = annotationScanner.findAnnotation(propertyReference, Column.class);
+        if (hasColumnName(columnAnnotation)) {
+            return namingStrategy.columnName(columnAnnotation.name());
         } else {
             return namingStrategy.propertyToColumnName(propertyReference.getName());
         }
+    }
+
+    private boolean hasColumnName(Column columnAnnotation) {
+        return columnAnnotation != null && isNotBlank(columnAnnotation.name());
     }
 
 }

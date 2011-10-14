@@ -98,8 +98,6 @@ public class DatabaseConstrainedValidator implements ConstraintValidator<Databas
             if (columnMetadata != null) {
                 final Object propertyValue = ModifiableBean.wrap(bean).getPropertyValue(property.getName());
                 propertyIsValid = isValidValue(bean, property.getName(), propertyValue, columnMetadata, context);
-            } else {
-                logger.warn("No column meta data has been defined for '{}' ({})", new Object[] { property.getName(), bean.getClass().getSimpleName() });
             }
         } catch (CouldNotBeMappedToColumnException e) {
             // Property has no matching column, and thus will not be validated

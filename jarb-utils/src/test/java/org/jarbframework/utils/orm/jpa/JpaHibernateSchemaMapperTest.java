@@ -206,13 +206,12 @@ public class JpaHibernateSchemaMapperTest {
         assertEquals("col_custom_embeddable", columnReference.getColumnName());
     }
 
-// TODO: Uncomment this when feature is implemented
-//    @Test
-//    public void testEmbeddedColumnWithOverwrittenName() {
-//        ColumnReference columnReference = mapper.columnOf(new PropertyReference(EntityWithProperties.class, "embeddedProperty.overwrittenEmbeddableProperty"));
-//        assertEquals("ctbl_entity_with_properties", columnReference.getTableName());
-//        assertEquals("col_custom_overwritten_embeddable", columnReference.getColumnName());
-//    }
+    @Test
+    public void testEmbeddedColumnWithOverwrittenName() {
+        ColumnReference columnReference = mapper.columnOf(new PropertyReference(EntityWithProperties.class, "embeddedProperty.overwrittenEmbeddableProperty"));
+        assertEquals("ctbl_entity_with_properties", columnReference.getTableName());
+        assertEquals("col_custom_overwritten_embeddable", columnReference.getColumnName());
+    }
         
     @Test
     public void testEmbeddedId() {
