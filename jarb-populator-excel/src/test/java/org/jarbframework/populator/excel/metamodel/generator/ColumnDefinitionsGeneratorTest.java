@@ -52,4 +52,5 @@ public class ColumnDefinitionsGeneratorTest extends DefaultExcelTestDataCase {
         classDefinitionBuilder.includeProperties(columnDefinitionsGenerator.createPropertyDefinitions(subClassEntities, entity, persistentClass));
         assertEquals(Address.class.getDeclaredField("streetAndNumber"), classDefinitionBuilder.build().property("streetAndNumber").getField());
     }
+
 }

@@ -2,7 +2,9 @@ package org.jarbframework.populator.excel;
 
 import javax.persistence.EntityManagerFactory;
 
+import org.jarbframework.populator.ConditionalDatabasePopulator;
 import org.jarbframework.populator.DatabasePopulator;
+import org.jarbframework.populator.condition.ResourceExistsCondition;
 import org.springframework.core.io.Resource;
 import org.springframework.util.Assert;
 
@@ -22,6 +24,22 @@ public class ExcelDatabasePopulator implements DatabasePopulator {
 
     public void setEntityManagerFactory(EntityManagerFactory entityManagerFactory) {
         this.entityManagerFactory = entityManagerFactory;
+    }
+
+    /**
+     * Construct a new {@link ExcelDatabasePopulator} that skips
+     * whenever the specified resource does not exist. Use this type of
+     * database populator whenever it is uncertain if a resource exists.
+     * 
+     * @param excelResource reference to the excel workbook resource
+     * @param entityManagerFactory JPA entity manager used to inspect and persist data
+     * @return database populator that will persist all entities declared inside the workbook
+     */
+    public static ConditionalDatabasePopulator ignoreIfResourceMissing(Resource excelResource, EntityManagerFactory entityManagerFactory) {
+        ExcelDatabasePopulator excelPopulator = new ExcelDatabasePopulator();
+        excelPopulator.setExcelResource(excelResource);
+        excelPopulator.setEntityManagerFactory(entityManagerFactory);
+        return new ConditionalDatabasePopulator(excelPopulator, new ResourceExistsCondition(excelResource));
     }
 
     /**
