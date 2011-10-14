@@ -13,15 +13,13 @@ import javax.persistence.metamodel.Metamodel;
 
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.jarbframework.populator.excel.DefaultExcelTestDataCase;
-import org.jarbframework.populator.excel.mapping.importer.ExcelRow;
-import org.jarbframework.populator.excel.mapping.importer.StoreExcelRecordValue;
-import org.jarbframework.populator.excel.mapping.importer.StoreJoinColumn;
 import org.jarbframework.populator.excel.metamodel.EntityDefinition;
 import org.jarbframework.populator.excel.metamodel.PropertyDefinition;
 import org.jarbframework.populator.excel.metamodel.generator.ClassDefinitionsGenerator;
 import org.jarbframework.populator.excel.metamodel.generator.FieldAnalyzer;
 import org.jarbframework.populator.excel.workbook.Workbook;
 import org.jarbframework.populator.excel.workbook.reader.PoiWorkbookParser;
+import org.jarbframework.utils.orm.jpa.JpaHibernateSchemaMapper;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -54,12 +52,14 @@ public class StoreJoinColumnTest extends DefaultExcelTestDataCase {
         Metamodel metamodel = getEntityManagerFactory().getMetamodel();
         EntityType<?> entity = metamodel.entity(domain.entities.Project.class);
 
-        classDefinition = ClassDefinitionsGenerator.createSingleClassDefinitionFromMetamodel(getEntityManagerFactory(), entity, false);
+        ClassDefinitionsGenerator classDefinitionsGenerator = new ClassDefinitionsGenerator(getEntityManagerFactory());
+        classDefinition = classDefinitionsGenerator.createSingleClassDefinitionFromMetamodel(entity, false);
 
         excelRow = new ExcelRow(classDefinition.getEntityClass());
 
         rowPosition = 1;
-        PropertyDefinition joinColumn = FieldAnalyzer.analyzeField(customerField).build();
+        FieldAnalyzer fieldAnalyzer = new FieldAnalyzer(JpaHibernateSchemaMapper.usingNamingStrategyOf(getEntityManagerFactory()));
+        PropertyDefinition joinColumn = fieldAnalyzer.analyzeField(customerField, persistentClass).build();
 
         StoreExcelRecordValue.storeValue(excel, classDefinition, joinColumn, rowPosition, excelRow);
         assertTrue(excelRow.getValueMap().containsKey(joinColumn));
@@ -72,7 +72,8 @@ public class StoreJoinColumnTest extends DefaultExcelTestDataCase {
         Metamodel metamodel = getEntityManagerFactory().getMetamodel();
         EntityType<?> entity = metamodel.entity(domain.entities.Project.class);
 
-        classDefinition = ClassDefinitionsGenerator.createSingleClassDefinitionFromMetamodel(getEntityManagerFactory(), entity, false);
+        ClassDefinitionsGenerator classDefinitionsGenerator = new ClassDefinitionsGenerator(getEntityManagerFactory());
+        classDefinition = classDefinitionsGenerator.createSingleClassDefinitionFromMetamodel(entity, false);
         excelRow = new ExcelRow(classDefinition.getEntityClass());
 
         StoreJoinColumn.storeValue(excel, classDefinition, classDefinition.property("customer"), 2, excelRow);

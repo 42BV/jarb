@@ -3,28 +3,28 @@ package org.jarbframework.populator.excel.metamodel.generator;
 import java.lang.reflect.Field;
 
 import org.jarbframework.populator.excel.metamodel.PropertyDefinition;
+import org.jarbframework.utils.orm.SchemaMapper;
 
 /**
  * Creates columnDefinitions for regular fields.
  * @author Sander Benschop
  *
  */
-public final class RegularColumnGenerator {
+public class RegularColumnGenerator {
+    private final FieldAnalyzer fieldAnalyzer;
 
-    /** Private constructor. */
-    private RegularColumnGenerator() {
+    public RegularColumnGenerator(SchemaMapper schemaMapper) {
+        this.fieldAnalyzer = new FieldAnalyzer(schemaMapper);
     }
 
     /**
      * Creates a columnDefinition for a regular field.
      * @param field To create the columnDefinition from
+     * @param entityClass 
      * @return ColumnDefinition
-     * @throws InstantiationException Thrown when function is used on a class that cannot be instantiated (abstract or interface)
-     * @throws IllegalAccessException Thrown when function does not have access to the definition of the specified class, field, method or constructor 
      */
-    public static PropertyDefinition createColumnDefinitionForRegularField(Field field) throws InstantiationException, IllegalAccessException {
-        PropertyDefinition.Builder columnDefinitionBuilder = FieldAnalyzer.analyzeField(field);
+    public PropertyDefinition createColumnDefinitionForRegularField(Field field, Class<?> entityClass) {
+        PropertyDefinition.Builder columnDefinitionBuilder = fieldAnalyzer.analyzeField(field, entityClass);
         return columnDefinitionBuilder != null ? columnDefinitionBuilder.build() : null;
     }
-
 }

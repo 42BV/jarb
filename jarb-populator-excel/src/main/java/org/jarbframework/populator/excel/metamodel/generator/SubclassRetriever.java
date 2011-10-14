@@ -41,9 +41,8 @@ public final class SubclassRetriever {
      * Returns a mapping with all subclasses in it, the discriminator value is the key.
      * @param subClassEntities Subclass entities of the Entity
      * @return Map with discriminator values and persistent classes.
-     * @throws ClassNotFoundException Thrown when a class cannot be found
      */
-    public static Map<String, Class<?>> getSubClassMapping(Set<EntityType<?>> subClassEntities) throws ClassNotFoundException {
+    public static Map<String, Class<?>> getSubClassMapping(Set<EntityType<?>> subClassEntities) {
         Map<String, Class<?>> subClassMap = new HashMap<String, Class<?>>();
         for (EntityType<?> subClassEntity : subClassEntities) {
             Class<?> subClass = subClassEntity.getJavaType();

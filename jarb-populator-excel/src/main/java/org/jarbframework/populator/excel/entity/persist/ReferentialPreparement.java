@@ -9,9 +9,9 @@ import java.util.Set;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.metamodel.Attribute;
+import javax.persistence.metamodel.Attribute.PersistentAttributeType;
 import javax.persistence.metamodel.EntityType;
 import javax.persistence.metamodel.Metamodel;
-import javax.persistence.metamodel.Attribute.PersistentAttributeType;
 
 import org.jarbframework.populator.excel.metamodel.generator.SuperclassRetriever;
 import org.jarbframework.populator.excel.util.JpaUtils;
@@ -46,7 +46,6 @@ public final class ReferentialPreparement {
     public static Object prepareEntityReferences(Object entity, EntityManager entityManager, Set<Object> cascadedObjectsInThisInteration) {
         EntityManagerFactory entityManagerFactory = entityManager.getEntityManagerFactory();
         Metamodel metamodel = entityManagerFactory.getMetamodel();
-
         for (Attribute<?, ?> attribute : metamodel.entity(entity.getClass()).getAttributes()) {
             PersistentAttributeType attributePersistenceType = attribute.getPersistentAttributeType();
             if ((attributePersistenceType == PersistentAttributeType.MANY_TO_ONE) || (attributePersistenceType == PersistentAttributeType.MANY_TO_MANY)) {
@@ -147,7 +146,6 @@ public final class ReferentialPreparement {
      * @param entityManager EntityManager needed to search through the persistence cache.
      * @param attributeName Name of the attribute tha's being edited.
      * @param referencedObject The referenced object
-     * @param jpaDao Jpa data access object by Hactar.
      * @param cascadedObjectsInThisInteration List with objects already cascaded.
      * @return Entity with persisted references
      */
@@ -165,7 +163,6 @@ public final class ReferentialPreparement {
                     cascadeReferencedObject(entity, entityManager, attributeName, referencedObject, cascadedObjectsInThisInteration);
                 }
             } else {
-                // Entity has no identifier yet
                 cascadeReferencedObject(entity, entityManager, attributeName, referencedObject, cascadedObjectsInThisInteration);
             }
         }
@@ -187,8 +184,6 @@ public final class ReferentialPreparement {
      */
     private static void cascadeReferencedObject(Object entity, EntityManager entityManager, String attributeName, Object referencedObject,
             Set<Object> cascadedObjectsInThisInteration) {
-        //ReferencedObject must be checked as well...
-
         if (!cascadingHasLooped(referencedObject, cascadedObjectsInThisInteration)) {
             referencedObject = prepareEntityReferences(referencedObject, entityManager, cascadedObjectsInThisInteration);
             LOGGER.info("Cascading Excelrow of class: " + referencedObject.getClass());
@@ -208,13 +203,11 @@ public final class ReferentialPreparement {
         if (cascadedObjectsInThisInteration.contains(referencedObject)) {
             return true;
         }
-
         for (Object object : cascadedObjectsInThisInteration) {
             if (referencedObject.getClass() == object.getClass()) {
                 return true;
             }
         }
-
         return false;
     }
 

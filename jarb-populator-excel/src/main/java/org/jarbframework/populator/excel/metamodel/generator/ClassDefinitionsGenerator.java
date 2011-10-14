@@ -19,31 +19,27 @@ import org.jarbframework.utils.orm.jpa.JpaHibernateSchemaMapper;
  *
  */
 public class ClassDefinitionsGenerator {
+    private final EntityManagerFactory entityManagerFactory;
+
+    public ClassDefinitionsGenerator(EntityManagerFactory entityManagerFactory) {
+        this.entityManagerFactory = entityManagerFactory;
+    }
 
     /**
      * Used to create a ClassDefinition, is used by the function createClassDefinitionsFromMetamodel but can also be used to create a single ClassDefinition.
-     * This can be useful for unittesting.
+     * This can be useful for unit testing.
      * Persistent class must be annotated as @Entity in order for this to work.
-     * @param entityManagerFactory EntityManagerFactory from the ApplicationContext file
-     * @param entity An entity from the metamodel.
+     * @param entity An entity from the meta-model.
      * @param includeSubClasses Whether or not to include subclasses in the ClassDefinition
-     * @return ClassDefinition, still without a worksheetDefinition 
-     * @throws ClassNotFoundException Throws if a class cannot be found
-     * @throws InstantiationException Thrown when function is used on a class that cannot be instantiated (abstract or interface)
-     * @throws IllegalAccessException Thrown when function does not have access to the definition of the specified class, field, method or constructor 
      */
-    public static EntityDefinition<?> createSingleClassDefinitionFromMetamodel(EntityManagerFactory entityManagerFactory, EntityType<?> entity,
-            boolean includeSubClasses) throws InstantiationException, ClassNotFoundException, IllegalAccessException {
+    public EntityDefinition<?> createSingleClassDefinitionFromMetamodel(EntityType<?> entity, boolean includeSubClasses) {
         Metamodel metamodel = entityManagerFactory.getMetamodel();
-
         Set<EntityType<?>> entities = metamodel.getEntities();
         Set<EntityType<?>> subClassEntities = new HashSet<EntityType<?>>();
-
         if (includeSubClasses) {
             subClassEntities = SubclassRetriever.getSubClassEntities(entity, entities);
         }
-
-        return createClassDefinitionFromEntity(entityManagerFactory, entity, entities, subClassEntities);
+        return createClassDefinitionFromEntity(entity, entities, subClassEntities);
     }
 
     /**
@@ -51,19 +47,15 @@ public class ClassDefinitionsGenerator {
      * @param entity Entity to create a classDefinition from
      * @param entities All entities from the Metamodel
      * @param subClassEntities All subclasses of the Entity
-     * @return ClassDefinition with columns and subclass mapping
-     * @throws ClassNotFoundException Throws if a class cannot be found
-     * @throws InstantiationException Thrown when function is used on a class that cannot be instantiated (abstract or interface)
-     * @throws IllegalAccessException Thrown when function does not have access to the definition of the specified class, field, method or constructor 
      */
     @SuppressWarnings("unchecked")
-    private static <T> EntityDefinition<T> createClassDefinitionFromEntity(EntityManagerFactory entityManagerFactory, EntityType<T> entity,
-            Set<EntityType<?>> entities, Set<EntityType<?>> subClassEntities) throws ClassNotFoundException, InstantiationException, IllegalAccessException {
+    private <T> EntityDefinition<T> createClassDefinitionFromEntity(EntityType<T> entity, Set<EntityType<?>> entities, Set<EntityType<?>> subClassEntities) {
         final Class<T> entityClass = entity.getJavaType();
         EntityDefinition.Builder<T> builder = EntityDefinition.forClass(entityClass);
         SchemaMapper schemaMapper = JpaHibernateSchemaMapper.usingNamingStrategyOf(entityManagerFactory);
         builder.setTableName(schemaMapper.tableNameOf(entityClass));
-        builder.includeProperties(ColumnDefinitionsGenerator.createPropertyDefinitions(subClassEntities, entity, entityClass));
+        ColumnDefinitionsGenerator columnDefinitionsGenerator = new ColumnDefinitionsGenerator(schemaMapper);
+        builder.includeProperties(columnDefinitionsGenerator.createPropertyDefinitions(subClassEntities, entity, entityClass));
         if (!subClassEntities.isEmpty()) {
             builder.setDiscriminatorColumnName(DiscriminatorColumnGenerator.getDiscriminatorColumnName(entityClass));
             for (Map.Entry<String, Class<?>> subClassMapping : SubclassRetriever.getSubClassMapping(subClassEntities).entrySet()) {

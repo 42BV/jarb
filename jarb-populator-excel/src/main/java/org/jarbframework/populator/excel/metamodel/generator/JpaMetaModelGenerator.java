@@ -24,7 +24,7 @@ public class JpaMetaModelGenerator implements MetaModelGenerator {
 
     /**
      * Construct a new {@link JpaMetaModelGenerator}.
-     * @param entityManagerFactory entity manager factory, used for its metamodel
+     * @param entityManagerFactory entity manager factory, used for its meta-model
      */
     public JpaMetaModelGenerator(EntityManagerFactory entityManagerFactory) {
         this.entityManagerFactory = entityManagerFactory;
@@ -63,9 +63,8 @@ public class JpaMetaModelGenerator implements MetaModelGenerator {
     private EntityDefinition<?> describeEntity(EntityType<?> entityType) {
         try {
             LOGGER.debug("Generating metamodel definition of '{}'...", entityType.getJavaType().getName());
-            return ClassDefinitionsGenerator.createSingleClassDefinitionFromMetamodel(entityManagerFactory, entityType, true);
+            return new ClassDefinitionsGenerator(entityManagerFactory).createSingleClassDefinitionFromMetamodel(entityType, true);
         } catch (Exception e) {
-            // TODO: Delegating class should not be throwing this many exceptions
             throw new RuntimeException(e);
         }
     }

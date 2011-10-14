@@ -10,14 +10,12 @@ import javax.persistence.metamodel.Metamodel;
 
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.jarbframework.populator.excel.DefaultExcelTestDataCase;
-import org.jarbframework.populator.excel.mapping.importer.ExcelRow;
-import org.jarbframework.populator.excel.mapping.importer.JoinColumnKey;
-import org.jarbframework.populator.excel.mapping.importer.Key;
 import org.jarbframework.populator.excel.metamodel.EntityDefinition;
 import org.jarbframework.populator.excel.metamodel.PropertyDefinition;
 import org.jarbframework.populator.excel.metamodel.generator.ClassDefinitionsGenerator;
 import org.jarbframework.populator.excel.metamodel.generator.FieldAnalyzer;
 import org.jarbframework.populator.excel.workbook.Workbook;
+import org.jarbframework.utils.orm.jpa.JpaHibernateSchemaMapper;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -46,10 +44,12 @@ public class ExcelRowTest extends DefaultExcelTestDataCase {
         Metamodel metamodel = getEntityManagerFactory().getMetamodel();
         EntityType<?> entity = metamodel.entity(domain.entities.Customer.class);
 
-        classDefinition = ClassDefinitionsGenerator.createSingleClassDefinitionFromMetamodel(getEntityManagerFactory(), entity, false);
+        ClassDefinitionsGenerator classDefinitionsGenerator = new ClassDefinitionsGenerator(getEntityManagerFactory());
+        classDefinition = classDefinitionsGenerator.createSingleClassDefinitionFromMetamodel(entity, false);
         excelRow = new ExcelRow(classDefinition.getEntityClass());
 
-        PropertyDefinition columnDefinition = FieldAnalyzer.analyzeField(persistentClass.getDeclaredField("id")).build();
+        FieldAnalyzer fieldAnalyzer = new FieldAnalyzer(JpaHibernateSchemaMapper.usingNamingStrategyOf(getEntityManagerFactory()));
+        PropertyDefinition columnDefinition = fieldAnalyzer.analyzeField(persistentClass.getDeclaredField("id"), persistentClass).build();
 
         Double cellValue = (Double) excel.getSheet(classDefinition.getTableName()).getValueAt(2, 0);
         Key keyValue = new JoinColumnKey();
@@ -66,7 +66,8 @@ public class ExcelRowTest extends DefaultExcelTestDataCase {
         Metamodel metamodel = getEntityManagerFactory().getMetamodel();
         EntityType<?> entity = metamodel.entity(domain.entities.Customer.class);
 
-        classDefinition = ClassDefinitionsGenerator.createSingleClassDefinitionFromMetamodel(getEntityManagerFactory(), entity, false);
+        ClassDefinitionsGenerator classDefinitionsGenerator = new ClassDefinitionsGenerator(getEntityManagerFactory());
+        classDefinition = classDefinitionsGenerator.createSingleClassDefinitionFromMetamodel(entity, false);
         excelRow = new ExcelRow(classDefinition.getEntityClass());
 
         createdInstance = (Customer) excelRow.getCreatedInstance();

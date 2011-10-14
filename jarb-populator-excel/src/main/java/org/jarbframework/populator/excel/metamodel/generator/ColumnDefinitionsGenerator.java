@@ -10,6 +10,7 @@ import javax.persistence.metamodel.EntityType;
 import javax.persistence.metamodel.IdentifiableType;
 
 import org.jarbframework.populator.excel.metamodel.PropertyDefinition;
+import org.jarbframework.utils.orm.SchemaMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,60 +21,56 @@ import org.slf4j.LoggerFactory;
  */
 public final class ColumnDefinitionsGenerator {
     private static final Logger LOGGER = LoggerFactory.getLogger(ColumnDefinitionsGenerator.class);
+    private final RegularColumnGenerator regularColumnGenerator;
+    private final EmbeddedColumnGenerator embeddedColumnGenerator;
 
-    /** Private constructor. */
-    private ColumnDefinitionsGenerator() {
+    public ColumnDefinitionsGenerator(SchemaMapper schemaMapper) {
+        regularColumnGenerator = new RegularColumnGenerator(schemaMapper);
+        embeddedColumnGenerator = new EmbeddedColumnGenerator(schemaMapper);
     }
 
     /**
-     * Creates a list of columnDefinitions from an entity originated in the JPA metamodel.
+     * Creates a list of columnDefinitions from an entity originated in the JPA meta-model.
      * @param subclassEntities Set of subclass entities
      * @param entity Entity whose attributes will be added as ColumnDefinitions.
      * @param persistentClass Persistent class of the ClassDefinition
      * @return List of ColumnDefinitions
-     * @throws ClassNotFoundException Throws if a class cannot be found
-     * @throws InstantiationException Thrown when function is used on a class that cannot be instantiated (abstract or interface)
-     * @throws IllegalAccessException Thrown when function does not have access to the definition of the specified class, field, method or constructor 
      */
-    public static List<PropertyDefinition> createPropertyDefinitions(Set<EntityType<?>> subclassEntities, EntityType<?> entity, Class<?> persistentClass)
-            throws InstantiationException, IllegalAccessException, ClassNotFoundException {
+    public List<PropertyDefinition> createPropertyDefinitions(Set<EntityType<?>> subclassEntities, EntityType<?> entity, Class<?> persistentClass) {
         List<PropertyDefinition> columnDefinitions = new ArrayList<PropertyDefinition>();
-        // Add attributes as ColumnDefinitions to ClassDefinition
-        addAttributesAsColumnDefinitions(columnDefinitions, entity);
-        createSuperTypeColumnDefinitions(columnDefinitions, entity);
+        addAttributesAsColumnDefinitions(columnDefinitions, entity, persistentClass);
+        createSuperTypeColumnDefinitions(columnDefinitions, entity, persistentClass);
         if (!subclassEntities.isEmpty()) {
-            // Add attributes of subclass and the sub's persistent class.
             createSubClassColumnDefinitions(columnDefinitions, subclassEntities, persistentClass);
         }
         return columnDefinitions;
     }
 
-    private static void addAttributesAsColumnDefinitions(List<PropertyDefinition> columnDefinitions, IdentifiableType<?> type) {
+    private void addAttributesAsColumnDefinitions(List<PropertyDefinition> columnDefinitions, IdentifiableType<?> type, Class<?> entityClass) {
         for (Attribute<?, ?> attribute : type.getDeclaredAttributes()) {
             Field field = (Field) attribute.getJavaMember();
-            List<PropertyDefinition> newlyGeneratedColumnDefinitions = createColumnsForField(field);
+            List<PropertyDefinition> newlyGeneratedColumnDefinitions = createColumnsForField(field, entityClass);
             for (PropertyDefinition columnDefinition : newlyGeneratedColumnDefinitions) {
                 addPropertyDefinitionIfUnique(columnDefinitions, type, columnDefinition);
             }
         }
     }
 
-    private static void createSuperTypeColumnDefinitions(List<PropertyDefinition> columnDefinitions, IdentifiableType<?> type) {
+    private void createSuperTypeColumnDefinitions(List<PropertyDefinition> columnDefinitions, IdentifiableType<?> type, Class<?> entityClass) {
         IdentifiableType<?> superType = type.getSupertype();
         if (superType != null) {
-            addAttributesAsColumnDefinitions(columnDefinitions, superType);
-            createSuperTypeColumnDefinitions(columnDefinitions, superType);
+            addAttributesAsColumnDefinitions(columnDefinitions, superType, entityClass);
+            createSuperTypeColumnDefinitions(columnDefinitions, superType, entityClass);
         }
     }
 
-    private static void createSubClassColumnDefinitions(List<PropertyDefinition> columnDefinitions, Set<EntityType<?>> subclassEntities,
-            Class<?> persistentClass) throws InstantiationException, IllegalAccessException {
+    private void createSubClassColumnDefinitions(List<PropertyDefinition> columnDefinitions, Set<EntityType<?>> subclassEntities, Class<?> persistentClass) {
         for (EntityType<?> subEntity : subclassEntities) {
-            addAttributesAsColumnDefinitions(columnDefinitions, subEntity);
+            addAttributesAsColumnDefinitions(columnDefinitions, subEntity, persistentClass);
         }
     }
 
-    private static void addPropertyDefinitionIfUnique(List<PropertyDefinition> columnDefinitions, IdentifiableType<?> type, PropertyDefinition columnDefinition) {
+    private void addPropertyDefinitionIfUnique(List<PropertyDefinition> columnDefinitions, IdentifiableType<?> type, PropertyDefinition columnDefinition) {
         if (propertyDefinitionUnique(columnDefinitions, columnDefinition)) {
             columnDefinitions.add(columnDefinition);
         } else {
@@ -82,7 +79,7 @@ public final class ColumnDefinitionsGenerator {
         }
     }
 
-    private static boolean propertyDefinitionUnique(List<PropertyDefinition> propertyDefs, PropertyDefinition newPropertyDef) {
+    private boolean propertyDefinitionUnique(List<PropertyDefinition> propertyDefs, PropertyDefinition newPropertyDef) {
         boolean unique = true;
         if (newPropertyDef.getColumnName() != null) {
             for (PropertyDefinition columnDefinition : propertyDefs) {
@@ -95,21 +92,15 @@ public final class ColumnDefinitionsGenerator {
         return unique;
     }
 
-    private static List<PropertyDefinition> createColumnsForField(Field field) {
+    private List<PropertyDefinition> createColumnsForField(Field field, Class<?> entityClass) {
         List<PropertyDefinition> columnDefinitions = new ArrayList<PropertyDefinition>();
-        try {
-            if ((field.getAnnotation(javax.persistence.Embedded.class) != null)) {
-                columnDefinitions.addAll(EmbeddedColumnGenerator.createColumnDefinitionsForEmbeddedField(field));
-            } else {
-                PropertyDefinition columnDefinition = RegularColumnGenerator.createColumnDefinitionForRegularField(field);
-                if (columnDefinition != null) {
-                    columnDefinitions.add(columnDefinition);
-                }
+        if ((field.getAnnotation(javax.persistence.Embedded.class) != null)) {
+            columnDefinitions.addAll(embeddedColumnGenerator.createColumnDefinitionsForEmbeddedField(field, entityClass));
+        } else {
+            PropertyDefinition columnDefinition = regularColumnGenerator.createColumnDefinitionForRegularField(field, entityClass);
+            if (columnDefinition != null) {
+                columnDefinitions.add(columnDefinition);
             }
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException(e);
-        } catch (InstantiationException e) {
-            throw new RuntimeException(e);
         }
         return columnDefinitions;
     }

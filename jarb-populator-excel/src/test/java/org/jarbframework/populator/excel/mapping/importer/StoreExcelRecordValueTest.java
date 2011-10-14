@@ -12,14 +12,13 @@ import javax.persistence.metamodel.Metamodel;
 
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.jarbframework.populator.excel.DefaultExcelTestDataCase;
-import org.jarbframework.populator.excel.mapping.importer.ExcelRow;
-import org.jarbframework.populator.excel.mapping.importer.StoreExcelRecordValue;
 import org.jarbframework.populator.excel.metamodel.EntityDefinition;
 import org.jarbframework.populator.excel.metamodel.PropertyDefinition;
 import org.jarbframework.populator.excel.metamodel.generator.ClassDefinitionsGenerator;
 import org.jarbframework.populator.excel.metamodel.generator.FieldAnalyzer;
 import org.jarbframework.populator.excel.workbook.Workbook;
 import org.jarbframework.populator.excel.workbook.reader.PoiWorkbookParser;
+import org.jarbframework.utils.orm.jpa.JpaHibernateSchemaMapper;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -42,13 +41,16 @@ public class StoreExcelRecordValueTest extends DefaultExcelTestDataCase {
     }
 
     @Test
-    public void testStoreNullClass() throws SecurityException, NoSuchFieldException, InstantiationException, IllegalAccessException, ClassNotFoundException {       
+    public void testStoreNullClass() throws SecurityException, NoSuchFieldException, InstantiationException, IllegalAccessException, ClassNotFoundException {
         Metamodel metamodel = getEntityManagerFactory().getMetamodel();
         EntityType<?> entity = metamodel.entity(Employee.class);
-        EntityDefinition<?> classDefinition = ClassDefinitionsGenerator.createSingleClassDefinitionFromMetamodel(getEntityManagerFactory(), entity, false);
-        
+        ClassDefinitionsGenerator classDefinitionsGenerator = new ClassDefinitionsGenerator(getEntityManagerFactory());
+        EntityDefinition<?> classDefinition = classDefinitionsGenerator.createSingleClassDefinitionFromMetamodel(entity, false);
+
         rowPosition = 3;
-        PropertyDefinition columnDefinition = FieldAnalyzer.analyzeField(Employee.class.getDeclaredField("projects")).build();
+
+        FieldAnalyzer fieldAnalyzer = new FieldAnalyzer(JpaHibernateSchemaMapper.usingNamingStrategyOf(getEntityManagerFactory()));
+        PropertyDefinition columnDefinition = fieldAnalyzer.analyzeField(Employee.class.getDeclaredField("projects"), Employee.class).build();
         excelRow = new ExcelRow(Employee.class);
         StoreExcelRecordValue.storeValue(excel, classDefinition, columnDefinition, rowPosition, excelRow);
         assertTrue(excelRow.getValueMap().containsKey(columnDefinition));

@@ -34,11 +34,10 @@ public final class ExcelImporter {
      * @throws IllegalAccessException Thrown when function does not have access to the definition of the specified class, field, method or constructor 
      * @throws NoSuchFieldException Thrown when a field is not available
      */
-    public static Map<EntityDefinition<?>, Map<Object, ExcelRow>> parseExcel(Workbook excel, Collection<EntityDefinition<?>> classDefinitions)
-            throws InstantiationException, IllegalAccessException, NoSuchFieldException {
+    public static Map<EntityDefinition<?>, Map<Object, ExcelRow>> parseExcel(Workbook excel, Collection<EntityDefinition<?>> entities) {
         Map<EntityDefinition<?>, Map<Object, ExcelRow>> objectModel = new HashMap<EntityDefinition<?>, Map<Object, ExcelRow>>();
 
-        for (EntityDefinition<?> classDefinition : classDefinitions) {
+        for (EntityDefinition<?> classDefinition : entities) {
             LOGGER.debug("Importing " + classDefinition.getTableName());
             objectModel.put(classDefinition, parseWorksheet(excel, classDefinition));
         }
@@ -67,8 +66,7 @@ public final class ExcelImporter {
      * @throws IllegalAccessException Thrown when function does not have access to the definition of the specified class, field, method or constructor 
      * @throws NoSuchFieldException Thrown when a field is not available
      */
-    public static Map<Object, ExcelRow> parseWorksheet(final Workbook excel, final EntityDefinition<?> classDefinition) throws InstantiationException,
-            IllegalAccessException, NoSuchFieldException {
+    public static Map<Object, ExcelRow> parseWorksheet(final Workbook excel, final EntityDefinition<?> classDefinition) {
         Map<Object, ExcelRow> createdInstances = new HashMap<Object, ExcelRow>();
 
         Sheet sheet = excel.getSheet(classDefinition.getTableName());
@@ -93,7 +91,7 @@ public final class ExcelImporter {
      * @throws IllegalAccessException Thrown when function does not have access to the definition of the specified class, field, method or constructor 
      */
     private static ExcelRow createFittingExcelRow(final Sheet sheet, final EntityDefinition<?> classDefinition, String discriminatorColumnName,
-            Integer rowPosition) throws InstantiationException, IllegalAccessException {
+            Integer rowPosition) {
         Class<?> entityClass = determineEntityClass(sheet, classDefinition, discriminatorColumnName, rowPosition);
         return new ExcelRow(BeanUtils.instantiateClass(entityClass));
     }
@@ -161,7 +159,7 @@ public final class ExcelImporter {
      * @throws NoSuchFieldException Thrown if field cannot be found
      */
     private static void storeExcelRecordByColumnDefinitions(final Workbook excel, final EntityDefinition<?> classDefinition, Integer rowPosition,
-            ExcelRow excelRow) throws NoSuchFieldException {
+            ExcelRow excelRow) {
         for (PropertyDefinition columnDefinition : classDefinition.properties()) {
             StoreExcelRecordValue.storeValue(excel, classDefinition, columnDefinition, rowPosition, excelRow);
         }

@@ -14,15 +14,13 @@ import javax.persistence.metamodel.EntityType;
 import javax.persistence.metamodel.Metamodel;
 
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
-import org.jarbframework.populator.excel.mapping.importer.ExcelRow;
-import org.jarbframework.populator.excel.mapping.importer.StoreExcelRecordValue;
-import org.jarbframework.populator.excel.mapping.importer.StoreJoinTable;
 import org.jarbframework.populator.excel.metamodel.EntityDefinition;
 import org.jarbframework.populator.excel.metamodel.PropertyDefinition;
 import org.jarbframework.populator.excel.metamodel.generator.ClassDefinitionsGenerator;
 import org.jarbframework.populator.excel.metamodel.generator.FieldAnalyzer;
 import org.jarbframework.populator.excel.workbook.Workbook;
 import org.jarbframework.populator.excel.workbook.reader.PoiWorkbookParser;
+import org.jarbframework.utils.orm.jpa.JpaHibernateSchemaMapper;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -63,11 +61,13 @@ public class StoreJoinTableTest {
         Metamodel metamodel = entityManagerFactory.getMetamodel();
         EntityType<?> entity = metamodel.entity(domain.entities.Employee.class);
 
-        classDefinition = ClassDefinitionsGenerator.createSingleClassDefinitionFromMetamodel(entityManagerFactory, entity, false);
+        ClassDefinitionsGenerator classDefinitionsGenerator = new ClassDefinitionsGenerator(entityManagerFactory);
+        classDefinition = classDefinitionsGenerator.createSingleClassDefinitionFromMetamodel(entity, false);
 
         excelRow = new ExcelRow(classDefinition.getEntityClass());
 
-        PropertyDefinition joinTable = FieldAnalyzer.analyzeField(projectsField).build();
+        FieldAnalyzer fieldAnalyzer = new FieldAnalyzer(JpaHibernateSchemaMapper.usingNamingStrategyOf(entityManagerFactory));
+        PropertyDefinition joinTable = fieldAnalyzer.analyzeField(projectsField, persistentClass).build();
 
         rowPosition = 3;
         assertFalse(excelRow.getValueMap().containsKey(joinTable));

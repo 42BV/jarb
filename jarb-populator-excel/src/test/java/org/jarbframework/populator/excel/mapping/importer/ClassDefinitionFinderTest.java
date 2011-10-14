@@ -13,7 +13,6 @@ import javax.persistence.metamodel.EntityType;
 import javax.persistence.metamodel.Metamodel;
 
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
-import org.jarbframework.populator.excel.mapping.importer.ClassDefinitionFinder;
 import org.jarbframework.populator.excel.metamodel.EntityDefinition;
 import org.jarbframework.populator.excel.metamodel.generator.ClassDefinitionsGenerator;
 import org.junit.Before;
@@ -48,8 +47,9 @@ public class ClassDefinitionFinderTest {
         EntityType<?> foreignEntity = metamodel.entity(domain.entities.Project.class);
 
         classDefinitionSet = new HashSet<EntityDefinition<?>>();
-        customer = ClassDefinitionsGenerator.createSingleClassDefinitionFromMetamodel(entityManagerFactory, persistentEntity, false);
-        project = ClassDefinitionsGenerator.createSingleClassDefinitionFromMetamodel(entityManagerFactory, foreignEntity, false);
+        ClassDefinitionsGenerator classDefinitionsGenerator = new ClassDefinitionsGenerator(entityManagerFactory);
+        customer = classDefinitionsGenerator.createSingleClassDefinitionFromMetamodel(persistentEntity, false);
+        project = classDefinitionsGenerator.createSingleClassDefinitionFromMetamodel(foreignEntity, false);
         classDefinitionSet.add(customer);
         classDefinitionSet.add(project);
 

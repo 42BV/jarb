@@ -4,9 +4,7 @@ import static org.junit.Assert.assertEquals;
 
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,22 +16,17 @@ import org.jarbframework.populator.excel.DefaultExcelTestDataCase;
 import org.jarbframework.populator.excel.mapping.importer.WorksheetDefinition;
 import org.jarbframework.populator.excel.metamodel.EntityDefinition;
 import org.jarbframework.populator.excel.metamodel.PropertyDefinition;
-import org.jarbframework.populator.excel.metamodel.generator.ClassDefinitionsGenerator;
 import org.jarbframework.populator.excel.workbook.Workbook;
 import org.jarbframework.populator.excel.workbook.reader.PoiWorkbookParser;
 import org.junit.Before;
 import org.junit.Test;
 
 public class ClassDefinitionsGeneratorTest extends DefaultExcelTestDataCase {
+    private ClassDefinitionsGenerator classDefinitionsGenerator;
 
     @Before
-    public void setupClassDefinitionsGeneratorTest() throws InvalidFormatException, IOException, IllegalArgumentException, InstantiationException,
-            IllegalAccessException, InvocationTargetException, SecurityException, NoSuchMethodException {
-
-        //For code coverage purposes:
-        Constructor<ClassDefinitionsGenerator> constructor = ClassDefinitionsGenerator.class.getDeclaredConstructor();
-        constructor.setAccessible(true);
-        constructor.newInstance();
+    public void setUp() {
+        classDefinitionsGenerator = new ClassDefinitionsGenerator(getEntityManagerFactory());
     }
 
     @Test
@@ -44,7 +37,7 @@ public class ClassDefinitionsGeneratorTest extends DefaultExcelTestDataCase {
         Metamodel metamodel = getEntityManagerFactory().getMetamodel();
         EntityType<?> entity = metamodel.entity(domain.entities.Department.class);
 
-        EntityDefinition<?> classDefinition = ClassDefinitionsGenerator.createSingleClassDefinitionFromMetamodel(getEntityManagerFactory(), entity, false);
+        EntityDefinition<?> classDefinition = classDefinitionsGenerator.createSingleClassDefinitionFromMetamodel(entity, false);
         PropertyDefinition generated = classDefinition.property("departmentName");
         Field departmentNameField = persistentClass.getDeclaredField("departmentName");
         assertEquals(departmentNameField, generated.getField());
@@ -58,7 +51,7 @@ public class ClassDefinitionsGeneratorTest extends DefaultExcelTestDataCase {
         Metamodel metamodel = getEntityManagerFactory().getMetamodel();
         EntityType<?> entity = metamodel.entity(domain.entities.Customer.class);
 
-        EntityDefinition<?> classDefinition = ClassDefinitionsGenerator.createSingleClassDefinitionFromMetamodel(getEntityManagerFactory(), entity, true);
+        EntityDefinition<?> classDefinition = classDefinitionsGenerator.createSingleClassDefinitionFromMetamodel(entity, true);
         PropertyDefinition generated = classDefinition.property("location");
         Field companyLocationField = subClass.getDeclaredField("location");
         assertEquals(companyLocationField, generated.getField());
@@ -72,7 +65,7 @@ public class ClassDefinitionsGeneratorTest extends DefaultExcelTestDataCase {
         Metamodel metamodel = getEntityManagerFactory().getMetamodel();
         EntityType<?> entity = metamodel.entity(domain.entities.Department.class);
 
-        classDefinitions.add(ClassDefinitionsGenerator.createSingleClassDefinitionFromMetamodel(getEntityManagerFactory(), entity, false));
+        classDefinitions.add(classDefinitionsGenerator.createSingleClassDefinitionFromMetamodel(entity, false));
         EntityDefinition<?> classDefinition = classDefinitions.get(0);
         Integer columnPosition = 1;
         assertEquals(columnPosition, WorksheetDefinition.analyzeWorksheet(classDefinition, excel).getColumnPosition("db_column"));

@@ -35,7 +35,7 @@ public final class StoreColumn {
      * @throws NoSuchFieldException Thrown when a field is not available
      */
     public static void storeValue(Workbook excel, EntityDefinition<?> classDefinition, PropertyDefinition columnDefinition, Integer rowPosition,
-            ExcelRow excelRow) throws NoSuchFieldException {
+            ExcelRow excelRow) {
         WorksheetDefinition worksheetDefinition = WorksheetDefinition.analyzeWorksheet(classDefinition, excel);
         Integer columnPosition = worksheetDefinition.getColumnPosition(columnDefinition.getColumnName());
 

@@ -26,9 +26,9 @@ public final class StoreExcelRecordValue {
      * @param excelRow ExcelRow to save to.
      * @throws NoSuchFieldException Thrown when a field is not available
      */
-    public static void storeValue(Workbook excel, EntityDefinition<?> classDefinition, PropertyDefinition columnDefinition, 
-            Integer rowPosition, ExcelRow excelRow) throws NoSuchFieldException {
-        switch(columnDefinition.getDatabaseType()) {
+    public static void storeValue(Workbook excel, EntityDefinition<?> classDefinition, PropertyDefinition columnDefinition, Integer rowPosition,
+            ExcelRow excelRow) {
+        switch (columnDefinition.getDatabaseType()) {
         case COLUMN:
             StoreColumn.storeValue(excel, classDefinition, columnDefinition, rowPosition, excelRow);
             break;
@@ -40,5 +40,5 @@ public final class StoreExcelRecordValue {
             break;
         }
     }
-    
+
 }

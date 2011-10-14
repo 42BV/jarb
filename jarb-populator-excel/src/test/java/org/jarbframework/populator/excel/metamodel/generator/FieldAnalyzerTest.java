@@ -1,11 +1,11 @@
 package org.jarbframework.populator.excel.metamodel.generator;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 
@@ -17,13 +17,13 @@ import org.jarbframework.populator.excel.DefaultExcelTestDataCase;
 import org.jarbframework.populator.excel.mapping.importer.WorksheetDefinition;
 import org.jarbframework.populator.excel.metamodel.EntityDefinition;
 import org.jarbframework.populator.excel.metamodel.PropertyDefinition;
-import org.jarbframework.populator.excel.metamodel.generator.ClassDefinitionsGenerator;
-import org.jarbframework.populator.excel.metamodel.generator.FieldAnalyzer;
 import org.jarbframework.populator.excel.workbook.Workbook;
 import org.jarbframework.populator.excel.workbook.reader.PoiWorkbookParser;
+import org.jarbframework.utils.orm.jpa.JpaHibernateSchemaMapper;
 import org.junit.Before;
 import org.junit.Test;
 
+import domain.entities.Document;
 import domain.entities.Employee;
 
 public class FieldAnalyzerTest extends DefaultExcelTestDataCase {
@@ -34,6 +34,7 @@ public class FieldAnalyzerTest extends DefaultExcelTestDataCase {
     private Field nameField;
     private Field idField;
     private WorksheetDefinition worksheetDefinition;
+    private FieldAnalyzer fieldAnalyzer;
 
     @Before
     public void setupAnalyzeField() throws InstantiationException, IllegalAccessException, SecurityException, NoSuchFieldException, InvalidFormatException,
@@ -46,41 +47,37 @@ public class FieldAnalyzerTest extends DefaultExcelTestDataCase {
         Metamodel metamodel = getEntityManagerFactory().getMetamodel();
         EntityType<?> entity = metamodel.entity(domain.entities.Customer.class);
 
-        classDefinition = ClassDefinitionsGenerator.createSingleClassDefinitionFromMetamodel(getEntityManagerFactory(), entity, false);
+        ClassDefinitionsGenerator classDefinitionsGenerator = new ClassDefinitionsGenerator(getEntityManagerFactory());
+        classDefinition = classDefinitionsGenerator.createSingleClassDefinitionFromMetamodel(entity, false);
         worksheetDefinition = new WorksheetDefinition();
         worksheetDefinition = WorksheetDefinition.analyzeWorksheet(classDefinition, excel);
         worksheetDefinition.addColumnPosition("address", "customers", 0);
 
-        //For code coverage purposes:
-        Constructor<FieldAnalyzer> constructor = FieldAnalyzer.class.getDeclaredConstructor();
-        constructor.setAccessible(true);
-        constructor.newInstance();
+        fieldAnalyzer = new FieldAnalyzer(JpaHibernateSchemaMapper.usingNamingStrategyOf(getEntityManagerFactory()));
     }
 
     @Test
-    public void testColumn() {    
-        PropertyDefinition testNameColumn = FieldAnalyzer.analyzeField(nameField).build();
+    public void testColumn() {
+        PropertyDefinition testNameColumn = fieldAnalyzer.analyzeField(nameField, persistentClass).build();
         assertEquals("first_name", testNameColumn.getColumnName());
         assertEquals("name", testNameColumn.getName());
     }
-    
 
     @Test
     public void testJoinTable() throws SecurityException, NoSuchFieldException {
-        PropertyDefinition definition = FieldAnalyzer.analyzeField(Employee.class.getDeclaredField("projects")).build();
+        PropertyDefinition definition = fieldAnalyzer.analyzeField(Employee.class.getDeclaredField("projects"), Employee.class).build();
         assertEquals("project_id", definition.getInverseJoinColumnName());
         assertEquals("employee_id", definition.getJoinColumnName());
     }
-    
+
     @Test
     public void testGeneratedValue() {
-        assertTrue(FieldAnalyzer.analyzeField(idField).build().isGeneratedValue());
+        assertTrue(fieldAnalyzer.analyzeField(idField, persistentClass).build().isGeneratedValue());
     }
 
     @Test
     public void testAnalyzeFieldNull() throws InstantiationException, IllegalAccessException, SecurityException, NoSuchFieldException {
-        assertEquals(null, FieldAnalyzer.analyzeField(domain.entities.Document.class.getDeclaredField("documentRevisions")));
+        assertNull(fieldAnalyzer.analyzeField(Document.class.getDeclaredField("documentRevisions"), Document.class));
     }
-    
 
 }

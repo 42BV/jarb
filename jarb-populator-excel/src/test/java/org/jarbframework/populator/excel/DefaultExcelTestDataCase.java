@@ -7,6 +7,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Arrays;
 
 import javax.persistence.EntityManagerFactory;
 
@@ -84,6 +85,10 @@ public abstract class DefaultExcelTestDataCase {
      */
     public MetaModel metamodel() {
         return excelDataManagerFactory.buildMetamodelGenerator().generate();
+    }
+
+    public MetaModel metamodelFor(Class<?>... entityClasses) {
+        return excelDataManagerFactory.buildMetamodelGenerator().generateFor(Arrays.asList(entityClasses));
     }
 
     public ExcelDataManager getExcelDataManager() {

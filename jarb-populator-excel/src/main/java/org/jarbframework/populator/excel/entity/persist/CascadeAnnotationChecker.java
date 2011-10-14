@@ -38,9 +38,7 @@ public final class CascadeAnnotationChecker {
             ManyToMany manyToMany = (ManyToMany) annotation;
             return checkForMergeAndPersistCascadeType(manyToMany.cascade());
         }
-
         return false;
-
     }
 
     /**

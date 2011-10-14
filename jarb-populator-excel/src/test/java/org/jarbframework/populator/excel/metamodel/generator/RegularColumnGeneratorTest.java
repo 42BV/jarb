@@ -2,30 +2,26 @@ package org.jarbframework.populator.excel.metamodel.generator;
 
 import static org.junit.Assert.assertEquals;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-
+import org.jarbframework.populator.excel.DefaultExcelTestDataCase;
 import org.jarbframework.populator.excel.metamodel.PropertyDefinition;
-import org.jarbframework.populator.excel.metamodel.generator.RegularColumnGenerator;
+import org.jarbframework.utils.orm.jpa.JpaHibernateSchemaMapper;
 import org.junit.Before;
 import org.junit.Test;
 
-public class RegularColumnGeneratorTest {
+import domain.entities.Project;
+
+public class RegularColumnGeneratorTest extends DefaultExcelTestDataCase {
+    private RegularColumnGenerator regularColumnGenerator;
 
     @Before
-    public void setupEmbeddedColumnGeneratorTest() throws SecurityException, NoSuchMethodException, IllegalArgumentException, InstantiationException,
-            IllegalAccessException, InvocationTargetException {
-
-        //For code coverage purposes:
-        Constructor<RegularColumnGenerator> constructor = RegularColumnGenerator.class.getDeclaredConstructor();
-        constructor.setAccessible(true);
-        constructor.newInstance();
+    public void setUp() {
+        regularColumnGenerator = new RegularColumnGenerator(JpaHibernateSchemaMapper.usingNamingStrategyOf(getEntityManagerFactory()));
     }
 
     @Test
-    public void testCreateColumnDefinitionsForEmbeddedField() throws SecurityException, NoSuchFieldException, InstantiationException, IllegalAccessException {
-        Class<?> persistentClass = domain.entities.Project.class;
-        PropertyDefinition generated = RegularColumnGenerator.createColumnDefinitionForRegularField(persistentClass.getDeclaredField("name"));
+    public void testCreateColumnDefinitionsForEmbeddedField() throws NoSuchFieldException {
+        PropertyDefinition generated = regularColumnGenerator.createColumnDefinitionForRegularField(Project.class.getDeclaredField("name"), Project.class);
         assertEquals("name", generated.getColumnName());
     }
+
 }

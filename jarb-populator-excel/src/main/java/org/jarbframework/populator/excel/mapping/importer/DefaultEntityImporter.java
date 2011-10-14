@@ -21,7 +21,7 @@ import org.jarbframework.populator.excel.workbook.Workbook;
  */
 public class DefaultEntityImporter implements EntityImporter {
     private final EntityManagerFactory entityManagerFactory;
-    
+
     public DefaultEntityImporter(EntityManagerFactory entityManagerFactory) {
         this.entityManagerFactory = entityManagerFactory;
     }
@@ -31,16 +31,15 @@ public class DefaultEntityImporter implements EntityImporter {
      */
     @Override
     public EntityRegistry load(Workbook workbook, MetaModel metamodel) {
-        List<EntityDefinition<?>> classDefinitions = new ArrayList<EntityDefinition<?>>(metamodel.entities());
+        List<EntityDefinition<?>> entities = new ArrayList<EntityDefinition<?>>(metamodel.entities());
         try {
-            Map<EntityDefinition<?>, Map<Object, ExcelRow>> objectMap = ExcelImporter.parseExcel(workbook, classDefinitions);
-            return toRegistry(objectMap);
+            return toRegistry(ExcelImporter.parseExcel(workbook, entities));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
-    
-    @SuppressWarnings("unchecked")
+
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     private EntityRegistry toRegistry(Map<EntityDefinition<?>, Map<Object, ExcelRow>> entitiesMap) {
         EntityRegistry registry = new EntityRegistry();
         for (Map.Entry<EntityDefinition<?>, Map<Object, ExcelRow>> entitiesEntry : entitiesMap.entrySet()) {
@@ -51,14 +50,14 @@ public class DefaultEntityImporter implements EntityImporter {
                 // Row identifier is only used in excel, entity identifier is used in registry and database
                 Object entity = excelRowEntry.getValue().getCreatedInstance();
                 Object identifier = JpaUtils.getIdentifier(entity, entityManagerFactory);
-                if(identifier == null) {
+                if (identifier == null) {
                     // Whenever the identifier is null, because it has not yet been defined (generated value)
                     // use a random placeholder identifier. This identifier is only used to access the entity
                     // inside the generated entity registry. After persisting the registry, our entity identifier
                     // will be replaced with the actual database identifier.
                     identifier = UUID.randomUUID().toString();
                 }
-                entities.add(identifier,entity );
+                entities.add(identifier, entity);
             }
             registry.addAll(entities);
         }
