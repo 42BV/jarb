@@ -39,7 +39,8 @@ public class ForeignRelationsMapperTest extends DefaultExcelTestDataCase {
             SecurityException, NoSuchFieldException {
         excel = getExcelDataManagerFactory().buildExcelParser().parse(new FileInputStream("src/test/resources/Excel.xls"));
 
-        Map<EntityDefinition<?>, Map<Object, ExcelRow>> objectModel = new ExcelImporter(new ValueConversionService()).parseExcel(excel, metamodel().entities());
+        Map<EntityDefinition<?>, Map<Object, ExcelRow>> objectModel = new ExcelImporter(ValueConversionService.defaultConversions()).parseExcel(excel,
+                metamodel().entities());
 
         for (Entry<EntityDefinition<?>, Map<Object, ExcelRow>> classRecord : objectModel.entrySet()) {
             for (Entry<Object, ExcelRow> classValues : classRecord.getValue().entrySet()) {

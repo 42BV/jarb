@@ -58,13 +58,13 @@ public class DefaultExcelImporterTest extends DefaultExcelTestDataCase {
 
     @Test
     public void testParseExcel() throws InstantiationException, IllegalAccessException, SecurityException, NoSuchFieldException {
-        parseExcelMap = new ExcelImporter(new ValueConversionService()).parseExcel(excel, classDefinitionList);
+        parseExcelMap = new ExcelImporter(ValueConversionService.defaultConversions()).parseExcel(excel, classDefinitionList);
         assertTrue(classDefinitionList.containsAll(parseExcelMap.keySet()));
     }
 
     @Test
     public void testParseWorksheet() throws InstantiationException, IllegalAccessException, SecurityException, NoSuchFieldException {
-        parseWorksheetMap = new ExcelImporter(new ValueConversionService()).parseWorksheet(excel, classDefinition);
+        parseWorksheetMap = new ExcelImporter(ValueConversionService.defaultConversions()).parseWorksheet(excel, classDefinition);
         assertTrue(parseWorksheetMap.keySet().contains(1D));
         assertFalse(parseWorksheetMap.keySet().contains(2D));
         assertTrue(parseWorksheetMap.keySet().contains(3D));
@@ -84,13 +84,13 @@ public class DefaultExcelImporterTest extends DefaultExcelTestDataCase {
         excel = new PoiWorkbookParser().parse(new FileInputStream("src/test/resources/DiscriminatorColumnLacking.xls"));
         ClassDefinitionsGenerator classDefinitionsGenerator = new ClassDefinitionsGenerator(getEntityManagerFactory());
         classDefinition = classDefinitionsGenerator.createSingleClassDefinitionFromMetamodel(entity, true);
-        parseWorksheetMap = new ExcelImporter(new ValueConversionService()).parseWorksheet(excel, classDefinition);
+        parseWorksheetMap = new ExcelImporter(ValueConversionService.defaultConversions()).parseWorksheet(excel, classDefinition);
     }
 
     @Test
     public void testDuplicatePrimaryKey() throws InvalidFormatException, IOException, InstantiationException, IllegalAccessException, NoSuchFieldException {
         excel = new PoiWorkbookParser().parse(new FileInputStream("src/test/resources/DuplicatePrimaryKey.xls"));
-        parseWorksheetMap = new ExcelImporter(new ValueConversionService()).parseWorksheet(excel, classDefinition);
+        parseWorksheetMap = new ExcelImporter(ValueConversionService.defaultConversions()).parseWorksheet(excel, classDefinition);
         assertEquals(1, parseWorksheetMap.size());
     }
 }

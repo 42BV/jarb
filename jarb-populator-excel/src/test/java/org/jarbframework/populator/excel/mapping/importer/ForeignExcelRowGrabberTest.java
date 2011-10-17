@@ -60,7 +60,7 @@ public class ForeignExcelRowGrabberTest extends DefaultExcelTestDataCase {
         Key keyValue = new JoinColumnKey();
         keyValue.setForeignClass(Customer.class);
         keyValue.setKeyValue(6D);
-        objectModel = new ExcelImporter(new ValueConversionService()).parseWorksheet(excel, classDefinition);
+        objectModel = new ExcelImporter(ValueConversionService.defaultConversions()).parseWorksheet(excel, classDefinition);
         assertEquals(persistentClass, ForeignExcelRowGrabber.getInstanceValue(keyValue, objectModel).getClass());
     }
 
@@ -87,7 +87,7 @@ public class ForeignExcelRowGrabberTest extends DefaultExcelTestDataCase {
         }
 
         key.setKeyValue(keyValueSet);
-        objectModel = new ExcelImporter(new ValueConversionService()).parseWorksheet(excel, classDefinition);
+        objectModel = new ExcelImporter(ValueConversionService.defaultConversions()).parseWorksheet(excel, classDefinition);
         assertFalse(ForeignExcelRowGrabber.getInstanceValue(key, objectModel).equals(null));
     }
 
@@ -103,7 +103,7 @@ public class ForeignExcelRowGrabberTest extends DefaultExcelTestDataCase {
         classDefinition = classDefinitionsGenerator.createSingleClassDefinitionFromMetamodel(entity, false);
 
         Key key = null;
-        objectModel = new ExcelImporter(new ValueConversionService()).parseWorksheet(excel, classDefinition);
+        objectModel = new ExcelImporter(ValueConversionService.defaultConversions()).parseWorksheet(excel, classDefinition);
         assertEquals(null, ForeignExcelRowGrabber.getInstanceValue(key, objectModel));
     }
 

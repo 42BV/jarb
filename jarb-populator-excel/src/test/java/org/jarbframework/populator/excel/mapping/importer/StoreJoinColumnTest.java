@@ -60,7 +60,7 @@ public class StoreJoinColumnTest extends DefaultExcelTestDataCase {
         FieldAnalyzer fieldAnalyzer = new FieldAnalyzer(JpaHibernateSchemaMapper.usingNamingStrategyOf(getEntityManagerFactory()));
         PropertyDefinition joinColumn = fieldAnalyzer.analyzeField(new PropertyReference(persistentClass, "customer")).build();
 
-        new StoreExcelRecordValue(new ValueConversionService()).storeValue(excel, classDefinition, joinColumn, rowPosition, excelRow);
+        new StoreExcelRecordValue(ValueConversionService.defaultConversions()).storeValue(excel, classDefinition, joinColumn, rowPosition, excelRow);
         assertTrue(excelRow.getValueMap().containsKey(joinColumn));
     }
 

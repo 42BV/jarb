@@ -48,7 +48,7 @@ public class StoreExcelRecordValueTest extends DefaultExcelTestDataCase {
         FieldAnalyzer fieldAnalyzer = new FieldAnalyzer(JpaHibernateSchemaMapper.usingNamingStrategyOf(getEntityManagerFactory()));
         PropertyDefinition columnDefinition = fieldAnalyzer.analyzeField(new PropertyReference(Employee.class, "projects")).build();
         excelRow = new ExcelRow(Employee.class);
-        new StoreExcelRecordValue(new ValueConversionService()).storeValue(excel, classDefinition, columnDefinition, rowPosition, excelRow);
+        new StoreExcelRecordValue(ValueConversionService.defaultConversions()).storeValue(excel, classDefinition, columnDefinition, rowPosition, excelRow);
         assertTrue(excelRow.getValueMap().containsKey(columnDefinition));
     }
 

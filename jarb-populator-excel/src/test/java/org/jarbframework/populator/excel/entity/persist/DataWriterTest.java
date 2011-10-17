@@ -74,7 +74,7 @@ public class DataWriterTest extends DefaultExcelTestDataCase {
         classDefinitionList.add(project);
         classDefinitionList.add(sla);
 
-        parseExcelMap = new ExcelImporter(new ValueConversionService()).parseExcel(excel, classDefinitionList);
+        parseExcelMap = new ExcelImporter(ValueConversionService.defaultConversions()).parseExcel(excel, classDefinitionList);
         DataWriter.saveEntity(toRegistry(parseExcelMap), getEntityManagerFactory());
     }
 
@@ -95,7 +95,7 @@ public class DataWriterTest extends DefaultExcelTestDataCase {
         classDefinitionList.add(vehicle);
         //  classDefinitionList.add(project);
 
-        parseExcelMap = new ExcelImporter(new ValueConversionService()).parseExcel(excel, classDefinitionList);
+        parseExcelMap = new ExcelImporter(ValueConversionService.defaultConversions()).parseExcel(excel, classDefinitionList);
         DataWriter.saveEntity(toRegistry(parseExcelMap), getEntityManagerFactory());
     }
 

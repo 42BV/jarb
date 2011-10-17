@@ -62,7 +62,7 @@ public class ExcelDatabasePopulator implements DatabasePopulator {
     }
 
     private ValueConversionService buildValueConversionService() {
-        return conversionService != null ? new ValueConversionService(conversionService) : new ValueConversionService();
+        return conversionService != null ? new ValueConversionService(conversionService) : ValueConversionService.defaultConversions();
     }
 
     /**

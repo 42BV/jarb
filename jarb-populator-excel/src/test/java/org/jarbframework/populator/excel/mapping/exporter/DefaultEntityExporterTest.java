@@ -7,7 +7,6 @@ import static org.junit.Assert.assertTrue;
 import org.jarbframework.populator.excel.DefaultExcelTestDataCase;
 import org.jarbframework.populator.excel.entity.EntityRegistry;
 import org.jarbframework.populator.excel.mapping.ValueConversionService;
-import org.jarbframework.populator.excel.mapping.exporter.DefaultEntityExporter;
 import org.jarbframework.populator.excel.metamodel.EntityDefinition;
 import org.jarbframework.populator.excel.metamodel.MetaModel;
 import org.jarbframework.populator.excel.metamodel.generator.MetaModelGenerator;
@@ -28,13 +27,13 @@ import domain.entities.VeryImportantCustomer;
 public class DefaultEntityExporterTest extends DefaultExcelTestDataCase {
     private DefaultEntityExporter exporter;
     private EntityRegistry registry;
-    
+
     private MetaModelGenerator metamodelGenerator;
     private MetaModel metamodel;
 
     @Before
     public void setUpExporter() {
-        exporter = new DefaultEntityExporter(new ValueConversionService());
+        exporter = new DefaultEntityExporter(ValueConversionService.defaultConversions());
         registry = new EntityRegistry();
         metamodelGenerator = getExcelDataManagerFactory().buildMetamodelGenerator();
         metamodel = metamodelGenerator.generate();
@@ -48,11 +47,11 @@ public class DefaultEntityExporterTest extends DefaultExcelTestDataCase {
         Sheet vehiclesSheet = workbook.getSheet("vehicles");
         EntityDefinition<? super CompanyVehicle> vehiclesDefinition = metamodel.entity(CompanyVehicle.class);
         // Each column should be stored inside the workbook
-        for(String columnName : vehiclesDefinition.getColumnNames()) {
+        for (String columnName : vehiclesDefinition.getColumnNames()) {
             assertTrue(vehiclesSheet.containsColumn(columnName));
         }
     }
-    
+
     @Test
     public void testDiscriminatorCustomColumn() {
         CompanyCar car = new CompanyCar("bugatti", 999999D, 0, Gearbox.MANUAL, true);
@@ -63,7 +62,7 @@ public class DefaultEntityExporterTest extends DefaultExcelTestDataCase {
         String carDiscriminatorValue = vehiclesDefinition.getDiscriminatorValue(CompanyCar.class);
         assertEquals(carDiscriminatorValue, vehiclesSheet.getValueAt(1, "type"));
     }
-    
+
     @Test
     public void testValueColumns() {
         CompanyCar car = new CompanyCar("bugatti", 999999D, 42, Gearbox.MANUAL, true);
@@ -76,7 +75,7 @@ public class DefaultEntityExporterTest extends DefaultExcelTestDataCase {
         assertEquals("MANUAL", vehiclesSheet.getValueAt(1, "gearbox"));
         assertEquals(Boolean.TRUE, vehiclesSheet.getValueAt(1, "airbags"));
     }
-    
+
     @Test
     public void testJoinColumn() {
         CompanyCar car = new CompanyCar("bugatti", 999999D, 42, Gearbox.MANUAL, true);
@@ -88,7 +87,7 @@ public class DefaultEntityExporterTest extends DefaultExcelTestDataCase {
         Object carIdentifier = workbook.getSheet("vehicles").getValueAt(1, 0);
         assertEquals(carIdentifier, workbook.getSheet("employees").getValueAt(1, "company_vehicle_id"));
     }
-    
+
     @Test
     public void testJoinTable() {
         BusinessRelationshipGift gift = new BusinessRelationshipGift();
@@ -110,7 +109,7 @@ public class DefaultEntityExporterTest extends DefaultExcelTestDataCase {
         assertEquals(customerId, joinSheet.getValueAt(2, "customer_id"));
         assertEquals(workbook.getSheet("gifts").getValueAt(2, 0), joinSheet.getValueAt(2, "gift_id"));
     }
-    
+
     @Test
     public void testEmbeddable() {
         Employee employee = new Employee();

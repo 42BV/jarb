@@ -69,7 +69,7 @@ public class StoreJoinTableTest {
 
         rowPosition = 3;
         assertFalse(excelRow.getValueMap().containsKey(joinTable));
-        new StoreExcelRecordValue(new ValueConversionService()).storeValue(excel, classDefinition, joinTable, rowPosition, excelRow);
+        new StoreExcelRecordValue(ValueConversionService.defaultConversions()).storeValue(excel, classDefinition, joinTable, rowPosition, excelRow);
         assertTrue(excelRow.getValueMap().containsKey(joinTable));
 
     }

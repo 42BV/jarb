@@ -30,7 +30,7 @@ public class ExcelDataManagerFactory {
     private ValueConversionService conversionService;
 
     public ExcelDataManagerFactory(EntityManagerFactory entityManagerFactory) {
-        this(entityManagerFactory, new ValueConversionService());
+        this(entityManagerFactory, ValueConversionService.defaultConversions());
     }
 
     public ExcelDataManagerFactory(EntityManagerFactory entityManagerFactory, ValueConversionService conversionService) {
