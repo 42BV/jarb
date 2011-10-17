@@ -46,13 +46,6 @@
 			<email>jeroen.van.schagen@42.nl</email>
 		</developer>
 	</developers>
-    
-    <distributionManagement>
-        <snapshotRepository>
-            <id>snapshot.nidera</id>
-            <url>http://nidrtd58.nidera.nl:8081/nexus/content/repositories/snapshots/</url>
-        </snapshotRepository>
-    </distributionManagement>
 
 	<scm>
 		<url>https://github.com/42BV/jarb</url>
