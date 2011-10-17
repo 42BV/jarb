@@ -11,7 +11,6 @@ import org.jarbframework.populator.excel.workbook.Sheet;
 import org.jarbframework.populator.excel.workbook.Workbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeanUtils;
 
 /**
  * Parses through Excel data. Can create a set of columnDefinitions and add to a columnDefinition.
@@ -76,26 +75,11 @@ public final class ExcelImporter {
         String discriminatorColumnName = classDefinition.getDiscriminatorColumnName();
         for (Integer rowPosition = 1; rowPosition <= sheet.getLastRowNumber(); rowPosition++) {
             LOGGER.debug("Importing row {}", rowPosition);
-            ExcelRow excelRow = createFittingExcelRow(sheet, classDefinition, discriminatorColumnName, rowPosition);
+            ExcelRow excelRow = new ExcelRow(determineEntityClass(sheet, classDefinition, discriminatorColumnName, rowPosition));
             storeExcelRecordByColumnDefinitions(excel, classDefinition, rowPosition, excelRow);
             putCreatedInstance(sheet, classDefinition, createdInstances, rowPosition, excelRow);
         }
         return createdInstances;
-    }
-
-    /**
-     * Used to create the right type of ExcelRow, if columns from subclasses are present, the subclass must be instantiated.
-     * @param sheet Excel file needed to get the Discriminator value
-     * @param classDefinition ClassDefinition needed to get the Discriminator column
-     * @param discriminatorColumnName The discriminator's column name
-     * @param rowPosition The rowPosition in the Excel file (0 based) 
-     * @return An ExcelRecord of the right type
-     * @throws InstantiationException Thrown when function is used on a class that cannot be instantiated (abstract or interface)
-     * @throws IllegalAccessException Thrown when function does not have access to the definition of the specified class, field, method or constructor 
-     */
-    private ExcelRow createFittingExcelRow(final Sheet sheet, final EntityDefinition<?> classDefinition, String discriminatorColumnName, Integer rowPosition) {
-        Class<?> entityClass = determineEntityClass(sheet, classDefinition, discriminatorColumnName, rowPosition);
-        return new ExcelRow(BeanUtils.instantiateClass(entityClass));
     }
 
     private Class<?> determineEntityClass(final Sheet sheet, final EntityDefinition<?> classDefinition, String discriminatorColumnName, Integer rowPosition) {
@@ -114,13 +98,6 @@ public final class ExcelImporter {
         return entityClass;
     }
 
-    /**
-     * Returns the discriminator value from the Excel sheet.
-     * @param sheet Excel file to get the value from
-     * @param rowPosition Row position (0-based)
-     * @param discriminatorPosition Column position (0-based)
-     * @return The value from the discriminator column in the Excel sheet
-     */
     private String getDiscriminatorValueFromExcelFile(final Sheet sheet, Integer rowPosition, Integer discriminatorPosition) {
         String discriminatorValue = null;
         if (discriminatorPosition != null) {

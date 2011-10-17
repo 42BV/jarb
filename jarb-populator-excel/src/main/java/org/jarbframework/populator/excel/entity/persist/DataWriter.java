@@ -23,7 +23,7 @@ import org.slf4j.LoggerFactory;
  * @author Sander Benschop
  */
 class DataWriter {
-    private static final Logger LOGGER = LoggerFactory.getLogger(DataWriter.class);
+    private static final Logger logger = LoggerFactory.getLogger(DataWriter.class);
 
     /**
      * Private constructor.
@@ -45,14 +45,16 @@ class DataWriter {
         Collections.sort(entities, new ObjectClassInstantationComparator());
 
         entityTransaction.begin();
-        Set<Object> alreadySaved = new HashSet<Object>();
         for (Object entity : entities) {
             entity = new ReferentialPreparement(entityManager).prepareEntityReferences(entity);
             Object identifier = JpaUtils.getIdentifier(entity, entityManagerFactory);
-            LOGGER.info("Persisting entity '{}'.", entity);
+            logger.debug("Persisting entity '{}'...", entity);
             if (identifier == null || entityManager.find(entity.getClass(), identifier) == null) {
-                alreadySaved.add(entity);
-                entityManager.merge(entity);
+                try {
+                    entityManager.merge(entity);
+                } catch (RuntimeException e) {
+                    logger.error("Could not persist entity '{}'.", entity, e);
+                }
             }
         }
         entityTransaction.commit();
@@ -68,13 +70,13 @@ class DataWriter {
         return instanceSet;
     }
 
-    // Compares two objects based on class name
     private static class ObjectClassInstantationComparator implements Comparator<Object> {
-        /** {@inheritDoc} */
+
         @Override
         public int compare(Object left, Object right) {
             return left.getClass().getName().compareTo(right.getClass().getName());
         }
+
     }
 
 }

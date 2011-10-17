@@ -4,6 +4,8 @@ import org.jarbframework.populator.excel.mapping.CouldNotConvertException;
 import org.jarbframework.populator.excel.mapping.ValueConversionService;
 import org.jarbframework.populator.excel.metamodel.EntityDefinition;
 import org.jarbframework.populator.excel.metamodel.PropertyDefinition;
+import org.jarbframework.populator.excel.metamodel.PropertyNode;
+import org.jarbframework.populator.excel.metamodel.PropertyPath;
 import org.jarbframework.populator.excel.workbook.Sheet;
 import org.jarbframework.populator.excel.workbook.Workbook;
 import org.jarbframework.utils.bean.BeanProperties;
@@ -11,6 +13,7 @@ import org.jarbframework.utils.bean.ModifiableBean;
 import org.jarbframework.utils.bean.PropertyReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 
 /**
  * Stores the value of a regular Excel column.
@@ -48,9 +51,23 @@ public final class StoreColumn {
         if (propertyAccessor.isWritableProperty(columnDefinition.getName())) {
             setExcelRowFieldValue(excelRow.getCreatedInstance(), columnDefinition.getName(), cellValue);
         } else if (columnDefinition.isEmbeddedAttribute()) {
-            Object embeddedField = columnDefinition.getEmbeddablePath().traverse(excelRow.getCreatedInstance());
+            Object embeddedField = getOrCreatePathLeaf(excelRow.getCreatedInstance(), columnDefinition.getEmbeddablePath());
             setExcelRowFieldValue(embeddedField, columnDefinition.getName(), cellValue);
         }
+    }
+
+    private Object getOrCreatePathLeaf(Object root, PropertyPath path) {
+        Object current = root;
+        for (PropertyNode node : path) {
+            ModifiableBean<?> modifiableBean = ModifiableBean.wrap(current);
+            Object value = modifiableBean.getPropertyValue(node.getName());
+            if (value == null) {
+                value = BeanUtils.instantiateClass(node.getField().getType());
+                modifiableBean.setPropertyValue(node.getName(), value);
+            }
+            current = value;
+        }
+        return current;
     }
 
     /**
