@@ -36,11 +36,13 @@ public class ValueConversionService {
      * @return converted source value
      */
     public <T> T convert(Object source, Class<T> targetType) {
+        if (source == null) {
+            return null;
+        }
         try {
             return genericConversionService.convert(source, targetType);
         } catch (ConversionFailedException e) {
-            // Convert the spring-specific exception into our own format
-            throw new CouldNotConvertException(source, targetType, e.getCause());
+            throw new CouldNotConvertException(source, e.getSourceType().getType(), e.getTargetType().getType(), e.getCause());
         }
     }
 

@@ -1,6 +1,7 @@
 package org.jarbframework.populator.excel.mapping;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -22,6 +23,11 @@ public class ValueConversionServiceTest {
         assertTrue(conversionService.convert("ja", Boolean.class));
     }
 
+    @Test
+    public void testConvertNull() {
+        assertNull(conversionService.convert(null, Double.class));
+    }
+
     /**
      * Invalid conversions result in a runtime exception.
      */
@@ -33,6 +39,7 @@ public class ValueConversionServiceTest {
         } catch (CouldNotConvertException e) {
             assertEquals(NumberFormatException.class, e.getCause().getClass());
             assertEquals(Double.NaN, e.getSource());
+            assertEquals(Double.class, e.getSourceType());
             assertEquals(BigDecimal.class, e.getTargetType());
         }
     }
