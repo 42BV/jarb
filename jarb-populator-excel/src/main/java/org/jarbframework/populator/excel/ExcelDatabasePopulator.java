@@ -1,12 +1,13 @@
 package org.jarbframework.populator.excel;
 
+import static org.jarbframework.populator.excel.mapping.ValueConversionService.defaultConversions;
+
 import javax.persistence.EntityManagerFactory;
 
 import org.jarbframework.populator.ConditionalDatabasePopulator;
 import org.jarbframework.populator.DatabasePopulator;
 import org.jarbframework.populator.condition.ResourceExistsCondition;
 import org.jarbframework.populator.excel.mapping.ValueConversionService;
-import org.springframework.core.convert.support.GenericConversionService;
 import org.springframework.core.io.Resource;
 import org.springframework.util.Assert;
 
@@ -17,7 +18,7 @@ import org.springframework.util.Assert;
  * @since 7-6-2011
  */
 public class ExcelDatabasePopulator implements DatabasePopulator {
-    private GenericConversionService conversionService;
+    private ValueConversionService valueConversionService;
     private EntityManagerFactory entityManagerFactory;
     private Resource excelResource;
 
@@ -29,8 +30,8 @@ public class ExcelDatabasePopulator implements DatabasePopulator {
         this.entityManagerFactory = entityManagerFactory;
     }
 
-    public void setConversionService(GenericConversionService conversionService) {
-        this.conversionService = conversionService;
+    public void setValueConversionService(ValueConversionService valueConversionService) {
+        this.valueConversionService = valueConversionService;
     }
 
     /**
@@ -57,12 +58,12 @@ public class ExcelDatabasePopulator implements DatabasePopulator {
         Assert.state(excelResource != null, "Excel resource cannot be null");
         Assert.state(entityManagerFactory != null, "Entity manager factory cannot be null");
 
-        ExcelDataManager excelDataManager = new ExcelDataManagerFactory(entityManagerFactory, buildValueConversionService()).build();
-        excelDataManager.persist(excelDataManager.loadWorkbook(excelResource));
+        ExcelDataManager excelDataManager = new ExcelDataManagerFactory(entityManagerFactory, loadValueConversionService()).build();
+        excelDataManager.loadWorkbook(excelResource).persist();
     }
 
-    private ValueConversionService buildValueConversionService() {
-        return conversionService != null ? new ValueConversionService(conversionService) : ValueConversionService.defaultConversions();
+    private ValueConversionService loadValueConversionService() {
+        return valueConversionService != null ? valueConversionService : defaultConversions();
     }
 
     /**

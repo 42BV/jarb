@@ -135,15 +135,15 @@ public class ExcelDataManager {
             }
             return this;
         }
-    }
 
-    /**
-     * Persist the workbook entities inside our database.
-     * @param workbookLoader responsible for loading the entities
-     * @return this instance, for chaining
-     */
-    public EntityRegistry persist(WorkbookLoader workbookLoader) {
-        return persist(workbookLoader.entities());
+        /**
+         * Persist all loaded entities inside our database.
+         * @return this instance, for chaining
+         */
+        public WorkbookLoader persist() {
+            ExcelDataManager.this.persist(entities());
+            return this;
+        }
     }
 
     /**

@@ -43,16 +43,16 @@ public class ExcelDataManagerFactory {
      * @return fresh instance of excel test data
      */
     public ExcelDataManager build() {
-        ExcelDataManager etd = new ExcelDataManager();
-        etd.setExcelParser(buildExcelParser());
-        etd.setExcelWriter(buildExcelWriter());
-        etd.setEntityImporter(buildEntityImporter());
-        etd.setEntityExporter(buildEntityExporter());
-        etd.setEntityReader(buildEntityReader());
-        etd.setEntityWriter(buildEntityWriter());
-        etd.setExcelValidator(buildExcelValidator());
-        etd.setMetamodelGenerator(buildMetamodelGenerator());
-        return etd;
+        ExcelDataManager excelDataManager = new ExcelDataManager();
+        excelDataManager.setExcelParser(buildExcelParser());
+        excelDataManager.setExcelWriter(buildExcelWriter());
+        excelDataManager.setEntityImporter(buildEntityImporter());
+        excelDataManager.setEntityExporter(buildEntityExporter());
+        excelDataManager.setEntityReader(buildEntityReader());
+        excelDataManager.setEntityWriter(buildEntityWriter());
+        excelDataManager.setExcelValidator(buildExcelValidator());
+        excelDataManager.setMetamodelGenerator(buildMetamodelGenerator());
+        return excelDataManager;
     }
 
     public WorkbookParser buildExcelParser() {

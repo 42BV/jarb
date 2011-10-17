@@ -6,7 +6,6 @@ import java.io.FileNotFoundException;
 
 import org.jarbframework.populator.excel.DefaultExcelTestDataCase;
 import org.jarbframework.populator.excel.entity.EntityRegistry;
-import org.jarbframework.populator.excel.entity.query.JpaEntityReader;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -22,7 +21,7 @@ public class JpaEntityReaderTest extends DefaultExcelTestDataCase {
 
     @Test
     public void testFetchAll() throws FileNotFoundException {
-        getExcelDataManager().persist(getExcelDataManager().loadWorkbook("src/test/resources/Excel.xls"));
+        getExcelDataManager().loadWorkbook("src/test/resources/Excel.xls").persist();
         EntityRegistry registry = entityReader.readAll();
         assertFalse(registry.withClass(Project.class).isEmpty());
     }

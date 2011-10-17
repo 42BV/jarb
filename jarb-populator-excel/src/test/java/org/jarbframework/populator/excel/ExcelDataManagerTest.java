@@ -9,8 +9,6 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
-import org.jarbframework.populator.excel.ExcelDataManager;
-import org.jarbframework.populator.excel.InvalidWorkbookException;
 import org.jarbframework.populator.excel.entity.EntityRegistry;
 import org.jarbframework.populator.excel.workbook.validator.WorkbookValidationResult;
 import org.junit.Before;
@@ -92,7 +90,7 @@ public class ExcelDataManagerTest extends DefaultExcelTestDataCase {
      */
     @Test
     public void testPersistWorkbook() throws FileNotFoundException {
-        excelData.persist(excelData.loadWorkbook("src/test/resources/Excel.xls"));
+        excelData.loadWorkbook("src/test/resources/Excel.xls").persist();
     }
 
     // Building
