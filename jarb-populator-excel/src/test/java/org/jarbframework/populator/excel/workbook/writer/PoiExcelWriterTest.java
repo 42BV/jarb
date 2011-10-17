@@ -15,7 +15,6 @@ import org.jarbframework.populator.excel.workbook.Row;
 import org.jarbframework.populator.excel.workbook.Sheet;
 import org.jarbframework.populator.excel.workbook.StringValue;
 import org.jarbframework.populator.excel.workbook.Workbook;
-import org.jarbframework.populator.excel.workbook.writer.PoiWorkbookWriter;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -35,6 +34,7 @@ public class PoiExcelWriterTest extends DefaultExcelTestDataCase {
         workbook.createSheet("second");
         workbook.createSheet("third");
         writer.write(workbook, createOutputStream());
+
         Workbook result = readGeneratedFile();
         assertEquals(3, result.getSheetCount());
         assertTrue(result.containsSheet("first"));
@@ -48,6 +48,7 @@ public class PoiExcelWriterTest extends DefaultExcelTestDataCase {
         Row row = sheet.createRow();
         row.getCellAt(0).setCellValue(new StringValue("haha"));
         writer.write(workbook, createOutputStream());
+
         Sheet result = readGeneratedFile().getSheet("test");
         assertEquals("haha", result.getValueAt(0, 0));
     }
@@ -59,6 +60,7 @@ public class PoiExcelWriterTest extends DefaultExcelTestDataCase {
         row.getCellAt(0).setCellValue(new BooleanValue(true));
         row.getCellAt(1).setCellValue(new BooleanValue(false));
         writer.write(workbook, createOutputStream());
+
         Sheet result = readGeneratedFile().getSheet("test");
         assertEquals(Boolean.TRUE, result.getValueAt(0, 0));
         assertEquals(Boolean.FALSE, result.getValueAt(0, 1));
@@ -71,6 +73,7 @@ public class PoiExcelWriterTest extends DefaultExcelTestDataCase {
         Date date = new Date();
         row.getCellAt(0).setCellValue(new DateValue(date));
         writer.write(workbook, createOutputStream());
+
         Sheet result = readGeneratedFile().getSheet("test");
         assertEquals(date, result.getValueAt(0, 0));
     }
@@ -82,6 +85,7 @@ public class PoiExcelWriterTest extends DefaultExcelTestDataCase {
         Double number = Double.valueOf(42);
         row.getCellAt(0).setCellValue(new NumericValue(number));
         writer.write(workbook, createOutputStream());
+
         Sheet result = readGeneratedFile().getSheet("test");
         assertEquals(number, result.getValueAt(0, 0));
     }
@@ -94,8 +98,9 @@ public class PoiExcelWriterTest extends DefaultExcelTestDataCase {
         row.getCellAt(1).setCellValue(new NumericValue(2D));
         row.getCellAt(2).setCellValue(new FormulaValue("SUM(A1:B1)"));
         writer.write(workbook, createOutputStream());
+
         Sheet result = readGeneratedFile().getSheet("test");
-        assertEquals("SUM(A1:B1)", result.getValueAt(0, 2));
+        assertEquals(Double.valueOf(3), result.getValueAt(0, 2));
     }
 
     @Test
@@ -104,6 +109,7 @@ public class PoiExcelWriterTest extends DefaultExcelTestDataCase {
         Row row = sheet.createRow();
         assertEquals(0, row.getRowNo());
         writer.write(workbook, createOutputStream());
+
         Sheet result = readGeneratedFile().getSheet("test");
         assertNull(result.getValueAt(0, 0));
     }

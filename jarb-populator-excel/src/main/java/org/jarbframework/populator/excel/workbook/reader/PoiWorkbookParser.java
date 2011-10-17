@@ -10,6 +10,7 @@ import java.io.InputStream;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+import org.apache.poi.ss.usermodel.CreationHelper;
 import org.apache.poi.ss.usermodel.DateUtil;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.jarbframework.populator.excel.workbook.BooleanValue;
@@ -17,7 +18,6 @@ import org.jarbframework.populator.excel.workbook.Cell;
 import org.jarbframework.populator.excel.workbook.CellValue;
 import org.jarbframework.populator.excel.workbook.DateValue;
 import org.jarbframework.populator.excel.workbook.EmptyValue;
-import org.jarbframework.populator.excel.workbook.FormulaValue;
 import org.jarbframework.populator.excel.workbook.NumericValue;
 import org.jarbframework.populator.excel.workbook.Row;
 import org.jarbframework.populator.excel.workbook.Sheet;
@@ -37,8 +37,7 @@ public class PoiWorkbookParser implements WorkbookParser {
     @Override
     public Workbook parse(InputStream is) {
         try {
-            org.apache.poi.ss.usermodel.Workbook workbook = createWorkbook(is);
-            return parseWorkbook(workbook);
+            return parseWorkbook(WorkbookFactory.create(is));
         } catch (InvalidFormatException e) {
             throw new RuntimeException(e);
         } catch (IOException e) {
@@ -48,85 +47,68 @@ public class PoiWorkbookParser implements WorkbookParser {
         }
     }
 
-    /**
-     * Build a new workbook, used to access data from an excel file.
-     * @param is stream to our excel file
-     * @return POI workbook instance to that excel
-     * @throws InvalidFormatException whenever the file is of an invalid format
-     * @throws IOException whenever another type of read exception occurs
-     */
-    protected org.apache.poi.ss.usermodel.Workbook createWorkbook(InputStream is) throws InvalidFormatException, IOException {
-        return WorkbookFactory.create(is);
-    }
-
-    /**
-     * Parse an Apache POI workbook into our own {@link Workbook} instance.
-     * @param poiWorkbook workbook retrieved from POI
-     * @return new workbook instance, containing all sheets
-     */
     private Workbook parseWorkbook(org.apache.poi.ss.usermodel.Workbook poiWorkbook) {
         Workbook workbook = new Workbook();
         for (int sheetNo = 0; sheetNo < poiWorkbook.getNumberOfSheets(); sheetNo++) {
             org.apache.poi.ss.usermodel.Sheet poiSheet = poiWorkbook.getSheetAt(sheetNo);
-            Sheet sheet = workbook.createSheet(poiSheet.getSheetName());
-            copyRows(sheet, poiSheet);
+            parseSheet(poiSheet, workbook);
         }
         return workbook;
     }
 
-    /**
-     * Parse an Apache POI sheet into our own {@link Sheet} instance.
-     * @param sheet sheet model that contains all content
-     * @param poiSheet sheet retrieved from POI
-     * @return new sheet instance, containing all rows
-     */
-    private void copyRows(Sheet sheet, org.apache.poi.ss.usermodel.Sheet poiSheet) {
+    private Sheet parseSheet(org.apache.poi.ss.usermodel.Sheet poiSheet, Workbook workbook) {
+        Sheet sheet = workbook.createSheet(poiSheet.getSheetName());
         for (int rowNo = 0; rowNo <= poiSheet.getLastRowNum(); rowNo++) {
             org.apache.poi.ss.usermodel.Row poiRow = poiSheet.getRow(rowNo);
-            if (poiRow != null) { // Row is 'null' when not a single cell has been defined
-                Row row = sheet.getRowAt(rowNo);
-                for (int colNo = 0; colNo < poiRow.getLastCellNum(); colNo++) {
-                    Cell cell = row.getCellAt(colNo);
-                    cell.setCellValue(parseValue(poiRow.getCell(colNo)));
-                }
+            if (poiRow != null) {
+                parseRow(poiRow, sheet);
             }
         }
+        return sheet;
     }
 
-    /**
-     * Parse an Apache POI cell value object, and type, into our own {@link CellValue} instance.
-     * @param poiCell cell, including its value, as retrieved from POI
-     * @return new cell value instance, never {@code null}
-     */
+    private Row parseRow(org.apache.poi.ss.usermodel.Row poiRow, Sheet sheet) {
+        Row row = sheet.getRowAt(poiRow.getRowNum());
+        for (int colNo = 0; colNo < poiRow.getLastCellNum(); colNo++) {
+            org.apache.poi.ss.usermodel.Cell poiCell = poiRow.getCell(colNo);
+            if (poiCell != null) {
+                parseCell(poiCell, row);
+            }
+        }
+        return row;
+    }
+
+    private Cell parseCell(org.apache.poi.ss.usermodel.Cell poiCell, Row row) {
+        Cell cell = row.getCellAt(poiCell.getColumnIndex());
+        cell.setCellValue(parseValue(poiCell));
+        return cell;
+    }
+
     private CellValue parseValue(org.apache.poi.ss.usermodel.Cell poiCell) {
-        CellValue value = null;
-        if (poiCell == null) {
-            // Unknown cells have an empty value
-            value = new EmptyValue();
-        } else {
+        CellValue cellValue = new EmptyValue();
+        if (poiCell != null) {
             switch (poiCell.getCellType()) {
             case CELL_TYPE_STRING:
-                value = new StringValue(poiCell.getRichStringCellValue().getString());
+                cellValue = new StringValue(poiCell.getRichStringCellValue().getString());
                 break;
             case CELL_TYPE_NUMERIC:
                 if (DateUtil.isCellDateFormatted(poiCell)) {
-                    value = new DateValue(poiCell.getDateCellValue());
+                    cellValue = new DateValue(poiCell.getDateCellValue());
                 } else {
-                    value = new NumericValue(poiCell.getNumericCellValue());
+                    cellValue = new NumericValue(poiCell.getNumericCellValue());
                 }
                 break;
             case CELL_TYPE_BOOLEAN:
-                value = new BooleanValue(poiCell.getBooleanCellValue());
+                cellValue = new BooleanValue(poiCell.getBooleanCellValue());
                 break;
             case CELL_TYPE_FORMULA:
-                value = new FormulaValue(poiCell.getCellFormula());
-                break;
-            default:
-                // Remaining cell types (blank, error) have an empty value
-                value = new EmptyValue();
+                CreationHelper creationHelper = poiCell.getRow().getSheet().getWorkbook().getCreationHelper();
+                creationHelper.createFormulaEvaluator().evaluateInCell(poiCell);
+                cellValue = parseValue(poiCell);
                 break;
             }
         }
-        return value;
+        return cellValue;
     }
+
 }

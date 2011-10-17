@@ -7,9 +7,6 @@ public class FormulaValue implements CellValue {
         this.formula = formula;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getValue() {
         return getFormula();
