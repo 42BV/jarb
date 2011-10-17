@@ -54,7 +54,7 @@ public class ExcelDataManager {
      * @param is input stream to the excel resource
      * @return loaded instance of the workbook
      */
-    public WorkbookLoader loadWorkbook(InputStream is) {
+    public WorkbookLoader load(InputStream is) {
         Workbook workbook = excelParser.parse(notNull(is, "Workbook input stream cannot be null"));
         return new WorkbookLoader(workbook);
     }
@@ -65,8 +65,8 @@ public class ExcelDataManager {
      * @return loaded instance of the workbook
      * @throws IOException if the stream could not be opened
      */
-    public WorkbookLoader loadWorkbook(Resource resource) throws IOException {
-        return loadWorkbook(notNull(resource, "Workbook resource cannot be null").getInputStream());
+    public WorkbookLoader load(Resource resource) throws IOException {
+        return load(notNull(resource, "Workbook resource cannot be null").getInputStream());
     }
 
     /**
@@ -77,8 +77,8 @@ public class ExcelDataManager {
      * directory rather than a regular file, or for some other reason
      * cannot be opened for reading. 
      */
-    public WorkbookLoader loadWorkbook(String fileName) throws FileNotFoundException {
-        return loadWorkbook(new FileInputStream(hasText(fileName, "Workbook file name cannot be empty")));
+    public WorkbookLoader load(String fileName) throws FileNotFoundException {
+        return load(new FileInputStream(hasText(fileName, "Workbook file name cannot be empty")));
     }
 
     /**
@@ -159,8 +159,8 @@ public class ExcelDataManager {
      * Start building a new Excel workbook.
      * @return new Excel workbook builder
      */
-    public WorkbookBuilder newWorkbook() {
-        return newWorkbook(new EntityRegistry());
+    public WorkbookBuilder buildNew() {
+        return buildWith(new EntityRegistry());
     }
 
     /**
@@ -168,7 +168,7 @@ public class ExcelDataManager {
      * @param entities the entities that should be included
      * @return new Excel workbook builder
      */
-    public WorkbookBuilder newWorkbook(EntityRegistry entities) {
+    public WorkbookBuilder buildWith(EntityRegistry entities) {
         return new WorkbookBuilder(entities);
     }
 

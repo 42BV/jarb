@@ -59,7 +59,7 @@ public class ExcelDatabasePopulator implements DatabasePopulator {
         Assert.state(entityManagerFactory != null, "Entity manager factory cannot be null");
 
         ExcelDataManager excelDataManager = new ExcelDataManagerFactory(entityManagerFactory, loadValueConversionService()).build();
-        excelDataManager.loadWorkbook(excelResource).persist();
+        excelDataManager.load(excelResource).persist();
     }
 
     private ValueConversionService loadValueConversionService() {

@@ -20,11 +20,11 @@ import domain.entities.CompanyVehicle;
 import domain.entities.CompanyVehicle.Gearbox;
 
 public class ExcelDataManagerTest extends DefaultExcelTestDataCase {
-    private ExcelDataManager excelData;
+    private ExcelDataManager excelDataManager;
 
     @Before
     public void setUp() {
-        excelData = getExcelDataManager();
+        excelDataManager = getExcelDataManager();
     }
 
     /**
@@ -32,7 +32,7 @@ public class ExcelDataManagerTest extends DefaultExcelTestDataCase {
      */
     @Test
     public void testLoadByInputStream() throws FileNotFoundException {
-        excelData.loadWorkbook(new FileInputStream("src/test/resources/Excel.xls")).continueIfValid();
+        excelDataManager.load(new FileInputStream("src/test/resources/Excel.xls")).continueIfValid();
     }
 
     /**
@@ -41,7 +41,7 @@ public class ExcelDataManagerTest extends DefaultExcelTestDataCase {
      */
     @Test
     public void testLoadByResource() throws IOException {
-        excelData.loadWorkbook(new ClassPathResource("Excel.xls")).continueIfValid();
+        excelDataManager.load(new ClassPathResource("Excel.xls")).continueIfValid();
     }
 
     /**
@@ -49,7 +49,7 @@ public class ExcelDataManagerTest extends DefaultExcelTestDataCase {
      */
     @Test
     public void testLoadByString() throws FileNotFoundException {
-        excelData.loadWorkbook("src/test/resources/Excel.xls").continueIfValid();
+        excelDataManager.load("src/test/resources/Excel.xls").continueIfValid();
     }
 
     // Validation
@@ -59,7 +59,7 @@ public class ExcelDataManagerTest extends DefaultExcelTestDataCase {
      */
     @Test
     public void testValidateWorkbook() throws FileNotFoundException {
-        WorkbookValidationResult validation = excelData.loadWorkbook("src/test/resources/Excel.xls").validate();
+        WorkbookValidationResult validation = excelDataManager.load("src/test/resources/Excel.xls").validate();
         assertNotNull("No workbook validation was returned", validation);
         assertFalse("Workbook should not contain errors", validation.hasViolations());
     }
@@ -72,7 +72,7 @@ public class ExcelDataManagerTest extends DefaultExcelTestDataCase {
     @Test
     public void testInvalidWorkbook() throws FileNotFoundException {
         try {
-            excelData.loadWorkbook("src/test/resources/ExcelVerification/missing_sheet.xls").entities();
+            excelDataManager.load("src/test/resources/ExcelVerification/missing_sheet.xls").entities();
             fail("Expected an exception as the loaded workbook has an invalid structure");
         } catch (InvalidWorkbookException e) {
             WorkbookValidationResult validation = e.getValidation();
@@ -90,15 +90,15 @@ public class ExcelDataManagerTest extends DefaultExcelTestDataCase {
      */
     @Test
     public void testPersistWorkbook() throws FileNotFoundException {
-        excelData.loadWorkbook("src/test/resources/Excel.xls").persist();
+        excelDataManager.load("src/test/resources/Excel.xls").persist();
     }
 
     // Building
 
     @Test
     public void testCreateWorkbookTemplate() throws FileNotFoundException {
-        excelData.newWorkbook().write("src/test/resources/excel/generated/NewExcelFile.xls");
-        WorkbookValidationResult validation = excelData.loadWorkbook("src/test/resources/excel/generated/NewExcelFile.xls").validate();
+        excelDataManager.buildNew().write("src/test/resources/excel/generated/NewExcelFile.xls");
+        WorkbookValidationResult validation = excelDataManager.load("src/test/resources/excel/generated/NewExcelFile.xls").validate();
         assertFalse("Created workbook template is not valid", validation.hasViolations());
     }
 
@@ -108,9 +108,9 @@ public class ExcelDataManagerTest extends DefaultExcelTestDataCase {
         bugatti.setId(42L);
 
         final String outputFilePath = "src/test/resources/excel/generated/NewExcelFileFromDatabase.xls";
-        excelData.newWorkbook().include(CompanyVehicle.class, 42L, bugatti).write(outputFilePath);
+        excelDataManager.buildNew().include(CompanyVehicle.class, 42L, bugatti).write(outputFilePath);
 
-        CompanyVehicle result = excelData.loadWorkbook(outputFilePath).entities().find(CompanyVehicle.class, bugatti.getId());
+        CompanyVehicle result = excelDataManager.load(outputFilePath).entities().find(CompanyVehicle.class, bugatti.getId());
         assertNotNull("Car was not maintained during store and load.", result);
         assertEquals(bugatti.getId(), result.getId());
     }
@@ -121,10 +121,10 @@ public class ExcelDataManagerTest extends DefaultExcelTestDataCase {
         bugatti.setId(42L);
 
         final String outputFilePath = "src/test/resources/excel/generated/Clone.xls";
-        EntityRegistry entities = excelData.loadWorkbook("src/test/resources/Excel.xls").entities();
-        excelData.newWorkbook(entities).include(CompanyVehicle.class, 42L, bugatti).write(outputFilePath);
+        EntityRegistry entities = excelDataManager.load("src/test/resources/Excel.xls").entities();
+        excelDataManager.buildWith(entities).include(CompanyVehicle.class, 42L, bugatti).write(outputFilePath);
 
-        CompanyVehicle result = excelData.loadWorkbook(outputFilePath).entities().find(CompanyVehicle.class, bugatti.getId());
+        CompanyVehicle result = excelDataManager.load(outputFilePath).entities().find(CompanyVehicle.class, bugatti.getId());
         assertNotNull("Car was not maintained during store and load.", result);
         assertEquals(bugatti.getId(), result.getId());
     }
