@@ -18,9 +18,13 @@ public class ValueConversionService {
 
     public static ValueConversionService defaultConversions() {
         GenericConversionService genericConversionService = ConversionServiceFactory.createDefaultConversionService();
-        genericConversionService.addConverter(new StringToBooleanConverter());
         ValueConversionService conversionService = new ValueConversionService(genericConversionService);
-        return conversionService;
+        return conversionService.registerDefaultConverters();
+    }
+
+    public ValueConversionService registerDefaultConverters() {
+        genericConversionService.addConverter(new StringToBooleanConverter());
+        return this;
     }
 
     /**
