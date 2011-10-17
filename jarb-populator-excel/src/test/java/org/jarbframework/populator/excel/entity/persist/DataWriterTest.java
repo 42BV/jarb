@@ -15,6 +15,7 @@ import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.jarbframework.populator.excel.DefaultExcelTestDataCase;
 import org.jarbframework.populator.excel.entity.EntityRegistry;
 import org.jarbframework.populator.excel.entity.EntityTable;
+import org.jarbframework.populator.excel.mapping.ValueConversionService;
 import org.jarbframework.populator.excel.mapping.importer.ExcelImporter;
 import org.jarbframework.populator.excel.mapping.importer.ExcelRow;
 import org.jarbframework.populator.excel.metamodel.EntityDefinition;
@@ -73,7 +74,7 @@ public class DataWriterTest extends DefaultExcelTestDataCase {
         classDefinitionList.add(project);
         classDefinitionList.add(sla);
 
-        parseExcelMap = ExcelImporter.parseExcel(excel, classDefinitionList);
+        parseExcelMap = new ExcelImporter(new ValueConversionService()).parseExcel(excel, classDefinitionList);
         DataWriter.saveEntity(toRegistry(parseExcelMap), getEntityManagerFactory());
     }
 
@@ -94,7 +95,7 @@ public class DataWriterTest extends DefaultExcelTestDataCase {
         classDefinitionList.add(vehicle);
         //  classDefinitionList.add(project);
 
-        parseExcelMap = ExcelImporter.parseExcel(excel, classDefinitionList);
+        parseExcelMap = new ExcelImporter(new ValueConversionService()).parseExcel(excel, classDefinitionList);
         DataWriter.saveEntity(toRegistry(parseExcelMap), getEntityManagerFactory());
     }
 

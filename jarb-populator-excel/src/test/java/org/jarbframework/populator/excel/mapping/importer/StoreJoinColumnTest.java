@@ -12,6 +12,7 @@ import javax.persistence.metamodel.Metamodel;
 
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.jarbframework.populator.excel.DefaultExcelTestDataCase;
+import org.jarbframework.populator.excel.mapping.ValueConversionService;
 import org.jarbframework.populator.excel.metamodel.EntityDefinition;
 import org.jarbframework.populator.excel.metamodel.PropertyDefinition;
 import org.jarbframework.populator.excel.metamodel.generator.ClassDefinitionsGenerator;
@@ -59,7 +60,7 @@ public class StoreJoinColumnTest extends DefaultExcelTestDataCase {
         FieldAnalyzer fieldAnalyzer = new FieldAnalyzer(JpaHibernateSchemaMapper.usingNamingStrategyOf(getEntityManagerFactory()));
         PropertyDefinition joinColumn = fieldAnalyzer.analyzeField(new PropertyReference(persistentClass, "customer")).build();
 
-        StoreExcelRecordValue.storeValue(excel, classDefinition, joinColumn, rowPosition, excelRow);
+        new StoreExcelRecordValue(new ValueConversionService()).storeValue(excel, classDefinition, joinColumn, rowPosition, excelRow);
         assertTrue(excelRow.getValueMap().containsKey(joinColumn));
     }
 

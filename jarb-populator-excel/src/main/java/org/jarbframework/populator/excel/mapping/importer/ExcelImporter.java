@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.jarbframework.populator.excel.mapping.ValueConversionService;
 import org.jarbframework.populator.excel.metamodel.EntityDefinition;
 import org.jarbframework.populator.excel.metamodel.PropertyDefinition;
 import org.jarbframework.populator.excel.workbook.Sheet;
@@ -21,8 +22,10 @@ import org.springframework.beans.BeanUtils;
 public final class ExcelImporter {
     private static final Logger LOGGER = LoggerFactory.getLogger(ExcelImporter.class);
 
-    /** Private constructor. */
-    private ExcelImporter() {
+    private StoreExcelRecordValue valueStorer;
+
+    public ExcelImporter(ValueConversionService conversionService) {
+        valueStorer = new StoreExcelRecordValue(conversionService);
     }
 
     /**
@@ -34,7 +37,7 @@ public final class ExcelImporter {
      * @throws IllegalAccessException Thrown when function does not have access to the definition of the specified class, field, method or constructor 
      * @throws NoSuchFieldException Thrown when a field is not available
      */
-    public static Map<EntityDefinition<?>, Map<Object, ExcelRow>> parseExcel(Workbook excel, Collection<EntityDefinition<?>> entities) {
+    public Map<EntityDefinition<?>, Map<Object, ExcelRow>> parseExcel(Workbook excel, Collection<EntityDefinition<?>> entities) {
         Map<EntityDefinition<?>, Map<Object, ExcelRow>> objectModel = new HashMap<EntityDefinition<?>, Map<Object, ExcelRow>>();
 
         for (EntityDefinition<?> classDefinition : entities) {
@@ -66,7 +69,7 @@ public final class ExcelImporter {
      * @throws IllegalAccessException Thrown when function does not have access to the definition of the specified class, field, method or constructor 
      * @throws NoSuchFieldException Thrown when a field is not available
      */
-    public static Map<Object, ExcelRow> parseWorksheet(final Workbook excel, final EntityDefinition<?> classDefinition) {
+    public Map<Object, ExcelRow> parseWorksheet(final Workbook excel, final EntityDefinition<?> classDefinition) {
         Map<Object, ExcelRow> createdInstances = new HashMap<Object, ExcelRow>();
 
         Sheet sheet = excel.getSheet(classDefinition.getTableName());
@@ -90,14 +93,12 @@ public final class ExcelImporter {
      * @throws InstantiationException Thrown when function is used on a class that cannot be instantiated (abstract or interface)
      * @throws IllegalAccessException Thrown when function does not have access to the definition of the specified class, field, method or constructor 
      */
-    private static ExcelRow createFittingExcelRow(final Sheet sheet, final EntityDefinition<?> classDefinition, String discriminatorColumnName,
-            Integer rowPosition) {
+    private ExcelRow createFittingExcelRow(final Sheet sheet, final EntityDefinition<?> classDefinition, String discriminatorColumnName, Integer rowPosition) {
         Class<?> entityClass = determineEntityClass(sheet, classDefinition, discriminatorColumnName, rowPosition);
         return new ExcelRow(BeanUtils.instantiateClass(entityClass));
     }
 
-    private static Class<?> determineEntityClass(final Sheet sheet, final EntityDefinition<?> classDefinition, String discriminatorColumnName,
-            Integer rowPosition) {
+    private Class<?> determineEntityClass(final Sheet sheet, final EntityDefinition<?> classDefinition, String discriminatorColumnName, Integer rowPosition) {
         Class<?> entityClass = classDefinition.getEntityClass();
         if (discriminatorColumnName != null) {
             WorksheetDefinition worksheetDefinition = WorksheetDefinition.analyzeWorksheet(classDefinition, sheet.getWorkbook());
@@ -120,7 +121,7 @@ public final class ExcelImporter {
      * @param discriminatorPosition Column position (0-based)
      * @return The value from the discriminator column in the Excel sheet
      */
-    private static String getDiscriminatorValueFromExcelFile(final Sheet sheet, Integer rowPosition, Integer discriminatorPosition) {
+    private String getDiscriminatorValueFromExcelFile(final Sheet sheet, Integer rowPosition, Integer discriminatorPosition) {
         String discriminatorValue = null;
         if (discriminatorPosition != null) {
             discriminatorValue = (String) sheet.getValueAt(rowPosition, discriminatorPosition);
@@ -136,8 +137,8 @@ public final class ExcelImporter {
      * @param rowPosition The rowPosition in the Excel file (0 based) 
      * @param excelRow An excelRow to store in the value map
      */
-    private static void putCreatedInstance(final Sheet sheet, final EntityDefinition<?> classDefinition, Map<Object, ExcelRow> createdInstances,
-            Integer rowPosition, ExcelRow excelRow) {
+    private void putCreatedInstance(final Sheet sheet, final EntityDefinition<?> classDefinition, Map<Object, ExcelRow> createdInstances, Integer rowPosition,
+            ExcelRow excelRow) {
         Object identifier = sheet.getValueAt(rowPosition, 0);
         if (identifier == null) {
             LOGGER.error("Could not store row #{} of {}, because the identifier is empty.", new Object[] { rowPosition, sheet.getName() });
@@ -158,10 +159,9 @@ public final class ExcelImporter {
      * @param excelRow The excelRecord to save the data to
      * @throws NoSuchFieldException Thrown if field cannot be found
      */
-    private static void storeExcelRecordByColumnDefinitions(final Workbook excel, final EntityDefinition<?> classDefinition, Integer rowPosition,
-            ExcelRow excelRow) {
+    private void storeExcelRecordByColumnDefinitions(final Workbook excel, final EntityDefinition<?> classDefinition, Integer rowPosition, ExcelRow excelRow) {
         for (PropertyDefinition columnDefinition : classDefinition.properties()) {
-            StoreExcelRecordValue.storeValue(excel, classDefinition, columnDefinition, rowPosition, excelRow);
+            valueStorer.storeValue(excel, classDefinition, columnDefinition, rowPosition, excelRow);
         }
     }
 }

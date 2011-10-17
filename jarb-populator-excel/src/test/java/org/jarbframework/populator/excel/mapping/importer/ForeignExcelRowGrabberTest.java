@@ -18,6 +18,7 @@ import javax.persistence.metamodel.Metamodel;
 
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.jarbframework.populator.excel.DefaultExcelTestDataCase;
+import org.jarbframework.populator.excel.mapping.ValueConversionService;
 import org.jarbframework.populator.excel.metamodel.EntityDefinition;
 import org.jarbframework.populator.excel.metamodel.generator.ClassDefinitionsGenerator;
 import org.jarbframework.populator.excel.workbook.Workbook;
@@ -59,7 +60,7 @@ public class ForeignExcelRowGrabberTest extends DefaultExcelTestDataCase {
         Key keyValue = new JoinColumnKey();
         keyValue.setForeignClass(Customer.class);
         keyValue.setKeyValue(6D);
-        objectModel = ExcelImporter.parseWorksheet(excel, classDefinition);
+        objectModel = new ExcelImporter(new ValueConversionService()).parseWorksheet(excel, classDefinition);
         assertEquals(persistentClass, ForeignExcelRowGrabber.getInstanceValue(keyValue, objectModel).getClass());
     }
 
@@ -86,7 +87,7 @@ public class ForeignExcelRowGrabberTest extends DefaultExcelTestDataCase {
         }
 
         key.setKeyValue(keyValueSet);
-        objectModel = ExcelImporter.parseWorksheet(excel, classDefinition);
+        objectModel = new ExcelImporter(new ValueConversionService()).parseWorksheet(excel, classDefinition);
         assertFalse(ForeignExcelRowGrabber.getInstanceValue(key, objectModel).equals(null));
     }
 
@@ -102,7 +103,7 @@ public class ForeignExcelRowGrabberTest extends DefaultExcelTestDataCase {
         classDefinition = classDefinitionsGenerator.createSingleClassDefinitionFromMetamodel(entity, false);
 
         Key key = null;
-        objectModel = ExcelImporter.parseWorksheet(excel, classDefinition);
+        objectModel = new ExcelImporter(new ValueConversionService()).parseWorksheet(excel, classDefinition);
         assertEquals(null, ForeignExcelRowGrabber.getInstanceValue(key, objectModel));
     }
 

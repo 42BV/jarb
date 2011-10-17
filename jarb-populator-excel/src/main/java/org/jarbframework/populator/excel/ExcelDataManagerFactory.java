@@ -27,15 +27,15 @@ import org.jarbframework.populator.excel.workbook.writer.WorkbookWriter;
  */
 public class ExcelDataManagerFactory {
     private EntityManagerFactory entityManagerFactory;
-    private ValueConversionService valueConversionService;
+    private ValueConversionService conversionService;
 
     public ExcelDataManagerFactory(EntityManagerFactory entityManagerFactory) {
-        this.entityManagerFactory = entityManagerFactory;
-        valueConversionService = new ValueConversionService();
+        this(entityManagerFactory, new ValueConversionService());
     }
-    
-    public void setValueConversionService(ValueConversionService valueConversionService) {
-        this.valueConversionService = valueConversionService;
+
+    public ExcelDataManagerFactory(EntityManagerFactory entityManagerFactory, ValueConversionService conversionService) {
+        this.entityManagerFactory = entityManagerFactory;
+        this.conversionService = conversionService;
     }
 
     /**
@@ -64,11 +64,11 @@ public class ExcelDataManagerFactory {
     }
 
     public EntityImporter buildEntityImporter() {
-        return new DefaultEntityImporter(entityManagerFactory);
+        return new DefaultEntityImporter(entityManagerFactory, conversionService);
     }
 
     public EntityExporter buildEntityExporter() {
-        return new DefaultEntityExporter(valueConversionService);
+        return new DefaultEntityExporter(conversionService);
     }
 
     public EntityReader buildEntityReader() {

@@ -6,7 +6,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -18,6 +17,7 @@ import javax.persistence.metamodel.Metamodel;
 
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.jarbframework.populator.excel.DefaultExcelTestDataCase;
+import org.jarbframework.populator.excel.mapping.ValueConversionService;
 import org.jarbframework.populator.excel.metamodel.EntityDefinition;
 import org.jarbframework.populator.excel.metamodel.generator.ClassDefinitionsGenerator;
 import org.jarbframework.populator.excel.workbook.Workbook;
@@ -54,22 +54,17 @@ public class DefaultExcelImporterTest extends DefaultExcelTestDataCase {
 
         classDefinition = classDefinitionsGenerator.createSingleClassDefinitionFromMetamodel(customerEntity, false);
         parseWorksheetMap = new HashMap<Object, ExcelRow>();
-
-        //For code coverage purposes:
-        Constructor<ExcelImporter> constructor = ExcelImporter.class.getDeclaredConstructor();
-        constructor.setAccessible(true);
-        constructor.newInstance();
     }
 
     @Test
     public void testParseExcel() throws InstantiationException, IllegalAccessException, SecurityException, NoSuchFieldException {
-        parseExcelMap = ExcelImporter.parseExcel(excel, classDefinitionList);
+        parseExcelMap = new ExcelImporter(new ValueConversionService()).parseExcel(excel, classDefinitionList);
         assertTrue(classDefinitionList.containsAll(parseExcelMap.keySet()));
     }
 
     @Test
     public void testParseWorksheet() throws InstantiationException, IllegalAccessException, SecurityException, NoSuchFieldException {
-        parseWorksheetMap = ExcelImporter.parseWorksheet(excel, classDefinition);
+        parseWorksheetMap = new ExcelImporter(new ValueConversionService()).parseWorksheet(excel, classDefinition);
         assertTrue(parseWorksheetMap.keySet().contains(1D));
         assertFalse(parseWorksheetMap.keySet().contains(2D));
         assertTrue(parseWorksheetMap.keySet().contains(3D));
@@ -89,13 +84,13 @@ public class DefaultExcelImporterTest extends DefaultExcelTestDataCase {
         excel = new PoiWorkbookParser().parse(new FileInputStream("src/test/resources/DiscriminatorColumnLacking.xls"));
         ClassDefinitionsGenerator classDefinitionsGenerator = new ClassDefinitionsGenerator(getEntityManagerFactory());
         classDefinition = classDefinitionsGenerator.createSingleClassDefinitionFromMetamodel(entity, true);
-        parseWorksheetMap = ExcelImporter.parseWorksheet(excel, classDefinition);
+        parseWorksheetMap = new ExcelImporter(new ValueConversionService()).parseWorksheet(excel, classDefinition);
     }
 
     @Test
     public void testDuplicatePrimaryKey() throws InvalidFormatException, IOException, InstantiationException, IllegalAccessException, NoSuchFieldException {
         excel = new PoiWorkbookParser().parse(new FileInputStream("src/test/resources/DuplicatePrimaryKey.xls"));
-        parseWorksheetMap = ExcelImporter.parseWorksheet(excel, classDefinition);
+        parseWorksheetMap = new ExcelImporter(new ValueConversionService()).parseWorksheet(excel, classDefinition);
         assertEquals(1, parseWorksheetMap.size());
     }
 }

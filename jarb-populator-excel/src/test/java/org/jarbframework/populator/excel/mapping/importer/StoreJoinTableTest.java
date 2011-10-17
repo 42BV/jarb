@@ -13,6 +13,7 @@ import javax.persistence.metamodel.EntityType;
 import javax.persistence.metamodel.Metamodel;
 
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+import org.jarbframework.populator.excel.mapping.ValueConversionService;
 import org.jarbframework.populator.excel.metamodel.EntityDefinition;
 import org.jarbframework.populator.excel.metamodel.PropertyDefinition;
 import org.jarbframework.populator.excel.metamodel.generator.ClassDefinitionsGenerator;
@@ -68,7 +69,7 @@ public class StoreJoinTableTest {
 
         rowPosition = 3;
         assertFalse(excelRow.getValueMap().containsKey(joinTable));
-        StoreExcelRecordValue.storeValue(excel, classDefinition, joinTable, rowPosition, excelRow);
+        new StoreExcelRecordValue(new ValueConversionService()).storeValue(excel, classDefinition, joinTable, rowPosition, excelRow);
         assertTrue(excelRow.getValueMap().containsKey(joinTable));
 
     }

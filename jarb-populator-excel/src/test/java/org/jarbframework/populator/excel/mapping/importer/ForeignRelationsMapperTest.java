@@ -11,10 +11,7 @@ import java.util.Map.Entry;
 
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.jarbframework.populator.excel.DefaultExcelTestDataCase;
-import org.jarbframework.populator.excel.mapping.importer.ExcelImporter;
-import org.jarbframework.populator.excel.mapping.importer.ExcelRow;
-import org.jarbframework.populator.excel.mapping.importer.ForeignRelationsMapper;
-import org.jarbframework.populator.excel.mapping.importer.Key;
+import org.jarbframework.populator.excel.mapping.ValueConversionService;
 import org.jarbframework.populator.excel.metamodel.EntityDefinition;
 import org.jarbframework.populator.excel.metamodel.PropertyDefinition;
 import org.jarbframework.populator.excel.workbook.Workbook;
@@ -42,7 +39,7 @@ public class ForeignRelationsMapperTest extends DefaultExcelTestDataCase {
             SecurityException, NoSuchFieldException {
         excel = getExcelDataManagerFactory().buildExcelParser().parse(new FileInputStream("src/test/resources/Excel.xls"));
 
-        Map<EntityDefinition<?>, Map<Object, ExcelRow>> objectModel = ExcelImporter.parseExcel(excel, metamodel().entities());
+        Map<EntityDefinition<?>, Map<Object, ExcelRow>> objectModel = new ExcelImporter(new ValueConversionService()).parseExcel(excel, metamodel().entities());
 
         for (Entry<EntityDefinition<?>, Map<Object, ExcelRow>> classRecord : objectModel.entrySet()) {
             for (Entry<Object, ExcelRow> classValues : classRecord.getValue().entrySet()) {

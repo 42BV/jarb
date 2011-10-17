@@ -1,5 +1,6 @@
 package org.jarbframework.populator.excel.mapping.importer;
 
+import org.jarbframework.populator.excel.mapping.ValueConversionService;
 import org.jarbframework.populator.excel.metamodel.EntityDefinition;
 import org.jarbframework.populator.excel.metamodel.PropertyDefinition;
 import org.jarbframework.populator.excel.workbook.Workbook;
@@ -11,9 +12,10 @@ import org.jarbframework.populator.excel.workbook.Workbook;
  *
  */
 public final class StoreExcelRecordValue {
+    private StoreColumn storeColumn;
 
-    /** Private constructor. */
-    private StoreExcelRecordValue() {
+    public StoreExcelRecordValue(ValueConversionService conversionService) {
+        this.storeColumn = new StoreColumn(conversionService);
     }
 
     /**
@@ -26,11 +28,10 @@ public final class StoreExcelRecordValue {
      * @param excelRow ExcelRow to save to.
      * @throws NoSuchFieldException Thrown when a field is not available
      */
-    public static void storeValue(Workbook excel, EntityDefinition<?> classDefinition, PropertyDefinition columnDefinition, Integer rowPosition,
-            ExcelRow excelRow) {
+    public void storeValue(Workbook excel, EntityDefinition<?> classDefinition, PropertyDefinition columnDefinition, Integer rowPosition, ExcelRow excelRow) {
         switch (columnDefinition.getDatabaseType()) {
         case COLUMN:
-            StoreColumn.storeValue(excel, classDefinition, columnDefinition, rowPosition, excelRow);
+            storeColumn.storeValue(excel, classDefinition, columnDefinition, rowPosition, excelRow);
             break;
         case COLLECTION_REFERENCE:
             StoreJoinTable.storeValue(excel, classDefinition, columnDefinition, rowPosition, excelRow);

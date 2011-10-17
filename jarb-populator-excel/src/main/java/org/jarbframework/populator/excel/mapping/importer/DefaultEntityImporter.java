@@ -9,6 +9,7 @@ import javax.persistence.EntityManagerFactory;
 
 import org.jarbframework.populator.excel.entity.EntityRegistry;
 import org.jarbframework.populator.excel.entity.EntityTable;
+import org.jarbframework.populator.excel.mapping.ValueConversionService;
 import org.jarbframework.populator.excel.metamodel.EntityDefinition;
 import org.jarbframework.populator.excel.metamodel.MetaModel;
 import org.jarbframework.populator.excel.util.JpaUtils;
@@ -21,9 +22,11 @@ import org.jarbframework.populator.excel.workbook.Workbook;
  */
 public class DefaultEntityImporter implements EntityImporter {
     private final EntityManagerFactory entityManagerFactory;
+    private ExcelImporter delegateImporter;
 
-    public DefaultEntityImporter(EntityManagerFactory entityManagerFactory) {
+    public DefaultEntityImporter(EntityManagerFactory entityManagerFactory, ValueConversionService conversionService) {
         this.entityManagerFactory = entityManagerFactory;
+        delegateImporter = new ExcelImporter(conversionService);
     }
 
     /**
@@ -33,7 +36,7 @@ public class DefaultEntityImporter implements EntityImporter {
     public EntityRegistry load(Workbook workbook, MetaModel metamodel) {
         List<EntityDefinition<?>> entities = new ArrayList<EntityDefinition<?>>(metamodel.entities());
         try {
-            return toRegistry(ExcelImporter.parseExcel(workbook, entities));
+            return toRegistry(delegateImporter.parseExcel(workbook, entities));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

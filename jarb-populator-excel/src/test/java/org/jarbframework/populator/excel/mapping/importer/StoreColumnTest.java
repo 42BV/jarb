@@ -4,13 +4,13 @@ import static org.junit.Assert.assertEquals;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
 import javax.persistence.metamodel.EntityType;
 import javax.persistence.metamodel.Metamodel;
 
 import org.jarbframework.populator.excel.DefaultExcelTestDataCase;
+import org.jarbframework.populator.excel.mapping.ValueConversionService;
 import org.jarbframework.populator.excel.metamodel.EntityDefinition;
 import org.jarbframework.populator.excel.metamodel.PropertyDefinition;
 import org.jarbframework.populator.excel.metamodel.generator.ClassDefinitionsGenerator;
@@ -35,11 +35,6 @@ public class StoreColumnTest extends DefaultExcelTestDataCase {
     public void setupTestStoreExcelRecordValue() throws FileNotFoundException, NoSuchMethodException, InstantiationException, IllegalAccessException,
             InvocationTargetException {
         excel = new PoiWorkbookParser().parse(new FileInputStream("src/test/resources/ExcelUnitTesting.xls"));
-
-        //For code coverage purposes:
-        Constructor<StoreColumn> constructor = StoreColumn.class.getDeclaredConstructor();
-        constructor.setAccessible(true);
-        constructor.newInstance();
     }
 
     @Test
@@ -61,7 +56,7 @@ public class StoreColumnTest extends DefaultExcelTestDataCase {
         excelRow = new ExcelRow(classDefinition.getEntityClass());
 
         rowPosition = 1;
-        StoreExcelRecordValue.storeValue(excel, classDefinition, column, rowPosition, excelRow);
+        new StoreExcelRecordValue(new ValueConversionService()).storeValue(excel, classDefinition, column, rowPosition, excelRow);
         assertEquals("Customer1", ModifiableBean.wrap(excelRow.getCreatedInstance()).getPropertyValue("name"));
     }
 }

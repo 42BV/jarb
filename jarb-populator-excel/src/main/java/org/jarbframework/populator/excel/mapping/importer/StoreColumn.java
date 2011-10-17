@@ -21,8 +21,10 @@ import org.slf4j.LoggerFactory;
 public final class StoreColumn {
     private static final Logger logger = LoggerFactory.getLogger(StoreColumn.class);
 
-    /** Private constructor. */
-    private StoreColumn() {
+    private ValueConversionService conversionService;
+
+    public StoreColumn(ValueConversionService conversionService) {
+        this.conversionService = conversionService;
     }
 
     /**
@@ -34,8 +36,7 @@ public final class StoreColumn {
      * @param excelRow ExcelRow to save to.
      * @throws NoSuchFieldException Thrown when a field is not available
      */
-    public static void storeValue(Workbook excel, EntityDefinition<?> classDefinition, PropertyDefinition columnDefinition, Integer rowPosition,
-            ExcelRow excelRow) {
+    public void storeValue(Workbook excel, EntityDefinition<?> classDefinition, PropertyDefinition columnDefinition, Integer rowPosition, ExcelRow excelRow) {
         WorksheetDefinition worksheetDefinition = WorksheetDefinition.analyzeWorksheet(classDefinition, excel);
         Integer columnPosition = worksheetDefinition.getColumnPosition(columnDefinition.getColumnName());
 
@@ -58,10 +59,10 @@ public final class StoreColumn {
      * @param fieldName Name of field which value is to be set
      * @param cellValue Value of the field that is to be saved
      */
-    private static void setExcelRowFieldValue(Object excelRow, String fieldName, Object cellValue) {
+    private void setExcelRowFieldValue(Object excelRow, String fieldName, Object cellValue) {
         final Class<?> fieldType = BeanProperties.getPropertyType(new PropertyReference(excelRow.getClass(), fieldName));
         try {
-            Object fieldValue = new ValueConversionService().convert(cellValue, fieldType);
+            Object fieldValue = conversionService.convert(cellValue, fieldType);
             ModifiableBean.wrap(excelRow).setPropertyValue(fieldName, fieldValue);
         } catch (CouldNotConvertException e) {
             logger.warn("Could not convert '{}' into a {}, thus '{}' will remain unchanged.", new Object[] { cellValue, fieldType, fieldName });
@@ -75,7 +76,7 @@ public final class StoreColumn {
      * @param columnPosition ColumnPosition of the cell
      * @return CellValue from the specified location
      */
-    private static Object getCellValue(Sheet sheet, Integer rowPosition, Integer columnPosition) {
+    private Object getCellValue(Sheet sheet, Integer rowPosition, Integer columnPosition) {
         Object cellValue = null;
         if (columnPosition != null) {
             cellValue = sheet.getValueAt(rowPosition, columnPosition);

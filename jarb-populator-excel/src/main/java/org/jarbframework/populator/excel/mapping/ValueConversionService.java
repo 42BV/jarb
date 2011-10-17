@@ -13,19 +13,20 @@ import org.springframework.core.convert.support.GenericConversionService;
 public class ValueConversionService {
     private final GenericConversionService genericConversionService;
 
-    /**
-     * Construct a new {@link ValueConversionService}.
-     */
     public ValueConversionService() {
-        genericConversionService = ConversionServiceFactory.createDefaultConversionService();
+        this(ConversionServiceFactory.createDefaultConversionService());
+    }
+
+    public ValueConversionService(GenericConversionService genericConversionService) {
+        this.genericConversionService = genericConversionService;
         addConverter(new StringToBooleanConverter());
     }
-    
+
     /**
      * Include a converter in this conversion service.
      * @param converter converter to add
      */
-    protected void addConverter(Converter<?,?> converter) {
+    protected void addConverter(Converter<?, ?> converter) {
         genericConversionService.addConverter(converter);
     }
 
