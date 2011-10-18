@@ -21,6 +21,7 @@ public class ExcelDatabasePopulator implements DatabasePopulator {
     private ValueConversionService valueConversionService;
     private EntityManagerFactory entityManagerFactory;
     private Resource excelResource;
+    private boolean strict = true;
 
     public void setExcelResource(Resource excelResource) {
         this.excelResource = excelResource;
@@ -34,6 +35,10 @@ public class ExcelDatabasePopulator implements DatabasePopulator {
         this.valueConversionService = valueConversionService;
     }
 
+    public void setStrict(boolean strict) {
+        this.strict = strict;
+    }
+
     /**
      * Construct a new {@link ExcelDatabasePopulator} that skips
      * whenever the specified resource does not exist. Use this type of
@@ -44,10 +49,10 @@ public class ExcelDatabasePopulator implements DatabasePopulator {
      * @return database populator that will persist all entities declared inside the workbook
      */
     public static ConditionalDatabasePopulator ignoreIfResourceMissing(Resource excelResource, EntityManagerFactory entityManagerFactory) {
-        ExcelDatabasePopulator excelPopulator = new ExcelDatabasePopulator();
-        excelPopulator.setExcelResource(excelResource);
-        excelPopulator.setEntityManagerFactory(entityManagerFactory);
-        return new ConditionalDatabasePopulator(excelPopulator, new ResourceExistsCondition(excelResource));
+        ExcelDatabasePopulator populator = new ExcelDatabasePopulator();
+        populator.setExcelResource(excelResource);
+        populator.setEntityManagerFactory(entityManagerFactory);
+        return new ConditionalDatabasePopulator(populator, new ResourceExistsCondition(excelResource));
     }
 
     /**
@@ -59,6 +64,7 @@ public class ExcelDatabasePopulator implements DatabasePopulator {
         Assert.state(entityManagerFactory != null, "Entity manager factory cannot be null");
 
         ExcelDataManager excelDataManager = new ExcelDataManagerFactory(entityManagerFactory, loadValueConversionService()).build();
+        excelDataManager.setStrict(strict);
         excelDataManager.load(excelResource).persist();
     }
 

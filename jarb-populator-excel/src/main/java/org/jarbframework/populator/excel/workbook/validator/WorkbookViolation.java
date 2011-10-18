@@ -3,7 +3,7 @@ package org.jarbframework.populator.excel.workbook.validator;
 /**
  * Workbook violation.
  * 
- * @author Jeroen van Schagn
+ * @author Jeroen van Schagen
  * @since 24-06-2011
  */
 public class WorkbookViolation {
@@ -31,5 +31,4 @@ public class WorkbookViolation {
     public String toString() {
         return getMessage();
     }
-
 }

@@ -75,12 +75,27 @@ public class ExcelDataManagerTest extends DefaultExcelTestDataCase {
             excelDataManager.load("src/test/resources/ExcelVerification/missing_sheet.xls").entities();
             fail("Expected an exception as the loaded workbook has an invalid structure");
         } catch (InvalidWorkbookException e) {
-            WorkbookValidationResult validation = e.getValidation();
-            assertNotNull("Expected a workbook validation with the exception", validation);
-            assertEquals(1, validation.getViolations().size());
-            assertEquals("Sheet 'customers' is missing.", validation.getViolations().iterator().next().getMessage());
             assertEquals("Worbook is invalid:\n - Sheet 'customers' is missing.", e.getMessage());
         }
+    }
+
+    @Test
+    public void testNonStrictValidation() throws FileNotFoundException {
+        excelDataManager.setStrict(false);
+        excelDataManager.load("src/test/resources/ExcelVerification/missing_sheet.xls").continueIfValid();
+        excelDataManager.setStrict(true);
+    }
+
+    @Test
+    public void testNonStrictValidationWithError() throws FileNotFoundException {
+        excelDataManager.setStrict(false);
+        try {
+            excelDataManager.load("src/test/resources/ExcelVerification/missing_identifier.xls").entities();
+            fail("Expected an exception as the loaded workbook has an invalid structure");
+        } catch (InvalidWorkbookException e) {
+            assertEquals("Worbook is invalid:\n - Row 1 in 'currencies' has no identifier.", e.getMessage());
+        }
+        excelDataManager.setStrict(true);
     }
 
     // Persisting
@@ -97,7 +112,7 @@ public class ExcelDataManagerTest extends DefaultExcelTestDataCase {
 
     @Test
     public void testCreateWorkbookTemplate() throws FileNotFoundException {
-        excelDataManager.buildNew().write("src/test/resources/excel/generated/NewExcelFile.xls");
+        excelDataManager.builder().write("src/test/resources/excel/generated/NewExcelFile.xls");
         WorkbookValidationResult validation = excelDataManager.load("src/test/resources/excel/generated/NewExcelFile.xls").validate();
         assertFalse("Created workbook template is not valid", validation.hasViolations());
     }
@@ -108,7 +123,7 @@ public class ExcelDataManagerTest extends DefaultExcelTestDataCase {
         bugatti.setId(42L);
 
         final String outputFilePath = "src/test/resources/excel/generated/NewExcelFileFromDatabase.xls";
-        excelDataManager.buildNew().include(CompanyVehicle.class, 42L, bugatti).write(outputFilePath);
+        excelDataManager.builder().include(CompanyVehicle.class, 42L, bugatti).write(outputFilePath);
 
         CompanyVehicle result = excelDataManager.load(outputFilePath).entities().find(CompanyVehicle.class, bugatti.getId());
         assertNotNull("Car was not maintained during store and load.", result);
@@ -122,7 +137,7 @@ public class ExcelDataManagerTest extends DefaultExcelTestDataCase {
 
         final String outputFilePath = "src/test/resources/excel/generated/Clone.xls";
         EntityRegistry entities = excelDataManager.load("src/test/resources/Excel.xls").entities();
-        excelDataManager.buildWith(entities).include(CompanyVehicle.class, 42L, bugatti).write(outputFilePath);
+        excelDataManager.builder(entities).include(CompanyVehicle.class, 42L, bugatti).write(outputFilePath);
 
         CompanyVehicle result = excelDataManager.load(outputFilePath).entities().find(CompanyVehicle.class, bugatti.getId());
         assertNotNull("Car was not maintained during store and load.", result);

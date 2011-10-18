@@ -19,6 +19,7 @@ import org.jarbframework.populator.excel.metamodel.MetaModel;
 import org.jarbframework.populator.excel.metamodel.generator.MetaModelGenerator;
 import org.jarbframework.populator.excel.workbook.Workbook;
 import org.jarbframework.populator.excel.workbook.reader.WorkbookParser;
+import org.jarbframework.populator.excel.workbook.validator.ViolationLevel;
 import org.jarbframework.populator.excel.workbook.validator.WorkbookValidationResult;
 import org.jarbframework.populator.excel.workbook.validator.WorkbookValidator;
 import org.jarbframework.populator.excel.workbook.writer.WorkbookWriter;
@@ -31,8 +32,8 @@ import org.springframework.core.io.Resource;
  * <p>
  * 
  * <code>
- *  manager.loadWorkbook("input.xls").persist();<br>
- *  manager.newWorkbook().includeAll().write("output.xls");
+ *  manager.load("input.xls").persist();<br>
+ *  manager.builder().includeAll().write("output.xls");
  * </code>
  * 
  * @author Jeroen van Schagen
@@ -47,6 +48,8 @@ public class ExcelDataManager {
     private EntityWriter entityWriter;
     private WorkbookValidator excelValidator;
     private MetaModelGenerator metamodelGenerator;
+
+    private boolean strict = true;
 
     /**
      * Load an Excel workbook based on some input stream.
@@ -129,14 +132,16 @@ public class ExcelDataManager {
          */
         protected WorkbookLoader continueIfValid() {
             WorkbookValidationResult validation = validate();
-            if (validation.hasViolations()) {
-                throw new InvalidWorkbookException(validation);
+            if (strict && validation.hasViolations()) {
+                throw new InvalidWorkbookException(validation.getViolations());
+            } else if (validation.hasViolations(ViolationLevel.ERROR)) {
+                throw new InvalidWorkbookException(validation.getViolations(ViolationLevel.ERROR));
             }
             return this;
         }
 
         /**
-         * Persist all loaded entities inside our database.
+         * Persist all loaded entities.
          * @return this instance, for chaining
          */
         public WorkbookLoader persist() {
@@ -158,8 +163,8 @@ public class ExcelDataManager {
      * Start building a new Excel workbook.
      * @return new Excel workbook builder
      */
-    public WorkbookBuilder buildNew() {
-        return buildWith(new EntityRegistry());
+    public WorkbookBuilder builder() {
+        return builder(new EntityRegistry());
     }
 
     /**
@@ -167,7 +172,7 @@ public class ExcelDataManager {
      * @param entities the entities that should be included
      * @return new Excel workbook builder
      */
-    public WorkbookBuilder buildWith(EntityRegistry entities) {
+    public WorkbookBuilder builder(EntityRegistry entities) {
         return new WorkbookBuilder(entities);
     }
 
@@ -265,6 +270,10 @@ public class ExcelDataManager {
 
     public void setMetamodelGenerator(MetaModelGenerator metaModelGenerator) {
         this.metamodelGenerator = metaModelGenerator;
+    }
+
+    public void setStrict(boolean strict) {
+        this.strict = strict;
     }
 
 }

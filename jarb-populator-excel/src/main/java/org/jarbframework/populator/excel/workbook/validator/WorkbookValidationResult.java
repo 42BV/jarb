@@ -1,7 +1,8 @@
 package org.jarbframework.populator.excel.workbook.validator;
 
+import static java.util.Collections.unmodifiableSet;
+
 import java.io.OutputStream;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -23,16 +24,30 @@ public class WorkbookValidationResult {
         return !getViolations().isEmpty();
     }
 
+    public boolean hasViolations(ViolationLevel level) {
+        return !getViolations(level).isEmpty();
+    }
+
     public Set<WorkbookViolation> getViolations() {
         Set<WorkbookViolation> violations = new HashSet<WorkbookViolation>(globalViolations);
         for (Set<WorkbookViolation> sheetViolations : sheetViolationsMap.values()) {
             violations.addAll(sheetViolations);
         }
-        return Collections.unmodifiableSet(violations);
+        return unmodifiableSet(violations);
+    }
+
+    public Set<WorkbookViolation> getViolations(ViolationLevel level) {
+        Set<WorkbookViolation> violationsWithLevel = new HashSet<WorkbookViolation>();
+        for (WorkbookViolation violation : getViolations()) {
+            if (violation.getLevel() == level) {
+                violationsWithLevel.add(violation);
+            }
+        }
+        return unmodifiableSet(violationsWithLevel);
     }
 
     public Set<WorkbookViolation> getGlobalViolations() {
-        return Collections.unmodifiableSet(globalViolations);
+        return unmodifiableSet(globalViolations);
     }
 
     /**
@@ -44,7 +59,7 @@ public class WorkbookValidationResult {
     }
 
     public Set<WorkbookViolation> getSheetViolations(String sheetName) {
-        return Collections.unmodifiableSet(sheetViolationsMap.get(sheetName));
+        return unmodifiableSet(sheetViolationsMap.get(sheetName));
     }
 
     /**
@@ -62,7 +77,7 @@ public class WorkbookValidationResult {
     }
 
     public Set<String> getValidatedSheetNames() {
-        return Collections.unmodifiableSet(sheetViolationsMap.keySet());
+        return unmodifiableSet(sheetViolationsMap.keySet());
     }
 
     public void export(ValidationExporter exporter, OutputStream os) {

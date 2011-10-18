@@ -72,13 +72,16 @@ public final class ExcelImporter {
         Map<Object, ExcelRow> createdInstances = new HashMap<Object, ExcelRow>();
 
         Sheet sheet = excel.getSheet(classDefinition.getTableName());
-        String discriminatorColumnName = classDefinition.getDiscriminatorColumnName();
-        for (Integer rowPosition = 1; rowPosition <= sheet.getLastRowNumber(); rowPosition++) {
-            LOGGER.debug("Importing row {}", rowPosition);
-            ExcelRow excelRow = new ExcelRow(determineEntityClass(sheet, classDefinition, discriminatorColumnName, rowPosition));
-            storeExcelRecordByColumnDefinitions(excel, classDefinition, rowPosition, excelRow);
-            putCreatedInstance(sheet, classDefinition, createdInstances, rowPosition, excelRow);
+        if (sheet != null) {
+            String discriminatorColumnName = classDefinition.getDiscriminatorColumnName();
+            for (Integer rowPosition = 1; rowPosition <= sheet.getLastRowNumber(); rowPosition++) {
+                LOGGER.debug("Importing row {}", rowPosition);
+                ExcelRow excelRow = new ExcelRow(determineEntityClass(sheet, classDefinition, discriminatorColumnName, rowPosition));
+                storeExcelRecordByColumnDefinitions(excel, classDefinition, rowPosition, excelRow);
+                putCreatedInstance(sheet, classDefinition, createdInstances, rowPosition, excelRow);
+            }
         }
+
         return createdInstances;
     }
 
