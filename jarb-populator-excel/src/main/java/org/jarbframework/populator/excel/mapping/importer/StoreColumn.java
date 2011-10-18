@@ -1,5 +1,7 @@
 package org.jarbframework.populator.excel.mapping.importer;
 
+import static org.jarbframework.utils.bean.BeanProperties.getPropertyType;
+
 import org.jarbframework.populator.excel.mapping.CouldNotConvertException;
 import org.jarbframework.populator.excel.mapping.ValueConversionService;
 import org.jarbframework.populator.excel.metamodel.EntityDefinition;
@@ -8,7 +10,6 @@ import org.jarbframework.populator.excel.metamodel.PropertyNode;
 import org.jarbframework.populator.excel.metamodel.PropertyPath;
 import org.jarbframework.populator.excel.workbook.Sheet;
 import org.jarbframework.populator.excel.workbook.Workbook;
-import org.jarbframework.utils.bean.BeanProperties;
 import org.jarbframework.utils.bean.ModifiableBean;
 import org.jarbframework.utils.bean.PropertyReference;
 import org.slf4j.Logger;
@@ -72,17 +73,20 @@ public final class StoreColumn {
 
     /**
      * Sets an Excelrow's field value via reflection. Works for regular fields, embedded fields and Enumerations.
-     * @param excelRow Excelrow to add the field value to
+     * @param bean Excelrow to add the field value to
      * @param fieldName Name of field which value is to be set
      * @param cellValue Value of the field that is to be saved
      */
-    private void setExcelRowFieldValue(Object excelRow, String fieldName, Object cellValue) {
-        final Class<?> fieldType = BeanProperties.getPropertyType(new PropertyReference(excelRow.getClass(), fieldName));
-        try {
-            Object fieldValue = conversionService.convert(cellValue, fieldType);
-            ModifiableBean.wrap(excelRow).setPropertyValue(fieldName, fieldValue);
-        } catch (CouldNotConvertException e) {
-            logger.warn("Could not convert '{}' into a {}, thus '{}' will remain unchanged.", new Object[] { cellValue, fieldType, fieldName });
+    private void setExcelRowFieldValue(Object bean, String fieldName, Object cellValue) {
+        ModifiableBean<?> modifiableBean = ModifiableBean.wrap(bean);
+        if (modifiableBean.isWritableProperty(fieldName)) {
+            Class<?> fieldType = getPropertyType(new PropertyReference(bean.getClass(), fieldName));
+            try {
+                Object fieldValue = conversionService.convert(cellValue, fieldType);
+                modifiableBean.setPropertyValue(fieldName, fieldValue);
+            } catch (CouldNotConvertException e) {
+                logger.warn("Could not convert '{}' into a {}, thus '{}' will remain unchanged.", new Object[] { cellValue, fieldType, fieldName });
+            }
         }
     }
 

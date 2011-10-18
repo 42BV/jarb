@@ -19,8 +19,7 @@ import org.slf4j.LoggerFactory;
  *
  */
 public final class ExcelImporter {
-    private static final Logger LOGGER = LoggerFactory.getLogger(ExcelImporter.class);
-
+    private static final Logger logger = LoggerFactory.getLogger(ExcelImporter.class);
     private StoreExcelRecordValue valueStorer;
 
     public ExcelImporter(ValueConversionService conversionService) {
@@ -31,7 +30,7 @@ public final class ExcelImporter {
      * Returns an objectModel hashmap containing ClassDefinitions with their corresponding Excel records, also by calling parseWorksheet listed below.
      * @param excel Excel file in use to be stored in the objectModel
      * @param classDefinitions All classDefinitions to be stored in the objectModel and saved to the database later on
-     * @return Hashmap containing all classdefinitions and parsed excel records.
+     * @return map containing all class definitions and parsed excel records.
      * @throws InstantiationException Thrown when function is used on a class that cannot be instantiated (abstract or interface)
      * @throws IllegalAccessException Thrown when function does not have access to the definition of the specified class, field, method or constructor 
      * @throws NoSuchFieldException Thrown when a field is not available
@@ -40,7 +39,7 @@ public final class ExcelImporter {
         Map<EntityDefinition<?>, Map<Object, ExcelRow>> objectModel = new HashMap<EntityDefinition<?>, Map<Object, ExcelRow>>();
 
         for (EntityDefinition<?> classDefinition : entities) {
-            LOGGER.debug("Importing " + classDefinition.getTableName());
+            logger.debug("Importing " + classDefinition.getTableName());
             objectModel.put(classDefinition, parseWorksheet(excel, classDefinition));
         }
 
@@ -75,7 +74,7 @@ public final class ExcelImporter {
         if (sheet != null) {
             String discriminatorColumnName = classDefinition.getDiscriminatorColumnName();
             for (Integer rowPosition = 1; rowPosition <= sheet.getLastRowNumber(); rowPosition++) {
-                LOGGER.debug("Importing row {}", rowPosition);
+                logger.debug("Importing row {}", rowPosition);
                 ExcelRow excelRow = new ExcelRow(determineEntityClass(sheet, classDefinition, discriminatorColumnName, rowPosition));
                 storeExcelRecordByColumnDefinitions(excel, classDefinition, rowPosition, excelRow);
                 putCreatedInstance(sheet, classDefinition, createdInstances, rowPosition, excelRow);
@@ -121,12 +120,12 @@ public final class ExcelImporter {
             ExcelRow excelRow) {
         Object identifier = sheet.getValueAt(rowPosition, 0);
         if (identifier == null) {
-            LOGGER.error("Could not store row #{} of {}, because the identifier is empty.", new Object[] { rowPosition, sheet.getName() });
+            logger.error("Could not store row #{} of {}, because the identifier is empty.", new Object[] { rowPosition, sheet.getName() });
         } else {
             if (!createdInstances.containsKey(identifier)) {
                 createdInstances.put(identifier, excelRow);
             } else {
-                LOGGER.error("IDCOLUMNNAME value '" + identifier + "' in table " + classDefinition.getTableName() + " is not unique.");
+                logger.error("IDCOLUMNNAME value '" + identifier + "' in table " + classDefinition.getTableName() + " is not unique.");
             }
         }
     }
