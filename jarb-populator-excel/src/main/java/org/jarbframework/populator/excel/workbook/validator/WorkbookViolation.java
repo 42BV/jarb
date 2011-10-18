@@ -1,17 +1,35 @@
 package org.jarbframework.populator.excel.workbook.validator;
 
 /**
- * Violation message, as returned by our validator.
+ * Workbook violation.
  * 
  * @author Jeroen van Schagn
  * @since 24-06-2011
  */
-public interface WorkbookViolation {
+public class WorkbookViolation {
+    private final String message;
+    private final ViolationLevel level;
+
+    public WorkbookViolation(String message, ViolationLevel level) {
+        this.message = message;
+        this.level = level;
+    }
 
     /**
      * Retrieve the actual violation message.
      * @return violation message
      */
-    String getMessage();
-    
+    public String getMessage() {
+        return message;
+    }
+
+    public ViolationLevel getLevel() {
+        return level;
+    }
+
+    @Override
+    public String toString() {
+        return getMessage();
+    }
+
 }

@@ -11,7 +11,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.util.Assert;
 
 public class Sheet implements Iterable<Row> {
-    private static final int COLUMN_ROW_NO = 0;
+    public static final int COLUMN_ROW_NO = 0;
+    public static final int IDENTIFIER_COLUMN_NO = 0;
 
     private final TreeMap<Integer, Row> rows = new TreeMap<Integer, Row>();
     private final Workbook workbook;
@@ -103,7 +104,7 @@ public class Sheet implements Iterable<Row> {
     /**
      * Retrieve the index where a certain column first occurs.
      * @param columnName name of the column index to find
-     * @return index of the column's first occurance
+     * @return index of the column's first occurrence
      */
     public int indexOfColumn(String columnName) {
         int index = -1; // Return '-1' when nothing can be found
@@ -175,6 +176,10 @@ public class Sheet implements Iterable<Row> {
         return getRowAt(rowNo).getValueAt(colNo);
     }
 
+    public Object getIdentifierAt(int rowNo) {
+        return getValueAt(rowNo, IDENTIFIER_COLUMN_NO);
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -182,5 +187,4 @@ public class Sheet implements Iterable<Row> {
     public String toString() {
         return "Sheet '" + name + "' " + rows.toString();
     }
-
 }

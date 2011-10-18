@@ -19,7 +19,6 @@ import org.jarbframework.populator.excel.metamodel.MetaModel;
 import org.jarbframework.populator.excel.metamodel.generator.MetaModelGenerator;
 import org.jarbframework.populator.excel.workbook.Workbook;
 import org.jarbframework.populator.excel.workbook.reader.WorkbookParser;
-import org.jarbframework.populator.excel.workbook.validator.MutableWorkbookValidationResult;
 import org.jarbframework.populator.excel.workbook.validator.WorkbookValidationResult;
 import org.jarbframework.populator.excel.workbook.validator.WorkbookValidator;
 import org.jarbframework.populator.excel.workbook.writer.WorkbookWriter;
@@ -32,8 +31,8 @@ import org.springframework.core.io.Resource;
  * <p>
  * 
  * <code>
- *  manager.persist(manager.loadWorkbook("input.xls"));<br>
- *  manager.newWorkbook().readAndIncludeAll().write("output.xls");
+ *  manager.loadWorkbook("input.xls").persist();<br>
+ *  manager.newWorkbook().includeAll().write("output.xls");
  * </code>
  * 
  * @author Jeroen van Schagen

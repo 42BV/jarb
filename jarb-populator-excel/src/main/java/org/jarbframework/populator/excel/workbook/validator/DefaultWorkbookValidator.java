@@ -1,15 +1,7 @@
 package org.jarbframework.populator.excel.workbook.validator;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-
-import org.jarbframework.populator.excel.metamodel.EntityDefinition;
 import org.jarbframework.populator.excel.metamodel.MetaModel;
-import org.jarbframework.populator.excel.metamodel.PropertyDatabaseType;
-import org.jarbframework.populator.excel.metamodel.PropertyDefinition;
+import org.jarbframework.populator.excel.workbook.Cell;
 import org.jarbframework.populator.excel.workbook.Row;
 import org.jarbframework.populator.excel.workbook.Sheet;
 import org.jarbframework.populator.excel.workbook.Workbook;
@@ -22,126 +14,66 @@ import org.jarbframework.populator.excel.workbook.Workbook;
  */
 public class DefaultWorkbookValidator implements WorkbookValidator {
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public WorkbookValidationResult validate(Workbook workbook, MetaModel metamodel) {
-        MutableWorkbookValidationResult result = new MutableWorkbookValidationResult();
+        WorkbookValidationResult result = new WorkbookValidationResult();
         WorkbookExpectation expectation = new WorkbookExpectation(metamodel);
-        // Ensure that each definition has a corresponding sheet
-        for(String expectedSheetName : expectation.getSheetNames()) {
-            if(workbook.containsSheet(expectedSheetName)) {
-                Sheet sheet = workbook.getSheet(expectedSheetName);
-                validateSheet(sheet, expectation, result);
-            } else {
-                result.addGlobalViolation(new MissingSheetViolation(expectedSheetName));
-            }
-        }
-        // Ensure that each sheet maps to a definition in our metamodel
-        for(String sheetName : workbook.getSheetNames()) {
-            if(!expectation.isExpectedSheet(sheetName)) {
-                result.addGlobalViolation(new UnknownSheetViolation(sheetName));
-            }
+        checkIfEachEntityHasSheet(workbook, result, expectation);
+        checkIfEachSheetIsRecognized(workbook, result, expectation);
+        for (Sheet sheet : workbook) {
+            validateSheet(sheet, expectation, result);
         }
         return result;
     }
-    
-    /**
-     * Validate a specific workbook sheet, and append violations in the validation result.
-     * @param sheet the sheet being validated
-     * @param expectedColumnNames all column names expected in the sheet
-     * @param result validation result that contains our violations
-     */
-    private void validateSheet(Sheet sheet, WorkbookExpectation expectation, MutableWorkbookValidationResult result) {
-        final String sheetName = sheet.getName();
-        Set<String> expectedColumnNames = expectation.getColumnNames(sheetName);
-        // Ensure that each expected column is defined in our sheet
-        for(String expectedColumnName : expectedColumnNames) {
-            if(!sheet.containsColumn(expectedColumnName)) {
-                result.addSheetViolation(sheetName, new MissingColumnViolation(sheetName, expectedColumnName));
-            }
-        }
-        // Ensure that each defined column is acceptable
-        for(String columnName : sheet.getColumnNames()) {
-            // Our first cell can have any value as it represents the row identifier
-            if(!expectedColumnNames.contains(columnName) && sheet.indexOfColumn(columnName) != 0) {
-                result.addSheetViolation(sheetName, new UnknownColumnViolation(sheetName, columnName));
-            }
-        }
-        // Ensure that each row has an identifier
-        for(Row row : sheet.getRows()) {
-            if(row.getValueAt(0) == null) {
-                result.addSheetViolation(sheetName, new MissingIdentifierViolation(sheetName, row.getRowNo()));
+
+    private void checkIfEachEntityHasSheet(Workbook workbook, WorkbookValidationResult result, WorkbookExpectation expectation) {
+        for (String sheetName : expectation.getSheetNames()) {
+            if (!workbook.containsSheet(sheetName)) {
+                result.addGlobalViolation(new WorkbookViolation("Sheet '" + sheetName + "' is missing.", ViolationLevel.WARNING));
             }
         }
     }
-    
-    /**
-     * Create the expectations of a workbook, based on some metamodel.
-     */
-    private class WorkbookExpectation {
-        /** All expected sheet names **/
-        private Set<String> sheetNames = new HashSet<String>();
-        /** All expected column names per sheet **/
-        private Map<String, Set<String>> columnNamesMap = new HashMap<String, Set<String>>();
-        
-        /**
-         * Construct a new {@link WorkbookExpectation}.
-         * @param metamodel the metamodel that describes our entity structure
-         */
-        public WorkbookExpectation(MetaModel metamodel) {
-            for(EntityDefinition<?> entity : metamodel.entities()) {
-                final String sheetName = entity.getTableName();
-                // Each entity type has a specific sheet name
-                sheetNames.add(sheetName);
-                Set<String> columnNames = new HashSet<String>();
-                if(entity.hasDiscriminatorColumn()) {
-                    columnNames.add(entity.getDiscriminatorColumnName());
-                }
-                for(PropertyDefinition property : entity.properties()) {
-                    if(property.getDatabaseType() == PropertyDatabaseType.COLLECTION_REFERENCE) {
-                        // Join table properties got their own sheet
-                        final String joinSheetName = property.getJoinTableName();
-                        sheetNames.add(joinSheetName);
-                        // With the join and inverse join as columns
-                        Set<String> joinColumnNames = new HashSet<String>();
-                        joinColumnNames.add(property.getJoinColumnName());
-                        joinColumnNames.add(property.getInverseJoinColumnName());
-                        columnNamesMap.put(joinSheetName, joinColumnNames);
-                    } else {
-                        // Regular properties are mapped to a column name
-                        columnNames.add(property.getColumnName());
-                    }
-                }
-                columnNamesMap.put(sheetName, columnNames);
+
+    private void checkIfEachSheetIsRecognized(Workbook workbook, WorkbookValidationResult result, WorkbookExpectation expectation) {
+        for (String sheetName : workbook.getSheetNames()) {
+            if (!expectation.isExpectedSheet(sheetName)) {
+                result.addGlobalViolation(new WorkbookViolation("Sheet '" + sheetName + "' does not exist in our mapping.", ViolationLevel.WARNING));
             }
         }
-        
-        /**
-         * Retrieve all expected sheet names.
-         * @return expected sheet names
-         */
-        public Set<String> getSheetNames() {
-            return Collections.unmodifiableSet(sheetNames);
+    }
+
+    private void validateSheet(Sheet sheet, WorkbookExpectation expectation, WorkbookValidationResult result) {
+        checkIfEachPropertyHasColumn(sheet, expectation, result);
+        checkIfEachColumnIsRecognized(sheet, expectation, result);
+        checkIfEachRowHasIdentifier(sheet, result);
+    }
+
+    private void checkIfEachPropertyHasColumn(Sheet sheet, WorkbookExpectation expectation, WorkbookValidationResult result) {
+        for (String columnName : expectation.getColumnNames(sheet.getName())) {
+            if (!sheet.containsColumn(columnName)) {
+                String message = "Column '" + sheet.getName() + "." + columnName + "' is missing.";
+                result.addSheetViolation(sheet.getName(), new WorkbookViolation(message, ViolationLevel.WARNING));
+            }
         }
-        
-        /**
-         * Determine if a certain sheet is expected.
-         * @param sheetName name of the sheet
-         * @return {@code true} if the sheet is expected, else {@code false}
-         */
-        public boolean isExpectedSheet(String sheetName) {
-            return sheetNames.contains(sheetName);
+    }
+
+    private void checkIfEachColumnIsRecognized(Sheet sheet, WorkbookExpectation expectation, WorkbookValidationResult result) {
+        for (Cell cell : sheet.getColumnRow()) {
+            String columnName = cell.getValueAsString();
+            // Identifier column can have any type of string value
+            if (!(expectation.isExpectedColumn(sheet.getName(), columnName) || cell.getColNo() == Sheet.IDENTIFIER_COLUMN_NO)) {
+                String message = "Column '" + sheet.getName() + "." + columnName + "' does not exist in our mapping.";
+                result.addSheetViolation(sheet.getName(), new WorkbookViolation(message, ViolationLevel.WARNING));
+            }
         }
-        
-        /**
-         * Retrieve all expected column names of a sheet.
-         * @param sheetName name of the sheet
-         * @return expected column names
-         */
-        public Set<String> getColumnNames(String sheetName) {
-            return Collections.unmodifiableSet(columnNamesMap.get(sheetName));
+    }
+
+    private void checkIfEachRowHasIdentifier(Sheet sheet, WorkbookValidationResult result) {
+        for (Row row : sheet.getRows()) {
+            if (sheet.getIdentifierAt(row.getRowNo()) == null) {
+                String message = "Row " + row.getRowNo() + " in '" + sheet.getName() + "' has no identifier.";
+                result.addSheetViolation(sheet.getName(), new WorkbookViolation(message, ViolationLevel.ERROR));
+            }
         }
     }
 
