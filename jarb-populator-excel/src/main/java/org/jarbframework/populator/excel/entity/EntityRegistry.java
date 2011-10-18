@@ -1,8 +1,10 @@
 package org.jarbframework.populator.excel.entity;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * In memory storage of entity instances.
@@ -14,12 +16,17 @@ public class EntityRegistry implements Iterable<EntityTable<?>> {
     /** Map based container of all entity tables. **/
     private Map<Class<?>, EntityTable<?>> entityTableMap = new HashMap<Class<?>, EntityTable<?>>();
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Iterator<EntityTable<?>> iterator() {
         return entityTableMap.values().iterator();
+    }
+
+    public Set<Object> all() {
+        Set<Object> entities = new HashSet<Object>();
+        for (EntityTable<?> table : this) {
+            entities.addAll(table.all());
+        }
+        return entities;
     }
 
     /**

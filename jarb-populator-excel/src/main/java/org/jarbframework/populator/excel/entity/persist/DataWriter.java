@@ -3,16 +3,13 @@ package org.jarbframework.populator.excel.entity.persist;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 
 import org.jarbframework.populator.excel.entity.EntityRegistry;
-import org.jarbframework.populator.excel.entity.EntityTable;
 import org.jarbframework.populator.excel.util.JpaUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,7 +38,7 @@ class DataWriter {
         EntityManager entityManager = JpaUtils.createEntityManager(entityManagerFactory);
         EntityTransaction entityTransaction = entityManager.getTransaction();
 
-        List<Object> entities = new ArrayList<Object>(createInstanceSet(registry));
+        List<Object> entities = new ArrayList<Object>(registry.all());
         Collections.sort(entities, new ObjectClassInstantationComparator());
 
         entityTransaction.begin();
@@ -58,16 +55,6 @@ class DataWriter {
             }
         }
         entityTransaction.commit();
-    }
-
-    private static Set<Object> createInstanceSet(EntityRegistry registry) {
-        Set<Object> instanceSet = new HashSet<Object>();
-        for (EntityTable<?> entities : registry) {
-            for (Object entity : entities) {
-                instanceSet.add(entity);
-            }
-        }
-        return instanceSet;
     }
 
     private static class ObjectClassInstantationComparator implements Comparator<Object> {

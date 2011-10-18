@@ -1,13 +1,14 @@
 package org.jarbframework.populator.excel.entity;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import static java.util.Collections.unmodifiableMap;
+import static java.util.Collections.unmodifiableSet;
+import static org.jarbframework.utils.Asserts.notNull;
 
-import org.springframework.util.Assert;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * In memory representation of entities from a specific type.
@@ -22,7 +23,7 @@ public class EntityTable<T> implements Iterable<T> {
     private final Class<T> entityClass;
     /** Map based container of all stored entities **/
     private Map<Object, T> entitiesMap = new HashMap<Object, T>();
-    
+
     /**
      * Construct a new {@link EntityTable}.
      * @param entityClass class of entities stored in this table
@@ -38,7 +39,7 @@ public class EntityTable<T> implements Iterable<T> {
     public Class<T> getEntityClass() {
         return entityClass;
     }
-    
+
     /**
      * Retrieve an entity based on its identifier.
      * @param id identifier of the entity
@@ -47,7 +48,7 @@ public class EntityTable<T> implements Iterable<T> {
     public T find(Object id) {
         return entitiesMap.get(id);
     }
-    
+
     /**
      * Determine if an entity with the specified identifier exists.
      * @param id identifier of the entity
@@ -56,7 +57,7 @@ public class EntityTable<T> implements Iterable<T> {
     public boolean exists(Object id) {
         return entitiesMap.containsKey(id);
     }
-    
+
     /**
      * Count the number of stored entities.
      * @return number of stored entities
@@ -66,13 +67,13 @@ public class EntityTable<T> implements Iterable<T> {
     }
 
     /**
-     * Check if there are no stored entites.
+     * Check if there are no stored entities.
      * @return {@code true} if the table is empty, else {@code false}
      */
     public boolean isEmpty() {
         return entitiesMap.isEmpty();
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -82,11 +83,11 @@ public class EntityTable<T> implements Iterable<T> {
     }
 
     /**
-     * Retrieve every entity, in {@link List} format.
-     * @return list representation of each stored entity
+     * Retrieve every entity, in {@link Set} format.
+     * @return set representation of each stored entity
      */
-    public List<T> list() {
-        return Collections.unmodifiableList(new ArrayList<T>(entitiesMap.values()));
+    public Set<T> all() {
+        return unmodifiableSet(new HashSet<T>(entitiesMap.values()));
     }
 
     /**
@@ -94,7 +95,7 @@ public class EntityTable<T> implements Iterable<T> {
      * @return map representation of each stored entity
      */
     public Map<Object, T> map() {
-        return Collections.unmodifiableMap(entitiesMap);
+        return unmodifiableMap(new HashMap<Object, T>(entitiesMap));
     }
 
     /**
@@ -103,8 +104,8 @@ public class EntityTable<T> implements Iterable<T> {
      * @param entity reference to the entity
      */
     public void add(Object id, T entity) {
-        Assert.notNull(id, "Cannot store an entity using a null identifier");
-        Assert.notNull(id, "Cannot store a null entity");
+        notNull(id, "Cannot store an entity using a null identifier");
+        notNull(entity, "Cannot store a null entity");
         entitiesMap.put(id, entity);
     }
 

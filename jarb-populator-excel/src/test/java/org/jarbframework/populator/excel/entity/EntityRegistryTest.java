@@ -1,13 +1,13 @@
 package org.jarbframework.populator.excel.entity;
 
+import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
-import java.util.Arrays;
-import java.util.List;
+import java.util.Set;
 
-import org.jarbframework.populator.excel.entity.EntityRegistry;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -54,8 +54,8 @@ public class EntityRegistryTest {
         final Employee jeroen = new Employee();
         registry.add(Employee.class, 1L, bas);
         registry.add(Employee.class, 2L, jeroen);
-        List<Employee> employees = registry.withClass(Employee.class).list();
-        assertEquals(Arrays.asList(bas, jeroen), employees);
+        Set<Employee> employees = registry.withClass(Employee.class).all();
+        assertThat(employees, containsInAnyOrder(bas, jeroen));
     }
 
     /**
