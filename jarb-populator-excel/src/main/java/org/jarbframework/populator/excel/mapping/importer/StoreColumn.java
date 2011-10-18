@@ -41,20 +41,31 @@ public final class StoreColumn {
      * @throws NoSuchFieldException Thrown when a field is not available
      */
     public void storeValue(Workbook excel, EntityDefinition<?> classDefinition, PropertyDefinition columnDefinition, Integer rowPosition, ExcelRow excelRow) {
+        Sheet sheet = excel.getSheet(classDefinition.getTableName());
+
         WorksheetDefinition worksheetDefinition = WorksheetDefinition.analyzeWorksheet(classDefinition, excel);
         Integer columnPosition = worksheetDefinition.getColumnPosition(columnDefinition.getColumnName());
 
-        Sheet sheet = excel.getSheet(classDefinition.getTableName());
         Object cellValue = getCellValue(sheet, rowPosition, columnPosition);
         logger.debug("field: " + columnDefinition.getName() + " column: " + columnDefinition.getColumnName() + " value:[" + cellValue + "]");
 
-        ModifiableBean<Object> propertyAccessor = ModifiableBean.wrap(excelRow.getCreatedInstance());
-        if (propertyAccessor.isWritableProperty(columnDefinition.getName())) {
-            setExcelRowFieldValue(excelRow.getCreatedInstance(), columnDefinition.getName(), cellValue);
-        } else if (columnDefinition.isEmbeddedAttribute()) {
-            Object embeddedField = getOrCreatePathLeaf(excelRow.getCreatedInstance(), columnDefinition.getEmbeddablePath());
-            setExcelRowFieldValue(embeddedField, columnDefinition.getName(), cellValue);
+        if (cellValue != null) {
+            Object bean = excelRow.getCreatedInstance();
+            if (columnDefinition.isEmbeddedAttribute()) {
+                bean = getOrCreatePathLeaf(bean, columnDefinition.getEmbeddablePath());
+            }
+            if (ModifiableBean.wrap(bean).isWritableProperty(columnDefinition.getName())) {
+                setExcelRowFieldValue(bean, columnDefinition.getName(), cellValue);
+            }
         }
+    }
+
+    private Object getCellValue(Sheet sheet, Integer rowPosition, Integer columnPosition) {
+        Object cellValue = null;
+        if (columnPosition != null) {
+            cellValue = sheet.getValueAt(rowPosition, columnPosition);
+        }
+        return cellValue;
     }
 
     private Object getOrCreatePathLeaf(Object root, PropertyPath path) {
@@ -71,37 +82,14 @@ public final class StoreColumn {
         return current;
     }
 
-    /**
-     * Sets an Excelrow's field value via reflection. Works for regular fields, embedded fields and Enumerations.
-     * @param bean Excelrow to add the field value to
-     * @param fieldName Name of field which value is to be set
-     * @param cellValue Value of the field that is to be saved
-     */
-    private void setExcelRowFieldValue(Object bean, String fieldName, Object cellValue) {
-        ModifiableBean<?> modifiableBean = ModifiableBean.wrap(bean);
-        if (modifiableBean.isWritableProperty(fieldName)) {
-            Class<?> fieldType = getPropertyType(new PropertyReference(bean.getClass(), fieldName));
-            try {
-                Object fieldValue = conversionService.convert(cellValue, fieldType);
-                modifiableBean.setPropertyValue(fieldName, fieldValue);
-            } catch (CouldNotConvertException e) {
-                logger.warn("Could not convert '{}' into a {}, thus '{}' will remain unchanged.", new Object[] { cellValue, fieldType, fieldName });
-            }
+    private void setExcelRowFieldValue(Object bean, String propertyName, Object value) {
+        Class<?> propertyType = getPropertyType(new PropertyReference(bean.getClass(), propertyName));
+        try {
+            Object convertedValue = conversionService.convert(value, propertyType);
+            ModifiableBean.wrap(bean).setPropertyValue(propertyName, convertedValue);
+        } catch (CouldNotConvertException e) {
+            logger.warn("Could not convert '{}' into a {}, thus '{}' will remain unchanged.", new Object[] { value, propertyType, propertyName });
         }
     }
 
-    /**
-     * Returns the cellValue from the excel file.
-     * @param excel Excel file to get cellValue from
-     * @param rowPosition Rowposition of the cell
-     * @param columnPosition ColumnPosition of the cell
-     * @return CellValue from the specified location
-     */
-    private Object getCellValue(Sheet sheet, Integer rowPosition, Integer columnPosition) {
-        Object cellValue = null;
-        if (columnPosition != null) {
-            cellValue = sheet.getValueAt(rowPosition, columnPosition);
-        }
-        return cellValue;
-    }
 }
