@@ -1,7 +1,6 @@
 package org.jarbframework.populator.excel.entity.query;
 
 import org.jarbframework.populator.excel.entity.EntityRegistry;
-import org.jarbframework.populator.excel.entity.EntityTable;
 
 /**
  * Capable of retrieving entity instances from the database.
@@ -16,22 +15,5 @@ public interface EntityReader {
      * @return registry containing every entities
      */
     EntityRegistry readAll();
-    
-    /**
-     * Retrieve all entities of a specific type from the database.
-     * @param <T> type of entities
-     * @param entityClass class of the entity type
-     * @return entity table containing all entities of that type
-     */
-    <T> EntityTable<T> readFrom(Class<T> entityClass);
-    
-    /**
-     * Retrieve a specific entity from the database.
-     * @param <T> type of entity
-     * @param entityClass entity class
-     * @param identifier entity identifier
-     * @return entity, if any, else {@code null}
-     */
-    <T> T read(Class<T> entityClass, Object identifier);
 
 }

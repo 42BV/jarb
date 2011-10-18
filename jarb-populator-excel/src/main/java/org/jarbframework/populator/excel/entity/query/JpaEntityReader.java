@@ -1,5 +1,8 @@
 package org.jarbframework.populator.excel.entity.query;
 
+import static org.jarbframework.utils.orm.jpa.JpaMetaModelUtils.getRootEntities;
+import static org.springframework.orm.jpa.EntityManagerFactoryUtils.getTransactionalEntityManager;
+
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -9,7 +12,6 @@ import javax.persistence.metamodel.EntityType;
 import org.jarbframework.populator.excel.entity.EntityRegistry;
 import org.jarbframework.populator.excel.entity.EntityTable;
 import org.jarbframework.populator.excel.util.JpaUtils;
-import org.jarbframework.utils.orm.jpa.JpaMetaModelUtils;
 
 /**
  * Java Persistence API (JPA) implementation of {@link EntityReader}.
@@ -18,14 +20,14 @@ import org.jarbframework.utils.orm.jpa.JpaMetaModelUtils;
  * @since 11-05-2011
  */
 public class JpaEntityReader implements EntityReader {
-    private EntityManager entityManager;
+    private final EntityManagerFactory entityManagerFactory;
 
     /**
      * Construct a new {@link JpaEntityReader}.
      * @param entityManagerFactory entity manager factory used for retrieving data
      */
     public JpaEntityReader(EntityManagerFactory entityManagerFactory) {
-        entityManager = JpaUtils.createEntityManager(entityManagerFactory);
+        this.entityManagerFactory = entityManagerFactory;
     }
 
     /**
@@ -34,42 +36,28 @@ public class JpaEntityReader implements EntityReader {
     @Override
     public EntityRegistry readAll() {
         EntityRegistry registry = new EntityRegistry();
-        for (EntityType<?> entityType : JpaMetaModelUtils.getRootEntities(entityManager.getMetamodel())) {
+        EntityManager entityManager = getTransactionalEntityManager(entityManagerFactory);
+        for (EntityType<?> entityType : getRootEntities(entityManagerFactory.getMetamodel())) {
             final Class<?> entityClass = entityType.getJavaType();
-            registry.addAll(readFrom(entityClass));
+            registry.addAll(readFrom(entityClass, entityManager));
         }
         return registry;
     }
-    
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public <T> EntityTable<T> readFrom(Class<T> entityClass) {
+
+    private <T> EntityTable<T> readFrom(Class<T> entityClass, EntityManager entityManager) {
         EntityTable<T> entities = new EntityTable<T>(entityClass);
-        for (T entity : queryInstancesOf(entityClass)) {
-            Object identifier = JpaUtils.getIdentifier(entity, entityManager.getEntityManagerFactory());
-            entities.add(identifier, entity);
+        for (T entity : findAll(entityClass, entityManager)) {
+            entities.add(identifierOf(entity), entity);
         }
         return entities;
     }
-    
-    /**
-     * Perform the actual database query, retrieving our entities.
-     * @param <T> type of entities to retrieve
-     * @param entityClass class reference to the entity type
-     * @return list of each entity, currently stored inside the database, from that type
-     */
-    protected <T> List<T> queryInstancesOf(Class<T> entityClass) {
+
+    private <T> List<T> findAll(Class<T> entityClass, EntityManager entityManager) {
         return entityManager.createQuery("from " + entityClass.getName(), entityClass).getResultList();
     }
-    
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public <T> T read(Class<T> entityClass, Object identifier) {
-        return entityManager.find(entityClass, identifier);
+
+    private Object identifierOf(Object entity) {
+        return JpaUtils.getIdentifier(entity, entityManagerFactory);
     }
 
 }

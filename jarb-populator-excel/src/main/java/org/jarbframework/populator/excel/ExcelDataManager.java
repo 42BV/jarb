@@ -190,36 +190,8 @@ public class ExcelDataManager {
          * Include all entities currently stored in the database.
          * @return this builder, for chaining
          */
-        public WorkbookBuilder readAndIncludeAll() {
+        public WorkbookBuilder includeAll() {
             entities = entityReader.readAll();
-            return this;
-        }
-
-        /**
-         * Include all entities, of a specific type, currently stored in the database.
-         * @param <T> type of entities being included
-         * @param entityClass class of the entity type
-         * @return this builder, for chaining
-         */
-        public <T> WorkbookBuilder readAndIncludeAll(Class<T> entityClass) {
-            notNull(entityClass, "Entity class cannot be null");
-
-            entities.addAll(entityReader.readFrom(entityClass));
-            return this;
-        }
-
-        /**
-         * Include a specific entity, currently stored in the database.
-         * @param <T> type of entity being included
-         * @param entityClass class of the entity type
-         * @param identifier entity identifier
-         * @return this builder, for chaining
-         */
-        public <T> WorkbookBuilder readAndInclude(Class<T> entityClass, Object identifier) {
-            notNull(entityClass, "Entity class cannot be null");
-            notNull(identifier, "Entity identifier cannot be null");
-
-            entities.add(entityClass, identifier, entityReader.read(entityClass, identifier));
             return this;
         }
 
@@ -295,4 +267,5 @@ public class ExcelDataManager {
     public void setMetamodelGenerator(MetaModelGenerator metaModelGenerator) {
         this.metamodelGenerator = metaModelGenerator;
     }
+
 }
