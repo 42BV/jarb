@@ -1,5 +1,7 @@
 package org.jarbframework.validation;
 
+import java.util.Set;
+
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 import javax.validation.ValidatorFactory;
@@ -42,8 +44,19 @@ public class DatabaseConstraintValidatorAdapter implements ConstraintValidator<D
     private BeanSearcher beanAccessor;
 
     @Override
-    public boolean isValid(Object bean, ConstraintValidatorContext context) {
-        return databaseConstraintValidator.isValid(bean, context);
+    public boolean isValid(Object bean, ConstraintValidatorContext context) {       
+        Set<DatabaseConstraintViolation> violations = databaseConstraintValidator.validate(bean);
+        context.disableDefaultConstraintViolation();
+        for(DatabaseConstraintViolation violation : violations) {
+            addConstraintViolation(violation, context);
+        }
+        return violations.isEmpty();
+    }
+
+    private void addConstraintViolation(DatabaseConstraintViolation violation, ConstraintValidatorContext context) {
+        context.buildConstraintViolationWithTemplate(violation.getMessage())
+               .addNode(violation.getPropertyRef().getName())
+               .addConstraintViolation();
     }
 
     @Override

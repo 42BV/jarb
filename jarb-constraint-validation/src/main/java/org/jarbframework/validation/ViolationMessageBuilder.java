@@ -1,7 +1,10 @@
 package org.jarbframework.validation;
 
+import static java.util.Collections.emptyList;
+import static java.util.Collections.emptySet;
+import static java.util.Collections.unmodifiableMap;
+
 import java.lang.annotation.Annotation;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -94,7 +97,7 @@ public class ViolationMessageBuilder {
     /**
      * Simple interpolator context implementation that returns the configured values.
      */
-    public static class SimpleInterpolatorContext implements MessageInterpolator.Context {
+    private static class SimpleInterpolatorContext implements MessageInterpolator.Context {
         private final ConstraintDescriptor<?> constraintDescriptor;
         private final Object value;
 
@@ -103,17 +106,11 @@ public class ViolationMessageBuilder {
             this.value = value;
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         public ConstraintDescriptor<?> getConstraintDescriptor() {
             return constraintDescriptor;
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         public Object getValidatedValue() {
             return value;
@@ -124,64 +121,43 @@ public class ViolationMessageBuilder {
      * Constraint descriptor implementation that only provides the configured attributes.
      * This adapter class is needed to enable usage of the message interpolator.
      */
-    public static class AttributeConstraintDescriptor implements ConstraintDescriptor<Annotation> {
+    private static class AttributeConstraintDescriptor implements ConstraintDescriptor<Annotation> {
         private final Map<String, Object> attributes;
 
         public AttributeConstraintDescriptor(Map<String, Object> attributes) {
-            this.attributes = attributes;
+            this.attributes = unmodifiableMap(attributes);
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         public Annotation getAnnotation() {
             return null;
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         public Map<String, Object> getAttributes() {
-            return Collections.unmodifiableMap(attributes);
+            return attributes;
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         public Set<ConstraintDescriptor<?>> getComposingConstraints() {
-            return Collections.emptySet();
+            return emptySet();
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         public List<Class<? extends ConstraintValidator<Annotation, ?>>> getConstraintValidatorClasses() {
-            return Collections.emptyList();
+            return emptyList();
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         public Set<Class<?>> getGroups() {
-            return Collections.emptySet();
+            return emptySet();
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         public Set<Class<? extends Payload>> getPayload() {
-            return Collections.emptySet();
+            return emptySet();
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         public boolean isReportAsSingleViolation() {
             return false;
