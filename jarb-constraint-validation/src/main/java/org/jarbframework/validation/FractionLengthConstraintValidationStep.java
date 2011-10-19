@@ -32,5 +32,4 @@ public class FractionLengthConstraintValidationStep implements DatabaseConstrain
         BigDecimal numberAsBigDecimal = new BigDecimal(number.toString());
         return numberAsBigDecimal.scale() < 0 ? 0 : numberAsBigDecimal.scale();
     }
-
 }

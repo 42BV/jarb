@@ -79,5 +79,4 @@ public class DatabaseConstraintValidatorAdapter implements ConstraintValidator<D
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
         this.beanSearcher = new BeanSearcher(applicationContext);
     }
-
 }

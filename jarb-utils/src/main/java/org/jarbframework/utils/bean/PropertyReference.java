@@ -51,6 +51,10 @@ public class PropertyReference {
         String parentName = StringUtils.substringBeforeLast(name, PROPERTY_SEPARATOR);
         return new PropertyReference(beanClass, parentName);
     }
+    
+    public String[] getPath() {
+        return StringUtils.split(name, PROPERTY_SEPARATOR);
+    }
 
     @Override
     public boolean equals(Object obj) {

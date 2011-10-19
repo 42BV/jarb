@@ -23,5 +23,4 @@ public class NotNullConstraintValidationStep implements DatabaseConstraintValida
     private boolean isGeneratable(PropertyReference propertyRef, ColumnMetadata columnMetadata) {
         return columnMetadata.isGeneratable() || fieldOrGetter().hasAnnotation(propertyRef, DatabaseGenerated.class);
     }
-
 }

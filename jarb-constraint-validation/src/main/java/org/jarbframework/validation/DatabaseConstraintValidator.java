@@ -18,17 +18,17 @@ import org.slf4j.LoggerFactory;
 
 public class DatabaseConstraintValidator {
     private final Logger logger = LoggerFactory.getLogger(DatabaseConstraintValidator.class);
-    private final List<DatabaseConstraintValidationStep> validationSteps;
+    private final List<DatabaseConstraintValidationStep> steps;
     
     private DatabaseConstraintRepository constraintRepository;
     private ViolationMessageBuilder messageBuilder;
     private SchemaMapper schemaMapper;
 
     public DatabaseConstraintValidator() {
-        validationSteps = new ArrayList<DatabaseConstraintValidationStep>();
-        validationSteps.add(new NotNullConstraintValidationStep());
-        validationSteps.add(new LengthConstraintValidationStep());
-        validationSteps.add(new FractionLengthConstraintValidationStep());
+        steps = new ArrayList<DatabaseConstraintValidationStep>();
+        steps.add(new NotNullConstraintValidationStep());
+        steps.add(new LengthConstraintValidationStep());
+        steps.add(new FractionLengthConstraintValidationStep());
     }
     
     public void setMessageInterpolator(MessageInterpolator messageInterpolator) {
@@ -54,27 +54,30 @@ public class DatabaseConstraintValidator {
     private void validateProperty(Object bean, PropertyReference propertyRef, DatabaseConstraintValidationContext validation) {
         Class<?> propertyClass = BeanProperties.getPropertyType(propertyRef);
         if (schemaMapper.isEmbeddable(propertyClass)) {
-            for (String embbededPropertyName : BeanProperties.getFieldNames(propertyClass)) {
-                validateProperty(bean, new PropertyReference(propertyRef, embbededPropertyName), validation);
-            }
+            validateNestedProperty(bean, propertyRef, validation, propertyClass);
         } else {
-            ColumnReference columnRef = schemaMapper.columnOf(propertyRef);
-            if (columnRef != null) {
-                validateColumnConstraints(bean, propertyRef, columnRef, validation);
-            }
+            validateSimpleProperty(bean, propertyRef, validation);
         }
     }
 
-    private void validateColumnConstraints(Object bean, PropertyReference propertyRef, ColumnReference columnRef, DatabaseConstraintValidationContext validation) {
-        ColumnMetadata columnMetadata = constraintRepository.getColumnMetadata(columnRef);
-        if(columnMetadata != null) {
-            Object propertyValue = ModifiableBean.wrap(bean).getPropertyValue(propertyRef.getName());
-            for (DatabaseConstraintValidationStep validationStep : validationSteps) {
-                validationStep.validate(propertyValue, propertyRef, columnMetadata, validation);
-            }
-        } else {
-            logger.warn("Skipped validation because no metadata could be found for column '{}'.", columnRef);
+    private void validateNestedProperty(Object bean, PropertyReference propertyRef, DatabaseConstraintValidationContext validation, Class<?> propertyClass) {
+        for (String embbededPropertyName : BeanProperties.getFieldNames(propertyClass)) {
+            validateProperty(bean, new PropertyReference(propertyRef, embbededPropertyName), validation);
         }
     }
 
+    private void validateSimpleProperty(Object bean, PropertyReference propertyRef, DatabaseConstraintValidationContext validation) {
+        ColumnReference columnRef = schemaMapper.columnOf(propertyRef);
+        if (columnRef != null) {
+            ColumnMetadata columnMetadata = constraintRepository.getColumnMetadata(columnRef);
+            if(columnMetadata != null) {
+                Object propertyValue = ModifiableBean.wrap(bean).getPropertyValue(propertyRef.getName());
+                for (DatabaseConstraintValidationStep step : steps) {
+                    step.validate(propertyValue, propertyRef, columnMetadata, validation);
+                }
+            } else {
+                logger.warn("Skipped validation because no metadata could be found for column '{}'.", columnRef);
+            }
+        }
+    }
 }

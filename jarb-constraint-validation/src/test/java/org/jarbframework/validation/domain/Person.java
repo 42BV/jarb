@@ -26,7 +26,7 @@ public class Person {
     private String age;
     
     @Embedded
-    private Address address;
+    private Contact contact;
 
     public Long getId() {
         return id;
@@ -52,12 +52,12 @@ public class Person {
         this.age = age;
     }
     
-    public Address getAddress() {
-        return address;
+    public Contact getContact() {
+        return contact;
     }
     
-    public void setAddress(Address address) {
-        this.address = address;
+    public void setContact(Contact contact) {
+        this.contact = contact;
     }
 
 }

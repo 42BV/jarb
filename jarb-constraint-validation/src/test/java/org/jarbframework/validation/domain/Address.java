@@ -10,20 +10,20 @@ public class Address {
     private String streetAndNumber;
     private String city;
     
+    public Address() {
+    }
+    
+    public Address(String streetAndNumber, String city) {
+        this.streetAndNumber = streetAndNumber;
+        this.city = city;
+    }
+
     public String getStreetAndNumber() {
         return streetAndNumber;
     }
     
-    public void setStreetAndNumber(String streetAndNumber) {
-        this.streetAndNumber = streetAndNumber;
-    }
-    
     public String getCity() {
         return city;
-    }
-    
-    public void setCity(String city) {
-        this.city = city;
     }
     
 }

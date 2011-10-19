@@ -33,5 +33,4 @@ public class LengthConstraintValidationStep implements DatabaseConstraintValidat
     private int numberOfDigits(Number number) {
         return new BigDecimal(number.toString()).precision();
     }
-
 }

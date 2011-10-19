@@ -1,6 +1,9 @@
 package org.jarbframework.validation;
 
 import javax.validation.ConstraintValidatorContext;
+import javax.validation.ConstraintValidatorContext.ConstraintViolationBuilder;
+import javax.validation.ConstraintValidatorContext.ConstraintViolationBuilder.NodeBuilderCustomizableContext;
+import javax.validation.ConstraintValidatorContext.ConstraintViolationBuilder.NodeBuilderDefinedContext;
 
 import org.jarbframework.utils.bean.PropertyReference;
 import org.jarbframework.validation.ViolationMessageBuilder.ViolationMessageTemplate;
@@ -54,16 +57,36 @@ public final class DatabaseConstraintValidationContext {
             return this;
         }
 
-        // TODO: Does not support '.' separated paths, find a solution
         public DatabaseConstraintValidationContext addViolation() {
-            validatorContext.buildConstraintViolationWithTemplate(template.message()).addNode(propertyReference.getName()).addConstraintViolation();
             markAsInvalid();
+            if(propertyReference.isNestedProperty()) {
+                addNestedPropertyViolation();
+            } else {
+                addSimpleViolation();
+            }
             return DatabaseConstraintValidationContext.this;
         }
 
         private void markAsInvalid() {
             valid = false;
         }
+
+        private void addNestedPropertyViolation() {
+            String[] path = propertyReference.getPath();
+            NodeBuilderDefinedContext rootContext = createConstraintViolationBuilder().addNode(path[0]);
+            NodeBuilderCustomizableContext nestedContext = rootContext.addNode(path[1]);
+            for(int i = 2; i < path.length; i++) {
+                nestedContext = nestedContext.addNode(path[i]);
+            }
+            nestedContext.addConstraintViolation();
+        }
+        
+        private ConstraintValidatorContext addSimpleViolation() {
+            return createConstraintViolationBuilder().addNode(propertyReference.getName()).addConstraintViolation();
+        }
+        
+        private ConstraintViolationBuilder createConstraintViolationBuilder() {
+            return validatorContext.buildConstraintViolationWithTemplate(template.message());
+        }
     }
-    
 }
