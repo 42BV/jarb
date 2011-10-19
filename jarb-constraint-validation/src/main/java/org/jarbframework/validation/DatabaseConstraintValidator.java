@@ -3,76 +3,37 @@ package org.jarbframework.validation;
 import java.beans.PropertyDescriptor;
 import java.math.BigDecimal;
 
-import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
-import javax.validation.ValidatorFactory;
 
+import org.jarbframework.constraint.DatabaseGenerated;
 import org.jarbframework.constraint.database.CouldNotBeMappedToColumnException;
 import org.jarbframework.constraint.database.DatabaseConstraintRepository;
 import org.jarbframework.constraint.database.column.ColumnMetadata;
 import org.jarbframework.utils.bean.BeanAnnotationScanner;
 import org.jarbframework.utils.bean.ModifiableBean;
 import org.jarbframework.utils.bean.PropertyReference;
-import org.jarbframework.utils.spring.BeanSearcher;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.BeansException;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
-import org.springframework.util.Assert;
 
-/**
- * Validates the property values of a bean satisfy our database constraints.
- * Performed database checks include:
- * 
- * <ul>
- *  <li>Not nullable columns cannot have {@code null} values, unless they are generated</li>
- *  <li>Column length can never be exceeded. (char and number based)</li>
- *  <li>Fraction length in number column cannot be exceeded</li>
- * </ul>
- * 
- * Whenever a database constraint is violated, a constraint violation will be
- * added for that property. Multiple constraint violations can occur, even on
- * the same property.
- * 
- * <p>
- * 
- * In order for this validator to work, it has to be constructed by a Spring
- * context aware factory. Also a {@link DatabaseConstraintRepository} bean
- * has to be present in the application context.
- * 
- * @author Jeroen van Schagen
- * @since 23-05-2011
- */
-public class DatabaseConstrainedValidator implements ConstraintValidator<DatabaseConstrained, Object>, ApplicationContextAware {
-    public static final String DEFAULT_VALIDATOR_FACTORY_ID = "validator";
-
-    private final Logger logger = LoggerFactory.getLogger(DatabaseConstrainedValidator.class);
-
-    // Violation message templates
+public class DatabaseConstraintValidator {
     private static final String NOT_NULL_TEMPLATE = "{javax.validation.constraints.NotNull.message}";
     private static final String LENGTH_TEMPLATE = "{org.jarb.validation.DatabaseConstraint.Length.message}";
     private static final String FRACTION_LENGTH_TEMPLATE = "{org.jarb.validation.DatabaseConstraint.FractionLength.message}";
 
     private final BeanAnnotationScanner annotationScanner = new BeanAnnotationScanner(true, true);
-
-    /** Used to retrieve column meta-data repository during initialization **/
-    private BeanSearcher beanAccessor;
-
-    /** Provides the meta-data of columns in our database **/
-    private DatabaseConstraintRepository databaseConstraintRepository;
-    /** Allows custom violation messages to be build **/
+    private DatabaseConstraintRepository constraintRepository;
     private ViolationMessageBuilder messageBuilder;
-
-    private DatabaseConstrained annotation;
+    
+    public void setConstraintRepository(DatabaseConstraintRepository constraintRepository) {
+        this.constraintRepository = constraintRepository;
+    }
+    
+    public void setMessageBuilder(ViolationMessageBuilder messageBuilder) {
+        this.messageBuilder = messageBuilder;
+    }
 
     /**
-     * {@inheritDoc}
-     * <p>
      * Checks whether all properties inside a bean satisfy our database constraints.
      */
-    @Override
     public boolean isValid(Object bean, ConstraintValidatorContext context) {
         boolean beanIsValid = true;
         context.disableDefaultConstraintViolation(); // Only provide property violations
@@ -94,7 +55,7 @@ public class DatabaseConstrainedValidator implements ConstraintValidator<Databas
     private boolean isValidProperty(Object bean, PropertyDescriptor property, ConstraintValidatorContext context) {
         boolean propertyIsValid = true;
         try {
-            ColumnMetadata columnMetadata = databaseConstraintRepository.getColumnMetadata(bean.getClass(), property.getName());
+            ColumnMetadata columnMetadata = constraintRepository.getColumnMetadata(bean.getClass(), property.getName());
             if (columnMetadata != null) {
                 final Object propertyValue = ModifiableBean.wrap(bean).getPropertyValue(property.getName());
                 propertyIsValid = isValidValue(bean, property.getName(), propertyValue, columnMetadata, context);
@@ -145,7 +106,7 @@ public class DatabaseConstrainedValidator implements ConstraintValidator<Databas
     }
 
     private boolean isGeneratable(PropertyReference propertyReference, ColumnMetadata columnMetadata) {
-        return columnMetadata.isGeneratable() || annotationScanner.hasAnnotation(propertyReference, annotation.autoIncrementalClass());
+        return columnMetadata.isGeneratable() || annotationScanner.hasAnnotation(propertyReference, DatabaseGenerated.class);
     }
 
     /**
@@ -198,31 +159,5 @@ public class DatabaseConstrainedValidator implements ConstraintValidator<Databas
         BigDecimal numberAsBigDecimal = new BigDecimal(number.toString());
         return numberAsBigDecimal.scale() < 0 ? 0 : numberAsBigDecimal.scale();
     }
-
-    // Initialization
-
-    /**
-     * {@inheritDoc}
-     * <p>
-     * Asserts that every required dependency has been injected correctly.
-     */
-    @Override
-    public void initialize(DatabaseConstrained annotation) {
-        Assert.notNull(beanAccessor, "Bean accessor cannot be null.");
-        if (databaseConstraintRepository == null) {
-            databaseConstraintRepository = beanAccessor.findBean(DatabaseConstraintRepository.class, annotation.repository());
-            ValidatorFactory validatorFactory = beanAccessor.findBean(ValidatorFactory.class, annotation.factory(), DEFAULT_VALIDATOR_FACTORY_ID);
-            messageBuilder = new ViolationMessageBuilder(validatorFactory.getMessageInterpolator());
-        }
-        this.annotation = annotation;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-        this.beanAccessor = new BeanSearcher(applicationContext);
-    }
-
+      
 }

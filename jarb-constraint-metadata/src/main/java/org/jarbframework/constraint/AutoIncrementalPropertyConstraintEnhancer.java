@@ -13,7 +13,7 @@ public class AutoIncrementalPropertyConstraintEnhancer implements PropertyConstr
 
     @Override
     public PropertyConstraintDescription enhance(PropertyConstraintDescription propertyConstraints) {
-        if (fieldOrGetter().hasAnnotation(propertyConstraints.toPropertyReference(), AutoIncremental.class)) {
+        if (fieldOrGetter().hasAnnotation(propertyConstraints.toPropertyReference(), DatabaseGenerated.class)) {
             propertyConstraints.setRequired(false);
         }
         return propertyConstraints;
