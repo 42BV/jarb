@@ -3,6 +3,9 @@ package org.jarbframework.validation;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.validation.ConstraintValidatorContext;
+import javax.validation.MessageInterpolator;
+
 import org.jarbframework.constraint.database.DatabaseConstraintRepository;
 import org.jarbframework.constraint.database.column.ColumnMetadata;
 import org.jarbframework.utils.bean.BeanProperties;
@@ -28,28 +31,27 @@ public class DatabaseConstraintValidator {
         validationSteps.add(new FractionLengthConstraintValidationStep());
     }
     
-    public void setConstraintRepository(DatabaseConstraintRepository constraintRepository) {
-        this.constraintRepository = constraintRepository;
+    public void setMessageInterpolator(MessageInterpolator messageInterpolator) {
+        messageBuilder = new ViolationMessageBuilder(messageInterpolator);
     }
     
-    public void setMessageBuilder(ViolationMessageBuilder messageBuilder) {
-        this.messageBuilder = messageBuilder;
+    public void setConstraintRepository(DatabaseConstraintRepository constraintRepository) {
+        this.constraintRepository = constraintRepository;
     }
     
     public void setSchemaMapper(SchemaMapper schemaMapper) {
         this.schemaMapper = schemaMapper;
     }
 
-    public DatabaseConstraintValidation validate(Object bean) {
-        DatabaseConstraintValidation validation = new DatabaseConstraintValidation(messageBuilder);
+    public boolean isValid(Object bean, ConstraintValidatorContext validatorContext) {
+        DatabaseConstraintValidationContext validation = new DatabaseConstraintValidationContext(validatorContext, messageBuilder);
         for (String propertyName : BeanProperties.getFieldNames(bean.getClass())) {
-            PropertyReference propertyRef = new PropertyReference(bean.getClass(), propertyName);
-            validateProperty(bean, propertyRef, validation);
+            validateProperty(bean, new PropertyReference(bean.getClass(), propertyName), validation);
         }
-        return validation;
+        return validation.isValid();
     }
 
-    private void validateProperty(Object bean, PropertyReference propertyRef, DatabaseConstraintValidation validation) {
+    private void validateProperty(Object bean, PropertyReference propertyRef, DatabaseConstraintValidationContext validation) {
         Class<?> propertyClass = BeanProperties.getPropertyType(propertyRef);
         if (schemaMapper.isEmbeddable(propertyClass)) {
             for (String embbededPropertyName : BeanProperties.getFieldNames(propertyClass)) {
@@ -58,20 +60,21 @@ public class DatabaseConstraintValidator {
         } else {
             ColumnReference columnRef = schemaMapper.columnOf(propertyRef);
             if (columnRef != null) {
-                ColumnMetadata columnMetadata = constraintRepository.getColumnMetadata(columnRef);
-                if(columnMetadata != null) {
-                    validateConstraints(bean, propertyRef, columnMetadata, validation);
-                } else {
-                    logger.warn("Skipped validation because no metadata could be found for column '{}'.", columnRef);
-                }
+                validateColumnConstraints(bean, propertyRef, columnRef, validation);
             }
         }
     }
 
-    private void validateConstraints(Object bean, PropertyReference propertyRef, ColumnMetadata columnMetadata, DatabaseConstraintValidation validation) {
-        Object propertyValue = ModifiableBean.wrap(bean).getPropertyValue(propertyRef.getName());
-        for (DatabaseConstraintValidationStep validationStep : validationSteps) {
-            validationStep.validate(propertyValue, propertyRef, columnMetadata, validation);
+    private void validateColumnConstraints(Object bean, PropertyReference propertyRef, ColumnReference columnRef, DatabaseConstraintValidationContext validation) {
+        ColumnMetadata columnMetadata = constraintRepository.getColumnMetadata(columnRef);
+        if(columnMetadata != null) {
+            Object propertyValue = ModifiableBean.wrap(bean).getPropertyValue(propertyRef.getName());
+            for (DatabaseConstraintValidationStep validationStep : validationSteps) {
+                validationStep.validate(propertyValue, propertyRef, columnMetadata, validation);
+            }
+        } else {
+            logger.warn("Skipped validation because no metadata could be found for column '{}'.", columnRef);
         }
     }
+
 }

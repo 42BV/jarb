@@ -24,7 +24,7 @@ import javax.validation.metadata.ConstraintDescriptor;
  * @author Jeroen van Schagen
  * @since 24-05-2011
  */
-public class ViolationMessageBuilder {
+class ViolationMessageBuilder {
     private final MessageInterpolator messageInterpolator;
 
     /**

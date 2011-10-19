@@ -8,7 +8,6 @@ import org.jarbframework.constraint.database.DatabaseConstraintRepository;
 import org.jarbframework.utils.orm.SchemaMapper;
 import org.jarbframework.utils.orm.jpa.JpaHibernateSchemaMapper;
 import org.jarbframework.utils.spring.BeanSearcher;
-import org.jarbframework.validation.DatabaseConstraintValidation.DatabaseConstraintViolation;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.context.ApplicationContext;
@@ -42,47 +41,35 @@ public class DatabaseConstraintValidatorAdapter implements ConstraintValidator<D
     public static final String DEFAULT_VALIDATOR_FACTORY_ID = "validator";
     public static final String DEFAULT_SCHEMA_MAPPER_ID = "schemaMapper";
 
-    private DatabaseConstraintValidator databaseConstraintValidator;
-    private BeanSearcher beanAccessor;
+    private DatabaseConstraintValidator constraintValidator;
+    private BeanSearcher beanSearcher;
 
     @Override
-    public boolean isValid(Object bean, ConstraintValidatorContext context) {       
-        DatabaseConstraintValidation validation = databaseConstraintValidator.validate(bean);
-        context.disableDefaultConstraintViolation();
-        for(DatabaseConstraintViolation violation : validation.getViolations()) {
-            addConstraintViolation(violation, context);
-        }
-        return validation.isValid();
-    }
-
-    private void addConstraintViolation(DatabaseConstraintViolation violation, ConstraintValidatorContext context) {
-        // TODO: Does not support '.' separated paths, find a solution
-        context.buildConstraintViolationWithTemplate(violation.getMessage())
-                   .addNode(violation.getPropertyRef().getName())
-                       .addConstraintViolation();
+    public boolean isValid(Object bean, ConstraintValidatorContext validatorContext) {       
+        return constraintValidator.isValid(bean, validatorContext);
     }
 
     @Override
     public void initialize(DatabaseConstrained annotation) {
         try {
-            databaseConstraintValidator = beanAccessor.findBean(DatabaseConstraintValidator.class, annotation.id());
+            constraintValidator = beanSearcher.findBean(DatabaseConstraintValidator.class, annotation.id());
         } catch(NoSuchBeanDefinitionException e) {
-            databaseConstraintValidator = buildNewDatabaseConstraintValidator();
+            constraintValidator = buildNewDatabaseConstraintValidator();
         }
     }
 
     private DatabaseConstraintValidator buildNewDatabaseConstraintValidator() {
         DatabaseConstraintValidator databaseConstraintValidator = new DatabaseConstraintValidator();
-        databaseConstraintValidator.setConstraintRepository(beanAccessor.findBean(DatabaseConstraintRepository.class, null, DEFAULT_CONSTRAINT_REPO_ID));
-        ValidatorFactory validatorFactory = beanAccessor.findBean(ValidatorFactory.class, null, DEFAULT_VALIDATOR_FACTORY_ID);
-        databaseConstraintValidator.setMessageBuilder(new ViolationMessageBuilder(validatorFactory.getMessageInterpolator()));
+        databaseConstraintValidator.setConstraintRepository(beanSearcher.findBean(DatabaseConstraintRepository.class, null, DEFAULT_CONSTRAINT_REPO_ID));
+        ValidatorFactory validatorFactory = beanSearcher.findBean(ValidatorFactory.class, null, DEFAULT_VALIDATOR_FACTORY_ID);
+        databaseConstraintValidator.setMessageInterpolator(validatorFactory.getMessageInterpolator());
         databaseConstraintValidator.setSchemaMapper(findOrBuildSchemaMapper());
         return databaseConstraintValidator;
     }
 
     private SchemaMapper findOrBuildSchemaMapper() {
         try {
-            return beanAccessor.findBean(SchemaMapper.class, null, DEFAULT_SCHEMA_MAPPER_ID);
+            return beanSearcher.findBean(SchemaMapper.class, null, DEFAULT_SCHEMA_MAPPER_ID);
         } catch(NoSuchBeanDefinitionException e) {
             return new JpaHibernateSchemaMapper();
         }
@@ -90,7 +77,7 @@ public class DatabaseConstraintValidatorAdapter implements ConstraintValidator<D
 
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-        this.beanAccessor = new BeanSearcher(applicationContext);
+        this.beanSearcher = new BeanSearcher(applicationContext);
     }
 
 }
