@@ -28,6 +28,8 @@ databaseChangeLog() {
 			}
 			column(name: "name", type: "varchar(255)") { constraints(nullable: false) }
 			column(name: "age", type: "bigint")
+			column(name: "street_and_number", type: "varchar(255)") { constraints(nullable: false) }
+			column(name: "city", type: "varchar(255)") { constraints(nullable: false) }
 		}
 	}
 	

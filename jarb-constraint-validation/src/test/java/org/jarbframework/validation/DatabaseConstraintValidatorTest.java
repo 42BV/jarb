@@ -101,6 +101,22 @@ public class DatabaseConstraintValidatorTest {
         Assert.assertTrue(messages.contains("length cannot be greater than 6"));
         Assert.assertTrue(messages.contains("cannot have more than 2 numbers behind the comma"));
     }
+    
+//    @Test
+//    public void testEmbedded() {
+//        Person person = new Person();
+//        person.setName("Henk");
+//        Address address = new Address();
+//        address.setStreetAndNumber("Testweg 61");
+//        person.setAddress(address);
+//        
+//        Set<ConstraintViolation<Person>> violations = validator.validate(person);
+//        assertEquals(1, violations.size());
+//        
+//        ConstraintViolation<Person> violation = violations.iterator().next();
+//        assertEquals(address, violation.getLeafBean());
+//        assertEquals("cannot be null", violation.getMessage());
+//    }
 
     /**
      * Retrieve the messages of each provided constraint violation.

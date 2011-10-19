@@ -25,6 +25,10 @@ public class PropertyReference {
         this.name = hasText(name, "Property name is required");
         this.beanClass = notNull(beanClass, "Bean class is required");
     }
+    
+    public PropertyReference(PropertyReference parent, String name) {
+        this(parent.getBeanClass(), parent.getName() + PROPERTY_SEPARATOR + name);
+    }
 
     public String getName() {
         return name;
@@ -46,10 +50,6 @@ public class PropertyReference {
         Asserts.state(isNestedProperty(), "Can only retrieve the parent for a nested property.");
         String parentName = StringUtils.substringBeforeLast(name, PROPERTY_SEPARATOR);
         return new PropertyReference(beanClass, parentName);
-    }
-
-    public PropertyReference createNestedProperty(String nestedName) {
-        return new PropertyReference(beanClass, name + PROPERTY_SEPARATOR + nestedName);
     }
 
     @Override

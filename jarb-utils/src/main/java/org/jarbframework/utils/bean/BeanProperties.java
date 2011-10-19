@@ -23,11 +23,11 @@ public final class BeanProperties {
         for (PropertyDescriptor propertyDescriptor : getPropertyDescriptors(beanClass)) {
             propertyNames.add(propertyDescriptor.getName());
         }
-        propertyNames.addAll(collectFieldNames(beanClass));
+        propertyNames.addAll(getFieldNames(beanClass));
         return propertyNames;
     }
 
-    private static Set<String> collectFieldNames(Class<?> beanClass) {
+    public static Set<String> getFieldNames(Class<?> beanClass) {
         final Set<String> fieldNames = new HashSet<String>();
         ReflectionUtils.doWithFields(beanClass, new FieldCallback() {
             @Override

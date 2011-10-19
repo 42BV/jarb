@@ -1,14 +1,18 @@
 package org.jarbframework.validation.domain;
 
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import org.jarbframework.validation.DatabaseConstrained;
+
 @Entity
 @Table(name = "persons")
+@DatabaseConstrained
 public class Person {
 
     @Id
@@ -20,6 +24,9 @@ public class Person {
 
     @Column
     private String age;
+    
+    @Embedded
+    private Address address;
 
     public Long getId() {
         return id;
@@ -43,6 +50,14 @@ public class Person {
 
     public void setAge(String age) {
         this.age = age;
+    }
+    
+    public Address getAddress() {
+        return address;
+    }
+    
+    public void setAddress(Address address) {
+        this.address = address;
     }
 
 }
