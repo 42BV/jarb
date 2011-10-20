@@ -77,7 +77,10 @@ public class JpaHibernateSchemaMapperTest {
 
     @Entity
     static class SimpleEntity {
-        @Id Long id;
+
+        @Id
+        Long id;
+
     }
 
     /**
@@ -121,7 +124,7 @@ public class JpaHibernateSchemaMapperTest {
     }
 
     // Inheritance
-    
+
     /**
      * A single table inheritance strategy causes sub-classes to have the same
      * table name as their parent class.
@@ -189,7 +192,7 @@ public class JpaHibernateSchemaMapperTest {
         assertEquals("ctbl_entity_with_properties", columnReference.getTableName());
         assertEquals("col_custom_property", columnReference.getColumnName());
     }
-    
+
     // Embedded properties
 
     @Test
@@ -198,10 +201,11 @@ public class JpaHibernateSchemaMapperTest {
         assertEquals("ctbl_entity_with_properties", columnReference.getTableName());
         assertEquals("prop_embeddable_property", columnReference.getColumnName());
     }
-    
+
     @Test
     public void testEmbeddedColumnWithCustomName() {
-        ColumnReference columnReference = mapper.columnOf(new PropertyReference(EntityWithProperties.class, "embeddedProperty.embeddablePropertyWithCustomName"));
+        ColumnReference columnReference = mapper
+                .columnOf(new PropertyReference(EntityWithProperties.class, "embeddedProperty.embeddablePropertyWithCustomName"));
         assertEquals("ctbl_entity_with_properties", columnReference.getTableName());
         assertEquals("col_custom_embeddable", columnReference.getColumnName());
     }
@@ -212,7 +216,7 @@ public class JpaHibernateSchemaMapperTest {
         assertEquals("ctbl_entity_with_properties", columnReference.getTableName());
         assertEquals("col_custom_overwritten_embeddable", columnReference.getColumnName());
     }
-        
+
     @Test
     public void testEmbeddedId() {
         ColumnReference columnReference = mapper.columnOf(new PropertyReference(EntityWithProperties.class, "embeddedIdProperty.embeddableIdProperty"));
@@ -221,7 +225,7 @@ public class JpaHibernateSchemaMapperTest {
     }
 
     // Reference properties
-    
+
     /**
      * With @OneToOne we also use the property name.
      */
@@ -251,7 +255,7 @@ public class JpaHibernateSchemaMapperTest {
         assertEquals("ctbl_entity_with_properties", columnReference.getTableName());
         assertEquals("col_custom_reference", columnReference.getColumnName());
     }
-    
+
     // Not columns
 
     /**
@@ -260,6 +264,7 @@ public class JpaHibernateSchemaMapperTest {
     @Test
     public void testNotAColumn() {
         assertNull(mapper.columnOf(new PropertyReference(EntityWithProperties.class, "oneToManyProperty")));
+        assertNull(mapper.columnOf(new PropertyReference(EntityWithProperties.class, "notOwnedOneToOneProperty")));
         assertNull(mapper.columnOf(new PropertyReference(EntityWithProperties.class, "manyToManyProperty")));
         assertNull(mapper.columnOf(new PropertyReference(EntityWithProperties.class, "elementCollectionProperty")));
         assertNull(mapper.columnOf(new PropertyReference(EntityWithProperties.class, "transientProperty")));
@@ -275,9 +280,9 @@ public class JpaHibernateSchemaMapperTest {
 
         @Id
         Long idProperty;
-        
+
         @EmbeddedId
-        EmbeddableIdClass embeddedIdProperty; 
+        EmbeddableIdClass embeddedIdProperty;
 
         String simpleProperty;
 
@@ -289,6 +294,9 @@ public class JpaHibernateSchemaMapperTest {
 
         @OneToOne
         SimpleEntity oneToOneProperty;
+
+        @OneToOne(mappedBy = "entityWithProperties")
+        EntityWithProperties notOwnedOneToOneProperty;
 
         @ManyToOne
         SimpleEntity manyToOneProperty;
@@ -308,30 +316,42 @@ public class JpaHibernateSchemaMapperTest {
 
         @Transient
         String transientProperty;
-        
+
         @Embedded
-        @AttributeOverride(name = "overwrittenEmbeddableProperty", column = @Column(name="custom_overwritten_embeddable"))
+        @AttributeOverride(name = "overwrittenEmbeddableProperty", column = @Column(name = "custom_overwritten_embeddable"))
         EmbeddableClass embeddedProperty;
 
     }
-    
+
+    @Entity
+    static class OtherEntity {
+
+        @Id
+        Long idProperty;
+
+        @OneToOne
+        EntityWithProperties entityWithProperties;
+
+    }
+
     @Embeddable
     static class EmbeddableClass {
         String embeddableProperty;
-        
+
         @Column(name = "custom_embeddable")
         String embeddablePropertyWithCustomName;
-        
+
         String overwrittenEmbeddableProperty;
     }
-    
+
     @Embeddable
     static class EmbeddableIdClass {
-        @Id Long embeddableIdProperty;
+        @Id
+        Long embeddableIdProperty;
     }
-    
+
     // Joined inheritance properties
-    
+
     /**
      * Joined inheritance causes properties to be placed inside the
      * table of their declaring class. Thus, properties defined inside

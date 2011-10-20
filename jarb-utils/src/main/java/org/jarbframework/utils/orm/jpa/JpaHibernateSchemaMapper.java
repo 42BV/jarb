@@ -12,6 +12,8 @@ import static org.jarbframework.utils.bean.BeanProperties.getPropertyType;
 import static org.jarbframework.utils.orm.jpa.JpaMetaModelUtils.findRootEntityClass;
 import static org.springframework.beans.BeanUtils.instantiateClass;
 
+import java.util.Collection;
+
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;
@@ -32,6 +34,7 @@ import javax.persistence.Transient;
 import org.hibernate.cfg.DefaultNamingStrategy;
 import org.hibernate.cfg.NamingStrategy;
 import org.jarbframework.utils.bean.BeanAnnotationScanner;
+import org.jarbframework.utils.bean.BeanProperties;
 import org.jarbframework.utils.bean.PropertyReference;
 import org.jarbframework.utils.orm.ColumnReference;
 import org.jarbframework.utils.orm.NotAnEntityException;
@@ -152,15 +155,25 @@ public class JpaHibernateSchemaMapper implements SchemaMapper {
 
     private boolean isMappedToColumn(PropertyReference propertyReference) {
         boolean mappedToColumn = false;
-        if (!isCollection(propertyReference)) {
+        if (!isCollection(propertyReference) && !isInverseReferenceColumn(propertyReference)) {
             mappedToColumn = !annotationScanner.hasAnnotation(propertyReference, Transient.class);
         }
         return mappedToColumn;
     }
 
+    private boolean isInverseReferenceColumn(PropertyReference propertyReference) {
+        boolean inverseReferenceColumn = false;
+        if (annotationScanner.hasAnnotation(propertyReference, OneToOne.class)) {
+            inverseReferenceColumn = isNotBlank(annotationScanner.findAnnotation(propertyReference, OneToOne.class).mappedBy());
+        }
+        return inverseReferenceColumn;
+    }
+
     private boolean isCollection(PropertyReference propertyReference) {
-        return annotationScanner.hasAnnotation(propertyReference, OneToMany.class) || annotationScanner.hasAnnotation(propertyReference, ManyToMany.class)
-                || annotationScanner.hasAnnotation(propertyReference, ElementCollection.class);
+        return 
+                annotationScanner.hasAnnotation(propertyReference, OneToMany.class) ||
+                annotationScanner.hasAnnotation(propertyReference, ManyToMany.class) ||
+                annotationScanner.hasAnnotation(propertyReference, ElementCollection.class);
     }
 
     private String tableForProperty(PropertyReference propertyReference) {
