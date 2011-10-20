@@ -17,13 +17,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * ReferentialPreparement class can prepare classes for persistence by persisting needed referenced objects first.
+ * ReferentialPreparement class can prepare classes for persistence by persisting required referenced objects first.
  * Only does this if they're NOT annotated with cascadeTypes both PERSIST and MERGE or ALL.
  * If it is annotated as one of those, it will still check if the referenced item holds a reference that isn't.
  * @author Sander Benschop
  *
  */
-public final class ReferentialPreparement {
+public class ReferentialPreparement {
     private static final Logger LOGGER = LoggerFactory.getLogger(ReferentialPreparement.class);
     private final Set<Object> cascadedObjects = new HashSet<Object>();
     private final EntityManager entityManager;
@@ -41,18 +41,27 @@ public final class ReferentialPreparement {
      * @return Object with prepared entity references (either persisted or not, depending on lack of cascade types).
      */
     public <T> T prepareEntityReferences(T entity) {
-        cascadedObjects.add(entity);
-
+        //Add this entity to the cascadedObjects set so we can recognize if we're in a referencing loop later on.
+    	cascadedObjects.add(entity);
         EntityManagerFactory entityManagerFactory = entityManager.getEntityManagerFactory();
         Metamodel metamodel = entityManagerFactory.getMetamodel();
         for (Attribute<?, ?> attribute : metamodel.entity(entity.getClass()).getAttributes()) {
-            PersistentAttributeType attributePersistenceType = attribute.getPersistentAttributeType();
-            if ((attributePersistenceType == PersistentAttributeType.MANY_TO_ONE) || (attributePersistenceType == PersistentAttributeType.MANY_TO_MANY)) {
+            if (attributeIsAssociation(attribute)) {
                 prepareAttribute(entity, attribute);
             }
         }
-
         return entity;
+    }
+    
+    /**
+     * Returns true if attribute has a PersistentAttributeType of either MANY_TO_ONE or MANY_TO_MANY.
+     * The function attribute.IsAssociation() does not suffice as this only returns true for MANY_TO_MANY associations.
+     * @param attribute Attribute to check the PersistenceAttributeType of.
+     * @return True if type is MANY_TO_ONE or MANY_TO_MANY
+     */
+    private boolean attributeIsAssociation(Attribute<?,?> attribute){
+    	PersistentAttributeType attributePersistenceType = attribute.getPersistentAttributeType();
+    	return (attributePersistenceType == PersistentAttributeType.MANY_TO_ONE) || (attributePersistenceType == PersistentAttributeType.MANY_TO_MANY);
     }
 
     /**
@@ -65,48 +74,59 @@ public final class ReferentialPreparement {
      * @param attribute Attribute from the Entity   
      */
     private void prepareAttribute(Object entity, Attribute<?, ?> attribute) {
-        if (!CascadeAnnotationChecker.hasNecessaryCascadeAnnotations(attribute)) {
-            retrieveReferencesForAttribute(entity, attribute);
+    	Object referencedEntity = ModifiableBean.wrap(entity).getPropertyValue(attribute.getName());
+    	if (!CascadeAnnotationChecker.hasNecessaryCascadeAnnotations(attribute)) {
+        	//Attribute DOESN'T hold proper Cascade annotations. We need to persist the entities referenced by this entity first.
+        	//Otherwise it will generate exceptions upon persistence.
+        	retrieveReferencesForEntity(entity, referencedEntity, attribute);
         } else {
-            Object referencedObject = ModifiableBean.wrap(entity).getPropertyValue(attribute.getName());
-            if (referencedObject != null && !cascadedObjects.contains(referencedObject)) {
-                if (referencedObject instanceof Iterable<?>) {
-                    prepareEntitiesFromSet((Iterable<?>) referencedObject);
-                } else {
-                    prepareEntityReferences(referencedObject);
-                }
+        	//Attribute DOES hold the proper Cascade annotations, however we can't just persist it as its referenced objects may
+        	//also contain relationships that DON'T. These need to be handled as well.
+        	retrieveReferencesForReferencedEntities(entity, referencedEntity, attribute);
+        }
+    }
+
+    /**
+     * Persists the referenced entities of the passed entity so the entity's own persistence won't fail on account of unpersisted references.
+     * Checks if an entity's attribute is a Collection or not. If it is, we need to iterate over it and persist the contents of the Collection.
+     * @param entity JPA Metamodel Entity
+     * @param referencedEntity Entity that is referenced by passed Entity.
+     * @param attribute Attribute from the Entity
+     */
+    private void retrieveReferencesForEntity(Object entity, Object referencedEntity, Attribute<?, ?> attribute) {
+        if (referencedEntity instanceof Iterable<?>) {
+            prepareEntitiesFromSet((Iterable<?>) referencedEntity);
+        } else {
+            setFieldValuesForReferencedObject(entity, attribute.getName(), referencedEntity);
+        }
+    }    
+    
+    /**
+     * Checks if referencedObject has references which in their turn are not annotated properly.
+     * If so, these will be persisted first.
+     * @param entity JPA Metamodel Entity
+     * @param referencedEntity Entity that is referenced by passed Entity.
+     * @param attribute Attribute from the Entity
+     */
+    private void retrieveReferencesForReferencedEntities(Object entity, Object referencedEntity, Attribute<?, ?> attribute){
+        if (referencedEntity != null && !cascadedObjects.contains(referencedEntity)) {
+            if (referencedEntity instanceof Iterable<?>) {
+                prepareEntitiesFromSet((Iterable<?>) referencedEntity);
+            } else {
+                prepareEntityReferences(referencedEntity);
             }
         }
     }
-
-    /**
-     * Checks if an entity's attribute is a Collection or not. Then takes the appropriate action to retrieve the referenced object.
-     * @param entity JPA Metamodel Entity
-     * @param jpaDao Jpa data access object by Hactar
-     * @param entityManager EntityManager needed to search through the persistence cache.
-     * @param attribute Attribute from the Entity
-     * @param cascadedObjectsInThisInteration List with objects already cascaded.
-     */
-    private void retrieveReferencesForAttribute(Object entity, Attribute<?, ?> attribute) {
-        Object referencedObject = ModifiableBean.wrap(entity).getPropertyValue(attribute.getName());
-        if (referencedObject instanceof Iterable<?>) {
-            prepareEntitiesFromSet((Iterable<?>) referencedObject);
-        } else {
-            setFieldValuesForReferencedObject(entity, attribute.getName(), referencedObject);
-        }
-    }
-
+    
     /**
      * Prepares a set of entities for persistence.
      * Saves them afterwards so the referencing entity will know where to point to.
-     * @param entityManager EntityManager needed to search through the persistence cache.
-     * @param referencedObject Refenced object which is a collection item.
-     * @param cascadedObjectsInThisInteration List with objects already cascaded.
+	 * @param referencedEntitySet Set of referenced entities which need to be persisted
      */
-    private void prepareEntitiesFromSet(Iterable<?> referencedObjectSet) {
-        for (Object referencedElement : referencedObjectSet) {
-            LOGGER.info("Cascading Excelrow of class: {}", referencedElement.getClass());
-            entityManager.merge(prepareEntityReferences(referencedElement));
+    private void prepareEntitiesFromSet(Iterable<?> referencedEntitySet) {
+        for (Object referencedEntity : referencedEntitySet) {
+            LOGGER.info("Cascading Excelrow of class: {}", referencedEntity.getClass());
+            entityManager.merge(prepareEntityReferences(referencedEntity));
         }
     }
 
@@ -119,26 +139,24 @@ public final class ReferentialPreparement {
      * This is a set that's filled with all the processed objects in an iteration and then emptied.
      * So if an object is already in that set, we know it's a circular reference and must take action. Otherwise it'll loop eternally.
      * @param entity JPA Metamodel Entity
-     * @param entityManager EntityManager needed to search through the persistence cache.
-     * @param attributeName Name of the attribute tha's being edited.
-     * @param referencedObject The referenced object
-     * @param cascadedObjectsInThisInteration List with objects already cascaded.
+     * @param attributeName Name of the attribute that's being edited.
+     * @param referencedEntity The referenced entity
      * @return Entity with persisted references
      */
-    private Object setFieldValuesForReferencedObject(Object entity, String attributeName, Object referencedObject) {
-        if (referencedObject != null) {
-            Object identifier = JpaUtils.getIdentifier(referencedObject, entityManager.getEntityManagerFactory());
+    private Object setFieldValuesForReferencedObject(Object entity, String attributeName, Object referencedEntity) {
+        if (referencedEntity != null) {
+            Object identifier = JpaUtils.getIdentifier(referencedEntity, entityManager.getEntityManagerFactory());
             if (identifier != null) {
-                Object retrievenObject = entityManager.find(referencedObject.getClass(), identifier);
+                Object retrievenObject = entityManager.find(referencedEntity.getClass(), identifier);
                 if (retrievenObject != null) {
                     // Entity has already been persisted, couple to persisted value
                     ModifiableBean.wrap(entity).setPropertyValue(attributeName, retrievenObject);
                 } else {
                     // Entity claimed to have an identifier, but is not known in database
-                    cascadeReferencedObject(entity, attributeName, referencedObject);
+                    cascadeReferencedObject(entity, attributeName, referencedEntity);
                 }
             } else {
-                cascadeReferencedObject(entity, attributeName, referencedObject);
+                cascadeReferencedObject(entity, attributeName, referencedEntity);
             }
         }
         return entity;
@@ -151,34 +169,30 @@ public final class ReferentialPreparement {
      * If it's not, the referenced object will recursively be checked for referenced objects as well
      * and afterwards it's saved and re-added to the entity.
      * @param entity JPA Metamodel Entity
-     * @param entityManager EntityManager needed to search through the persistence cache.
      * @param attributeName Name of the attribute tha's being edited.
-     * @param referencedObject The referenced object
-     * @param jpaDao Jpa data access object by Hactar.
-     * @param cascadedObjectsInThisInteration List with objects already cascaded.
+     * @param referencedEntity The referenced entity
      */
-    private void cascadeReferencedObject(Object entity, String attributeName, Object referencedObject) {
-        if (!cascadingHasLooped(referencedObject)) {
-            referencedObject = prepareEntityReferences(referencedObject);
-            LOGGER.info("Cascading Excelrow of class: " + referencedObject.getClass());
-            ModifiableBean.wrap(entity).setPropertyValue(attributeName, entityManager.merge(referencedObject));
+    private void cascadeReferencedObject(Object entity, String attributeName, Object referencedEntity) {
+        if (!cascadingHasLooped(referencedEntity)) {
+            referencedEntity = prepareEntityReferences(referencedEntity);
+            LOGGER.info("Cascading Excelrow of class: " + referencedEntity.getClass());
+            ModifiableBean.wrap(entity).setPropertyValue(attributeName, entityManager.merge(referencedEntity));
         } else {
-            resolveCircularReferencing(entity, referencedObject);
+            resolveCircularReferencing(entity, referencedEntity);
         }
     }
 
     /**
      * Returns true if the referencedObject has been handled in this iteration before, thus being an infinite loop.
-     * @param referencedObject Object to check the list for.
-     * @param cascadedObjectsInThisInteration List with objects that have previously been handled.
-     * @return True or false.
+     * @param referencedEntity Object to check the list for.
+     * @return True if cascading has looped.
      */
-    private boolean cascadingHasLooped(Object referencedObject) {
-        if (cascadedObjects.contains(referencedObject)) {
+    private boolean cascadingHasLooped(Object referencedEntity) {
+        if (cascadedObjects.contains(referencedEntity)) {
             return true;
         }
         for (Object cascadedObject : cascadedObjects) {
-            if (referencedObject.getClass() == cascadedObject.getClass()) {
+            if (referencedEntity.getClass() == cascadedObject.getClass()) {
                 return true;
             }
         }
@@ -197,21 +211,18 @@ public final class ReferentialPreparement {
      * Note: circular references in the domain entities, though supported by this component, 
      * might not be the best form of implementation and should be avoided in most situations.
      * @param entity Entity that's in a circular referency.
-     * @param entityManager EntityManager needed to check the persistence cache.
-     * @param referencedObject The referenced object that points to another object which in turn points back to entity.
-     * @param jpaDao Jpa data access object by Hactar.
-     * @param cascadedObjectsInThisInteration List with objects already cascaded.
+     * @param referencedEntity The referenced object that points to another object which in turn points back to entity.
      */
-    private void resolveCircularReferencing(Object entity, Object referencedObject) {
+    private void resolveCircularReferencing(Object entity, Object referencedEntity) {
         EntityManagerFactory entityManagerFactory = entityManager.getEntityManagerFactory();
         Metamodel metamodel = entityManagerFactory.getMetamodel();
-        String refName = getReferentialFieldname(referencedObject, entity, metamodel);
+        String refName = getReferentialFieldname(entity, referencedEntity, metamodel);
         Object temporaryObject = createTemporaryObject(entity, metamodel, refName);
 
         if (!cascadedObjects.contains(entity)) {
-            LOGGER.info("Cascading Excelrow of class: " + referencedObject.getClass());
-            referencedObject = prepareEntityReferences(referencedObject);
-            ModifiableBean.wrap(entity).setPropertyValue(refName, entityManager.merge(referencedObject));
+            LOGGER.info("Cascading Excelrow of class: " + referencedEntity.getClass());
+            referencedEntity = prepareEntityReferences(referencedEntity);
+            ModifiableBean.wrap(entity).setPropertyValue(refName, entityManager.merge(referencedEntity));
             cascadedObjects.add(entity);
         }
         if (temporaryObject != null) {
@@ -242,22 +253,21 @@ public final class ReferentialPreparement {
 
     /**
      * Resolves a referential fieldname of a referencedObject from an entity.
-     * @param referencedObject ReferencedObject to get the fieldname from.
      * @param entity Entity to search the fieldname in.
+     * @param referencedEntity ReferencedObject to get the fieldname from.
      * @param entityManagerFactory EntityManagerFactory needed to generate the metamodel.
      * @return Fieldname
      */
-    private String getReferentialFieldname(Object referencedObject, Object entity, Metamodel metamodel) {
+    private String getReferentialFieldname(Object entity, Object referencedEntity, Metamodel metamodel) {
         String refName = null;
         EntityType<?> entityType = metamodel.entity(entity.getClass());
         for (Attribute<?, ?> attribute : entityType.getAttributes()) {
-            if ((attribute.getJavaType() == referencedObject.getClass())
-                    || SuperclassRetriever.getListOfSuperClasses(referencedObject.getClass()).contains(attribute.getJavaType())) {
+            if ((attribute.getJavaType() == referencedEntity.getClass())
+                    || SuperclassRetriever.getListOfSuperClasses(referencedEntity.getClass()).contains(attribute.getJavaType())) {
                 refName = attribute.getName();
                 break;
             }
         }
         return refName;
     }
-
 }
