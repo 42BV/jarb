@@ -82,7 +82,7 @@ public final class ReferentialPreparement {
     private void retrieveReferencesForEntity(Object entity, Object referencedEntity, Attribute<?, ?> attribute) {
         if (referencedEntity instanceof Iterable<?>) {
             prepareEntitiesFromSet((Iterable<?>) referencedEntity);
-        } else {
+        } else if (referencedEntity != null){
             setFieldValuesForReferencedObject(entity, attribute.getName(), referencedEntity);
         }
     }    
@@ -127,23 +127,37 @@ public final class ReferentialPreparement {
      * @return Entity with persisted references
      */
     private Object setFieldValuesForReferencedObject(Object entity, String attributeName, Object referencedEntity) {
-        if (referencedEntity != null) {
-            Object identifier = JpaUtils.getIdentifier(referencedEntity, entityManager.getEntityManagerFactory());
-            if (identifier != null) {
-                Object retrievenObject = entityManager.find(referencedEntity.getClass(), identifier);
-                if (retrievenObject != null) {
-                    // Entity has already been persisted, couple to persisted value
-                    ModifiableBean.wrap(entity).setPropertyValue(attributeName, retrievenObject);
-                } else {
-                    // Entity claimed to have an identifier, but is not known in database
-                    cascadeReferencedObject(entity, attributeName, referencedEntity);
-                }
-            } else {
-                cascadeReferencedObject(entity, attributeName, referencedEntity);
-            }
-        }
-        return entity;
+		Object identifier = JpaUtils.getIdentifier(referencedEntity,
+				entityManager.getEntityManagerFactory());
+		if (identifier != null) {
+			tryToCoupleEntities(entity, attributeName, referencedEntity,
+					identifier);
+		} else {
+			cascadeReferencedObject(entity, attributeName, referencedEntity);
+		}
+		return entity;
     }
+
+    /**
+     * Tries to fetch object referenced by referencedObject from the persistent cache.
+     * If this succeeds, the persistent object is added as a property value of referencedObject
+     * If not, it will be persisted and added to referencedObject.
+     * @param entity JPA Metamodel Entity
+     * @param attributeName Name of the attribute that's being edited.
+     * @param referencedEntity The referenced entity
+     * @param identifier Identifier of referencedEntity
+     */
+	private void tryToCoupleEntities(Object entity, String attributeName,
+			Object referencedEntity, Object identifier) {
+		Object retrievenObject = entityManager.find(referencedEntity.getClass(), identifier);
+		if (retrievenObject != null) {
+		    // Entity has already been persisted, couple to persisted value
+		    ModifiableBean.wrap(entity).setPropertyValue(attributeName, retrievenObject);
+		} else {
+		    // Entity claimed to have an identifier, but is not known in database
+		    cascadeReferencedObject(entity, attributeName, referencedEntity);
+		}
+	}
 
     /**
      * Handles a referenced object that has been proven not to be persistent.
