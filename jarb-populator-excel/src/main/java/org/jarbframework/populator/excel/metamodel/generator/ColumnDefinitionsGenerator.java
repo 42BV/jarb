@@ -21,7 +21,8 @@ import org.slf4j.LoggerFactory;
  *
  */
 public final class ColumnDefinitionsGenerator {
-    private static final Logger LOGGER = LoggerFactory.getLogger(ColumnDefinitionsGenerator.class);
+    private final Logger logger = LoggerFactory.getLogger(ColumnDefinitionsGenerator.class);
+
     private final RegularColumnGenerator regularColumnGenerator;
     private final EmbeddedColumnGenerator embeddedColumnGenerator;
 
@@ -89,8 +90,8 @@ public final class ColumnDefinitionsGenerator {
         if (propertyDefinitionUnique(columnDefinitions, columnDefinition)) {
             columnDefinitions.add(columnDefinition);
         } else {
-            LOGGER.warn("Duplicate property definition '" + columnDefinition.getColumnName() + "' in entity '" + type + "' was ommited.");
-            LOGGER.warn("Possibly the column name is defined in several subclasses. Since these are merged into one the column names must be unique.");
+            logger.info("Duplicate property definition '" + columnDefinition.getColumnName() + "' in entity '" + type + "' was ommited.");
+            logger.info("Possibly the column name is defined in several subclasses. Since these are merged into one the column names must be unique.");
         }
     }
 
