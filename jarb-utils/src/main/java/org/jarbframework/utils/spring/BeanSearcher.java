@@ -3,6 +3,7 @@ package org.jarbframework.utils.spring;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static org.jarbframework.utils.Asserts.notNull;
 
+import org.jarbframework.utils.Asserts;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 
@@ -31,7 +32,14 @@ public class BeanSearcher {
      * @return matching bean
      */
     public <T> T findBean(Class<T> beanClass, String identifier) {
-        return findBean(beanClass, identifier, null);
+        notNull(beanClass, "Bean class cannot be null.");
+        if (isNotBlank(identifier)) {
+            // Find the bean based on its specified non-blank identifier
+            return beanFactory.getBean(identifier, beanClass);
+        } else {
+            // Whenever no identifier is specified, look if the bean is unique
+            return beanFactory.getBean(beanClass);
+        }
     }
 
     /**
@@ -40,25 +48,19 @@ public class BeanSearcher {
      * the specified type, we will wire based on the default identifier.
      * @param beanClass type of the bean
      * @param identifier identifier of the bean (<b>optional</b>)
-     * @param defaultIdentifier default bean identifier
+     * @param defaultIdentifier default bean identifier (<b>required</b>)
      * @return matching bean
      */
     public <T> T findBean(Class<T> beanClass, String identifier, String defaultIdentifier) {
-        notNull(beanClass, "Bean class cannot be null.");
-        if (isNotBlank(identifier)) {
-            // Find the bean based on its specified non-blank identifier
-            return beanFactory.getBean(identifier, beanClass);
-        } else {
-            // Whenever no identifier is specified, look if the bean is unique
+        try {
+            return findBean(beanClass, identifier);
+        } catch (NoSuchBeanDefinitionException noBean) {
+            // Whenever no regular bean could be found, look for the default bean
             try {
-                return beanFactory.getBean(beanClass);
-            } catch (NoSuchBeanDefinitionException noSuchBeanException) {
-                // Whenever we could not find a matching unique bean, attempt the default identifier
-                if (isNotBlank(defaultIdentifier)) {
-                    return beanFactory.getBean(defaultIdentifier, beanClass);
-                } else {
-                    throw noSuchBeanException;
-                }
+                Asserts.hasText(defaultIdentifier, "Default bean identifier cannot be empty");
+                return beanFactory.getBean(defaultIdentifier, beanClass);
+            } catch (NoSuchBeanDefinitionException noDefaultBean) {
+                throw noBean; // Throw the original exception
             }
         }
     }

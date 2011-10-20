@@ -13,7 +13,7 @@ import javax.validation.Payload;
 @Documented
 @Target(TYPE)
 @Retention(RUNTIME)
-@Constraint(validatedBy = DatabaseConstraintValidatorAdapter.class)
+@Constraint(validatedBy = DatabaseConstrainedAdapter.class)
 public @interface DatabaseConstrained {
     /**
      * Identifier of the {@link DatabaseConstraintValidator} bean that should be used
@@ -21,7 +21,7 @@ public @interface DatabaseConstrained {
      * from our context, or build a new default validator instance.
      */
     String id() default "";
-    
+
     Class<?>[] groups() default {};
 
     Class<? extends Payload>[] payload() default {};
