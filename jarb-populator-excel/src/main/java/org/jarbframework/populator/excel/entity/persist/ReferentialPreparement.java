@@ -65,10 +65,10 @@ public final class ReferentialPreparement {
         	//Attribute DOESN'T hold proper Cascade annotations. We need to persist the entities referenced by this entity first.
         	//Otherwise it will generate exceptions upon persistence.
         	retrieveReferencesForEntity(entity, referencedEntity, attribute);
-        } else {
+        } else if (referencedEntity != null && !cascadedObjects.contains(referencedEntity)){
         	//Attribute DOES hold the proper Cascade annotations, however we can't just persist it as its referenced objects may
         	//also contain relationships that DON'T. These need to be handled as well.
-        	retrieveReferencesForReferencedEntities(entity, referencedEntity, attribute);
+        	retrieveReferencesForReferencedEntities(referencedEntity);
         }
     }
 
@@ -88,20 +88,17 @@ public final class ReferentialPreparement {
     }    
     
     /**
-     * Checks if referencedObject has references which in their turn are not annotated properly.
-     * If so, these will be persisted first.
+     * Persists the references of referencedEntity which in their turn are not properly annotated.
      * @param entity JPA Metamodel Entity
      * @param referencedEntity Entity that is referenced by passed Entity.
      * @param attribute Attribute from the Entity
      */
-    private void retrieveReferencesForReferencedEntities(Object entity, Object referencedEntity, Attribute<?, ?> attribute){
-        if (referencedEntity != null && !cascadedObjects.contains(referencedEntity)) {
-            if (referencedEntity instanceof Iterable<?>) {
-                prepareEntitiesFromSet((Iterable<?>) referencedEntity);
-            } else {
-                prepareEntityReferences(referencedEntity);
-            }
-        }
+    private void retrieveReferencesForReferencedEntities(Object referencedEntity){
+		if (referencedEntity instanceof Iterable<?>) {
+			prepareEntitiesFromSet((Iterable<?>) referencedEntity);
+		} else {
+			prepareEntityReferences(referencedEntity);
+		}
     }
     
     /**
