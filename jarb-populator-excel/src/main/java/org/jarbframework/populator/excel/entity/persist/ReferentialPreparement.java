@@ -189,8 +189,8 @@ public final class ReferentialPreparement {
      * Then, the temporaryObject is checked itself and then put back inside the referencedObject.
      * <br><br>
      * Note: circular references in the domain entities, though supported by this component, 
-     * might not be the best form of implementation and should be avoided in most situations.
-     * @param entity Entity that's in a circular referency.
+     * may not be the best form of implementation and should be avoided in most situations.
+     * @param entity Entity that's in a circular reference.
      * @param referencedEntity The referenced object that points to another object which in turn points back to entity.
      */
     private void resolveCircularReferencing(Object entity, Object referencedEntity) {
