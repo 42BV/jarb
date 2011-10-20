@@ -1,5 +1,7 @@
 package org.jarbframework.validation;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -75,11 +77,14 @@ public class DatabaseConstraintValidator {
     }
 
     private void validateProperty(Object bean, PropertyReference propertyRef, DatabaseConstraintValidationContext validation) {
-        Class<?> propertyClass = BeanProperties.getPropertyType(propertyRef);
-        if (schemaMapper.isEmbeddable(propertyClass)) {
-            validateNestedProperty(bean, propertyRef, validation, propertyClass);
-        } else {
-            validateDirectProperty(bean, propertyRef, validation);
+        Field propertyField = BeanProperties.findPropertyField(propertyRef);
+        if (!Modifier.isStatic(propertyField.getModifiers())) {
+            Class<?> propertyClass = propertyField.getType();
+            if (schemaMapper.isEmbeddable(propertyClass)) {
+                validateNestedProperty(bean, propertyRef, validation, propertyClass);
+            } else {
+                validateDirectProperty(bean, propertyRef, validation);
+            }
         }
     }
 
