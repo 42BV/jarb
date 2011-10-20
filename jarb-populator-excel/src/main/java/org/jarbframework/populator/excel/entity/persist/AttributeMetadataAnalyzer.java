@@ -11,16 +11,30 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.metamodel.Attribute;
+import javax.persistence.metamodel.Attribute.PersistentAttributeType;
 
 /**
- * CascadeAnnotationChecker is used to check if a referential annotation holds the necessary cascadeTypes.
- * We need both CascadeType.PERSIST and CascadeTYPE.MERGE to be active, otherwise the foreign key constraints will fail.
- * Instead of these two, CascadeType.ALL may also be active.
+ * AttributeMetadataAnalyzer is a class which can analyze a passed attribute.
+ * Analyses the passed attribute's PersistenceAttributeType and the attribute's cascade annotations.
+ * The former is needed to determine if an entity holds a reference and the latter to determine if this needs to be cascaded manualy.
+ * is used to check if a referential annotation holds the necessary cascadeTypes.
+ * 
  * @author Sander Benschop
  *
  */
-public final class CascadeAnnotationChecker {
+public final class AttributeMetadataAnalyzer {
 
+    /**
+     * Returns true if attribute has a PersistentAttributeType of either MANY_TO_ONE or MANY_TO_MANY.
+     * The function attribute.IsAssociation() does not suffice as this only returns true for MANY_TO_MANY associations.
+     * @param attribute Attribute to check the PersistenceAttributeType of.
+     * @return True if type is MANY_TO_ONE or MANY_TO_MANY
+     */
+    public static boolean attributeIsAssociation(Attribute<?,?> attribute){
+    	PersistentAttributeType attributePersistenceType = attribute.getPersistentAttributeType();
+    	return (attributePersistenceType == PersistentAttributeType.MANY_TO_ONE) || (attributePersistenceType == PersistentAttributeType.MANY_TO_MANY);
+    }
+	
     /**
      * Checks if an annotation holds cascade parameters. At this time only ManyToMany and ManyToOne are supported.
      * We are looking for both the PERSIST and MERGE annotation (or ALL). 
@@ -33,6 +47,11 @@ public final class CascadeAnnotationChecker {
         return checkForMergeAndPersistCascadeType(collectCascadeTypes(attribute));
     }
 
+    /**
+     * Collects cascadetypes annotations from attribute.
+     * @param attribute Attribute to search for cascade annotations in.
+     * @return Array of found CascadeTypes
+     */
     private static CascadeType[] collectCascadeTypes(Attribute<?, ?> attribute) {
         Field field = (Field) attribute.getJavaMember();
         switch (attribute.getPersistentAttributeType()) {
@@ -48,7 +67,13 @@ public final class CascadeAnnotationChecker {
             return new CascadeType[0];
         }
     }
-
+    
+    /**
+     * Checks if CascadeType.MERGE and CascadeType.PERSIST annotations are present.
+     * Alternatively, CascadeType.ALL may also be present.
+     * @param cascades Array of cascadeTypes passed from collectCascadeTypes function.
+     * @return True if MERGE && PERSIST or ALL are/is present.
+     */
     private static boolean checkForMergeAndPersistCascadeType(CascadeType[] cascades) {
         List<CascadeType> cascadeTypeList = Arrays.asList(cascades);
         if (cascadeTypeList.contains(CascadeType.ALL)) {
@@ -60,5 +85,4 @@ public final class CascadeAnnotationChecker {
             return cascadeTypeList.containsAll(expectedCascadeTypes);
         }
     }
-
 }
