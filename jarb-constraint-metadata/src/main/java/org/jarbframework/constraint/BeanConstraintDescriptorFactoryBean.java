@@ -4,6 +4,7 @@ import java.util.Date;
 
 import org.hibernate.validator.constraints.CreditCardNumber;
 import org.hibernate.validator.constraints.Email;
+import org.jarbframework.constraint.database.DatabaseGeneratedPropertyConstraintEnhancer;
 import org.jarbframework.constraint.database.DatabaseConstraintRepository;
 import org.jarbframework.constraint.database.DatabasePropertyConstraintDescriptionEnhancer;
 import org.jarbframework.constraint.jsr303.DigitsPropertyConstraintEnhancer;
@@ -29,7 +30,7 @@ public class BeanConstraintDescriptorFactoryBean extends SingletonFactoryBean<Be
     protected BeanConstraintDescriptor createObject() throws Exception {
         BeanConstraintDescriptorImpl accessor = new BeanConstraintDescriptorImpl();
         accessor.registerEnhancer(new DatabasePropertyConstraintDescriptionEnhancer(databaseConstraintRepository));
-        accessor.registerEnhancer(new AutoIncrementalPropertyConstraintEnhancer());
+        accessor.registerEnhancer(new DatabaseGeneratedPropertyConstraintEnhancer());
         // Basic constraint annotations
         accessor.registerEnhancer(new LengthPropertyConstraintEnhancer());
         accessor.registerEnhancer(new DigitsPropertyConstraintEnhancer());

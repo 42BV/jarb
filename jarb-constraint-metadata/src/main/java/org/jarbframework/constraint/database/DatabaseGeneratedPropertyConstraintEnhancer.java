@@ -1,6 +1,9 @@
-package org.jarbframework.constraint;
+package org.jarbframework.constraint.database;
 
 import static org.jarbframework.utils.bean.BeanAnnotationScanner.fieldOrGetter;
+
+import org.jarbframework.constraint.PropertyConstraintDescription;
+import org.jarbframework.constraint.PropertyConstraintEnhancer;
 
 /**
  * Whenever a property is annotated as @AutoIncremental a value
@@ -9,7 +12,7 @@ import static org.jarbframework.utils.bean.BeanAnnotationScanner.fieldOrGetter;
  * @author Jeroen van Schagen
  * @since 6 September 2011
  */
-public class AutoIncrementalPropertyConstraintEnhancer implements PropertyConstraintEnhancer {
+public class DatabaseGeneratedPropertyConstraintEnhancer implements PropertyConstraintEnhancer {
 
     @Override
     public PropertyConstraintDescription enhance(PropertyConstraintDescription propertyConstraints) {

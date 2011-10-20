@@ -2,7 +2,7 @@ package org.jarbframework.validation;
 
 import static org.jarbframework.utils.bean.BeanAnnotationScanner.fieldOrGetter;
 
-import org.jarbframework.constraint.DatabaseGenerated;
+import org.jarbframework.constraint.database.DatabaseGenerated;
 import org.jarbframework.constraint.database.column.ColumnMetadata;
 import org.jarbframework.utils.bean.PropertyReference;
 
