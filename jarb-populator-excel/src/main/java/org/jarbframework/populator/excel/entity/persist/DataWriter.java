@@ -36,21 +36,26 @@ class DataWriter {
      */
     public static void saveEntity(EntityRegistry registry, EntityManagerFactory entityManagerFactory) {
         EntityManager entityManager = JpaUtils.createEntityManager(entityManagerFactory);
-        EntityTransaction entityTransaction = entityManager.getTransaction();
+        EntityTransaction transaction = entityManager.getTransaction();
 
         List<Object> entities = new ArrayList<Object>(registry.all());
         Collections.sort(entities, new ObjectClassInstantationComparator());
 
-        entityTransaction.begin();
-        for (Object entity : entities) {
-            entity = new ReferentialPreparement(entityManager).prepareEntityReferences(entity);
-            Object identifier = JpaUtils.getIdentifier(entity, entityManagerFactory);
-            logger.debug("Persisting entity '{}'...", entity);
-            if (identifier == null || entityManager.find(entity.getClass(), identifier) == null) {
-                entityManager.merge(entity);
+        transaction.begin();
+        try {
+            for (Object entity : entities) {
+                entity = new ReferentialPreparement(entityManager).prepareEntityReferences(entity);
+                Object identifier = JpaUtils.getIdentifier(entity, entityManagerFactory);
+                logger.debug("Persisting entity '{}'...", entity);
+                if (identifier == null || entityManager.find(entity.getClass(), identifier) == null) {
+                    entityManager.merge(entity);
+                }
             }
+            transaction.commit();
+        } catch (RuntimeException e) {
+            transaction.rollback();
+            throw e;
         }
-        entityTransaction.commit();
     }
 
     private static class ObjectClassInstantationComparator implements Comparator<Object> {
