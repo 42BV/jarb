@@ -47,11 +47,7 @@ class DataWriter {
             Object identifier = JpaUtils.getIdentifier(entity, entityManagerFactory);
             logger.debug("Persisting entity '{}'...", entity);
             if (identifier == null || entityManager.find(entity.getClass(), identifier) == null) {
-                try {
-                    entityManager.merge(entity);
-                } catch (RuntimeException e) {
-                    logger.error("Could not persist entity '{}'.", entity, e);
-                }
+                entityManager.merge(entity);
             }
         }
         entityTransaction.commit();
