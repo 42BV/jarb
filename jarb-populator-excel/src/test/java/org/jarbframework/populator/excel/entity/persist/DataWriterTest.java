@@ -6,7 +6,6 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import javax.persistence.metamodel.EntityType;
 import javax.persistence.metamodel.Metamodel;
@@ -14,10 +13,8 @@ import javax.persistence.metamodel.Metamodel;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.jarbframework.populator.excel.DefaultExcelTestDataCase;
 import org.jarbframework.populator.excel.entity.EntityRegistry;
-import org.jarbframework.populator.excel.entity.EntityTable;
 import org.jarbframework.populator.excel.mapping.ValueConversionService;
 import org.jarbframework.populator.excel.mapping.importer.ExcelImporter;
-import org.jarbframework.populator.excel.mapping.importer.ExcelRow;
 import org.jarbframework.populator.excel.metamodel.EntityDefinition;
 import org.jarbframework.populator.excel.metamodel.generator.ClassDefinitionsGenerator;
 import org.jarbframework.populator.excel.workbook.Workbook;
@@ -33,8 +30,6 @@ import domain.entities.ServiceLevelAgreement;
 
 public class DataWriterTest extends DefaultExcelTestDataCase {
     private ClassDefinitionsGenerator classDefinitionsGenerator;
-
-    private Map<EntityDefinition<?>, Map<Object, ExcelRow>> parseExcelMap;
     private Workbook excel;
     private EntityDefinition<?> customer;
     private EntityDefinition<?> project;
@@ -74,8 +69,9 @@ public class DataWriterTest extends DefaultExcelTestDataCase {
         classDefinitionList.add(project);
         classDefinitionList.add(sla);
 
-        parseExcelMap = new ExcelImporter(ValueConversionService.defaultConversions()).parseExcel(excel, classDefinitionList);
-        DataWriter.saveEntity(toRegistry(parseExcelMap), getEntityManagerFactory());
+        ExcelImporter excelImporter = new ExcelImporter(ValueConversionService.defaultConversions(), getEntityManagerFactory());
+        EntityRegistry entityRegistry = excelImporter.parseExcelToRegistry(excel, classDefinitionList);
+        DataWriter.saveEntity(entityRegistry, getEntityManagerFactory());
     }
 
     @Test
@@ -95,22 +91,8 @@ public class DataWriterTest extends DefaultExcelTestDataCase {
         classDefinitionList.add(vehicle);
         //  classDefinitionList.add(project);
 
-        parseExcelMap = new ExcelImporter(ValueConversionService.defaultConversions()).parseExcel(excel, classDefinitionList);
-        DataWriter.saveEntity(toRegistry(parseExcelMap), getEntityManagerFactory());
+        EntityRegistry entityRegistry = new ExcelImporter(ValueConversionService.defaultConversions(), getEntityManagerFactory()).parseExcelToRegistry(excel,
+                classDefinitionList);
+        DataWriter.saveEntity(entityRegistry, getEntityManagerFactory());
     }
-
-    @SuppressWarnings({ "unchecked", "rawtypes" })
-    private EntityRegistry toRegistry(Map<EntityDefinition<?>, Map<Object, ExcelRow>> entitiesMap) {
-        EntityRegistry registry = new EntityRegistry();
-        for (Map.Entry<EntityDefinition<?>, Map<Object, ExcelRow>> entitiesEntry : entitiesMap.entrySet()) {
-            final Class entityClass = entitiesEntry.getKey().getEntityClass();
-            EntityTable<Object> table = new EntityTable<Object>(entityClass);
-            for (Map.Entry<Object, ExcelRow> excelRowEntry : entitiesEntry.getValue().entrySet()) {
-                table.add(excelRowEntry.getKey(), excelRowEntry.getValue().getCreatedInstance());
-            }
-            registry.addAll(table);
-        }
-        return registry;
-    }
-
 }

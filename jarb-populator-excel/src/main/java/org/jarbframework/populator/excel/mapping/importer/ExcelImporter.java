@@ -3,10 +3,16 @@ package org.jarbframework.populator.excel.mapping.importer;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
+import javax.persistence.EntityManagerFactory;
+
+import org.jarbframework.populator.excel.entity.EntityRegistry;
+import org.jarbframework.populator.excel.entity.EntityTable;
 import org.jarbframework.populator.excel.mapping.ValueConversionService;
 import org.jarbframework.populator.excel.metamodel.EntityDefinition;
 import org.jarbframework.populator.excel.metamodel.PropertyDefinition;
+import org.jarbframework.populator.excel.util.JpaUtils;
 import org.jarbframework.populator.excel.workbook.Sheet;
 import org.jarbframework.populator.excel.workbook.Workbook;
 import org.slf4j.Logger;
@@ -21,41 +27,59 @@ import org.slf4j.LoggerFactory;
 public final class ExcelImporter {
     private static final Logger logger = LoggerFactory.getLogger(ExcelImporter.class);
     private StoreExcelRecordValue valueStorer;
+    private EntityManagerFactory entityManagerFactory;
+    private Map<EntityDefinition<?>, Map<Object, ExcelRow>> excelRowMap;
 
-    public ExcelImporter(ValueConversionService conversionService) {
+    public ExcelImporter(ValueConversionService conversionService, EntityManagerFactory entityManagerFactory) {
         valueStorer = new StoreExcelRecordValue(conversionService);
+        this.entityManagerFactory = entityManagerFactory;
+        excelRowMap = new HashMap<EntityDefinition<?>, Map<Object, ExcelRow>>();
     }
 
     /**
-     * Returns an objectModel hashmap containing ClassDefinitions with their corresponding Excel records, also by calling parseWorksheet listed below.
+     * Returns an EntityRegistry containing EntityTables which in their turn contain ExcelRows
      * @param excel Excel file in use to be stored in the objectModel
-     * @param classDefinitions All classDefinitions to be stored in the objectModel and saved to the database later on
-     * @return map containing all class definitions and parsed excel records.
-     * @throws InstantiationException Thrown when function is used on a class that cannot be instantiated (abstract or interface)
-     * @throws IllegalAccessException Thrown when function does not have access to the definition of the specified class, field, method or constructor 
-     * @throws NoSuchFieldException Thrown when a field is not available
+     * @param entityDefinitions Used to creaet EntityTables
+     * @return EntityRegistry containing EntityTables and parsed excel records.
+     * @throws NoSuchFieldException 
      */
-    public Map<EntityDefinition<?>, Map<Object, ExcelRow>> parseExcel(Workbook excel, Collection<EntityDefinition<?>> entities) {
-        Map<EntityDefinition<?>, Map<Object, ExcelRow>> objectModel = new HashMap<EntityDefinition<?>, Map<Object, ExcelRow>>();
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    public EntityRegistry parseExcelToRegistry(Workbook excel, Collection<EntityDefinition<?>> entityDefinitions) throws NoSuchFieldException {
+    	//First we need to create all ExcelRows..
+    	createExcelRows(excel, entityDefinitions);
+    	
+    	EntityRegistry entityRegistry = new EntityRegistry();
+        //First loop over the entities formerly known as classDefinitions
+        for (EntityDefinition<?> entityDefinition : entityDefinitions) {
+            final Class entityClass = entityDefinition.getEntityClass();
+            EntityTable<Object> entities = new EntityTable<Object>(entityClass);
+            for (ExcelRow excelRow : excelRowMap.get(entityDefinition).values()) {
+            	//First map the foreign relations
+            	ForeignRelationsMapper.makeForeignRelations(excelRow, excelRowMap);
 
-        for (EntityDefinition<?> classDefinition : entities) {
-            logger.debug("Importing " + classDefinition.getTableName());
-            objectModel.put(classDefinition, parseWorksheet(excel, classDefinition));
-        }
-
-        // Create foreign key relations, resulting in a fully prepared instance
-
-        for (Map.Entry<EntityDefinition<?>, Map<Object, ExcelRow>> objectModelEntry : objectModel.entrySet()) {
-            for (Map.Entry<Object, ExcelRow> excelRowEntry : objectModelEntry.getValue().entrySet()) {
-                try {
-                    ForeignRelationsMapper.makeForeignRelations(excelRowEntry.getValue(), objectModel);
-                } catch (NoSuchFieldException e) {
-                    throw new RuntimeException(e);
+                // Entity registry uses the entities persistent identifier, rather than its row identifier
+                // Row identifier is only used in excel, entity identifier is used in registry and database
+                Object entity = excelRow.getCreatedInstance();
+                Object identifier = JpaUtils.getIdentifier(entity, entityManagerFactory);
+                if (identifier == null) {
+                    // Whenever the identifier is null, because it has not yet been defined (generated value)
+                    // use a random placeholder identifier. This identifier is only used to access the entity
+                    // inside the generated entity registry. After persisting the registry, our entity identifier
+                    // will be replaced with the actual database identifier.
+                    identifier = UUID.randomUUID().toString();
                 }
+                entities.add(identifier, entity);
             }
+            entityRegistry.addAll(entities);
         }
+        return entityRegistry;
+    }
 
-        return objectModel;
+    private Map<EntityDefinition<?>, Map<Object, ExcelRow>> createExcelRows (final Workbook excel, final Collection<EntityDefinition<?>> entityDefinitions){
+    	for (EntityDefinition<?> entityDefinition : entityDefinitions){
+    		excelRowMap.put(entityDefinition, parseWorksheet(excel, entityDefinition));
+    	}
+    	return excelRowMap;
     }
 
     /**
