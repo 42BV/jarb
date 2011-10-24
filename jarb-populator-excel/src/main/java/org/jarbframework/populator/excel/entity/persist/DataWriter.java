@@ -20,6 +20,8 @@ import org.slf4j.LoggerFactory;
  * @author Sander Benschop
  */
 class DataWriter {
+    // TODO: Use JpaTemplate
+
     private static final Logger logger = LoggerFactory.getLogger(DataWriter.class);
 
     /**
@@ -55,6 +57,8 @@ class DataWriter {
         } catch (RuntimeException e) {
             transaction.rollback();
             throw e;
+        } finally {
+            entityManager.close();
         }
     }
 
