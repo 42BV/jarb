@@ -1,10 +1,13 @@
 package org.jarbframework.populator.excel;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
+import org.jarbframework.populator.ConditionalDatabasePopulator;
 import org.jarbframework.populator.excel.mapping.ValueConversionService;
 import org.junit.Before;
 import org.junit.Test;
@@ -42,6 +45,18 @@ public class ExcelDatabasePopulatorTest extends DefaultExcelTestDataCase {
         ValueConversionService valueConversionService = new ValueConversionService(genericConversionService);
         populator.setValueConversionService(valueConversionService);
         populator.populate();
+    }
+
+    @Test
+    public void testConditionalDatabasePopulator() {
+        ConditionalDatabasePopulator conditionalDatabasePopulator = ExcelDatabasePopulator.ignoreIfResourceMissing(new ClassPathResource(
+                "/src/test/resources/ExcelVerification/missing_sheet.xls"), getEntityManagerFactory());
+        assertNotNull(conditionalDatabasePopulator);
+    }
+
+    @Test
+    public void testToString() {
+        assertEquals("Excel populator 'class path resource [Excel.xls]'", populator.toString());
     }
 
 }
