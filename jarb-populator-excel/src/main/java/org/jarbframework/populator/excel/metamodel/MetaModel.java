@@ -14,20 +14,20 @@ import java.util.Map;
  */
 public class MetaModel implements Iterable<EntityDefinition<?>> {
     private final Map<Class<?>, EntityDefinition<?>> entityDefinitionsMap;
-    
+
     /**
      * Construct a new {@link MetaModel}.
      * @param classDefinitions all class definitions
      */
     public MetaModel(Collection<EntityDefinition<?>> classDefinitions) {
         entityDefinitionsMap = new HashMap<Class<?>, EntityDefinition<?>>();
-        for(EntityDefinition<?> classDefinition : classDefinitions) {
+        for (EntityDefinition<?> classDefinition : classDefinitions) {
             entityDefinitionsMap.put(classDefinition.getEntityClass(), classDefinition);
         }
     }
-    
+
     /**
-     * Retrieve the class definition of a specific persistent class,
+     * Retrieve the entity definition of a specific persistent class,
      * or {@code null} if no matching definition can be found.
      * @param entityClass class that we are finding for
      * @return description of the provided class, else {@code null}
@@ -35,12 +35,12 @@ public class MetaModel implements Iterable<EntityDefinition<?>> {
     @SuppressWarnings("unchecked")
     public <T> EntityDefinition<? super T> entity(Class<T> entityClass) {
         EntityDefinition<? super T> definition = (EntityDefinition<T>) entityDefinitionsMap.get(entityClass);
-        if(definition == null && entityClass.getSuperclass() != null) {
+        if (definition == null && entityClass.getSuperclass() != null) {
             definition = entity(entityClass.getSuperclass());
         }
         return definition;
     }
-    
+
     /**
      * Determine if this meta model contains the described persistent class.
      * @param entityClass class that we are looking for
@@ -48,7 +48,7 @@ public class MetaModel implements Iterable<EntityDefinition<?>> {
      */
     public boolean contains(Class<?> entityClass) {
         boolean found = entityDefinitionsMap.containsKey(entityClass);
-        if(!found && entityClass.getSuperclass() != null) {
+        if (!found && entityClass.getSuperclass() != null) {
             found = contains(entityClass.getSuperclass());
         }
         return found;
