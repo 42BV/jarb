@@ -1,13 +1,18 @@
 package org.jarbframework.populator.excel;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
-import org.jarbframework.populator.excel.ExcelDatabasePopulator;
+import org.jarbframework.populator.ConditionalDatabasePopulator;
+import org.jarbframework.populator.excel.mapping.ValueConversionService;
 import org.junit.Before;
 import org.junit.Test;
+import org.springframework.core.convert.support.ConversionServiceFactory;
+import org.springframework.core.convert.support.GenericConversionService;
 import org.springframework.core.io.ClassPathResource;
 
 import domain.entities.Customer;
@@ -33,5 +38,25 @@ public class ExcelDatabasePopulatorTest extends DefaultExcelTestDataCase {
         populator.populate();
         assertFalse(entityManager.createQuery("from domain.entities.Customer", Customer.class).getResultList().isEmpty());
     }
-    
+
+    @Test
+    public void testPopulateWithSpecifiedValueConversionService() throws Exception {
+        GenericConversionService genericConversionService = ConversionServiceFactory.createDefaultConversionService();
+        ValueConversionService valueConversionService = new ValueConversionService(genericConversionService);
+        populator.setValueConversionService(valueConversionService);
+        populator.populate();
+    }
+
+    @Test
+    public void testConditionalDatabasePopulator() {
+        ConditionalDatabasePopulator conditionalDatabasePopulator = ExcelDatabasePopulator.ignoreIfResourceMissing(new ClassPathResource(
+                "/src/test/resources/ExcelVerification/missing_sheet.xls"), getEntityManagerFactory());
+        assertNotNull(conditionalDatabasePopulator);
+    }
+
+    @Test
+    public void testToString() {
+        assertEquals("Excel populator 'class path resource [Excel.xls]'", populator.toString());
+    }
+
 }
