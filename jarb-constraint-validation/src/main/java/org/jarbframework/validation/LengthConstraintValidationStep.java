@@ -14,7 +14,7 @@ public class LengthConstraintValidationStep implements DatabaseConstraintValidat
             validation.buildViolationWithTemplate(propertyRef, LENGTH_VIOLATION_TEMPLATE)
                           .attribute("max", columnMetadata.getMaximumLength())
                           .value(propertyValue)
-                              .addViolation();
+                              .addToContext();
         }
     }
     

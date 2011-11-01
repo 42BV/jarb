@@ -14,7 +14,7 @@ public class FractionLengthConstraintValidationStep implements DatabaseConstrain
             validation.buildViolationWithTemplate(propertyRef, FRACTION_LENGTH_TEMPLATE)
                           .attribute("max", columnMetadata.getFractionLength())
                           .value(propertyValue)
-                              .addViolation();
+                              .addToContext();
         }
     }
     

@@ -17,6 +17,7 @@ import org.jarbframework.utils.orm.ColumnReference;
 import org.jarbframework.utils.orm.SchemaMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.NullValueInNestedPathException;
 
 /**
  * Validates the property values of a bean satisfy our database constraints.
@@ -99,7 +100,12 @@ public class DatabaseConstraintValidator {
         if (columnRef != null) {
             ColumnMetadata columnMetadata = constraintRepository.getColumnMetadata(columnRef);
             if (columnMetadata != null) {
-                Object propertyValue = ModifiableBean.wrap(bean).getPropertyValue(propertyRef.getName());
+                Object propertyValue = null;
+                try {
+                    propertyValue = ModifiableBean.wrap(bean).getPropertyValue(propertyRef.getName());
+                } catch (NullValueInNestedPathException e) {
+                    logger.debug("Could not retrieve actual property value.", e);
+                }
                 for (DatabaseConstraintValidationStep step : steps) {
                     step.validate(propertyValue, propertyRef, columnMetadata, validation);
                 }

@@ -36,7 +36,7 @@ public final class DatabaseConstraintValidationContext {
 
     /**
      * Start building a new database constraint violation. Note that the violation will only
-     * be stored after invoking {@link DatabaseConstraintViolationBuilder#addViolation()}.
+     * be stored after invoking {@link DatabaseConstraintViolationBuilder#addToContext()}.
      * @param propertyRef reference to the property that was violated
      * @param templateName name of the message template
      * @return new violation builder
@@ -84,7 +84,7 @@ public final class DatabaseConstraintValidationContext {
          * Finish building and include the violation to our context.
          * @return the relevant context, capable of building new violation
          */
-        public DatabaseConstraintValidationContext addViolation() {
+        public DatabaseConstraintValidationContext addToContext() {
             markAsInvalid();
             if (propertyReference.isNestedProperty()) {
                 buildAndIncludeNestedPropertyViolation();
