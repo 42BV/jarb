@@ -3,11 +3,10 @@ package org.jarbframework.populator;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
+import java.util.Arrays;
+
 import javax.sql.DataSource;
 
-import org.jarbframework.populator.CompoundDatabasePopulator;
-import org.jarbframework.populator.DatabasePopulator;
-import org.jarbframework.populator.SqlResourceDatabasePopulator;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,10 +28,12 @@ public class CompoundDatabasePopulatorTest {
      */
     @Test
     public void testPopulate() throws Exception {
-        CompoundDatabasePopulator populator = new CompoundDatabasePopulator();
-        populator.add(fromScript("create-schema.sql"));
-        populator.add(fromScript("insert-person.sql"));
-        populator.populate();
+        new CompoundDatabasePopulator(
+            Arrays.asList(
+                fromScript("create-schema.sql"),
+                fromScript("insert-person.sql")
+            )
+        ).populate();
 
         JdbcTemplate template = new JdbcTemplate(dataSource);
         assertEquals("eddie", template.queryForObject("SELECT name FROM persons WHERE id = 1", String.class));
@@ -40,12 +41,15 @@ public class CompoundDatabasePopulatorTest {
 
     @Test
     public void testSupressExceptions() throws Exception {
-        CompoundDatabasePopulator populator = new CompoundDatabasePopulator();
-        populator.add(fromScript("unknown.sql")); // Does not exist
-        populator.add(fromScript("create-schema.sql"));
-        populator.add(fromScript("unknown.sql")); // Does not exist
-        populator.add(fromScript("insert-person.sql"));
-        populator.add(fromScript("unknown.sql")); // Does not exist
+        CompoundDatabasePopulator populator = new CompoundDatabasePopulator(
+            Arrays.asList(
+                fromScript("unknown.sql"),
+                fromScript("create-schema.sql"),
+                fromScript("unknown.sql"),
+                fromScript("insert-person.sql"),
+                fromScript("unknown.sql")
+            )
+        );
 
         // Just to demonstrate that an exception will be thrown
         try {

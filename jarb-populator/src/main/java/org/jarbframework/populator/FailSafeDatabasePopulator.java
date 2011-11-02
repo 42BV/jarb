@@ -2,9 +2,6 @@ package org.jarbframework.populator;
 
 import static org.jarbframework.utils.Asserts.notNull;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,11 +18,11 @@ public class FailSafeDatabasePopulator implements DatabasePopulator {
 
     /** Populator that might throw an exception. **/
     private final DatabasePopulator populator;
-
     /** Classes of exceptions that should be skipped. **/
-    private Set<Class<? extends Exception>> skippingExceptionClasses;
+    private final Class<? extends Exception> exceptionClass;
+    
     /** Determines if occured exceptions should be logged. **/
-    private boolean logError = true;
+    private boolean shouldLogErrors = true;
 
     /**
      * Construct a new {@link FailSafeDatabasePopulator}.
@@ -38,42 +35,30 @@ public class FailSafeDatabasePopulator implements DatabasePopulator {
     /**
      * Construct a new {@link FailSafeDatabasePopulator}.
      * @param populator the populator being wrapped
-     * @param skippingExceptionClass exception class being skipped
+     * @param exceptionClass exception class being skipped
      */
-    public FailSafeDatabasePopulator(DatabasePopulator populator, Class<? extends Exception> skippingExceptionClass) {
+    public FailSafeDatabasePopulator(DatabasePopulator populator, Class<? extends Exception> exceptionClass) {
         this.populator = notNull(populator, "Populator cannot be null");
-        skippingExceptionClasses = new HashSet<Class<? extends Exception>>();
-        skippingExceptionClasses.add(skippingExceptionClass);
-    }
-
-    /**
-     * Configure the exception classes that should be skipped.
-     * @param skippingExceptionClasses exception classes being skipped
-     */
-    public void setSkippingExceptionClasses(Set<Class<? extends Exception>> skippingExceptionClasses) {
-        this.skippingExceptionClasses = skippingExceptionClasses;
+        this.exceptionClass = exceptionClass;
     }
 
     /**
      * Configure whether exceptions should be logged or not.
-     * @param logError {@code true} if exceptions should be logged, else {@code false}
+     * @param shouldLogErrors {@code true} if exceptions should be logged, else {@code false}
      */
-    public void setLogError(boolean logError) {
-        this.logError = logError;
+    public void setShouldLogErrors(boolean shouldLogErrors) {
+        this.shouldLogErrors = shouldLogErrors;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void populate() throws Exception {
         try {
             populator.populate();
-        } catch (Exception e) {
-            if (isSkipableException(e)) {
-                logIfNeeded(e);
+        } catch (Exception exception) {
+            if (isSkipableException(exception)) {
+                logIfNeeded(exception);
             } else {
-                throw e;
+                throw exception;
             }
         }
     }
@@ -84,13 +69,8 @@ public class FailSafeDatabasePopulator implements DatabasePopulator {
      * @param e exception that was initially thrown
      * @return {@code true} if it should be skipped, else {@code false}
      */
-    private boolean isSkipableException(Exception e) {
-        for (Class<? extends Exception> skippingExceptionClass : skippingExceptionClasses) {
-            if (skippingExceptionClass.isAssignableFrom(e.getClass())) {
-                return true;
-            }
-        }
-        return false;
+    private boolean isSkipableException(Exception exception) {
+        return exceptionClass.isInstance(exception);
     }
 
     /**
@@ -98,17 +78,13 @@ public class FailSafeDatabasePopulator implements DatabasePopulator {
      * @param e exception that should be logged
      */
     private void logIfNeeded(Exception e) {
-        if (logError) {
+        if (shouldLogErrors) {
             logger.info("An error occured while executing database populator (" + populator + ").", e);
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String toString() {
         return ToStringBuilder.reflectionToString(this);
     }
-
 }

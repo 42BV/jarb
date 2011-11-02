@@ -36,21 +36,31 @@
 	</bean>
 	
 	<!-- Insert content into our database -->
-	<bean class="org.jarbframework.populator.DatabasePopulatorExecutor">
-    	<constructor-arg>
-			<list>
-				<!-- Using SQL statements -->
-				<bean class="org.jarbframework.populator.SqlResourceDatabasePopulator">
-					<property name="sqlResource" value="classpath:import.sql"/>
-					<property name="dataSource" ref="dataSource"/>
-				</bean>
-				<!-- And an Excel workbook -->
-				<bean class="org.jarbframework.populator.excel.ExcelDatabasePopulator">
-					<property name="excelResource" value="classpath:import.xls"/>
-					<property name="entityManagerFactory" ref="entityManagerFactory"/>
-				</bean>
-			</list>
-    	</constructor-arg>
+	<bean class="org.jarbframework.populator.DatabasePopulatingListener">
+    	<property name="initializer">
+    	   <bean class="org.jarbframework.populator.CompoundDatabasePopulator">
+    	       <constructor-arg>
+					<list>
+						<!-- Using SQL statements -->
+						<bean class="org.jarbframework.populator.SqlResourceDatabasePopulator">
+							<property name="sqlResource" value="classpath:import.sql"/>
+							<property name="dataSource" ref="dataSource"/>
+						</bean>
+						<!-- And an Excel workbook -->
+						<bean class="org.jarbframework.populator.excel.ExcelDatabasePopulator">
+							<property name="excelResource" value="classpath:import.xls"/>
+							<property name="entityManagerFactory" ref="entityManagerFactory"/>
+						</bean>
+					</list>
+                </constructor-arg>
+			</bean>
+    	</property>
+    	<property name="destroyer">
+			<bean class="org.jarbframework.populator.SqlResourceDatabasePopulator">
+			    <property name="sqlResource" value="classpath:clean.sql"/>
+			    <property name="dataSource" ref="dataSource"/>
+			</bean>
+    	</property>
     </bean>
 
     <!-- Object relational mapping using Hibernate and Spring -->

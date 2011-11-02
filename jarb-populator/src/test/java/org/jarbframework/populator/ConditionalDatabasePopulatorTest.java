@@ -6,10 +6,6 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import org.easymock.EasyMock;
-import org.jarbframework.populator.ConditionalDatabasePopulator;
-import org.jarbframework.populator.DatabasePopulator;
-import org.jarbframework.populator.condition.Condition;
-import org.jarbframework.populator.condition.ResourceExistsCondition;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.core.io.ClassPathResource;
@@ -27,7 +23,7 @@ public class ConditionalDatabasePopulatorTest {
      */
     @Test
     public void testSupported() throws Exception {
-        final Condition existingResourceExists = new ResourceExistsCondition(new ClassPathResource("create-schema.sql"));
+        final Conditional existingResourceExists = new ResourceExistsConditional(new ClassPathResource("create-schema.sql"));
         assertTrue(existingResourceExists.check().isSatisfied()); // Resource 'create-schema.sql' exists on our classpath
         
         ConditionalDatabasePopulator conditionalPopulator = new ConditionalDatabasePopulator(populatorMock, existingResourceExists);
@@ -46,7 +42,7 @@ public class ConditionalDatabasePopulatorTest {
      */
     @Test
     public void testUnsupported() throws Exception {
-        final Condition unknownResourceDoesNotExists = new ResourceExistsCondition(new ClassPathResource("unknown.sql"));
+        final Conditional unknownResourceDoesNotExists = new ResourceExistsConditional(new ClassPathResource("unknown.sql"));
         assertFalse(unknownResourceDoesNotExists.check().isSatisfied()); // Resource 'unknown.sql' does not exist on our classpath
         
         ConditionalDatabasePopulator conditionalPopulator = new ConditionalDatabasePopulator(populatorMock, unknownResourceDoesNotExists);
@@ -63,7 +59,7 @@ public class ConditionalDatabasePopulatorTest {
             fail("Expected an illegal state exception because our condition was not satisfied.");
         } catch (IllegalStateException e) {
             assertEquals(
-                    "Database populator (" + populatorMock + ") was not executed, because:\n" +
+                    "Database populator (" + populatorMock + ") was not performed, because:\n" +
                     " - Resource 'class path resource [unknown.sql]' does not exist."
                     , e.getMessage()
             );

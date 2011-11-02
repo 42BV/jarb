@@ -7,7 +7,6 @@ import java.sql.SQLException;
 
 import javax.sql.DataSource;
 
-import org.jarbframework.populator.condition.ResourceExistsCondition;
 import org.jarbframework.utils.JdbcConnectionCallback;
 import org.jarbframework.utils.JdbcUtils;
 import org.springframework.core.io.Resource;
@@ -20,6 +19,7 @@ import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
  * @since 01-06-2011
  */
 public class SqlResourceDatabasePopulator implements DatabasePopulator {
+    
     /** Data source being populated. **/
     private DataSource dataSource;
     /** Reference to the SQL script resource. **/
@@ -47,7 +47,7 @@ public class SqlResourceDatabasePopulator implements DatabasePopulator {
         SqlResourceDatabasePopulator sqlPopulator = new SqlResourceDatabasePopulator();
         sqlPopulator.setSqlResource(sqlResource);
         sqlPopulator.setDataSource(dataSource);
-        return new ConditionalDatabasePopulator(sqlPopulator, new ResourceExistsCondition(sqlResource));
+        return new ConditionalDatabasePopulator(sqlPopulator, new ResourceExistsConditional(sqlResource));
     }
     
     @Override

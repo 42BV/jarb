@@ -1,9 +1,5 @@
 package org.jarbframework.populator;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,34 +14,16 @@ public class CompoundDatabasePopulator implements DatabasePopulator {
     private final Logger logger = LoggerFactory.getLogger(CompoundDatabasePopulator.class);
 
     /** Ordered collection of delegate populator. **/
-    private final List<DatabasePopulator> populators;
+    private final Iterable<DatabasePopulator> populators;
     /** Determine if we should continue after an exception. **/
     private boolean continueOnException = false;
-
-    /**
-     * Construct an empty {@link CompoundDatabasePopulator}.
-     */
-    public CompoundDatabasePopulator() {
-        this.populators = new ArrayList<DatabasePopulator>();
-    }
 
     /**
      * Construct a new {@link CompoundDatabasePopulator}.
      * @param populators database populators that should be executed in sequence
      */
-    public CompoundDatabasePopulator(Collection<DatabasePopulator> populators) {
-        this.populators = new ArrayList<DatabasePopulator>(populators);
-    }
-
-    /**
-     * Include a database populator to this compound populator. Populators
-     * will be executed in the same sequence as they were added.
-     * @param populator database populator being added
-     * @return this compound populator instance, useful for chaining
-     */
-    public CompoundDatabasePopulator add(DatabasePopulator populator) {
-        populators.add(populator);
-        return this;
+    public CompoundDatabasePopulator(Iterable<DatabasePopulator> populators) {
+        this.populators = populators;
     }
 
     public void setContinueOnException(boolean continueOnException) {
@@ -57,12 +35,11 @@ public class CompoundDatabasePopulator implements DatabasePopulator {
      */
     @Override
     public void populate() throws Exception {
-        logger.info("Starting to execute {} database populators.", populators.size());
         for (DatabasePopulator populator : populators) {
-            logger.info("Executing {}...", populator);
             if (continueOnException) {
                 populator = new FailSafeDatabasePopulator(populator);
             }
+            logger.info("Starting populator '{}'...", populator);
             populator.populate();
         }
     }

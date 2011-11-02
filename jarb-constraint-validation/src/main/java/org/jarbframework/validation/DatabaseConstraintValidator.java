@@ -40,7 +40,7 @@ public class DatabaseConstraintValidator {
     private final Logger logger = LoggerFactory.getLogger(DatabaseConstraintValidator.class);
 
     /** Concrete validation logic that should be performed **/
-    private final List<DatabaseConstraintValidationStep> steps;
+    private final List<DatabaseConstraintValidationStep> validationSteps;
 
     /** Retrieves the column meta-data that we use for validation **/
     private DatabaseConstraintRepository constraintRepository;
@@ -53,10 +53,10 @@ public class DatabaseConstraintValidator {
      * Construct a new {@link DatabaseConstraintValidator}.
      */
     public DatabaseConstraintValidator() {
-        steps = new ArrayList<DatabaseConstraintValidationStep>();
-        steps.add(new NotNullConstraintValidationStep());
-        steps.add(new LengthConstraintValidationStep());
-        steps.add(new FractionLengthConstraintValidationStep());
+        validationSteps = new ArrayList<DatabaseConstraintValidationStep>();
+        validationSteps.add(new NotNullConstraintValidationStep());
+        validationSteps.add(new LengthConstraintValidationStep());
+        validationSteps.add(new FractionLengthConstraintValidationStep());
     }
 
     /**
@@ -106,7 +106,7 @@ public class DatabaseConstraintValidator {
                 } catch (NullValueInNestedPathException e) {
                     logger.debug("Could not retrieve actual property value.", e);
                 }
-                for (DatabaseConstraintValidationStep step : steps) {
+                for (DatabaseConstraintValidationStep step : validationSteps) {
                     step.validate(propertyValue, propertyRef, columnMetadata, validation);
                 }
             } else {

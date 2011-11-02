@@ -6,7 +6,7 @@ import javax.persistence.EntityManagerFactory;
 
 import org.jarbframework.populator.ConditionalDatabasePopulator;
 import org.jarbframework.populator.DatabasePopulator;
-import org.jarbframework.populator.condition.ResourceExistsCondition;
+import org.jarbframework.populator.ResourceExistsConditional;
 import org.jarbframework.populator.excel.mapping.ValueConversionService;
 import org.springframework.core.io.Resource;
 import org.springframework.util.Assert;
@@ -52,7 +52,7 @@ public class ExcelDatabasePopulator implements DatabasePopulator {
         ExcelDatabasePopulator populator = new ExcelDatabasePopulator();
         populator.setExcelResource(excelResource);
         populator.setEntityManagerFactory(entityManagerFactory);
-        return new ConditionalDatabasePopulator(populator, new ResourceExistsCondition(excelResource));
+        return new ConditionalDatabasePopulator(populator, new ResourceExistsConditional(excelResource));
     }
 
     /**
