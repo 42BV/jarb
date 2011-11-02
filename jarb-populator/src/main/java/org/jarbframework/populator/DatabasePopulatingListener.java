@@ -29,24 +29,11 @@ public class DatabasePopulatingListener implements ApplicationListener<Applicati
     
     @Override
     public void onApplicationEvent(ApplicationContextEvent event) {
-        if(hasNotStartedInitializer() && event instanceof ContextRefreshedEvent) {
-            initializeDatabase();
+        if(event instanceof ContextRefreshedEvent && initializerStarted.compareAndSet(false, true)) {
+            execute(initializer);
         } else if(event instanceof ContextClosedEvent) {
-            cleanDatabase();
+            execute(destroyer);
         }
-    }
-
-    private boolean hasNotStartedInitializer() {
-        return !initializerStarted.get();
-    }
-
-    private void initializeDatabase() {
-        initializerStarted.set(true);
-        execute(initializer);
-    }
-    
-    private void cleanDatabase() {
-        execute(destroyer);
     }
     
     private void execute(DatabasePopulator populator) {
