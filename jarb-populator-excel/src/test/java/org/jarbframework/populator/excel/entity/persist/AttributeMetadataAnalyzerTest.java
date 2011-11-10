@@ -14,12 +14,12 @@ import domain.entities.VeryImportantCustomer;
 
 public class AttributeMetadataAnalyzerTest extends DefaultExcelTestDataCase {
 
-	@Test
-	public void testAttributeIsAssociation(){
-		Attribute<?, ?> attribute = getEntityManagerFactory().getMetamodel().entity(Project.class).getAttribute("customer");
-		assertTrue(AttributeMetadataAnalyzer.attributeIsAssociation(attribute));
-	}
-	
+    @Test
+    public void testAttributeIsAssociation() {
+        Attribute<?, ?> attribute = getEntityManagerFactory().getMetamodel().entity(Project.class).getAttribute("customer");
+        assertTrue(AttributeMetadataAnalyzer.attributeIsAssociation(attribute));
+    }
+
     @Test
     public void testHasNecessaryCascadeAnnotations() {
         Attribute<?, ?> attribute = getEntityManagerFactory().getMetamodel().entity(Project.class).getAttribute("customer");

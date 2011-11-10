@@ -10,7 +10,7 @@ import org.jarbframework.populator.excel.workbook.Workbook;
  * @since 10-05-2011
  */
 public interface EntityExporter {
-    
+
     /**
      * Convert a registry of entities into a workbook.
      * @param registry entities that should be converted into a workbook

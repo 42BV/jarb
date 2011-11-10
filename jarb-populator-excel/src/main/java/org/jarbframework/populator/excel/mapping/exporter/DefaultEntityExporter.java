@@ -2,6 +2,7 @@ package org.jarbframework.populator.excel.mapping.exporter;
 
 import org.jarbframework.populator.excel.entity.EntityRegistry;
 import org.jarbframework.populator.excel.mapping.ValueConversionService;
+import org.jarbframework.populator.excel.metamodel.Definition;
 import org.jarbframework.populator.excel.metamodel.EntityDefinition;
 import org.jarbframework.populator.excel.metamodel.MetaModel;
 import org.jarbframework.populator.excel.metamodel.PropertyDatabaseType;
@@ -49,8 +50,8 @@ public class DefaultEntityExporter implements EntityExporter {
     @Override
     public Workbook export(EntityRegistry registry, MetaModel metamodel) {
         Workbook workbook = excelTemplateBuilder.createTemplate(metamodel);
-        for (EntityDefinition<?> classDefinition : metamodel.entities()) {
-            exportEntities(registry, classDefinition, workbook);
+        for (Definition<?> entityDefinition : metamodel.entities()) {
+            exportEntities(registry, entityDefinition, workbook);
         }
         return workbook;
     }
@@ -62,9 +63,9 @@ public class DefaultEntityExporter implements EntityExporter {
      * @param classDefinition description of the entity class
      * @param workbook excel workbook that will contain our data
      */
-    private <T> void exportEntities(EntityRegistry registry, EntityDefinition<T> classDefinition, Workbook workbook) {
+    private <T> void exportEntities(EntityRegistry registry, Definition<T> classDefinition, Workbook workbook) {
         Sheet sheet = workbook.getSheet(classDefinition.getTableName());
-        for (T entity : registry.withClass(classDefinition.getEntityClass())) {
+        for (T entity : registry.withClass(classDefinition.getDefinedClass())) {
             exportEntity(entity, classDefinition, sheet);
         }
     }
@@ -73,13 +74,13 @@ public class DefaultEntityExporter implements EntityExporter {
      * Store a specific entity in our sheet.
      * @param <T> type of entity being stored
      * @param entity the entity being stored
-     * @param classDefinition description of the entity class
+     * @param definition description of the entity class
      * @param sheet the sheet in which we store the entity
      */
-    private <T> void exportEntity(T entity, EntityDefinition<T> classDefinition, Sheet sheet) {
+    private <T> void exportEntity(T entity, Definition<T> definition, Sheet sheet) {
         Row row = sheet.createRow();
         // Handle each property definition
-        for (PropertyDefinition propertyDefinition : classDefinition.properties()) {
+        for (PropertyDefinition propertyDefinition : definition.properties()) {
             final PropertyDatabaseType type = propertyDefinition.getDatabaseType();
             if (type == PropertyDatabaseType.COLUMN) {
                 // Retrieve the property value and store it as cell value
@@ -96,11 +97,16 @@ public class DefaultEntityExporter implements EntityExporter {
                 exportJoinTable(entity, propertyDefinition, sheet.getWorkbook());
             }
         }
-        // Include the discriminator value, whenever relevant
-        if (classDefinition.hasDiscriminatorColumn()) {
-            String discriminatorValue = classDefinition.getDiscriminatorValue(entity.getClass());
-            row.setCellValueAt(classDefinition.getDiscriminatorColumnName(), new StringValue(discriminatorValue));
+
+        if (definition instanceof EntityDefinition<?>) {
+            EntityDefinition<?> entityDefinition = (EntityDefinition<?>) definition;
+            // Include the discriminator value, whenever relevant
+            if (entityDefinition.hasDiscriminatorColumn()) {
+                String discriminatorValue = entityDefinition.getDiscriminatorValue(entity.getClass());
+                row.setCellValueAt(entityDefinition.getDiscriminatorColumnName(), new StringValue(discriminatorValue));
+            }
         }
+
         // Define the row identifier of our entity, allowing us to reference it
         row.setCellValueAt(0, cellValueGenerator.asCellValue(entityRowIdResolver.resolveRowId(entity)));
     }

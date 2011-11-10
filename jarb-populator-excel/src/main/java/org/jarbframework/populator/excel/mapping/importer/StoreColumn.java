@@ -4,7 +4,7 @@ import static org.jarbframework.utils.bean.BeanProperties.getPropertyType;
 
 import org.jarbframework.populator.excel.mapping.CouldNotConvertException;
 import org.jarbframework.populator.excel.mapping.ValueConversionService;
-import org.jarbframework.populator.excel.metamodel.EntityDefinition;
+import org.jarbframework.populator.excel.metamodel.Definition;
 import org.jarbframework.populator.excel.metamodel.PropertyDefinition;
 import org.jarbframework.populator.excel.metamodel.PropertyNode;
 import org.jarbframework.populator.excel.metamodel.PropertyPath;
@@ -40,7 +40,7 @@ public final class StoreColumn {
      * @param excelRow ExcelRow to save to.
      * @throws NoSuchFieldException Thrown when a field is not available
      */
-    public void storeValue(Workbook excel, EntityDefinition<?> classDefinition, PropertyDefinition columnDefinition, Integer rowPosition, ExcelRow excelRow) {
+    public void storeValue(Workbook excel, Definition<?> classDefinition, PropertyDefinition columnDefinition, Integer rowPosition, ExcelRow excelRow) {
         Sheet sheet = excel.getSheet(classDefinition.getTableName());
 
         WorksheetDefinition worksheetDefinition = WorksheetDefinition.analyzeWorksheet(classDefinition, excel);

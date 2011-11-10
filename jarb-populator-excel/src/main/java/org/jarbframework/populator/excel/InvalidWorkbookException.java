@@ -15,7 +15,7 @@ import org.jarbframework.populator.excel.workbook.validator.WorkbookViolation;
 public class InvalidWorkbookException extends RuntimeException {
 
     public InvalidWorkbookException(Set<WorkbookViolation> violations) {
-        super("Worbook is invalid:\n - " + collectionToDelimitedString(violations, "\n - "));
+        super("Workbook is invalid:\n - " + collectionToDelimitedString(violations, "\n - "));
     }
 
 }

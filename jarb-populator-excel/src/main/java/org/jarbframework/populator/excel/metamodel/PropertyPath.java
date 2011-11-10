@@ -129,7 +129,6 @@ public final class PropertyPath implements Iterable<PropertyNode> {
         return nodes.iterator();
     }
 
-
     /**
      * {@inheritDoc}
      */

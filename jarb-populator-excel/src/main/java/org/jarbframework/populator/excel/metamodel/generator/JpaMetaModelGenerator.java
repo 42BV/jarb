@@ -4,8 +4,11 @@ import java.util.Collection;
 import java.util.HashSet;
 
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.metamodel.EmbeddableType;
 import javax.persistence.metamodel.EntityType;
 
+import org.jarbframework.populator.excel.metamodel.Definition;
+import org.jarbframework.populator.excel.metamodel.ElementCollectionDefinition;
 import org.jarbframework.populator.excel.metamodel.EntityDefinition;
 import org.jarbframework.populator.excel.metamodel.MetaModel;
 import org.jarbframework.utils.orm.jpa.JpaMetaModelUtils;
@@ -35,9 +38,14 @@ public class JpaMetaModelGenerator implements MetaModelGenerator {
      */
     @Override
     public MetaModel generate() {
-        Collection<EntityDefinition<?>> entities = new HashSet<EntityDefinition<?>>();
+        Collection<Definition<?>> entities = new HashSet<Definition<?>>();
         for (EntityType<?> entityType : JpaMetaModelUtils.getRootEntities(entityManagerFactory.getMetamodel())) {
             entities.add(describeEntity(entityType));
+
+            for (EmbeddableType<?> elementCollection : JpaMetaModelUtils.getElementCollectionsForEntity(entityType)) {
+                entities.add(describeElementCollection(elementCollection, entityType));
+            }
+
         }
         return new MetaModel(entities);
     }
@@ -47,7 +55,7 @@ public class JpaMetaModelGenerator implements MetaModelGenerator {
      */
     @Override
     public MetaModel generateFor(Collection<Class<?>> entityClasses) {
-        Collection<EntityDefinition<?>> entities = new HashSet<EntityDefinition<?>>();
+        Collection<Definition<?>> entities = new HashSet<Definition<?>>();
         for (Class<?> entityClass : entityClasses) {
             EntityType<?> entityType = entityManagerFactory.getMetamodel().entity(entityClass);
             entities.add(describeEntity(entityType));
@@ -62,11 +70,17 @@ public class JpaMetaModelGenerator implements MetaModelGenerator {
      */
     private EntityDefinition<?> describeEntity(EntityType<?> entityType) {
         try {
-            LOGGER.debug("Generating metamodel definition of '{}'...", entityType.getJavaType().getName());
-            return new ClassDefinitionsGenerator(entityManagerFactory).createSingleClassDefinitionFromMetamodel(entityType, true);
+            LOGGER.debug("Generating metamodel definition of entity class '{}'...", entityType.getJavaType().getName());
+            return new EntityDefinitionsGenerator(entityManagerFactory).createSingleEntityDefinitionFromMetamodel(entityType, true);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private ElementCollectionDefinition<?> describeElementCollection(EmbeddableType<?> embeddableType, EntityType<?> enclosingType) {
+        LOGGER.debug("Generating metamodel definition of embeddable class '{}'...", embeddableType.getJavaType().getName());
+        return new ElementCollectionDefinitionsGenerator(entityManagerFactory).createSingleElementCollectionDefinitionFromMetamodel(embeddableType,
+                enclosingType);
     }
 
 }

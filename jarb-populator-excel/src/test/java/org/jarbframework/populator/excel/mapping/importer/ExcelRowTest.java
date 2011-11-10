@@ -11,7 +11,7 @@ import javax.persistence.metamodel.Metamodel;
 import org.jarbframework.populator.excel.DefaultExcelTestDataCase;
 import org.jarbframework.populator.excel.metamodel.EntityDefinition;
 import org.jarbframework.populator.excel.metamodel.PropertyDefinition;
-import org.jarbframework.populator.excel.metamodel.generator.ClassDefinitionsGenerator;
+import org.jarbframework.populator.excel.metamodel.generator.EntityDefinitionsGenerator;
 import org.jarbframework.populator.excel.metamodel.generator.FieldAnalyzer;
 import org.jarbframework.populator.excel.workbook.Workbook;
 import org.jarbframework.utils.bean.PropertyReference;
@@ -42,9 +42,9 @@ public class ExcelRowTest extends DefaultExcelTestDataCase {
         Metamodel metamodel = getEntityManagerFactory().getMetamodel();
         EntityType<?> entity = metamodel.entity(domain.entities.Customer.class);
 
-        ClassDefinitionsGenerator classDefinitionsGenerator = new ClassDefinitionsGenerator(getEntityManagerFactory());
-        classDefinition = classDefinitionsGenerator.createSingleClassDefinitionFromMetamodel(entity, false);
-        excelRow = new ExcelRow(classDefinition.getEntityClass());
+        EntityDefinitionsGenerator entityDefinitionsGenerator = new EntityDefinitionsGenerator(getEntityManagerFactory());
+        classDefinition = entityDefinitionsGenerator.createSingleEntityDefinitionFromMetamodel(entity, false);
+        excelRow = new ExcelRow(classDefinition.getDefinedClass());
 
         FieldAnalyzer fieldAnalyzer = new FieldAnalyzer(JpaHibernateSchemaMapper.usingNamingStrategyOf(getEntityManagerFactory()));
         PropertyDefinition columnDefinition = fieldAnalyzer.analyzeField(new PropertyReference(persistentClass, "id")).build();
@@ -64,9 +64,9 @@ public class ExcelRowTest extends DefaultExcelTestDataCase {
         Metamodel metamodel = getEntityManagerFactory().getMetamodel();
         EntityType<?> entity = metamodel.entity(domain.entities.Customer.class);
 
-        ClassDefinitionsGenerator classDefinitionsGenerator = new ClassDefinitionsGenerator(getEntityManagerFactory());
-        classDefinition = classDefinitionsGenerator.createSingleClassDefinitionFromMetamodel(entity, false);
-        excelRow = new ExcelRow(classDefinition.getEntityClass());
+        EntityDefinitionsGenerator entityDefinitionsGenerator = new EntityDefinitionsGenerator(getEntityManagerFactory());
+        classDefinition = entityDefinitionsGenerator.createSingleEntityDefinitionFromMetamodel(entity, false);
+        excelRow = new ExcelRow(classDefinition.getDefinedClass());
 
         createdInstance = (Customer) excelRow.getCreatedInstance();
         assertEquals(persistentClass, createdInstance.getClass());

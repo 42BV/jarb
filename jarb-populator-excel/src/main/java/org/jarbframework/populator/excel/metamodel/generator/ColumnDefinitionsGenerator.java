@@ -6,8 +6,10 @@ import java.util.List;
 import java.util.Set;
 
 import javax.persistence.metamodel.Attribute;
+import javax.persistence.metamodel.EmbeddableType;
 import javax.persistence.metamodel.EntityType;
 import javax.persistence.metamodel.IdentifiableType;
+import javax.persistence.metamodel.ManagedType;
 
 import org.jarbframework.populator.excel.metamodel.PropertyDefinition;
 import org.jarbframework.utils.bean.PropertyReference;
@@ -34,33 +36,65 @@ public final class ColumnDefinitionsGenerator {
     /**
      * Creates a list of columnDefinitions from an entity originated in the JPA meta-model.
      * @param subclassEntities Set of subclass entities
-     * @param entity Entity whose attributes will be added as ColumnDefinitions.
-     * @param persistentClass Persistent class of the ClassDefinition
+     * @param type Entity whose attributes will be added as ColumnDefinitions.
+     * @param definedClass Persistent class of the ClassDefinition
      * @return List of ColumnDefinitions
      */
-    public List<PropertyDefinition> createPropertyDefinitions(Set<EntityType<?>> subclassEntities, EntityType<?> entity, Class<?> persistentClass) {
+    public List<PropertyDefinition> createPropertyDefinitions(Set<EntityType<?>> subclassEntities, EntityType<?> type, Class<?> persistentClass) {
         List<PropertyDefinition> columnDefinitions = new ArrayList<PropertyDefinition>();
-        addAttributesAsColumnDefinitions(columnDefinitions, entity, persistentClass);
-        createSuperTypeColumnDefinitions(columnDefinitions, entity, persistentClass);
+        addAttributesAsColumnDefinitions(columnDefinitions, type, persistentClass);
+        createSuperTypeColumnDefinitions(columnDefinitions, type, persistentClass);
         if (!subclassEntities.isEmpty()) {
             createSubClassColumnDefinitions(columnDefinitions, subclassEntities);
         }
         return columnDefinitions;
     }
 
-    private void addAttributesAsColumnDefinitions(List<PropertyDefinition> columnDefinitions, IdentifiableType<?> type, Class<?> entityClass) {
+    public List<PropertyDefinition> createPropertyDefinitions(EmbeddableType<?> embeddableType, EntityType<?> enclosingType) {
+        List<PropertyDefinition> propertyDefinitions = new ArrayList<PropertyDefinition>();
+        Class<?> embeddableClass = embeddableType.getJavaType();
+        Class<?> enclosingClass = enclosingType.getJavaType();
+        addAttributesAsColumnDefinitions(propertyDefinitions, embeddableType, embeddableClass, enclosingClass);
+        return propertyDefinitions;
+    }
+
+    private void addAttributesAsColumnDefinitions(List<PropertyDefinition> columnDefinitions, ManagedType<?> type, Class<?> entityClass) {
+        addAttributesAsColumnDefinitions(columnDefinitions, type, entityClass, null);
+    }
+
+    private void addAttributesAsColumnDefinitions(List<PropertyDefinition> columnDefinitions, ManagedType<?> type, Class<?> entityClass, Class<?> enclosingClass) {
         for (Attribute<?, ?> attribute : type.getDeclaredAttributes()) {
             Field field = (Field) attribute.getJavaMember();
-            List<PropertyDefinition> newlyGeneratedColumnDefinitions = createColumnsForField(field, entityClass);
+
+            List<PropertyDefinition> newlyGeneratedColumnDefinitions = createPropertyDefinitionList(
+                    entityClass, enclosingClass, field);
+
             for (PropertyDefinition columnDefinition : newlyGeneratedColumnDefinitions) {
                 addPropertyDefinitionIfUnique(columnDefinitions, type, columnDefinition);
             }
         }
     }
 
+    private List<PropertyDefinition> createPropertyDefinitionList(
+            Class<?> entityClass, Class<?> enclosingClass, Field field) {
+        List<PropertyDefinition> newlyGeneratedColumnDefinitions = null;
+        if (enclosingClass == null) {
+            newlyGeneratedColumnDefinitions = createColumnsForField(field, entityClass);
+        } else {
+            newlyGeneratedColumnDefinitions = createColumnsForField(field, entityClass, enclosingClass);
+        }
+        return newlyGeneratedColumnDefinitions;
+    }
+
     private List<PropertyDefinition> createColumnsForField(Field field, Class<?> entityClass) {
+        return createColumnsForField(field, entityClass, null);
+    }
+
+    private List<PropertyDefinition> createColumnsForField(Field field, Class<?> entityClass, Class<?> enclosingClass) {
         List<PropertyDefinition> columnDefinitions = new ArrayList<PropertyDefinition>();
-        PropertyReference propertyReference = new PropertyReference(entityClass, field.getName());
+
+        PropertyReference propertyReference = createPropertyReference(field, entityClass, enclosingClass);
+
         if ((field.getAnnotation(javax.persistence.Embedded.class) != null)) {
             columnDefinitions.addAll(embeddedColumnGenerator.createColumnDefinitionsForEmbeddedField(propertyReference));
         } else {
@@ -70,6 +104,17 @@ public final class ColumnDefinitionsGenerator {
             }
         }
         return columnDefinitions;
+    }
+
+    private PropertyReference createPropertyReference(Field field,
+            Class<?> entityClass, Class<?> enclosingClass) {
+        PropertyReference propertyReference = null;
+        if (enclosingClass == null) {
+            propertyReference = new PropertyReference(entityClass, field.getName());
+        } else {
+            propertyReference = new PropertyReference(entityClass, enclosingClass, field.getName());
+        }
+        return propertyReference;
     }
 
     private void createSuperTypeColumnDefinitions(List<PropertyDefinition> columnDefinitions, IdentifiableType<?> type, Class<?> entityClass) {
@@ -86,7 +131,7 @@ public final class ColumnDefinitionsGenerator {
         }
     }
 
-    private void addPropertyDefinitionIfUnique(List<PropertyDefinition> columnDefinitions, IdentifiableType<?> type, PropertyDefinition columnDefinition) {
+    private void addPropertyDefinitionIfUnique(List<PropertyDefinition> columnDefinitions, ManagedType<?> type, PropertyDefinition columnDefinition) {
         if (propertyDefinitionUnique(columnDefinitions, columnDefinition)) {
             columnDefinitions.add(columnDefinition);
         } else {

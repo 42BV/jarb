@@ -3,6 +3,7 @@ package org.jarbframework.populator.excel.mapping.importer;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.jarbframework.populator.excel.metamodel.Definition;
 import org.jarbframework.populator.excel.metamodel.EntityDefinition;
 import org.jarbframework.populator.excel.metamodel.PropertyDefinition;
 import org.jarbframework.populator.excel.workbook.Sheet;
@@ -28,7 +29,7 @@ public class WorksheetDefinition {
      * @param excel The Excel file to read from
      * @return WorksheetDefinition with column names and positions
      */
-    public static WorksheetDefinition analyzeWorksheet(final EntityDefinition<?> classDefinition, final Workbook excel) {
+    public static WorksheetDefinition analyzeWorksheet(final Definition<?> classDefinition, final Workbook excel) {
         WorksheetDefinition worksheetDefinition = new WorksheetDefinition();
         LOGGER.debug("Analyzing worksheet: [" + classDefinition.getTableName() + "]");
         Sheet sheet = excel.getSheet(classDefinition.getTableName());
@@ -37,24 +38,28 @@ public class WorksheetDefinition {
             final String columnName = columnDefinition.getColumnName();
             LOGGER.debug("  field name: [" + columnDefinition.getName() + "], column name: [" + columnName + "]");
             if (columnDefinition.hasColumn()) {
-                if(sheet.containsColumn(columnName)) {
+                if (sheet.containsColumn(columnName)) {
                     worksheetDefinition.addColumnPosition(columnName, classDefinition.getTableName(), sheet.indexOfColumn(columnName));
                 } else {
                     LOGGER.warn("Column name " + columnDefinition.getColumnName() + " was not present in the Worksheet.");
                 }
             }
         }
-        
-        if(classDefinition.hasDiscriminatorColumn()) {
-            final String discriminatorColumnName = classDefinition.getDiscriminatorColumnName();
-            LOGGER.debug("  discriminator column name: [" + discriminatorColumnName + "]");
-            if(sheet.containsColumn(discriminatorColumnName)) {
-                worksheetDefinition.addColumnPosition(discriminatorColumnName, classDefinition.getTableName(), sheet.indexOfColumn(discriminatorColumnName));
-            } else {
-                LOGGER.warn("Discriminator column {} is missing in the worksheet.", discriminatorColumnName);
+
+        if (classDefinition instanceof EntityDefinition<?>) {
+            EntityDefinition<?> entityDefinition = (EntityDefinition<?>) classDefinition;
+            if (entityDefinition.hasDiscriminatorColumn()) {
+                final String discriminatorColumnName = entityDefinition.getDiscriminatorColumnName();
+                LOGGER.debug("  discriminator column name: [" + discriminatorColumnName + "]");
+                if (sheet.containsColumn(discriminatorColumnName)) {
+                    worksheetDefinition.addColumnPosition(discriminatorColumnName, entityDefinition.getTableName(),
+                            sheet.indexOfColumn(discriminatorColumnName));
+                } else {
+                    LOGGER.warn("Discriminator column {} is missing in the worksheet.", discriminatorColumnName);
+                }
             }
         }
-        
+
         return worksheetDefinition;
     }
 

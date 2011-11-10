@@ -38,7 +38,7 @@ public class DefaultExcelValidatorTest extends DefaultExcelTestDataCase {
 
     private WorkbookValidator validator;
     private MetaModel metamodel;
-    
+
     private WorkbookParser parser;
 
     @Before
@@ -81,7 +81,7 @@ public class DefaultExcelValidatorTest extends DefaultExcelTestDataCase {
     @Test
     public void testMissingSheetAssociateTableExists() throws FileNotFoundException {
         //Testcase 4: Missing Employee sheet (because of the associative mapping, see if employees_projects) still tests ok.
-        Workbook excel = parser.parse(new FileInputStream("src/test/resources/ExcelVerification/missing_sheet_with_associate.xls"));        
+        Workbook excel = parser.parse(new FileInputStream("src/test/resources/ExcelVerification/missing_sheet_with_associate.xls"));
         WorkbookValidationResult validation = validator.validate(excel, metamodel);
         assertTrue(validation.hasViolations());
         Set<WorkbookViolation> violations = validation.getGlobalViolations();
@@ -110,17 +110,17 @@ public class DefaultExcelValidatorTest extends DefaultExcelTestDataCase {
         assertEquals(1, violations.size());
         assertEquals("Sheet 'ExtraSheet' does not exist in our mapping.", violations.iterator().next().getMessage());
     }
-    
-  @Test
-  public void testMissingEmbeddedColumn() throws FileNotFoundException {
-      //Testcase 7: Missing embeddable column
-      Workbook excel = parser.parse(new FileInputStream("src/test/resources/ExcelVerification/missing_embedded_column.xls"));
-      WorkbookValidationResult validation = validator.validate(excel, metamodel);
-      assertTrue(validation.hasViolations());
-      Set<WorkbookViolation> violations = validation.getSheetViolations("workspaces");
-      assertEquals(1, violations.size());
-      assertEquals("Column 'workspaces.\"invoice.city_name\"' is missing.", violations.iterator().next().getMessage());
-  }
+
+    @Test
+    public void testMissingEmbeddedColumn() throws FileNotFoundException {
+        //Testcase 7: Missing embeddable column
+        Workbook excel = parser.parse(new FileInputStream("src/test/resources/ExcelVerification/missing_embedded_column.xls"));
+        WorkbookValidationResult validation = validator.validate(excel, metamodel);
+        assertTrue(validation.hasViolations());
+        Set<WorkbookViolation> violations = validation.getSheetViolations("workspaces");
+        assertEquals(1, violations.size());
+        assertEquals("Column 'workspaces.\"invoice.city_name\"' is missing.", violations.iterator().next().getMessage());
+    }
 
     @Test
     public void testUnknownAndMissingColumn() throws FileNotFoundException {

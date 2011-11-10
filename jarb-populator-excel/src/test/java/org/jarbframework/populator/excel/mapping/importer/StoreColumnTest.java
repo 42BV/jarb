@@ -13,7 +13,7 @@ import org.jarbframework.populator.excel.DefaultExcelTestDataCase;
 import org.jarbframework.populator.excel.mapping.ValueConversionService;
 import org.jarbframework.populator.excel.metamodel.EntityDefinition;
 import org.jarbframework.populator.excel.metamodel.PropertyDefinition;
-import org.jarbframework.populator.excel.metamodel.generator.ClassDefinitionsGenerator;
+import org.jarbframework.populator.excel.metamodel.generator.EntityDefinitionsGenerator;
 import org.jarbframework.populator.excel.metamodel.generator.FieldAnalyzer;
 import org.jarbframework.populator.excel.workbook.Workbook;
 import org.jarbframework.populator.excel.workbook.reader.PoiWorkbookParser;
@@ -45,15 +45,15 @@ public class StoreColumnTest extends DefaultExcelTestDataCase {
         Metamodel metamodel = getEntityManagerFactory().getMetamodel();
         EntityType<?> entity = metamodel.entity(domain.entities.Customer.class);
 
-        ClassDefinitionsGenerator classDefinitionsGenerator = new ClassDefinitionsGenerator(getEntityManagerFactory());
+        EntityDefinitionsGenerator entityDefinitionsGenerator = new EntityDefinitionsGenerator(getEntityManagerFactory());
         FieldAnalyzer fieldAnalyzer = new FieldAnalyzer(JpaHibernateSchemaMapper.usingNamingStrategyOf(getEntityManagerFactory()));
         PropertyDefinition column = fieldAnalyzer.analyzeField(new PropertyReference(persistentClass, "name")).build();
-        classDefinition = classDefinitionsGenerator.createSingleClassDefinitionFromMetamodel(entity, false);
+        classDefinition = entityDefinitionsGenerator.createSingleEntityDefinitionFromMetamodel(entity, false);
 
         worksheetDefinition = new WorksheetDefinition();
         worksheetDefinition = WorksheetDefinition.analyzeWorksheet(classDefinition, excel);
         worksheetDefinition.addColumnPosition("address", "customers", 0);
-        excelRow = new ExcelRow(classDefinition.getEntityClass());
+        excelRow = new ExcelRow(classDefinition.getDefinedClass());
 
         rowPosition = 1;
         new StoreExcelRecordValue(ValueConversionService.defaultConversions()).storeValue(excel, classDefinition, column, rowPosition, excelRow);

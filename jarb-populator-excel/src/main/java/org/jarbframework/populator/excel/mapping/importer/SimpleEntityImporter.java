@@ -1,4 +1,5 @@
 package org.jarbframework.populator.excel.mapping.importer;
+
 //package org.jarb.populator.excel.mapping.importer;
 //
 //import org.apache.commons.lang.StringUtils;
@@ -59,15 +60,15 @@ package org.jarbframework.populator.excel.mapping.importer;
 //    }
 //    
 //    private <T> Class<? extends T> determineClass(Row row, ClassDefinition<T> classDefinition) {
-//        Class<? extends T> entityClass = classDefinition.getPersistentClass();
+//        Class<? extends T> definedClass = classDefinition.getPersistentClass();
 //        final String discriminatorColumnName = classDefinition.getDiscriminatorColumnName();
 //        if(StringUtils.isNotBlank(discriminatorColumnName)) {
 //            String discriminatorValue = row.getCellAt(discriminatorColumnName).getValueAsString();
 //            if(StringUtils.isNotBlank(discriminatorValue)) {
-//                entityClass = classDefinition.getSubClass(discriminatorValue);
+//                definedClass = classDefinition.getSubClass(discriminatorValue);
 //            }
 //        }
-//        return entityClass;
+//        return definedClass;
 //    }
 //    
 //    private Long getIdentifier(Object entity) {

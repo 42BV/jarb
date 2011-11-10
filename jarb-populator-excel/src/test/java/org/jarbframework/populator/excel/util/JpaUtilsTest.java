@@ -16,5 +16,5 @@ public class JpaUtilsTest extends DefaultExcelTestDataCase {
         assertNotNull(em);
         assertNotNull(em.getProperties());
     }
-    
+
 }

@@ -19,8 +19,9 @@ import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.jarbframework.populator.excel.DefaultExcelTestDataCase;
 import org.jarbframework.populator.excel.entity.EntityRegistry;
 import org.jarbframework.populator.excel.mapping.ValueConversionService;
+import org.jarbframework.populator.excel.metamodel.Definition;
 import org.jarbframework.populator.excel.metamodel.EntityDefinition;
-import org.jarbframework.populator.excel.metamodel.generator.ClassDefinitionsGenerator;
+import org.jarbframework.populator.excel.metamodel.generator.EntityDefinitionsGenerator;
 import org.jarbframework.populator.excel.workbook.Workbook;
 import org.jarbframework.populator.excel.workbook.reader.PoiWorkbookParser;
 import org.junit.Before;
@@ -29,7 +30,7 @@ import org.junit.Test;
 public class DefaultExcelImporterTest extends DefaultExcelTestDataCase {
 
     private Workbook excel;
-    private List<EntityDefinition<?>> classDefinitionList;
+    private List<Definition<?>> classDefinitionList;
     private EntityDefinition<?> customer;
     private EntityDefinition<?> project;
     private EntityRegistry entityRegistry;
@@ -41,19 +42,19 @@ public class DefaultExcelImporterTest extends DefaultExcelTestDataCase {
             NoSuchMethodException, IllegalArgumentException, InvocationTargetException, ClassNotFoundException {
         excel = new PoiWorkbookParser().parse(new FileInputStream("src/test/resources/ExcelUnitTesting.xls"));
 
-        classDefinitionList = new ArrayList<EntityDefinition<?>>();
+        classDefinitionList = new ArrayList<Definition<?>>();
 
         Metamodel metamodel = getEntityManagerFactory().getMetamodel();
         EntityType<?> customerEntity = metamodel.entity(domain.entities.Customer.class);
         EntityType<?> projectEntity = metamodel.entity(domain.entities.Project.class);
 
-        ClassDefinitionsGenerator classDefinitionsGenerator = new ClassDefinitionsGenerator(getEntityManagerFactory());
-        customer = classDefinitionsGenerator.createSingleClassDefinitionFromMetamodel(customerEntity, false);
-        project = classDefinitionsGenerator.createSingleClassDefinitionFromMetamodel(projectEntity, false);
+        EntityDefinitionsGenerator entityDefinitionsGenerator = new EntityDefinitionsGenerator(getEntityManagerFactory());
+        customer = entityDefinitionsGenerator.createSingleEntityDefinitionFromMetamodel(customerEntity, false);
+        project = entityDefinitionsGenerator.createSingleEntityDefinitionFromMetamodel(projectEntity, false);
         classDefinitionList.add(customer);
         classDefinitionList.add(project);
 
-        classDefinition = classDefinitionsGenerator.createSingleClassDefinitionFromMetamodel(customerEntity, false);
+        classDefinition = entityDefinitionsGenerator.createSingleEntityDefinitionFromMetamodel(customerEntity, false);
         parseWorksheetMap = new HashMap<Object, ExcelRow>();
     }
 
@@ -84,8 +85,8 @@ public class DefaultExcelImporterTest extends DefaultExcelTestDataCase {
         EntityType<?> entity = metamodel.entity(domain.entities.Customer.class);
 
         excel = new PoiWorkbookParser().parse(new FileInputStream("src/test/resources/DiscriminatorColumnLacking.xls"));
-        ClassDefinitionsGenerator classDefinitionsGenerator = new ClassDefinitionsGenerator(getEntityManagerFactory());
-        classDefinition = classDefinitionsGenerator.createSingleClassDefinitionFromMetamodel(entity, true);
+        EntityDefinitionsGenerator entityDefinitionsGenerator = new EntityDefinitionsGenerator(getEntityManagerFactory());
+        classDefinition = entityDefinitionsGenerator.createSingleEntityDefinitionFromMetamodel(entity, true);
         parseWorksheetMap = new ExcelImporter(ValueConversionService.defaultConversions(), getEntityManagerFactory()).parseWorksheet(excel, classDefinition);
     }
 

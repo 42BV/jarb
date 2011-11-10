@@ -8,8 +8,14 @@ import static org.junit.Assert.fail;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 import org.jarbframework.populator.excel.entity.EntityRegistry;
+import org.jarbframework.populator.excel.entity.EntityTable;
+import org.jarbframework.populator.excel.entity.persist.EntityWriter;
+import org.jarbframework.populator.excel.entity.persist.JpaEntityWriter;
 import org.jarbframework.populator.excel.workbook.validator.WorkbookValidationResult;
 import org.junit.Before;
 import org.junit.Test;
@@ -18,6 +24,8 @@ import org.springframework.core.io.ClassPathResource;
 import domain.entities.CompanyCar;
 import domain.entities.CompanyVehicle;
 import domain.entities.CompanyVehicle.Gearbox;
+import domain.entities.Employee;
+import domain.entities.Phone;
 
 public class ExcelDataManagerTest extends DefaultExcelTestDataCase {
     private ExcelDataManager excelDataManager;
@@ -75,7 +83,7 @@ public class ExcelDataManagerTest extends DefaultExcelTestDataCase {
             excelDataManager.load("src/test/resources/ExcelVerification/missing_sheet.xls").entities();
             fail("Expected an exception as the loaded workbook has an invalid structure");
         } catch (InvalidWorkbookException e) {
-            assertEquals("Worbook is invalid:\n - Sheet 'customers' is missing.", e.getMessage());
+            assertEquals("Workbook is invalid:\n - Sheet 'customers' is missing.", e.getMessage());
         }
     }
 
@@ -93,7 +101,7 @@ public class ExcelDataManagerTest extends DefaultExcelTestDataCase {
             excelDataManager.load("src/test/resources/ExcelVerification/missing_identifier.xls").entities();
             fail("Expected an exception as the loaded workbook has an invalid structure");
         } catch (InvalidWorkbookException e) {
-            assertEquals("Worbook is invalid:\n - Row 1 in 'currencies' has no identifier.", e.getMessage());
+            assertEquals("Workbook is invalid:\n - Row 1 in 'currencies' has no identifier.", e.getMessage());
         }
         excelDataManager.setStrict(true);
     }
@@ -106,6 +114,40 @@ public class ExcelDataManagerTest extends DefaultExcelTestDataCase {
     @Test
     public void testPersistWorkbook() throws FileNotFoundException {
         excelDataManager.load("src/test/resources/Excel.xls").persist();
+    }
+
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+    @Test
+    public void testPersistElementCollection() {
+        Employee henk = new Employee();
+        henk.setName("Henk");
+
+        Phone htc = new Phone();
+        htc.setPhoneModel("HTC Desire");
+        htc.setPhoneNumber("0612345678");
+
+        Phone iPhone = new Phone();
+        iPhone.setPhoneModel("iPhone 3GS");
+        iPhone.setPhoneNumber("0687654321");
+
+        List<Phone> phoneList = new ArrayList<Phone>();
+        phoneList.add(htc);
+        phoneList.add(iPhone);
+
+        henk.setPhones(phoneList);
+
+        EntityWriter entityWriter = new JpaEntityWriter(getEntityManagerFactory());
+
+        EntityRegistry entReg = new EntityRegistry();
+
+        Class employeeClass = domain.entities.Employee.class;
+        EntityTable<Object> employees = new EntityTable<Object>(employeeClass);
+
+        Object identifier = UUID.randomUUID().toString();
+        employees.add(identifier, henk);
+
+        entReg.addAll(employees);
+        entityWriter.persist(entReg);
     }
 
     // Building

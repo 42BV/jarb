@@ -18,7 +18,7 @@ import org.jarbframework.populator.excel.workbook.StringValue;
 public class CellValueGenerator {
     /** Converts property values into any desired format. **/
     private final ValueConversionService valueConversionService;
-    
+
     /**
      * Construct a new {@link CellValueGenerator}.
      * @param valueConversionService converts values
@@ -26,7 +26,7 @@ public class CellValueGenerator {
     public CellValueGenerator(ValueConversionService valueConversionService) {
         this.valueConversionService = valueConversionService;
     }
-    
+
     /**
      * Create a cell value based on some raw value.
      * @param value raw value being stored
@@ -34,17 +34,18 @@ public class CellValueGenerator {
      */
     public CellValue asCellValue(Object value) {
         CellValue cellValue = null;
-        if(value == null) {
+        if (value == null) {
             cellValue = new EmptyValue();
         } else {
             final Class<?> valueType = value.getClass();
-            if(String.class.equals(valueType)) {
+            if (String.class.equals(valueType)) {
                 cellValue = new StringValue((String) value);
-            } if(Boolean.class.isAssignableFrom(valueType)) {
+            }
+            if (Boolean.class.isAssignableFrom(valueType)) {
                 cellValue = new BooleanValue((Boolean) value);
-            } else if(Date.class.isAssignableFrom(valueType)) {
+            } else if (Date.class.isAssignableFrom(valueType)) {
                 cellValue = new DateValue((Date) value);
-            } else if(Number.class.isAssignableFrom(valueType)) {
+            } else if (Number.class.isAssignableFrom(valueType)) {
                 cellValue = new NumericValue((Number) value);
             } else {
                 // Unrecognized value types are converted to string
@@ -53,7 +54,7 @@ public class CellValueGenerator {
         }
         return cellValue;
     }
-    
+
     /**
      * Convert a value into its string representation.
      * @param value the value being converted
@@ -62,5 +63,5 @@ public class CellValueGenerator {
     private String toString(Object value) {
         return valueConversionService.convert(value, String.class);
     }
-    
+
 }

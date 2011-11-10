@@ -6,7 +6,7 @@ public class Cell {
     private final Row row;
     private final int colNo;
     private CellValue cellValue;
-    
+
     Cell(Row row, int colNo) {
         this(row, colNo, new EmptyValue());
     }
@@ -23,15 +23,15 @@ public class Cell {
     public Row getRow() {
         return row;
     }
-    
+
     public int getColNo() {
         return colNo;
     }
-    
+
     public int getRowNo() {
         return row.getRowNo();
     }
-    
+
     public Object getValue() {
         return cellValue.getValue();
     }

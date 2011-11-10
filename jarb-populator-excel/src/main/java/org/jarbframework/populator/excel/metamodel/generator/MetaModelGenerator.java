@@ -17,7 +17,7 @@ public interface MetaModelGenerator {
      * @return new meta model
      */
     MetaModel generate();
-    
+
     /**
      * Generate a meta model for all entities.
      * @return new meta model

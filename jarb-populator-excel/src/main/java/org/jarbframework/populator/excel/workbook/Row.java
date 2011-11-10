@@ -10,20 +10,20 @@ import org.springframework.util.Assert;
 public class Row implements Iterable<Cell> {
     private final Sheet sheet;
     private final int rowNo;
-    
+
     private TreeMap<Integer, Cell> cells = new TreeMap<Integer, Cell>();
-    
+
     Row(Sheet sheet, int rowNo) {
         Assert.notNull(sheet, "Sheet cannot be null");
         Assert.state(rowNo >= 0, "Row number has to be positive");
         this.sheet = sheet;
         this.rowNo = rowNo;
     }
-    
+
     public Sheet getSheet() {
         return sheet;
     }
-    
+
     public int getRowNo() {
         return rowNo;
     }
@@ -51,20 +51,20 @@ public class Row implements Iterable<Cell> {
     public Object getValueAt(int colNo) {
         return getCellAt(colNo).getValue();
     }
-    
+
     public Cell getCellAt(String columnName) {
         return sheet.getCellAt(rowNo, columnName);
     }
-    
+
     public Object getValueAt(String columnName) {
         return sheet.getValueAt(rowNo, columnName);
     }
-    
+
     public Row setCellValueAt(int colNo, CellValue cellValue) {
         getCellAt(colNo).setCellValue(cellValue);
         return this;
     }
-    
+
     public Row setCellValueAt(String columnName, CellValue cellValue) {
         getCellAt(columnName).setCellValue(cellValue);
         return this;
@@ -74,7 +74,7 @@ public class Row implements Iterable<Cell> {
         int colNo = cells.isEmpty() ? 0 : cells.lastKey() + 1;
         return createCell(colNo);
     }
-    
+
     private Cell createCell(int colNo) {
         Cell cell = new Cell(this, colNo);
         cells.put(colNo, cell);

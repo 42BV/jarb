@@ -17,7 +17,7 @@ import org.jarbframework.utils.bean.ModifiableBean;
  *
  */
 public final class CircularReferenceUtilities {
-    
+
     /**
      * Returns true if the referencedObject has been handled in this iteration before, thus being an infinite loop.
      * @param referencedEntity Object to check the list for.
@@ -34,8 +34,8 @@ public final class CircularReferenceUtilities {
         }
         return false;
     }
-	
-	/**
+
+    /**
      * Creates a temporaryObject filled with a nullable reference to another object within a referential circle.
      * This is needed because the field in the regular object will be made null to resolve this problem.
      * Afterwards we still want to persist this data, that's why it's kept in a temporaryObject.

@@ -16,7 +16,7 @@ import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.jarbframework.populator.excel.mapping.ValueConversionService;
 import org.jarbframework.populator.excel.metamodel.EntityDefinition;
 import org.jarbframework.populator.excel.metamodel.PropertyDefinition;
-import org.jarbframework.populator.excel.metamodel.generator.ClassDefinitionsGenerator;
+import org.jarbframework.populator.excel.metamodel.generator.EntityDefinitionsGenerator;
 import org.jarbframework.populator.excel.metamodel.generator.FieldAnalyzer;
 import org.jarbframework.populator.excel.workbook.Workbook;
 import org.jarbframework.populator.excel.workbook.reader.PoiWorkbookParser;
@@ -59,10 +59,10 @@ public class StoreJoinTableTest {
         Metamodel metamodel = entityManagerFactory.getMetamodel();
         EntityType<?> entity = metamodel.entity(domain.entities.Employee.class);
 
-        ClassDefinitionsGenerator classDefinitionsGenerator = new ClassDefinitionsGenerator(entityManagerFactory);
-        classDefinition = classDefinitionsGenerator.createSingleClassDefinitionFromMetamodel(entity, false);
+        EntityDefinitionsGenerator entityDefinitionsGenerator = new EntityDefinitionsGenerator(entityManagerFactory);
+        classDefinition = entityDefinitionsGenerator.createSingleEntityDefinitionFromMetamodel(entity, false);
 
-        excelRow = new ExcelRow(classDefinition.getEntityClass());
+        excelRow = new ExcelRow(classDefinition.getDefinedClass());
 
         FieldAnalyzer fieldAnalyzer = new FieldAnalyzer(JpaHibernateSchemaMapper.usingNamingStrategyOf(entityManagerFactory));
         PropertyDefinition joinTable = fieldAnalyzer.analyzeField(new PropertyReference(persistentClass, "projects")).build();

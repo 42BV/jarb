@@ -6,7 +6,7 @@ public class NumericValue implements CellValue {
     public NumericValue(Number number) {
         this(number.doubleValue());
     }
-    
+
     public NumericValue(double value) {
         this.value = value;
     }

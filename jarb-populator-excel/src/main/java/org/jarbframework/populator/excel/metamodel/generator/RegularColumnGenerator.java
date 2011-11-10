@@ -19,7 +19,7 @@ public class RegularColumnGenerator {
     /**
      * Creates a columnDefinition for a regular field.
      * @param field To create the columnDefinition from
-     * @param entityClass 
+     * @param definedClass 
      * @return ColumnDefinition
      */
     public PropertyDefinition createColumnDefinitionForRegularField(PropertyReference propertyReference) {

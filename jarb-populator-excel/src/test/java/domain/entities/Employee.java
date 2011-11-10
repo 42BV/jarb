@@ -2,11 +2,15 @@ package domain.entities;
 
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
+import javax.persistence.CollectionTable;
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -56,6 +60,10 @@ public final class Employee {
     @JoinTable(name = "employees_projects", joinColumns = { @JoinColumn(name = "employee_id") }, inverseJoinColumns = { @JoinColumn(name = "project_id") })
     /** Set of projects these employees work on */
     private Set<Project> projects;
+
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "phones", joinColumns = @JoinColumn(name = "owner"))
+    private List<Phone> phones;
 
     /**
      * Public constructor, initializes projects hashmap.
@@ -149,7 +157,7 @@ public final class Employee {
      * @return Date of birth.
      */
     public Date getDateOfBirth() {
-        if(dateOfBirth == null) return null;
+        if (dateOfBirth == null) return null;
         return new Date(dateOfBirth.getTime());
     }
 
@@ -183,5 +191,21 @@ public final class Employee {
      */
     public CompanyVehicle getVehicle() {
         return vehicle;
+    }
+
+    /**
+     * Returns the Employee's phones
+     * @return Employee's phones
+     */
+    public List<Phone> getPhones() {
+        return phones;
+    }
+
+    /**
+     * Sets the Employee's phones
+     * @param phones Employee's phones
+     */
+    public void setPhones(List<Phone> phones) {
+        this.phones = phones;
     }
 }

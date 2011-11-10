@@ -30,11 +30,11 @@ public final class AttributeMetadataAnalyzer {
      * @param attribute Attribute to check the PersistenceAttributeType of.
      * @return True if type is MANY_TO_ONE or MANY_TO_MANY
      */
-    public static boolean attributeIsAssociation(Attribute<?,?> attribute){
-    	PersistentAttributeType attributePersistenceType = attribute.getPersistentAttributeType();
-    	return (attributePersistenceType == PersistentAttributeType.MANY_TO_ONE) || (attributePersistenceType == PersistentAttributeType.MANY_TO_MANY);
+    public static boolean attributeIsAssociation(Attribute<?, ?> attribute) {
+        PersistentAttributeType attributePersistenceType = attribute.getPersistentAttributeType();
+        return (attributePersistenceType == PersistentAttributeType.MANY_TO_ONE) || (attributePersistenceType == PersistentAttributeType.MANY_TO_MANY);
     }
-	
+
     /**
      * Checks if an annotation holds cascade parameters. At this time only ManyToMany and ManyToOne are supported.
      * We are looking for both the PERSIST and MERGE annotation (or ALL). 
@@ -67,7 +67,7 @@ public final class AttributeMetadataAnalyzer {
             return new CascadeType[0];
         }
     }
-    
+
     /**
      * Checks if CascadeType.MERGE and CascadeType.PERSIST annotations are present.
      * Alternatively, CascadeType.ALL may also be present.

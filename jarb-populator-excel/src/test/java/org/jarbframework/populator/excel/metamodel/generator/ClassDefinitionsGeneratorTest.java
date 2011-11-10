@@ -22,11 +22,11 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class ClassDefinitionsGeneratorTest extends DefaultExcelTestDataCase {
-    private ClassDefinitionsGenerator classDefinitionsGenerator;
+    private EntityDefinitionsGenerator entityDefinitionsGenerator;
 
     @Before
     public void setUp() {
-        classDefinitionsGenerator = new ClassDefinitionsGenerator(getEntityManagerFactory());
+        entityDefinitionsGenerator = new EntityDefinitionsGenerator(getEntityManagerFactory());
     }
 
     @Test
@@ -37,7 +37,7 @@ public class ClassDefinitionsGeneratorTest extends DefaultExcelTestDataCase {
         Metamodel metamodel = getEntityManagerFactory().getMetamodel();
         EntityType<?> entity = metamodel.entity(domain.entities.Department.class);
 
-        EntityDefinition<?> classDefinition = classDefinitionsGenerator.createSingleClassDefinitionFromMetamodel(entity, false);
+        EntityDefinition<?> classDefinition = entityDefinitionsGenerator.createSingleEntityDefinitionFromMetamodel(entity, false);
         PropertyDefinition generated = classDefinition.property("departmentName");
         Field departmentNameField = persistentClass.getDeclaredField("departmentName");
         assertEquals(departmentNameField, generated.getField());
@@ -51,7 +51,7 @@ public class ClassDefinitionsGeneratorTest extends DefaultExcelTestDataCase {
         Metamodel metamodel = getEntityManagerFactory().getMetamodel();
         EntityType<?> entity = metamodel.entity(domain.entities.Customer.class);
 
-        EntityDefinition<?> classDefinition = classDefinitionsGenerator.createSingleClassDefinitionFromMetamodel(entity, true);
+        EntityDefinition<?> classDefinition = entityDefinitionsGenerator.createSingleEntityDefinitionFromMetamodel(entity, true);
         PropertyDefinition generated = classDefinition.property("location");
         Field companyLocationField = subClass.getDeclaredField("location");
         assertEquals(companyLocationField, generated.getField());
@@ -65,7 +65,7 @@ public class ClassDefinitionsGeneratorTest extends DefaultExcelTestDataCase {
         Metamodel metamodel = getEntityManagerFactory().getMetamodel();
         EntityType<?> entity = metamodel.entity(domain.entities.Department.class);
 
-        classDefinitions.add(classDefinitionsGenerator.createSingleClassDefinitionFromMetamodel(entity, false));
+        classDefinitions.add(entityDefinitionsGenerator.createSingleEntityDefinitionFromMetamodel(entity, false));
         EntityDefinition<?> classDefinition = classDefinitions.get(0);
         Integer columnPosition = 1;
         assertEquals(columnPosition, WorksheetDefinition.analyzeWorksheet(classDefinition, excel).getColumnPosition("db_column"));

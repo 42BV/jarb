@@ -17,7 +17,7 @@ public class Workbook implements Iterable<Sheet> {
     public Iterator<Sheet> iterator() {
         return sheetsMap.values().iterator();
     }
-    
+
     public Sheet getSheet(String name) {
         return sheetsMap.get(name);
     }
@@ -26,7 +26,7 @@ public class Workbook implements Iterable<Sheet> {
         List<Sheet> sheets = new ArrayList<Sheet>(sheetsMap.values());
         return Collections.unmodifiableList(sheets);
     }
-    
+
     public Set<String> getSheetNames() {
         return Collections.unmodifiableSet(sheetsMap.keySet());
     }
@@ -40,9 +40,9 @@ public class Workbook implements Iterable<Sheet> {
     }
 
     public Sheet createSheet(String name) {
-        if(containsSheet(name)) {
+        if (containsSheet(name)) {
             throw new IllegalStateException("Sheet '" + name + "' already exists");
-        } 
+        }
         Sheet sheet = new Sheet(this, name);
         sheetsMap.put(name, sheet);
         return sheet;

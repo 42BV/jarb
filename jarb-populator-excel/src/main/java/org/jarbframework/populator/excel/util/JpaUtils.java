@@ -21,7 +21,7 @@ public final class JpaUtils {
     public static EntityManager createEntityManager(EntityManagerFactory entityManagerFactory) {
         return entityManagerFactory.createEntityManager(entityManagerFactory.getProperties());
     }
-    
+
     /**
      * Retrieve the identifier (@Id) value of an entity.
      * @param entity reference to the entity
@@ -34,5 +34,5 @@ public final class JpaUtils {
         }
         return entityManagerFactory.getPersistenceUnitUtil().getIdentifier(entity);
     }
-    
+
 }

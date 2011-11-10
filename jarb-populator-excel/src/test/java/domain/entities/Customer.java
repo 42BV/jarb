@@ -39,7 +39,7 @@ public class Customer {
      */
     public Customer() {
     }
-    
+
     public void setId(Long id) {
         this.id = id;
     }

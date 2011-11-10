@@ -24,12 +24,12 @@ public class SimpleValidationExporter implements ValidationExporter {
         Writer writer = new OutputStreamWriter(os);
         try {
             writer.write("Workbook violations\n");
-            for(WorkbookViolation violation : validation.getGlobalViolations()) {
+            for (WorkbookViolation violation : validation.getGlobalViolations()) {
                 writer.write(" - " + violation.getMessage() + "\n");
             }
-            for(String sheetName : validation.getValidatedSheetNames()) {
+            for (String sheetName : validation.getValidatedSheetNames()) {
                 writer.write("\nSheet '" + sheetName + "':\n");
-                for(WorkbookViolation violation : validation.getSheetViolations(sheetName)) {
+                for (WorkbookViolation violation : validation.getSheetViolations(sheetName)) {
                     writer.write(" - " + violation.getMessage() + "\n");
                 }
             }

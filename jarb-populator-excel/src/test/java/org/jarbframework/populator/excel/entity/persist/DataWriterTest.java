@@ -15,8 +15,9 @@ import org.jarbframework.populator.excel.DefaultExcelTestDataCase;
 import org.jarbframework.populator.excel.entity.EntityRegistry;
 import org.jarbframework.populator.excel.mapping.ValueConversionService;
 import org.jarbframework.populator.excel.mapping.importer.ExcelImporter;
+import org.jarbframework.populator.excel.metamodel.Definition;
 import org.jarbframework.populator.excel.metamodel.EntityDefinition;
-import org.jarbframework.populator.excel.metamodel.generator.ClassDefinitionsGenerator;
+import org.jarbframework.populator.excel.metamodel.generator.EntityDefinitionsGenerator;
 import org.jarbframework.populator.excel.workbook.Workbook;
 import org.jarbframework.populator.excel.workbook.reader.PoiWorkbookParser;
 import org.junit.Before;
@@ -29,7 +30,7 @@ import domain.entities.Project;
 import domain.entities.ServiceLevelAgreement;
 
 public class DataWriterTest extends DefaultExcelTestDataCase {
-    private ClassDefinitionsGenerator classDefinitionsGenerator;
+    private EntityDefinitionsGenerator entityDefinitionsGenerator;
     private Workbook excel;
     private EntityDefinition<?> customer;
     private EntityDefinition<?> project;
@@ -42,7 +43,7 @@ public class DataWriterTest extends DefaultExcelTestDataCase {
     @Before
     public void setUpDatabaseConnectionTest() throws InvalidFormatException, IOException, InstantiationException, IllegalAccessException, SecurityException,
             NoSuchMethodException, IllegalArgumentException, InvocationTargetException, ClassNotFoundException {
-        classDefinitionsGenerator = new ClassDefinitionsGenerator(getEntityManagerFactory());
+        entityDefinitionsGenerator = new EntityDefinitionsGenerator(getEntityManagerFactory());
         excel = new PoiWorkbookParser().parse(new FileInputStream("src/test/resources/ExcelUnitTesting.xls"));
 
         jpaMetamodel = getEntityManagerFactory().getMetamodel();
@@ -59,11 +60,11 @@ public class DataWriterTest extends DefaultExcelTestDataCase {
     @Test
     public void testSaveEntity() throws InstantiationException, IllegalAccessException, SecurityException, NoSuchFieldException, ClassNotFoundException,
             InvalidFormatException, IOException {
-        List<EntityDefinition<?>> classDefinitionList = new ArrayList<EntityDefinition<?>>();
+        List<Definition<?>> classDefinitionList = new ArrayList<Definition<?>>();
 
-        customer = classDefinitionsGenerator.createSingleClassDefinitionFromMetamodel(customerEntity, false);
-        project = classDefinitionsGenerator.createSingleClassDefinitionFromMetamodel(projectEntity, false);
-        sla = classDefinitionsGenerator.createSingleClassDefinitionFromMetamodel(slaEntity, false);
+        customer = entityDefinitionsGenerator.createSingleEntityDefinitionFromMetamodel(customerEntity, false);
+        project = entityDefinitionsGenerator.createSingleEntityDefinitionFromMetamodel(projectEntity, false);
+        sla = entityDefinitionsGenerator.createSingleEntityDefinitionFromMetamodel(slaEntity, false);
 
         classDefinitionList.add(customer);
         classDefinitionList.add(project);
@@ -77,15 +78,15 @@ public class DataWriterTest extends DefaultExcelTestDataCase {
     @Test
     public void testEntityReferencing() throws InstantiationException, ClassNotFoundException, IllegalAccessException, NoSuchFieldException,
             InvalidFormatException, IOException {
-        List<EntityDefinition<?>> classDefinitionList = new ArrayList<EntityDefinition<?>>();
+        List<Definition<?>> classDefinitionList = new ArrayList<Definition<?>>();
         excel = new PoiWorkbookParser().parse(new FileInputStream("src/test/resources/ExcelEmployeesVehicles.xls"));
 
         EntityType<?> employeeEntity = jpaMetamodel.entity(Employee.class);
         EntityType<?> vehicleEntity = jpaMetamodel.entity(CompanyVehicle.class);
 
-        EntityDefinition<?> employee = classDefinitionsGenerator.createSingleClassDefinitionFromMetamodel(employeeEntity, false);
-        EntityDefinition<?> vehicle = classDefinitionsGenerator.createSingleClassDefinitionFromMetamodel(vehicleEntity, true);
-        //  project = ClassDefinitionsGenerator.createSingleClassDefinitionFromMetamodel(entityManagerFactory, projectEntity, true);
+        EntityDefinition<?> employee = entityDefinitionsGenerator.createSingleEntityDefinitionFromMetamodel(employeeEntity, false);
+        EntityDefinition<?> vehicle = entityDefinitionsGenerator.createSingleEntityDefinitionFromMetamodel(vehicleEntity, true);
+        //  project = EntityDefinitionsGenerator.createSingleClassDefinitionFromMetamodel(entityManagerFactory, projectEntity, true);
 
         classDefinitionList.add(employee);
         classDefinitionList.add(vehicle);

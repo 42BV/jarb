@@ -17,7 +17,7 @@ import org.springframework.util.Assert;
 public class EntityRowIdResolver {
     private Map<Object, Object> identityCache = new HashMap<Object, Object>();
     private long counter = 1;
-    
+
     /**
      * Resolve the row identifier of an entity.
      * @param entity the entity to identify
@@ -26,7 +26,7 @@ public class EntityRowIdResolver {
     public Object resolveRowId(Object entity) {
         Assert.notNull(entity, "Cannot resolve the row identifier of a null entity");
         Object identifier = null;
-        if(identityCache.containsKey(entity)) {
+        if (identityCache.containsKey(entity)) {
             identifier = identityCache.get(entity);
         } else {
             identifier = counter++;
@@ -34,5 +34,5 @@ public class EntityRowIdResolver {
         }
         return identifier;
     }
-    
+
 }

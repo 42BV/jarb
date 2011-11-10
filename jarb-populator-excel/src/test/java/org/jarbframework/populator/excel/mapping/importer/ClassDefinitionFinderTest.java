@@ -13,8 +13,9 @@ import javax.persistence.metamodel.EntityType;
 import javax.persistence.metamodel.Metamodel;
 
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+import org.jarbframework.populator.excel.metamodel.Definition;
 import org.jarbframework.populator.excel.metamodel.EntityDefinition;
-import org.jarbframework.populator.excel.metamodel.generator.ClassDefinitionsGenerator;
+import org.jarbframework.populator.excel.metamodel.generator.EntityDefinitionsGenerator;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -23,8 +24,8 @@ public class ClassDefinitionFinderTest {
 
     private Class<?> foreignClass;
 
-    private Set<EntityDefinition<?>> classDefinitionSet;
-    private Set<EntityDefinition<?>> emptyClassDefinitionSet;
+    private Set<Definition<?>> classDefinitionSet;
+    private Set<Definition<?>> emptyClassDefinitionSet;
 
     private EntityDefinition<?> customer;
     private EntityDefinition<?> project;
@@ -35,7 +36,7 @@ public class ClassDefinitionFinderTest {
     @Before
     public void setupClassDefinitionFinder() throws InvalidFormatException, IOException, InstantiationException, IllegalAccessException,
             IllegalArgumentException, InvocationTargetException, SecurityException, NoSuchMethodException, ClassNotFoundException {
-        emptyClassDefinitionSet = new HashSet<EntityDefinition<?>>();
+        emptyClassDefinitionSet = new HashSet<Definition<?>>();
 
         context = new ClassPathXmlApplicationContext("test-context.xml");
         entityManagerFactory = (EntityManagerFactory) context.getBean("entityManagerFactory");
@@ -46,24 +47,24 @@ public class ClassDefinitionFinderTest {
         EntityType<?> persistentEntity = metamodel.entity(domain.entities.Customer.class);
         EntityType<?> foreignEntity = metamodel.entity(domain.entities.Project.class);
 
-        classDefinitionSet = new HashSet<EntityDefinition<?>>();
-        ClassDefinitionsGenerator classDefinitionsGenerator = new ClassDefinitionsGenerator(entityManagerFactory);
-        customer = classDefinitionsGenerator.createSingleClassDefinitionFromMetamodel(persistentEntity, false);
-        project = classDefinitionsGenerator.createSingleClassDefinitionFromMetamodel(foreignEntity, false);
+        classDefinitionSet = new HashSet<Definition<?>>();
+        EntityDefinitionsGenerator entityDefinitionsGenerator = new EntityDefinitionsGenerator(entityManagerFactory);
+        customer = entityDefinitionsGenerator.createSingleEntityDefinitionFromMetamodel(persistentEntity, false);
+        project = entityDefinitionsGenerator.createSingleEntityDefinitionFromMetamodel(foreignEntity, false);
         classDefinitionSet.add(customer);
         classDefinitionSet.add(project);
 
         //For code coverage purposes:
-        Constructor<ClassDefinitionFinder> constructor = ClassDefinitionFinder.class.getDeclaredConstructor();
+        Constructor<DefinitionFinder> constructor = DefinitionFinder.class.getDeclaredConstructor();
         constructor.setAccessible(true);
         constructor.newInstance();
     }
 
     @Test
     public void testFindClassDefinitionByPersistentClass() {
-        assertEquals(foreignClass, ClassDefinitionFinder.findClassDefinitionByPersistentClass(classDefinitionSet, domain.entities.Project.class)
-                .getEntityClass());
-        assertEquals(null, ClassDefinitionFinder.findClassDefinitionByPersistentClass(classDefinitionSet, domain.entities.Employee.class));
-        assertEquals(null, ClassDefinitionFinder.findClassDefinitionByPersistentClass(emptyClassDefinitionSet, domain.entities.Project.class));
+        assertEquals(foreignClass, DefinitionFinder.findDefinitionByPersistentClass(classDefinitionSet, domain.entities.Project.class)
+                .getDefinedClass());
+        assertEquals(null, DefinitionFinder.findDefinitionByPersistentClass(classDefinitionSet, domain.entities.Employee.class));
+        assertEquals(null, DefinitionFinder.findDefinitionByPersistentClass(emptyClassDefinitionSet, domain.entities.Project.class));
     }
 }

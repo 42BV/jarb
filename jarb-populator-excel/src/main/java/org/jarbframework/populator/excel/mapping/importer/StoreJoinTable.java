@@ -5,6 +5,7 @@ import java.lang.reflect.Type;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.jarbframework.populator.excel.metamodel.Definition;
 import org.jarbframework.populator.excel.metamodel.EntityDefinition;
 import org.jarbframework.populator.excel.metamodel.PropertyDefinition;
 import org.jarbframework.populator.excel.workbook.Sheet;
@@ -25,9 +26,6 @@ public final class StoreJoinTable {
     private StoreJoinTable() {
     }
 
-    /** Identification number of row in Excel file. */
-    private static final String IDCOLUMNNAME = "id";
-
     /**
      * Stores a JoinTable in ExcelRow.
      * @param sheet Representation of excel file
@@ -36,9 +34,10 @@ public final class StoreJoinTable {
      * @param rowPosition Vertical position number of the excelRecord
      * @param excelRow ExcelRow to save to.
      */
-    public static void storeValue(Workbook excel, EntityDefinition<?> classDefinition, PropertyDefinition columnDefinition, Integer rowPosition, ExcelRow excelRow) {
+    public static void storeValue(Workbook excel, Definition<?> classDefinition, PropertyDefinition columnDefinition, Integer rowPosition, ExcelRow excelRow) {
         Sheet mainSheet = excel.getSheet(classDefinition.getTableName());
-        Double code = (Double) mainSheet.getValueAt(rowPosition, IDCOLUMNNAME);
+        String idColumnName = getIdColumnName(classDefinition);
+        Double code = (Double) mainSheet.getValueAt(rowPosition, idColumnName);
         Sheet joinSheet = excel.getSheet(columnDefinition.getJoinTableName());
 
         if (joinSheet != null) {
@@ -46,6 +45,20 @@ public final class StoreJoinTable {
             Key keyList = createJoinTableKey(columnDefinition, foreignKeyList);
             excelRow.addValue(columnDefinition, keyList);
         }
+    }
+
+    /**
+     * Returns the ID column name from the passed Definition
+     * @param classDefinition Definition to check the id column name of
+     * @return Id Column name
+     */
+    private static String getIdColumnName(Definition<?> classDefinition) {
+        String idColumnName = "";
+        if (classDefinition instanceof EntityDefinition<?>){
+            EntityDefinition<?> entityDefinition = (EntityDefinition<?>) classDefinition;
+            idColumnName = entityDefinition.getIdColumnName();
+        }
+        return idColumnName;
     }
 
     /**
@@ -73,9 +86,9 @@ public final class StoreJoinTable {
         Set<Integer> foreignKeyList = new HashSet<Integer>();
         for (Integer newRowPosition = 1; newRowPosition <= sheet.getLastRowNumber(); newRowPosition++) {
             Object joinColumnValue = sheet.getValueAt(newRowPosition, joinTable.getJoinColumnName());
-            if(joinColumnValue instanceof Double && joinColumnValue.equals(code)) {
+            if (joinColumnValue instanceof Double && joinColumnValue.equals(code)) {
                 Object inverseJoinColumnValue = sheet.getValueAt(newRowPosition, joinTable.getInverseJoinColumnName());
-                if(inverseJoinColumnValue instanceof Number) {
+                if (inverseJoinColumnValue instanceof Number) {
                     foreignKeyList.add(((Number) inverseJoinColumnValue).intValue());
                 } else {
                     LOGGER.warn("Could not convert {} foreign key value to number.", inverseJoinColumnValue);

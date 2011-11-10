@@ -24,12 +24,12 @@ public class Workspace {
     private Long id;
 
     @Embedded
-    @AttributeOverrides( { @AttributeOverride(name = "streetAndNumber", column = @Column(name = "\"invoice.building_address\"")),
+    @AttributeOverrides({ @AttributeOverride(name = "streetAndNumber", column = @Column(name = "\"invoice.building_address\"")),
             @AttributeOverride(name = "city", column = @Column(name = "\"invoice.city_name\"")) })
     private Address invoice = new Address();
 
     @Embedded
-    @AttributeOverrides( { @AttributeOverride(name = "streetAndNumber", column = @Column(name = "\"shipping.building_address\"")),
+    @AttributeOverrides({ @AttributeOverride(name = "streetAndNumber", column = @Column(name = "\"shipping.building_address\"")),
             @AttributeOverride(name = "city", column = @Column(name = "\"shipping.city_name\"")) })
     private Address shipping = new Address();
 

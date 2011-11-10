@@ -32,7 +32,7 @@ public class EntityRegistry implements Iterable<EntityTable<?>> {
     /**
      * Retrieve all entities of a specific type.
      * @param <T> type of the entities being retrieved
-     * @param entityClass class of the entities
+     * @param definedClass class of the entities
      * @return each entity of the specified type
      */
     @SuppressWarnings("unchecked")
@@ -48,7 +48,7 @@ public class EntityRegistry implements Iterable<EntityTable<?>> {
     /**
      * Retrieve a specific entity.
      * @param <T> type of entity being retrieved
-     * @param entityClass class of the entity being retrieved
+     * @param definedClass class of the entity being retrieved
      * @param id identifier of the entity being retrieved
      * @return entity of the specified type and identity, if any
      */
@@ -58,7 +58,7 @@ public class EntityRegistry implements Iterable<EntityTable<?>> {
 
     /**
      * Determine if a specific entity exists in our registry.
-     * @param entityClass class of the entity
+     * @param definedClass class of the entity
      * @param id identifier of the entity
      * @return {@code true} if it exists, else {@code false}
      */
@@ -69,7 +69,7 @@ public class EntityRegistry implements Iterable<EntityTable<?>> {
     /**
      * Store an entity inside this registry.
      * @param <T> type of the entity being stored
-     * @param entityClass class that the entity should be registered on
+     * @param definedClass class that the entity should be registered on
      * @param id identifier of the entity
      * @param entity reference to the entity being stored
      */
@@ -94,7 +94,7 @@ public class EntityRegistry implements Iterable<EntityTable<?>> {
     /**
      * Remove a specific entity from our registry.
      * @param <T> type of the entity being removed
-     * @param entityClass class of the entity
+     * @param definedClass class of the entity
      * @param id identifier of the entity
      * @return the removed entity
      */

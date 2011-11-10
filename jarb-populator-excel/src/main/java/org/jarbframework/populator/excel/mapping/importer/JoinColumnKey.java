@@ -1,6 +1,5 @@
 package org.jarbframework.populator.excel.mapping.importer;
 
-
 /**
  * Sets and returns key value belonging to a JoinColumn instance, extends from Key.
  * @author Willem Eppen

@@ -1,6 +1,5 @@
 package org.jarbframework.populator.excel.metamodel;
 
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -13,52 +12,36 @@ import org.springframework.util.Assert;
 /**
  * Describes a specific persistable class, providing additional information about
  * the class and its mapping to a database table.
- * 
- * @param <T> type of class being described
- * 
  * @author Willem Eppen
  * @author Sander Benschop
  * @author Jeroen van Schagen
+ * 
+ * @param <T> type of class being described
+ * 
  */
-public class EntityDefinition<T> {
-    /** Entity class being described. */
-    private final Class<T> entityClass;
+public class EntityDefinition<T> extends Definition<T> {
 
     /** Name of the discriminator column. **/
     private String discriminatorColumnName;
     /** Mapping of each subclass and the related discriminator value. */
     private Map<String, Class<? extends T>> subClasses;
 
-    /** Name of the mapped database table. */
-    private String tableName;
-
-    /** Description of each defined property. */
-    private Set<PropertyDefinition> propertyDefinitions;
-
     /**
-     * Construct a new {@link ClassDefinition).
-     * @param entityClass class being described
+     * Construct a new {@link EntityDefinition).
+     * @param definedClass class being described
      */
     private EntityDefinition(Class<T> entityClass) {
-        this.entityClass = entityClass;
+        super(entityClass);
     }
 
     /**
      * Start building a new {@link EntityDefinition}.
      * @param <T> type of class being described
-     * @param entityClass class being described
+     * @param definedClass class being described
      * @return class definition builder
      */
     public static <T> Builder<T> forClass(Class<T> entityClass) {
-        return new Builder<T>(entityClass);
-    }
-
-    /**
-     * Returns the persistentClass belonging to classDefinition.
-     * @return persistentClass instance from domain package
-     */
-    public Class<T> getEntityClass() {
-        return entityClass;
+        return new EntityDefinition.Builder<T>(entityClass);
     }
 
     /**
@@ -102,94 +85,60 @@ public class EntityDefinition<T> {
         return StringUtils.isNotBlank(discriminatorColumnName);
     }
 
-    /**
-     * Retrieve all property definitions declared inside this class.
-     * @return definition of each declared property
-     */
-    public Set<PropertyDefinition> properties() {
-        return Collections.unmodifiableSet(propertyDefinitions);
-    }
-
-    /**
-     * Retrieve a specific property definition.
-     * @param propertyName name of the property field
-     * @return matching property field, if any
-     */
-    public PropertyDefinition property(String propertyName) {
-        PropertyDefinition result = null;
-        for (PropertyDefinition property : propertyDefinitions) {
-            if (StringUtils.equalsIgnoreCase(propertyName, property.getName())) {
-                result = property;
-            }
-        }
-        return result;
-    }
-
-    /**
-     * Retrieve a specific property definition, based on property. Note
-     * that the column must actually map to a property inside our class.
-     * Certain columns, such as discriminators, are not mapped to a field
-     * and thus will result in a {@link null}.
-     * @param columnName name of the column
-     * @return matching property field, if any
-     */
-    public PropertyDefinition propertyByColumnName(String columnName) {
-        PropertyDefinition result = null;
-        for (PropertyDefinition property : propertyDefinitions) {
-            if (StringUtils.equalsIgnoreCase(columnName, property.getColumnName())) {
-                result = property;
-            }
-        }
-        return result;
-    }
-
-    /**
-     * Retrieve all column names for this entity table.
-     * @return each column name on this entity
-     */
+    @Override
     public Set<String> getColumnNames() {
         Set<String> columnNames = new HashSet<String>();
-        for (PropertyDefinition property : propertyDefinitions) {
-            if (property.hasColumn()) {
-                columnNames.add(property.getColumnName());
-            }
-        }
+        columnNames.addAll(super.getColumnNames());
+
         if (hasDiscriminatorColumn()) {
             columnNames.add(discriminatorColumnName);
         }
+
         return columnNames;
     }
 
     /**
-     * Returns the tableName of the classDefinition.
-     * @return tableName String
+     * Returns the column name of the field annotated with @Id in the entity class.
+     * @return Column name of Id column.
      */
-    public String getTableName() {
-        return tableName;
+    public String getIdColumnName() {
+        String columnName = null;
+        for (PropertyDefinition propertyDefinition : this.properties()) {
+            if (propertyDefinition.isIdColumn()) {
+                return propertyDefinition.getColumnName();
+            }
+        }
+        return columnName;
     }
 
-    /**
-     * Capable of building {@link EntityDefinition} instances.
-     * 
-     * @author Jeroen van Schagen
-     * @since 15-06-2011
-     *
-     * @param <T> type of class being described
-     */
-    public static class Builder<T> {
-        private final Class<T> persistentClass;
+    public static class Builder<T> extends Definition.Builder<T> {
+        /** Name of the discriminator column. **/
         private String discriminatorColumnName;
+
+        /** Mapping of each subclass and the related discriminator value. */
         private Map<String, Class<? extends T>> subClasses = new HashMap<String, Class<? extends T>>();
-        private String tableName;
-        private Set<PropertyDefinition> properties = new HashSet<PropertyDefinition>();
 
         /**
          * Construct a new {@link Builder}.
-         * @param entityClass class being described
+         * @param definedClass class being described
          */
         public Builder(Class<T> entityClass) {
-            Assert.notNull(entityClass, "Entity class cannot be null");
-            this.persistentClass = entityClass;
+            super(entityClass);
+        }
+
+        /**
+         * Construct a new class definition that contains all previously configured attributes.
+         * @return new class definition
+         */
+        public EntityDefinition<T> build() {
+            Assert.hasText(tableName, "Table name cannot be blank");
+
+            EntityDefinition<T> classDefinition = new EntityDefinition<T>(definedClass);
+            classDefinition.discriminatorColumnName = discriminatorColumnName;
+            classDefinition.subClasses = Collections.unmodifiableMap(subClasses);
+            classDefinition.tableName = tableName;
+            classDefinition.propertyDefinitions = Collections.unmodifiableSet(properties);
+            return classDefinition;
         }
 
         /**
@@ -199,19 +148,6 @@ public class EntityDefinition<T> {
          */
         public Builder<T> setDiscriminatorColumnName(final String discriminatorColumnName) {
             this.discriminatorColumnName = discriminatorColumnName;
-            return this;
-        }
-
-        /**
-         * Include a persistent sub class to the definition.
-         * @param discriminatorValue discriminator value of subclass
-         * @param persistentSubClass actual persistent subclass
-         * @return this for method chaining
-         */
-        public Builder<T> includeSubClass(String discriminatorValue, Class<? extends T> persistentSubClass) {
-            Assert.hasText(discriminatorValue, "Discriminator value cannot be blank");
-            Assert.notNull(persistentClass, "Persistent sub class cannot be null");
-            subClasses.put(discriminatorValue, persistentSubClass);
             return this;
         }
 
@@ -226,28 +162,16 @@ public class EntityDefinition<T> {
         }
 
         /**
-         * Include a column definition.
-         * @param properties property definitions being added
+         * Include a persistent sub class to the definition.
+         * @param discriminatorValue discriminator value of subclass
+         * @param persistentSubClass actual persistent subclass
          * @return this for method chaining
          */
-        public Builder<T> includeProperties(Collection<PropertyDefinition> properties) {
-            this.properties.addAll(properties);
+        public Builder<T> includeSubClass(String discriminatorValue, Class<? extends T> persistentSubClass) {
+            Assert.hasText(discriminatorValue, "Discriminator value cannot be blank");
+            Assert.notNull(definedClass, "Persistent sub class cannot be null");
+            subClasses.put(discriminatorValue, persistentSubClass);
             return this;
-        }
-
-        /**
-         * Construct a new class definition that contains all previously configured attributes.
-         * @return new class definition
-         */
-        public EntityDefinition<T> build() {
-            Assert.hasText(tableName, "Table name cannot be blank");
-
-            EntityDefinition<T> classDefinition = new EntityDefinition<T>(persistentClass);
-            classDefinition.discriminatorColumnName = discriminatorColumnName;
-            classDefinition.subClasses = Collections.unmodifiableMap(subClasses);
-            classDefinition.tableName = tableName;
-            classDefinition.propertyDefinitions = Collections.unmodifiableSet(properties);
-            return classDefinition;
         }
     }
 
@@ -259,7 +183,7 @@ public class EntityDefinition<T> {
         if (obj == this) {
             return true;
         } else if (obj instanceof EntityDefinition<?>) {
-            return entityClass.equals(((EntityDefinition<?>) obj).entityClass);
+            return definedClass.equals(((EntityDefinition<?>) obj).definedClass);
         } else {
             return false;
         }
@@ -270,7 +194,7 @@ public class EntityDefinition<T> {
      */
     @Override
     public int hashCode() {
-        return entityClass.hashCode();
+        return definedClass.hashCode();
     }
 
     /**
@@ -278,7 +202,7 @@ public class EntityDefinition<T> {
      */
     @Override
     public String toString() {
-        return entityClass.getName();
+        return definedClass.getName();
     }
 
 }

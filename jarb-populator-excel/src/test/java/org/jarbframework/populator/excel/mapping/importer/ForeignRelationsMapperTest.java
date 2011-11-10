@@ -17,7 +17,7 @@ import javax.persistence.EntityManagerFactory;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.jarbframework.populator.excel.DefaultExcelTestDataCase;
 import org.jarbframework.populator.excel.mapping.ValueConversionService;
-import org.jarbframework.populator.excel.metamodel.EntityDefinition;
+import org.jarbframework.populator.excel.metamodel.Definition;
 import org.jarbframework.populator.excel.metamodel.MetaModel;
 import org.jarbframework.populator.excel.metamodel.PropertyDefinition;
 import org.jarbframework.populator.excel.metamodel.generator.JpaMetaModelGenerator;
@@ -40,7 +40,7 @@ public class ForeignRelationsMapperTest extends DefaultExcelTestDataCase {
         constructor.setAccessible(true);
         constructor.newInstance();
     }
-    
+
     @Test
     public void testMakeForeignRelations() throws ClassNotFoundException, InstantiationException, IllegalAccessException, InvalidFormatException, IOException,
             SecurityException, NoSuchFieldException {
@@ -49,16 +49,16 @@ public class ForeignRelationsMapperTest extends DefaultExcelTestDataCase {
         EntityManagerFactory emf = getEntityManagerFactory();
         MetaModelGenerator mmg = new JpaMetaModelGenerator(emf);
         MetaModel medamodel = mmg.generate();
-        
-        Map<EntityDefinition<?>, Map<Object, ExcelRow>> objectModel = new HashMap<EntityDefinition<?>, Map<Object, ExcelRow>>();
+
+        Map<Definition<?>, Map<Object, ExcelRow>> objectModel = new HashMap<Definition<?>, Map<Object, ExcelRow>>();
         ExcelImporter excelImporter = new ExcelImporter(ValueConversionService.defaultConversions(), emf);
-        
-        List<EntityDefinition<?>> entities = new ArrayList<EntityDefinition<?>>(medamodel.entities());
-        for (EntityDefinition<?> entityDefinition : entities){
-        	objectModel.put(entityDefinition, excelImporter.parseWorksheet(excel, entityDefinition));
+
+        List<Definition<?>> entities = new ArrayList<Definition<?>>(medamodel.entities());
+        for (Definition<?> entityDefinition : entities) {
+            objectModel.put(entityDefinition, excelImporter.parseWorksheet(excel, entityDefinition));
         }
-        
-        for (Entry<EntityDefinition<?>, Map<Object, ExcelRow>> classRecord : objectModel.entrySet()) {
+
+        for (Entry<Definition<?>, Map<Object, ExcelRow>> classRecord : objectModel.entrySet()) {
             for (Entry<Object, ExcelRow> classValues : classRecord.getValue().entrySet()) {
                 ExcelRow excelRow = classValues.getValue();
                 Class<?> tobeTested = domain.entities.Project.class;

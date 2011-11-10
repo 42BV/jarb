@@ -18,5 +18,5 @@ public interface ValidationExporter {
      * @param os output stream being exported into
      */
     void export(WorkbookValidationResult validation, OutputStream os);
-    
+
 }

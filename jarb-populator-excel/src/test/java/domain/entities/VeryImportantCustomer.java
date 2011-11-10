@@ -50,7 +50,7 @@ public class VeryImportantCustomer extends SpecialCustomer {
     public Set<BusinessRelationshipGift> getGifts() {
         return gifts;
     }
-    
+
     public void addGift(BusinessRelationshipGift gift) {
         gifts.add(gift);
     }

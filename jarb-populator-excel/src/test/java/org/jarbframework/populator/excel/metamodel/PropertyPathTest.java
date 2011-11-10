@@ -16,7 +16,7 @@ public class PropertyPathTest {
     public void setUp() throws SecurityException, NoSuchFieldException {
         fieldPath = PropertyPath.startingFrom(Person.class, "address").to("street").to("name");
     }
-    
+
     @Test
     public void testGetFieldValue() {
         Person person = new Person();
@@ -27,18 +27,18 @@ public class PropertyPathTest {
         person.address = address;
         assertEquals("Teststreet 45", fieldPath.traverse(person));
     }
-    
+
     @Test
     public void testInvalidPathByString() {
         try {
             // Address has no 'unknown' field
             PropertyPath.startingFrom(Person.class, "address").to("unknown").to("name");
             fail("Invalid paths should not be accepted during construction.");
-        } catch(IllegalStateException e) {
+        } catch (IllegalStateException e) {
             assertEquals("Property 'unknown' does not exist in 'Address'.", e.getMessage());
         }
     }
-    
+
     @Test
     public void testEquals() {
         // Reference to the same object should always be equal
@@ -48,26 +48,26 @@ public class PropertyPathTest {
         // Different path, should not be equal
         assertFalse(fieldPath.equals(PropertyPath.startingFrom(Person.class, "address").to("street")));
     }
-    
+
     @Test
     public void testHashCode() {
         // Reference to the same object should always have equal hash code
         assertEquals(fieldPath.hashCode(), fieldPath.hashCode());
     }
-    
+
     public static class Person {
         @SuppressWarnings("unused")
         private Address address;
     }
-    
+
     public static class Address {
         @SuppressWarnings("unused")
         private Street street;
     }
-    
+
     public static class Street {
         @SuppressWarnings("unused")
         private String name;
     }
-    
+
 }

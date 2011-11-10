@@ -4,7 +4,10 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 import java.lang.reflect.Field;
-
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
 import org.springframework.util.Assert;
 
 /**
@@ -19,9 +22,11 @@ public class PropertyDefinition {
     private PropertyDatabaseType databaseType;
     private PropertyPath embeddablePath;
     private boolean generatedValue;
+    private boolean isIdColumn;
     private String joinTableName;
     private String joinColumnName;
     private String inverseJoinColumnName;
+    private Map<String, String> elementCollectionJoinColumns;
 
     private PropertyDefinition(Field field) {
         this.field = field;
@@ -68,6 +73,10 @@ public class PropertyDefinition {
         return generatedValue;
     }
 
+    public boolean isIdColumn() {
+        return isIdColumn;
+    }
+
     public String getJoinTableName() {
         return joinTableName;
     }
@@ -80,6 +89,14 @@ public class PropertyDefinition {
         return inverseJoinColumnName;
     }
 
+    public Map<String, String> getElementCollectionJoinColumns() {
+        return elementCollectionJoinColumns;
+    }
+
+    public Collection<? extends String> getElementCollectionJoinColumnNames() {
+        return elementCollectionJoinColumns.keySet();
+    }
+
     public static class Builder {
         private final Field field;
         private String columnName;
@@ -88,11 +105,15 @@ public class PropertyDefinition {
         private String joinTableName;
         private String joinColumnName;
         private String inverseJoinColumnName;
+        /** Explanation: elementcollectionJoinColumns<ColumnName, ReferencedColumnName> */
+        private Map<String, String> elementCollectionJoinColumns;
         private boolean generatedValue = false;
+        private boolean isIdColumn = false;
 
         public Builder(Field field) {
             Assert.notNull(field, "Field cannot be null");
             this.field = field;
+            this.elementCollectionJoinColumns = new HashMap<String, String>();
         }
 
         public Builder setColumnName(String columnName) {
@@ -107,6 +128,11 @@ public class PropertyDefinition {
 
         public Builder valueIsGenerated() {
             generatedValue = true;
+            return this;
+        }
+
+        public Builder columnIsIdColumn() {
+            isIdColumn = true;
             return this;
         }
 
@@ -130,13 +156,30 @@ public class PropertyDefinition {
             return this;
         }
 
+        public void putElementCollectionJoinColumnName(String elementCollectionJoinColumnName, String elementCollectionReferencedColumnName) {
+            this.elementCollectionJoinColumns.put(elementCollectionJoinColumnName, elementCollectionReferencedColumnName);
+        }
+
         public PropertyDefinition build() {
             Assert.notNull(databaseType, "Database type cannot be null");
             if (databaseType == PropertyDatabaseType.COLLECTION_REFERENCE) {
                 Assert.state(isBlank(columnName), "Join table property cannot have a column name");
+                Assert.state(elementCollectionJoinColumns.size() == 0, "Join table property cannot have elementCollection joinColumn names");
                 Assert.state(isNotBlank(joinTableName), "Join table name cannot be blank");
                 Assert.state(isNotBlank(joinColumnName), "Join column name cannot be blank");
                 Assert.state(isNotBlank(inverseJoinColumnName), "Inverse join column name cannot be blank");
+            } else if (databaseType == PropertyDatabaseType.ELEMENT_COLLECTION) {
+                Assert.state(isBlank(columnName), "Element collection property cannot have a column name");
+                Assert.state(isBlank(inverseJoinColumnName), "Element collection property cannot have an inversed joinColumn name");
+                Assert.state(isBlank(joinTableName), "ElementCollection property cannot have a joinTable name");
+                Assert.state(isBlank(joinColumnName), "ElementCollection property cannot have a join column name");
+                for (Entry<String, String> entry : elementCollectionJoinColumns.entrySet()) {
+                    Assert.state(isNotBlank(entry.getKey()), "ElementCollection property's joinColumn names may not be blank");
+                    if (elementCollectionJoinColumns.size() > 1) {
+                        Assert.state(isNotBlank(entry.getValue()),
+                                "ElementCollection property's referenced column names may not be blank if there's more than 1 JoinColumn");
+                    }
+                }
             } else {
                 Assert.state(isNotBlank(columnName), "Column name cannot be blank");
             }
@@ -148,7 +191,9 @@ public class PropertyDefinition {
             definition.joinTableName = joinTableName;
             definition.joinColumnName = joinColumnName;
             definition.inverseJoinColumnName = inverseJoinColumnName;
+            definition.elementCollectionJoinColumns = elementCollectionJoinColumns;
             definition.generatedValue = generatedValue;
+            definition.isIdColumn = isIdColumn;
             return definition;
         }
     }
@@ -187,5 +232,4 @@ public class PropertyDefinition {
     public String toString() {
         return String.format("Property: %s (%s)", columnName, getName());
     }
-
 }
