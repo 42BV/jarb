@@ -56,7 +56,7 @@ public final class ExcelImporter {
      */
     @SuppressWarnings({ "unchecked", "rawtypes" })
     public EntityRegistry parseExcelToRegistry(Workbook excel, Collection<Definition<?>> entityDefinitions) throws NoSuchFieldException {
-        //First we need to create all ExcelRows..
+        //First we need to create all ExcelRows, including those of the subtype 'ElementCollectionDefinitions'
         createExcelRows(excel, entityDefinitions);
 
         EntityRegistry entityRegistry = new EntityRegistry();
@@ -200,7 +200,7 @@ public final class ExcelImporter {
             Map<Object, List<Object>> createdElementCollectionInstances, Integer rowPosition,
             ExcelRow excelRow) {
         if (classDefinition instanceof EntityDefinition<?>) {
-            Object identifier = sheet.getValueAt(rowPosition, 0);
+            Object identifier = getIdentifierValue(rowPosition, sheet, sheet.getColumnNameAt(0));
             addRecordIfIdentifierIsUnique(sheet, classDefinition, createdInstances, createdElementCollectionInstances, rowPosition, excelRow, identifier);
         } else if (classDefinition instanceof ElementCollectionDefinition<?>) {
             ElementCollectionDefinition<?> elementCollection = (ElementCollectionDefinition<?>) classDefinition;
@@ -213,6 +213,29 @@ public final class ExcelImporter {
         }
     }
 
+    /**
+     * Returns the temporary identifier value of the row. If it's a number it will be converted to an integer so the difference in formatting throughout multiple Excel files won't cause foreign key couplings to fail.
+     * @param rowPosition The current row position
+     * @param sheet Excel worksheet to gather data from
+     * @param columnName The column name to get the value from
+     * @return Identifier value
+     */
+    private Object getIdentifierValue(int rowPosition, final Sheet sheet, String columnName){
+        Object value = sheet.getCellAt(rowPosition, columnName).getValue();
+        if (value instanceof Number){
+            value = ((Number) value).intValue();
+        }
+        return value;
+    }
+
+    /**
+     * Returns the identifiers from an ElementCollectionField by using the @JoinColumn annotations. If no annotations are present, the default JPA column names will be used to find the data.
+     * @param sheet ExcelSheet to get the data from
+     * @param rowPosition The current row position
+     * @param enclosingClass The class the ElementCollection is enclosed in
+     * @param beanClass The ElementCollection's class
+     * @return Map of columnnames and identifiers
+     */
     private Map<String, Object> getIdentifiersFromElementCollectionField(final Sheet sheet,
             Integer rowPosition, Class<?> enclosingClass, Class<?> beanClass) {
         Map<String, Object> identifiers = new HashMap<String, Object>();
@@ -220,19 +243,30 @@ public final class ExcelImporter {
         if (elementCollectionField.getAnnotation(CollectionTable.class) != null) {
             CollectionTable collectionTable = (CollectionTable) elementCollectionField.getAnnotation(CollectionTable.class);
             for (JoinColumn joinColumn : collectionTable.joinColumns()) {
-                identifiers.put(joinColumn.name(), sheet.getCellAt(rowPosition, joinColumn.name()).getValue());
+                Object identifierValue = getIdentifierValue(rowPosition, sheet, joinColumn.name());
+                identifiers.put(joinColumn.name(), identifierValue);
             }
         }
 
         if (identifiers.isEmpty()) {
             //If no @JoinColumns are present in the CollectionTable or the CollectionTable isn't present at all, the identifier will be assumed to be the name of the enclosing entity and the
             //primary key columns separated by an underscore as documented in the JPA spec.
-            String identifier = JpaMetaModelUtils.deduceIdentifierColumnName(enclosingClass, entityManagerFactory);
-            identifiers.put(identifier, sheet.getCellAt(rowPosition, identifier).getValue());
+            String identifierColumn = JpaMetaModelUtils.deduceIdentifierColumnName(enclosingClass, entityManagerFactory);
+            identifiers.put(identifierColumn, getIdentifierValue(rowPosition, sheet, identifierColumn));
         }
         return identifiers;
     }
-
+    
+    /**
+     * Adds the record to the proper map if its identifiers are unique. In case of an ElementCollectionDefinition row it will always be added.
+     * @param sheet Excelsheet to get the sheetname from
+     * @param classDefinition Definition which belongs to the ExcelRow
+     * @param createdInstances Map of created ExcelRow instances
+     * @param createdElementCollectionInstances Map of created ExcelRow instances of ElementCollection type
+     * @param rowPosition Current row position
+     * @param excelRow Excelrow which is being processed
+     * @param identifier Identifier of ExcelRow
+     */
     private void addRecordIfIdentifierIsUnique(final Sheet sheet, final Definition<?> classDefinition, Map<Object, ExcelRow> createdInstances,
             Map<Object, List<Object>> createdElementCollectionInstances,
             Integer rowPosition, ExcelRow excelRow, Object identifier) {

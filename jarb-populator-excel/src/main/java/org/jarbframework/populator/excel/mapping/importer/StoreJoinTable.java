@@ -37,7 +37,7 @@ public final class StoreJoinTable {
     public static void storeValue(Workbook excel, Definition<?> classDefinition, PropertyDefinition columnDefinition, Integer rowPosition, ExcelRow excelRow) {
         Sheet mainSheet = excel.getSheet(classDefinition.getTableName());
         String idColumnName = getIdColumnName(classDefinition);
-        Double code = (Double) mainSheet.getValueAt(rowPosition, idColumnName);
+        Object code = mainSheet.getValueAt(rowPosition, idColumnName);
         Sheet joinSheet = excel.getSheet(columnDefinition.getJoinTableName());
 
         if (joinSheet != null) {
@@ -82,7 +82,7 @@ public final class StoreJoinTable {
      * @param code Id number
      * @return Set of foreign keys
      */
-    private static Set<Integer> createForeignKeyList(Sheet sheet, PropertyDefinition joinTable, Double code) {
+    private static Set<Integer> createForeignKeyList(Sheet sheet, PropertyDefinition joinTable, Object code) {
         Set<Integer> foreignKeyList = new HashSet<Integer>();
         for (Integer newRowPosition = 1; newRowPosition <= sheet.getLastRowNumber(); newRowPosition++) {
             Object joinColumnValue = sheet.getValueAt(newRowPosition, joinTable.getJoinColumnName());

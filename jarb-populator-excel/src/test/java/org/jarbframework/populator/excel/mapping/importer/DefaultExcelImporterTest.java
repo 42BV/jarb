@@ -68,11 +68,11 @@ public class DefaultExcelImporterTest extends DefaultExcelTestDataCase {
     @Test
     public void testParseWorksheet() throws InstantiationException, IllegalAccessException, SecurityException, NoSuchFieldException {
         parseWorksheetMap = new ExcelImporter(ValueConversionService.defaultConversions(), getEntityManagerFactory()).parseWorksheet(excel, classDefinition);
-        assertTrue(parseWorksheetMap.keySet().contains(1D));
-        assertFalse(parseWorksheetMap.keySet().contains(2D));
-        assertTrue(parseWorksheetMap.keySet().contains(3D));
-        assertTrue(parseWorksheetMap.keySet().contains(4D));
-        assertTrue(parseWorksheetMap.keySet().contains(5D));
+        assertTrue(parseWorksheetMap.keySet().contains(1));
+        assertFalse(parseWorksheetMap.keySet().contains(2));
+        assertTrue(parseWorksheetMap.keySet().contains(3));
+        assertTrue(parseWorksheetMap.keySet().contains(4));
+        assertTrue(parseWorksheetMap.keySet().contains(5));
     }
 
     /**

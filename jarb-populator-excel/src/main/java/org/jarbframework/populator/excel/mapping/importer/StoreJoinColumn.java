@@ -34,10 +34,26 @@ public final class StoreJoinColumn {
         LOGGER.debug("field: " + columnDefinition.getName() + " column: " + columnDefinition.getColumnName() + " value:[" + cellValue + "]");
         if (cellValue != null) {
             // Sets the Key
-            Key keyValue = new JoinColumnKey();
-            keyValue.setKeyValue(cellValue);
-            keyValue.setForeignClass(columnDefinition.getField().getType());
-            excelRow.addValue(columnDefinition, keyValue);
+            Key joinColumnKey = createJoinColumnKey(columnDefinition, cellValue);
+            excelRow.addValue(columnDefinition, joinColumnKey);
         }
     }
+    
+    /**
+     * Creates a JoinColumnKey. If the key is of a numeric type it will be cast to Integer to prevent Excel formatting issues.
+     * @param propertyDefinition PropertyDefinition used to get the foreign class from
+     * @param cellValue Key value from Excel file
+     * @return JoinColumnKey
+     */
+    private static Key createJoinColumnKey(PropertyDefinition propertyDefinition, Object cellValue){
+        if (cellValue instanceof Number) {
+            cellValue = ((Number) cellValue).intValue();
+        }
+        Key joinColumnKey = new JoinColumnKey();
+        joinColumnKey.setKeyValue(cellValue);
+        joinColumnKey.setForeignClass(propertyDefinition.getField().getType());
+        return joinColumnKey;
+    }
+    
+    
 }

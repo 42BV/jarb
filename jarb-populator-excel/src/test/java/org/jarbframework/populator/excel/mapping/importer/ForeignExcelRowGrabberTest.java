@@ -59,7 +59,7 @@ public class ForeignExcelRowGrabberTest extends DefaultExcelTestDataCase {
 
         Key keyValue = new JoinColumnKey();
         keyValue.setForeignClass(Customer.class);
-        keyValue.setKeyValue(6D);
+        keyValue.setKeyValue(6);
         objectModel = new ExcelImporter(ValueConversionService.defaultConversions(), getEntityManagerFactory()).parseWorksheet(excel, classDefinition);
         assertEquals(persistentClass, ForeignExcelRowGrabber.getInstanceValue(keyValue, objectModel).getClass());
     }
