@@ -29,7 +29,7 @@ public class MetaModel implements Iterable<Definition<?>> {
     /**
      * Retrieve the entity definition of a specific persistent class,
      * or {@code null} if no matching definition can be found.
-     * @param definedClass class that we are finding for
+     * @param entityClass class that we are finding for
      * @return description of the provided class, else {@code null}
      */
     @SuppressWarnings("unchecked")
@@ -43,7 +43,7 @@ public class MetaModel implements Iterable<Definition<?>> {
 
     /**
      * Determine if this meta model contains the described persistent class.
-     * @param definedClass class that we are looking for
+     * @param entityClass class that we are looking for
      * @return {@code true} if it is contained, else {@code false}
      */
     public boolean contains(Class<?> entityClass) {

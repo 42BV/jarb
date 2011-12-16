@@ -76,7 +76,7 @@ public class PoiWorkbookWriter implements WorkbookWriter {
         } else if (cellValue instanceof NumericValue) {
             poiCell.setCellValue(((NumericValue) cellValue).getValue());
         } else if (cellValue instanceof FormulaValue) {
-            poiCell.setCellFormula((((FormulaValue) cellValue).getFormula()));
+            poiCell.setCellFormula(((FormulaValue) cellValue).getFormula());
         } else if (cellValue instanceof StringValue) {
             poiCell.setCellValue(((StringValue) cellValue).getValue());
         }

@@ -26,7 +26,7 @@ public class EntityTable<T> implements Iterable<T> {
 
     /**
      * Construct a new {@link EntityTable}.
-     * @param definedClass class of entities stored in this table
+     * @param entityClass class of entities stored in this table
      */
     public EntityTable(Class<T> entityClass) {
         this.entityClass = entityClass;

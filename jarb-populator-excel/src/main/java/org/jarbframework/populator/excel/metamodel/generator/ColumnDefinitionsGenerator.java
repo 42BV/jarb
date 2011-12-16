@@ -37,7 +37,7 @@ public final class ColumnDefinitionsGenerator {
      * Creates a list of columnDefinitions from an entity originated in the JPA meta-model.
      * @param subclassEntities Set of subclass entities
      * @param type Entity whose attributes will be added as ColumnDefinitions.
-     * @param definedClass Persistent class of the ClassDefinition
+     * @param persistentClass Persistent class of the ClassDefinition
      * @return List of ColumnDefinitions
      */
     public List<PropertyDefinition> createPropertyDefinitions(Set<EntityType<?>> subclassEntities, EntityType<?> type, Class<?> persistentClass) {

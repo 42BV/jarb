@@ -220,9 +220,9 @@ public final class ExcelImporter {
      * @param columnName The column name to get the value from
      * @return Identifier value
      */
-    private Object getIdentifierValue(int rowPosition, final Sheet sheet, String columnName){
+    private Object getIdentifierValue(int rowPosition, final Sheet sheet, String columnName) {
         Object value = sheet.getCellAt(rowPosition, columnName).getValue();
-        if (value instanceof Number){
+        if (value instanceof Number) {
             value = ((Number) value).intValue();
         }
         return value;

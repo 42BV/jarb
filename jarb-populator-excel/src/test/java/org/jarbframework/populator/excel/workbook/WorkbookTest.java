@@ -2,6 +2,7 @@ package org.jarbframework.populator.excel.workbook;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.fail;
 
 import java.util.Arrays;
 import java.util.List;
@@ -43,6 +44,18 @@ public class WorkbookTest {
         assertEquals(sheet, workbook.getSheet("test"));
         assertEquals(another, workbook.getSheet("another"));
         assertNull(workbook.getSheet("unknown"));
+    }
+    
+    @Test
+    public void testPreventDuplicateSheets(){
+    	final String sheetname = "test";
+    	workbook.createSheet(sheetname);
+    	try{
+    		workbook.createSheet(sheetname);
+    		fail();
+    	} catch (IllegalStateException e){
+    		assertEquals("Sheet '"+sheetname+"' already exists", e.getMessage());
+    	}
     }
 
 }

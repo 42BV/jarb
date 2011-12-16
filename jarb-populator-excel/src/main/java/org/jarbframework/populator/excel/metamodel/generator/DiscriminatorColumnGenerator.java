@@ -9,7 +9,7 @@ public final class DiscriminatorColumnGenerator {
 
     /**
      * Return the discriminator column's name from the peristent class' annotation.
-     * @param definedClass Persistent class to read the annotation from
+     * @param persistentClass Persistent class to read the annotation from
      * @return Discriminator column name.
      */
     public static String getDiscriminatorColumnName(Class<?> persistentClass) {

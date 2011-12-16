@@ -13,10 +13,12 @@ import org.junit.Test;
 
 public class CellTest {
     private Cell cell;
+    private Row row;
 
     @Before
     public void setUp() {
-        cell = new Workbook().createSheet("test").createRow().createCell();
+    	row = new Workbook().createSheet("test").createRow();
+        cell = row.createCell();
     }
 
     /**
@@ -51,5 +53,22 @@ public class CellTest {
         cell.setCellValue(new StringValue("test"));
         assertEquals("test", cell.toString());
     }
-
+    
+    /**
+     * When a new cell is made, it should be linked to its row properly
+     * Since the cell is made by creating a cell from the row stored in the variable
+     * row, the row of the cell should be the same as the row it was made from. 
+     */
+    @Test
+    public void testGetRow(){
+    	assertEquals(row, cell.getRow());
+    }
+    
+    /**
+     * Besides having the same row, the cell and the row should also have the same row number
+     */
+    @Test
+    public void testGetRowNo(){
+    	assertEquals(row.getRowNo(), cell.getRowNo());
+    }
 }

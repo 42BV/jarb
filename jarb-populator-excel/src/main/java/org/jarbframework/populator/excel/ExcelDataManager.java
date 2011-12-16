@@ -202,7 +202,7 @@ public class ExcelDataManager {
         /**
          * Include a new entity, not (yet) stored in the database.
          * @param <T> type of entity being included
-         * @param definedClass class of the entity type
+         * @param entityClass class of the entity type
          * @param identifier entity identifier, can be anything
          * @param entity reference to the new entity
          * @return this builder, for chaining

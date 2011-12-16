@@ -38,7 +38,7 @@ public final class SuperclassRetriever {
     /**
      * Checks if the peristent class has a superclass, and if it does it checks if this superclass also has one, and so on.
      * Creates a list of all superclasses in the levels above the persistentclass except for java.lang.Object which is of no use to us
-     * @param definedClass Lowest level class
+     * @param persistentClass Lowest level class
      * @return List of classes
      */
     public static Set<Class<?>> getListOfSuperClasses(Class<?> persistentClass) {

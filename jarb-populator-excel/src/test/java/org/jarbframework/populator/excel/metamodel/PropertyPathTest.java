@@ -38,7 +38,31 @@ public class PropertyPathTest {
             assertEquals("Property 'unknown' does not exist in 'Address'.", e.getMessage());
         }
     }
-
+    
+    @Test
+    public void testInvalidStartingPathByString(){
+    	try{
+    		// Person has no "unknown" field
+    		PropertyPath.startingFrom(Person.class, "unknown");
+    		fail("Invalid paths should not be accepted during construction.");
+    	} catch (IllegalStateException e){
+    		assertEquals("Property 'unknown' does not exist in 'Person'.", e.getMessage());
+    	}
+    }
+    
+    @Test
+    public void testTraverseWithUndefinedValue(){
+    	Person p = new Person();
+    	Object o = PropertyPath.startingFrom(Person.class, "address").to("street").to("name").traverse(p);
+    	assertEquals(null, o);
+    }
+    
+    @Test
+    public void testGetEnd(){
+    	PropertyPath pp = PropertyPath.startingFrom(Person.class, "address");
+    	assertTrue(pp.getStart() == pp.getEnd());
+    }
+    
     @Test
     public void testEquals() {
         // Reference to the same object should always be equal

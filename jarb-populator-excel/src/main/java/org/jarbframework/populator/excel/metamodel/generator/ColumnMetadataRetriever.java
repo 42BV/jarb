@@ -20,7 +20,7 @@ public final class ColumnMetadataRetriever {
 
     /**
      * Retrieves all the column names of all fields in the passed Class that possess @Column annotations.
-     * @param definedClass Class to pull the columnNames from.
+     * @param entityClass Class to pull the columnNames from.
      * @return Set of column names.
      */
     public static Set<String> getColumnNamesForClass(Class<?> entityClass) {

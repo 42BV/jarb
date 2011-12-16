@@ -10,6 +10,12 @@ import java.util.TreeSet;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.util.Assert;
 
+/**
+ * A Sheet is the internal representation of a single Sheet in a Excel workbook.
+ * Changes made to the state of a Sheet do not affect the Excel file it was loaded from. 
+ * @author Unknown
+ *
+ */
 public class Sheet implements Iterable<Row> {
     public static final int COLUMN_ROW_NO = 0;
     public static final int IDENTIFIER_COLUMN_NO = 0;
@@ -104,7 +110,7 @@ public class Sheet implements Iterable<Row> {
     /**
      * Retrieve the index where a certain column first occurs.
      * @param columnName name of the column index to find
-     * @return index of the column's first occurrence
+     * @return index of the column's first occurrence, -1 if no column is found.
      */
     public int indexOfColumn(String columnName) {
         int index = -1; // Return '-1' when nothing can be found

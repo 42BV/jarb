@@ -56,7 +56,7 @@ public final class SubclassRetriever {
      * Returns the class' discriminator value, the default is the Simple Classname.
      * This can be overriden by using the @DiscriminatorValue annotation.
      * If an @Entity(name="") annotation is present, this will be used because Hibernate does this too
-     * @param definedClass Persistent class
+     * @param persistentClass Persistent class
      * @return The persistent class' discriminator value
      */
     public static String getDiscriminatorValue(Class<?> persistentClass) {
@@ -73,7 +73,7 @@ public final class SubclassRetriever {
 
     /**
      * Tries to read the discriminator value from the @DiscriminatorValue anottation from the persistent class.
-     * @param definedClass Persistent class to read annotation from
+     * @param persistentClass Persistent class to read annotation from
      * @return Discriminator value or null if annotation cannot be read or found.
      */
     private static String tryToReadDiscriminatorValueAnnotation(Class<?> persistentClass) {
@@ -89,7 +89,7 @@ public final class SubclassRetriever {
     /**
      * Loops over all the annotations in the persistent class to find an Entity annotation.
      * Calls getentityNameFromEntityAnnotation function to retrieve entity name value and returns this.
-     * @param definedClass Persistent class to read annotation from
+     * @param persistentClass Persistent class to read annotation from
      * @return Discriminator value or null if annotation cannot be read or found.
      */
     private static String tryToReadEntityNameAnnotationForDiscriminatorValue(Class<?> persistentClass) {
