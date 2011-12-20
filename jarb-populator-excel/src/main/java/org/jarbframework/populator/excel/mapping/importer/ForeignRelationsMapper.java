@@ -94,7 +94,7 @@ public final class ForeignRelationsMapper {
     }
 
     /**
-     * Fills a map with identifier columnnames and values corresponding with the @JoinColumn values of an ElementCollection's ExcelRow
+     * Fills a map with identifier columnnames and values corresponding with the @JoinColumn values of an ElementCollection's ExcelRow.
      * @param entityDefinition EntityDefinition of the enclosing class is needed to retrieve the referencedField name
      * @param excelRowIdentifier Identifier of current (enclosing) ExcelRow
      * @param propertyAccessor Accessor used to retrieve data from and edit data in an ExcelRow

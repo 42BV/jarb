@@ -28,7 +28,7 @@ public final class StoreJoinTable {
 
     /**
      * Stores a JoinTable in ExcelRow.
-     * @param sheet Representation of excel file
+     * @param excel Representation of excel file
      * @param classDefinition ClassDefinition used to determine columnPosition
      * @param columnDefinition ColumnDefinition is the superclass of Column, JoinColumn and JoinTable.
      * @param rowPosition Vertical position number of the excelRecord
@@ -54,7 +54,7 @@ public final class StoreJoinTable {
      */
     private static String getIdColumnName(Definition<?> classDefinition) {
         String idColumnName = "";
-        if (classDefinition instanceof EntityDefinition<?>){
+        if (classDefinition instanceof EntityDefinition<?>) {
             EntityDefinition<?> entityDefinition = (EntityDefinition<?>) classDefinition;
             idColumnName = entityDefinition.getIdColumnName();
         }

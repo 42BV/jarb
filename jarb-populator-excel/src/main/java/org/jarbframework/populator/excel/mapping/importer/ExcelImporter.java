@@ -48,7 +48,7 @@ public final class ExcelImporter {
     }
 
     /**
-     * Returns an EntityRegistry containing EntityTables which in their turn contain ExcelRows
+     * Returns an EntityRegistry containing EntityTables which in their turn contain ExcelRows.
      * @param excel Excel file in use to be stored in the objectModel
      * @param entityDefinitions Used to create EntityTables
      * @return EntityRegistry containing EntityTables and parsed excel records.

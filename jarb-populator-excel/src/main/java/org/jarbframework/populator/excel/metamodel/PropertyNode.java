@@ -13,7 +13,7 @@ public class PropertyNode {
     private final Field field;
 
     /**
-     * Construct a new {@link 
+     * Construct a new {@link PropertyNode}.
      * @param field the field being represented
      */
     PropertyNode(Field field) {

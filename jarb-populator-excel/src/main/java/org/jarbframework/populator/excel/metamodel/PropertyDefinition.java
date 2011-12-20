@@ -105,7 +105,7 @@ public class PropertyDefinition {
         private String joinTableName;
         private String joinColumnName;
         private String inverseJoinColumnName;
-        /** Explanation: elementcollectionJoinColumns<ColumnName, ReferencedColumnName> */
+        /** Explanation: elementcollectionJoinColumns<ColumnName, ReferencedColumnName>. */
         private Map<String, String> elementCollectionJoinColumns;
         private boolean generatedValue = false;
         private boolean isIdColumn = false;

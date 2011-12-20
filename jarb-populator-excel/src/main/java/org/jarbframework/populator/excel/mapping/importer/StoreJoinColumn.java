@@ -45,7 +45,7 @@ public final class StoreJoinColumn {
      * @param cellValue Key value from Excel file
      * @return JoinColumnKey
      */
-    private static Key createJoinColumnKey(PropertyDefinition propertyDefinition, Object cellValue){
+    private static Key createJoinColumnKey(PropertyDefinition propertyDefinition, Object cellValue) {
         if (cellValue instanceof Number) {
             cellValue = ((Number) cellValue).intValue();
         }

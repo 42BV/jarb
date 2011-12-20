@@ -19,9 +19,9 @@ import java.util.Set;
  * @param <T> type of entities being maintained
  */
 public class EntityTable<T> implements Iterable<T> {
-    /** Class of entities being stored **/
+    /** Class of entities being stored. **/
     private final Class<T> entityClass;
-    /** Map based container of all stored entities **/
+    /** Map based container of all stored entities. **/
     private Map<Object, T> entitiesMap = new HashMap<Object, T>();
 
     /**
