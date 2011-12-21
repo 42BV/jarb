@@ -17,8 +17,7 @@ import org.springframework.util.Assert;
  *
  */
 public final class ColumnMetadataRetriever {
-
-	/**
+    /**
      * Gets the Collection's content type. Should only be one in case of ElementCollections.
      * @param property PropertyDefinition to get the content type from.
      * @return Class of content type.
