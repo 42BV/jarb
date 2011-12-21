@@ -75,8 +75,20 @@ public class FieldAnalyzer {
     }
 
     private PropertyDefinition.Builder joinTableDefinition(JoinTable annotation, Field field) {
+    	String joinColumnName = null;
+    	if(annotation.joinColumns().length != 0){
+    		joinColumnName = annotation.joinColumns()[0].name();
+    	} else {
+    		throw new UnsupportedOperationException("JoinTable annotations with implicit JoinColumns are not yet supported by JaRB.");
+    	}
+    	String inverseJoinColumnName = null;
+    	if(annotation.inverseJoinColumns().length != 0){
+    		inverseJoinColumnName = annotation.inverseJoinColumns()[0].name();
+    	} else {
+    		throw new UnsupportedOperationException("JoinTable annotations with implicit JoinColumns are not yet supported by JaRB.");
+    	}
         return PropertyDefinition.forField(field).setDatabaseType(PropertyDatabaseType.COLLECTION_REFERENCE).setJoinTableName(annotation.name())
-                .setJoinColumnName(annotation.joinColumns()[0].name()).setInverseJoinColumnName(annotation.inverseJoinColumns()[0].name());
+                .setJoinColumnName(joinColumnName).setInverseJoinColumnName(inverseJoinColumnName);
     }
 
     private PropertyDefinition.Builder elementCollectionDefinition(ElementCollection annotation, Field field) {

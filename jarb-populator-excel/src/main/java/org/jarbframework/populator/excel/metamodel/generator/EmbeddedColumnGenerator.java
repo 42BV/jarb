@@ -33,8 +33,8 @@ public final class EmbeddedColumnGenerator {
         Field embeddableField = BeanProperties.findPropertyField(propertyReference);
         for (Field embeddedPropertyField : embeddableField.getType().getDeclaredFields()) {
             if (!ReflectionUtils.isPublicStaticFinal(embeddedPropertyField)) {
-                PropertyReference embeddablePropertReference = new PropertyReference(propertyReference, embeddedPropertyField.getName());
-                PropertyDefinition.Builder columnDefinitionBuilder = new FieldAnalyzer(schemaMapper).analyzeField(embeddablePropertReference);
+                PropertyReference embeddablePropertyReference = new PropertyReference(propertyReference, embeddedPropertyField.getName());
+                PropertyDefinition.Builder columnDefinitionBuilder = new FieldAnalyzer(schemaMapper).analyzeField(embeddablePropertyReference);
                 if (columnDefinitionBuilder != null) {
                     columnDefinitionBuilder.setEmbeddablePath(PropertyPath.startingFrom(embeddableField));
                     columnDefinitions.add(columnDefinitionBuilder.build());

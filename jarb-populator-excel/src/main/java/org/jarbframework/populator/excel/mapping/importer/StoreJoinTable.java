@@ -48,7 +48,7 @@ public final class StoreJoinTable {
     }
 
     /**
-     * Returns the ID column name from the passed Definition
+     * Returns the ID column name from the passed Definition.
      * @param classDefinition Definition to check the id column name of
      * @return Id Column name
      */
@@ -84,10 +84,12 @@ public final class StoreJoinTable {
      */
     private static Set<Integer> createForeignKeyList(Sheet sheet, PropertyDefinition joinTable, Object code) {
         Set<Integer> foreignKeyList = new HashSet<Integer>();
+        int joinColumnIndex = sheet.getCellAt(0, joinTable.getJoinColumnName()).getColNo();
+        int inverseJoinColumnIndex = sheet.getCellAt(0, joinTable.getInverseJoinColumnName()).getColNo();
         for (Integer newRowPosition = 1; newRowPosition <= sheet.getLastRowNumber(); newRowPosition++) {
-            Object joinColumnValue = sheet.getValueAt(newRowPosition, joinTable.getJoinColumnName());
+            Object joinColumnValue = sheet.getValueAt(newRowPosition, joinColumnIndex);
             if (joinColumnValue instanceof Double && joinColumnValue.equals(code)) {
-                Object inverseJoinColumnValue = sheet.getValueAt(newRowPosition, joinTable.getInverseJoinColumnName());
+                Object inverseJoinColumnValue = sheet.getValueAt(newRowPosition, inverseJoinColumnIndex);
                 if (inverseJoinColumnValue instanceof Number) {
                     foreignKeyList.add(((Number) inverseJoinColumnValue).intValue());
                 } else {

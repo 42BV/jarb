@@ -38,9 +38,6 @@ public class CellValueGenerator {
             cellValue = new EmptyValue();
         } else {
             final Class<?> valueType = value.getClass();
-            if (String.class.equals(valueType)) {
-                cellValue = new StringValue((String) value);
-            }
             if (Boolean.class.isAssignableFrom(valueType)) {
                 cellValue = new BooleanValue((Boolean) value);
             } else if (Date.class.isAssignableFrom(valueType)) {

@@ -86,28 +86,26 @@ public class PoiWorkbookParser implements WorkbookParser {
 
     private CellValue parseValue(org.apache.poi.ss.usermodel.Cell poiCell) {
         CellValue cellValue = new EmptyValue();
-        if (poiCell != null) {
-            switch (poiCell.getCellType()) {
-            case CELL_TYPE_STRING:
-                cellValue = new StringValue(poiCell.getRichStringCellValue().getString());
-                break;
-            case CELL_TYPE_NUMERIC:
-                if (DateUtil.isCellDateFormatted(poiCell)) {
-                    cellValue = new DateValue(poiCell.getDateCellValue());
-                } else {
-                    cellValue = new NumericValue(poiCell.getNumericCellValue());
-                }
-                break;
-            case CELL_TYPE_BOOLEAN:
-                cellValue = new BooleanValue(poiCell.getBooleanCellValue());
-                break;
-            case CELL_TYPE_FORMULA:
-                CreationHelper creationHelper = poiCell.getRow().getSheet().getWorkbook().getCreationHelper();
-                creationHelper.createFormulaEvaluator().evaluateInCell(poiCell);
-                cellValue = parseValue(poiCell);
-                break;
-            }
-        }
+        switch (poiCell.getCellType()) {
+		case CELL_TYPE_STRING:
+			cellValue = new StringValue(poiCell.getRichStringCellValue().getString());
+			break;
+		case CELL_TYPE_NUMERIC:
+			if (DateUtil.isCellDateFormatted(poiCell)) {
+				cellValue = new DateValue(poiCell.getDateCellValue());
+			} else {
+				cellValue = new NumericValue(poiCell.getNumericCellValue());
+			}
+			break;
+		case CELL_TYPE_BOOLEAN:
+			cellValue = new BooleanValue(poiCell.getBooleanCellValue());
+			break;
+		case CELL_TYPE_FORMULA:
+			CreationHelper creationHelper = poiCell.getRow().getSheet().getWorkbook().getCreationHelper();
+			creationHelper.createFormulaEvaluator().evaluateInCell(poiCell);
+			cellValue = parseValue(poiCell);
+			break;
+		}
         return cellValue;
     }
 

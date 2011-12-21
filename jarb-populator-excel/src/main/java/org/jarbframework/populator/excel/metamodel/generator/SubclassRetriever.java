@@ -107,9 +107,9 @@ public final class SubclassRetriever {
      * @return Entity name value or null if not present
      */
     private static String getEntityNameFromEntityAnnotation(Annotation annotation) {
-        Entity annotatedEntity = (Entity) annotation;
-        if ((annotatedEntity.name() != null) && (!annotatedEntity.name().isEmpty())) {
-            return annotatedEntity.name();
+        String annotatedEntityName = ((Entity) annotation).name();
+        if (annotatedEntityName != null && annotatedEntityName.isEmpty()) {
+            return annotatedEntityName;
         }
         return null;
     }

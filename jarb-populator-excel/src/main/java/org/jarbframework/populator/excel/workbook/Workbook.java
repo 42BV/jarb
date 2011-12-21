@@ -14,10 +14,8 @@ import java.util.TreeMap;
  * and each of these Sheets has Rows which are made out of Cells.
  * Changes made to the state of a Workbook have no effect on the Excel file it was loaded from.
  * @author Unknown
- *
  */
 public class Workbook implements Iterable<Sheet> {
-	
     /**
      * The Sheetsmap is a map holding the Sheets of the workbook.
      * The key for the Sheets is their name.

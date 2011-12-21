@@ -18,7 +18,19 @@ import org.springframework.util.Assert;
  */
 public final class ColumnMetadataRetriever {
 
-    /**
+	/**
+     * Gets the Collection's content type. Should only be one in case of ElementCollections.
+     * @param property PropertyDefinition to get the content type from.
+     * @return Class of content type.
+     */
+    public static Class<?> getCollectionContentsType(PropertyDefinition property) {
+        ParameterizedType type = (ParameterizedType) property.getField().getGenericType();
+        Type[] typeArguments = type.getActualTypeArguments();
+        Assert.isTrue(typeArguments.length == 1, "ElementCollection collection can only be of one type");
+        return (Class<?>) typeArguments[0];
+    }
+	
+	/**
      * Retrieves all the column names of all fields in the passed Class that possess @Column annotations.
      * @param entityClass Class to pull the columnNames from.
      * @return Set of column names.
@@ -35,20 +47,6 @@ public final class ColumnMetadataRetriever {
     }
 
     /**
-     * Gets the Collection's content type. Should only be one in case of ElementCollections.
-     * @param property PropertyDefinition to get the content type from.
-     * @return Class of content type.
-     */
-    public static Class<?> getCollectionContentsType(PropertyDefinition property) {
-        ParameterizedType type = (ParameterizedType) property.getField().getGenericType();
-        Assert.isTrue(type.getActualTypeArguments().length == 1, "ElementCollection collection can only be of one type");
-        for (Type typeArgument : type.getActualTypeArguments()) {
-            return (Class<?>) typeArgument;
-        }
-        return null;
-    }
-
-    /**
      * Retrieves a column name from an @Column annotation of a field.
      * @param field Field to retrieve column name from
      * @return Column name
@@ -56,8 +54,10 @@ public final class ColumnMetadataRetriever {
     private static String getColumnNameFromField(Field field) {
         String columnName = null;
         Column columnAnnotation = field.getAnnotation(Column.class);
-        if (columnAnnotation != null) {
+        if (columnAnnotation != null && !"".equals(columnAnnotation.name())) {
             columnName = columnAnnotation.name();
+        } else {
+        	columnName = field.getName();
         }
         return columnName;
     }
