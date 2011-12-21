@@ -102,5 +102,21 @@ public class SheetTest {
         row.getCellAt(1).setCellValue(new StringValue("second"));
         assertEquals("Sheet 'test' {0={0=first, 1=second}}", sheet.toString());
     }
+    
+    /**
+     * If a sheet has empty columns, they should be skipped when collecting the column names.
+     */
+    @Test
+    public void testGetColumnNamesWithEmptyColumns(){
+    	Row row = sheet.getRowAt(0);
+    	assertTrue(row.getCells().isEmpty());
+    	row.getCellAt(0).setCellValue(new StringValue("first"));
+    	row.getCellAt(1);
+    	row.getCellAt(2).setCellValue(new StringValue("third"));
+    	Collection<String> headers = sheet.getColumnNames();
+    	assertTrue(headers.contains("first"));
+    	assertTrue(headers.contains("third"));
+    	assertEquals(2, headers.size());
+    }
 
 }
