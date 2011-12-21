@@ -8,7 +8,7 @@ package org.jarbframework.populator.excel.metamodel.generator;
 public final class DiscriminatorColumnGenerator {
 
     /**
-     * Return the discriminator column's name from the peristent class' annotation.
+     * Return the discriminator column's name from the persistent class' annotation.
      * @param persistentClass Persistent class to read the annotation from
      * @return Discriminator column name.
      */
