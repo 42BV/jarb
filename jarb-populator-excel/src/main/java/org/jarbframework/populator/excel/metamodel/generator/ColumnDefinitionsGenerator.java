@@ -63,7 +63,7 @@ public final class ColumnDefinitionsGenerator {
     }
 
     private void addAttributesAsColumnDefinitions(
-    		List<PropertyDefinition> columnDefinitions, ManagedType<?> type, Class<?> entityClass, Class<?> enclosingClass) {
+            List<PropertyDefinition> columnDefinitions, ManagedType<?> type, Class<?> entityClass, Class<?> enclosingClass) {
         for (Attribute<?, ?> attribute : type.getDeclaredAttributes()) {
             Field field = (Field) attribute.getJavaMember();
 
