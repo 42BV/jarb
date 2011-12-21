@@ -2,8 +2,6 @@ package org.jarbframework.populator;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ApplicationContextEvent;
 import org.springframework.context.event.ContextClosedEvent;
@@ -16,41 +14,39 @@ import org.springframework.context.event.ContextRefreshedEvent;
  * @author Jeroen van Schagen
  * @since 02-11-2011
  */
-public class DatabasePopulatingListener implements ApplicationListener<ApplicationContextEvent> {
-    private final Logger logger = LoggerFactory.getLogger(DatabasePopulatingListener.class);
-
+public class DatabaseUpdatingListener implements ApplicationListener<ApplicationContextEvent> {
     /** Describes whether the initializer has already been started. **/
-    private final AtomicBoolean initializerStarted = new AtomicBoolean();
+    private final AtomicBoolean started = new AtomicBoolean();
     
     /** Executed when application context is started. **/
-    private DatabasePopulator initializer;
+    private DatabaseUpdater initializer;
     /** Executed when application context is stopped. **/
-    private DatabasePopulator destroyer;
+    private DatabaseUpdater destroyer;
     
     @Override
     public void onApplicationEvent(ApplicationContextEvent event) {
-        if(event instanceof ContextRefreshedEvent && initializerStarted.compareAndSet(false, true)) {
+        if(event instanceof ContextRefreshedEvent && started.compareAndSet(false, true)) {
             execute(initializer);
         } else if(event instanceof ContextClosedEvent) {
             execute(destroyer);
         }
     }
     
-    private void execute(DatabasePopulator populator) {
-        if(populator != null) {
+    private void execute(DatabaseUpdater updater) {
+        if(updater != null) {
             try {
-                populator.populate();
+                updater.update();
             } catch (Exception e) {
-                logger.error("Could not execute '" + populator + "'.", e);
+                throw new RuntimeException(e);
             }
         }
     }
 
-    public void setInitializer(DatabasePopulator initializer) {
+    public void setInitializer(DatabaseUpdater initializer) {
         this.initializer = initializer;
     }
     
-    public void setDestroyer(DatabasePopulator destroyer) {
+    public void setDestroyer(DatabaseUpdater destroyer) {
         this.destroyer = destroyer;
     }
 }

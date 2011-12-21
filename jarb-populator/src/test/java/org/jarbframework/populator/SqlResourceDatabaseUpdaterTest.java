@@ -5,7 +5,6 @@ import static org.junit.Assert.fail;
 
 import javax.sql.DataSource;
 
-import org.jarbframework.populator.SqlResourceDatabasePopulator;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +16,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "classpath:application-context.xml")
-public class SqlResourceDatabasePopulatorTest {
+public class SqlResourceDatabaseUpdaterTest {
 
     @Autowired
     private DataSource dataSource;
@@ -27,8 +26,8 @@ public class SqlResourceDatabasePopulatorTest {
      */
     @Test
     public void testPopulate() throws Exception {
-        fromScript("create-schema.sql").populate();
-        fromScript("insert-person.sql").populate();
+        fromScript("create-schema.sql").update();
+        fromScript("insert-person.sql").update();
 
         // Ensure the 'persons' table is created, and a record is inserted
         JdbcTemplate template = new JdbcTemplate(dataSource);
@@ -41,7 +40,7 @@ public class SqlResourceDatabasePopulatorTest {
     @Test
     public void testFailIfScriptNotFound() throws Exception {
         try {
-            fromScript("unknown.sql").populate();
+            fromScript("unknown.sql").update();
             fail("Expected an exception because unknown.sql does not exist.");
         } catch(CannotReadScriptException e) {
             assertEquals("Cannot read SQL script from class path resource [unknown.sql]", e.getMessage());
@@ -55,16 +54,16 @@ public class SqlResourceDatabasePopulatorTest {
      */
     @Test
     public void testIgnoreIfScriptNotFound() throws Exception {
-        SqlResourceDatabasePopulator.ignoreIfResourceMissing(new ClassPathResource("unknown.sql"), dataSource).populate();
+        SqlResourceDatabaseUpdater.ignoreIfResourceMissing(new ClassPathResource("unknown.sql"), dataSource).update();
     }
     
     @Test
     public void testToString() {
-        assertEquals("SQL populator 'class path resource [create-schema.sql]'", fromScript("create-schema.sql").toString());
+        assertEquals("SQL(class path resource [create-schema.sql])", fromScript("create-schema.sql").toString());
     }
     
-    private SqlResourceDatabasePopulator fromScript(String name) {
-        SqlResourceDatabasePopulator populator = new SqlResourceDatabasePopulator();
+    private SqlResourceDatabaseUpdater fromScript(String name) {
+        SqlResourceDatabaseUpdater populator = new SqlResourceDatabaseUpdater();
         populator.setDataSource(dataSource);
         populator.setSqlResource(new ClassPathResource(name));
         return populator;

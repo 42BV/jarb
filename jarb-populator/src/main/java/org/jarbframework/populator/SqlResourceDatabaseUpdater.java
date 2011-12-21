@@ -7,6 +7,8 @@ import java.sql.SQLException;
 
 import javax.sql.DataSource;
 
+import org.jarbframework.populator.condition.ConditionalDatabaseUpdater;
+import org.jarbframework.populator.condition.ResourceExistsCondition;
 import org.jarbframework.utils.JdbcConnectionCallback;
 import org.jarbframework.utils.JdbcUtils;
 import org.springframework.core.io.Resource;
@@ -14,11 +16,10 @@ import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
 
 /**
  * Populate database using an SQL resource.
- * 
  * @author Jeroen van Schagen
  * @since 01-06-2011
  */
-public class SqlResourceDatabasePopulator implements DatabasePopulator {
+public class SqlResourceDatabaseUpdater implements DatabaseUpdater {
     
     /** Data source being populated. **/
     private DataSource dataSource;
@@ -34,7 +35,7 @@ public class SqlResourceDatabasePopulator implements DatabasePopulator {
     }
     
     /**
-     * Construct a new {@link SqlResourceDatabasePopulator} that skips
+     * Construct a new {@link SqlResourceDatabaseUpdater} that skips
      * whenever the specified resource does not exist. Use this type of
      * database populator whenever it is uncertain if a resource exists.
      * 
@@ -43,15 +44,15 @@ public class SqlResourceDatabasePopulator implements DatabasePopulator {
      * @return database populator that will execute SQL statements from the
      * specified script resource, whenever it exists
      */
-    public static ConditionalDatabasePopulator ignoreIfResourceMissing(Resource sqlResource, DataSource dataSource) {
-        SqlResourceDatabasePopulator sqlPopulator = new SqlResourceDatabasePopulator();
+    public static ConditionalDatabaseUpdater ignoreIfResourceMissing(Resource sqlResource, DataSource dataSource) {
+        SqlResourceDatabaseUpdater sqlPopulator = new SqlResourceDatabaseUpdater();
         sqlPopulator.setSqlResource(sqlResource);
         sqlPopulator.setDataSource(dataSource);
-        return new ConditionalDatabasePopulator(sqlPopulator, new ResourceExistsConditional(sqlResource));
+        return new ConditionalDatabaseUpdater(sqlPopulator, new ResourceExistsCondition(sqlResource));
     }
     
     @Override
-    public void populate() throws Exception {
+    public void update() throws Exception {
         final ResourceDatabasePopulator populator = new ResourceDatabasePopulator();
         populator.addScript(notNull(sqlResource, "SQL resource cannot be null"));
         JdbcUtils.doWithConnection(dataSource, new JdbcConnectionCallback<Void>() {
@@ -64,13 +65,10 @@ public class SqlResourceDatabasePopulator implements DatabasePopulator {
             
         });
     }
-    
-    /**
-     * {@inheritDoc}
-     */
+
     @Override
     public String toString() {
-        return String.format("SQL populator '%s'", sqlResource);
+        return "SQL(" + sqlResource + ")";
     }
 
 }
