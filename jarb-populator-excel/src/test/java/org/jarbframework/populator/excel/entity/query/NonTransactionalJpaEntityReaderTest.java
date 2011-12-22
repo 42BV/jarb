@@ -41,16 +41,15 @@ public class NonTransactionalJpaEntityReaderTest {
         return entityManagerFactory;
     }
     
-    @Ignore
     @Test
     public void testFetchAll() throws FileNotFoundException {
     	JpaEntityReader entityReader = new JpaEntityReader(getEntityManagerFactory());
         getExcelDataManager().load("src/test/resources/Excel.xls").persist();
         try {
         	entityReader.readAll();
-        	fail("IllegalStateException expected: 'No transactional EntityManagerFactory supplied'");
+        	fail("IllegalStateException expected: 'Could not obtain Transactional EntityManager'");
         } catch (IllegalStateException ise){
-        	assertEquals("No transactional EntityManagerFactory supplied", ise.getMessage());
+        	assertEquals("Could not obtain Transactional EntityManager", ise.getMessage());
         }
     }
 }

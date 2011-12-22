@@ -20,6 +20,7 @@ import org.jarbframework.populator.excel.util.JpaUtils;
  * @since 11-05-2011
  */
 public class JpaEntityReader implements EntityReader {
+    /** The entityManagerFactory used to retrieve a transactional EntityManager to retrieve data. */
     private final EntityManagerFactory entityManagerFactory;
 
     /**
@@ -35,8 +36,11 @@ public class JpaEntityReader implements EntityReader {
      */
     @Override
     public EntityRegistry readAll() {
-        EntityRegistry registry = new EntityRegistry();
         EntityManager entityManager = getTransactionalEntityManager(entityManagerFactory);
+        if (entityManager == null) {
+            throw new IllegalStateException("Could not obtain Transactional EntityManager");
+        }
+        EntityRegistry registry = new EntityRegistry();
         for (EntityType<?> entityType : getRootEntities(entityManagerFactory.getMetamodel())) {
             final Class<?> entityClass = entityType.getJavaType();
             registry.addAll(readFrom(entityClass, entityManager));

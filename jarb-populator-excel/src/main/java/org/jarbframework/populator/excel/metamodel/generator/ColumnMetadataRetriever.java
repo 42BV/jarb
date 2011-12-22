@@ -28,8 +28,8 @@ public final class ColumnMetadataRetriever {
         Assert.isTrue(typeArguments.length == 1, "ElementCollection collection can only be of one type");
         return (Class<?>) typeArguments[0];
     }
-	
-	/**
+    
+    /**
      * Retrieves all the column names of all fields in the passed Class that possess @Column annotations.
      * @param entityClass Class to pull the columnNames from.
      * @return Set of column names.
@@ -56,7 +56,7 @@ public final class ColumnMetadataRetriever {
         if (columnAnnotation != null && !"".equals(columnAnnotation.name())) {
             columnName = columnAnnotation.name();
         } else {
-        	columnName = field.getName();
+            columnName = field.getName();
         }
         return columnName;
     }
