@@ -4,9 +4,9 @@ import static org.jarbframework.populator.excel.mapping.ValueConversionService.d
 
 import javax.persistence.EntityManagerFactory;
 
-import org.jarbframework.populator.ConditionalDatabasePopulator;
-import org.jarbframework.populator.DatabasePopulator;
-import org.jarbframework.populator.ResourceExistsConditional;
+import org.jarbframework.populator.DatabaseUpdater;
+import org.jarbframework.populator.condition.ConditionalDatabaseUpdater;
+import org.jarbframework.populator.condition.ResourceExistsCondition;
 import org.jarbframework.populator.excel.mapping.ValueConversionService;
 import org.springframework.core.io.Resource;
 import org.springframework.util.Assert;
@@ -17,7 +17,7 @@ import org.springframework.util.Assert;
  * @author Jeroen van Schagen
  * @since 7-6-2011
  */
-public class ExcelDatabasePopulator implements DatabasePopulator {
+public class ExcelDatabaseUpdater implements DatabaseUpdater {
     private ValueConversionService valueConversionService;
     private EntityManagerFactory entityManagerFactory;
     private Resource excelResource;
@@ -40,7 +40,7 @@ public class ExcelDatabasePopulator implements DatabasePopulator {
     }
 
     /**
-     * Construct a new {@link ExcelDatabasePopulator} that skips
+     * Construct a new {@link ExcelDatabaseUpdater} that skips
      * whenever the specified resource does not exist. Use this type of
      * database populator whenever it is uncertain if a resource exists.
      * 
@@ -48,18 +48,18 @@ public class ExcelDatabasePopulator implements DatabasePopulator {
      * @param entityManagerFactory JPA entity manager used to inspect and persist data
      * @return database populator that will persist all entities declared inside the workbook
      */
-    public static ConditionalDatabasePopulator ignoreIfResourceMissing(Resource excelResource, EntityManagerFactory entityManagerFactory) {
-        ExcelDatabasePopulator populator = new ExcelDatabasePopulator();
+    public static ConditionalDatabaseUpdater ignoreIfResourceMissing(Resource excelResource, EntityManagerFactory entityManagerFactory) {
+        ExcelDatabaseUpdater populator = new ExcelDatabaseUpdater();
         populator.setExcelResource(excelResource);
         populator.setEntityManagerFactory(entityManagerFactory);
-        return new ConditionalDatabasePopulator(populator, new ResourceExistsConditional(excelResource));
+        return new ConditionalDatabaseUpdater(populator, new ResourceExistsCondition(excelResource));
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void populate() throws Exception {
+    public void update() throws Exception {
         Assert.state(excelResource != null, "Excel resource cannot be null");
         Assert.state(entityManagerFactory != null, "Entity manager factory cannot be null");
 

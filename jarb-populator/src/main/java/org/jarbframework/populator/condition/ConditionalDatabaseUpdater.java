@@ -1,36 +1,34 @@
-package org.jarbframework.populator;
+package org.jarbframework.populator.condition;
 
 import static org.apache.commons.lang3.StringUtils.join;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.jarbframework.populator.Conditional.Condition;
+import org.jarbframework.populator.DatabaseUpdater;
+import org.jarbframework.populator.WrappingDatabaseUpdater;
+import org.jarbframework.populator.condition.Condition.ConditionEvaluation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Database populator that only executes whenever a desired condition is met.
- * 
+ * Database updater that only executes whenever a desired condition is met.
  * @author Jeroen van Schagen
  * @since 17-06-2011
  */
-public class ConditionalDatabasePopulator implements DatabasePopulator {
-    private final Logger logger = LoggerFactory.getLogger(ConditionalDatabasePopulator.class);
+public class ConditionalDatabaseUpdater extends WrappingDatabaseUpdater {
+    private final Logger logger = LoggerFactory.getLogger(ConditionalDatabaseUpdater.class);
 
-    /** Delegate database populator, invoked if condition is satisfied. **/
-    private final DatabasePopulator populator;
     /** Checks if the desired condition has been satisfied **/
-    private final Conditional conditional;
-    
+    private final Condition conditional;
     /** Determine if an exception should be thrown if the condition is not satisfied. **/
     private boolean throwErrorIfUnsupported = false;
 
     /**
-     * Construct a new {@link ConditionalDatabasePopulator}.
+     * Construct a new {@link ConditionalDatabaseUpdater}.
      * @param populator delegate database populator, invoked if the condition is satisfied
      * @param conditional describes the condition that should be met to perform population
      */
-    public ConditionalDatabasePopulator(DatabasePopulator populator, Conditional conditional) {
-        this.populator = populator;
+    public ConditionalDatabaseUpdater(DatabaseUpdater populator, Condition conditional) {
+        super(populator);
         this.conditional = conditional;
     }
 
@@ -40,25 +38,25 @@ public class ConditionalDatabasePopulator implements DatabasePopulator {
      * or {@link false} if it should only be logged
      * @return this populator, for method chaining
      */
-    public ConditionalDatabasePopulator setThrowExceptionIfUnsupported(boolean throwErrorIfUnsupported) {
+    public ConditionalDatabaseUpdater setThrowExceptionIfUnsupported(boolean throwErrorIfUnsupported) {
         this.throwErrorIfUnsupported = throwErrorIfUnsupported;
         return this;
     }
 
     @Override
-    public void populate() throws Exception {
-        Condition condition = conditional.check();
-        if (condition.isSatisfied()) {
-            populator.populate();
+    public void update() throws Exception {
+        ConditionEvaluation evaluation = conditional.evaluate();
+        if (evaluation.isSatisfied()) {
+            super.update();
         } else {
-            notifyPopulatorNotPerformed(condition);
+            notifyConditionUnsatisfied(evaluation);
         }
     }
 
-    private void notifyPopulatorNotPerformed(Condition condition) {
+    private void notifyConditionUnsatisfied(ConditionEvaluation evaluation) {
         StringBuilder messageBuilder = new StringBuilder();
-        messageBuilder.append("Database populator (").append(populator).append(") was not performed, because:");
-        messageBuilder.append("\n - ").append(join(condition.getFailures(), "\n - "));
+        messageBuilder.append("Update (").append(getDelegate()).append(") was not performed, because:");
+        messageBuilder.append("\n - ").append(join(evaluation.getFailures(), "\n - "));
         final String failureMessage = messageBuilder.toString();
         if (throwErrorIfUnsupported) {
             throw new IllegalStateException(failureMessage);

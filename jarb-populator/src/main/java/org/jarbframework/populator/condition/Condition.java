@@ -1,4 +1,4 @@
-package org.jarbframework.populator;
+package org.jarbframework.populator.condition;
 
 import static java.util.Collections.unmodifiableList;
 
@@ -6,31 +6,29 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Describes a conditional that can be checked on our current state.
+ * Evaluates whether as specific condition has been satisfied.
+ * @author Jeroen van Schagen
+ * @since 21-06-2011
  */
-public interface Conditional {
+public interface Condition {
     
     /**
-     * Determine if a conditional check is satisfied.
-     * @return conditional check result, see {@link Condition#isSatisfied()}
+     * Determine if a condition has been satisfied.
      */
-    Condition check();
+    ConditionEvaluation evaluate();
     
     /**
-     * Result type from {@link Conditional#check()}. The condition has been
+     * Result type from {@link Condition#evaluate()}. The condition has been
      * met whenever {@link #isSatisfied()} evaluates into {@code true}. If
      * the condition is not satisfied, look at {@link #getFailures()}.
-     * 
-     * @author Jeroen van Schagen
-     * @since 21-06-2011
      */
-    public class Condition {
+    public class ConditionEvaluation {
         private final List<String> failures;
 
         /**
-         * Construct a new {@link Condition}.
+         * Construct a new {@link ConditionEvaluation}.
          */
-        public Condition() {
+        protected ConditionEvaluation() {
             failures = new ArrayList<String>();
         }
 
@@ -39,7 +37,7 @@ public interface Conditional {
          * @param failure state failure that should be included
          * @return same result, for chaining
          */
-        public Condition fail(String failure) {
+        protected ConditionEvaluation fail(String failure) {
             failures.add(failure);
             return this;
         }

@@ -58,7 +58,7 @@
 		<!-- Java version -->
 		<jdk.version>1.6</jdk.version>
 		<!-- Dependency versions -->
-		<spring.version>3.0.6.RELEASE</spring.version>
+		<spring.version>3.1.0.RELEASE</spring.version>
 		<hibernate.version>3.6.7.Final</hibernate.version>
 		<hsqldb.version>2.2.4</hsqldb.version>
 		<slf4j.version>1.6.3</slf4j.version>
