@@ -1,5 +1,6 @@
 package org.jarbframework.populator;
 
+import static org.jarbframework.populator.SqlResourceDatabaseUpdater.ignoreIfResourceMissing;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
@@ -25,9 +26,9 @@ public class SqlResourceDatabaseUpdaterTest {
      * Correct script resources can be executed.
      */
     @Test
-    public void testPopulate() throws Exception {
-        fromScript("create-schema.sql").update();
-        fromScript("insert-person.sql").update();
+    public void testPopulate() {
+        script("create-schema.sql").update();
+        script("insert-person.sql").update();
 
         // Ensure the 'persons' table is created, and a record is inserted
         JdbcTemplate template = new JdbcTemplate(dataSource);
@@ -38,9 +39,9 @@ public class SqlResourceDatabaseUpdaterTest {
      * Executing with a non-existing script resource causes a runtime exception to be thrown.
      */
     @Test
-    public void testFailIfScriptNotFound() throws Exception {
+    public void testFailIfScriptNotFound() {
         try {
-            fromScript("unknown.sql").update();
+            script("unknown.sql").update();
             fail("Expected an exception because unknown.sql does not exist.");
         } catch(CannotReadScriptException e) {
             assertEquals("Cannot read SQL script from class path resource [unknown.sql]", e.getMessage());
@@ -48,25 +49,24 @@ public class SqlResourceDatabaseUpdaterTest {
     }
     
     /**
-     * However, we can also create a database populator that skips non existing script resources.
-     * Thus preventing any runtime exception from being thrown. Use this type of populator whenever
+     * However, we can also create a database populator that skips non existing script resources,
+     * preventing any runtime exception from being thrown. Use this type of populator whenever
      * it is not certain if a file will be available.
      */
     @Test
-    public void testIgnoreIfScriptNotFound() throws Exception {
-        SqlResourceDatabaseUpdater.ignoreIfResourceMissing(new ClassPathResource("unknown.sql"), dataSource).update();
+    public void testIgnoreIfScriptNotFound() {
+        ignoreIfResourceMissing(new ClassPathResource("unknown.sql"), dataSource).update();
     }
     
     @Test
     public void testToString() {
-        assertEquals("SQL(class path resource [create-schema.sql])", fromScript("create-schema.sql").toString());
+        assertEquals("SQL(class path resource [create-schema.sql])", script("create-schema.sql").toString());
     }
     
-    private SqlResourceDatabaseUpdater fromScript(String name) {
+    private SqlResourceDatabaseUpdater script(String name) {
         SqlResourceDatabaseUpdater populator = new SqlResourceDatabaseUpdater();
         populator.setDataSource(dataSource);
         populator.setSqlResource(new ClassPathResource(name));
         return populator;
     }
-
 }

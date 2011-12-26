@@ -15,7 +15,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
 
 /**
- * Populate database using an SQL resource.
+ * Update the database by executing an SQL resource.
  * @author Jeroen van Schagen
  * @since 01-06-2011
  */
@@ -23,7 +23,7 @@ public class SqlResourceDatabaseUpdater implements DatabaseUpdater {
     
     /** Data source being populated. **/
     private DataSource dataSource;
-    /** Reference to the SQL script resource. **/
+    /** SQL resource that should be executed. **/
     private Resource sqlResource;
     
     public void setDataSource(DataSource dataSource) {
@@ -52,7 +52,7 @@ public class SqlResourceDatabaseUpdater implements DatabaseUpdater {
     }
     
     @Override
-    public void update() throws Exception {
+    public void update() {
         final ResourceDatabasePopulator populator = new ResourceDatabasePopulator();
         populator.addScript(notNull(sqlResource, "SQL resource cannot be null"));
         JdbcUtils.doWithConnection(dataSource, new JdbcConnectionCallback<Void>() {
@@ -70,5 +70,4 @@ public class SqlResourceDatabaseUpdater implements DatabaseUpdater {
     public String toString() {
         return "SQL(" + sqlResource + ")";
     }
-
 }

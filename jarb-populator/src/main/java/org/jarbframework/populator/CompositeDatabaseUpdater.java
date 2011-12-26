@@ -3,6 +3,7 @@ package org.jarbframework.populator;
 import static org.springframework.util.StringUtils.collectionToCommaDelimitedString;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -14,18 +15,26 @@ import org.slf4j.LoggerFactory;
  * @author Jeroen van Schagen
  * @since 01-06-2011
  */
-public class CompositeDatabaseUpdater implements DatabaseUpdater, Revertable {
+public class CompositeDatabaseUpdater implements RevertableDatabaseUpdater {
     private final Logger logger = LoggerFactory.getLogger(CompositeDatabaseUpdater.class);
 
     /** Collection of delegate populator, executed in order of collection. **/
     private final List<DatabaseUpdater> updaters;
 
+    /**
+     * Construct a new {@link CompositeDatabaseUpdater}.
+     * @param updaters the updates that should be performed
+     */
     public CompositeDatabaseUpdater(List<DatabaseUpdater> updaters) {
-        this.updaters = updaters;
+        this.updaters = Collections.unmodifiableList(updaters);
+    }
+    
+    public static CompositeDatabaseUpdater composite(DatabaseUpdater... updaters) {
+        return new CompositeDatabaseUpdater(Arrays.asList(updaters));
     }
 
     @Override
-    public void update() throws Exception {
+    public void update() {
         logger.info("Running {} composed updates...", updaters.size());
         for (DatabaseUpdater updater : updaters) {
             logger.info("Running update {}...", updater);
@@ -34,12 +43,12 @@ public class CompositeDatabaseUpdater implements DatabaseUpdater, Revertable {
     }
     
     @Override
-    public void revert() throws Exception {
+    public void revert() {
         logger.info("Reverting {} composed updates...", updaters.size());
         for (DatabaseUpdater updater : updatersInReversedOrder()) {
-            if(updater instanceof Revertable) {
+            if(updater instanceof RevertableDatabaseUpdater) {
                 logger.info("Reverting update '{}'...", updater);
-                ((Revertable) updater).revert();
+                ((RevertableDatabaseUpdater) updater).revert();
             } else {
                 logger.info("Update '{}' was not revertable.", updater);
             }

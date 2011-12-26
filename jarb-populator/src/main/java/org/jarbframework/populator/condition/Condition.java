@@ -31,14 +31,32 @@ public interface Condition {
         protected ConditionEvaluation() {
             failures = new ArrayList<String>();
         }
+        
+        protected static ConditionEvaluation sucess() {
+            return new ConditionEvaluation();
+        }
+        
+        /**
+         * Check whether a certain state is {@code true}, whenever not achieved
+         * include a failure using the {@link #addFailure(String)}.
+         * @param state the state that should be satisfied
+         * @param message failure message to include when unsatisfied
+         * @return this evaluation, for chaining
+         */
+        protected ConditionEvaluation state(boolean state, String message) {
+            if(!state) {
+                addFailure(message);
+            }
+            return this;
+        }
 
         /**
          * Include a failure, causing {@link #isSatisfied()} to fail.
-         * @param failure state failure that should be included
-         * @return same result, for chaining
+         * @param message failure message to include
+         * @return this evaluation, for chaining
          */
-        protected ConditionEvaluation fail(String failure) {
-            failures.add(failure);
+        protected ConditionEvaluation addFailure(String message) {
+            failures.add(message);
             return this;
         }
 

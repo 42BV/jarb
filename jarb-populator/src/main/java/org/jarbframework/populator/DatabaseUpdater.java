@@ -14,8 +14,7 @@ public interface DatabaseUpdater {
      *  <li>Modifying data</li>
      *  <li>Altering the schema</li>
      * </ul>
-     * @throws Exception whenever an unrecoverable fault occured during the database update
      */
-    void update() throws Exception;
+    void update();
 
 }

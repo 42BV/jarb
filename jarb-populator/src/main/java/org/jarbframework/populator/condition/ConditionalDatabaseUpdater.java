@@ -2,7 +2,6 @@ package org.jarbframework.populator.condition;
 
 import static org.apache.commons.lang3.StringUtils.join;
 
-import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.jarbframework.populator.DatabaseUpdater;
 import org.jarbframework.populator.WrappingDatabaseUpdater;
 import org.jarbframework.populator.condition.Condition.ConditionEvaluation;
@@ -15,37 +14,35 @@ import org.slf4j.LoggerFactory;
  * @since 17-06-2011
  */
 public class ConditionalDatabaseUpdater extends WrappingDatabaseUpdater {
+    
     private final Logger logger = LoggerFactory.getLogger(ConditionalDatabaseUpdater.class);
 
     /** Checks if the desired condition has been satisfied **/
-    private final Condition conditional;
+    private final Condition condition;
     /** Determine if an exception should be thrown if the condition is not satisfied. **/
     private boolean throwErrorIfUnsupported = false;
 
     /**
      * Construct a new {@link ConditionalDatabaseUpdater}.
-     * @param populator delegate database populator, invoked if the condition is satisfied
-     * @param conditional describes the condition that should be met to perform population
+     * @param delegate delegate database updater, invoked if the condition is satisfied
+     * @param condition describes the condition that should be met to perform population
      */
-    public ConditionalDatabaseUpdater(DatabaseUpdater populator, Condition conditional) {
-        super(populator);
-        this.conditional = conditional;
+    public ConditionalDatabaseUpdater(DatabaseUpdater delegate, Condition condition) {
+        super(delegate);
+        this.condition = condition;
     }
 
     /**
      * Configure whether an exception should be thrown if the condition is not satisfied.
-     * @param throwErrorIfUnsupported {@code true} if an exception should be thrown,
-     * or {@link false} if it should only be logged
-     * @return this populator, for method chaining
+     * @param throwErrorIfUnsupported whether an exception should be thrown, or not
      */
-    public ConditionalDatabaseUpdater setThrowExceptionIfUnsupported(boolean throwErrorIfUnsupported) {
+    public void setThrowExceptionIfUnsupported(boolean throwErrorIfUnsupported) {
         this.throwErrorIfUnsupported = throwErrorIfUnsupported;
-        return this;
     }
 
     @Override
-    public void update() throws Exception {
-        ConditionEvaluation evaluation = conditional.evaluate();
+    public void update() {
+        ConditionEvaluation evaluation = condition.evaluate();
         if (evaluation.isSatisfied()) {
             super.update();
         } else {
@@ -54,10 +51,7 @@ public class ConditionalDatabaseUpdater extends WrappingDatabaseUpdater {
     }
 
     private void notifyConditionUnsatisfied(ConditionEvaluation evaluation) {
-        StringBuilder messageBuilder = new StringBuilder();
-        messageBuilder.append("Update (").append(getDelegate()).append(") was not performed, because:");
-        messageBuilder.append("\n - ").append(join(evaluation.getFailures(), "\n - "));
-        final String failureMessage = messageBuilder.toString();
+        final String failureMessage = buildFailureMessage(evaluation);
         if (throwErrorIfUnsupported) {
             throw new IllegalStateException(failureMessage);
         } else {
@@ -65,8 +59,15 @@ public class ConditionalDatabaseUpdater extends WrappingDatabaseUpdater {
         }
     }
 
+    private String buildFailureMessage(ConditionEvaluation evaluation) {
+        StringBuilder messageBuilder = new StringBuilder();
+        messageBuilder.append("Update (").append(getDelegate()).append(") was not performed, because:");
+        messageBuilder.append("\n - ").append(join(evaluation.getFailures(), "\n - "));
+        return messageBuilder.toString();
+    }
+
     @Override
     public String toString() {
-        return ToStringBuilder.reflectionToString(this);
+        return "Conditional(condition: " + condition + ", updater: " + getDelegate() + ")";
     }
 }
