@@ -48,6 +48,9 @@ import org.springframework.stereotype.Repository;
  * @since 17-05-2011
  */
 public class DatabaseConstraintExceptionTranslatingBeanPostProcessor extends AdvisorAddingBeanPostProcessor implements InitializingBean {
+    
+    /** Generated serial version ID. */
+    private static final long serialVersionUID = -4629879504141581723L;
     /** Indicates where exception translation should be plugged into. */
     private Pointcut pointcut = new AnnotationMatchingPointcut(Repository.class, true);
     /** Converted into a persistence exception translator. */
@@ -85,6 +88,9 @@ public class DatabaseConstraintExceptionTranslatingBeanPostProcessor extends Adv
     
     private class ExceptionTranslatingAdvisor extends AbstractPointcutAdvisor {
 
+        /** Generated serial version ID. */
+        private static final long serialVersionUID = 1881398008897100400L;
+
         @Override
         public Pointcut getPointcut() {
             return pointcut;
@@ -107,5 +113,4 @@ public class DatabaseConstraintExceptionTranslatingBeanPostProcessor extends Adv
             };
         }
     }
-
 }

@@ -22,7 +22,7 @@ public class NotEmptyPropertyConstraintEnhancer implements PropertyConstraintEnh
         if (fieldOrGetter().hasAnnotation(propertyConstraints.toPropertyReference(), NotEmpty.class)) {
             // When a property cannot be empty, it has a minimum length of at least 1
             // If our description already has a greater minimum length, do nothing
-            if (propertyConstraints.getMinimumLength() == null || propertyConstraints.getMinimumLength() == 0) {
+            if ((propertyConstraints.getMinimumLength() == null) || (propertyConstraints.getMinimumLength() == 0)) {
                 propertyConstraints.setMinimumLength(1);
             }
         }

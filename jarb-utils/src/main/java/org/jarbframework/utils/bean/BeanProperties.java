@@ -31,7 +31,7 @@ public final class BeanProperties {
         final Set<String> fieldNames = new HashSet<String>();
         ReflectionUtils.doWithFields(beanClass, new FieldCallback() {
             @Override
-            public void doWith(Field field) throws IllegalArgumentException, IllegalAccessException {
+            public void doWith(Field field) throws IllegalAccessException {
                 fieldNames.add(field.getName());
             }
         });

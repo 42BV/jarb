@@ -32,7 +32,7 @@ public class DatabaseAssignedIdentifierGenerator extends AbstractPostInsertGener
 
     @Override
     public InsertGeneratedIdentifierDelegate getInsertGeneratedIdentifierDelegate(PostInsertIdentityPersister persister, Dialect dialect,
-            boolean isGetGeneratedKeysEnabled) throws HibernateException {
+            boolean isGetGeneratedKeysEnabled) {
         return new Delegate(persister, dialect);
     }
 

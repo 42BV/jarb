@@ -20,10 +20,8 @@ public class FractionLengthConstraintValidationStep implements DatabaseConstrain
     
     private boolean fractionLengthExceeded(Object propertyValue, ColumnMetadata columnMetadata) {
         boolean lengthExceeded = false;
-        if (columnMetadata.hasFractionLength()) {
-            if(propertyValue instanceof Number) {
-                lengthExceeded = lengthOfFraction((Number) propertyValue) > columnMetadata.getFractionLength();
-            }
+        if ((columnMetadata.hasFractionLength()) && (propertyValue instanceof Number)) {
+            lengthExceeded = lengthOfFraction((Number) propertyValue) > columnMetadata.getFractionLength();
         }
         return lengthExceeded;
     }

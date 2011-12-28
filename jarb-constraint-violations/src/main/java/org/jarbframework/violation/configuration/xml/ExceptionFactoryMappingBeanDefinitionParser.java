@@ -55,10 +55,8 @@ public class ExceptionFactoryMappingBeanDefinitionParser implements BeanDefiniti
 
     private Object parseMappedExceptionFactory(Element element, ParserContext parserContext) {
         Object exceptionFactory = parsePropertyFromAttributeOrChild(element, "exception-factory", parserContext, parentDefinition);
-        if(exceptionFactory == null) {
-            if(element.hasAttribute("exception")) {
-                exceptionFactory = createReflectionExceptionFactory(element.getAttribute("exception"));
-            }
+        if((exceptionFactory == null) && (element.hasAttribute("exception"))) {
+            exceptionFactory = createReflectionExceptionFactory(element.getAttribute("exception"));
         }
         return exceptionFactory;
     }
