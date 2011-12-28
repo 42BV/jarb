@@ -2,6 +2,8 @@ package org.jarbframework.populator.excel;
 
 import static org.jarbframework.populator.excel.mapping.ValueConversionService.defaultConversions;
 
+import java.io.IOException;
+
 import javax.persistence.EntityManagerFactory;
 
 import org.jarbframework.populator.DatabaseUpdater;
@@ -59,13 +61,18 @@ public class ExcelDatabaseUpdater implements DatabaseUpdater {
      * {@inheritDoc}
      */
     @Override
-    public void update() throws Exception {
+    public void update() {
         Assert.state(excelResource != null, "Excel resource cannot be null");
         Assert.state(entityManagerFactory != null, "Entity manager factory cannot be null");
 
         ExcelDataManager excelDataManager = new ExcelDataManagerFactory(entityManagerFactory, loadValueConversionService()).build();
         excelDataManager.setStrict(strict);
-        excelDataManager.load(excelResource).persist();
+        
+        try {
+            excelDataManager.load(excelResource).persist();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private ValueConversionService loadValueConversionService() {
