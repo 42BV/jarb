@@ -13,6 +13,10 @@ import org.hibernate.proxy.HibernateProxy;
  */
 public final class JpaUtils {
 
+    /** Utility class, do not attempt to instantiate. */
+    private JpaUtils(){
+    }
+    
     /**
      * Create a new {@link EntityManager}, using all configured properties.
      * @param entityManagerFactory factory that builds entity managers

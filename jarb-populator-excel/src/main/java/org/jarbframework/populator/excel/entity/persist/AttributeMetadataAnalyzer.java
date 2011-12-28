@@ -24,6 +24,10 @@ import javax.persistence.metamodel.Attribute.PersistentAttributeType;
  */
 public final class AttributeMetadataAnalyzer {
 
+    /** Utility class, do not attempt to instantiate. */
+    private AttributeMetadataAnalyzer(){
+    }
+    
     /**
      * Returns true if attribute has a PersistentAttributeType of either MANY_TO_ONE or MANY_TO_MANY.
      * The function attribute.IsAssociation() does not suffice as this only returns true for MANY_TO_MANY associations.
