@@ -214,7 +214,9 @@ public final class ExcelImporter {
     }
 
     /**
-     * Returns the temporary identifier value of the row. If it's a number it will be converted to an integer so the difference in formatting throughout multiple Excel files won't cause foreign key couplings to fail.
+     * Returns the temporary identifier value of the row. 
+     * If it's a number it will be converted to an integer so the difference in 
+     * formatting throughout multiple Excel files won't cause foreign key couplings to fail.
      * @param rowPosition The current row position
      * @param sheet Excel worksheet to gather data from
      * @param columnName The column name to get the value from
@@ -229,7 +231,8 @@ public final class ExcelImporter {
     }
 
     /**
-     * Returns the identifiers from an ElementCollectionField by using the @JoinColumn annotations. If no annotations are present, the default JPA column names will be used to find the data.
+     * Returns the identifiers from an ElementCollectionField by using the @JoinColumn annotations. 
+     * If no annotations are present, the default JPA column names will be used to find the data.
      * @param sheet ExcelSheet to get the data from
      * @param rowPosition The current row position
      * @param enclosingClass The class the ElementCollection is enclosed in
@@ -249,8 +252,9 @@ public final class ExcelImporter {
         }
 
         if (identifiers.isEmpty()) {
-            //If no @JoinColumns are present in the CollectionTable or the CollectionTable isn't present at all, the identifier will be assumed to be the name of the enclosing entity and the
-            //primary key columns separated by an underscore as documented in the JPA spec.
+            /*If no @JoinColumns are present in the CollectionTable or the CollectionTable isn't present at all, 
+            the identifier will be assumed to be the name of the enclosing entity and the
+            primary key columns separated by an underscore as documented in the JPA spec. */
             String identifierColumn = JpaMetaModelUtils.deduceIdentifierColumnName(enclosingClass, entityManagerFactory);
             identifiers.put(identifierColumn, getIdentifierValue(rowPosition, sheet, identifierColumn));
         }

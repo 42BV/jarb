@@ -86,7 +86,7 @@ public final class StoreJoinTable {
         Set<Integer> foreignKeyList = new HashSet<Integer>();
         int joinColumnIndex = sheet.getCellAt(0, joinTable.getJoinColumnName()).getColNo();
         int inverseJoinColumnIndex = sheet.getCellAt(0, joinTable.getInverseJoinColumnName()).getColNo();
-        for (Integer newRowPosition = 1; newRowPosition <= sheet.getLastRowNumber(); newRowPosition++) {
+        for (int newRowPosition = 1; newRowPosition <= sheet.getLastRowNumber(); newRowPosition++) {
             Object joinColumnValue = sheet.getValueAt(newRowPosition, joinColumnIndex);
             if (joinColumnValue instanceof Double && joinColumnValue.equals(code)) {
                 Object inverseJoinColumnValue = sheet.getValueAt(newRowPosition, inverseJoinColumnIndex);

@@ -19,7 +19,7 @@ import org.slf4j.LoggerFactory;
  * @author Willem Eppen
  * @author Sander Benschop
  */
-class DataWriter {
+public final class DataWriter {
     // TODO: Use JpaTemplate
 
     private static final Logger logger = LoggerFactory.getLogger(DataWriter.class);
