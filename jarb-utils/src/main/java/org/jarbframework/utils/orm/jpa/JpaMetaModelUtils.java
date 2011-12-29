@@ -83,9 +83,9 @@ public final class JpaMetaModelUtils {
      * @param fieldArray FieldArray to loop through
      * @return Field of passed class type.
      */
-    private static Field getFieldThatsOfClassType(Class<?> clazz, Field[] fieldArray){
+    private static Field getFieldThatsOfClassType(Class<?> clazz, Field[] fieldArray) {
     	for (Field field : fieldArray) {
-			if (fieldIsOfClassType(clazz, field)){
+			if (fieldIsOfClassType(clazz, field)) {
 				return field;
 			}
     	}
@@ -100,9 +100,9 @@ public final class JpaMetaModelUtils {
      */
 	public static boolean fieldIsOfClassType(Class<?> clazz, Field field) {
 		boolean isOfClassType = false;
-		if ((field.getGenericType() instanceof ParameterizedType) && (field.getAnnotation(ElementCollection.class) != null)){
+		if ((field.getGenericType() instanceof ParameterizedType) && (field.getAnnotation(ElementCollection.class) != null)) {
 			List<Type> types = Arrays.asList(((ParameterizedType) field.getGenericType()).getActualTypeArguments());
-			if (types.get(0) == clazz){
+			if (types.get(0) == clazz) {
 				isOfClassType = true;
 			}
 		}
@@ -117,7 +117,7 @@ public final class JpaMetaModelUtils {
      */
 	private static String createTableNameForElementCollection(Field field, Class<?> enclosingClass, EntityManagerFactory entityManagerFactory) {
 		String tableName = "";
-		if (field.getAnnotation(CollectionTable.class) != null){
+		if (field.getAnnotation(CollectionTable.class) != null) {
 			CollectionTable collectionTable = field.getAnnotation(CollectionTable.class);
 			tableName = collectionTable.name();
 		} else {
@@ -161,14 +161,14 @@ public final class JpaMetaModelUtils {
 	 * @param definedClass Defined class to search in
 	 * @return Field with @Id annotation
 	 */
-	public static Field getIdentifierField(Class<?> definedClass){
-        if (!isEntity(definedClass)){
+	public static Field getIdentifierField(Class<?> definedClass) {
+        if (!isEntity(definedClass)) {
         	String message = String.format("Class '%s' is not an entity and thus has no identifier field.", definedClass.getName());
         	throw new NotAnEntityException(message);
         }
 		
-		for (Field field : definedClass.getDeclaredFields()){
-        	if (field.getAnnotation(Id.class) != null){
+		for (Field field : definedClass.getDeclaredFields()) {
+        	if (field.getAnnotation(Id.class) != null) {
         		return field;
         	}
         }
@@ -182,7 +182,7 @@ public final class JpaMetaModelUtils {
      */
     public static Collection<EmbeddableType<?>> getElementCollectionsForEntity(EntityType<?> entity) {
     	Set<EmbeddableType<?>> elementCollections = new HashSet<EmbeddableType<?>>();
-    	for (PluralAttribute<?, ?, ?> pluralAttribute : entity.getPluralAttributes()){
+    	for (PluralAttribute<?, ?, ?> pluralAttribute : entity.getPluralAttributes()) {
     		if (pluralAttribute.getPersistentAttributeType() == PersistentAttributeType.ELEMENT_COLLECTION){
     			EmbeddableType<?> elementCollection = (EmbeddableType<?>) pluralAttribute.getElementType();
     			elementCollections.add(elementCollection);

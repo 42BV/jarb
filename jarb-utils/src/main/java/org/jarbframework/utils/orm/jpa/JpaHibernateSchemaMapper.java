@@ -163,7 +163,7 @@ public class JpaHibernateSchemaMapper implements SchemaMapper {
 		return columnReference;
 	}
 	
-	private String getTableNameForEmbeddable(PropertyReference propertyReference){
+	private String getTableNameForEmbeddable(PropertyReference propertyReference) {
 		Class<?> beanClass = propertyReference.getBeanClass();
 		Class<?> enclosingClass = propertyReference.getEnclosingClass();
 		String tableName = JpaMetaModelUtils.getFieldNameForElementCollectionClass(beanClass, enclosingClass, entityManagerFactory);

@@ -41,8 +41,6 @@ public class OracleViolationResolver extends RootCauseMessageViolationResolver {
     private static final String INVALID_TYPE_PATTERN
     /* Provided: column type */
     = "(.+): invalid (.+)\n";
-
-    private static final int MATCH_GROUP_THREE = 3;
     
     /**
      * {@inheritDoc}
