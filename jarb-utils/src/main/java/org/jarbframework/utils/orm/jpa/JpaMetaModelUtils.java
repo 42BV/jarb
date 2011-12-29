@@ -152,8 +152,7 @@ public final class JpaMetaModelUtils {
 		SchemaMapper schemaMapper = JpaHibernateSchemaMapper.usingNamingStrategyOf(entityManagerFactory);
 		String enclosingTypeTableName = schemaMapper.tableNameOf(enclosingClass);
 		String idColumnName = JpaMetaModelUtils.getIdentifierField(enclosingClass).getAnnotation(Column.class).name();
-		String identifier = enclosingTypeTableName + "_" + idColumnName;
-		return identifier;
+		return enclosingTypeTableName + "_" + idColumnName;
 	}
 
 	/**

@@ -166,8 +166,7 @@ public class JpaHibernateSchemaMapper implements SchemaMapper {
 	private String getTableNameForEmbeddable(PropertyReference propertyReference) {
 		Class<?> beanClass = propertyReference.getBeanClass();
 		Class<?> enclosingClass = propertyReference.getEnclosingClass();
-		String tableName = JpaMetaModelUtils.getFieldNameForElementCollectionClass(beanClass, enclosingClass, entityManagerFactory);
-		return tableName;
+		return JpaMetaModelUtils.getFieldNameForElementCollectionClass(beanClass, enclosingClass, entityManagerFactory);
 	}
 	
 
@@ -213,6 +212,8 @@ public class JpaHibernateSchemaMapper implements SchemaMapper {
                 break;
             case JOINED:
                 tableClass = getDeclaringClass(propertyReference);
+                break;
+            default:
                 break;
             }
         }

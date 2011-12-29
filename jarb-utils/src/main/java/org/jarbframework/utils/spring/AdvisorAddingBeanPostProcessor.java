@@ -57,8 +57,7 @@ public abstract class AdvisorAddingBeanPostProcessor extends ProxyConfig impleme
         Assert.state(advisor != null, "Cannot add a null pointer advisor to beans.");
 
         Object result = bean;
-        if (!(bean instanceof AopInfrastructureBean)) {
-            if (AopUtils.canApply(advisor, AopUtils.getTargetClass(bean))) {
+        if (!(bean instanceof AopInfrastructureBean) && (AopUtils.canApply(advisor, AopUtils.getTargetClass(bean)))) {
                 if (bean instanceof Advised) {
                     // Bean already has advisors, append new advisor on the desired position
                     if (addUpFront) {
@@ -73,10 +72,7 @@ public abstract class AdvisorAddingBeanPostProcessor extends ProxyConfig impleme
                     proxyFactory.addAdvisor(advisor);
                     result = proxyFactory.getProxy(beanClassLoader);
                 }
-            }
         }
-
         return result;
     }
-
 }

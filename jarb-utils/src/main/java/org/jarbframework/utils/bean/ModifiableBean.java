@@ -18,7 +18,7 @@ import org.springframework.beans.PropertyAccessor;
  * @author Jeroen van Schagen
  * @date Aug 16, 2011
  */
-public class ModifiableBean<T> {
+public final class ModifiableBean<T> {
     private final T bean;
 
     private final BeanWrapper beanWrapper;
