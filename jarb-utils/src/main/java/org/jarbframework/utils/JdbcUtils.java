@@ -12,6 +12,10 @@ import javax.sql.DataSource;
  */
 public final class JdbcUtils {
 
+    /** Utility class, do not instantiate. */
+    private JdbcUtils(){ 
+    }
+    
     /**
      * Open a data source connection and provide callback functionality
      * on that connection. After the callback has been invoked, the newly

@@ -38,10 +38,10 @@ public final class BeanParsingHelper {
     public static Object parseBeanInsideElement(Element element, ParserContext parserContext, BeanDefinition beanDefinition) {
         Object result = null;
         List<Element> children = DomUtils.getChildElements(element);
-        if(children.size() == 1) {
+        if (children.size() == 1) {
             Element child = children.get(0);
             result = parserContext.getDelegate().parsePropertySubElement(child, beanDefinition);
-        } else if(children.size() > 1) {
+        } else if (children.size() > 1) {
             parserContext.getReaderContext().error("Expected only one child element inside " + element.getTagName() + ", not multiple.", element);
         }
         return result;
@@ -79,11 +79,11 @@ public final class BeanParsingHelper {
     public static Object parsePropertyFromAttributeOrChild(Element element, String propertyName, ParserContext parserContext, BeanDefinition beanDefinition) {
         Object result = null;
         String attributeReference = element.getAttribute(propertyName);
-        if(StringUtils.isNotBlank(attributeReference)) {
+        if (StringUtils.isNotBlank(attributeReference)) {
             result = new RuntimeBeanReference(attributeReference);
         } else {
             Element childElement = DomUtils.getChildElementByTagName(element, propertyName);
-            if(childElement != null) {
+            if (childElement != null) {
                 result = parseBeanInsideElement(childElement, parserContext, beanDefinition);
             }
         }

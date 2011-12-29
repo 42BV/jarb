@@ -77,7 +77,7 @@ public class BeanAnnotationScanner {
      */
     public <T extends Annotation> T findAnnotation(PropertyReference propertyReference, Class<T> annotationType) {
         Collection<T> annotations = collectAnnotations(propertyReference, annotationType);
-        if(annotations.isEmpty()) {
+        if (annotations.isEmpty()) {
             return null;
         } else {
             state(annotations.size() == 1, "Found more than one matching annotation.");
@@ -117,7 +117,7 @@ public class BeanAnnotationScanner {
     }
     
     private <T> void addIfNotNull(T element, Collection<T> collection) {
-        if(element != null) {
+        if (element != null) {
             collection.add(element);
         }
     }
