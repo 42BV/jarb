@@ -10,7 +10,7 @@ import org.jarbframework.populator.excel.metamodel.generator.SuperclassRetriever
 import org.jarbframework.utils.bean.ModifiableBean;
 
 /**
- * Contains utilities for dealing with ciruclar references in the domain mapping.
+ * Contains utilities for dealing with circular references in the domain mapping.
  * Checks if cascading has looped by looking for the referencedEntity in the set of cascadedObjects
  * Can also create temporaryObjects which are used when dealing with circular references and referential fieldnames.
  * @author Sander Benschop
@@ -19,7 +19,7 @@ import org.jarbframework.utils.bean.ModifiableBean;
 public final class CircularReferenceUtilities {
 
     /** Utility class, do not attempt to instantiate. */
-    private CircularReferenceUtilities(){
+    private CircularReferenceUtilities() {
     }
     
     /**

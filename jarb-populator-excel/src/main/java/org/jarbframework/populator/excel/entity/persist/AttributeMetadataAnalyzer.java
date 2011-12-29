@@ -25,7 +25,7 @@ import javax.persistence.metamodel.Attribute.PersistentAttributeType;
 public final class AttributeMetadataAnalyzer {
 
     /** Utility class, do not attempt to instantiate. */
-    private AttributeMetadataAnalyzer(){
+    private AttributeMetadataAnalyzer() {
     }
     
     /**

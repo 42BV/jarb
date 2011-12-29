@@ -19,7 +19,7 @@ import org.springframework.util.Assert;
 public final class ColumnMetadataRetriever {
     
     /** Utility class, do not attempt to instantiate. */
-    private ColumnMetadataRetriever(){
+    private ColumnMetadataRetriever() {
     }
     
     /**

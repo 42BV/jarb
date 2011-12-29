@@ -14,7 +14,7 @@ import org.hibernate.proxy.HibernateProxy;
 public final class JpaUtils {
 
     /** Utility class, do not attempt to instantiate. */
-    private JpaUtils(){
+    private JpaUtils() {
     }
     
     /**
