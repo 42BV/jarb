@@ -34,7 +34,7 @@ public final class StoreJoinTable {
      * @param rowPosition Vertical position number of the excelRecord
      * @param excelRow ExcelRow to save to.
      */
-    public static void storeValue(Workbook excel, Definition<?> classDefinition, PropertyDefinition columnDefinition, Integer rowPosition, ExcelRow excelRow) {
+    public static void storeValue(Workbook excel, Definition classDefinition, PropertyDefinition columnDefinition, Integer rowPosition, ExcelRow excelRow) {
         Sheet mainSheet = excel.getSheet(classDefinition.getTableName());
         String idColumnName = getIdColumnName(classDefinition);
         Object code = mainSheet.getValueAt(rowPosition, idColumnName);
@@ -52,7 +52,7 @@ public final class StoreJoinTable {
      * @param classDefinition Definition to check the id column name of
      * @return Id Column name
      */
-    private static String getIdColumnName(Definition<?> classDefinition) {
+    private static String getIdColumnName(Definition classDefinition) {
         String idColumnName = "";
         if (classDefinition instanceof EntityDefinition<?>) {
             EntityDefinition<?> entityDefinition = (EntityDefinition<?>) classDefinition;

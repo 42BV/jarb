@@ -40,7 +40,7 @@ public final class StoreColumn {
      * @param excelRow ExcelRow to save to.
      * @throws NoSuchFieldException Thrown when a field is not available
      */
-    public void storeValue(Workbook excel, Definition<?> classDefinition, PropertyDefinition columnDefinition, Integer rowPosition, ExcelRow excelRow) {
+    public void storeValue(Workbook excel, Definition classDefinition, PropertyDefinition columnDefinition, Integer rowPosition, ExcelRow excelRow) {
         Sheet sheet = excel.getSheet(classDefinition.getTableName());
 
         WorksheetDefinition worksheetDefinition = WorksheetDefinition.analyzeWorksheet(classDefinition, excel);

@@ -16,6 +16,7 @@ import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.jarbframework.populator.excel.metamodel.Definition;
 import org.jarbframework.populator.excel.metamodel.EntityDefinition;
 import org.jarbframework.populator.excel.metamodel.generator.EntityDefinitionsGenerator;
+import org.jarbframework.populator.excel.util.JpaUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -24,8 +25,8 @@ public class ClassDefinitionFinderTest {
 
     private Class<?> foreignClass;
 
-    private Set<Definition<?>> classDefinitionSet;
-    private Set<Definition<?>> emptyClassDefinitionSet;
+    private Set<Definition> classDefinitionSet;
+    private Set<Definition> emptyClassDefinitionSet;
 
     private EntityDefinition<?> customer;
     private EntityDefinition<?> project;
@@ -36,7 +37,7 @@ public class ClassDefinitionFinderTest {
     @Before
     public void setupClassDefinitionFinder() throws InvalidFormatException, IOException, InstantiationException, IllegalAccessException,
             IllegalArgumentException, InvocationTargetException, SecurityException, NoSuchMethodException, ClassNotFoundException {
-        emptyClassDefinitionSet = new HashSet<Definition<?>>();
+        emptyClassDefinitionSet = new HashSet<Definition>();
 
         context = new ClassPathXmlApplicationContext("test-context.xml");
         entityManagerFactory = (EntityManagerFactory) context.getBean("entityManagerFactory");
@@ -47,7 +48,7 @@ public class ClassDefinitionFinderTest {
         EntityType<?> persistentEntity = metamodel.entity(domain.entities.Customer.class);
         EntityType<?> foreignEntity = metamodel.entity(domain.entities.Project.class);
 
-        classDefinitionSet = new HashSet<Definition<?>>();
+        classDefinitionSet = new HashSet<Definition>();
         EntityDefinitionsGenerator entityDefinitionsGenerator = new EntityDefinitionsGenerator(entityManagerFactory);
         customer = entityDefinitionsGenerator.createSingleEntityDefinitionFromMetamodel(persistentEntity, false);
         project = entityDefinitionsGenerator.createSingleEntityDefinitionFromMetamodel(foreignEntity, false);
@@ -62,8 +63,8 @@ public class ClassDefinitionFinderTest {
 
     @Test
     public void testFindClassDefinitionByPersistentClass() {
-        assertEquals(foreignClass, DefinitionFinder.findDefinitionByPersistentClass(classDefinitionSet, domain.entities.Project.class)
-                .getDefinedClass());
+        Definition definition = DefinitionFinder.findDefinitionByPersistentClass(classDefinitionSet, domain.entities.Project.class);
+        assertEquals(foreignClass, JpaUtils.getDefinedClassOfDefinition(definition));
         assertEquals(null, DefinitionFinder.findDefinitionByPersistentClass(classDefinitionSet, domain.entities.Employee.class));
         assertEquals(null, DefinitionFinder.findDefinitionByPersistentClass(emptyClassDefinitionSet, domain.entities.Project.class));
     }

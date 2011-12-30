@@ -60,7 +60,7 @@ public class DataWriterTest extends DefaultExcelTestDataCase {
     @Test
     public void testSaveEntity() throws InstantiationException, IllegalAccessException, SecurityException, NoSuchFieldException, ClassNotFoundException,
             InvalidFormatException, IOException {
-        List<Definition<?>> classDefinitionList = new ArrayList<Definition<?>>();
+        List<Definition> classDefinitionList = new ArrayList<Definition>();
 
         customer = entityDefinitionsGenerator.createSingleEntityDefinitionFromMetamodel(customerEntity, false);
         project = entityDefinitionsGenerator.createSingleEntityDefinitionFromMetamodel(projectEntity, false);
@@ -78,7 +78,7 @@ public class DataWriterTest extends DefaultExcelTestDataCase {
     @Test
     public void testEntityReferencing() throws InstantiationException, ClassNotFoundException, IllegalAccessException, NoSuchFieldException,
             InvalidFormatException, IOException {
-        List<Definition<?>> classDefinitionList = new ArrayList<Definition<?>>();
+        List<Definition> classDefinitionList = new ArrayList<Definition>();
         excel = new PoiWorkbookParser().parse(new FileInputStream("src/test/resources/ExcelEmployeesVehicles.xls"));
 
         EntityType<?> employeeEntity = jpaMetamodel.entity(Employee.class);

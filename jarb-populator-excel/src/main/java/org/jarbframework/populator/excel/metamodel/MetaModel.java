@@ -6,24 +6,28 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import org.jarbframework.populator.excel.util.JpaUtils;
+
 /**
  * Describes the entities in our context.
  * 
  * @author Jeroen van Schagen
  * @since 10-05-2011
  */
-public class MetaModel implements Iterable<Definition<?>> {
-    private final Map<Class<?>, Definition<?>> entityDefinitionsMap;
+public class MetaModel implements Iterable<Definition> {
+    private final Map<Class<?>, Definition> entityDefinitionsMap;
 
     /**
      * Construct a new {@link MetaModel}.
      * @param classDefinitions all class definitions
      */
-    public MetaModel(Collection<Definition<?>> classDefinitions) {
-        entityDefinitionsMap = new HashMap<Class<?>, Definition<?>>();
-        for (Definition<?> classDefinition : classDefinitions) {
-            entityDefinitionsMap.put(classDefinition.getDefinedClass(), classDefinition);
+    public MetaModel(Collection<Definition> classDefinitions) {
+        entityDefinitionsMap = new HashMap<Class<?>, Definition>();
+
+        for (Definition classDefinition : classDefinitions) {
+            entityDefinitionsMap.put(JpaUtils.getDefinedClassOfDefinition(classDefinition), classDefinition);
         }
+        
     }
 
     /**
@@ -59,7 +63,7 @@ public class MetaModel implements Iterable<Definition<?>> {
      * types currently described in this meta model.
      * @return definition of each entity type
      */
-    public Collection<Definition<?>> entities() {
+    public Collection<Definition> entities() {
         return Collections.unmodifiableCollection(entityDefinitionsMap.values());
     }
 
@@ -67,7 +71,7 @@ public class MetaModel implements Iterable<Definition<?>> {
      * {@inheritDoc}
      */
     @Override
-    public Iterator<Definition<?>> iterator() {
+    public Iterator<Definition> iterator() {
         return entityDefinitionsMap.values().iterator();
     }
 

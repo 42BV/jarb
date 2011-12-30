@@ -38,7 +38,7 @@ public class JpaMetaModelGenerator implements MetaModelGenerator {
      */
     @Override
     public MetaModel generate() {
-        Collection<Definition<?>> entities = new HashSet<Definition<?>>();
+        Collection<Definition> entities = new HashSet<Definition>();
         for (EntityType<?> entityType : JpaMetaModelUtils.getRootEntities(entityManagerFactory.getMetamodel())) {
             entities.add(describeEntity(entityType));
 
@@ -55,7 +55,7 @@ public class JpaMetaModelGenerator implements MetaModelGenerator {
      */
     @Override
     public MetaModel generateFor(Collection<Class<?>> entityClasses) {
-        Collection<Definition<?>> entities = new HashSet<Definition<?>>();
+        Collection<Definition> entities = new HashSet<Definition>();
         for (Class<?> entityClass : entityClasses) {
             EntityType<?> entityType = entityManagerFactory.getMetamodel().entity(entityClass);
             entities.add(describeEntity(entityType));

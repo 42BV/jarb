@@ -30,7 +30,7 @@ import org.junit.Test;
 public class DefaultExcelImporterTest extends DefaultExcelTestDataCase {
 
     private Workbook excel;
-    private List<Definition<?>> classDefinitionList;
+    private List<Definition> classDefinitionList;
     private EntityDefinition<?> customer;
     private EntityDefinition<?> project;
     private EntityRegistry entityRegistry;
@@ -42,7 +42,7 @@ public class DefaultExcelImporterTest extends DefaultExcelTestDataCase {
             NoSuchMethodException, IllegalArgumentException, InvocationTargetException, ClassNotFoundException {
         excel = new PoiWorkbookParser().parse(new FileInputStream("src/test/resources/ExcelUnitTesting.xls"));
 
-        classDefinitionList = new ArrayList<Definition<?>>();
+        classDefinitionList = new ArrayList<Definition>();
 
         Metamodel metamodel = getEntityManagerFactory().getMetamodel();
         EntityType<?> customerEntity = metamodel.entity(domain.entities.Customer.class);

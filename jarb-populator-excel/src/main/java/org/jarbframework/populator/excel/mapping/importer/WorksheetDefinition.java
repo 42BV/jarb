@@ -29,7 +29,7 @@ public class WorksheetDefinition {
      * @param excel The Excel file to read from
      * @return WorksheetDefinition with column names and positions
      */
-    public static WorksheetDefinition analyzeWorksheet(final Definition<?> classDefinition, final Workbook excel) {
+    public static WorksheetDefinition analyzeWorksheet(final Definition classDefinition, final Workbook excel) {
         WorksheetDefinition worksheetDefinition = new WorksheetDefinition();
         LOGGER.debug("Analyzing worksheet: [" + classDefinition.getTableName() + "]");
         Sheet sheet = excel.getSheet(classDefinition.getTableName());

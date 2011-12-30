@@ -6,42 +6,21 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.util.Assert;
 
 /**
- * Abstract supertype of EntityDefinition and ElementCollectionDefinitionClass.
- * Holds the common properties of these two classes.
+ * Abstract supertype of Definition classes. Holds the common properties and functions.
  * @author Sander Benschop
  *
  * @param <T> type of class being described
  */
-public abstract class Definition<T> {
-
-    /** Entity class being described. */
-    protected final Class<T> definedClass;
-
+public abstract class Definition {
+    
     /** Name of the database table. */
     protected String tableName;
 
     /** Description of each defined property. */
     protected Set<PropertyDefinition> propertyDefinitions;
-
-    /**
-     * Construct a new {@link Definition).
-     * @param definedClass class being described
-     */
-    public Definition(Class<T> definedClass) {
-        this.definedClass = definedClass;
-    }
-
-    /**
-     * Returns the definedClass belonging to classDefinition.
-     * @return definedClass instance from domain package
-     */
-    public Class<T> getDefinedClass() {
-        return definedClass;
-    }
-
+    
     /**
      * Returns the tableName of the classDefinition.
      * @return tableName String
@@ -123,18 +102,8 @@ public abstract class Definition<T> {
      * @param <T> type of class being described
      */
     public abstract static class Builder<T> {
-        protected final Class<T> definedClass;
         protected String tableName;
         protected Set<PropertyDefinition> properties = new HashSet<PropertyDefinition>();
-
-        /**
-         * Construct a new {@link Builder}.
-         * @param definedClass class being described
-         */
-        public Builder(Class<T> definedClass) {
-            Assert.notNull(definedClass, "Defined class cannot be null");
-            this.definedClass = definedClass;
-        }
 
         /**
          * Include a column definition.

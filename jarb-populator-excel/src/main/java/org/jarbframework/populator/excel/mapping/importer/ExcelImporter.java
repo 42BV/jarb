@@ -37,13 +37,13 @@ public final class ExcelImporter {
     private static final Logger logger = LoggerFactory.getLogger(ExcelImporter.class);
     private StoreExcelRecordValue valueStorer;
     private EntityManagerFactory entityManagerFactory;
-    private Map<Definition<?>, Map<Object, ExcelRow>> excelRowMap;
+    private Map<Definition, Map<Object, ExcelRow>> excelRowMap;
     private Map<ElementCollectionDefinition<?>, Map<Object, List<Object>>> elementCollectionRowMap;
 
     public ExcelImporter(ValueConversionService conversionService, EntityManagerFactory entityManagerFactory) {
         valueStorer = new StoreExcelRecordValue(conversionService);
         this.entityManagerFactory = entityManagerFactory;
-        excelRowMap = new HashMap<Definition<?>, Map<Object, ExcelRow>>();
+        excelRowMap = new HashMap<Definition, Map<Object, ExcelRow>>();
         elementCollectionRowMap = new HashMap<ElementCollectionDefinition<?>, Map<Object, List<Object>>>();
     }
 
@@ -55,15 +55,15 @@ public final class ExcelImporter {
      * @throws NoSuchFieldException 
      */
     @SuppressWarnings({ "unchecked", "rawtypes" })
-    public EntityRegistry parseExcelToRegistry(Workbook excel, Collection<Definition<?>> entityDefinitions) throws NoSuchFieldException {
+    public EntityRegistry parseExcelToRegistry(Workbook excel, Collection<Definition> entityDefinitions) throws NoSuchFieldException {
         //First we need to create all ExcelRows, including those of the subtype 'ElementCollectionDefinitions'
         createExcelRows(excel, entityDefinitions);
 
         EntityRegistry entityRegistry = new EntityRegistry();
         //First loop over the entities
-        for (Definition<?> entityDefinition : entityDefinitions) {
+        for (Definition entityDefinition : entityDefinitions) {
             if (entityDefinition instanceof EntityDefinition<?>) {
-                final Class entityClass = entityDefinition.getDefinedClass();
+                final Class entityClass = JpaUtils.getDefinedClassOfDefinition(entityDefinition);
                 EntityTable<Object> entities = new EntityTable<Object>(entityClass);
                 for (Entry<Object, ExcelRow> entry : excelRowMap.get(entityDefinition).entrySet()) {
                     ExcelRow excelRow = entry.getValue();
@@ -96,8 +96,8 @@ public final class ExcelImporter {
      * @param entityDefinitions Definitions of tables data will be stored in
      * @return
      */
-    private void createExcelRows(final Workbook excel, final Collection<Definition<?>> entityDefinitions) {
-        for (Definition<?> entityDefinition : entityDefinitions) {
+    private void createExcelRows(final Workbook excel, final Collection<Definition> entityDefinitions) {
+        for (Definition entityDefinition : entityDefinitions) {
             excelRowMap.put(entityDefinition, parseWorksheet(excel, entityDefinition));
         }
     }
@@ -111,7 +111,7 @@ public final class ExcelImporter {
      * @throws IllegalAccessException Thrown when function does not have access to the definition of the specified class, field, method or constructor 
      * @throws NoSuchFieldException Thrown when a field is not available
      */
-    public Map<Object, ExcelRow> parseWorksheet(final Workbook excel, final Definition<?> definition) {
+    public Map<Object, ExcelRow> parseWorksheet(final Workbook excel, final Definition definition) {
         Map<Object, ExcelRow> createdInstances = new HashMap<Object, ExcelRow>();
         Map<Object, List<Object>> createdElementCollectionInstances = new HashMap<Object, List<Object>>();
 
@@ -138,7 +138,7 @@ public final class ExcelImporter {
      * @param definition Definition of either an Entity or ElementCollection embeddable
      * @return Discriminator name
      */
-    private String getDiscriminatorColumnFromDefinition(Definition<?> definition) {
+    private String getDiscriminatorColumnFromDefinition(Definition definition) {
         String discriminatorColumnName = null;
         if (definition instanceof EntityDefinition<?>) {
             EntityDefinition<?> entityDefinition = (EntityDefinition<?>) definition;
@@ -155,8 +155,8 @@ public final class ExcelImporter {
      * @param rowPosition The row number which is currently being processed.
      * @return Entity class
      */
-    private Class<?> determineEntityClass(final Sheet sheet, final Definition<?> definition, String discriminatorColumnName, Integer rowPosition) {
-        Class<?> entityClass = definition.getDefinedClass();
+    private Class<?> determineEntityClass(final Sheet sheet, final Definition definition, String discriminatorColumnName, Integer rowPosition) {
+        Class<?> entityClass = JpaUtils.getDefinedClassOfDefinition(definition);
         if (discriminatorColumnName != null) {
             WorksheetDefinition worksheetDefinition = WorksheetDefinition.analyzeWorksheet(definition, sheet.getWorkbook());
             Integer discriminatorPosition = worksheetDefinition.getColumnPosition(discriminatorColumnName);
@@ -196,7 +196,7 @@ public final class ExcelImporter {
      * @param rowPosition The rowPosition in the Excel file (0 based) 
      * @param excelRow An excelRow to store in the value map
      */
-    private void putCreatedInstance(final Sheet sheet, final Definition<?> classDefinition, Map<Object, ExcelRow> createdInstances,
+    private void putCreatedInstance(final Sheet sheet, final Definition classDefinition, Map<Object, ExcelRow> createdInstances,
             Map<Object, List<Object>> createdElementCollectionInstances, Integer rowPosition,
             ExcelRow excelRow) {
         if (classDefinition instanceof EntityDefinition<?>) {
@@ -205,11 +205,11 @@ public final class ExcelImporter {
         } else if (classDefinition instanceof ElementCollectionDefinition<?>) {
             ElementCollectionDefinition<?> elementCollection = (ElementCollectionDefinition<?>) classDefinition;
             Class<?> enclosingClass = elementCollection.getEnclosingClass();
-            Class<?> beanClass = classDefinition.getDefinedClass();
+            Class<?> beanClass = elementCollection.getDefinedClass();
             Map<String, Object> identifiers = getIdentifiersFromElementCollectionField(sheet, rowPosition, enclosingClass, beanClass);
             addRecordIfIdentifierIsUnique(sheet, classDefinition, createdInstances, createdElementCollectionInstances, rowPosition, excelRow, identifiers);
         } else {
-            logger.error("Could not store row #{} of {}, because the Definition<T> is of an improper type.", new Object[] { rowPosition, sheet.getName() });
+            logger.error("Could not store row #{} of {}, because the Definition is of an improper type.", new Object[] { rowPosition, sheet.getName() });
         }
     }
 
@@ -271,7 +271,7 @@ public final class ExcelImporter {
      * @param excelRow Excelrow which is being processed
      * @param identifier Identifier of ExcelRow
      */
-    private void addRecordIfIdentifierIsUnique(final Sheet sheet, final Definition<?> classDefinition, Map<Object, ExcelRow> createdInstances,
+    private void addRecordIfIdentifierIsUnique(final Sheet sheet, final Definition classDefinition, Map<Object, ExcelRow> createdInstances,
             Map<Object, List<Object>> createdElementCollectionInstances,
             Integer rowPosition, ExcelRow excelRow, Object identifier) {
         if (!isInvalidIdentifier(identifier)) {
@@ -332,7 +332,7 @@ public final class ExcelImporter {
      * @param excelRow The excelRecord to save the data to
      * @throws NoSuchFieldException Thrown if field cannot be found
      */
-    private void storeExcelRecordByColumnDefinitions(final Workbook excel, final Definition<?> definition, Integer rowPosition, ExcelRow excelRow) {
+    private void storeExcelRecordByColumnDefinitions(final Workbook excel, final Definition definition, Integer rowPosition, ExcelRow excelRow) {
         for (PropertyDefinition columnDefinition : definition.properties()) {
             valueStorer.storeValue(excel, definition, columnDefinition, rowPosition, excelRow);
         }

@@ -4,6 +4,9 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 
 import org.hibernate.proxy.HibernateProxy;
+import org.jarbframework.populator.excel.metamodel.Definition;
+import org.jarbframework.populator.excel.metamodel.ElementCollectionDefinition;
+import org.jarbframework.populator.excel.metamodel.EntityDefinition;
 
 /**
  * Java Persistence API (JPA) utilities.
@@ -39,4 +42,19 @@ public final class JpaUtils {
         return entityManagerFactory.getPersistenceUnitUtil().getIdentifier(entity);
     }
 
+    /**
+     * Returns the defined class of passed definition if it possesses one.
+     * @param definition Definition to get defined class from
+     * @return Defined class
+     */
+    public static Class<?> getDefinedClassOfDefinition(Definition definition){
+        Class<?> definedClass = null;
+        if (definition instanceof EntityDefinition<?>){
+            definedClass = ((EntityDefinition<?>) definition).getDefinedClass();
+        } else if (definition instanceof ElementCollectionDefinition<?>){
+            definedClass = ((ElementCollectionDefinition<?>) definition).getDefinedClass();
+        }
+        return definedClass;
+    }
+    
 }

@@ -11,21 +11,32 @@ import org.springframework.util.Assert;
  *
  * @param <T>
  */
-public class ElementCollectionDefinition<T> extends Definition<T> {
+public class ElementCollectionDefinition<T> extends Definition {
 
     /** The entity class the elementCollection is enclosing in. */
     private final Class<T> enclosingClass;
 
+    /** Entity class being described. */
+    protected final Class<T> definedClass;
+    
     /**
      * Construct a new {@link ElementCollectionDefinition).
      * @param definedClass class being described
      */
     private ElementCollectionDefinition(Class<T> entityClass, Class<T> enclosingClass) {
-        super(entityClass);
+        this.definedClass = entityClass;
         this.enclosingClass = enclosingClass;
 
     }
 
+    /**
+     * Returns the definedClass belonging to classDefinition.
+     * @return definedClass instance from domain package
+     */
+    public Class<T> getDefinedClass() {
+        return definedClass;
+    }
+    
     /**
      * Start building a new {@link ElementCollectionDefinition}.
      * @param <T> type of class being described
@@ -46,6 +57,8 @@ public class ElementCollectionDefinition<T> extends Definition<T> {
 
     public static class Builder<T> extends Definition.Builder<T> {
 
+        private Class<T> definedClass;
+        
         /** The entity class the elementCollection is enclosing in. */
         private Class<T> enclosingClass;
 
@@ -54,7 +67,7 @@ public class ElementCollectionDefinition<T> extends Definition<T> {
          * @param elementCollectionClass class being described
          */
         public Builder(Class<T> elementCollectionClass) {
-            super(elementCollectionClass);
+            this.definedClass = elementCollectionClass;
         }
 
         /**

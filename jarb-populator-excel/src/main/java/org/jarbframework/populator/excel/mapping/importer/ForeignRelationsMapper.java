@@ -35,11 +35,11 @@ public final class ForeignRelationsMapper {
      * @param excelRow Object representing one row in an excel file.
      * @throws NoSuchFieldException 
      */
-    public static void makeForeignRelations(ExcelRow excelRow, Map<Definition<?>, Map<Object, ExcelRow>> objectModel) throws NoSuchFieldException {
+    public static void makeForeignRelations(ExcelRow excelRow, Map<Definition, Map<Object, ExcelRow>> objectModel) throws NoSuchFieldException {
         for (Entry<PropertyDefinition, Key> entry : excelRow.getValueMap().entrySet()) {
             Key key = entry.getValue();
 
-            Definition<?> classDefinition = DefinitionFinder.findDefinitionByPersistentClass(objectModel.keySet(), key.getForeignClass());
+            Definition classDefinition = DefinitionFinder.findDefinitionByPersistentClass(objectModel.keySet(), key.getForeignClass());
             if (classDefinition == null) {
                 Set<Class<?>> superClasses = getListOfSuperClasses(key.getForeignClass());
                 classDefinition = getDefinitionOfParent(objectModel, superClasses);
@@ -171,9 +171,9 @@ public final class ForeignRelationsMapper {
      * @param parents Parents to retrieve Definitions of
      * @return Definition of parent who has one.
      */
-    private static Definition<?> getDefinitionOfParent(Map<Definition<?>, Map<Object, ExcelRow>> objectModel, Set<Class<?>> parents) {
+    private static Definition getDefinitionOfParent(Map<Definition, Map<Object, ExcelRow>> objectModel, Set<Class<?>> parents) {
         for (Class<?> parent : parents) {
-            Definition<?> classDefinition = DefinitionFinder.findDefinitionByPersistentClass(objectModel.keySet(), parent);
+            Definition classDefinition = DefinitionFinder.findDefinitionByPersistentClass(objectModel.keySet(), parent);
             if (classDefinition != null) {
                 return classDefinition;
             }

@@ -3,11 +3,13 @@ package org.jarbframework.populator.excel.mapping.exporter;
 import org.jarbframework.populator.excel.entity.EntityRegistry;
 import org.jarbframework.populator.excel.mapping.ValueConversionService;
 import org.jarbframework.populator.excel.metamodel.Definition;
+import org.jarbframework.populator.excel.metamodel.ElementCollectionDefinition;
 import org.jarbframework.populator.excel.metamodel.EntityDefinition;
 import org.jarbframework.populator.excel.metamodel.MetaModel;
 import org.jarbframework.populator.excel.metamodel.PropertyDatabaseType;
 import org.jarbframework.populator.excel.metamodel.PropertyDefinition;
 import org.jarbframework.populator.excel.metamodel.PropertyPath;
+import org.jarbframework.populator.excel.util.JpaUtils;
 import org.jarbframework.populator.excel.workbook.Row;
 import org.jarbframework.populator.excel.workbook.Sheet;
 import org.jarbframework.populator.excel.workbook.StringValue;
@@ -50,7 +52,7 @@ public class DefaultEntityExporter implements EntityExporter {
     @Override
     public Workbook export(EntityRegistry registry, MetaModel metamodel) {
         Workbook workbook = excelTemplateBuilder.createTemplate(metamodel);
-        for (Definition<?> entityDefinition : metamodel.entities()) {
+        for (Definition entityDefinition : metamodel.entities()) {
             exportEntities(registry, entityDefinition, workbook);
         }
         return workbook;
@@ -63,11 +65,13 @@ public class DefaultEntityExporter implements EntityExporter {
      * @param classDefinition description of the entity class
      * @param workbook excel workbook that will contain our data
      */
-    private <T> void exportEntities(EntityRegistry registry, Definition<T> classDefinition, Workbook workbook) {
+    private <T> void exportEntities(EntityRegistry registry, Definition classDefinition, Workbook workbook) {
         Sheet sheet = workbook.getSheet(classDefinition.getTableName());
-        for (T entity : registry.withClass(classDefinition.getDefinedClass())) {
+
+        for (Object entity : registry.withClass(JpaUtils.getDefinedClassOfDefinition(classDefinition))) {
             exportEntity(entity, classDefinition, sheet);
         }
+        
     }
 
     /**
@@ -77,7 +81,7 @@ public class DefaultEntityExporter implements EntityExporter {
      * @param definition description of the entity class
      * @param sheet the sheet in which we store the entity
      */
-    private <T> void exportEntity(T entity, Definition<T> definition, Sheet sheet) {
+    private <T> void exportEntity(T entity, Definition definition, Sheet sheet) {
         Row row = sheet.createRow();
         // Handle each property definition
         for (PropertyDefinition propertyDefinition : definition.properties()) {

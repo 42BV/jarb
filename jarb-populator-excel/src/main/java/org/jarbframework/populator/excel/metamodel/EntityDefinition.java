@@ -19,21 +19,32 @@ import org.springframework.util.Assert;
  * @param <T> type of class being described
  * 
  */
-public class EntityDefinition<T> extends Definition<T> {
+public class EntityDefinition<T> extends Definition {
 
     /** Name of the discriminator column. **/
     private String discriminatorColumnName;
     /** Mapping of each subclass and the related discriminator value. */
     private Map<String, Class<? extends T>> subClasses;
-
+    
+    /** Entity class being described. */
+    protected final Class<T> definedClass;
+    
     /**
      * Construct a new {@link EntityDefinition).
      * @param definedClass class being described
      */
     private EntityDefinition(Class<T> entityClass) {
-        super(entityClass);
+        this.definedClass = entityClass;
     }
 
+    /**
+     * Returns the definedClass belonging to classDefinition.
+     * @return definedClass instance from domain package
+     */
+    public Class<T> getDefinedClass() {
+        return definedClass;
+    }
+    
     /**
      * Start building a new {@link EntityDefinition}.
      * @param <T> type of class being described
@@ -115,6 +126,8 @@ public class EntityDefinition<T> extends Definition<T> {
         /** Name of the discriminator column. **/
         private String discriminatorColumnName;
 
+        protected final Class<T> definedClass;
+        
         /** Mapping of each subclass and the related discriminator value. */
         private Map<String, Class<? extends T>> subClasses = new HashMap<String, Class<? extends T>>();
 
@@ -123,7 +136,7 @@ public class EntityDefinition<T> extends Definition<T> {
          * @param definedClass class being described
          */
         public Builder(Class<T> entityClass) {
-            super(entityClass);
+            this.definedClass = entityClass;
         }
 
         /**

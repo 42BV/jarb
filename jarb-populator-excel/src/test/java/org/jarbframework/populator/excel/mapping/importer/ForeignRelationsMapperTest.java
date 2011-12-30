@@ -50,15 +50,15 @@ public class ForeignRelationsMapperTest extends DefaultExcelTestDataCase {
         MetaModelGenerator mmg = new JpaMetaModelGenerator(emf);
         MetaModel medamodel = mmg.generate();
 
-        Map<Definition<?>, Map<Object, ExcelRow>> objectModel = new HashMap<Definition<?>, Map<Object, ExcelRow>>();
+        Map<Definition, Map<Object, ExcelRow>> objectModel = new HashMap<Definition, Map<Object, ExcelRow>>();
         ExcelImporter excelImporter = new ExcelImporter(ValueConversionService.defaultConversions(), emf);
 
-        List<Definition<?>> entities = new ArrayList<Definition<?>>(medamodel.entities());
-        for (Definition<?> entityDefinition : entities) {
+        List<Definition> entities = new ArrayList<Definition>(medamodel.entities());
+        for (Definition entityDefinition : entities) {
             objectModel.put(entityDefinition, excelImporter.parseWorksheet(excel, entityDefinition));
         }
 
-        for (Entry<Definition<?>, Map<Object, ExcelRow>> classRecord : objectModel.entrySet()) {
+        for (Entry<Definition, Map<Object, ExcelRow>> classRecord : objectModel.entrySet()) {
             for (Entry<Object, ExcelRow> classValues : classRecord.getValue().entrySet()) {
                 ExcelRow excelRow = classValues.getValue();
                 Class<?> tobeTested = domain.entities.Project.class;

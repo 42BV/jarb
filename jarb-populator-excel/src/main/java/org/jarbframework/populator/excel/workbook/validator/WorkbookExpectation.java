@@ -23,7 +23,7 @@ class WorkbookExpectation {
     private Map<String, Set<String>> columnNamesMap = new HashMap<String, Set<String>>();
 
     public WorkbookExpectation(MetaModel metamodel) {
-        for (Definition<?> entity : metamodel.entities()) {
+        for (Definition entity : metamodel.entities()) {
             final String sheetName = entity.getTableName();
             // Each entity type has a specific sheet name
             sheetNames.add(sheetName);
@@ -66,7 +66,7 @@ class WorkbookExpectation {
      * @param entity Entity to get the discriminator column name from.
      * @param columnNames Collection of column names.
      */
-    private void addDiscriminatorColumnNameIfApplicable(Definition<?> entity,
+    private void addDiscriminatorColumnNameIfApplicable(Definition entity,
             Set<String> columnNames) {
         if (entity instanceof EntityDefinition<?>) {
             EntityDefinition<?> entityDefinition = (EntityDefinition<?>) entity;

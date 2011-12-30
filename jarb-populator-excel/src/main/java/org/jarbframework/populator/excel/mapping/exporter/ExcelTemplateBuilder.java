@@ -32,9 +32,9 @@ public class ExcelTemplateBuilder {
      */
     public Workbook createTemplate(MetaModel metamodel) {
         Workbook workbook = new Workbook();
-        List<Definition<?>> classDefinitions = new ArrayList<Definition<?>>(metamodel.entities());
+        List<Definition> classDefinitions = new ArrayList<Definition>(metamodel.entities());
         Collections.sort(classDefinitions, new DefinitionNameComparator());
-        for (Definition<?> classDefinition : classDefinitions) {
+        for (Definition classDefinition : classDefinitions) {
             if (classDefinition instanceof EntityDefinition<?>) {
                 createClassSheet(classDefinition, workbook);
             }
@@ -47,7 +47,7 @@ public class ExcelTemplateBuilder {
      * @param entityDefinition description of the entity structure being stored
      * @param workbook the workbook that will hold our sheet
      */
-    private void createClassSheet(Definition<?> entityDefinition, Workbook workbook) {
+    private void createClassSheet(Definition entityDefinition, Workbook workbook) {
         Sheet sheet = workbook.createSheet(entityDefinition.getTableName());
         storeColumnNames(sheet, entityDefinition);
         for (PropertyDefinition propertyDefinition : entityDefinition.properties()) {
@@ -64,7 +64,7 @@ public class ExcelTemplateBuilder {
      * @param sheet the sheet that should contain our columns
      * @param classDefinition description of all columns
      */
-    private void storeColumnNames(Sheet sheet, Definition<?> classDefinition) {
+    private void storeColumnNames(Sheet sheet, Definition classDefinition) {
         int columnNumber = 0;
         sheet.setColumnNameAt(columnNumber++, "#"); // Row identifier
         for (String columnName : classDefinition.getColumnNames()) {
@@ -116,12 +116,12 @@ public class ExcelTemplateBuilder {
     }
 
     // Sorts class definitions based on table name
-    private static class DefinitionNameComparator implements Comparator<Definition<?>> {
+    private static class DefinitionNameComparator implements Comparator<Definition> {
         /**
          * {@inheritDoc}
          */
         @Override
-        public int compare(Definition<?> left, Definition<?> right) {
+        public int compare(Definition left, Definition right) {
             return left.getTableName().compareTo(right.getTableName());
         }
     }
