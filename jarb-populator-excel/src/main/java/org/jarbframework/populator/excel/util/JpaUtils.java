@@ -47,6 +47,7 @@ public final class JpaUtils {
      * @param definition Definition to get defined class from
      * @return Defined class
      */
+    //TO-DO Remove this function and replace by proper Definition type structure.
     public static Class<?> getDefinedClassOfDefinition(Definition definition){
         Class<?> definedClass = null;
         if (definition instanceof EntityDefinition<?>){
@@ -55,6 +56,22 @@ public final class JpaUtils {
             definedClass = ((ElementCollectionDefinition<?>) definition).getDefinedClass();
         }
         return definedClass;
+    }
+    
+    /**
+     * Returns the table name of passed definition if it possesses one.
+     * @param definition Definition to get table name from
+     * @return Table name
+     */
+    //TO-DO Remove this function and replace by proper Definition type structure.
+    public static String getTableNameOfDefinition(Definition definition){
+        String tableName = null;
+        if (definition instanceof EntityDefinition<?>){
+            tableName = ((EntityDefinition<?>) definition).getTableName();
+        } else if (definition instanceof ElementCollectionDefinition<?>){
+            tableName = ((ElementCollectionDefinition<?>) definition).getTableName();
+        }
+        return tableName;
     }
     
 }

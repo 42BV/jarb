@@ -8,6 +8,7 @@ import org.jarbframework.populator.excel.metamodel.Definition;
 import org.jarbframework.populator.excel.metamodel.PropertyDefinition;
 import org.jarbframework.populator.excel.metamodel.PropertyNode;
 import org.jarbframework.populator.excel.metamodel.PropertyPath;
+import org.jarbframework.populator.excel.util.JpaUtils;
 import org.jarbframework.populator.excel.workbook.Sheet;
 import org.jarbframework.populator.excel.workbook.Workbook;
 import org.jarbframework.utils.bean.ModifiableBean;
@@ -41,7 +42,7 @@ public final class StoreColumn {
      * @throws NoSuchFieldException Thrown when a field is not available
      */
     public void storeValue(Workbook excel, Definition classDefinition, PropertyDefinition columnDefinition, Integer rowPosition, ExcelRow excelRow) {
-        Sheet sheet = excel.getSheet(classDefinition.getTableName());
+        Sheet sheet = excel.getSheet(JpaUtils.getTableNameOfDefinition(classDefinition));
 
         WorksheetDefinition worksheetDefinition = WorksheetDefinition.analyzeWorksheet(classDefinition, excel);
         Integer columnPosition = worksheetDefinition.getColumnPosition(columnDefinition.getColumnName());

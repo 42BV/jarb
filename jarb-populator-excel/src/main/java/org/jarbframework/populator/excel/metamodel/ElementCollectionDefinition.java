@@ -13,6 +13,9 @@ import org.springframework.util.Assert;
  */
 public class ElementCollectionDefinition<T> extends Definition {
 
+    /** Name of the database table. */
+    protected String tableName;
+   
     /** The entity class the elementCollection is enclosing in. */
     private final Class<T> enclosingClass;
 
@@ -27,6 +30,14 @@ public class ElementCollectionDefinition<T> extends Definition {
         this.definedClass = entityClass;
         this.enclosingClass = enclosingClass;
 
+    }
+    
+    /**
+     * Returns the tableName of the classDefinition.
+     * @return tableName String
+     */
+    public String getTableName() {
+        return tableName;
     }
 
     /**
@@ -56,7 +67,7 @@ public class ElementCollectionDefinition<T> extends Definition {
     }
 
     public static class Builder<T> extends Definition.Builder<T> {
-
+        private String tableName;
         private Class<T> definedClass;
         
         /** The entity class the elementCollection is enclosing in. */

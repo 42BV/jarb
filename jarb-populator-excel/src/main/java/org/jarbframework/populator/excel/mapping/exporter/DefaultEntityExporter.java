@@ -66,7 +66,7 @@ public class DefaultEntityExporter implements EntityExporter {
      * @param workbook excel workbook that will contain our data
      */
     private <T> void exportEntities(EntityRegistry registry, Definition classDefinition, Workbook workbook) {
-        Sheet sheet = workbook.getSheet(classDefinition.getTableName());
+        Sheet sheet = workbook.getSheet(JpaUtils.getTableNameOfDefinition(classDefinition));
 
         for (Object entity : registry.withClass(JpaUtils.getDefinedClassOfDefinition(classDefinition))) {
             exportEntity(entity, classDefinition, sheet);

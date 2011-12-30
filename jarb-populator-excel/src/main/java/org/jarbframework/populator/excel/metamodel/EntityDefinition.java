@@ -21,6 +21,9 @@ import org.springframework.util.Assert;
  */
 public class EntityDefinition<T> extends Definition {
 
+    /** Name of the database table. */
+    protected String tableName;
+    
     /** Name of the discriminator column. **/
     private String discriminatorColumnName;
     /** Mapping of each subclass and the related discriminator value. */
@@ -28,6 +31,14 @@ public class EntityDefinition<T> extends Definition {
     
     /** Entity class being described. */
     protected final Class<T> definedClass;
+    
+    /**
+     * Returns the tableName of the classDefinition.
+     * @return tableName String
+     */
+    public String getTableName() {
+        return tableName;
+    }
     
     /**
      * Construct a new {@link EntityDefinition).
@@ -123,6 +134,8 @@ public class EntityDefinition<T> extends Definition {
     }
 
     public static class Builder<T> extends Definition.Builder<T> {
+        private String tableName;
+        
         /** Name of the discriminator column. **/
         private String discriminatorColumnName;
 

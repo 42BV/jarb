@@ -115,7 +115,7 @@ public final class ExcelImporter {
         Map<Object, ExcelRow> createdInstances = new HashMap<Object, ExcelRow>();
         Map<Object, List<Object>> createdElementCollectionInstances = new HashMap<Object, List<Object>>();
 
-        Sheet sheet = excel.getSheet(definition.getTableName());
+        Sheet sheet = excel.getSheet(JpaUtils.getTableNameOfDefinition(definition));
         String discriminatorColumnName = getDiscriminatorColumnFromDefinition(definition);
 
         if (sheet != null) {
@@ -280,7 +280,7 @@ public final class ExcelImporter {
             if (!createdInstances.containsKey(identifier)) {
                 createdInstances.put(identifier, excelRow);
             } else {
-                logger.error("IDCOLUMNNAME value '" + identifier + "' in table " + classDefinition.getTableName() + " is not unique.");
+                logger.error("IDCOLUMNNAME value '" + identifier + "' in table " + JpaUtils.getTableNameOfDefinition(classDefinition) + " is not unique.");
             }
         } else if (classDefinition instanceof ElementCollectionDefinition<?>) {
             if (createdElementCollectionInstances.containsKey(identifier)) {

@@ -14,20 +14,9 @@ import org.apache.commons.lang3.StringUtils;
  * @param <T> type of class being described
  */
 public abstract class Definition {
-    
-    /** Name of the database table. */
-    protected String tableName;
 
     /** Description of each defined property. */
     protected Set<PropertyDefinition> propertyDefinitions;
-    
-    /**
-     * Returns the tableName of the classDefinition.
-     * @return tableName String
-     */
-    public String getTableName() {
-        return tableName;
-    }
 
     /**
      * Retrieve all property definitions declared inside this class.
@@ -102,7 +91,6 @@ public abstract class Definition {
      * @param <T> type of class being described
      */
     public abstract static class Builder<T> {
-        protected String tableName;
         protected Set<PropertyDefinition> properties = new HashSet<PropertyDefinition>();
 
         /**

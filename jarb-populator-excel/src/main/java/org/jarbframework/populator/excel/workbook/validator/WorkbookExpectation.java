@@ -17,6 +17,7 @@ import org.jarbframework.populator.excel.metamodel.MetaModel;
 import org.jarbframework.populator.excel.metamodel.PropertyDatabaseType;
 import org.jarbframework.populator.excel.metamodel.PropertyDefinition;
 import org.jarbframework.populator.excel.metamodel.generator.ColumnMetadataRetriever;
+import org.jarbframework.populator.excel.util.JpaUtils;
 
 class WorkbookExpectation {
     private Set<String> sheetNames = new HashSet<String>();
@@ -24,7 +25,7 @@ class WorkbookExpectation {
 
     public WorkbookExpectation(MetaModel metamodel) {
         for (Definition entity : metamodel.entities()) {
-            final String sheetName = entity.getTableName();
+            final String sheetName = JpaUtils.getTableNameOfDefinition(entity);
             // Each entity type has a specific sheet name
             sheetNames.add(sheetName);
             Set<String> columnNames = new HashSet<String>();

@@ -11,6 +11,7 @@ import org.jarbframework.populator.excel.metamodel.MetaModel;
 import org.jarbframework.populator.excel.metamodel.PropertyDatabaseType;
 import org.jarbframework.populator.excel.metamodel.PropertyDefinition;
 import org.jarbframework.populator.excel.metamodel.generator.ColumnMetadataRetriever;
+import org.jarbframework.populator.excel.util.JpaUtils;
 import org.jarbframework.populator.excel.workbook.Sheet;
 import org.jarbframework.populator.excel.workbook.Workbook;
 
@@ -48,7 +49,7 @@ public class ExcelTemplateBuilder {
      * @param workbook the workbook that will hold our sheet
      */
     private void createClassSheet(Definition entityDefinition, Workbook workbook) {
-        Sheet sheet = workbook.createSheet(entityDefinition.getTableName());
+        Sheet sheet = workbook.createSheet(JpaUtils.getTableNameOfDefinition(entityDefinition));
         storeColumnNames(sheet, entityDefinition);
         for (PropertyDefinition propertyDefinition : entityDefinition.properties()) {
             if (propertyDefinition.getDatabaseType() == PropertyDatabaseType.COLLECTION_REFERENCE) {
@@ -122,7 +123,7 @@ public class ExcelTemplateBuilder {
          */
         @Override
         public int compare(Definition left, Definition right) {
-            return left.getTableName().compareTo(right.getTableName());
+            return JpaUtils.getTableNameOfDefinition(left).compareTo(JpaUtils.getTableNameOfDefinition(right));
         }
     }
 

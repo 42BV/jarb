@@ -6,6 +6,7 @@ import java.util.Map;
 import org.jarbframework.populator.excel.metamodel.Definition;
 import org.jarbframework.populator.excel.metamodel.EntityDefinition;
 import org.jarbframework.populator.excel.metamodel.PropertyDefinition;
+import org.jarbframework.populator.excel.util.JpaUtils;
 import org.jarbframework.populator.excel.workbook.Sheet;
 import org.jarbframework.populator.excel.workbook.Workbook;
 import org.slf4j.Logger;
@@ -31,15 +32,16 @@ public class WorksheetDefinition {
      */
     public static WorksheetDefinition analyzeWorksheet(final Definition classDefinition, final Workbook excel) {
         WorksheetDefinition worksheetDefinition = new WorksheetDefinition();
-        LOGGER.debug("Analyzing worksheet: [" + classDefinition.getTableName() + "]");
-        Sheet sheet = excel.getSheet(classDefinition.getTableName());
+        String tableName = JpaUtils.getTableNameOfDefinition(classDefinition);
+        LOGGER.debug("Analyzing worksheet: [" + tableName + "]");
+        Sheet sheet = excel.getSheet(tableName);
 
         for (PropertyDefinition columnDefinition : classDefinition.properties()) {
             final String columnName = columnDefinition.getColumnName();
             LOGGER.debug("  field name: [" + columnDefinition.getName() + "], column name: [" + columnName + "]");
             if (columnDefinition.hasColumn()) {
                 if (sheet.containsColumn(columnName)) {
-                    worksheetDefinition.addColumnPosition(columnName, classDefinition.getTableName(), sheet.indexOfColumn(columnName));
+                    worksheetDefinition.addColumnPosition(columnName, tableName, sheet.indexOfColumn(columnName));
                 } else {
                     LOGGER.warn("Column name " + columnDefinition.getColumnName() + " was not present in the Worksheet.");
                 }
