@@ -72,9 +72,12 @@ public final class JpaMetaModelUtils {
      * @return Collection field.
      */
     public static String getFieldNameForElementCollectionClass(Class<?> beanClass, Class<?> enclosingClass, EntityManagerFactory entityManagerFactory) {
-    	Field field = getFieldThatsOfClassType(beanClass, enclosingClass.getDeclaredFields());
-    	return createTableNameForElementCollection(field, enclosingClass, entityManagerFactory);
-
+    	String tableName = "";
+        Field field = getFieldThatsOfClassType(beanClass, enclosingClass.getDeclaredFields());
+        if (field != null){
+    	    tableName = createTableNameForElementCollection(field, enclosingClass, entityManagerFactory);
+    	}
+    	return tableName;
     }
     
     /**

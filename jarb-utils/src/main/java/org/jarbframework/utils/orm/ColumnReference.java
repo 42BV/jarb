@@ -18,6 +18,14 @@ public class ColumnReference {
     private String tableName;
     private String columnName;
 
+    /**
+     * Create columnReference for Definition of type EMBEDDABLE_ENTITYDEFINITION
+     * @param columnName ColumnName to give the columnReference
+     */
+    public ColumnReference(String columnName) {
+        this.columnName = hasText(columnName, "Column name is required");
+    }
+    
     public ColumnReference(String tableName, String columnName) {
         this.tableName = hasText(tableName, "Table name is required");
         this.columnName = hasText(columnName, "Column name is required");

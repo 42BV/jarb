@@ -17,6 +17,7 @@ import org.jarbframework.utils.bean.BeanProperties;
 import org.jarbframework.utils.bean.PropertyReference;
 import org.jarbframework.utils.orm.ColumnReference;
 import org.jarbframework.utils.orm.SchemaMapper;
+import org.jarbframework.utils.orm.jpa.JpaMetaModelUtils;
 
 /**
  * Creates a ColumnDefinition from a field.
@@ -41,9 +42,11 @@ public class FieldAnalyzer {
                 columnDefinitionBuilder = elementCollectionDefinition(elementCollection, field);
             }
         } else {
-            ColumnReference columnRef = schemaMapper.columnOf(propertyReference);
-            if (columnRef != null) {
-                columnDefinitionBuilder = PropertyDefinition.forField(field).setColumnName(columnRef.getColumnName());
+            String referencedColumnName = "";
+            referencedColumnName = schemaMapper.columnOf(propertyReference).getColumnName();
+            
+            if (!referencedColumnName.isEmpty()) {
+                columnDefinitionBuilder = PropertyDefinition.forField(field).setColumnName(referencedColumnName);
                 if (isAssociation(field)) {
                     columnDefinitionBuilder.setDatabaseType(PropertyDatabaseType.REFERENCE);
                 }

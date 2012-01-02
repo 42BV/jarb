@@ -2,6 +2,7 @@ package org.jarbframework.populator.excel.metamodel.generator;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -34,13 +35,20 @@ public final class ColumnDefinitionsGenerator {
     }
 
     /**
+     * @see ColumnDefinitionsGenerator#createPropertyDefinitions(HashSet, IdentifiableType, Class)
+     */
+    public List<PropertyDefinition> createPropertyDefinitions(ManagedType<?> type, Class<?> persistentClass){
+        return createPropertyDefinitions(new HashSet<EntityType<?>>(), type, persistentClass);
+    }
+    
+    /**
      * Creates a list of columnDefinitions from an entity originated in the JPA meta-model.
      * @param subclassEntities Set of subclass entities
      * @param type Entity whose attributes will be added as ColumnDefinitions.
      * @param persistentClass Persistent class of the ClassDefinition
      * @return List of ColumnDefinitions
      */
-    public List<PropertyDefinition> createPropertyDefinitions(Set<EntityType<?>> subclassEntities, EntityType<?> type, Class<?> persistentClass) {
+    public List<PropertyDefinition> createPropertyDefinitions(Set<EntityType<?>> subclassEntities, ManagedType<?> type, Class<?> persistentClass) {
         List<PropertyDefinition> columnDefinitions = new ArrayList<PropertyDefinition>();
         addAttributesAsColumnDefinitions(columnDefinitions, type, persistentClass);
         createSuperTypeColumnDefinitions(columnDefinitions, type, persistentClass);
@@ -49,7 +57,9 @@ public final class ColumnDefinitionsGenerator {
         }
         return columnDefinitions;
     }
-
+    
+    @Deprecated
+    //Will be removed in next release
     public List<PropertyDefinition> createPropertyDefinitions(EmbeddableType<?> embeddableType, EntityType<?> enclosingType) {
         List<PropertyDefinition> propertyDefinitions = new ArrayList<PropertyDefinition>();
         Class<?> embeddableClass = embeddableType.getJavaType();
@@ -108,11 +118,13 @@ public final class ColumnDefinitionsGenerator {
         return propertyReference;
     }
 
-    private void createSuperTypeColumnDefinitions(List<PropertyDefinition> columnDefinitions, IdentifiableType<?> type, Class<?> entityClass) {
-        IdentifiableType<?> superType = type.getSupertype();
-        if (superType != null) {
-            addAttributesAsColumnDefinitions(columnDefinitions, superType, entityClass);
-            createSuperTypeColumnDefinitions(columnDefinitions, superType, entityClass);
+    private void createSuperTypeColumnDefinitions(List<PropertyDefinition> columnDefinitions, ManagedType<?> type, Class<?> entityClass) {
+        if (type instanceof IdentifiableType<?>){
+            IdentifiableType<?> superType = ((IdentifiableType<?>) type).getSupertype();
+            if (superType != null) {
+                addAttributesAsColumnDefinitions(columnDefinitions, superType, entityClass);
+                createSuperTypeColumnDefinitions(columnDefinitions, superType, entityClass);
+            }
         }
     }
 

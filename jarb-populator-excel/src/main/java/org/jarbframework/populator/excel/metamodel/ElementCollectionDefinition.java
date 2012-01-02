@@ -11,6 +11,8 @@ import org.springframework.util.Assert;
  *
  * @param <T>
  */
+@Deprecated
+//Will be removed in next release
 public class ElementCollectionDefinition<T> extends Definition {
 
     /** Name of the database table. */

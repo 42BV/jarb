@@ -156,19 +156,11 @@ public class JpaHibernateSchemaMapper implements SchemaMapper {
 	private ColumnReference createColumnReferenceFromEmbeddable(PropertyReference propertyReference) {
 		ColumnReference columnReference = null;
 		if (isMappedToColumn(propertyReference)) {
-			String tableName = getTableNameForEmbeddable(propertyReference);
 			String columnName = columnName(propertyReference);
-			columnReference = new ColumnReference(tableName, columnName);
+			columnReference = new ColumnReference(columnName);
 		}
 		return columnReference;
 	}
-	
-	private String getTableNameForEmbeddable(PropertyReference propertyReference) {
-		Class<?> beanClass = propertyReference.getBeanClass();
-		Class<?> enclosingClass = propertyReference.getEnclosingClass();
-		return JpaMetaModelUtils.getFieldNameForElementCollectionClass(beanClass, enclosingClass, entityManagerFactory);
-	}
-	
 
 	private ColumnReference createColumnReferenceFromEntity(PropertyReference propertyReference) {
 		ColumnReference columnReference = null;

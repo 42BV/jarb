@@ -107,20 +107,4 @@ public class EntityDefinitionTest extends DefaultExcelTestDataCase {
     public void testGetIdColumnName() {
         assertEquals("employee_id", employeeDefinition.getIdColumnName());
     }
-    
-    @Test
-    public void testBuildDefinitionOfTypeENTITY(){
-        
-    }
-    
-    @Test
-    public void testBuildDefinitionOfTypeEMBEDDABLE_ELEMENTCOLLECTION(){
-        
-    }   
-
-    @Test
-    public void testBuildDefinitionOfTypeSIMPLE_DATATYPE_ELEMENTCOLLECTION(){
-        
-    }   
-    
 }
