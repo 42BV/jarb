@@ -11,6 +11,7 @@ import org.jarbframework.utils.orm.ColumnReference;
  * @since 20-05-2011
  */
 public class ColumnMetadata {
+
     /** Reference to the column **/
     private final ColumnReference columnReference;
     /** Determines if a not-null value is required **/

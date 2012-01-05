@@ -1,6 +1,6 @@
 package org.jarbframework.constraint.database.column;
 
-import static org.apache.commons.lang3.StringUtils.lowerCase;
+import static org.apache.commons.lang3.StringUtils.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -16,6 +16,7 @@ import org.springframework.util.Assert;
  * @since 30-05-2011
  */
 public class MapColumnMetadataRepository implements ColumnMetadataRepository {
+
     private final Map<String, Map<String, ColumnMetadata>> columnMetadataMap;
 
     /**
@@ -50,9 +51,6 @@ public class MapColumnMetadataRepository implements ColumnMetadataRepository {
         return this;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public ColumnMetadata getColumnMetadata(ColumnReference columnReference) {
         ColumnMetadata columnMetadata = null;

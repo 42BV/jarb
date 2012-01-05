@@ -1,5 +1,7 @@
 package org.jarbframework.constraint.database.column;
 
+import static org.jarbframework.utils.Asserts.*;
+
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
@@ -14,7 +16,6 @@ import org.jarbframework.utils.JdbcUtils;
 import org.jarbframework.utils.orm.ColumnReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.util.Assert;
 
 /**
  * Retrieves column meta data using JDBC.
@@ -23,28 +24,36 @@ import org.springframework.util.Assert;
  * @since 30-05-2011
  */
 public class JdbcColumnMetadataProvider implements ColumnMetadataProvider {
-    private static final Logger LOGGER = LoggerFactory.getLogger(JdbcColumnMetadataProvider.class);
+
+    private final Logger logger = LoggerFactory.getLogger(JdbcColumnMetadataProvider.class);
+
     private final DataSource dataSource;
+    private String catalog;
+    private String schemaPattern;
 
     /**
      * Construct a new {@link JdbcColumnMetadataProvider}.
      * @param dataSource data source reference
      */
     public JdbcColumnMetadataProvider(DataSource dataSource) {
-        Assert.notNull(dataSource, "Property 'data source' cannot be null.");
-        this.dataSource = dataSource;
+        this.dataSource = notNull(dataSource, "Data source cannot be null.");
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    public void setCatalog(String catalog) {
+        this.catalog = catalog;
+    }
+
+    public void setSchemaPattern(String schemaPattern) {
+        this.schemaPattern = schemaPattern;
+    }
+
     @Override
     public Set<ColumnMetadata> all() {
         Connection connection = null;
         try {
             connection = dataSource.getConnection();
             DatabaseMetaData metadata = connection.getMetaData();
-            ResultSet columnResultSet = metadata.getColumns(null, null, null, null);
+            ResultSet columnResultSet = metadata.getColumns(catalog, schemaPattern, null, null);
             return extractColumnInfo(columnResultSet);
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -60,11 +69,13 @@ public class JdbcColumnMetadataProvider implements ColumnMetadataProvider {
      * @throws SQLException if any exception occurs
      */
     private Set<ColumnMetadata> extractColumnInfo(ResultSet resultSet) throws SQLException {
-        Set<ColumnMetadata> columnMetaData = new HashSet<ColumnMetadata>();
+        Set<ColumnMetadata> columnMetaDataSet = new HashSet<ColumnMetadata>();
         while (resultSet.next()) {
-            columnMetaData.add(mapToColumnMetadata(resultSet));
+            ColumnMetadata columnMetaData = mapToColumnMetadata(resultSet);
+            logger.debug("Extracted {}.", columnMetaData);
+            columnMetaDataSet.add(columnMetaData);
         }
-        return columnMetaData;
+        return columnMetaDataSet;
     }
 
     /**
@@ -99,7 +110,7 @@ public class JdbcColumnMetadataProvider implements ColumnMetadataProvider {
         try {
             return resultSet.getObject(columnLabel);
         } catch (SQLException e) {
-            LOGGER.debug("Could not extract '" + columnLabel + "' from result set");
+            logger.debug("Could not extract '{}' from result set", columnLabel);
             return null;
         }
     }

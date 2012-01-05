@@ -12,6 +12,7 @@ import org.springframework.util.Assert;
  * @since 24-05-2011
  */
 public class CachingColumnMetadataRepository implements ColumnMetadataRepository {
+
     /** Maintains all constraint meta-data in memory **/
     private final MapColumnMetadataRepository columnMetadataCache = new MapColumnMetadataRepository();
     /** Capable of filling our cache with constraint meta-data **/
