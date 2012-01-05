@@ -2,6 +2,8 @@ package org.jarbframework.populator.excel.mapping.importer;
 
 import java.util.Set;
 
+import org.springframework.util.Assert;
+
 /**
  * Sets and returns key values belonging to a JoinTable instance, extends from Key.
  * @author Willem Eppen
@@ -18,6 +20,7 @@ public class JoinTableKey extends Key {
      */
     @SuppressWarnings("unchecked")
     public void setKeyValue(final Object foreignKeyObject) {
+        Assert.isInstanceOf(Set.class, foreignKeyObject, "Key passed to JoinTableKey is not of type Set.");
         this.foreignKeys = (Set<Integer>) foreignKeyObject;
     }
 
