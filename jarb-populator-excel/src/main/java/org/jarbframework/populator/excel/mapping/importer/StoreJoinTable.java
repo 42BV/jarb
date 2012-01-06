@@ -23,7 +23,7 @@ import org.slf4j.LoggerFactory;
 public final class StoreJoinTable {
     private static final Logger LOGGER = LoggerFactory.getLogger(StoreJoinTable.class);
 
-    /** Private constructor. */
+    /** Utility class, do not instantiate. */
     private StoreJoinTable() {
     }
 

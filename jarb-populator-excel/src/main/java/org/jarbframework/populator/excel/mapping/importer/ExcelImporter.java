@@ -19,10 +19,12 @@ import org.jarbframework.populator.excel.mapping.ValueConversionService;
 import org.jarbframework.populator.excel.metamodel.Definition;
 import org.jarbframework.populator.excel.metamodel.ElementCollectionDefinition;
 import org.jarbframework.populator.excel.metamodel.EntityDefinition;
+import org.jarbframework.populator.excel.metamodel.PropertyDatabaseType;
 import org.jarbframework.populator.excel.metamodel.PropertyDefinition;
 import org.jarbframework.populator.excel.util.JpaUtils;
 import org.jarbframework.populator.excel.workbook.Sheet;
 import org.jarbframework.populator.excel.workbook.Workbook;
+import org.jarbframework.utils.database.DatabaseType;
 import org.jarbframework.utils.orm.jpa.JpaMetaModelUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -56,7 +58,7 @@ public final class ExcelImporter {
      */
     @SuppressWarnings({ "unchecked", "rawtypes" })
     public EntityRegistry parseExcelToRegistry(Workbook excel, Collection<Definition> entityDefinitions) throws NoSuchFieldException {
-        //First we need to create all ExcelRows, including those of the subtype 'ElementCollectionDefinitions'
+        //First we need to create all ExcelRows, including those of the subtype 'ElementCollectionDefinition'
         createExcelRows(excel, entityDefinitions);
 
         EntityRegistry entityRegistry = new EntityRegistry();
@@ -239,6 +241,7 @@ public final class ExcelImporter {
      * @param beanClass The ElementCollection's class
      * @return Map of columnnames and identifiers
      */
+    @Deprecated
     private Map<String, Object> getIdentifiersFromElementCollectionField(final Sheet sheet,
             Integer rowPosition, Class<?> enclosingClass, Class<?> beanClass) {
         Map<String, Object> identifiers = new HashMap<String, Object>();
@@ -334,7 +337,7 @@ public final class ExcelImporter {
      */
     private void storeExcelRecordByColumnDefinitions(final Workbook excel, final Definition definition, Integer rowPosition, ExcelRow excelRow) {
         for (PropertyDefinition columnDefinition : definition.properties()) {
-            valueStorer.storeValue(excel, definition, columnDefinition, rowPosition, excelRow);
+           valueStorer.storeValue(excel, definition, columnDefinition, rowPosition, excelRow);
         }
     }
 }

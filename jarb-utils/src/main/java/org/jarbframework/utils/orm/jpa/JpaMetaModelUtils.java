@@ -151,6 +151,7 @@ public final class JpaMetaModelUtils {
 	 * @param entityManagerFactory EntityManagerFactory to get the schemaMapper from
 	 * @return Identifier column name
 	 */
+	@Deprecated
 	public static String deduceIdentifierColumnName(Class<?> enclosingClass, EntityManagerFactory entityManagerFactory) {
 		SchemaMapper schemaMapper = JpaHibernateSchemaMapper.usingNamingStrategyOf(entityManagerFactory);
 		String enclosingTypeTableName = schemaMapper.tableNameOf(enclosingClass);

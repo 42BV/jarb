@@ -89,10 +89,12 @@ public class PropertyDefinition {
         return inverseJoinColumnName;
     }
 
+    @Deprecated
     public Map<String, String> getElementCollectionJoinColumns() {
         return elementCollectionJoinColumns;
     }
 
+    @Deprecated
     public Collection<? extends String> getElementCollectionJoinColumnNames() {
         return elementCollectionJoinColumns.keySet();
     }
@@ -156,6 +158,7 @@ public class PropertyDefinition {
             return this;
         }
 
+        @Deprecated
         public void putElementCollectionJoinColumnName(String elementCollectionJoinColumnName, String elementCollectionReferencedColumnName) {
             this.elementCollectionJoinColumns.put(elementCollectionJoinColumnName, elementCollectionReferencedColumnName);
         }
@@ -169,6 +172,7 @@ public class PropertyDefinition {
                 Assert.state(isNotBlank(joinColumnName), "Join column name cannot be blank");
                 Assert.state(isNotBlank(inverseJoinColumnName), "Inverse join column name cannot be blank");
             } else if (databaseType == PropertyDatabaseType.ELEMENT_COLLECTION) {
+                //TO DO: Remove
                 Assert.state(isBlank(columnName), "Element collection property cannot have a column name");
                 Assert.state(isBlank(inverseJoinColumnName), "Element collection property cannot have an inversed joinColumn name");
                 Assert.state(isBlank(joinTableName), "ElementCollection property cannot have a joinTable name");
@@ -180,6 +184,11 @@ public class PropertyDefinition {
                                 "ElementCollection property's referenced column names may not be blank if there's more than 1 JoinColumn");
                     }
                 }
+            } else if (databaseType == PropertyDatabaseType.INVERSED_REFERENCE){
+                Assert.state(isBlank(columnName), "Element collection property cannot have a column name");
+                Assert.state(isBlank(inverseJoinColumnName), "Element collection property cannot have an inversed joinColumn name");
+                Assert.state(isBlank(joinTableName), "ElementCollection property cannot have a joinTable name");
+                Assert.state(isBlank(joinColumnName), "ElementCollection property cannot have a join column name");
             } else {
                 Assert.state(isNotBlank(columnName), "Column name cannot be blank");
             }

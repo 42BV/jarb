@@ -39,6 +39,9 @@ public final class StoreExcelRecordValue {
         case REFERENCE:
             StoreJoinColumn.storeValue(excel, definition, columnDefinition, rowPosition, excelRow);
             break;
+        case INVERSED_REFERENCE:
+            ///
+            break;
         }
     }
 

@@ -105,6 +105,7 @@ public class JpaHibernateSchemaMapper implements SchemaMapper {
         }
         return tableName;
     }
+    
 
     private Class<?> determineTableClass(Class<?> entityClass) {
         Class<?> tableClass = entityClass;

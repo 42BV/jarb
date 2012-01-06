@@ -25,6 +25,7 @@ class WorkbookExpectation {
 
     public WorkbookExpectation(MetaModel metamodel) {
         for (Definition entity : metamodel.entities()) {
+            if (entity instanceof EntityDefinition<?>){
             final String sheetName = JpaUtils.getTableNameOfDefinition(entity);
             // Each entity type has a specific sheet name
             sheetNames.add(sheetName);
@@ -42,17 +43,8 @@ class WorkbookExpectation {
                     joinColumnNames.add(property.getJoinColumnName());
                     joinColumnNames.add(property.getInverseJoinColumnName());
                     columnNamesMap.put(joinSheetName, joinColumnNames);
-                } else if (property.getDatabaseType() == PropertyDatabaseType.ELEMENT_COLLECTION) {
-                    //Element collections have their own sheet
-                    final String elementCollectionTableName = property.getName();
-                    sheetNames.add(elementCollectionTableName);
-
-                    //With the joinColumns and its own columns as columns
-                    Set<String> elementCollectionColumnNames = new HashSet<String>();
-                    elementCollectionColumnNames.addAll(property.getElementCollectionJoinColumnNames());
-                    elementCollectionColumnNames.addAll(ColumnMetadataRetriever.getColumnNamesForClass(ColumnMetadataRetriever
-                            .getCollectionContentsType(property)));
-                    columnNamesMap.put(elementCollectionTableName, elementCollectionColumnNames);
+                } else if (property.getDatabaseType() == PropertyDatabaseType.INVERSED_REFERENCE) {
+                    //TO DO: implement functionality.
                 } else {
                     // Regular properties are mapped to a column name
                     columnNames.add(property.getColumnName());
@@ -60,6 +52,7 @@ class WorkbookExpectation {
             }
             columnNamesMap.put(sheetName, columnNames);
         }
+       }
     }
 
     /**

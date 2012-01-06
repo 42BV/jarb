@@ -53,7 +53,7 @@ public class EntityDefinitionTest extends DefaultExcelTestDataCase {
 
     @Test
     public void testProperties() {
-        assertEquals(10, employeeDefinition.propertyDefinitions.size());
+        assertEquals(11, employeeDefinition.propertyDefinitions.size());
     }
 
     @Test
@@ -75,7 +75,7 @@ public class EntityDefinitionTest extends DefaultExcelTestDataCase {
 
     @Test
     public void testGetColumnNames() {
-        assertEquals(8, employeeDefinition.getColumnNames().size());
+        assertEquals(9, employeeDefinition.getColumnNames().size());
     }
 
     @Test

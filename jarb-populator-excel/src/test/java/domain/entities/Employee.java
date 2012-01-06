@@ -64,6 +64,9 @@ public final class Employee {
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "phones", joinColumns = @JoinColumn(name = "owner"))
     private List<Phone> phones;
+    
+    @ElementCollection
+    private List<EmailAddress> emailAddresses;
 
     /**
      * Public constructor, initializes projects hashmap.
@@ -207,5 +210,21 @@ public final class Employee {
      */
     public void setPhones(List<Phone> phones) {
         this.phones = phones;
+    }
+
+    /**
+     * Returns the Employee's collection of emailAddresses.
+     * @return Employee's email adresses.
+     */
+    public List<EmailAddress> getEmailAddresses() {
+        return emailAddresses;
+    }
+
+    /**
+     * Sets the Employee's email adresses.
+     * @param emailAddresses Employee's email adresses
+     */
+    public void setEmailAddresses(List<EmailAddress> emailAddresses) {
+        this.emailAddresses = emailAddresses;
     }
 }

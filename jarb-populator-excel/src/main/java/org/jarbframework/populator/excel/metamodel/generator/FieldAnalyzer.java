@@ -96,17 +96,7 @@ public class FieldAnalyzer {
 
     private PropertyDefinition.Builder elementCollectionDefinition(ElementCollection annotation, Field field) {
         PropertyDefinition.Builder propertyDefinition = PropertyDefinition.forField(field);
-        propertyDefinition.setDatabaseType(PropertyDatabaseType.ELEMENT_COLLECTION);
-        JoinColumn[] joinColumnArray = field.getAnnotation(javax.persistence.CollectionTable.class).joinColumns();
-        if (joinColumnArray.length >= 1) {
-            for (JoinColumn joinColumn : joinColumnArray) {
-                String referencedColumnName = joinColumn.referencedColumnName();
-                if (referencedColumnName.isEmpty()) {
-                    referencedColumnName = null;
-                }
-                propertyDefinition.putElementCollectionJoinColumnName(joinColumn.name(), referencedColumnName);
-            }
-        }
+        propertyDefinition.setDatabaseType(PropertyDatabaseType.INVERSED_REFERENCE);
         return propertyDefinition;
     }
 

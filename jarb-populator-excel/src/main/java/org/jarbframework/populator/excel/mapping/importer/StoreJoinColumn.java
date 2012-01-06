@@ -17,7 +17,7 @@ import org.slf4j.LoggerFactory;
 public final class StoreJoinColumn {
     private static final Logger LOGGER = LoggerFactory.getLogger(StoreJoinColumn.class);
 
-    /** Private constructor. */
+    /** Utility class, do not instantiate. */
     private StoreJoinColumn() {
     }
 
