@@ -22,6 +22,7 @@ public class InverseJoinColumnKey extends Key {
      * Sets the foreign key HashMap.
      * @param foreignKeyMap HashMap with JoinColumn names as keys and objects as values
      */
+    @Override
     @SuppressWarnings("unchecked")
     public void setKeyValue(Object foreignKeyMap) {
         Assert.isInstanceOf(HashMap.class, foreignKeyMap, "Key passed to InverseJoinColumnKey is not of type Hashmap.");

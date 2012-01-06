@@ -18,6 +18,7 @@ public class JoinTableKey extends Key {
      * Sets a single key value.
      * @param foreignKeyObject Foreign key on many-side referring to one-side
      */
+    @Override
     @SuppressWarnings("unchecked")
     public void setKeyValue(final Object foreignKeyObject) {
         Assert.isInstanceOf(Set.class, foreignKeyObject, "Key passed to JoinTableKey is not of type Set.");

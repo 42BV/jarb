@@ -19,12 +19,10 @@ import org.jarbframework.populator.excel.mapping.ValueConversionService;
 import org.jarbframework.populator.excel.metamodel.Definition;
 import org.jarbframework.populator.excel.metamodel.ElementCollectionDefinition;
 import org.jarbframework.populator.excel.metamodel.EntityDefinition;
-import org.jarbframework.populator.excel.metamodel.PropertyDatabaseType;
 import org.jarbframework.populator.excel.metamodel.PropertyDefinition;
 import org.jarbframework.populator.excel.util.JpaUtils;
 import org.jarbframework.populator.excel.workbook.Sheet;
 import org.jarbframework.populator.excel.workbook.Workbook;
-import org.jarbframework.utils.database.DatabaseType;
 import org.jarbframework.utils.orm.jpa.JpaMetaModelUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -247,7 +245,7 @@ public final class ExcelImporter {
         Map<String, Object> identifiers = new HashMap<String, Object>();
         Field elementCollectionField = getElementCollectionField(beanClass, enclosingClass);
         if (elementCollectionField.getAnnotation(CollectionTable.class) != null) {
-            CollectionTable collectionTable = (CollectionTable) elementCollectionField.getAnnotation(CollectionTable.class);
+            CollectionTable collectionTable = elementCollectionField.getAnnotation(CollectionTable.class);
             for (JoinColumn joinColumn : collectionTable.joinColumns()) {
                 Object identifierValue = getIdentifierValue(rowPosition, sheet, joinColumn.name());
                 identifiers.put(joinColumn.name(), identifierValue);

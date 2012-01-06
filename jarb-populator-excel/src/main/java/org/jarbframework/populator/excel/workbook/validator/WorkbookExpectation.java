@@ -16,7 +16,6 @@ import org.jarbframework.populator.excel.metamodel.EntityDefinition;
 import org.jarbframework.populator.excel.metamodel.MetaModel;
 import org.jarbframework.populator.excel.metamodel.PropertyDatabaseType;
 import org.jarbframework.populator.excel.metamodel.PropertyDefinition;
-import org.jarbframework.populator.excel.metamodel.generator.ColumnMetadataRetriever;
 import org.jarbframework.populator.excel.util.JpaUtils;
 
 class WorkbookExpectation {

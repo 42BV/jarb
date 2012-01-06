@@ -14,6 +14,7 @@ public class JoinColumnKey extends Key {
      * Sets key value to many-side.
      * @param foreignKeyObject Key object with reference to many-side
      */
+    @Override
     public void setKeyValue(final Object foreignKeyObject) {
         this.foreignKey = foreignKeyObject;
     }
