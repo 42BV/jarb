@@ -62,13 +62,13 @@ public class DefaultWorkbookValidator implements WorkbookValidator {
             String columnName = cell.getValueAsString();
             // Identifier column can have any type of string value
             //TO-DO fix New Excel File Generator for new style ElementCollections so null columns won't occur anymore.
-            if (columnName != null){
-            if (!(expectation.isExpectedColumn(sheet.getName(), columnName) || cell.getColNo() == Sheet.IDENTIFIER_COLUMN_NO)) {
-                String message = "Column '" + sheet.getName() + "." + columnName + "' does not exist in our mapping.";
-                validation.addSheetViolation(sheet.getName(), new WorkbookViolation(message, ViolationLevel.WARNING));
+            if (columnName != null) {
+                if (!(expectation.isExpectedColumn(sheet.getName(), columnName) || cell.getColNo() == Sheet.IDENTIFIER_COLUMN_NO)) {
+                    String message = "Column '" + sheet.getName() + "." + columnName + "' does not exist in our mapping.";
+                    validation.addSheetViolation(sheet.getName(), new WorkbookViolation(message, ViolationLevel.WARNING));
+                }
             }
         }
-       }
     }
 
     private void checkIfEachRowHasIdentifier(Sheet sheet, WorkbookValidationResult validation) {

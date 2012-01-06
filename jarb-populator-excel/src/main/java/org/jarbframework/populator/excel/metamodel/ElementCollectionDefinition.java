@@ -17,13 +17,13 @@ public class ElementCollectionDefinition<T> extends Definition {
 
     /** Name of the database table. */
     protected String tableName;
-   
+
     /** The entity class the elementCollection is enclosing in. */
     private final Class<T> enclosingClass;
 
     /** Entity class being described. */
     protected final Class<T> definedClass;
-    
+
     /**
      * Construct a new {@link ElementCollectionDefinition).
      * @param definedClass class being described
@@ -33,7 +33,7 @@ public class ElementCollectionDefinition<T> extends Definition {
         this.enclosingClass = enclosingClass;
 
     }
-    
+
     /**
      * Returns the tableName of the classDefinition.
      * @return tableName String
@@ -49,7 +49,7 @@ public class ElementCollectionDefinition<T> extends Definition {
     public Class<T> getDefinedClass() {
         return definedClass;
     }
-    
+
     /**
      * Start building a new {@link ElementCollectionDefinition}.
      * @param <T> type of class being described
@@ -71,7 +71,7 @@ public class ElementCollectionDefinition<T> extends Definition {
     public static class Builder<T> extends Definition.Builder<T> {
         private String tableName;
         private Class<T> definedClass;
-        
+
         /** The entity class the elementCollection is enclosing in. */
         private Class<T> enclosingClass;
 

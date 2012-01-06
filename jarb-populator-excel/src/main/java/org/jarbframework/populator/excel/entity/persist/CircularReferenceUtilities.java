@@ -21,7 +21,7 @@ public final class CircularReferenceUtilities {
     /** Utility class, do not attempt to instantiate. */
     private CircularReferenceUtilities() {
     }
-    
+
     /**
      * Returns true if the referencedObject has been handled in this iteration before, thus being an infinite loop.
      * @param referencedEntity Object to check the list for.

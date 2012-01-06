@@ -37,7 +37,7 @@ public final class JpaUtils {
     /** Utility class, do not attempt to instantiate. */
     private JpaUtils() {
     }
-    
+
     /**
      * Create a new {@link EntityManager}, using all configured properties.
      * @param entityManagerFactory factory that builds entity managers
@@ -66,32 +66,32 @@ public final class JpaUtils {
      * @return Defined class
      */
     //TO-DO Remove this function and replace by proper Definition type structure.
-    public static Class<?> getDefinedClassOfDefinition(Definition definition){
+    public static Class<?> getDefinedClassOfDefinition(Definition definition) {
         Class<?> definedClass = null;
-        if (definition instanceof EntityDefinition<?>){
+        if (definition instanceof EntityDefinition<?>) {
             definedClass = ((EntityDefinition<?>) definition).getDefinedClass();
-        } else if (definition instanceof ElementCollectionDefinition<?>){
+        } else if (definition instanceof ElementCollectionDefinition<?>) {
             definedClass = ((ElementCollectionDefinition<?>) definition).getDefinedClass();
         }
         return definedClass;
     }
-    
+
     /**
      * Returns the table name of passed definition if it possesses one.
      * @param definition Definition to get table name from
      * @return Table name
      */
     //TO-DO Remove this function and replace by proper Definition type structure.
-    public static String getTableNameOfDefinition(Definition definition){
+    public static String getTableNameOfDefinition(Definition definition) {
         String tableName = null;
-        if (definition instanceof EntityDefinition<?>){
+        if (definition instanceof EntityDefinition<?>) {
             tableName = ((EntityDefinition<?>) definition).getTableName();
-        } else if (definition instanceof ElementCollectionDefinition<?>){
+        } else if (definition instanceof ElementCollectionDefinition<?>) {
             tableName = ((ElementCollectionDefinition<?>) definition).getTableName();
         }
         return tableName;
     }
-    
+
     /**
      * Returns the @JoinColumns names from a JPA annotated field. If no @JoinColumn names are present, the JPA default will be deduced.
      * @param schemaMapper JPA schemamapper used to retrieve the table name
@@ -110,7 +110,7 @@ public final class JpaUtils {
             return new ArrayList<String>();
         }
     }
-    
+
     /**
      * Returns the @JoinColums names from an ElementCollection field.
      * @param schemaMapper JPA schemamapper used to retrieve the table name
@@ -120,14 +120,14 @@ public final class JpaUtils {
      */
     private static List<String> getJoinColumnNamesForElementCollectionField(SchemaMapper schemaMapper, EntityType<?> owningEntity, Field field) {
         List<String> joinColumnNames = new ArrayList<String>();
-        if (field.isAnnotationPresent(CollectionTable.class)){
+        if (field.isAnnotationPresent(CollectionTable.class)) {
             CollectionTable collectionTable = field.getAnnotation(CollectionTable.class);
-            for (JoinColumn joinColumn : collectionTable.joinColumns()){
+            for (JoinColumn joinColumn : collectionTable.joinColumns()) {
                 joinColumnNames.add(joinColumn.name());
             }
-        } 
-        
-        if (joinColumnNames.isEmpty()){
+        }
+
+        if (joinColumnNames.isEmpty()) {
             Class<?> owningClass = owningEntity.getJavaType();
             String owningClassDatabaseTableName = schemaMapper.tableNameOf(owningClass);
             String elementCollectionDatabaseAttributeName = getIdentifierColumnName(owningEntity);
@@ -135,36 +135,36 @@ public final class JpaUtils {
         }
         return joinColumnNames;
     }
-    
+
     /**
      * Returns the column name of the identifier field from the passed entity.
      * @param entity Entity to get the identifier field's column name from.
      * @return Identifier's column name
      */
     private static String getIdentifierColumnName(EntityType<?> entity) {
-        for (SingularAttribute<?,?> attribute : entity.getSingularAttributes()){
+        for (SingularAttribute<?, ?> attribute : entity.getSingularAttributes()) {
             if (attribute.isId()) {
                 return getJPAColumnNameOfSingularAttribute(attribute);
             }
         }
         throw new RuntimeException("Identifier field not found in entity '" + entity.getName() + "'");
     }
-    
+
     /**
      * Returns the JPA Column name for passed SingularAttribute. If no name is annotated in the @Column annotation or the @Column annotation is not present,
      * the field name will be returned (per JPA2 spec default).
      * @param singularAttribute Singular Attribute to get the JPA column name from
      * @return JPA Column name for passed SingularAttribute
      */
-    private static String getJPAColumnNameOfSingularAttribute(SingularAttribute<?,?> singularAttribute) {
+    private static String getJPAColumnNameOfSingularAttribute(SingularAttribute<?, ?> singularAttribute) {
         String columnName = "";
         Field field = (Field) singularAttribute.getJavaMember();
-        
-        if (field.isAnnotationPresent(Column.class)){
+
+        if (field.isAnnotationPresent(Column.class)) {
             columnName = field.getAnnotation(Column.class).name();
         }
-        
-        if (columnName.isEmpty()){
+
+        if (columnName.isEmpty()) {
             columnName = singularAttribute.getName();
         }
         return columnName;

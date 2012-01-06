@@ -86,11 +86,12 @@ public final class ForeignRelationsMapper {
             PropertyDefinition propertyDefinition) {
         ElementCollectionDefinition<?> key = getElementCollectionDefinitionOfField(propertyDefinition.getField(), elementCollectionRowMap);
         if (propertyAccessor.isWritableProperty(propertyDefinition.getName()) && (key != null)) {
-                //Now we have the proper ElementCollection. We need to add all ExcelRows that have the same key as this joincolumns combined.
-                Map<String, String> elementCollectionJoinColumns = propertyDefinition.getElementCollectionJoinColumns();
-                Map<String, Object> elementCollectionKeys = fillElementCollectionKeys(entityDefinition, excelRowIdentifier, propertyAccessor, elementCollectionJoinColumns);
-                propertyAccessor.setPropertyValue(propertyDefinition.getField().getName(), elementCollectionRowMap.get(key).get(elementCollectionKeys));
-            }
+            //Now we have the proper ElementCollection. We need to add all ExcelRows that have the same key as this joincolumns combined.
+            Map<String, String> elementCollectionJoinColumns = propertyDefinition.getElementCollectionJoinColumns();
+            Map<String, Object> elementCollectionKeys = fillElementCollectionKeys(entityDefinition, excelRowIdentifier, propertyAccessor,
+                    elementCollectionJoinColumns);
+            propertyAccessor.setPropertyValue(propertyDefinition.getField().getName(), elementCollectionRowMap.get(key).get(elementCollectionKeys));
+        }
     }
 
     /**
@@ -101,7 +102,8 @@ public final class ForeignRelationsMapper {
      * @param elementCollectionJoinColumns Collection of ElementCollectionJoinColumns which hold the referencedColumn names (the actual column names in the Entity class) and the JoinColumn names (columns in ELementCollection class referring to the actual ones)
      * @return Map with identifier columnnames and their values.
      */
-    private static Map<String, Object> fillElementCollectionKeys(EntityDefinition<?> entityDefinition, Object excelRowIdentifier, ModifiableBean<Object> propertyAccessor,
+    private static Map<String, Object> fillElementCollectionKeys(EntityDefinition<?> entityDefinition, Object excelRowIdentifier,
+            ModifiableBean<Object> propertyAccessor,
             Map<String, String> elementCollectionJoinColumns) {
         Map<String, Object> elementCollectionKeys = new HashMap<String, Object>();
         for (Entry<String, String> entry : elementCollectionJoinColumns.entrySet()) {
@@ -140,7 +142,8 @@ public final class ForeignRelationsMapper {
      * @param idColumnDictionary Dictionary to translate JoinColumn names to actual Column names of the Entity
      * @return Referenced column name
      */
-    private static String getReferencedColumnName(EntityDefinition<?> entityDefinition, Map<String, String> joinColumns, Entry<String, String> idColumnDictionary) {
+    private static String getReferencedColumnName(EntityDefinition<?> entityDefinition, Map<String, String> joinColumns,
+            Entry<String, String> idColumnDictionary) {
         String referencedColumnName = idColumnDictionary.getValue();
         if ((referencedColumnName == null) && (joinColumns.size() == 1)) {
             //Get the name of the Id annotated column in the entityDefinition

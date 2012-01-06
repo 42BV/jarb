@@ -6,7 +6,7 @@ public class EmbeddableElementCollectionDefinition<T> extends Definition {
 
     /** Entity class being described. */
     protected final Class<T> definedClass;
-    
+
     /**
      * Construct a new {@link EmbeddableElementCollectionDefinition).
      * @param definedClass class being described
@@ -14,7 +14,7 @@ public class EmbeddableElementCollectionDefinition<T> extends Definition {
     private EmbeddableElementCollectionDefinition(Class<T> entityClass) {
         this.definedClass = entityClass;
     }
-    
+
     /**
      * Returns the definedClass belonging to classDefinition.
      * @return definedClass instance from domain package
@@ -22,7 +22,7 @@ public class EmbeddableElementCollectionDefinition<T> extends Definition {
     public Class<T> getDefinedClass() {
         return definedClass;
     }
-    
+
     /**
      * Start building a new {@link EmbeddableElementCollectionDefinition}.
      * @param <T> type of class being described
@@ -32,11 +32,11 @@ public class EmbeddableElementCollectionDefinition<T> extends Definition {
     public static <T> Builder<T> forClass(Class<T> entityClass) {
         return new EmbeddableElementCollectionDefinition.Builder<T>(entityClass);
     }
-    
+
     public static class Builder<T> extends Definition.Builder<T> {
-        
+
         protected final Class<T> definedClass;
-        
+
         /**
          * Construct a new {@link Builder}.
          * @param definedClass class being described
@@ -44,7 +44,6 @@ public class EmbeddableElementCollectionDefinition<T> extends Definition {
         public Builder(Class<T> entityClass) {
             this.definedClass = entityClass;
         }
-        
 
         /**
          * Construct a new class definition that contains all previously configured attributes.
@@ -55,7 +54,7 @@ public class EmbeddableElementCollectionDefinition<T> extends Definition {
             embeddableElementCollectionDefinition.propertyDefinitions = Collections.unmodifiableSet(properties);
             return embeddableElementCollectionDefinition;
         }
-        
+
     }
-    
+
 }

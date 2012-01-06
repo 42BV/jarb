@@ -44,7 +44,7 @@ public class FieldAnalyzer {
         } else {
             String referencedColumnName = "";
             referencedColumnName = schemaMapper.columnOf(propertyReference).getColumnName();
-            
+
             if (!referencedColumnName.isEmpty()) {
                 columnDefinitionBuilder = PropertyDefinition.forField(field).setColumnName(referencedColumnName);
                 if (isAssociation(field)) {

@@ -25,34 +25,34 @@ class WorkbookExpectation {
 
     public WorkbookExpectation(MetaModel metamodel) {
         for (Definition entity : metamodel.entities()) {
-            if (entity instanceof EntityDefinition<?>){
-            final String sheetName = JpaUtils.getTableNameOfDefinition(entity);
-            // Each entity type has a specific sheet name
-            sheetNames.add(sheetName);
-            Set<String> columnNames = new HashSet<String>();
+            if (entity instanceof EntityDefinition<?>) {
+                final String sheetName = JpaUtils.getTableNameOfDefinition(entity);
+                // Each entity type has a specific sheet name
+                sheetNames.add(sheetName);
+                Set<String> columnNames = new HashSet<String>();
 
-            addDiscriminatorColumnNameIfApplicable(entity, columnNames);
+                addDiscriminatorColumnNameIfApplicable(entity, columnNames);
 
-            for (PropertyDefinition property : entity.properties()) {
-                if (property.getDatabaseType() == PropertyDatabaseType.COLLECTION_REFERENCE) {
-                    // Join table properties got their own sheet
-                    final String joinSheetName = property.getJoinTableName();
-                    sheetNames.add(joinSheetName);
-                    // With the join and inverse join as columns
-                    Set<String> joinColumnNames = new HashSet<String>();
-                    joinColumnNames.add(property.getJoinColumnName());
-                    joinColumnNames.add(property.getInverseJoinColumnName());
-                    columnNamesMap.put(joinSheetName, joinColumnNames);
-                } else if (property.getDatabaseType() == PropertyDatabaseType.INVERSED_REFERENCE) {
-                    //TO DO: implement functionality.
-                } else {
-                    // Regular properties are mapped to a column name
-                    columnNames.add(property.getColumnName());
+                for (PropertyDefinition property : entity.properties()) {
+                    if (property.getDatabaseType() == PropertyDatabaseType.COLLECTION_REFERENCE) {
+                        // Join table properties got their own sheet
+                        final String joinSheetName = property.getJoinTableName();
+                        sheetNames.add(joinSheetName);
+                        // With the join and inverse join as columns
+                        Set<String> joinColumnNames = new HashSet<String>();
+                        joinColumnNames.add(property.getJoinColumnName());
+                        joinColumnNames.add(property.getInverseJoinColumnName());
+                        columnNamesMap.put(joinSheetName, joinColumnNames);
+                    } else if (property.getDatabaseType() == PropertyDatabaseType.INVERSED_REFERENCE) {
+                        //TO DO: implement functionality.
+                    } else {
+                        // Regular properties are mapped to a column name
+                        columnNames.add(property.getColumnName());
+                    }
                 }
+                columnNamesMap.put(sheetName, columnNames);
             }
-            columnNamesMap.put(sheetName, columnNames);
         }
-       }
     }
 
     /**

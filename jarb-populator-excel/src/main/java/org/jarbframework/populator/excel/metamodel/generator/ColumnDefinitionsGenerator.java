@@ -37,10 +37,10 @@ public final class ColumnDefinitionsGenerator {
     /**
      * @see ColumnDefinitionsGenerator#createPropertyDefinitions(HashSet, IdentifiableType, Class)
      */
-    public List<PropertyDefinition> createPropertyDefinitions(ManagedType<?> type, Class<?> persistentClass){
+    public List<PropertyDefinition> createPropertyDefinitions(ManagedType<?> type, Class<?> persistentClass) {
         return createPropertyDefinitions(new HashSet<EntityType<?>>(), type, persistentClass);
     }
-    
+
     /**
      * Creates a list of columnDefinitions from an entity originated in the JPA meta-model.
      * @param subclassEntities Set of subclass entities
@@ -57,7 +57,7 @@ public final class ColumnDefinitionsGenerator {
         }
         return columnDefinitions;
     }
-    
+
     @Deprecated
     //Will be removed in next release
     public List<PropertyDefinition> createPropertyDefinitions(EmbeddableType<?> embeddableType, EntityType<?> enclosingType) {
@@ -119,7 +119,7 @@ public final class ColumnDefinitionsGenerator {
     }
 
     private void createSuperTypeColumnDefinitions(List<PropertyDefinition> columnDefinitions, ManagedType<?> type, Class<?> entityClass) {
-        if (type instanceof IdentifiableType<?>){
+        if (type instanceof IdentifiableType<?>) {
             IdentifiableType<?> superType = ((IdentifiableType<?>) type).getSupertype();
             if (superType != null) {
                 addAttributesAsColumnDefinitions(columnDefinitions, superType, entityClass);

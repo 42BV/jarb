@@ -27,7 +27,7 @@ public class PropertyDefinition {
     private String joinColumnName;
     private String inverseJoinColumnName;
     private InverseJoinColumnRelationProperties inverseJoinColumnRelationProperties;
-    
+
     private Map<String, String> elementCollectionJoinColumns;
 
     private PropertyDefinition(Field field) {
@@ -186,7 +186,7 @@ public class PropertyDefinition {
                                 "ElementCollection property's referenced column names may not be blank if there's more than 1 JoinColumn");
                     }
                 }
-            } else if (databaseType == PropertyDatabaseType.INVERSED_REFERENCE){
+            } else if (databaseType == PropertyDatabaseType.INVERSED_REFERENCE) {
                 Assert.state(isBlank(columnName), "Element collection property cannot have a column name");
                 Assert.state(isBlank(inverseJoinColumnName), "Element collection property cannot have an inversed joinColumn name");
                 Assert.state(isBlank(joinTableName), "ElementCollection property cannot have a joinTable name");

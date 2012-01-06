@@ -17,7 +17,7 @@ public final class InverseJoinColumnRelationProperties {
      * @param referencedTableName The destination tablename of the inversed JoinColumn relation
      * @param joinColumnNames The @JoinColumn names the destination table uses the refer back to its owner record
      */
-    public InverseJoinColumnRelationProperties(String referencedTableName, Collection<String> joinColumnNames){
+    public InverseJoinColumnRelationProperties(String referencedTableName, Collection<String> joinColumnNames) {
         this.setReferencedTableName(referencedTableName);
         this.setJoinColumnNames(joinColumnNames);
     }

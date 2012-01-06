@@ -27,7 +27,7 @@ public class MetaModel implements Iterable<Definition> {
         for (Definition classDefinition : classDefinitions) {
             entityDefinitionsMap.put(JpaUtils.getDefinedClassOfDefinition(classDefinition), classDefinition);
         }
-        
+
     }
 
     /**

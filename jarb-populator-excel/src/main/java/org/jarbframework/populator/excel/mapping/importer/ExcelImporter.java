@@ -263,7 +263,7 @@ public final class ExcelImporter {
         }
         return identifiers;
     }
-    
+
     /**
      * Adds the record to the proper map if its identifiers are unique. In case of an ElementCollectionDefinition row it will always be added.
      * @param sheet Excelsheet to get the sheetname from
@@ -337,7 +337,7 @@ public final class ExcelImporter {
      */
     private void storeExcelRecordByColumnDefinitions(final Workbook excel, final Definition definition, Integer rowPosition, ExcelRow excelRow) {
         for (PropertyDefinition columnDefinition : definition.properties()) {
-           valueStorer.storeValue(excel, definition, columnDefinition, rowPosition, excelRow);
+            valueStorer.storeValue(excel, definition, columnDefinition, rowPosition, excelRow);
         }
     }
 }

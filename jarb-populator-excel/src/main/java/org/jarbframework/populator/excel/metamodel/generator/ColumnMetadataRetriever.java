@@ -17,11 +17,11 @@ import org.springframework.util.Assert;
  *
  */
 public final class ColumnMetadataRetriever {
-    
+
     /** Utility class, do not attempt to instantiate. */
     private ColumnMetadataRetriever() {
     }
-    
+
     /**
      * Gets the Collection's content type. Should only be one in case of ElementCollections.
      * @param property PropertyDefinition to get the content type from.
@@ -33,7 +33,7 @@ public final class ColumnMetadataRetriever {
         Assert.isTrue(typeArguments.length == 1, "ElementCollection collection can only be of one type");
         return (Class<?>) typeArguments[0];
     }
-    
+
     /**
      * Retrieves all the column names of all fields in the passed Class that possess @Column annotations.
      * @param entityClass Class to pull the columnNames from.

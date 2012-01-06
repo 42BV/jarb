@@ -39,7 +39,7 @@ public final class StoreJoinColumn {
             excelRow.addValue(columnDefinition, joinColumnKey);
         }
     }
-    
+
     /**
      * Creates a JoinColumnKey. If the key is of a numeric type it will be cast to Integer to prevent Excel formatting issues.
      * @param propertyDefinition PropertyDefinition used to get the foreign class from
@@ -55,6 +55,5 @@ public final class StoreJoinColumn {
         joinColumnKey.setForeignClass(propertyDefinition.getField().getType());
         return joinColumnKey;
     }
-    
-    
+
 }

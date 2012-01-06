@@ -67,7 +67,7 @@ public class ExcelDatabaseUpdater implements DatabaseUpdater {
 
         ExcelDataManager excelDataManager = new ExcelDataManagerFactory(entityManagerFactory, loadValueConversionService()).build();
         excelDataManager.setStrict(strict);
-        
+
         try {
             excelDataManager.load(excelResource).persist();
         } catch (IOException e) {

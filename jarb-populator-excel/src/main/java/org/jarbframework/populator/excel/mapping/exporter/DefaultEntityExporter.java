@@ -71,7 +71,7 @@ public class DefaultEntityExporter implements EntityExporter {
         for (Object entity : registry.withClass(JpaUtils.getDefinedClassOfDefinition(classDefinition))) {
             exportEntity(entity, classDefinition, sheet);
         }
-        
+
     }
 
     /**

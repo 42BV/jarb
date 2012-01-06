@@ -23,15 +23,15 @@ public class EntityDefinition<T> extends Definition {
 
     /** Name of the database table. */
     protected String tableName;
-    
+
     /** Name of the discriminator column. **/
     private String discriminatorColumnName;
     /** Mapping of each subclass and the related discriminator value. */
     private Map<String, Class<? extends T>> subClasses;
-    
+
     /** Entity class being described. */
     protected final Class<T> definedClass;
-    
+
     /**
      * Returns the tableName of the classDefinition.
      * @return tableName String
@@ -39,7 +39,7 @@ public class EntityDefinition<T> extends Definition {
     public String getTableName() {
         return tableName;
     }
-    
+
     /**
      * Construct a new {@link EntityDefinition).
      * @param definedClass class being described
@@ -55,7 +55,7 @@ public class EntityDefinition<T> extends Definition {
     public Class<T> getDefinedClass() {
         return definedClass;
     }
-    
+
     /**
      * Start building a new {@link EntityDefinition}.
      * @param <T> type of class being described
@@ -135,12 +135,12 @@ public class EntityDefinition<T> extends Definition {
 
     public static class Builder<T> extends Definition.Builder<T> {
         private String tableName;
-        
+
         /** Name of the discriminator column. **/
         private String discriminatorColumnName;
 
         protected final Class<T> definedClass;
-        
+
         /** Mapping of each subclass and the related discriminator value. */
         private Map<String, Class<? extends T>> subClasses = new HashMap<String, Class<? extends T>>();
 

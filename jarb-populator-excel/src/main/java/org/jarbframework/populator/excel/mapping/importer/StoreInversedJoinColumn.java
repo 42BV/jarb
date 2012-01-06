@@ -8,11 +8,11 @@ import org.slf4j.LoggerFactory;
 
 public final class StoreInversedJoinColumn {
     private static final Logger LOGGER = LoggerFactory.getLogger(StoreInversedJoinColumn.class);
-    
+
     /** Utility class, do not instantiate. */
-    private StoreInversedJoinColumn(){
+    private StoreInversedJoinColumn() {
     }
-    
+
     /**
      * Stores an InversedJoinColumn in ExcelRow.
      * @param excel Representation of excel file
@@ -22,7 +22,7 @@ public final class StoreInversedJoinColumn {
      * @param excelRow ExcelRow to save to.
      */
     public static void storeValue(Workbook excel, Definition classDefinition, PropertyDefinition columnDefinition, Integer rowPosition, ExcelRow excelRow) {
-        
+
     }
-    
+
 }
