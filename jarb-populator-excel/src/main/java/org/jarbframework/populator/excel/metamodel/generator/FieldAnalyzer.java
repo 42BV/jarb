@@ -10,11 +10,14 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 
+import org.jarbframework.populator.excel.metamodel.InverseJoinColumnReferenceProperties;
 import org.jarbframework.populator.excel.metamodel.PropertyDatabaseType;
 import org.jarbframework.populator.excel.metamodel.PropertyDefinition;
+import org.jarbframework.populator.excel.util.JpaUtils;
 import org.jarbframework.utils.bean.BeanProperties;
 import org.jarbframework.utils.bean.PropertyReference;
 import org.jarbframework.utils.orm.SchemaMapper;
+import org.jarbframework.utils.orm.jpa.JpaMetaModelUtils;
 
 /**
  * Creates a ColumnDefinition from a field.
@@ -36,7 +39,7 @@ public class FieldAnalyzer {
             if (joinTable != null) {
                 columnDefinitionBuilder = joinTableDefinition(joinTable, field);
             } else if (elementCollection != null) {
-                columnDefinitionBuilder = elementCollectionDefinition(elementCollection, field);
+                columnDefinitionBuilder = inversedReferencePropertyDefinition(elementCollection, field);
             }
         } else {
             String referencedColumnName = "";
@@ -91,10 +94,18 @@ public class FieldAnalyzer {
                 .setJoinColumnName(joinColumnName).setInverseJoinColumnName(inverseJoinColumnName);
     }
 
-    private PropertyDefinition.Builder elementCollectionDefinition(ElementCollection annotation, Field field) {
+    private PropertyDefinition.Builder inversedReferencePropertyDefinition(ElementCollection annotation, Field field) {
         PropertyDefinition.Builder propertyDefinition = PropertyDefinition.forField(field);
         propertyDefinition.setDatabaseType(PropertyDatabaseType.INVERSED_REFERENCE);
+        propertyDefinition.setInverseJoinColumnReferenceProperties(inverseJoinColumnReferenceProperties(field));
         return propertyDefinition;
+    }
+    
+    private InverseJoinColumnReferenceProperties inverseJoinColumnReferenceProperties(Field field) {
+        InverseJoinColumnReferenceProperties inverseJoinColumnReferenceProperties = new InverseJoinColumnReferenceProperties();
+        //JpaUtils.getJoinColumnNamesFromJpaAnnotatedField(schemaMapper, field.getClass(), field);
+        //inverseJoinColumnReferenceProperties.setJoinColumnNames(joinColumnNames);
+        return inverseJoinColumnReferenceProperties;
     }
 
 }

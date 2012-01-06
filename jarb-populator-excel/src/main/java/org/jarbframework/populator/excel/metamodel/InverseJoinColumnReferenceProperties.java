@@ -7,20 +7,12 @@ import java.util.Collection;
  * @author Sander Benschop
  *
  */
-public final class InverseJoinColumnRelationProperties {
+public final class InverseJoinColumnReferenceProperties {
 
     private String referencedTableName;
     private Collection<String> joinColumnNames;
 
-    /**
-     * Constructor which creates an InverseJoinColumnRelationProperties.
-     * @param referencedTableName The destination tablename of the inversed JoinColumn relation
-     * @param joinColumnNames The @JoinColumn names the destination table uses the refer back to its owner record
-     */
-    public InverseJoinColumnRelationProperties(String referencedTableName, Collection<String> joinColumnNames) {
-        this.setReferencedTableName(referencedTableName);
-        this.setJoinColumnNames(joinColumnNames);
-    }
+
 
     /**
      * Returns the destination tablename of the inversed JoinColumn relation.

@@ -26,7 +26,7 @@ public class PropertyDefinition {
     private String joinTableName;
     private String joinColumnName;
     private String inverseJoinColumnName;
-    private InverseJoinColumnRelationProperties inverseJoinColumnRelationProperties;
+    private InverseJoinColumnReferenceProperties inverseJoinColumnReferenceProperties;
 
     private Map<String, String> elementCollectionJoinColumns;
 
@@ -109,10 +109,12 @@ public class PropertyDefinition {
         private String joinTableName;
         private String joinColumnName;
         private String inverseJoinColumnName;
-        /** Explanation: elementcollectionJoinColumns<ColumnName, ReferencedColumnName>. */
+        private InverseJoinColumnReferenceProperties inverseJoinColumnReferenceProperties;
+        
         private Map<String, String> elementCollectionJoinColumns;
         private boolean generatedValue = false;
         private boolean isIdColumn = false;
+        
 
         public Builder(Field field) {
             Assert.notNull(field, "Field cannot be null");
@@ -157,6 +159,17 @@ public class PropertyDefinition {
 
         public Builder setInverseJoinColumnName(String inverseJoinColumnName) {
             this.inverseJoinColumnName = inverseJoinColumnName;
+            return this;
+        }
+        
+        /**
+         * Sets the InverseJoinColumnReferenceProperties data structure, which holds information needed when coupling @ElementCollection tables 
+         * or @OneToMany tables with an @JoinColumn annotation on it.
+         * @param inverseJoinColumnReferenceProperties InverseJoinColumnReferenceProperties data structure
+         * @return This builder for method chaining
+         */
+        public Builder setInverseJoinColumnReferenceProperties(InverseJoinColumnReferenceProperties inverseJoinColumnReferenceProperties) {
+            this.inverseJoinColumnReferenceProperties = inverseJoinColumnReferenceProperties;
             return this;
         }
 
@@ -205,6 +218,7 @@ public class PropertyDefinition {
             definition.elementCollectionJoinColumns = elementCollectionJoinColumns;
             definition.generatedValue = generatedValue;
             definition.isIdColumn = isIdColumn;
+            definition.inverseJoinColumnReferenceProperties = inverseJoinColumnReferenceProperties;
             return definition;
         }
     }
@@ -245,20 +259,12 @@ public class PropertyDefinition {
     }
 
     /**
-     * Returns the InverseJoinColumnRelationProperties data structure, which holds information needed when coupling @ElementCollection tables 
+     * Returns the InverseJoinColumnReferenceProperties data structure, which holds information needed when coupling @ElementCollection tables 
      * or @OneToMany tables with an @JoinColumn annotation on it.
-     * @return InverseJoinColumnRelationProperties data structure
+     * @return InverseJoinColumnReferenceProperties data structure
      */
-    public InverseJoinColumnRelationProperties getInverseJoinColumnRelationProperties() {
-        return inverseJoinColumnRelationProperties;
+    public InverseJoinColumnReferenceProperties getInverseJoinColumnRelationProperties() {
+        return inverseJoinColumnReferenceProperties;
     }
 
-    /**
-     * Sets the InverseJoinColumnRelationProperties data structure, which holds information needed when coupling @ElementCollection tables 
-     * or @OneToMany tables with an @JoinColumn annotation on it.
-     * @param inverseJoinColumnRelationProperties InverseJoinColumnRelationProperties data structure
-     */
-    public void setInverseJoinColumnRelationProperties(InverseJoinColumnRelationProperties inverseJoinColumnRelationProperties) {
-        this.inverseJoinColumnRelationProperties = inverseJoinColumnRelationProperties;
-    }
 }
