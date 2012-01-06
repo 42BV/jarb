@@ -45,17 +45,17 @@ public class WorkbookTest {
         assertEquals(another, workbook.getSheet("another"));
         assertNull(workbook.getSheet("unknown"));
     }
-    
+
     @Test
-    public void testPreventDuplicateSheets(){
-    	final String sheetname = "test";
-    	workbook.createSheet(sheetname);
-    	try{
-    		workbook.createSheet(sheetname);
-    		fail();
-    	} catch (IllegalStateException e){
-    		assertEquals("Sheet '"+sheetname+"' already exists", e.getMessage());
-    	}
+    public void testPreventDuplicateSheets() {
+        final String sheetname = "test";
+        workbook.createSheet(sheetname);
+        try {
+            workbook.createSheet(sheetname);
+            fail();
+        } catch (IllegalStateException e) {
+            assertEquals("Sheet '" + sheetname + "' already exists", e.getMessage());
+        }
     }
 
 }

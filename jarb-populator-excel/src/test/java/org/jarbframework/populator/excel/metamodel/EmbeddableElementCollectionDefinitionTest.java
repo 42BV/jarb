@@ -21,7 +21,7 @@ public class EmbeddableElementCollectionDefinitionTest extends DefaultExcelTestD
 
     private Class<Phone> phone = Phone.class;
     private EmbeddableElementCollectionDefinition<Phone> phoneDefinition;
-    
+
     @Before
     public void prepareTest() {
         SchemaMapper schemaMapper = JpaHibernateSchemaMapper.usingNamingStrategyOf(getEntityManagerFactory());
@@ -31,13 +31,13 @@ public class EmbeddableElementCollectionDefinitionTest extends DefaultExcelTestD
         phoneBuilder.includeProperties(columnDefinitionsGenerator.createPropertyDefinitions(metamodel.embeddable(phone), phone));
         phoneDefinition = phoneBuilder.build();
     }
-    
+
     @Test
-    public void testGetColumnNames(){
+    public void testGetColumnNames() {
         Set<String> columnNames = new HashSet<String>();
         columnNames.add("phone_model");
         columnNames.add("phone_number");
         assertEquals(columnNames, phoneDefinition.getColumnNames());
     }
-    
+
 }

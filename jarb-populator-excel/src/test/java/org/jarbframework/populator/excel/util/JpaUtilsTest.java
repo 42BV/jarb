@@ -26,12 +26,12 @@ public class JpaUtilsTest extends DefaultExcelTestDataCase {
 
     private EntityDefinition<Employee> employeeDefinition;
     private Metamodel metamodel;
-    
+
     @Before
-    public void setupJpaUtilsTest(){
+    public void setupJpaUtilsTest() {
         Class<Employee> employee = Employee.class;
         EntityType<Employee> employeeEntity = getEntityManagerFactory().getMetamodel().entity(employee);
-        
+
         SchemaMapper schemaMapper = JpaHibernateSchemaMapper.usingNamingStrategyOf(getEntityManagerFactory());
         ColumnDefinitionsGenerator columnDefinitionsGenerator = new ColumnDefinitionsGenerator(schemaMapper);
 
@@ -39,10 +39,10 @@ public class JpaUtilsTest extends DefaultExcelTestDataCase {
         employeeBuilder.setTableName("employees");
         employeeBuilder.includeProperties(columnDefinitionsGenerator.createPropertyDefinitions(employeeEntity, employee));
         employeeDefinition = employeeBuilder.build();
-        
+
         metamodel = getEntityManagerFactory().getMetamodel();
     }
-    
+
     @Test
     public void testCreateEntityManager() {
         EntityManager em = JpaUtils.createEntityManager(getEntityManagerFactory());
@@ -58,14 +58,15 @@ public class JpaUtilsTest extends DefaultExcelTestDataCase {
         SchemaMapper schemaMapper = JpaHibernateSchemaMapper.usingNamingStrategyOf(getEntityManagerFactory());
         assertEquals(joinColumnNames, JpaUtils.getJoinColumnNamesFromJpaAnnotatedField(schemaMapper, metamodel.entity(Employee.class), phones.getField()));
     }
-    
+
     @Test
     public void testGetJoinColumnNamesFromElementCollectionFieldWithoutCollectionTable() {
         List<String> joinColumnNames = new ArrayList<String>();
         joinColumnNames.add("employees_employee_id");
         PropertyDefinition emailAdresses = employeeDefinition.property("emailAddresses");
         SchemaMapper schemaMapper = JpaHibernateSchemaMapper.usingNamingStrategyOf(getEntityManagerFactory());
-        assertEquals(joinColumnNames, JpaUtils.getJoinColumnNamesFromJpaAnnotatedField(schemaMapper, metamodel.entity(Employee.class), emailAdresses.getField()));
+        assertEquals(joinColumnNames,
+                JpaUtils.getJoinColumnNamesFromJpaAnnotatedField(schemaMapper, metamodel.entity(Employee.class), emailAdresses.getField()));
     }
-    
+
 }

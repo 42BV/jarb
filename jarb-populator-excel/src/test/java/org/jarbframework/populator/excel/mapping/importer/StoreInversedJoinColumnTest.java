@@ -23,18 +23,18 @@ import org.junit.Test;
 import domain.entities.Employee;
 import domain.entities.Phone;
 
-public class StoreInversedJoinColumnTest extends DefaultExcelImporterTest{
+public class StoreInversedJoinColumnTest extends DefaultExcelImporterTest {
 
     private EntityDefinition<Employee> employeeDefinition;
     private Workbook workbook;
     private ExcelRow excelRow;
     private InverseJoinColumnKey key;
-    
+
     @Before
-    public void setupStoreInversedJoinColumnTest() throws FileNotFoundException{
+    public void setupStoreInversedJoinColumnTest() throws FileNotFoundException {
         Class<Employee> employee = Employee.class;
         EntityType<Employee> employeeEntity = getEntityManagerFactory().getMetamodel().entity(employee);
-        
+
         SchemaMapper schemaMapper = JpaHibernateSchemaMapper.usingNamingStrategyOf(getEntityManagerFactory());
         ColumnDefinitionsGenerator columnDefinitionsGenerator = new ColumnDefinitionsGenerator(schemaMapper);
 
@@ -42,23 +42,23 @@ public class StoreInversedJoinColumnTest extends DefaultExcelImporterTest{
         employeeBuilder.setTableName("departments");
         employeeBuilder.includeProperties(columnDefinitionsGenerator.createPropertyDefinitions(new HashSet<EntityType<?>>(), employeeEntity, employee));
         employeeDefinition = employeeBuilder.build();
-        
+
         workbook = new PoiWorkbookParser().parse(new FileInputStream("src/test/resources/TemporaryExcelFileForNewStyleElementCollections.xls"));
         excelRow = new ExcelRow(employee);
-        
+
         key = new InverseJoinColumnKey();
         key.setForeignClass(Phone.class);
         HashMap<String, Object> keyValues = new HashMap<String, Object>();
         keyValues.put("employee_id", 8);
         key.setKeyValue(keyValues);
     }
-    
+
     @Ignore
     @Test
-    public void testStoreValue(){
+    public void testStoreValue() {
         PropertyDefinition propertyDefinition = employeeDefinition.property("phones");
         StoreInversedJoinColumn.storeValue(workbook, employeeDefinition, propertyDefinition, 1, excelRow);
         assertTrue(excelRow.getValueMap().containsKey(key));
     }
-    
+
 }

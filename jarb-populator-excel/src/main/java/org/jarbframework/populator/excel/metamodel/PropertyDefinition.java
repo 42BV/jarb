@@ -26,6 +26,8 @@ public class PropertyDefinition {
     private String joinTableName;
     private String joinColumnName;
     private String inverseJoinColumnName;
+    private InverseJoinColumnRelationProperties inverseJoinColumnRelationProperties;
+    
     private Map<String, String> elementCollectionJoinColumns;
 
     private PropertyDefinition(Field field) {
@@ -240,5 +242,23 @@ public class PropertyDefinition {
     @Override
     public String toString() {
         return String.format("Property: %s (%s)", columnName, getName());
+    }
+
+    /**
+     * Returns the InverseJoinColumnRelationProperties data structure, which holds information needed when coupling @ElementCollection tables 
+     * or @OneToMany tables with an @JoinColumn annotation on it.
+     * @return InverseJoinColumnRelationProperties data structure
+     */
+    public InverseJoinColumnRelationProperties getInverseJoinColumnRelationProperties() {
+        return inverseJoinColumnRelationProperties;
+    }
+
+    /**
+     * Sets the InverseJoinColumnRelationProperties data structure, which holds information needed when coupling @ElementCollection tables 
+     * or @OneToMany tables with an @JoinColumn annotation on it.
+     * @param inverseJoinColumnRelationProperties InverseJoinColumnRelationProperties data structure
+     */
+    public void setInverseJoinColumnRelationProperties(InverseJoinColumnRelationProperties inverseJoinColumnRelationProperties) {
+        this.inverseJoinColumnRelationProperties = inverseJoinColumnRelationProperties;
     }
 }

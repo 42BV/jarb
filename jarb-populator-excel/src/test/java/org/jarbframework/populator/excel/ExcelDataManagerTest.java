@@ -166,7 +166,7 @@ public class ExcelDataManagerTest extends DefaultExcelTestDataCase {
 
         final String outputFilePath = "src/test/resources/excel/generated/NewExcelFileFromDatabase.xls";
         excelDataManager.builder().include(CompanyVehicle.class, 42L, bugatti).write(outputFilePath);
-        
+
         CompanyVehicle result = excelDataManager.load(outputFilePath).entities().find(CompanyVehicle.class, bugatti.getId());
         assertNotNull("Car was not maintained during store and load.", result);
         assertEquals(bugatti.getId(), result.getId());

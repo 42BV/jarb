@@ -10,7 +10,6 @@ import javax.persistence.EntityManagerFactory;
 import org.jarbframework.populator.excel.ExcelDataManager;
 import org.jarbframework.populator.excel.ExcelDataManagerFactory;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +31,7 @@ public class NonTransactionalJpaEntityReaderTest {
     public void setUpExcelTestData() {
         excelDataManager = excelDataManagerFactory.build();
     }
- 
+
     public ExcelDataManager getExcelDataManager() {
         return excelDataManager;
     }
@@ -40,16 +39,16 @@ public class NonTransactionalJpaEntityReaderTest {
     public EntityManagerFactory getEntityManagerFactory() {
         return entityManagerFactory;
     }
-    
+
     @Test
     public void testFetchAll() throws FileNotFoundException {
-    	JpaEntityReader entityReader = new JpaEntityReader(getEntityManagerFactory());
+        JpaEntityReader entityReader = new JpaEntityReader(getEntityManagerFactory());
         getExcelDataManager().load("src/test/resources/Excel.xls").persist();
         try {
-        	entityReader.readAll();
-        	fail("IllegalStateException expected: 'Could not obtain Transactional EntityManager'");
-        } catch (IllegalStateException ise){
-        	assertEquals("Could not obtain Transactional EntityManager", ise.getMessage());
+            entityReader.readAll();
+            fail("IllegalStateException expected: 'Could not obtain Transactional EntityManager'");
+        } catch (IllegalStateException ise) {
+            assertEquals("Could not obtain Transactional EntityManager", ise.getMessage());
         }
     }
 }

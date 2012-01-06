@@ -64,7 +64,7 @@ public final class Employee {
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "phones", joinColumns = @JoinColumn(name = "owner"))
     private List<Phone> phones;
-    
+
     @ElementCollection
     private List<EmailAddress> emailAddresses;
 

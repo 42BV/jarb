@@ -22,11 +22,11 @@ import domain.entities.Employee;
 import domain.entities.Phone;
 
 public class ColumnDefinitionsGeneratorTest extends DefaultExcelTestDataCase {
-    
+
     private ColumnDefinitionsGenerator columnDefinitionsGenerator;
 
     private Metamodel metamodel;
-    
+
     @Before
     public void setUp() {
         columnDefinitionsGenerator = new ColumnDefinitionsGenerator(JpaHibernateSchemaMapper.usingNamingStrategyOf(getEntityManagerFactory()));
@@ -57,9 +57,9 @@ public class ColumnDefinitionsGeneratorTest extends DefaultExcelTestDataCase {
         classDefinitionBuilder.includeProperties(columnDefinitionsGenerator.createPropertyDefinitions(subClassEntities, entity, persistentClass));
         assertEquals(Address.class.getDeclaredField("streetAndNumber"), classDefinitionBuilder.build().property("streetAndNumber").getField());
     }
-    
+
     @Test
-    public void testCreatePropertyDefinitionsGeneratorForEmbeddableElementCollection(){
+    public void testCreatePropertyDefinitionsGeneratorForEmbeddableElementCollection() {
         Class<Phone> phone = Phone.class;
         EmbeddableType<?> embeddable = metamodel.embeddable(phone);
         EmbeddableElementCollectionDefinition.Builder<Phone> phoneDefinitionBuilder = EmbeddableElementCollectionDefinition.forClass(Phone.class);
