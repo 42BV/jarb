@@ -79,8 +79,8 @@ public class JdbcColumnMetadataRepository implements ColumnMetadataRepository {
             columnMetadata.setMaximumLength(getValueAsInteger(resultSet, "COLUMN_SIZE"));
             columnMetadata.setFractionLength(getValueAsInteger(resultSet, "DECIMAL_DIGITS"));
             columnMetadata.setRadix(getValueAsInteger(resultSet, "NUM_PREC_RADIX"));
-            columnMetadata.setRequired("NO".equals(getValueSafely(resultSet, "IS_NULLABLE")));
-            columnMetadata.setAutoIncrement("YES".equals(getValueSafely(resultSet, "IS_AUTOINCREMENT")));
+            columnMetadata.setRequired("NO".equals(getOptionalValue(resultSet, "IS_NULLABLE")));
+            columnMetadata.setAutoIncrement("YES".equals(getOptionalValue(resultSet, "IS_AUTOINCREMENT")));
         }
         return columnMetadata;
     }
@@ -93,13 +93,14 @@ public class JdbcColumnMetadataRepository implements ColumnMetadataRepository {
         return Integer.parseInt(numberAsString);
     }
 
-    private Object getValueSafely(ResultSet resultSet, String columnLabel) {
+    private Object getOptionalValue(ResultSet resultSet, String columnLabel) {
+        Object value = null;
         try {
-            return resultSet.getObject(columnLabel);
+            value = resultSet.getObject(columnLabel);
         } catch (SQLException e) {
-            logger.debug("Could not extract '" + columnLabel + "' from result set");
-            return null;
+            logger.debug("Column '" + columnLabel + "'  value could not be extracted from result set", e);
         }
+        return value;
     }
     
     public void setCatalog(String catalog) {
