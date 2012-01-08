@@ -16,14 +16,20 @@ import org.jarbframework.validation.ViolationMessageBuilder.ViolationMessageTemp
  * @since 20-10-2011
  */
 public final class DatabaseConstraintValidationContext {
+    
+    /** Context of the global bean validation. **/
     private final ConstraintValidatorContext validatorContext;
+    
+    /** Used to build database constraint violation messages. **/
     private final ViolationMessageBuilder messageBuilder;
+    
+    /** Describes if this context is still valid, meaning it has no violations. **/
     private boolean valid = true;
 
     DatabaseConstraintValidationContext(ConstraintValidatorContext validatorContext, ViolationMessageBuilder messageBuilder) {
         this.validatorContext = validatorContext;
-        this.messageBuilder = messageBuilder;
         validatorContext.disableDefaultConstraintViolation();
+        this.messageBuilder = messageBuilder;
     }
 
     /**
@@ -37,20 +43,22 @@ public final class DatabaseConstraintValidationContext {
     /**
      * Start building a new database constraint violation. Note that the violation will only
      * be stored after invoking {@link DatabaseConstraintViolationBuilder#addToContext()}.
-     * @param propertyRef reference to the property that was violated
+     * @param propertyReference reference to the property that was violated
      * @param templateName name of the message template
-     * @return new violation builder
+     * @return new database constraint violation builder
      */
-    public ViolationBuilder buildViolationWithTemplate(PropertyReference propertyRef, String templateName) {
-        return new ViolationBuilder(propertyRef, templateName);
+    public ViolationBuilder buildViolationWithTemplate(PropertyReference propertyReference, String templateName) {
+        return new ViolationBuilder(propertyReference, templateName);
     }
 
     /**
      * Used to build and include a new constraint violation to our context.
      */
     public class ViolationBuilder {
+        
         /** Reference to the property that was rejected **/
         private final PropertyReference propertyReference;
+        
         /** Template of the violation message that should be supplied **/
         private ViolationMessageTemplate template;
 

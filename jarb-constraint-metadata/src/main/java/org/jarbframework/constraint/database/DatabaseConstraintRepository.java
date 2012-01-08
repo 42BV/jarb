@@ -3,9 +3,9 @@
  */
 package org.jarbframework.constraint.database;
 
-import org.jarbframework.constraint.database.column.ColumnMetadata;
 import org.jarbframework.utils.bean.PropertyReference;
 import org.jarbframework.utils.orm.ColumnReference;
+import org.jarbframework.utils.orm.SchemaMapper;
 
 /**
  * Provides access to the constraint meta-data of a database.
@@ -13,7 +13,22 @@ import org.jarbframework.utils.orm.ColumnReference;
  * @author Jeroen van Schagen
  * @date Sep 6, 2011
  */
-public interface DatabaseConstraintRepository {
+public class DatabaseConstraintRepository {
+
+    /** Retrieves column meta-data. **/
+    private ColumnMetadataRepository columnMetadataRepository;
+
+    /** Maps beans and properties to tables and columns. **/
+    private SchemaMapper schemaMapper;
+
+    /**
+     * Retrieve the meta-data of a specific database column.
+     * @param columnReference reference to a column
+     * @return description of the column, if any
+     */
+    public ColumnMetadata getColumnMetadata(ColumnReference columnReference) {
+        return columnMetadataRepository.getColumnMetadata(columnReference);
+    }
 
     /**
      * Retrieve the meta-data of a specific database column.
@@ -22,7 +37,9 @@ public interface DatabaseConstraintRepository {
      * @return description of the column, if any
      * @throws CouldNotBeMappedToColumnException whenever some property could not be mapped to a column
      */
-    ColumnMetadata getColumnMetadata(Class<?> beanClass, String propertyName);
+    public ColumnMetadata getColumnMetadata(Class<?> beanClass, String propertyName) {
+        return getColumnMetadata(new PropertyReference(beanClass, propertyName));
+    }
 
     /**
      * Retrieve the meta-data of a specific database column.
@@ -30,13 +47,20 @@ public interface DatabaseConstraintRepository {
      * @return description of the column, if any
      * @throws CouldNotBeMappedToColumnException whenever some property could not be mapped to a column
      */
-    ColumnMetadata getColumnMetadata(PropertyReference propertyReference);
+    public ColumnMetadata getColumnMetadata(PropertyReference propertyReference) {
+        ColumnReference columnReference = schemaMapper.columnOf(propertyReference);
+        if (columnReference == null) {
+            throw new CouldNotBeMappedToColumnException("Property '" + propertyReference + "' could not be mapped to a column.");
+        }
+        return getColumnMetadata(columnReference);
+    }
 
-    /**
-     * Retrieve the meta-data of a specific database column.
-     * @param columnReference reference to a column
-     * @return description of the column, if any
-     */
-    ColumnMetadata getColumnMetadata(ColumnReference columnReference);
+    public void setColumnMetadataRepository(ColumnMetadataRepository columnMetadataRepository) {
+        this.columnMetadataRepository = columnMetadataRepository;
+    }
+
+    public void setSchemaMapper(SchemaMapper schemaMapper) {
+        this.schemaMapper = schemaMapper;
+    }
 
 }

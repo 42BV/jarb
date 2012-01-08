@@ -2,17 +2,18 @@ package org.jarbframework.validation;
 
 import static org.jarbframework.utils.bean.BeanAnnotationScanner.fieldOrGetter;
 
+import org.jarbframework.constraint.database.ColumnMetadata;
 import org.jarbframework.constraint.database.DatabaseGenerated;
-import org.jarbframework.constraint.database.column.ColumnMetadata;
 import org.jarbframework.utils.bean.PropertyReference;
 
 public class NotNullConstraintValidationStep implements DatabaseConstraintValidationStep {
+    
     private static final String NOT_NULL_VIOLATION_TEMPLATE = "{javax.validation.constraints.NotNull.message}";
 
     @Override
-    public void validate(Object propertyValue, PropertyReference propertyRef, ColumnMetadata columnMetadata, DatabaseConstraintValidationContext validation) {
+    public void validate(Object propertyValue, PropertyReference propertyRef, ColumnMetadata columnMetadata, DatabaseConstraintValidationContext context) {
         if (propertyValue == null && valueIsExpected(propertyRef, columnMetadata)) {
-            validation.buildViolationWithTemplate(propertyRef, NOT_NULL_VIOLATION_TEMPLATE).addToContext();
+            context.buildViolationWithTemplate(propertyRef, NOT_NULL_VIOLATION_TEMPLATE).addToContext();
         }
     }
 
@@ -23,4 +24,5 @@ public class NotNullConstraintValidationStep implements DatabaseConstraintValida
     private boolean isGeneratable(PropertyReference propertyRef, ColumnMetadata columnMetadata) {
         return columnMetadata.isGeneratable() || fieldOrGetter().hasAnnotation(propertyRef, DatabaseGenerated.class);
     }
+    
 }

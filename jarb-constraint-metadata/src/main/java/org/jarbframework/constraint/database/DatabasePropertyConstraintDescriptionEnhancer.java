@@ -4,7 +4,6 @@ import static org.jarbframework.utils.Asserts.notNull;
 
 import org.jarbframework.constraint.PropertyConstraintDescription;
 import org.jarbframework.constraint.PropertyConstraintEnhancer;
-import org.jarbframework.constraint.database.column.ColumnMetadata;
 import org.jarbframework.utils.bean.PropertyReference;
 import org.jarbframework.utils.orm.NotAnEntityException;
 import org.slf4j.Logger;

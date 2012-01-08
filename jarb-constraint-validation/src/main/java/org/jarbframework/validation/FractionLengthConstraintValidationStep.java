@@ -2,16 +2,17 @@ package org.jarbframework.validation;
 
 import java.math.BigDecimal;
 
-import org.jarbframework.constraint.database.column.ColumnMetadata;
+import org.jarbframework.constraint.database.ColumnMetadata;
 import org.jarbframework.utils.bean.PropertyReference;
 
 public class FractionLengthConstraintValidationStep implements DatabaseConstraintValidationStep {
+    
     private static final String FRACTION_LENGTH_TEMPLATE = "{org.jarb.validation.DatabaseConstraint.FractionLength.message}";
 
     @Override
-    public void validate(Object propertyValue, PropertyReference propertyRef, ColumnMetadata columnMetadata, DatabaseConstraintValidationContext validation) {
+    public void validate(Object propertyValue, PropertyReference propertyRef, ColumnMetadata columnMetadata, DatabaseConstraintValidationContext context) {
         if (fractionLengthExceeded(propertyValue, columnMetadata)) {
-            validation.buildViolationWithTemplate(propertyRef, FRACTION_LENGTH_TEMPLATE)
+            context.buildViolationWithTemplate(propertyRef, FRACTION_LENGTH_TEMPLATE)
                           .attribute("max", columnMetadata.getFractionLength())
                           .value(propertyValue)
                               .addToContext();
@@ -30,4 +31,5 @@ public class FractionLengthConstraintValidationStep implements DatabaseConstrain
         BigDecimal numberAsBigDecimal = new BigDecimal(number.toString());
         return numberAsBigDecimal.scale() < 0 ? 0 : numberAsBigDecimal.scale();
     }
+    
 }

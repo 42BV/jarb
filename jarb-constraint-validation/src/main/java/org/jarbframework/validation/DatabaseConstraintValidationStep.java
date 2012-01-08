@@ -1,6 +1,6 @@
 package org.jarbframework.validation;
 
-import org.jarbframework.constraint.database.column.ColumnMetadata;
+import org.jarbframework.constraint.database.ColumnMetadata;
 import org.jarbframework.utils.bean.PropertyReference;
 
 /**

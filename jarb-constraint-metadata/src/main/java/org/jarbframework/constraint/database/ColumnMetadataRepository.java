@@ -1,4 +1,4 @@
-package org.jarbframework.constraint.database.column;
+package org.jarbframework.constraint.database;
 
 import org.jarbframework.utils.orm.ColumnReference;
 

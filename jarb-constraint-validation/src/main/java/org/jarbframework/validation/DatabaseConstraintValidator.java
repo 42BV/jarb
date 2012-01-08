@@ -8,8 +8,8 @@ import java.util.List;
 import javax.validation.ConstraintValidatorContext;
 import javax.validation.MessageInterpolator;
 
+import org.jarbframework.constraint.database.ColumnMetadata;
 import org.jarbframework.constraint.database.DatabaseConstraintRepository;
-import org.jarbframework.constraint.database.column.ColumnMetadata;
 import org.jarbframework.utils.bean.BeanProperties;
 import org.jarbframework.utils.bean.ModifiableBean;
 import org.jarbframework.utils.bean.PropertyReference;

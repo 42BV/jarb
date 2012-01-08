@@ -5,9 +5,7 @@ import static org.junit.Assert.fail;
 
 import org.easymock.EasyMock;
 import org.jarbframework.constraint.database.CouldNotBeMappedToColumnException;
-import org.jarbframework.constraint.database.DatabaseConstraintRepositoryImpl;
-import org.jarbframework.constraint.database.column.ColumnMetadata;
-import org.jarbframework.constraint.database.column.ColumnMetadataRepository;
+import org.jarbframework.constraint.database.DatabaseConstraintRepository;
 import org.jarbframework.constraint.domain.Person;
 import org.jarbframework.utils.bean.PropertyReference;
 import org.jarbframework.utils.orm.ColumnReference;
@@ -21,8 +19,8 @@ import org.junit.Test;
  * @author Jeroen van Schagen
  * @since 20-05-2011
  */
-public class DatabaseConstraintRepositoryImplTest {
-    private DatabaseConstraintRepositoryImpl databaseConstraintRepository;
+public class DatabaseConstraintRepositoryTest {
+    private DatabaseConstraintRepository databaseConstraintRepository;
 
     private ColumnMetadataRepository columnMetadataRepository;
     private SchemaMapper schemaMapper;
@@ -31,7 +29,7 @@ public class DatabaseConstraintRepositoryImplTest {
     public void setUp() {
         columnMetadataRepository = EasyMock.createMock(ColumnMetadataRepository.class);
         schemaMapper = EasyMock.createMock(SchemaMapper.class);
-        databaseConstraintRepository = new DatabaseConstraintRepositoryImpl();
+        databaseConstraintRepository = new DatabaseConstraintRepository();
         databaseConstraintRepository.setColumnMetadataRepository(columnMetadataRepository);
         databaseConstraintRepository.setSchemaMapper(schemaMapper);
     }

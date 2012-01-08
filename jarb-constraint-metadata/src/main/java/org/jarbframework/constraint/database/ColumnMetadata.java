@@ -1,7 +1,8 @@
-package org.jarbframework.constraint.database.column;
+package org.jarbframework.constraint.database;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
+import org.jarbframework.utils.Asserts;
 import org.jarbframework.utils.orm.ColumnReference;
 
 /**
@@ -11,8 +12,10 @@ import org.jarbframework.utils.orm.ColumnReference;
  * @since 20-05-2011
  */
 public class ColumnMetadata {
+    
     /** Reference to the column **/
     private final ColumnReference columnReference;
+    
     /** Determines if a not-null value is required **/
     private boolean required;
     /** Determines if the database can auto increment **/
@@ -31,7 +34,7 @@ public class ColumnMetadata {
      * @param columnReference reference to the column
      */
     public ColumnMetadata(ColumnReference columnReference) {
-        this.columnReference = columnReference;
+        this.columnReference = Asserts.notNull(columnReference, "Column reference cannot be null");
     }
 
     /**
@@ -161,9 +164,6 @@ public class ColumnMetadata {
         this.fractionLength = fractionLength;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean equals(Object obj) {
         boolean equals = false;
@@ -173,17 +173,11 @@ public class ColumnMetadata {
         return equals;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public int hashCode() {
         return columnReference.hashCode();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String toString() {
         return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);

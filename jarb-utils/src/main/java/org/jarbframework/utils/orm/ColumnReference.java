@@ -19,13 +19,18 @@ public class ColumnReference {
     private String columnName;
 
     /**
-     * Create columnReference for Definition of type EMBEDDABLE_ENTITYDEFINITION
-     * @param columnName ColumnName to give the columnReference
+     * Create a new database column reference.
+     * @param columnName name of the column
      */
     public ColumnReference(String columnName) {
         this.columnName = hasText(columnName, "Column name is required");
     }
     
+    /**
+     * Create a new database column reference.
+     * @param tableName name of the table
+     * @param columnName name of the column
+     */
     public ColumnReference(String tableName, String columnName) {
         this.tableName = hasText(tableName, "Table name is required");
         this.columnName = hasText(columnName, "Column name is required");

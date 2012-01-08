@@ -2,16 +2,17 @@ package org.jarbframework.validation;
 
 import java.math.BigDecimal;
 
-import org.jarbframework.constraint.database.column.ColumnMetadata;
+import org.jarbframework.constraint.database.ColumnMetadata;
 import org.jarbframework.utils.bean.PropertyReference;
 
 public class LengthConstraintValidationStep implements DatabaseConstraintValidationStep {
+    
     private static final String LENGTH_VIOLATION_TEMPLATE = "{org.jarb.validation.DatabaseConstraint.Length.message}";
 
     @Override
-    public void validate(Object propertyValue, PropertyReference propertyRef, ColumnMetadata columnMetadata, DatabaseConstraintValidationContext validation) {
+    public void validate(Object propertyValue, PropertyReference propertyRef, ColumnMetadata columnMetadata, DatabaseConstraintValidationContext context) {
         if(lengthExceeded(propertyValue, columnMetadata)) {
-            validation.buildViolationWithTemplate(propertyRef, LENGTH_VIOLATION_TEMPLATE)
+            context.buildViolationWithTemplate(propertyRef, LENGTH_VIOLATION_TEMPLATE)
                           .attribute("max", columnMetadata.getMaximumLength())
                           .value(propertyValue)
                               .addToContext();
@@ -33,4 +34,5 @@ public class LengthConstraintValidationStep implements DatabaseConstraintValidat
     private int numberOfDigits(Number number) {
         return new BigDecimal(number.toString()).precision();
     }
+    
 }

@@ -94,7 +94,7 @@
     </bean>
     
 	<!-- Provides column meta-data, required for validation and bean description -->
-    <bean id="databaseConstraintRepository" class="org.jarbframework.constraint.database.DatabaseConstraintRepositoryFactoryBean">
+	<bean id="databaseConstraintRepository"  class="org.jarbframework.constraint.database.JdbcCachingDatabaseConstraintRepositoryFactoryBean">
         <property name="dataSource" ref="dataSource"/>
         <property name="schemaMapper">
             <bean class="org.jarbframework.utils.orm.jpa.JpaHibernateSchemaMapper" factory-method="usingNamingStrategyOf">
