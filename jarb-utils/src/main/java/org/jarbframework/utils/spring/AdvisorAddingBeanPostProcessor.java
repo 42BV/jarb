@@ -1,5 +1,6 @@
 package org.jarbframework.utils.spring;
 
+import org.jarbframework.utils.Asserts;
 import org.springframework.aop.Advisor;
 import org.springframework.aop.framework.Advised;
 import org.springframework.aop.framework.AopInfrastructureBean;
@@ -8,7 +9,6 @@ import org.springframework.aop.framework.ProxyFactory;
 import org.springframework.aop.support.AopUtils;
 import org.springframework.beans.factory.BeanClassLoaderAware;
 import org.springframework.beans.factory.config.BeanPostProcessor;
-import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
 
 /**
@@ -54,7 +54,7 @@ public abstract class AdvisorAddingBeanPostProcessor extends ProxyConfig impleme
      */
     @Override
     public Object postProcessAfterInitialization(Object bean, String beanName) {
-        Assert.state(advisor != null, "Cannot add a null pointer advisor to beans.");
+        Asserts.state(advisor != null, "Cannot add a null pointer advisor to beans.");
 
         Object result = bean;
         if (!(bean instanceof AopInfrastructureBean) && (AopUtils.canApply(advisor, AopUtils.getTargetClass(bean)))) {

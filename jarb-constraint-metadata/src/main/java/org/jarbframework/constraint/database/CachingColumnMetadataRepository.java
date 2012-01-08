@@ -1,7 +1,7 @@
 package org.jarbframework.constraint.database;
 
+import org.jarbframework.utils.Asserts;
 import org.jarbframework.utils.orm.ColumnReference;
-import org.springframework.util.Assert;
 
 /**
  * Repository that loads all constraint meta-data in memory, minimizing database
@@ -24,8 +24,7 @@ public class CachingColumnMetadataRepository implements ColumnMetadataRepository
      * @param columnMetadataRepository provides column meta-data for our cache
      */
     public CachingColumnMetadataRepository(ColumnMetadataRepository columnMetadataRepository) {
-        Assert.notNull(columnMetadataRepository, "Delegate column metadata repository cannot be null.");
-        this.columnMetadataRepository = columnMetadataRepository;
+        this.columnMetadataRepository = Asserts.notNull(columnMetadataRepository, "Delegate column metadata repository cannot be null.");
     }
 
     @Override
