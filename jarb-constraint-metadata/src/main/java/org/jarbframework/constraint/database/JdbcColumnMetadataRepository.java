@@ -146,7 +146,7 @@ public class JdbcColumnMetadataRepository implements ColumnMetadataRepository {
         private boolean isQuoted(String identifier) {
             boolean quoted = false;
             if(StringUtils.isNotBlank(identifierQuoteString)) {
-                quoted = StringUtils.startsWith(identifier, identifierQuoteString);
+                quoted = StringUtils.startsWith(identifier, identifierQuoteString) && StringUtils.endsWith(identifier, identifierQuoteString);
             }
             return quoted;
         }
@@ -154,9 +154,9 @@ public class JdbcColumnMetadataRepository implements ColumnMetadataRepository {
         private String caseQuotedIdentifier(String identifier) {
             String unquotedIdentifier = StringUtils.substringBetween(identifier, identifierQuoteString);
             if(storesLowerCaseQuotedIdentifiers) {
-                unquotedIdentifier = StringUtils.lowerCase(identifier);
+                unquotedIdentifier = StringUtils.lowerCase(unquotedIdentifier);
             } else if(storesUpperCaseQuotedIdentifiers) {
-                unquotedIdentifier = StringUtils.upperCase(identifier);
+                unquotedIdentifier = StringUtils.upperCase(unquotedIdentifier);
             }
             return unquotedIdentifier;
         }

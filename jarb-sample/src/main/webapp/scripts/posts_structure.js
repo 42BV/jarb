@@ -7,15 +7,15 @@
 
 $.getJSON('posts/structure.json', function(data) {
 
-	$.each(data.beanConstraintDescription.properties, function(index, property) {
-		var inputField = $('input[name=' + property.name + ']');
-		inputField.attr('minlength', property.minimumLength);
-		inputField.attr('length', property.maximumLength);
-		if(property.required) {
-			$('label[for=' + property.name + "]").append(" (*)");
+	$.each(data.beanConstraintDescription.propertyDescriptions, function(index, propertyDescription) {
+		var inputField = $('input[name=' + propertyDescription.name + ']');
+		inputField.attr('minlength', propertyDescription.minimumLength);
+		inputField.attr('length', propertyDescription.maximumLength);
+		if(propertyDescription.required) {
+			$('label[for=' + propertyDescription.name + "]").append(" (*)");
 			inputField.addClass('required');
 		}
-		$.each(property.types, function(index, propertyType) {
+		$.each(propertyDescription.types, function(index, propertyType) {
 			inputField.addClass(propertyType);
 		});
 	});

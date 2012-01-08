@@ -16,6 +16,7 @@ import org.springframework.beans.BeanUtils;
  * @since 31-05-2011
  */
 public class BeanConstraintDescriptorImpl implements BeanConstraintDescriptor {
+    
     private final List<PropertyConstraintEnhancer> propertyConstraintEnhancers = new ArrayList<PropertyConstraintEnhancer>();
 
     @Override

@@ -14,19 +14,16 @@ import org.jarbframework.constraint.PropertyConstraintEnhancer;
  */
 public class NotEmptyPropertyConstraintEnhancer implements PropertyConstraintEnhancer {
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
-    public PropertyConstraintDescription enhance(PropertyConstraintDescription propertyConstraints) {
-        if (fieldOrGetter().hasAnnotation(propertyConstraints.toPropertyReference(), NotEmpty.class)) {
+    public PropertyConstraintDescription enhance(PropertyConstraintDescription description) {
+        if (fieldOrGetter().hasAnnotation(description.toPropertyReference(), NotEmpty.class)) {
             // When a property cannot be empty, it has a minimum length of at least 1
             // If our description already has a greater minimum length, do nothing
-            if ((propertyConstraints.getMinimumLength() == null) || (propertyConstraints.getMinimumLength() == 0)) {
-                propertyConstraints.setMinimumLength(1);
+            if ((description.getMinimumLength() == null) || (description.getMinimumLength() == 0)) {
+                description.setMinimumLength(1);
             }
         }
-        return propertyConstraints;
+        return description;
     }
 
 }

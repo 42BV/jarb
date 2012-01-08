@@ -16,8 +16,9 @@ import org.apache.commons.lang3.builder.ToStringStyle;
  * @param <T> type of bean being described
  */
 public class BeanConstraintDescription<T> {
+    
     /** Provides a description of all property constraints. **/
-    private final Map<String, PropertyConstraintDescription> properties = new HashMap<String, PropertyConstraintDescription>();
+    private final Map<String, PropertyConstraintDescription> propertyDescriptionMap = new HashMap<String, PropertyConstraintDescription>();
 
     private final Class<T> beanClass;
 
@@ -33,25 +34,22 @@ public class BeanConstraintDescription<T> {
         return beanClass;
     }
 
-    public PropertyConstraintDescription getProperty(String propertyName) {
-        return properties.get(propertyName);
+    public PropertyConstraintDescription getPropertyDescription(String propertyName) {
+        return propertyDescriptionMap.get(propertyName);
     }
 
-    public Collection<PropertyConstraintDescription> getProperties() {
-        return properties.values();
+    public Collection<PropertyConstraintDescription> getPropertyDescriptions() {
+        return propertyDescriptionMap.values();
     }
 
     /**
      * Attach the description of a property to this bean description.
-     * @param propertyMetadata description of the property constraints
+     * @param description description of the property constraints
      */
-    void addPropertyDescription(PropertyConstraintDescription propertyMetadata) {
-        properties.put(propertyMetadata.getName(), propertyMetadata);
+    void addPropertyDescription(PropertyConstraintDescription description) {
+        propertyDescriptionMap.put(description.getName(), description);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String toString() {
         return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);

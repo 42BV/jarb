@@ -16,6 +16,7 @@ import org.slf4j.LoggerFactory;
  * @since 31-05-2011
  */
 public class DatabasePropertyConstraintDescriptionEnhancer implements PropertyConstraintEnhancer {
+    
     private final Logger logger = LoggerFactory.getLogger(DatabasePropertyConstraintDescriptionEnhancer.class);
 
     /** Repository used to access database constraint information. **/
@@ -25,31 +26,27 @@ public class DatabasePropertyConstraintDescriptionEnhancer implements PropertyCo
         this.databaseConstraintRepository = notNull(databaseConstraintRepository, "Database constraint repository cannot be null");
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
-    public PropertyConstraintDescription enhance(PropertyConstraintDescription propertyConstraints) {
-        PropertyReference propertyReference = propertyConstraints.toPropertyReference();
+    public PropertyConstraintDescription enhance(PropertyConstraintDescription description) {
+        PropertyReference propertyReference = description.toPropertyReference();
+        
         try {
             ColumnMetadata columnMetadata = databaseConstraintRepository.getColumnMetadata(propertyReference);
             if (columnMetadata != null) {
-                propertyConstraints.setRequired(columnMetadata.isRequired() && !columnMetadata.isGeneratable());
-                propertyConstraints.setMaximumLength(columnMetadata.getMaximumLength());
-                propertyConstraints.setFractionLength(columnMetadata.getFractionLength());
-                propertyConstraints.setRadix(columnMetadata.getRadix());
+                description.setRequired(columnMetadata.isRequired() && !columnMetadata.isGeneratable());
+                description.setMaximumLength(columnMetadata.getMaximumLength());
+                description.setFractionLength(columnMetadata.getFractionLength());
+                description.setRadix(columnMetadata.getRadix());
             } else {
-                logger.debug("Could not resolve column metadata {} ({}).", new Object[] {
-                        propertyReference.getName(),
-                        propertyReference.getBeanClass().getSimpleName()
-                });
+                logger.debug("Could not resolve column metadata for '{}'.", propertyReference);
             }
         } catch (NotAnEntityException e) {
-            logger.debug("Could not enhance with column metadata, because {} is not an entity", propertyReference.getBeanClass().getSimpleName());
+            logger.debug("Did not include database property constraints, because '{}' is not an entity", propertyReference.getBeanClass().getSimpleName());
         } catch (CouldNotBeMappedToColumnException e) {
-            logger.debug("Could not enhance with column metadata, because {} has no column", propertyReference.getName());
+            logger.debug("Did not include database property constraints, because '{}' is not a column.", propertyReference);
         }
-        return propertyConstraints;
+        
+        return description;
     }
 
 }

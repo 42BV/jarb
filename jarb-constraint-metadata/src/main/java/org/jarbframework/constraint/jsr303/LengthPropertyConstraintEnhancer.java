@@ -16,14 +16,11 @@ import org.jarbframework.constraint.PropertyConstraintEnhancer;
  */
 public class LengthPropertyConstraintEnhancer implements PropertyConstraintEnhancer {
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
-    public PropertyConstraintDescription enhance(PropertyConstraintDescription propertyConstraints) {
-        Collection<Length> lengthAnnotations = fieldOrGetter().collectAnnotations(propertyConstraints.toPropertyReference(), Length.class);
-        Integer minimumLength = propertyConstraints.getMinimumLength();
-        Integer maximumLength = propertyConstraints.getMaximumLength();
+    public PropertyConstraintDescription enhance(PropertyConstraintDescription description) {
+        Collection<Length> lengthAnnotations = fieldOrGetter().collectAnnotations(description.toPropertyReference(), Length.class);
+        Integer minimumLength = description.getMinimumLength();
+        Integer maximumLength = description.getMaximumLength();
         for (Length lengthAnnotation : lengthAnnotations) {
             if (minimumLength != null) {
                 // Store the highest minimum length, as this will cause both length restrictions to pass
@@ -38,9 +35,9 @@ public class LengthPropertyConstraintEnhancer implements PropertyConstraintEnhan
                 maximumLength = lengthAnnotation.max();
             }
         }
-        propertyConstraints.setMinimumLength(minimumLength);
-        propertyConstraints.setMaximumLength(maximumLength);
-        return propertyConstraints;
+        description.setMinimumLength(minimumLength);
+        description.setMaximumLength(maximumLength);
+        return description;
     }
 
 }

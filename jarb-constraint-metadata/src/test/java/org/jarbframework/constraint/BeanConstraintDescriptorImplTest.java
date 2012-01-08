@@ -25,11 +25,11 @@ public class BeanConstraintDescriptorImplTest {
     @Test
     public void testPropertiesAreDescribed() {
         BeanConstraintDescription<Car> carDescription = describtor.describe(Car.class);
-        assertEquals(Long.class, carDescription.getProperty("id").getJavaType());
-        assertEquals(String.class, carDescription.getProperty("licenseNumber").getJavaType());
-        assertEquals(Double.class, carDescription.getProperty("price").getJavaType());
-        assertEquals(Person.class, carDescription.getProperty("owner").getJavaType());
-        assertEquals(Class.class, carDescription.getProperty("class").getJavaType());
+        assertEquals(Long.class, carDescription.getPropertyDescription("id").getJavaType());
+        assertEquals(String.class, carDescription.getPropertyDescription("licenseNumber").getJavaType());
+        assertEquals(Double.class, carDescription.getPropertyDescription("price").getJavaType());
+        assertEquals(Person.class, carDescription.getPropertyDescription("owner").getJavaType());
+        assertEquals(Class.class, carDescription.getPropertyDescription("class").getJavaType());
     }
 
     /**
@@ -39,7 +39,7 @@ public class BeanConstraintDescriptorImplTest {
     public void testPropertyDescriptionEnhancers() {
         describtor.registerEnhancer(new LengthPropertyConstraintEnhancer());
         BeanConstraintDescription<Car> carDescription = describtor.describe(Car.class);
-        PropertyConstraintDescription licenseDescription = carDescription.getProperty("licenseNumber");
+        PropertyConstraintDescription licenseDescription = carDescription.getPropertyDescription("licenseNumber");
         assertEquals(Integer.valueOf(6), licenseDescription.getMinimumLength());
     }
 

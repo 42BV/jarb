@@ -17,7 +17,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "classpath:application-context.xml" })
-public class JdbcColumnMetadataProviderTest {
+public class JdbcColumnMetadataRepositoryTest {
     
     /*
      * HSQLDB uses a " as quote identifier, also the tables and columns are stored in upper case.

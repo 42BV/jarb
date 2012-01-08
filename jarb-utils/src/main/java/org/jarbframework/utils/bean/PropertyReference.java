@@ -16,6 +16,7 @@ import org.jarbframework.utils.Asserts;
  * @date Aug 29, 2011
  */
 public class PropertyReference {
+    
     private static final String PROPERTY_SEPARATOR = ".";
 
     private final String name;

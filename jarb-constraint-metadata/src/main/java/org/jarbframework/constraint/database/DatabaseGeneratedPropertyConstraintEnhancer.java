@@ -15,11 +15,11 @@ import org.jarbframework.constraint.PropertyConstraintEnhancer;
 public class DatabaseGeneratedPropertyConstraintEnhancer implements PropertyConstraintEnhancer {
 
     @Override
-    public PropertyConstraintDescription enhance(PropertyConstraintDescription propertyConstraints) {
-        if (fieldOrGetter().hasAnnotation(propertyConstraints.toPropertyReference(), DatabaseGenerated.class)) {
-            propertyConstraints.setRequired(false);
+    public PropertyConstraintDescription enhance(PropertyConstraintDescription description) {
+        if (fieldOrGetter().hasAnnotation(description.toPropertyReference(), DatabaseGenerated.class)) {
+            description.setRequired(false);
         }
-        return propertyConstraints;
+        return description;
     }
 
 }
