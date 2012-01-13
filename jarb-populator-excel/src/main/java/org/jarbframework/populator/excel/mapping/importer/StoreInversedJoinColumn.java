@@ -22,7 +22,7 @@ public final class StoreInversedJoinColumn {
      * @param excelRow ExcelRow to save to.
      */
     public static void storeValue(Workbook excel, Definition classDefinition, PropertyDefinition columnDefinition, Integer rowPosition, ExcelRow excelRow) {
-
+        
     }
 
 }

@@ -1,29 +1,21 @@
 package org.jarbframework.populator.excel.mapping.importer;
 
-import java.lang.reflect.Field;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.UUID;
 
-import javax.persistence.CollectionTable;
 import javax.persistence.EntityManagerFactory;
-import javax.persistence.JoinColumn;
-
 import org.jarbframework.populator.excel.entity.EntityRegistry;
 import org.jarbframework.populator.excel.entity.EntityTable;
 import org.jarbframework.populator.excel.mapping.ValueConversionService;
 import org.jarbframework.populator.excel.metamodel.Definition;
-import org.jarbframework.populator.excel.metamodel.ElementCollectionDefinition;
 import org.jarbframework.populator.excel.metamodel.EntityDefinition;
 import org.jarbframework.populator.excel.metamodel.PropertyDefinition;
 import org.jarbframework.populator.excel.util.JpaUtils;
 import org.jarbframework.populator.excel.workbook.Sheet;
 import org.jarbframework.populator.excel.workbook.Workbook;
-import org.jarbframework.utils.orm.jpa.JpaMetaModelUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,11 +30,13 @@ public final class ExcelImporter {
     private StoreExcelRecordValue valueStorer;
     private EntityManagerFactory entityManagerFactory;
     private Map<Definition, Map<Object, ExcelRow>> excelRowMap;
+    private Map<String, Map<Object, ExcelRow>> primitiveDatatypeExcelRowMap;
 
     public ExcelImporter(ValueConversionService conversionService, EntityManagerFactory entityManagerFactory) {
         this.entityManagerFactory = entityManagerFactory;
         valueStorer = new StoreExcelRecordValue(conversionService);
         excelRowMap = new HashMap<Definition, Map<Object, ExcelRow>>();
+        primitiveDatatypeExcelRowMap = new HashMap<String, Map<Object, ExcelRow>>();
     }
 
     /**
@@ -109,8 +103,6 @@ public final class ExcelImporter {
      */
     public Map<Object, ExcelRow> parseWorksheet(final Workbook excel, final Definition definition) {
         Map<Object, ExcelRow> createdInstances = new HashMap<Object, ExcelRow>();
-        Map<Object, List<Object>> createdElementCollectionInstances = new HashMap<Object, List<Object>>();
-
         Sheet sheet = excel.getSheet(JpaUtils.getTableNameOfDefinition(definition));
         String discriminatorColumnName = getDiscriminatorColumnFromDefinition(definition);
 
@@ -119,7 +111,7 @@ public final class ExcelImporter {
                 logger.debug("Importing row {}", rowPosition);
                 ExcelRow excelRow = new ExcelRow(determineEntityClass(sheet, definition, discriminatorColumnName, rowPosition));
                 storeExcelRecordByColumnDefinitions(excel, definition, rowPosition, excelRow);
-                putCreatedInstance(sheet, definition, createdInstances, createdElementCollectionInstances, rowPosition, excelRow);
+                putCreatedInstance(sheet, definition, createdInstances, rowPosition, excelRow);
             }
         }
         return createdInstances;
@@ -188,12 +180,11 @@ public final class ExcelImporter {
      * @param rowPosition The rowPosition in the Excel file (0 based) 
      * @param excelRow An excelRow to store in the value map
      */
-    private void putCreatedInstance(final Sheet sheet, final Definition classDefinition, Map<Object, ExcelRow> createdInstances,
-            Map<Object, List<Object>> createdElementCollectionInstances, Integer rowPosition,
+    private void putCreatedInstance(final Sheet sheet, final Definition classDefinition, Map<Object, ExcelRow> createdInstances, Integer rowPosition,
             ExcelRow excelRow) {
         if (classDefinition instanceof EntityDefinition<?>) {
             Object identifier = getIdentifierValue(rowPosition, sheet, sheet.getColumnNameAt(0));
-            addRecordIfIdentifierIsUnique(sheet, classDefinition, createdInstances, createdElementCollectionInstances, rowPosition, excelRow, identifier);
+            addRecordIfIdentifierIsUnique(sheet, classDefinition, createdInstances, rowPosition, excelRow, identifier);
         } else {
             logger.error("Could not store row #{} of {}, because the Definition is of an improper type.", new Object[] { rowPosition, sheet.getName() });
         }
@@ -217,38 +208,6 @@ public final class ExcelImporter {
     }
 
     /**
-     * Returns the identifiers from an ElementCollectionField by using the @JoinColumn annotations. 
-     * If no annotations are present, the default JPA column names will be used to find the data.
-     * @param sheet ExcelSheet to get the data from
-     * @param rowPosition The current row position
-     * @param enclosingClass The class the ElementCollection is enclosed in
-     * @param beanClass The ElementCollection's class
-     * @return Map of columnnames and identifiers
-     */
-    @Deprecated
-    private Map<String, Object> getIdentifiersFromElementCollectionField(final Sheet sheet,
-            Integer rowPosition, Class<?> enclosingClass, Class<?> beanClass) {
-        Map<String, Object> identifiers = new HashMap<String, Object>();
-        Field elementCollectionField = getElementCollectionField(beanClass, enclosingClass);
-        if (elementCollectionField.getAnnotation(CollectionTable.class) != null) {
-            CollectionTable collectionTable = elementCollectionField.getAnnotation(CollectionTable.class);
-            for (JoinColumn joinColumn : collectionTable.joinColumns()) {
-                Object identifierValue = getIdentifierValue(rowPosition, sheet, joinColumn.name());
-                identifiers.put(joinColumn.name(), identifierValue);
-            }
-        }
-
-        if (identifiers.isEmpty()) {
-            /*If no @JoinColumns are present in the CollectionTable or the CollectionTable isn't present at all, 
-            the identifier will be assumed to be the name of the enclosing entity and the
-            primary key columns separated by an underscore as documented in the JPA spec. */
-            String identifierColumn = JpaMetaModelUtils.deduceIdentifierColumnName(enclosingClass, entityManagerFactory);
-            identifiers.put(identifierColumn, getIdentifierValue(rowPosition, sheet, identifierColumn));
-        }
-        return identifiers;
-    }
-
-    /**
      * Adds the record to the proper map if its identifiers are unique. In case of an ElementCollectionDefinition row it will always be added.
      * @param sheet Excelsheet to get the sheetname from
      * @param classDefinition Definition which belongs to the ExcelRow
@@ -259,7 +218,6 @@ public final class ExcelImporter {
      * @param identifier Identifier of ExcelRow
      */
     private void addRecordIfIdentifierIsUnique(final Sheet sheet, final Definition classDefinition, Map<Object, ExcelRow> createdInstances,
-            Map<Object, List<Object>> createdElementCollectionInstances,
             Integer rowPosition, ExcelRow excelRow, Object identifier) {
         if (!isInvalidIdentifier(identifier)) {
             logger.error("Could not store row #{} of {}, because the identifier is empty.", new Object[] { rowPosition, sheet.getName() });
@@ -268,14 +226,6 @@ public final class ExcelImporter {
                 createdInstances.put(identifier, excelRow);
             } else {
                 logger.error("IDCOLUMNNAME value '" + identifier + "' in table " + JpaUtils.getTableNameOfDefinition(classDefinition) + " is not unique.");
-            }
-        } else if (classDefinition instanceof ElementCollectionDefinition<?>) {
-            if (createdElementCollectionInstances.containsKey(identifier)) {
-                createdElementCollectionInstances.get(identifier).add(excelRow.getCreatedInstance());
-            } else {
-                List<Object> excelRowList = new ArrayList<Object>();
-                excelRowList.add(excelRow.getCreatedInstance());
-                createdElementCollectionInstances.put(identifier, excelRowList);
             }
         }
     }
@@ -293,22 +243,6 @@ public final class ExcelImporter {
             isValid = identifier != null;
         }
         return isValid;
-    }
-
-    /**
-     * Returns the ElementCollectionField from the enclosingClass.
-     * @param beanClass The type class the ElementCollection is of.
-     * @param enclosingClass The class to search through.
-     * @return ElementCollection field.
-     */
-    private Field getElementCollectionField(Class<?> beanClass,
-            Class<?> enclosingClass) {
-        try {
-            return enclosingClass.getDeclaredField(JpaMetaModelUtils.getFieldNameForElementCollectionClass(beanClass, enclosingClass, entityManagerFactory));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
     }
 
     /**
