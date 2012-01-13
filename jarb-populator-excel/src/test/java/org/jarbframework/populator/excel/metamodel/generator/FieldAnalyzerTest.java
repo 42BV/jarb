@@ -6,6 +6,8 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.persistence.metamodel.EntityType;
 import javax.persistence.metamodel.Metamodel;
@@ -13,7 +15,9 @@ import javax.persistence.metamodel.Metamodel;
 import org.jarbframework.populator.excel.DefaultExcelTestDataCase;
 import org.jarbframework.populator.excel.mapping.importer.WorksheetDefinition;
 import org.jarbframework.populator.excel.metamodel.EntityDefinition;
+import org.jarbframework.populator.excel.metamodel.InverseJoinColumnReferenceProperties;
 import org.jarbframework.populator.excel.metamodel.PropertyDefinition;
+import org.jarbframework.populator.excel.metamodel.PropertyDefinition.Builder;
 import org.jarbframework.populator.excel.workbook.Workbook;
 import org.jarbframework.populator.excel.workbook.reader.PoiWorkbookParser;
 import org.jarbframework.utils.bean.PropertyReference;
@@ -69,6 +73,16 @@ public class FieldAnalyzerTest extends DefaultExcelTestDataCase {
     @Test
     public void testAnalyzeFieldNull() throws InstantiationException, IllegalAccessException, SecurityException, NoSuchFieldException {
         assertNull(fieldAnalyzer.analyzeField(new PropertyReference(Document.class, "documentRevisions")));
+    }
+
+    @Test
+    public void testInversedReferenceColumn() {
+        Builder fieldBuilder = fieldAnalyzer.analyzeField(new PropertyReference(Employee.class, "emailAddresses"));
+        InverseJoinColumnReferenceProperties inverseJoinColumnReferenceProperties = fieldBuilder.build().getInverseJoinColumnReferenceProperties();
+        List<String> joinColumnNames = new ArrayList<String>();
+        joinColumnNames.add("employees_employee_id");
+        assertEquals(joinColumnNames, inverseJoinColumnReferenceProperties.getJoinColumnNames());
+        assertEquals("employees_emailAddresses", inverseJoinColumnReferenceProperties.getReferencedTableName());
     }
 
 }

@@ -48,7 +48,6 @@ public class JpaHibernateSchemaMapper implements SchemaMapper {
 
     private final BeanAnnotationScanner annotationScanner = fieldOrGetter();
     private final NamingStrategy namingStrategy;
-    private final EntityManagerFactory entityManagerFactory;
 
     public JpaHibernateSchemaMapper() {
         this(new DefaultNamingStrategy());
@@ -56,12 +55,6 @@ public class JpaHibernateSchemaMapper implements SchemaMapper {
 
     public JpaHibernateSchemaMapper(NamingStrategy namingStrategy) {
         this.namingStrategy = notNull(namingStrategy, "Naming strategy property is required.");
-        this.entityManagerFactory = null;
-    }
-    
-    public JpaHibernateSchemaMapper(NamingStrategy namingStrategy, EntityManagerFactory entityManagerFactory) {
-    	this.namingStrategy = notNull(namingStrategy, "Naming strategy property is required.");
-    	this.entityManagerFactory = notNull(entityManagerFactory, "EntityManagerFactory property is required.");
     }
 
     public static JpaHibernateSchemaMapper usingNamingStrategyOf(EntityManagerFactory entityManagerFactory) {
@@ -70,7 +63,7 @@ public class JpaHibernateSchemaMapper implements SchemaMapper {
             return new JpaHibernateSchemaMapper();
         } else {
             String namingStrategyClass = instanceOf(namingStrategyProperty, String.class, format("Property '%s' should be a String.", NAMING_STRATEGY_KEY));
-            return new JpaHibernateSchemaMapper(instantiateStrategy(namingStrategyClass), entityManagerFactory);
+            return new JpaHibernateSchemaMapper(instantiateStrategy(namingStrategyClass));
         }
     }
 

@@ -2,6 +2,7 @@ package org.jarbframework.populator.excel.metamodel.generator;
 
 import java.lang.reflect.Field;
 import java.util.Collection;
+import java.util.List;
 
 import javax.persistence.ElementCollection;
 import javax.persistence.EntityManagerFactory;
@@ -10,14 +11,17 @@ import javax.persistence.Id;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
+import javax.persistence.metamodel.EntityType;
 
 import org.jarbframework.populator.excel.metamodel.InverseJoinColumnReferenceProperties;
 import org.jarbframework.populator.excel.metamodel.PropertyDatabaseType;
 import org.jarbframework.populator.excel.metamodel.PropertyDefinition;
+import org.jarbframework.populator.excel.util.JpaUtils;
 import org.jarbframework.utils.bean.BeanProperties;
 import org.jarbframework.utils.bean.PropertyReference;
 import org.jarbframework.utils.orm.SchemaMapper;
 import org.jarbframework.utils.orm.jpa.JpaHibernateSchemaMapper;
+import org.jarbframework.utils.orm.jpa.JpaMetaModelUtils;
 
 /**
  * Creates a ColumnDefinition from a field.
@@ -101,13 +105,32 @@ public class FieldAnalyzer {
         propertyDefinition.setInverseJoinColumnReferenceProperties(inverseJoinColumnReferenceProperties(field));
         return propertyDefinition;
     }
-    
+
+    /**
+     * Creates an InversedJoinColumnReferenceProperties instance which holds the referred class (unless it refers to a basic typed class) 
+     * as well as the JoinColumnColumn names.
+     * @param field Field for which an InversedJoinColumnReference will be created
+     * @return InversedJoinColumnReferenceProperties instance
+     */
     private InverseJoinColumnReferenceProperties inverseJoinColumnReferenceProperties(Field field) {
         InverseJoinColumnReferenceProperties inverseJoinColumnReferenceProperties = new InverseJoinColumnReferenceProperties();
-        //JpaUtils.getJoinColumnNamesFromJpaAnnotatedField(schemaMapper, field.getDeclaringClass(), field);
-        //inverseJoinColumnReferenceProperties.setJoinColumnNames(joinColumnNames);
-        
+        List<String> joinColumnNames = getJpaJoinColumnNamesForField(field);
+        inverseJoinColumnReferenceProperties.setJoinColumnNames(joinColumnNames);
+        inverseJoinColumnReferenceProperties.setReferencedTableName(JpaMetaModelUtils.createElementCollectionTableNameByJPADefault(field.getDeclaringClass(),
+                field.getName(), entityManagerFactory));
         return inverseJoinColumnReferenceProperties;
+    }
+
+    /**
+     * Returns the Jpa annotated JoinColumn names on the field if present, otherwise the spec default will be returned.
+     * @param field Field to get the JoinColumn names from
+     * @return JoinColumn names
+     */
+    private List<String> getJpaJoinColumnNamesForField(Field field) {
+        SchemaMapper schemaMapper = JpaHibernateSchemaMapper.usingNamingStrategyOf(entityManagerFactory);
+        EntityType<?> entityType = entityManagerFactory.getMetamodel().entity(field.getDeclaringClass());
+        List<String> joinColumnNames = JpaUtils.getJoinColumnNamesFromJpaAnnotatedField(schemaMapper, entityType, field);
+        return joinColumnNames;
     }
 
 }

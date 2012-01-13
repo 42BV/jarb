@@ -29,7 +29,7 @@ public class EntityDefinitionTest extends DefaultExcelTestDataCase {
     public void prepareTest() {
         employee = Employee.class;
         EntityType<Employee> departmentEntity = getEntityManagerFactory().getMetamodel().entity(employee);
-        
+
         ColumnDefinitionsGenerator columnDefinitionsGenerator = new ColumnDefinitionsGenerator(getEntityManagerFactory());
 
         EntityDefinition.Builder<Employee> employeeBuilder = EntityDefinition.forClass(employee);

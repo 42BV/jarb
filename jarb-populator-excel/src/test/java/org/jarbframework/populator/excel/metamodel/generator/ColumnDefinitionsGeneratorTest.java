@@ -11,7 +11,8 @@ import javax.persistence.metamodel.Metamodel;
 
 import org.jarbframework.populator.excel.DefaultExcelTestDataCase;
 import org.jarbframework.populator.excel.metamodel.EmbeddableElementCollectionDefinition;
-import org.jarbframework.populator.excel.metamodel.EntityDefinition;import org.junit.Before;
+import org.jarbframework.populator.excel.metamodel.EntityDefinition;
+import org.junit.Before;
 import org.junit.Test;
 
 import domain.entities.Address;

@@ -12,8 +12,6 @@ public final class InverseJoinColumnReferenceProperties {
     private String referencedTableName;
     private Collection<String> joinColumnNames;
 
-
-
     /**
      * Returns the destination tablename of the inversed JoinColumn relation.
      * @return Destination tablename

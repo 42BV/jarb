@@ -110,11 +110,10 @@ public class PropertyDefinition {
         private String joinColumnName;
         private String inverseJoinColumnName;
         private InverseJoinColumnReferenceProperties inverseJoinColumnReferenceProperties;
-        
+
         private Map<String, String> elementCollectionJoinColumns;
         private boolean generatedValue = false;
         private boolean isIdColumn = false;
-        
 
         public Builder(Field field) {
             Assert.notNull(field, "Field cannot be null");
@@ -161,7 +160,7 @@ public class PropertyDefinition {
             this.inverseJoinColumnName = inverseJoinColumnName;
             return this;
         }
-        
+
         /**
          * Sets the InverseJoinColumnReferenceProperties data structure, which holds information needed when coupling @ElementCollection tables 
          * or @OneToMany tables with an @JoinColumn annotation on it.
@@ -263,7 +262,7 @@ public class PropertyDefinition {
      * or @OneToMany tables with an @JoinColumn annotation on it.
      * @return InverseJoinColumnReferenceProperties data structure
      */
-    public InverseJoinColumnReferenceProperties getInverseJoinColumnRelationProperties() {
+    public InverseJoinColumnReferenceProperties getInverseJoinColumnReferenceProperties() {
         return inverseJoinColumnReferenceProperties;
     }
 
