@@ -41,11 +41,6 @@ public class JpaMetaModelGenerator implements MetaModelGenerator {
         Collection<Definition> entities = new HashSet<Definition>();
         for (EntityType<?> entityType : JpaMetaModelUtils.getRootEntities(entityManagerFactory.getMetamodel())) {
             entities.add(describeEntity(entityType));
-
-            for (EmbeddableType<?> elementCollection : JpaMetaModelUtils.getElementCollectionsForEntity(entityType)) {
-                entities.add(describeElementCollection(elementCollection, entityType));
-            }
-
         }
         return new MetaModel(entities);
     }
@@ -76,11 +71,4 @@ public class JpaMetaModelGenerator implements MetaModelGenerator {
             throw new RuntimeException(e);
         }
     }
-
-    private ElementCollectionDefinition<?> describeElementCollection(EmbeddableType<?> embeddableType, EntityType<?> enclosingType) {
-        LOGGER.debug("Generating metamodel definition of embeddable class '{}'...", embeddableType.getJavaType().getName());
-        return new ElementCollectionDefinitionsGenerator(entityManagerFactory).createSingleElementCollectionDefinitionFromMetamodel(embeddableType,
-                enclosingType);
-    }
-
 }

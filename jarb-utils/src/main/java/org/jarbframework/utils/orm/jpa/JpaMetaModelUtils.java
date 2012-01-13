@@ -118,7 +118,7 @@ public final class JpaMetaModelUtils {
      * @param beanClass Beanclass to get the simple name from
      * @return Table name
      */
-	private static String createTableNameForElementCollection(Field field, Class<?> enclosingClass, EntityManagerFactory entityManagerFactory) {
+	public static String createTableNameForElementCollection(Field field, Class<?> enclosingClass, EntityManagerFactory entityManagerFactory) {
 		String tableName = "";
 		if (field.getAnnotation(CollectionTable.class) != null) {
 			CollectionTable collectionTable = field.getAnnotation(CollectionTable.class);
@@ -137,7 +137,7 @@ public final class JpaMetaModelUtils {
 	 * @param entityManagerFactory EntityManagerFactory to get schemamapper from.
 	 * @return Table name
 	 */
-	public static String createElementCollectionTableNameByJPADefault(
+	private static String createElementCollectionTableNameByJPADefault(
 			Class<?> enclosingClass, String fieldName, EntityManagerFactory entityManagerFactory) {
 		SchemaMapper schemaMapper = JpaHibernateSchemaMapper.usingNamingStrategyOf(entityManagerFactory);
 		String enclosingTypeTableName = schemaMapper.tableNameOf(enclosingClass);
