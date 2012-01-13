@@ -27,7 +27,7 @@ public class JpaMetaModelGeneratorTest extends DefaultExcelTestDataCase {
     @Test
     public void testGenerate() {
         MetaModel metamodel = generator.generate();
-        assertEquals(16, metamodel.entities().size());
+        assertEquals(14, metamodel.entities().size());
 
         EntityDefinition<?> releaseDefinition = metamodel.entity(Release.class);
         assertEquals(Release.class, releaseDefinition.getDefinedClass());
