@@ -116,8 +116,9 @@ public class FieldAnalyzer {
         InverseJoinColumnReferenceProperties inverseJoinColumnReferenceProperties = new InverseJoinColumnReferenceProperties();
         List<String> joinColumnNames = getJpaJoinColumnNamesForField(field);
         inverseJoinColumnReferenceProperties.setJoinColumnNames(joinColumnNames);
-        inverseJoinColumnReferenceProperties.setReferencedTableName(JpaMetaModelUtils.createElementCollectionTableNameByJPADefault(field.getDeclaringClass(),
-                field.getName(), entityManagerFactory));
+        String tableName = JpaMetaModelUtils.createElementCollectionTableNameByJPADefault(field.getDeclaringClass(),
+                field.getName(), entityManagerFactory);
+        inverseJoinColumnReferenceProperties.setReferencedTableName(tableName);
         return inverseJoinColumnReferenceProperties;
     }
 

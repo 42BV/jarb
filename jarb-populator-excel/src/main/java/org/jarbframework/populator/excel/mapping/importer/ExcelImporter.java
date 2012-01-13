@@ -38,13 +38,11 @@ public final class ExcelImporter {
     private StoreExcelRecordValue valueStorer;
     private EntityManagerFactory entityManagerFactory;
     private Map<Definition, Map<Object, ExcelRow>> excelRowMap;
-    private Map<ElementCollectionDefinition<?>, Map<Object, List<Object>>> elementCollectionRowMap;
 
     public ExcelImporter(ValueConversionService conversionService, EntityManagerFactory entityManagerFactory) {
-        valueStorer = new StoreExcelRecordValue(conversionService);
         this.entityManagerFactory = entityManagerFactory;
+        valueStorer = new StoreExcelRecordValue(conversionService);
         excelRowMap = new HashMap<Definition, Map<Object, ExcelRow>>();
-        elementCollectionRowMap = new HashMap<ElementCollectionDefinition<?>, Map<Object, List<Object>>>();
     }
 
     /**
@@ -69,8 +67,6 @@ public final class ExcelImporter {
                     ExcelRow excelRow = entry.getValue();
                     //First map the foreign relations
                     ForeignRelationsMapper.makeForeignRelations(excelRow, excelRowMap);
-                    ForeignRelationsMapper.addElementCollectionRows((EntityDefinition<?>) entityDefinition, excelRow, entry.getKey(), elementCollectionRowMap);
-
                     // Entity registry uses the entities persistent identifier, rather than its row identifier
                     // Row identifier is only used in excel, entity identifier is used in registry and database
                     Object entity = excelRow.getCreatedInstance();
@@ -125,10 +121,6 @@ public final class ExcelImporter {
                 storeExcelRecordByColumnDefinitions(excel, definition, rowPosition, excelRow);
                 putCreatedInstance(sheet, definition, createdInstances, createdElementCollectionInstances, rowPosition, excelRow);
             }
-        }
-
-        if ((definition instanceof ElementCollectionDefinition<?>) && (!createdElementCollectionInstances.isEmpty())) {
-            elementCollectionRowMap.put((ElementCollectionDefinition<?>) definition, createdElementCollectionInstances);
         }
         return createdInstances;
     }
@@ -202,12 +194,6 @@ public final class ExcelImporter {
         if (classDefinition instanceof EntityDefinition<?>) {
             Object identifier = getIdentifierValue(rowPosition, sheet, sheet.getColumnNameAt(0));
             addRecordIfIdentifierIsUnique(sheet, classDefinition, createdInstances, createdElementCollectionInstances, rowPosition, excelRow, identifier);
-        } else if (classDefinition instanceof ElementCollectionDefinition<?>) {
-            ElementCollectionDefinition<?> elementCollection = (ElementCollectionDefinition<?>) classDefinition;
-            Class<?> enclosingClass = elementCollection.getEnclosingClass();
-            Class<?> beanClass = elementCollection.getDefinedClass();
-            Map<String, Object> identifiers = getIdentifiersFromElementCollectionField(sheet, rowPosition, enclosingClass, beanClass);
-            addRecordIfIdentifierIsUnique(sheet, classDefinition, createdInstances, createdElementCollectionInstances, rowPosition, excelRow, identifiers);
         } else {
             logger.error("Could not store row #{} of {}, because the Definition is of an improper type.", new Object[] { rowPosition, sheet.getName() });
         }
