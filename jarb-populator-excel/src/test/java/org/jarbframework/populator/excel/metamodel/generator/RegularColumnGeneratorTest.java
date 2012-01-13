@@ -5,7 +5,6 @@ import static org.junit.Assert.assertEquals;
 import org.jarbframework.populator.excel.DefaultExcelTestDataCase;
 import org.jarbframework.populator.excel.metamodel.PropertyDefinition;
 import org.jarbframework.utils.bean.PropertyReference;
-import org.jarbframework.utils.orm.jpa.JpaHibernateSchemaMapper;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -16,7 +15,7 @@ public class RegularColumnGeneratorTest extends DefaultExcelTestDataCase {
 
     @Before
     public void setUp() {
-        regularColumnGenerator = new RegularColumnGenerator(JpaHibernateSchemaMapper.usingNamingStrategyOf(getEntityManagerFactory()));
+        regularColumnGenerator = new RegularColumnGenerator(getEntityManagerFactory());
     }
 
     @Test

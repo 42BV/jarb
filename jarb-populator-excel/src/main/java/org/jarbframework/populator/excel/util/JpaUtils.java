@@ -9,7 +9,6 @@ import javax.persistence.ElementCollection;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.JoinColumn;
-import javax.persistence.OneToMany;
 import javax.persistence.metamodel.EntityType;
 import javax.persistence.metamodel.SingularAttribute;
 
@@ -95,10 +94,6 @@ public final class JpaUtils {
     public static List<String> getJoinColumnNamesFromJpaAnnotatedField(SchemaMapper schemaMapper, EntityType<?> owningEntity, Field field) {
         if (field.isAnnotationPresent(ElementCollection.class)) {
             return getJoinColumnNamesForElementCollectionField(schemaMapper, owningEntity, field);
-        } else if (field.isAnnotationPresent(OneToMany.class)) {
-            //To implement:
-            //return getJoinColumnNamesForOneToManyField(field);
-            return new ArrayList<String>();
         } else {
             return new ArrayList<String>();
         }

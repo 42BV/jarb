@@ -14,8 +14,6 @@ import org.jarbframework.populator.excel.metamodel.PropertyDefinition;
 import org.jarbframework.populator.excel.metamodel.generator.ColumnDefinitionsGenerator;
 import org.jarbframework.populator.excel.workbook.Workbook;
 import org.jarbframework.populator.excel.workbook.reader.PoiWorkbookParser;
-import org.jarbframework.utils.orm.SchemaMapper;
-import org.jarbframework.utils.orm.jpa.JpaHibernateSchemaMapper;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -35,8 +33,7 @@ public class StoreInversedJoinColumnTest extends DefaultExcelImporterTest {
         Class<Employee> employee = Employee.class;
         EntityType<Employee> employeeEntity = getEntityManagerFactory().getMetamodel().entity(employee);
 
-        SchemaMapper schemaMapper = JpaHibernateSchemaMapper.usingNamingStrategyOf(getEntityManagerFactory());
-        ColumnDefinitionsGenerator columnDefinitionsGenerator = new ColumnDefinitionsGenerator(schemaMapper);
+        ColumnDefinitionsGenerator columnDefinitionsGenerator = new ColumnDefinitionsGenerator(getEntityManagerFactory());
 
         EntityDefinition.Builder<Employee> employeeBuilder = EntityDefinition.forClass(employee);
         employeeBuilder.setTableName("departments");

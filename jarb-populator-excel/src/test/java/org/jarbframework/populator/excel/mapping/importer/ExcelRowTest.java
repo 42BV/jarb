@@ -15,7 +15,6 @@ import org.jarbframework.populator.excel.metamodel.generator.EntityDefinitionsGe
 import org.jarbframework.populator.excel.metamodel.generator.FieldAnalyzer;
 import org.jarbframework.populator.excel.workbook.Workbook;
 import org.jarbframework.utils.bean.PropertyReference;
-import org.jarbframework.utils.orm.jpa.JpaHibernateSchemaMapper;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -46,7 +45,7 @@ public class ExcelRowTest extends DefaultExcelTestDataCase {
         classDefinition = entityDefinitionsGenerator.createSingleEntityDefinitionFromMetamodel(entity, false);
         excelRow = new ExcelRow(classDefinition.getDefinedClass());
 
-        FieldAnalyzer fieldAnalyzer = new FieldAnalyzer(JpaHibernateSchemaMapper.usingNamingStrategyOf(getEntityManagerFactory()));
+        FieldAnalyzer fieldAnalyzer = new FieldAnalyzer(getEntityManagerFactory());
         PropertyDefinition columnDefinition = fieldAnalyzer.analyzeField(new PropertyReference(persistentClass, "id")).build();
 
         Double cellValue = (Double) excel.getSheet(classDefinition.getTableName()).getValueAt(2, 0);

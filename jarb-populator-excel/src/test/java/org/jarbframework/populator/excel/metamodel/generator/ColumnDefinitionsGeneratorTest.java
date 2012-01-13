@@ -11,9 +11,7 @@ import javax.persistence.metamodel.Metamodel;
 
 import org.jarbframework.populator.excel.DefaultExcelTestDataCase;
 import org.jarbframework.populator.excel.metamodel.EmbeddableElementCollectionDefinition;
-import org.jarbframework.populator.excel.metamodel.EntityDefinition;
-import org.jarbframework.utils.orm.jpa.JpaHibernateSchemaMapper;
-import org.junit.Before;
+import org.jarbframework.populator.excel.metamodel.EntityDefinition;import org.junit.Before;
 import org.junit.Test;
 
 import domain.entities.Address;
@@ -29,7 +27,7 @@ public class ColumnDefinitionsGeneratorTest extends DefaultExcelTestDataCase {
 
     @Before
     public void setUp() {
-        columnDefinitionsGenerator = new ColumnDefinitionsGenerator(JpaHibernateSchemaMapper.usingNamingStrategyOf(getEntityManagerFactory()));
+        columnDefinitionsGenerator = new ColumnDefinitionsGenerator(getEntityManagerFactory());
         metamodel = getEntityManagerFactory().getMetamodel();
     }
 

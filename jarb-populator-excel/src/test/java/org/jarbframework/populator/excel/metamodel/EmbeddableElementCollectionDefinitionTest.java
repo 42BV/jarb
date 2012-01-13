@@ -10,8 +10,6 @@ import javax.persistence.metamodel.Metamodel;
 import org.jarbframework.populator.excel.DefaultExcelTestDataCase;
 import org.jarbframework.populator.excel.metamodel.EmbeddableElementCollectionDefinition;
 import org.jarbframework.populator.excel.metamodel.generator.ColumnDefinitionsGenerator;
-import org.jarbframework.utils.orm.SchemaMapper;
-import org.jarbframework.utils.orm.jpa.JpaHibernateSchemaMapper;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -24,8 +22,7 @@ public class EmbeddableElementCollectionDefinitionTest extends DefaultExcelTestD
 
     @Before
     public void prepareTest() {
-        SchemaMapper schemaMapper = JpaHibernateSchemaMapper.usingNamingStrategyOf(getEntityManagerFactory());
-        ColumnDefinitionsGenerator columnDefinitionsGenerator = new ColumnDefinitionsGenerator(schemaMapper);
+        ColumnDefinitionsGenerator columnDefinitionsGenerator = new ColumnDefinitionsGenerator(getEntityManagerFactory());
         Metamodel metamodel = getEntityManagerFactory().getMetamodel();
         EmbeddableElementCollectionDefinition.Builder<Phone> phoneBuilder = EmbeddableElementCollectionDefinition.forClass(phone);
         phoneBuilder.includeProperties(columnDefinitionsGenerator.createPropertyDefinitions(metamodel.embeddable(phone), phone));

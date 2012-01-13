@@ -11,8 +11,6 @@ import javax.persistence.metamodel.EntityType;
 import org.jarbframework.populator.excel.DefaultExcelTestDataCase;
 import org.jarbframework.populator.excel.metamodel.generator.ColumnDefinitionsGenerator;
 import org.jarbframework.populator.excel.metamodel.generator.SubclassRetriever;
-import org.jarbframework.utils.orm.SchemaMapper;
-import org.jarbframework.utils.orm.jpa.JpaHibernateSchemaMapper;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -31,9 +29,8 @@ public class EntityDefinitionTest extends DefaultExcelTestDataCase {
     public void prepareTest() {
         employee = Employee.class;
         EntityType<Employee> departmentEntity = getEntityManagerFactory().getMetamodel().entity(employee);
-
-        SchemaMapper schemaMapper = JpaHibernateSchemaMapper.usingNamingStrategyOf(getEntityManagerFactory());
-        ColumnDefinitionsGenerator columnDefinitionsGenerator = new ColumnDefinitionsGenerator(schemaMapper);
+        
+        ColumnDefinitionsGenerator columnDefinitionsGenerator = new ColumnDefinitionsGenerator(getEntityManagerFactory());
 
         EntityDefinition.Builder<Employee> employeeBuilder = EntityDefinition.forClass(employee);
         employeeBuilder.setTableName("departments");

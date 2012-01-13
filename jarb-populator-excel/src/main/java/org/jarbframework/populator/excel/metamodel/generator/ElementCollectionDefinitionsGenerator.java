@@ -33,7 +33,7 @@ public class ElementCollectionDefinitionsGenerator {
         SchemaMapper schemaMapper = JpaHibernateSchemaMapper.usingNamingStrategyOf(entityManagerFactory);
         builder.setTableName(getTableName(embeddableType, enclosingType));
         builder.setEnclosingClass(enclosingClass);
-        ColumnDefinitionsGenerator columnDefinitionsGenerator = new ColumnDefinitionsGenerator(schemaMapper);
+        ColumnDefinitionsGenerator columnDefinitionsGenerator = new ColumnDefinitionsGenerator(entityManagerFactory);
         builder.includeProperties(columnDefinitionsGenerator.createPropertyDefinitions(embeddableType, enclosingType));
         return builder.build();
     }

@@ -4,11 +4,12 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.EntityManagerFactory;
+
 import org.jarbframework.populator.excel.metamodel.PropertyDefinition;
 import org.jarbframework.populator.excel.metamodel.PropertyPath;
 import org.jarbframework.utils.bean.BeanProperties;
 import org.jarbframework.utils.bean.PropertyReference;
-import org.jarbframework.utils.orm.SchemaMapper;
 import org.springframework.util.ReflectionUtils;
 
 /**
@@ -17,10 +18,10 @@ import org.springframework.util.ReflectionUtils;
  *
  */
 public final class EmbeddedColumnGenerator {
-    private final SchemaMapper schemaMapper;
+    private final EntityManagerFactory entityManagerFactory;
 
-    public EmbeddedColumnGenerator(SchemaMapper schemaMapper) {
-        this.schemaMapper = schemaMapper;
+    public EmbeddedColumnGenerator(EntityManagerFactory entityManagerFactory) {
+        this.entityManagerFactory = entityManagerFactory;
     }
 
     /**
@@ -34,7 +35,7 @@ public final class EmbeddedColumnGenerator {
         for (Field embeddedPropertyField : embeddableField.getType().getDeclaredFields()) {
             if (!ReflectionUtils.isPublicStaticFinal(embeddedPropertyField)) {
                 PropertyReference embeddablePropertyReference = new PropertyReference(propertyReference, embeddedPropertyField.getName());
-                PropertyDefinition.Builder columnDefinitionBuilder = new FieldAnalyzer(schemaMapper).analyzeField(embeddablePropertyReference);
+                PropertyDefinition.Builder columnDefinitionBuilder = new FieldAnalyzer(entityManagerFactory).analyzeField(embeddablePropertyReference);
                 if (columnDefinitionBuilder != null) {
                     columnDefinitionBuilder.setEmbeddablePath(PropertyPath.startingFrom(embeddableField));
                     columnDefinitions.add(columnDefinitionBuilder.build());

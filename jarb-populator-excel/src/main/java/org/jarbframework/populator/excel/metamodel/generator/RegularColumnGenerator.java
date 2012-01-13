@@ -1,8 +1,9 @@
 package org.jarbframework.populator.excel.metamodel.generator;
 
+import javax.persistence.EntityManagerFactory;
+
 import org.jarbframework.populator.excel.metamodel.PropertyDefinition;
 import org.jarbframework.utils.bean.PropertyReference;
-import org.jarbframework.utils.orm.SchemaMapper;
 
 /**
  * Creates columnDefinitions for regular fields.
@@ -12,8 +13,8 @@ import org.jarbframework.utils.orm.SchemaMapper;
 public class RegularColumnGenerator {
     private final FieldAnalyzer fieldAnalyzer;
 
-    public RegularColumnGenerator(SchemaMapper schemaMapper) {
-        this.fieldAnalyzer = new FieldAnalyzer(schemaMapper);
+    public RegularColumnGenerator(EntityManagerFactory entityManagerFactory) {
+        this.fieldAnalyzer = new FieldAnalyzer(entityManagerFactory);
     }
 
     /**

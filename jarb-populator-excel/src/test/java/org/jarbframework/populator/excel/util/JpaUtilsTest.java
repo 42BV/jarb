@@ -31,9 +31,7 @@ public class JpaUtilsTest extends DefaultExcelTestDataCase {
     public void setupJpaUtilsTest() {
         Class<Employee> employee = Employee.class;
         EntityType<Employee> employeeEntity = getEntityManagerFactory().getMetamodel().entity(employee);
-
-        SchemaMapper schemaMapper = JpaHibernateSchemaMapper.usingNamingStrategyOf(getEntityManagerFactory());
-        ColumnDefinitionsGenerator columnDefinitionsGenerator = new ColumnDefinitionsGenerator(schemaMapper);
+        ColumnDefinitionsGenerator columnDefinitionsGenerator = new ColumnDefinitionsGenerator(getEntityManagerFactory());
 
         EntityDefinition.Builder<Employee> employeeBuilder = EntityDefinition.forClass(employee);
         employeeBuilder.setTableName("employees");

@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.persistence.EntityManagerFactory;
 import javax.persistence.metamodel.Attribute;
 import javax.persistence.metamodel.EmbeddableType;
 import javax.persistence.metamodel.EntityType;
@@ -14,7 +15,6 @@ import javax.persistence.metamodel.ManagedType;
 
 import org.jarbframework.populator.excel.metamodel.PropertyDefinition;
 import org.jarbframework.utils.bean.PropertyReference;
-import org.jarbframework.utils.orm.SchemaMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,9 +29,9 @@ public final class ColumnDefinitionsGenerator {
     private final RegularColumnGenerator regularColumnGenerator;
     private final EmbeddedColumnGenerator embeddedColumnGenerator;
 
-    public ColumnDefinitionsGenerator(SchemaMapper schemaMapper) {
-        regularColumnGenerator = new RegularColumnGenerator(schemaMapper);
-        embeddedColumnGenerator = new EmbeddedColumnGenerator(schemaMapper);
+    public ColumnDefinitionsGenerator(EntityManagerFactory entityManagerFactory) {
+        regularColumnGenerator = new RegularColumnGenerator(entityManagerFactory);
+        embeddedColumnGenerator = new EmbeddedColumnGenerator(entityManagerFactory);
     }
 
     /**

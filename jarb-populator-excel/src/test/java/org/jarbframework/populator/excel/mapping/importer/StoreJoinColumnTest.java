@@ -20,7 +20,6 @@ import org.jarbframework.populator.excel.metamodel.generator.FieldAnalyzer;
 import org.jarbframework.populator.excel.workbook.Workbook;
 import org.jarbframework.populator.excel.workbook.reader.PoiWorkbookParser;
 import org.jarbframework.utils.bean.PropertyReference;
-import org.jarbframework.utils.orm.jpa.JpaHibernateSchemaMapper;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -57,7 +56,7 @@ public class StoreJoinColumnTest extends DefaultExcelTestDataCase {
         excelRow = new ExcelRow(classDefinition.getDefinedClass());
 
         rowPosition = 1;
-        FieldAnalyzer fieldAnalyzer = new FieldAnalyzer(JpaHibernateSchemaMapper.usingNamingStrategyOf(getEntityManagerFactory()));
+        FieldAnalyzer fieldAnalyzer = new FieldAnalyzer(getEntityManagerFactory());
         PropertyDefinition joinColumn = fieldAnalyzer.analyzeField(new PropertyReference(persistentClass, "customer")).build();
 
         new StoreExcelRecordValue(ValueConversionService.defaultConversions()).storeValue(excel, classDefinition, joinColumn, rowPosition, excelRow);

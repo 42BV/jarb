@@ -21,12 +21,11 @@ import org.jarbframework.populator.excel.metamodel.generator.FieldAnalyzer;
 import org.jarbframework.populator.excel.workbook.Workbook;
 import org.jarbframework.populator.excel.workbook.reader.PoiWorkbookParser;
 import org.jarbframework.utils.bean.PropertyReference;
-import org.jarbframework.utils.orm.jpa.JpaHibernateSchemaMapper;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-public class StoreJoinTableTest {
+public class StoreJoinTableTest extends DefaultExcelImporterTest {
     private Class<?> persistentClass;
     private EntityDefinition<?> classDefinition;
     private Workbook excel;
@@ -64,7 +63,7 @@ public class StoreJoinTableTest {
 
         excelRow = new ExcelRow(classDefinition.getDefinedClass());
 
-        FieldAnalyzer fieldAnalyzer = new FieldAnalyzer(JpaHibernateSchemaMapper.usingNamingStrategyOf(entityManagerFactory));
+        FieldAnalyzer fieldAnalyzer = new FieldAnalyzer(getEntityManagerFactory());
         PropertyDefinition joinTable = fieldAnalyzer.analyzeField(new PropertyReference(persistentClass, "projects")).build();
 
         rowPosition = 3;
