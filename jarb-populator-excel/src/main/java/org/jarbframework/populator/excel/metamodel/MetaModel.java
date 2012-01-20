@@ -16,16 +16,18 @@ import org.jarbframework.populator.excel.util.JpaUtils;
  */
 public class MetaModel implements Iterable<Definition> {
     private final Map<Class<?>, Definition> entityDefinitionsMap;
-
+    private final Map<Class<?>, EmbeddableElementCollectionDefinition<?>> embeddableElementCollectionDefinitionMap;
+    
     /**
      * Construct a new {@link MetaModel}.
      * @param classDefinitions all class definitions
      */
-    public MetaModel(Collection<Definition> classDefinitions) {
+    public MetaModel(Collection<EntityDefinition<?>> classDefinitions) {
         entityDefinitionsMap = new HashMap<Class<?>, Definition>();
-
-        for (Definition classDefinition : classDefinitions) {
-            entityDefinitionsMap.put(JpaUtils.getDefinedClassOfDefinition(classDefinition), classDefinition);
+        embeddableElementCollectionDefinitionMap = new HashMap<Class<?>, EmbeddableElementCollectionDefinition<?>>();
+        
+        for (EntityDefinition<?> classDefinition : classDefinitions) {
+            entityDefinitionsMap.put(JpaUtils.getDefinedClassOfDefinition(classDefinition), classDefinition);   
         }
 
     }

@@ -25,8 +25,8 @@ public class MetaModelTest {
     public void setUp() {
         workspaceDefinition = EntityDefinition.forClass(Workspace.class).setTableName("workspaces").build();
         customerDefinition = EntityDefinition.forClass(Customer.class).setTableName("customers").build();
-        metamodel = new MetaModel(Arrays.<Definition> asList(workspaceDefinition));
-        customerMetamodel = new MetaModel(Arrays.<Definition> asList(customerDefinition));
+        metamodel = new MetaModel(Arrays.<EntityDefinition<?>> asList(workspaceDefinition));
+        customerMetamodel = new MetaModel(Arrays.<EntityDefinition<?>> asList(customerDefinition));
     }
 
     @Test
