@@ -13,6 +13,7 @@ import java.util.Set;
 
 import org.jarbframework.populator.excel.metamodel.Definition;
 import org.jarbframework.populator.excel.metamodel.EntityDefinition;
+import org.jarbframework.populator.excel.metamodel.InverseJoinColumnReferenceProperties;
 import org.jarbframework.populator.excel.metamodel.MetaModel;
 import org.jarbframework.populator.excel.metamodel.PropertyDatabaseType;
 import org.jarbframework.populator.excel.metamodel.PropertyDefinition;
@@ -43,7 +44,13 @@ class WorkbookExpectation {
                         joinColumnNames.add(property.getInverseJoinColumnName());
                         columnNamesMap.put(joinSheetName, joinColumnNames);
                     } else if (property.getDatabaseType() == PropertyDatabaseType.INVERSED_REFERENCE) {
-                        //TO DO: implement functionality.
+                        InverseJoinColumnReferenceProperties inverseJoinColumnReferenceProperties = property.getInverseJoinColumnReferenceProperties();
+                        final String inversedReferenceTableName = inverseJoinColumnReferenceProperties.getReferencedTableName();
+                        sheetNames.add(inversedReferenceTableName);
+                        Set<String> inversedReferenceColumns = new HashSet<String>();
+                        inversedReferenceColumns.addAll(inverseJoinColumnReferenceProperties.getJoinColumnNames());
+                        inversedReferenceColumns.addAll(JpaUtils.getElementCollectionColumnNames(property, metamodel));
+                        columnNamesMap.put(inversedReferenceTableName, inversedReferenceColumns);
                     } else {
                         // Regular properties are mapped to a column name
                         columnNames.add(property.getColumnName());

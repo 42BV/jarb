@@ -3,14 +3,16 @@ package org.jarbframework.populator.excel.mapping.exporter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.jarbframework.populator.excel.metamodel.Definition;
 import org.jarbframework.populator.excel.metamodel.EntityDefinition;
+import org.jarbframework.populator.excel.metamodel.InverseJoinColumnReferenceProperties;
 import org.jarbframework.populator.excel.metamodel.MetaModel;
 import org.jarbframework.populator.excel.metamodel.PropertyDatabaseType;
 import org.jarbframework.populator.excel.metamodel.PropertyDefinition;
-import org.jarbframework.populator.excel.metamodel.generator.ColumnMetadataRetriever;
 import org.jarbframework.populator.excel.util.JpaUtils;
 import org.jarbframework.populator.excel.workbook.Sheet;
 import org.jarbframework.populator.excel.workbook.Workbook;
@@ -37,7 +39,7 @@ public class ExcelTemplateBuilder {
         Collections.sort(classDefinitions, new DefinitionNameComparator());
         for (Definition classDefinition : classDefinitions) {
             if (classDefinition instanceof EntityDefinition<?>) {
-                createClassSheet(classDefinition, workbook);
+                createClassSheet(classDefinition, workbook, metamodel);
             }
         }
         return workbook;
@@ -48,14 +50,14 @@ public class ExcelTemplateBuilder {
      * @param entityDefinition description of the entity structure being stored
      * @param workbook the workbook that will hold our sheet
      */
-    private void createClassSheet(Definition entityDefinition, Workbook workbook) {
+    private void createClassSheet(Definition entityDefinition, Workbook workbook, MetaModel metamodel) {
         Sheet sheet = workbook.createSheet(JpaUtils.getTableNameOfDefinition(entityDefinition));
-        storeColumnNames(sheet, entityDefinition);
+        storeColumnNames(sheet, entityDefinition.getColumnNames());
         for (PropertyDefinition propertyDefinition : entityDefinition.properties()) {
             if (propertyDefinition.getDatabaseType() == PropertyDatabaseType.COLLECTION_REFERENCE) {
                 createJoinSheet(propertyDefinition, workbook);
-            } else if (propertyDefinition.getDatabaseType() == PropertyDatabaseType.ELEMENT_COLLECTION) {
-                createElementCollectionSheet(propertyDefinition, workbook);
+            } else if (propertyDefinition.getDatabaseType() == PropertyDatabaseType.INVERSED_REFERENCE) {
+                createInversedReferenceSheet(propertyDefinition, workbook, metamodel);
             }
         }
     }
@@ -63,12 +65,12 @@ public class ExcelTemplateBuilder {
     /**
      * Store all column names in the sheet.
      * @param sheet the sheet that should contain our columns
-     * @param classDefinition description of all columns
+     * @param ColumnNames ColumnNames to write to Sheet
      */
-    private void storeColumnNames(Sheet sheet, Definition classDefinition) {
+    private void storeColumnNames(Sheet sheet, Set<String> columnNames) {
         int columnNumber = 0;
         sheet.setColumnNameAt(columnNumber++, "#"); // Row identifier
-        for (String columnName : classDefinition.getColumnNames()) {
+        for (String columnName : columnNames) {
             sheet.setColumnNameAt(columnNumber++, columnName);
         }
     }
@@ -84,35 +86,15 @@ public class ExcelTemplateBuilder {
         joinSheet.setColumnNameAt(1, propertyDefinition.getInverseJoinColumnName());
     }
 
-    /**
-     * Creates a new sheet for an ElementCollection table.
-     * @param propertyDefinition definition of the ElementCollection property
-     * @param workbook the workbook that will hold our sheet
-     */
-    private void createElementCollectionSheet(PropertyDefinition propertyDefinition, Workbook workbook) {
-        String elementCollectionTableName = propertyDefinition.getName();
-        Sheet elementCollectionSheet = workbook.createSheet(elementCollectionTableName);
+    private void createInversedReferenceSheet(PropertyDefinition propertyDefinition, Workbook workbook, MetaModel metamodel) {
+        InverseJoinColumnReferenceProperties inverseJoinColumnReferenceProperties = propertyDefinition.getInverseJoinColumnReferenceProperties();
+        String inversedReferenceTableName = inverseJoinColumnReferenceProperties.getReferencedTableName();
 
-        Class<?> propertyDefinitionClass = ColumnMetadataRetriever.getCollectionContentsType(propertyDefinition);
-
-        List<String> columns = getElementCollectionColumns(propertyDefinition, propertyDefinitionClass);
-
-        for (int columnNumber = 0; columnNumber < columns.size(); ++columnNumber) {
-            elementCollectionSheet.setColumnNameAt(columnNumber, columns.get(columnNumber));
-        }
-    }
-
-    /**
-     * Gathers the required columns for an ElementCollection table.
-     * @param propertyDefinition definition of the ElementCollection property
-     * @param propertyDefinitionClass class to gather the columnnames from
-     * @return List of column names
-     */
-    private List<String> getElementCollectionColumns(PropertyDefinition propertyDefinition, Class<?> propertyDefinitionClass) {
-        List<String> columns = new ArrayList<String>();
-        columns.addAll(propertyDefinition.getElementCollectionJoinColumnNames());
-        columns.addAll(ColumnMetadataRetriever.getColumnNamesForClass(propertyDefinitionClass));
-        return columns;
+        Sheet joinSheet = workbook.createSheet(inversedReferenceTableName);
+        Set<String> inversedReferenceColumns = new HashSet<String>();
+        inversedReferenceColumns.addAll(inverseJoinColumnReferenceProperties.getJoinColumnNames());
+        inversedReferenceColumns.addAll(JpaUtils.getElementCollectionColumnNames(propertyDefinition, metamodel));
+        storeColumnNames(joinSheet, inversedReferenceColumns);
     }
 
     // Sorts class definitions based on table name

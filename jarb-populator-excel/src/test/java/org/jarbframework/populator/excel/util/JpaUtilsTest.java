@@ -4,7 +4,9 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.EntityManager;
 import javax.persistence.metamodel.EntityType;
@@ -12,9 +14,10 @@ import javax.persistence.metamodel.Metamodel;
 
 import org.jarbframework.populator.excel.DefaultExcelTestDataCase;
 import org.jarbframework.populator.excel.metamodel.EntityDefinition;
+import org.jarbframework.populator.excel.metamodel.MetaModel;
 import org.jarbframework.populator.excel.metamodel.PropertyDefinition;
 import org.jarbframework.populator.excel.metamodel.generator.ColumnDefinitionsGenerator;
-import org.jarbframework.populator.excel.util.JpaUtils;
+import org.jarbframework.populator.excel.metamodel.generator.JpaMetaModelGenerator;
 import org.jarbframework.utils.orm.SchemaMapper;
 import org.jarbframework.utils.orm.jpa.JpaHibernateSchemaMapper;
 import org.junit.Before;
@@ -67,4 +70,15 @@ public class JpaUtilsTest extends DefaultExcelTestDataCase {
                 JpaUtils.getJoinColumnNamesFromJpaAnnotatedField(schemaMapper, metamodel.entity(Employee.class), emailAdresses.getField()));
     }
 
+    @Test
+    public void testGetElementCollectionColumnNames() {
+        JpaMetaModelGenerator jpaMetaModelGenerator = new JpaMetaModelGenerator(getEntityManagerFactory());
+        MetaModel metaModel = jpaMetaModelGenerator.generate();
+
+        Set<String> columnNames = new HashSet<String>();
+        columnNames.add("phone_model");
+        columnNames.add("phone_number");
+
+        assertEquals(columnNames, JpaUtils.getElementCollectionColumnNames(employeeDefinition.property("phones"), metaModel));
+    }
 }

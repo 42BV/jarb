@@ -54,10 +54,10 @@ public class MetaModelTest {
 
     @Test
     public void testContains() {
-        assertTrue(metamodel.contains(Workspace.class));
-        assertFalse(metamodel.contains(Project.class));
+        assertTrue(metamodel.containsEntity(Workspace.class));
+        assertFalse(metamodel.containsEntity(Project.class));
 
-        assertTrue(customerMetamodel.contains(SpecialCustomer.class));
+        assertTrue(customerMetamodel.containsEntity(SpecialCustomer.class));
     }
 
 }

@@ -54,14 +54,24 @@ public class MetaModel implements Iterable<EntityDefinition<?>> {
     }
 
     /**
+     * Retrieves an ElementCollection from the ElementCollection map. Key can either be the defined class (in case of en EmbeddableElementCollection) 
+     * or a table name in case of a SerialiableElementCollection.
+     * @param key Key to retrieve ElementCollection with
+     * @return Definition
+     */
+    public Definition elementCollection(Object key) {
+        return elementCollectionsMap.get(key);
+    }
+
+    /**
      * Determine if this meta model contains the described persistent class.
      * @param entityClass class that we are looking for
      * @return {@code true} if it is contained, else {@code false}
      */
-    public boolean contains(Class<?> entityClass) {
+    public boolean containsEntity(Class<?> entityClass) {
         boolean found = entityDefinitionsMap.containsKey(entityClass);
         if (!found && entityClass.getSuperclass() != null) {
-            found = contains(entityClass.getSuperclass());
+            found = containsEntity(entityClass.getSuperclass());
         }
         return found;
     }

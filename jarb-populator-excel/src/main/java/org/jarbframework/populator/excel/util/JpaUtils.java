@@ -2,6 +2,7 @@ package org.jarbframework.populator.excel.util;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 import javax.persistence.CollectionTable;
@@ -16,7 +17,12 @@ import javax.persistence.metamodel.SingularAttribute;
 import org.hibernate.proxy.HibernateProxy;
 import org.jarbframework.populator.excel.metamodel.Definition;
 import org.jarbframework.populator.excel.metamodel.ElementCollectionDefinition;
+import org.jarbframework.populator.excel.metamodel.EmbeddableElementCollectionDefinition;
 import org.jarbframework.populator.excel.metamodel.EntityDefinition;
+import org.jarbframework.populator.excel.metamodel.InverseJoinColumnReferenceProperties;
+import org.jarbframework.populator.excel.metamodel.InverseJoinColumnReferenceType;
+import org.jarbframework.populator.excel.metamodel.MetaModel;
+import org.jarbframework.populator.excel.metamodel.PropertyDefinition;
 import org.jarbframework.utils.orm.SchemaMapper;
 
 /**
@@ -98,6 +104,24 @@ public final class JpaUtils {
         } else {
             return new ArrayList<String>();
         }
+    }
+
+    /**
+     * Returns the Column names belonging to an ElementCollection.
+     * @param property Property which is annotated with @ElementCollection
+     * @param metamodel Metamodel to retrieve additional data from
+     * @return Set of Column names
+     */
+    public static HashSet<String> getElementCollectionColumnNames(PropertyDefinition property, MetaModel metamodel) {
+        InverseJoinColumnReferenceProperties inverseJoinColumnReferenceProperties = property.getInverseJoinColumnReferenceProperties();
+        HashSet<String> columnNames = new HashSet<String>();
+        if (inverseJoinColumnReferenceProperties.getInverseJoinColumnReferenceType() == InverseJoinColumnReferenceType.EMBEDDABLE) {
+            Class<?> definedClass = inverseJoinColumnReferenceProperties.getEmbeddableType().getJavaType();
+            EmbeddableElementCollectionDefinition<?> embeddableElementCollectionDefinition = (EmbeddableElementCollectionDefinition<?>) metamodel
+                    .elementCollection(definedClass);
+            columnNames.addAll(embeddableElementCollectionDefinition.getColumnNames());
+        }
+        return columnNames;
     }
 
     /**

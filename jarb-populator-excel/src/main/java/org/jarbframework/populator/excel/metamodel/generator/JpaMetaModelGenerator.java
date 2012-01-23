@@ -43,6 +43,7 @@ public class JpaMetaModelGenerator implements MetaModelGenerator {
             EntityDefinition<?> entityDefinition = describeEntity(entityType);
             entities.add(entityDefinition);
             elementCollections.addAll(returnDefinitionsForElementCollectionsFromEntity(entityDefinition, entityManagerFactory));
+
         }
         return new MetaModel(entities, elementCollections);
     }
