@@ -33,7 +33,7 @@ public class ExcelRow {
     }
 
     /**
-     * Adds a ColumnDefinition to the valueMap.
+     * Adds a an reference Key to the valueMap.
      * @param columnDefinition Instance of ColumnDefinition
      * @param value Key for ColumnDefinition
      */
@@ -42,7 +42,7 @@ public class ExcelRow {
     }
 
     /**
-     * Returns a hashmap with columndefinitions and keys.
+     * Returns a hashmap with columndefinitions as keys and reference keys as values.
      * @return hashmap with columnDefinitions and their corresponding keys
      */
     public Map<PropertyDefinition, Key> getValueMap() {

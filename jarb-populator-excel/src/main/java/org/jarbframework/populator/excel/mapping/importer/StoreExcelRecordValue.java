@@ -40,7 +40,7 @@ public final class StoreExcelRecordValue {
             StoreJoinColumn.storeValue(excel, definition, columnDefinition, rowPosition, excelRow);
             break;
         case INVERSED_REFERENCE:
-            StoreInversedJoinColumn.storeValue(excel, definition, columnDefinition, rowPosition, excelRow);
+            //StoreInversedJoinColumn.storeValue(excel, definition, columnDefinition, rowPosition, excelRow);
             break;
         }
     }

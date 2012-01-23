@@ -3,6 +3,7 @@ package org.jarbframework.populator.excel.util;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.persistence.CollectionTable;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
@@ -57,7 +58,7 @@ public final class JpaUtils {
      * @param definition Definition to get defined class from
      * @return Defined class
      */
-    //TO-DO Remove this function and replace by proper Definition type structure.
+    @Deprecated
     public static Class<?> getDefinedClassOfDefinition(Definition definition) {
         Class<?> definedClass = null;
         if (definition instanceof EntityDefinition<?>) {
@@ -73,7 +74,7 @@ public final class JpaUtils {
      * @param definition Definition to get table name from
      * @return Table name
      */
-    //TO-DO Remove this function and replace by proper Definition type structure.
+    @Deprecated
     public static String getTableNameOfDefinition(Definition definition) {
         String tableName = null;
         if (definition instanceof EntityDefinition<?>) {

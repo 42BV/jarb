@@ -1,7 +1,10 @@
 package domain.entities;
 
+import java.util.List;
+
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -33,6 +36,9 @@ public class Customer {
     @ManyToOne
     @JoinColumn(name = "service_level_agreement")
     private ServiceLevelAgreement serviceLevelAgreement;
+
+    @ElementCollection
+    private List<Phone> phones;
 
     /**
      * Public constructor.
@@ -98,5 +104,21 @@ public class Customer {
      */
     public ServiceLevelAgreement getServiceLevelAgreement() {
         return serviceLevelAgreement;
+    }
+
+    /**
+     * Sets the customer's phones.
+     * @param phones Customer's phones
+     */
+    public void setPhones(List<Phone> phones) {
+        this.phones = phones;
+    }
+
+    /**
+     * Returns the Customer's phones.
+     * @param phones Customer's phones
+     */
+    public List<Phone> getPhones() {
+        return phones;
     }
 }

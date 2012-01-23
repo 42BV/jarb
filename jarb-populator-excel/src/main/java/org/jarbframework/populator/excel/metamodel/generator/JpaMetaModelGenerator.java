@@ -4,13 +4,12 @@ import java.util.Collection;
 import java.util.HashSet;
 
 import javax.persistence.EntityManagerFactory;
-import javax.persistence.metamodel.EmbeddableType;
 import javax.persistence.metamodel.EntityType;
 
 import org.jarbframework.populator.excel.metamodel.Definition;
-import org.jarbframework.populator.excel.metamodel.ElementCollectionDefinition;
 import org.jarbframework.populator.excel.metamodel.EntityDefinition;
 import org.jarbframework.populator.excel.metamodel.MetaModel;
+import org.jarbframework.populator.excel.metamodel.PropertyDefinition;
 import org.jarbframework.utils.orm.jpa.JpaMetaModelUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,10 +38,32 @@ public class JpaMetaModelGenerator implements MetaModelGenerator {
     @Override
     public MetaModel generate() {
         Collection<EntityDefinition<?>> entities = new HashSet<EntityDefinition<?>>();
+        Collection<Definition> elementCollections = new HashSet<Definition>();
         for (EntityType<?> entityType : JpaMetaModelUtils.getRootEntities(entityManagerFactory.getMetamodel())) {
-            entities.add(describeEntity(entityType));
+            EntityDefinition<?> entityDefinition = describeEntity(entityType);
+            entities.add(entityDefinition);
+            elementCollections.addAll(returnDefinitionsForElementCollectionsFromEntity(entityDefinition, entityManagerFactory));
         }
-        return new MetaModel(entities);
+        return new MetaModel(entities, elementCollections);
+    }
+
+    /**
+     * Retrieves all ElementCollectionDefinitions that are connected with a certain EntityDefinition.
+     * @param entityDefinition EntityDefinition to search ElementCollectionDefinition occurences of
+     * @param entityManagerFactory JPA's EntityManagerFactory needed for creating ColumnDefinitions
+     * @return Collection of Definitions from ElementCollections
+     */
+    private Collection<Definition> returnDefinitionsForElementCollectionsFromEntity(EntityDefinition<?> entityDefinition,
+            EntityManagerFactory entityManagerFactory) {
+        Collection<Definition> definitions = new HashSet<Definition>();
+        for (PropertyDefinition propertyDefinition : entityDefinition.properties()) {
+            Definition definition = ElementCollectionDefinitionGenerator.createDefinitionForSingleElementCollectionFromEntity(propertyDefinition,
+                    entityManagerFactory);
+            if (definition != null) {
+                definitions.add(definition);
+            }
+        }
+        return definitions;
     }
 
     /**
@@ -51,11 +72,14 @@ public class JpaMetaModelGenerator implements MetaModelGenerator {
     @Override
     public MetaModel generateFor(Collection<Class<?>> entityClasses) {
         Collection<EntityDefinition<?>> entities = new HashSet<EntityDefinition<?>>();
+        Collection<Definition> elementCollections = new HashSet<Definition>();
         for (Class<?> entityClass : entityClasses) {
             EntityType<?> entityType = entityManagerFactory.getMetamodel().entity(entityClass);
-            entities.add(describeEntity(entityType));
+            EntityDefinition<?> entityDefinition = describeEntity(entityType);
+            entities.add(entityDefinition);
+            elementCollections.addAll(returnDefinitionsForElementCollectionsFromEntity(entityDefinition, entityManagerFactory));
         }
-        return new MetaModel(entities);
+        return new MetaModel(entities, elementCollections);
     }
 
     /**

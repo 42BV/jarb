@@ -1,5 +1,6 @@
 package domain.entities;
 
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -66,7 +67,7 @@ public final class Employee {
     private List<Phone> phones;
 
     @ElementCollection
-    private List<EmailAddress> emailAddresses;
+    private Collection<EmailAddress> emailAddresses;
 
     /**
      * Public constructor, initializes projects hashmap.
@@ -216,7 +217,7 @@ public final class Employee {
      * Returns the Employee's collection of emailAddresses.
      * @return Employee's email adresses.
      */
-    public List<EmailAddress> getEmailAddresses() {
+    public Collection<EmailAddress> getEmailAddresses() {
         return emailAddresses;
     }
 
@@ -224,7 +225,7 @@ public final class Employee {
      * Sets the Employee's email adresses.
      * @param emailAddresses Employee's email adresses
      */
-    public void setEmailAddresses(List<EmailAddress> emailAddresses) {
+    public void setEmailAddresses(Collection<EmailAddress> emailAddresses) {
         this.emailAddresses = emailAddresses;
     }
 }

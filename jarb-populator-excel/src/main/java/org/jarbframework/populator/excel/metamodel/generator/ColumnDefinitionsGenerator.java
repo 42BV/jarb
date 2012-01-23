@@ -72,13 +72,11 @@ public final class ColumnDefinitionsGenerator {
         addAttributesAsColumnDefinitions(columnDefinitions, type, entityClass, null);
     }
 
-    private void addAttributesAsColumnDefinitions(
-            List<PropertyDefinition> columnDefinitions, ManagedType<?> type, Class<?> entityClass, Class<?> enclosingClass) {
+    private void addAttributesAsColumnDefinitions(List<PropertyDefinition> columnDefinitions, ManagedType<?> type, Class<?> entityClass, Class<?> enclosingClass) {
         for (Attribute<?, ?> attribute : type.getDeclaredAttributes()) {
             Field field = (Field) attribute.getJavaMember();
 
-            List<PropertyDefinition> newlyGeneratedColumnDefinitions = createPropertyDefinitionList(
-                    entityClass, enclosingClass, field);
+            List<PropertyDefinition> newlyGeneratedColumnDefinitions = createPropertyDefinitionList(entityClass, enclosingClass, field);
 
             for (PropertyDefinition columnDefinition : newlyGeneratedColumnDefinitions) {
                 addPropertyDefinitionIfUnique(columnDefinitions, type, columnDefinition);
@@ -86,8 +84,7 @@ public final class ColumnDefinitionsGenerator {
         }
     }
 
-    private List<PropertyDefinition> createPropertyDefinitionList(
-            Class<?> entityClass, Class<?> enclosingClass, Field field) {
+    private List<PropertyDefinition> createPropertyDefinitionList(Class<?> entityClass, Class<?> enclosingClass, Field field) {
         return createColumnsForField(field, entityClass, enclosingClass);
     }
 
@@ -107,8 +104,7 @@ public final class ColumnDefinitionsGenerator {
         return columnDefinitions;
     }
 
-    private PropertyReference createPropertyReference(Field field,
-            Class<?> entityClass, Class<?> enclosingClass) {
+    private PropertyReference createPropertyReference(Field field, Class<?> entityClass, Class<?> enclosingClass) {
         PropertyReference propertyReference = null;
         if (enclosingClass == null) {
             propertyReference = new PropertyReference(entityClass, field.getName());

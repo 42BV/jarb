@@ -1,6 +1,8 @@
 package org.jarbframework.populator.excel.metamodel.generator;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.List;
 
@@ -11,9 +13,12 @@ import javax.persistence.Id;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
+import javax.persistence.metamodel.EmbeddableType;
 import javax.persistence.metamodel.EntityType;
 
+import org.apache.poi.hssf.record.formula.functions.T;
 import org.jarbframework.populator.excel.metamodel.InverseJoinColumnReferenceProperties;
+import org.jarbframework.populator.excel.metamodel.InverseJoinColumnReferenceType;
 import org.jarbframework.populator.excel.metamodel.PropertyDatabaseType;
 import org.jarbframework.populator.excel.metamodel.PropertyDefinition;
 import org.jarbframework.populator.excel.util.JpaUtils;
@@ -118,6 +123,7 @@ public class FieldAnalyzer {
         inverseJoinColumnReferenceProperties.setJoinColumnNames(joinColumnNames);
         String tableName = JpaMetaModelUtils.createTableNameForElementCollection(field, field.getDeclaringClass(), entityManagerFactory);
         inverseJoinColumnReferenceProperties.setReferencedTableName(tableName);
+        addPropertiesForEmbeddableElementCollection(field, inverseJoinColumnReferenceProperties);
         return inverseJoinColumnReferenceProperties;
     }
 
@@ -131,6 +137,25 @@ public class FieldAnalyzer {
         EntityType<?> entityType = entityManagerFactory.getMetamodel().entity(field.getDeclaringClass());
         List<String> joinColumnNames = JpaUtils.getJoinColumnNamesFromJpaAnnotatedField(schemaMapper, entityType, field);
         return joinColumnNames;
+    }
+
+    /**
+     * Sets the Referenced class and reference type if the InversedReference is an EmbeddableElementCollection.
+     * @param field Field to check the type arguments of
+     * @param inverseJoinColumnReferenceProperties Properties datastructure to mutate
+     */
+    private void addPropertiesForEmbeddableElementCollection(Field field, InverseJoinColumnReferenceProperties inverseJoinColumnReferenceProperties) {
+        ParameterizedType type = (ParameterizedType) field.getGenericType();
+
+        for (Type actualType : type.getActualTypeArguments()) {
+            Class<T> typeClass = (Class<T>) actualType;
+            if (JpaMetaModelUtils.isEmbeddable(typeClass)) {
+                EmbeddableType<T> embeddableType = entityManagerFactory.getMetamodel().embeddable(typeClass);
+                inverseJoinColumnReferenceProperties.setEmbeddableType(embeddableType);
+                inverseJoinColumnReferenceProperties.setInverseJoinColumnReferenceType(InverseJoinColumnReferenceType.EMBEDDABLE);
+                break;
+            }
+        }
     }
 
 }

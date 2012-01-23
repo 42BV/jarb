@@ -84,7 +84,7 @@ public class FieldAnalyzerTest extends DefaultExcelTestDataCase {
         assertEquals(joinColumnNames, inverseJoinColumnReferenceProperties.getJoinColumnNames());
         assertEquals("employees_emailAddresses", inverseJoinColumnReferenceProperties.getReferencedTableName());
     }
-    
+
     @Test
     public void testAnnotatedTableName() {
         Builder fieldBuilder = fieldAnalyzer.analyzeField(new PropertyReference(Employee.class, "phones"));

@@ -59,8 +59,7 @@ class WorkbookExpectation {
      * @param entity Entity to get the discriminator column name from.
      * @param columnNames Collection of column names.
      */
-    private void addDiscriminatorColumnNameIfApplicable(Definition entity,
-            Set<String> columnNames) {
+    private void addDiscriminatorColumnNameIfApplicable(Definition entity, Set<String> columnNames) {
         if (entity instanceof EntityDefinition<?>) {
             EntityDefinition<?> entityDefinition = (EntityDefinition<?>) entity;
             if (entityDefinition.hasDiscriminatorColumn()) {

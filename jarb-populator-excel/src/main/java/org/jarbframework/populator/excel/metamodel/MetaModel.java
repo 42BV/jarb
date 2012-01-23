@@ -6,28 +6,34 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import org.jarbframework.populator.excel.util.JpaUtils;
-
 /**
  * Describes the entities in our context.
  * 
  * @author Jeroen van Schagen
  * @since 10-05-2011
  */
-public class MetaModel implements Iterable<Definition> {
-    private final Map<Class<?>, Definition> entityDefinitionsMap;
-    private final Map<Class<?>, EmbeddableElementCollectionDefinition<?>> embeddableElementCollectionDefinitionMap;
-    
+public class MetaModel implements Iterable<EntityDefinition<?>> {
+
+    private final Map<Class<?>, EntityDefinition<?>> entityDefinitionsMap;
+    private final Map<Object, Definition> elementCollectionsMap;
+
     /**
      * Construct a new {@link MetaModel}.
      * @param classDefinitions all class definitions
      */
-    public MetaModel(Collection<EntityDefinition<?>> classDefinitions) {
-        entityDefinitionsMap = new HashMap<Class<?>, Definition>();
-        embeddableElementCollectionDefinitionMap = new HashMap<Class<?>, EmbeddableElementCollectionDefinition<?>>();
-        
+    public MetaModel(Collection<EntityDefinition<?>> classDefinitions, Collection<Definition> elementCollectionDefinitions) {
+        entityDefinitionsMap = new HashMap<Class<?>, EntityDefinition<?>>();
+        elementCollectionsMap = new HashMap<Object, Definition>();
+
         for (EntityDefinition<?> classDefinition : classDefinitions) {
-            entityDefinitionsMap.put(JpaUtils.getDefinedClassOfDefinition(classDefinition), classDefinition);   
+            entityDefinitionsMap.put(classDefinition.getDefinedClass(), classDefinition);
+        }
+
+        for (Definition elementCollectionDefinition : elementCollectionDefinitions) {
+            if (elementCollectionDefinition instanceof EmbeddableElementCollectionDefinition<?>) {
+                EmbeddableElementCollectionDefinition<?> embeddableElementCollectionDefinition = (EmbeddableElementCollectionDefinition<?>) elementCollectionDefinition;
+                elementCollectionsMap.put(embeddableElementCollectionDefinition.getDefinedClass(), embeddableElementCollectionDefinition);
+            }
         }
 
     }
@@ -65,7 +71,7 @@ public class MetaModel implements Iterable<Definition> {
      * types currently described in this meta model.
      * @return definition of each entity type
      */
-    public Collection<Definition> entities() {
+    public Collection<EntityDefinition<?>> entities() {
         return Collections.unmodifiableCollection(entityDefinitionsMap.values());
     }
 
@@ -73,7 +79,7 @@ public class MetaModel implements Iterable<Definition> {
      * {@inheritDoc}
      */
     @Override
-    public Iterator<Definition> iterator() {
+    public Iterator<EntityDefinition<?>> iterator() {
         return entityDefinitionsMap.values().iterator();
     }
 

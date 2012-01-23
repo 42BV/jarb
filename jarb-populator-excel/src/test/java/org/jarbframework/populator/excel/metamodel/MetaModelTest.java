@@ -5,6 +5,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Iterator;
 
 import org.junit.Before;
@@ -25,8 +26,8 @@ public class MetaModelTest {
     public void setUp() {
         workspaceDefinition = EntityDefinition.forClass(Workspace.class).setTableName("workspaces").build();
         customerDefinition = EntityDefinition.forClass(Customer.class).setTableName("customers").build();
-        metamodel = new MetaModel(Arrays.<EntityDefinition<?>> asList(workspaceDefinition));
-        customerMetamodel = new MetaModel(Arrays.<EntityDefinition<?>> asList(customerDefinition));
+        metamodel = new MetaModel(Arrays.<EntityDefinition<?>> asList(workspaceDefinition), new HashSet<Definition>());
+        customerMetamodel = new MetaModel(Arrays.<EntityDefinition<?>> asList(customerDefinition), new HashSet<Definition>());
     }
 
     @Test
@@ -42,7 +43,7 @@ public class MetaModelTest {
 
     @Test
     public void testIterator() {
-        Iterator<Definition> iterator = metamodel.iterator();
+        Iterator<EntityDefinition<?>> iterator = metamodel.iterator();
         assertEquals(workspaceDefinition, iterator.next());
     }
 

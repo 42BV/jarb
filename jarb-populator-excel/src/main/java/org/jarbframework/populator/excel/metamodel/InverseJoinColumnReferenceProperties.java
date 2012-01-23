@@ -2,6 +2,10 @@ package org.jarbframework.populator.excel.metamodel;
 
 import java.util.Collection;
 
+import javax.persistence.metamodel.EmbeddableType;
+
+import org.apache.poi.hssf.record.formula.functions.T;
+
 /**
  * Data structure for storing information needed for an inversed JoinColumn relation (ElementCollection or OneToMany with JoinColumn).
  * @author Sander Benschop
@@ -9,6 +13,9 @@ import java.util.Collection;
  */
 public final class InverseJoinColumnReferenceProperties {
 
+    private InverseJoinColumnReferenceType inverseJoinColumnReferenceType = InverseJoinColumnReferenceType.SERIALIZABLE_CLASS;
+
+    private EmbeddableType<T> embeddableType;
     private String referencedTableName;
     private Collection<String> joinColumnNames;
 
@@ -42,6 +49,22 @@ public final class InverseJoinColumnReferenceProperties {
      */
     public void setJoinColumnNames(Collection<String> joinColumnNames) {
         this.joinColumnNames = joinColumnNames;
+    }
+
+    public void setInverseJoinColumnReferenceType(InverseJoinColumnReferenceType inverseJoinColumnReferenceType) {
+        this.inverseJoinColumnReferenceType = inverseJoinColumnReferenceType;
+    }
+
+    public InverseJoinColumnReferenceType getInverseJoinColumnReferenceType() {
+        return inverseJoinColumnReferenceType;
+    }
+
+    public void setEmbeddableType(EmbeddableType<T> embeddableType) {
+        this.embeddableType = embeddableType;
+    }
+
+    public EmbeddableType<T> getEmbeddableType() {
+        return embeddableType;
     }
 
 }

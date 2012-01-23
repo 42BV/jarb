@@ -95,8 +95,7 @@ public class ExcelTemplateBuilder {
 
         Class<?> propertyDefinitionClass = ColumnMetadataRetriever.getCollectionContentsType(propertyDefinition);
 
-        List<String> columns = getElementCollectionColumns(propertyDefinition,
-                propertyDefinitionClass);
+        List<String> columns = getElementCollectionColumns(propertyDefinition, propertyDefinitionClass);
 
         for (int columnNumber = 0; columnNumber < columns.size(); ++columnNumber) {
             elementCollectionSheet.setColumnNameAt(columnNumber, columns.get(columnNumber));

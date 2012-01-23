@@ -127,11 +127,9 @@ public final class ReferentialPreparement {
      * @return Entity with persisted references
      */
     private Object setFieldValuesForReferencedObject(Object entity, String attributeName, Object referencedEntity) {
-        Object identifier = JpaUtils.getIdentifier(referencedEntity,
-                entityManager.getEntityManagerFactory());
+        Object identifier = JpaUtils.getIdentifier(referencedEntity, entityManager.getEntityManagerFactory());
         if (identifier != null) {
-            tryToCoupleEntities(entity, attributeName, referencedEntity,
-                    identifier);
+            tryToCoupleEntities(entity, attributeName, referencedEntity, identifier);
         } else {
             cascadeReferencedObject(entity, attributeName, referencedEntity);
         }
@@ -147,8 +145,7 @@ public final class ReferentialPreparement {
      * @param referencedEntity The referenced entity
      * @param identifier Identifier of referencedEntity
      */
-    private void tryToCoupleEntities(Object entity, String attributeName,
-            Object referencedEntity, Object identifier) {
+    private void tryToCoupleEntities(Object entity, String attributeName, Object referencedEntity, Object identifier) {
         Object retrievenObject = entityManager.find(referencedEntity.getClass(), identifier);
         if (retrievenObject != null) {
             // Entity has already been persisted, couple to persisted value
