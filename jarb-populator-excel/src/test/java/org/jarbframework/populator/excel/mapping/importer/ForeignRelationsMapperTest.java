@@ -18,6 +18,7 @@ import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.jarbframework.populator.excel.DefaultExcelTestDataCase;
 import org.jarbframework.populator.excel.mapping.ValueConversionService;
 import org.jarbframework.populator.excel.metamodel.Definition;
+import org.jarbframework.populator.excel.metamodel.EntityDefinition;
 import org.jarbframework.populator.excel.metamodel.MetaModel;
 import org.jarbframework.populator.excel.metamodel.PropertyDefinition;
 import org.jarbframework.populator.excel.metamodel.generator.JpaMetaModelGenerator;
@@ -53,8 +54,8 @@ public class ForeignRelationsMapperTest extends DefaultExcelTestDataCase {
         Map<Definition, Map<Object, ExcelRow>> objectModel = new HashMap<Definition, Map<Object, ExcelRow>>();
         ExcelImporter excelImporter = new ExcelImporter(ValueConversionService.defaultConversions(), emf);
 
-        List<Definition> entities = new ArrayList<Definition>(medamodel.entities());
-        for (Definition entityDefinition : entities) {
+        List<EntityDefinition<?>> entities = new ArrayList<EntityDefinition<?>>(medamodel.entities());
+        for (EntityDefinition<?> entityDefinition : entities) {
             objectModel.put(entityDefinition, excelImporter.parseWorksheet(excel, entityDefinition));
         }
 

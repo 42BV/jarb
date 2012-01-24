@@ -3,9 +3,8 @@ package org.jarbframework.populator.excel.util;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import javax.persistence.EntityManager;
@@ -53,8 +52,8 @@ public class JpaUtilsTest extends DefaultExcelTestDataCase {
 
     @Test
     public void testGetJoinColumnNamesFromElementCollectionFieldWithCollectionTable() {
-        List<String> joinColumnNames = new ArrayList<String>();
-        joinColumnNames.add("owner");
+        HashMap<String, String> joinColumnNames = new HashMap<String, String>();
+        joinColumnNames.put("#", "owner");
         PropertyDefinition phones = employeeDefinition.property("phones");
         SchemaMapper schemaMapper = JpaHibernateSchemaMapper.usingNamingStrategyOf(getEntityManagerFactory());
         assertEquals(joinColumnNames, JpaUtils.getJoinColumnNamesFromJpaAnnotatedField(schemaMapper, metamodel.entity(Employee.class), phones.getField()));
@@ -62,8 +61,8 @@ public class JpaUtilsTest extends DefaultExcelTestDataCase {
 
     @Test
     public void testGetJoinColumnNamesFromElementCollectionFieldWithoutCollectionTable() {
-        List<String> joinColumnNames = new ArrayList<String>();
-        joinColumnNames.add("employees_employee_id");
+        HashMap<String, String> joinColumnNames = new HashMap<String, String>();
+        joinColumnNames.put("#", "employees_employee_id");
         PropertyDefinition emailAdresses = employeeDefinition.property("emailAddresses");
         SchemaMapper schemaMapper = JpaHibernateSchemaMapper.usingNamingStrategyOf(getEntityManagerFactory());
         assertEquals(joinColumnNames,

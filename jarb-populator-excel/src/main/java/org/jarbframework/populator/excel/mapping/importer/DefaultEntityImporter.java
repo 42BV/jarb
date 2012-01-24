@@ -7,7 +7,7 @@ import javax.persistence.EntityManagerFactory;
 
 import org.jarbframework.populator.excel.entity.EntityRegistry;
 import org.jarbframework.populator.excel.mapping.ValueConversionService;
-import org.jarbframework.populator.excel.metamodel.Definition;
+import org.jarbframework.populator.excel.metamodel.EntityDefinition;
 import org.jarbframework.populator.excel.metamodel.MetaModel;
 import org.jarbframework.populator.excel.workbook.Workbook;
 
@@ -28,7 +28,7 @@ public class DefaultEntityImporter implements EntityImporter {
      */
     @Override
     public EntityRegistry load(Workbook workbook, MetaModel metamodel) {
-        List<Definition> entities = new ArrayList<Definition>(metamodel.entities());
+        List<EntityDefinition<?>> entities = new ArrayList<EntityDefinition<?>>(metamodel.entities());
         try {
             return delegateImporter.parseExcelToRegistry(workbook, entities);
         } catch (Exception e) {

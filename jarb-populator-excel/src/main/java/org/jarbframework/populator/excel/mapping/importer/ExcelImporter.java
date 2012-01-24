@@ -7,6 +7,7 @@ import java.util.Map.Entry;
 import java.util.UUID;
 
 import javax.persistence.EntityManagerFactory;
+
 import org.jarbframework.populator.excel.entity.EntityRegistry;
 import org.jarbframework.populator.excel.entity.EntityTable;
 import org.jarbframework.populator.excel.mapping.ValueConversionService;
@@ -47,35 +48,33 @@ public final class ExcelImporter {
      * @throws NoSuchFieldException 
      */
     @SuppressWarnings({ "unchecked", "rawtypes" })
-    public EntityRegistry parseExcelToRegistry(Workbook excel, Collection<Definition> entityDefinitions) throws NoSuchFieldException {
+    public EntityRegistry parseExcelToRegistry(Workbook excel, Collection<EntityDefinition<?>> entityDefinitions) throws NoSuchFieldException {
         //First we need to create all ExcelRows, including those of the subtype 'ElementCollectionDefinition'
         createExcelRows(excel, entityDefinitions);
 
         EntityRegistry entityRegistry = new EntityRegistry();
         //First loop over the entities
-        for (Definition entityDefinition : entityDefinitions) {
-            if (entityDefinition instanceof EntityDefinition<?>) {
-                final Class entityClass = JpaUtils.getDefinedClassOfDefinition(entityDefinition);
-                EntityTable<Object> entities = new EntityTable<Object>(entityClass);
-                for (Entry<Object, ExcelRow> entry : excelRowMap.get(entityDefinition).entrySet()) {
-                    ExcelRow excelRow = entry.getValue();
-                    //First map the foreign relations
-                    ForeignRelationsMapper.makeForeignRelations(excelRow, excelRowMap);
-                    // Entity registry uses the entities persistent identifier, rather than its row identifier
-                    // Row identifier is only used in excel, entity identifier is used in registry and database
-                    Object entity = excelRow.getCreatedInstance();
-                    Object identifier = JpaUtils.getIdentifier(entity, entityManagerFactory);
-                    if (identifier == null) {
-                        // Whenever the identifier is null, because it has not yet been defined (generated value)
-                        // use a random placeholder identifier. This identifier is only used to access the entity
-                        // inside the generated entity registry. After persisting the registry, our entity identifier
-                        // will be replaced with the actual database identifier.
-                        identifier = UUID.randomUUID().toString();
-                    }
-                    entities.add(identifier, entity);
+        for (EntityDefinition<?> entityDefinition : entityDefinitions) {
+            final Class entityClass = JpaUtils.getDefinedClassOfDefinition(entityDefinition);
+            EntityTable<Object> entities = new EntityTable<Object>(entityClass);
+            for (Entry<Object, ExcelRow> entry : excelRowMap.get(entityDefinition).entrySet()) {
+                ExcelRow excelRow = entry.getValue();
+                //First map the foreign relations
+                ForeignRelationsMapper.makeForeignRelations(excelRow, excelRowMap);
+                // Entity registry uses the entities persistent identifier, rather than its row identifier
+                // Row identifier is only used in excel, entity identifier is used in registry and database
+                Object entity = excelRow.getCreatedInstance();
+                Object identifier = JpaUtils.getIdentifier(entity, entityManagerFactory);
+                if (identifier == null) {
+                    // Whenever the identifier is null, because it has not yet been defined (generated value)
+                    // use a random placeholder identifier. This identifier is only used to access the entity
+                    // inside the generated entity registry. After persisting the registry, our entity identifier
+                    // will be replaced with the actual database identifier.
+                    identifier = UUID.randomUUID().toString();
                 }
-                entityRegistry.addAll(entities);
+                entities.add(identifier, entity);
             }
+            entityRegistry.addAll(entities);
         }
         return entityRegistry;
     }
@@ -86,8 +85,8 @@ public final class ExcelImporter {
      * @param entityDefinitions Definitions of tables data will be stored in
      * @return
      */
-    private void createExcelRows(final Workbook excel, final Collection<Definition> entityDefinitions) {
-        for (Definition entityDefinition : entityDefinitions) {
+    private void createExcelRows(final Workbook excel, final Collection<EntityDefinition<?>> entityDefinitions) {
+        for (EntityDefinition<?> entityDefinition : entityDefinitions) {
             excelRowMap.put(entityDefinition, parseWorksheet(excel, entityDefinition));
         }
     }
@@ -101,7 +100,7 @@ public final class ExcelImporter {
      * @throws IllegalAccessException Thrown when function does not have access to the definition of the specified class, field, method or constructor 
      * @throws NoSuchFieldException Thrown when a field is not available
      */
-    public Map<Object, ExcelRow> parseWorksheet(final Workbook excel, final Definition definition) {
+    public Map<Object, ExcelRow> parseWorksheet(final Workbook excel, final EntityDefinition<?> definition) {
         Map<Object, ExcelRow> createdInstances = new HashMap<Object, ExcelRow>();
         Sheet sheet = excel.getSheet(JpaUtils.getTableNameOfDefinition(definition));
         String discriminatorColumnName = getDiscriminatorColumnFromDefinition(definition);
@@ -253,7 +252,7 @@ public final class ExcelImporter {
      * @param excelRow The excelRecord to save the data to
      * @throws NoSuchFieldException Thrown if field cannot be found
      */
-    private void storeExcelRecordByColumnDefinitions(final Workbook excel, final Definition definition, Integer rowPosition, ExcelRow excelRow) {
+    private void storeExcelRecordByColumnDefinitions(final Workbook excel, final EntityDefinition<?> definition, Integer rowPosition, ExcelRow excelRow) {
         for (PropertyDefinition columnDefinition : definition.properties()) {
             valueStorer.storeValue(excel, definition, columnDefinition, rowPosition, excelRow);
         }

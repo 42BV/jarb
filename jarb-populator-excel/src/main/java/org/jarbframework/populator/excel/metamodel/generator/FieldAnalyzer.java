@@ -4,7 +4,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Collection;
-import java.util.List;
+import java.util.HashMap;
 
 import javax.persistence.ElementCollection;
 import javax.persistence.EntityManagerFactory;
@@ -119,7 +119,7 @@ public class FieldAnalyzer {
      */
     private InverseJoinColumnReferenceProperties inverseJoinColumnReferenceProperties(Field field) {
         InverseJoinColumnReferenceProperties inverseJoinColumnReferenceProperties = new InverseJoinColumnReferenceProperties();
-        List<String> joinColumnNames = getJpaJoinColumnNamesForField(field);
+        HashMap<String, String> joinColumnNames = getJpaJoinColumnNamesForInversedReferenceField(field);
         inverseJoinColumnReferenceProperties.setJoinColumnNames(joinColumnNames);
         String tableName = JpaMetaModelUtils.createTableNameForElementCollection(field, field.getDeclaringClass(), entityManagerFactory);
         inverseJoinColumnReferenceProperties.setReferencedTableName(tableName);
@@ -128,14 +128,15 @@ public class FieldAnalyzer {
     }
 
     /**
-     * Returns the Jpa annotated JoinColumn names on the field if present, otherwise the spec default will be returned.
-     * @param field Field to get the JoinColumn names from
-     * @return JoinColumn names
+     * Returns a hashmap with the referred column names as keys and the Jpa annotated JoinColumn names on the field as values.
+     * If the necessary annotations are not present, the JPA2 spec's default will be applied
+     * @param field Field to get the names from
+     * @return Hashmap with the referred column names as keys and the Jpa annotated JoinColumn names as values
      */
-    private List<String> getJpaJoinColumnNamesForField(Field field) {
+    private HashMap<String, String> getJpaJoinColumnNamesForInversedReferenceField(Field field) {
         SchemaMapper schemaMapper = JpaHibernateSchemaMapper.usingNamingStrategyOf(entityManagerFactory);
         EntityType<?> entityType = entityManagerFactory.getMetamodel().entity(field.getDeclaringClass());
-        List<String> joinColumnNames = JpaUtils.getJoinColumnNamesFromJpaAnnotatedField(schemaMapper, entityType, field);
+        HashMap<String, String> joinColumnNames = JpaUtils.getJoinColumnNamesFromJpaAnnotatedField(schemaMapper, entityType, field);
         return joinColumnNames;
     }
 
@@ -144,6 +145,7 @@ public class FieldAnalyzer {
      * @param field Field to check the type arguments of
      * @param inverseJoinColumnReferenceProperties Properties datastructure to mutate
      */
+    @SuppressWarnings("unchecked")
     private void addPropertiesForEmbeddableElementCollection(Field field, InverseJoinColumnReferenceProperties inverseJoinColumnReferenceProperties) {
         ParameterizedType type = (ParameterizedType) field.getGenericType();
 

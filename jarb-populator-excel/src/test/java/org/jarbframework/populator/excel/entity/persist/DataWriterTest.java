@@ -15,7 +15,6 @@ import org.jarbframework.populator.excel.DefaultExcelTestDataCase;
 import org.jarbframework.populator.excel.entity.EntityRegistry;
 import org.jarbframework.populator.excel.mapping.ValueConversionService;
 import org.jarbframework.populator.excel.mapping.importer.ExcelImporter;
-import org.jarbframework.populator.excel.metamodel.Definition;
 import org.jarbframework.populator.excel.metamodel.EntityDefinition;
 import org.jarbframework.populator.excel.metamodel.generator.EntityDefinitionsGenerator;
 import org.jarbframework.populator.excel.workbook.Workbook;
@@ -60,7 +59,7 @@ public class DataWriterTest extends DefaultExcelTestDataCase {
     @Test
     public void testSaveEntity() throws InstantiationException, IllegalAccessException, SecurityException, NoSuchFieldException, ClassNotFoundException,
             InvalidFormatException, IOException {
-        List<Definition> classDefinitionList = new ArrayList<Definition>();
+        List<EntityDefinition<?>> classDefinitionList = new ArrayList<EntityDefinition<?>>();
 
         customer = entityDefinitionsGenerator.createSingleEntityDefinitionFromMetamodel(customerEntity, false);
         project = entityDefinitionsGenerator.createSingleEntityDefinitionFromMetamodel(projectEntity, false);
@@ -78,7 +77,7 @@ public class DataWriterTest extends DefaultExcelTestDataCase {
     @Test
     public void testEntityReferencing() throws InstantiationException, ClassNotFoundException, IllegalAccessException, NoSuchFieldException,
             InvalidFormatException, IOException {
-        List<Definition> classDefinitionList = new ArrayList<Definition>();
+        List<EntityDefinition<?>> classDefinitionList = new ArrayList<EntityDefinition<?>>();
         excel = new PoiWorkbookParser().parse(new FileInputStream("src/test/resources/ExcelEmployeesVehicles.xls"));
 
         EntityType<?> employeeEntity = jpaMetamodel.entity(Employee.class);

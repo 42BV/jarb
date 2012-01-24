@@ -1,9 +1,8 @@
 package org.jarbframework.populator.excel.util;
 
 import java.lang.reflect.Field;
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 
 import javax.persistence.CollectionTable;
 import javax.persistence.Column;
@@ -32,6 +31,8 @@ import org.jarbframework.utils.orm.SchemaMapper;
  * @since 11-05-2011
  */
 public final class JpaUtils {
+
+    private static final String ROW_IDENTIFIER_COLUMN_NAME = "#";
 
     /** Utility class, do not attempt to instantiate. */
     private JpaUtils() {
@@ -92,17 +93,17 @@ public final class JpaUtils {
     }
 
     /**
-     * Returns the @JoinColumns names from a JPA annotated field. If no @JoinColumn names are present, the JPA default will be deduced.
+     * Returns the referred column names and the @JoinColumns names from a JPA annotated field. If no @JoinColumn names are present, the JPA default will be deduced.
      * @param schemaMapper JPA schemamapper used to retrieve the table name
      * @param owningEntity EntityType<?> of the Entity owning the passed field
-     * @param field Field to get @JoinColumns from
-     * @return List of JoinColumn names
+     * @param field Field to get metadata from
+     * @return HashMap with referred Column names as keys and @JoinColumn names as values
      */
-    public static List<String> getJoinColumnNamesFromJpaAnnotatedField(SchemaMapper schemaMapper, EntityType<?> owningEntity, Field field) {
+    public static HashMap<String, String> getJoinColumnNamesFromJpaAnnotatedField(SchemaMapper schemaMapper, EntityType<?> owningEntity, Field field) {
         if (field.isAnnotationPresent(ElementCollection.class)) {
             return getJoinColumnNamesForElementCollectionField(schemaMapper, owningEntity, field);
         } else {
-            return new ArrayList<String>();
+            return new HashMap<String, String>();
         }
     }
 
@@ -125,27 +126,56 @@ public final class JpaUtils {
     }
 
     /**
-     * Returns the @JoinColums names from an ElementCollection field.
+     * Returns the referenced column names and the @JoinColums names from an ElementCollection field.
      * @param schemaMapper JPA schemamapper used to retrieve the table name
      * @param owningEntity EntityType<?> of the Entity owning the passed field
      * @param field Field to get @JoinColumns from
-     * @return List of JoinColumn names
+     * @return HashMap with referred Column names as keys and @JoinColumn names as values
      */
-    private static List<String> getJoinColumnNamesForElementCollectionField(SchemaMapper schemaMapper, EntityType<?> owningEntity, Field field) {
-        List<String> joinColumnNames = new ArrayList<String>();
+    private static HashMap<String, String> getJoinColumnNamesForElementCollectionField(SchemaMapper schemaMapper, EntityType<?> owningEntity, Field field) {
+        HashMap<String, String> joinColumnNames = new HashMap<String, String>();
         if (field.isAnnotationPresent(CollectionTable.class)) {
-            CollectionTable collectionTable = field.getAnnotation(CollectionTable.class);
+            joinColumnNames = createColumnNamesFromCollectionTableAnnotation(field);
+        } else if (joinColumnNames.isEmpty()) {
+            joinColumnNames = createColumnNamesByJPADefault(schemaMapper, owningEntity);
+        }
+        return joinColumnNames;
+    }
+
+    /**
+     * Creates a HashMap with referenced column names as keys and @JoinColumn names as values, with data gathered from the @CollectionTable annotation.
+     * @param field Field to get CollectionTable annotation from
+     * @return HashMap with referred Column names as keys and @JoinColumn names as values
+     */
+    private static HashMap<String, String> createColumnNamesFromCollectionTableAnnotation(Field field) {
+        HashMap<String, String> joinColumnNames = new HashMap<String, String>();
+        CollectionTable collectionTable = field.getAnnotation(CollectionTable.class);
+
+        if (collectionTable.joinColumns().length == 1) {
+            JoinColumn joinColumn = collectionTable.joinColumns()[0];
+            joinColumnNames.put(ROW_IDENTIFIER_COLUMN_NAME, joinColumn.name());
+        } else {
             for (JoinColumn joinColumn : collectionTable.joinColumns()) {
-                joinColumnNames.add(joinColumn.name());
+                joinColumnNames.put(joinColumn.referencedColumnName(), joinColumn.name());
             }
         }
 
-        if (joinColumnNames.isEmpty()) {
-            Class<?> owningClass = owningEntity.getJavaType();
-            String owningClassDatabaseTableName = schemaMapper.tableNameOf(owningClass);
-            String elementCollectionDatabaseAttributeName = getIdentifierColumnName(owningEntity);
-            joinColumnNames.add(owningClassDatabaseTableName + "_" + elementCollectionDatabaseAttributeName);
-        }
+        return joinColumnNames;
+    }
+
+    /**
+     * Creates a HashMap with referenced column names as keys and @JoinColumn names as values, from the JPA spec's defaults.
+     * @param schemaMapper 
+     * @param owningEntity 
+     * @return HashMap with referred Column names as keys and @JoinColumn names as values
+     */
+    private static HashMap<String, String> createColumnNamesByJPADefault(SchemaMapper schemaMapper, EntityType<?> owningEntity) {
+        HashMap<String, String> joinColumnNames = new HashMap<String, String>();
+        Class<?> owningClass = owningEntity.getJavaType();
+        String owningClassDatabaseTableName = schemaMapper.tableNameOf(owningClass);
+        String elementCollectionDatabaseAttributeName = getIdentifierColumnName(owningEntity);
+        String concatinatedJoinColumnName = owningClassDatabaseTableName + "_" + elementCollectionDatabaseAttributeName;
+        joinColumnNames.put(ROW_IDENTIFIER_COLUMN_NAME, concatinatedJoinColumnName);
         return joinColumnNames;
     }
 

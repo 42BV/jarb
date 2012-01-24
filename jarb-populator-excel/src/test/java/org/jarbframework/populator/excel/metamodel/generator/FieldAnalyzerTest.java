@@ -6,8 +6,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
 
 import javax.persistence.metamodel.EntityType;
 import javax.persistence.metamodel.Metamodel;
@@ -79,9 +78,9 @@ public class FieldAnalyzerTest extends DefaultExcelTestDataCase {
     public void testInversedReferenceColumn() {
         Builder fieldBuilder = fieldAnalyzer.analyzeField(new PropertyReference(Employee.class, "emailAddresses"));
         InverseJoinColumnReferenceProperties inverseJoinColumnReferenceProperties = fieldBuilder.build().getInverseJoinColumnReferenceProperties();
-        List<String> joinColumnNames = new ArrayList<String>();
-        joinColumnNames.add("employees_employee_id");
-        assertEquals(joinColumnNames, inverseJoinColumnReferenceProperties.getJoinColumnNames());
+        HashMap<String, String> joinColumnNames = new HashMap<String, String>();
+        joinColumnNames.put("#", "employees_employee_id");
+        assertEquals(joinColumnNames, inverseJoinColumnReferenceProperties.getReferencedColumnAndJoinColumnNamesHashMap());
         assertEquals("employees_emailAddresses", inverseJoinColumnReferenceProperties.getReferencedTableName());
     }
 

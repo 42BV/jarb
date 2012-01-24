@@ -19,7 +19,6 @@ import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.jarbframework.populator.excel.DefaultExcelTestDataCase;
 import org.jarbframework.populator.excel.entity.EntityRegistry;
 import org.jarbframework.populator.excel.mapping.ValueConversionService;
-import org.jarbframework.populator.excel.metamodel.Definition;
 import org.jarbframework.populator.excel.metamodel.EntityDefinition;
 import org.jarbframework.populator.excel.metamodel.generator.EntityDefinitionsGenerator;
 import org.jarbframework.populator.excel.workbook.Workbook;
@@ -30,7 +29,7 @@ import org.junit.Test;
 public class DefaultExcelImporterTest extends DefaultExcelTestDataCase {
 
     private Workbook excel;
-    private List<Definition> classDefinitionList;
+    private List<EntityDefinition<?>> classDefinitionList;
     private EntityDefinition<?> customer;
     private EntityDefinition<?> project;
     private EntityRegistry entityRegistry;
@@ -42,7 +41,7 @@ public class DefaultExcelImporterTest extends DefaultExcelTestDataCase {
             NoSuchMethodException, IllegalArgumentException, InvocationTargetException, ClassNotFoundException {
         excel = new PoiWorkbookParser().parse(new FileInputStream("src/test/resources/ExcelUnitTesting.xls"));
 
-        classDefinitionList = new ArrayList<Definition>();
+        classDefinitionList = new ArrayList<EntityDefinition<?>>();
 
         Metamodel metamodel = getEntityManagerFactory().getMetamodel();
         EntityType<?> customerEntity = metamodel.entity(domain.entities.Customer.class);

@@ -28,6 +28,8 @@ import org.jarbframework.populator.excel.workbook.Workbook;
  */
 public class ExcelTemplateBuilder {
 
+    private static final String ROW_IDENTIFIER_COLUMN_NAME = "#";
+
     /**
      * Create an empty Excel workbook, with all sheets and columns in place.
      * @param metamodel the metamodel that describes our entity structure
@@ -69,7 +71,7 @@ public class ExcelTemplateBuilder {
      */
     private void storeColumnNames(Sheet sheet, Set<String> columnNames) {
         int columnNumber = 0;
-        sheet.setColumnNameAt(columnNumber++, "#"); // Row identifier
+        sheet.setColumnNameAt(columnNumber++, ROW_IDENTIFIER_COLUMN_NAME); // Row identifier
         for (String columnName : columnNames) {
             sheet.setColumnNameAt(columnNumber++, columnName);
         }
