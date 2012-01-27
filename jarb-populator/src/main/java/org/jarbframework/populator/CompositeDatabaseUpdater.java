@@ -16,9 +16,10 @@ import org.slf4j.LoggerFactory;
  * @since 01-06-2011
  */
 public class CompositeDatabaseUpdater implements RevertableDatabaseUpdater {
+	
     private final Logger logger = LoggerFactory.getLogger(CompositeDatabaseUpdater.class);
 
-    /** Collection of delegate populator, executed in order of collection. **/
+    /** Collection of update delegates, executed in order of collection. **/
     private final List<DatabaseUpdater> updaters;
 
     /**

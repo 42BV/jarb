@@ -9,16 +9,16 @@ import org.springframework.core.io.Resource;
  * @author Jeroen van Schagen
  * @since 21-06-2011
  */
-public class ResourceExistsCondition implements Condition {
+public class ResourceExists implements Condition {
     
     /** Resource being checked on existence. **/
     private final Resource resource;
 
     /**
-     * Construct a new {@link ResourceExistsCondition}.
+     * Construct a new {@link ResourceExists}.
      * @param resource the resource being checked on existence
      */
-    public ResourceExistsCondition(Resource resource) {
+    public ResourceExists(Resource resource) {
         this.resource = notNull(resource, "Cannot check the existence of a null resource");
     }
 
@@ -28,4 +28,5 @@ public class ResourceExistsCondition implements Condition {
         evaluation.state(resource.exists(), "Resource '" + resource + "' does not exist.");
         return evaluation;
     }
+    
 }

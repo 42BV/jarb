@@ -8,7 +8,7 @@ import java.sql.SQLException;
 import javax.sql.DataSource;
 
 import org.jarbframework.populator.condition.ConditionalDatabaseUpdater;
-import org.jarbframework.populator.condition.ResourceExistsCondition;
+import org.jarbframework.populator.condition.ResourceExists;
 import org.jarbframework.utils.JdbcConnectionCallback;
 import org.jarbframework.utils.JdbcUtils;
 import org.springframework.core.io.Resource;
@@ -48,7 +48,7 @@ public class SqlResourceDatabaseUpdater implements DatabaseUpdater {
         SqlResourceDatabaseUpdater sqlPopulator = new SqlResourceDatabaseUpdater();
         sqlPopulator.setSqlResource(sqlResource);
         sqlPopulator.setDataSource(dataSource);
-        return new ConditionalDatabaseUpdater(sqlPopulator, new ResourceExistsCondition(sqlResource));
+        return new ConditionalDatabaseUpdater(sqlPopulator, new ResourceExists(sqlResource));
     }
     
     @Override

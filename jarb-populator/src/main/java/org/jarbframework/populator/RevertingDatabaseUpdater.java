@@ -23,4 +23,5 @@ public class RevertingDatabaseUpdater implements DatabaseUpdater {
     public void update() {
         delegate.revert();
     }
+    
 }

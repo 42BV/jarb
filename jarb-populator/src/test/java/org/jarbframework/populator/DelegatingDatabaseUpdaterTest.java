@@ -7,12 +7,12 @@ import static org.mockito.Mockito.verifyZeroInteractions;
 
 import org.junit.Test;
 
-public class WrappingDatabaseUpdaterTest {
+public class DelegatingDatabaseUpdaterTest {
 
     @Test
     public void testUpdate() {
         DatabaseUpdater delegate = mock(DatabaseUpdater.class);
-        WrappingDatabaseUpdater updater = new WrappingDatabaseUpdaterImpl(delegate);
+        DelegatingDatabaseUpdater updater = new DelegatingDatabaseUpdater(delegate);
         
         updater.update();
         
@@ -22,7 +22,7 @@ public class WrappingDatabaseUpdaterTest {
     @Test
     public void testRevert() {
         RevertableDatabaseUpdater delegate = mock(RevertableDatabaseUpdater.class);
-        WrappingDatabaseUpdater updater = new WrappingDatabaseUpdaterImpl(delegate);
+        DelegatingDatabaseUpdater updater = new DelegatingDatabaseUpdater(delegate);
         
         updater.revert();
         
@@ -32,20 +32,11 @@ public class WrappingDatabaseUpdaterTest {
     @Test
     public void testRevertUnsupported() {
         DatabaseUpdater delegate = mock(DatabaseUpdater.class);
-        WrappingDatabaseUpdater updater = new WrappingDatabaseUpdaterImpl(delegate);
+        DelegatingDatabaseUpdater updater = new DelegatingDatabaseUpdater(delegate);
         
         updater.revert();
         
         verifyZeroInteractions(delegate);
-    }
-    
-    // Implementation class that should only be used for testing
-    private static class WrappingDatabaseUpdaterImpl extends WrappingDatabaseUpdater {
-
-        public WrappingDatabaseUpdaterImpl(DatabaseUpdater delegate) {
-            super(delegate);
-        }
-        
     }
     
 }
