@@ -8,7 +8,7 @@ import javax.persistence.EntityManagerFactory;
 
 import org.jarbframework.populator.DatabaseUpdater;
 import org.jarbframework.populator.condition.ConditionalDatabaseUpdater;
-import org.jarbframework.populator.condition.ResourceExistsCondition;
+import org.jarbframework.populator.condition.ResourceExists;
 import org.jarbframework.populator.excel.mapping.ValueConversionService;
 import org.springframework.core.io.Resource;
 import org.springframework.util.Assert;
@@ -54,7 +54,7 @@ public class ExcelDatabaseUpdater implements DatabaseUpdater {
         ExcelDatabaseUpdater populator = new ExcelDatabaseUpdater();
         populator.setExcelResource(excelResource);
         populator.setEntityManagerFactory(entityManagerFactory);
-        return new ConditionalDatabaseUpdater(populator, new ResourceExistsCondition(excelResource));
+        return new ConditionalDatabaseUpdater(populator, new ResourceExists(excelResource));
     }
 
     /**

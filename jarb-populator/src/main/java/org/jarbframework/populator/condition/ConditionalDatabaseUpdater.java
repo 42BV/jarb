@@ -3,7 +3,7 @@ package org.jarbframework.populator.condition;
 import static org.apache.commons.lang3.StringUtils.join;
 
 import org.jarbframework.populator.DatabaseUpdater;
-import org.jarbframework.populator.WrappingDatabaseUpdater;
+import org.jarbframework.populator.DelegatingDatabaseUpdater;
 import org.jarbframework.populator.condition.Condition.ConditionEvaluation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,7 +13,7 @@ import org.slf4j.LoggerFactory;
  * @author Jeroen van Schagen
  * @since 17-06-2011
  */
-public class ConditionalDatabaseUpdater extends WrappingDatabaseUpdater {
+public class ConditionalDatabaseUpdater extends DelegatingDatabaseUpdater {
     
     private final Logger logger = LoggerFactory.getLogger(ConditionalDatabaseUpdater.class);
 
