@@ -1,5 +1,7 @@
 package org.jarbframework.populator;
 
+import org.jarbframework.populator.condition.ClassOnClassPath;
+import org.jarbframework.populator.condition.ConditionalDatabaseUpdater;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -19,6 +21,11 @@ public class ClassNameDatabaseUpdater extends AbstractDelegatingDatabaseUpdater 
 		this.className = className;
 	}
 	
+    public static ConditionalDatabaseUpdater ignoreIfNotOnClassPath(String className) {
+        ClassNameDatabaseUpdater updater = new ClassNameDatabaseUpdater(className);
+        return new ConditionalDatabaseUpdater(updater, new ClassOnClassPath(className));
+    }
+	
 	protected DatabaseUpdater getDelegate() {
 		if(delegate == null) {
 			delegate = instantiate();
@@ -27,7 +34,8 @@ public class ClassNameDatabaseUpdater extends AbstractDelegatingDatabaseUpdater 
 	}
 	
 	private DatabaseUpdater instantiate() {
-		return (DatabaseUpdater) applicationContext.getAutowireCapableBeanFactory().createBean(getUpdaterClass());
+		Class<?> updaterClass = getUpdaterClass(); // Ensures the class is valid before accessing factory
+		return (DatabaseUpdater) applicationContext.getAutowireCapableBeanFactory().createBean(updaterClass);
 	}
 
 	private Class<?> getUpdaterClass() {

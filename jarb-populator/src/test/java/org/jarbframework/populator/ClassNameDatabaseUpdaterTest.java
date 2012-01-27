@@ -28,14 +28,12 @@ public class ClassNameDatabaseUpdaterTest {
 	
 	@Test(expected = RuntimeException.class)
 	public void testUnknownClass() {
-		ApplicationContext context = Mockito.mock(ApplicationContext.class);
-		AutowireCapableBeanFactory factory = Mockito.mock(AutowireCapableBeanFactory.class);
-		Mockito.when(context.getAutowireCapableBeanFactory()).thenReturn(factory);
-		
-		ClassNameDatabaseUpdater updater = new ClassNameDatabaseUpdater("some.unknown.WierdClass");
-		updater.setApplicationContext(context);
-
-		updater.update();
+		new ClassNameDatabaseUpdater("some.unknown.WierdClass").update();
+	}
+	
+	@Test
+	public void testIgnoreIfNotOnClassPath() {
+		ClassNameDatabaseUpdater.ignoreIfNotOnClassPath("some.unknown.WierdClass").update();
 	}
 	
 	public static class MyCustomUpdater implements DatabaseUpdater {

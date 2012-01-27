@@ -45,10 +45,10 @@ public class SqlResourceDatabaseUpdater implements DatabaseUpdater {
      * specified script resource, whenever it exists
      */
     public static ConditionalDatabaseUpdater ignoreIfResourceMissing(Resource sqlResource, DataSource dataSource) {
-        SqlResourceDatabaseUpdater sqlPopulator = new SqlResourceDatabaseUpdater();
-        sqlPopulator.setSqlResource(sqlResource);
-        sqlPopulator.setDataSource(dataSource);
-        return new ConditionalDatabaseUpdater(sqlPopulator, new ResourceExists(sqlResource));
+        SqlResourceDatabaseUpdater updater = new SqlResourceDatabaseUpdater();
+        updater.setSqlResource(sqlResource);
+        updater.setDataSource(dataSource);
+        return new ConditionalDatabaseUpdater(updater, new ResourceExists(sqlResource));
     }
     
     @Override
