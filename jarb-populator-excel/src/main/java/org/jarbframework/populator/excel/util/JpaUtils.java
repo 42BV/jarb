@@ -15,7 +15,6 @@ import javax.persistence.metamodel.SingularAttribute;
 
 import org.hibernate.proxy.HibernateProxy;
 import org.jarbframework.populator.excel.metamodel.Definition;
-import org.jarbframework.populator.excel.metamodel.ElementCollectionDefinition;
 import org.jarbframework.populator.excel.metamodel.EmbeddableElementCollectionDefinition;
 import org.jarbframework.populator.excel.metamodel.EntityDefinition;
 import org.jarbframework.populator.excel.metamodel.InverseJoinColumnReferenceProperties;
@@ -70,8 +69,6 @@ public final class JpaUtils {
         Class<?> definedClass = null;
         if (definition instanceof EntityDefinition<?>) {
             definedClass = ((EntityDefinition<?>) definition).getDefinedClass();
-        } else if (definition instanceof ElementCollectionDefinition<?>) {
-            definedClass = ((ElementCollectionDefinition<?>) definition).getDefinedClass();
         }
         return definedClass;
     }
@@ -86,8 +83,6 @@ public final class JpaUtils {
         String tableName = null;
         if (definition instanceof EntityDefinition<?>) {
             tableName = ((EntityDefinition<?>) definition).getTableName();
-        } else if (definition instanceof ElementCollectionDefinition<?>) {
-            tableName = ((ElementCollectionDefinition<?>) definition).getTableName();
         }
         return tableName;
     }
