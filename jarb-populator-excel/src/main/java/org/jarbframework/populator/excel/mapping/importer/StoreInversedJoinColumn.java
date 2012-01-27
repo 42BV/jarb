@@ -7,6 +7,9 @@ import java.util.Map.Entry;
 import org.jarbframework.populator.excel.metamodel.EntityDefinition;
 import org.jarbframework.populator.excel.metamodel.InverseJoinColumnReferenceProperties;
 import org.jarbframework.populator.excel.metamodel.PropertyDefinition;
+import org.jarbframework.populator.excel.workbook.Cell;
+import org.jarbframework.populator.excel.workbook.CellValue;
+import org.jarbframework.populator.excel.workbook.NumericValue;
 import org.jarbframework.populator.excel.workbook.Row;
 import org.jarbframework.populator.excel.workbook.Sheet;
 import org.jarbframework.populator.excel.workbook.Workbook;
@@ -33,7 +36,7 @@ public final class StoreInversedJoinColumn {
         InverseJoinColumnReferenceProperties inverseJoinColumnReferenceProperties = propertyDefinition.getInverseJoinColumnReferenceProperties();
 
         Key inverseJoinColumnKey = new InverseJoinColumnKey();
-        inverseJoinColumnKey.setForeignClass(inverseJoinColumnReferenceProperties.getEmbeddableType().getClass());
+        inverseJoinColumnKey.setForeignClass(inverseJoinColumnReferenceProperties.getEmbeddableType().getJavaType());
 
         Sheet sheet = excel.getSheet(classDefinition.getTableName());
         Row row = sheet.getRowAt(rowPosition);
@@ -42,13 +45,28 @@ public final class StoreInversedJoinColumn {
 
         for (Entry<String, String> joinColumnEntry : inverseJoinColumnReferenceProperties.getReferencedColumnAndJoinColumnNamesHashMap().entrySet()) {
             String referencedColumnName = joinColumnEntry.getKey();
-            String joinColumnName = joinColumnEntry.getValue();
-            Object identifier = row.getCellAt(referencedColumnName);
-            //Cell cell = row.getCellAt(joinColumnName);
-            //joinColumnKeyMap.put(joinColumnName, cell.getValue());
+            Cell cell = row.getCellAt(referencedColumnName);
+            if (cell != null) {
+                Integer intValue = convertCellValueToNumericValue(cell);
+                joinColumnKeyMap.put(referencedColumnName, intValue);
+            }
         }
 
-        System.out.println("");
+        inverseJoinColumnKey.setKeyValue(joinColumnKeyMap);
+        excelRow.addValue(propertyDefinition, inverseJoinColumnKey);
     }
 
+    /**
+     * Converts a cell value to an Integer value if possible.
+     * @param cell Cell to retrieve cellvalue from
+     @ @return Integer value
+     */
+    private static Integer convertCellValueToNumericValue(Cell cell) {
+        Integer intValue = null;
+        CellValue cellValue = cell.getCellValue();
+        if (cellValue instanceof NumericValue) {
+            intValue = (((Number) (cellValue.getValue())).intValue());
+        }
+        return intValue;
+    }
 }

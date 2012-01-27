@@ -1,7 +1,6 @@
 package org.jarbframework.populator.excel.mapping.importer;
 
-import static org.junit.Assert.assertTrue;
-
+import static org.junit.Assert.assertEquals;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.HashMap;
@@ -15,7 +14,6 @@ import org.jarbframework.populator.excel.metamodel.generator.ColumnDefinitionsGe
 import org.jarbframework.populator.excel.workbook.Workbook;
 import org.jarbframework.populator.excel.workbook.reader.PoiWorkbookParser;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import domain.entities.Employee;
@@ -46,16 +44,16 @@ public class StoreInversedJoinColumnTest extends DefaultExcelImporterTest {
         key = new InverseJoinColumnKey();
         key.setForeignClass(Phone.class);
         HashMap<String, Object> keyValues = new HashMap<String, Object>();
-        keyValues.put("employee_id", 8);
+        keyValues.put("#", 1);
         key.setKeyValue(keyValues);
     }
 
-    @Ignore
     @Test
     public void testStoreValue() {
         PropertyDefinition propertyDefinition = employeeDefinition.property("phones");
         StoreInversedJoinColumn.storeValue(workbook, employeeDefinition, propertyDefinition, 1, excelRow);
-        assertTrue(excelRow.getValueMap().containsKey(key));
+        HashMap<String, Object> keyValues = ((InverseJoinColumnKey) excelRow.getValueMap().get(propertyDefinition)).getKeyValues();
+        assertEquals(key.getKeyValues(), keyValues);
     }
 
 }
