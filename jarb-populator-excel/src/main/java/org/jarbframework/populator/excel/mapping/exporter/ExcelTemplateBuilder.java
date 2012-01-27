@@ -37,12 +37,10 @@ public class ExcelTemplateBuilder {
      */
     public Workbook createTemplate(MetaModel metamodel) {
         Workbook workbook = new Workbook();
-        List<Definition> classDefinitions = new ArrayList<Definition>(metamodel.entities());
+        List<EntityDefinition<?>> classDefinitions = new ArrayList<EntityDefinition<?>>(metamodel.entities());
         Collections.sort(classDefinitions, new DefinitionNameComparator());
-        for (Definition classDefinition : classDefinitions) {
-            if (classDefinition instanceof EntityDefinition<?>) {
-                createClassSheet(classDefinition, workbook, metamodel);
-            }
+        for (EntityDefinition<?> classDefinition : classDefinitions) {
+            createClassSheet(classDefinition, workbook, metamodel);
         }
         return workbook;
     }
@@ -52,8 +50,8 @@ public class ExcelTemplateBuilder {
      * @param entityDefinition description of the entity structure being stored
      * @param workbook the workbook that will hold our sheet
      */
-    private void createClassSheet(Definition entityDefinition, Workbook workbook, MetaModel metamodel) {
-        Sheet sheet = workbook.createSheet(JpaUtils.getTableNameOfDefinition(entityDefinition));
+    private void createClassSheet(EntityDefinition<?> entityDefinition, Workbook workbook, MetaModel metamodel) {
+        Sheet sheet = workbook.createSheet(entityDefinition.getTableName());
         storeColumnNames(sheet, entityDefinition.getColumnNames());
         for (PropertyDefinition propertyDefinition : entityDefinition.properties()) {
             if (propertyDefinition.getDatabaseType() == PropertyDatabaseType.COLLECTION_REFERENCE) {
@@ -100,13 +98,13 @@ public class ExcelTemplateBuilder {
     }
 
     // Sorts class definitions based on table name
-    private static class DefinitionNameComparator implements Comparator<Definition> {
+    private static class DefinitionNameComparator implements Comparator<EntityDefinition<?>> {
         /**
          * {@inheritDoc}
          */
         @Override
-        public int compare(Definition left, Definition right) {
-            return JpaUtils.getTableNameOfDefinition(left).compareTo(JpaUtils.getTableNameOfDefinition(right));
+        public int compare(EntityDefinition<?> left, EntityDefinition<?> right) {
+            return left.getTableName().compareTo(right.getTableName());
         }
     }
 

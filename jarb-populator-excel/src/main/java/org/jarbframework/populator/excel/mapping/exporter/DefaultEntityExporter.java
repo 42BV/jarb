@@ -51,7 +51,7 @@ public class DefaultEntityExporter implements EntityExporter {
     @Override
     public Workbook export(EntityRegistry registry, MetaModel metamodel) {
         Workbook workbook = excelTemplateBuilder.createTemplate(metamodel);
-        for (Definition entityDefinition : metamodel.entities()) {
+        for (EntityDefinition<?> entityDefinition : metamodel.entities()) {
             exportEntities(registry, entityDefinition, workbook);
         }
         return workbook;
@@ -61,16 +61,14 @@ public class DefaultEntityExporter implements EntityExporter {
      * Store the entities of a specific type in our sheet.
      * @param <T> type of entities being stored
      * @param registry registry containing the entities
-     * @param classDefinition description of the entity class
+     * @param entityDefinition description of the entity class
      * @param workbook excel workbook that will contain our data
      */
-    private <T> void exportEntities(EntityRegistry registry, Definition classDefinition, Workbook workbook) {
-        Sheet sheet = workbook.getSheet(JpaUtils.getTableNameOfDefinition(classDefinition));
-
-        for (Object entity : registry.withClass(JpaUtils.getDefinedClassOfDefinition(classDefinition))) {
-            exportEntity(entity, classDefinition, sheet);
+    private <T> void exportEntities(EntityRegistry registry, EntityDefinition<?> entityDefinition, Workbook workbook) {
+        Sheet sheet = workbook.getSheet(entityDefinition.getTableName());
+        for (Object entity : registry.withClass(entityDefinition.getDefinedClass())) {
+            exportEntity(entity, entityDefinition, sheet);
         }
-
     }
 
     /**

@@ -31,13 +31,11 @@ public final class ExcelImporter {
     private StoreExcelRecordValue valueStorer;
     private EntityManagerFactory entityManagerFactory;
     private Map<Definition, Map<Object, ExcelRow>> excelRowMap;
-    private Map<String, Map<Object, ExcelRow>> primitiveDatatypeExcelRowMap;
-
+    
     public ExcelImporter(ValueConversionService conversionService, EntityManagerFactory entityManagerFactory) {
         this.entityManagerFactory = entityManagerFactory;
         valueStorer = new StoreExcelRecordValue(conversionService);
         excelRowMap = new HashMap<Definition, Map<Object, ExcelRow>>();
-        primitiveDatatypeExcelRowMap = new HashMap<String, Map<Object, ExcelRow>>();
     }
 
     /**
@@ -55,7 +53,7 @@ public final class ExcelImporter {
         EntityRegistry entityRegistry = new EntityRegistry();
         //First loop over the entities
         for (EntityDefinition<?> entityDefinition : entityDefinitions) {
-            final Class entityClass = JpaUtils.getDefinedClassOfDefinition(entityDefinition);
+            final Class entityClass = entityDefinition.getDefinedClass();
             EntityTable<Object> entities = new EntityTable<Object>(entityClass);
             for (Entry<Object, ExcelRow> entry : excelRowMap.get(entityDefinition).entrySet()) {
                 ExcelRow excelRow = entry.getValue();
@@ -102,7 +100,7 @@ public final class ExcelImporter {
      */
     public Map<Object, ExcelRow> parseWorksheet(final Workbook excel, final EntityDefinition<?> definition) {
         Map<Object, ExcelRow> createdInstances = new HashMap<Object, ExcelRow>();
-        Sheet sheet = excel.getSheet(JpaUtils.getTableNameOfDefinition(definition));
+        Sheet sheet = excel.getSheet(definition.getTableName());
         String discriminatorColumnName = getDiscriminatorColumnFromDefinition(definition);
 
         if (sheet != null) {
@@ -133,25 +131,21 @@ public final class ExcelImporter {
     /**
      * Determines the entity class of the row being persisted. Could be the Definition's defined class or a subclass.
      * @param sheet Sheet to get WorkbookDefinitions from
-     * @param definition definition used to get the defined class from.
+     * @param entityDefinition definition used to get the defined class from.
      * @param discriminatorColumnName DiscriminatorColumnName is used to determine the subtype.
      * @param rowPosition The row number which is currently being processed.
      * @return Entity class
      */
-    private Class<?> determineEntityClass(final Sheet sheet, final Definition definition, String discriminatorColumnName, Integer rowPosition) {
-        Class<?> entityClass = JpaUtils.getDefinedClassOfDefinition(definition);
+    private Class<?> determineEntityClass(final Sheet sheet, final EntityDefinition<?> entityDefinition, String discriminatorColumnName, Integer rowPosition) {
+        Class<?> entityClass = entityDefinition.getDefinedClass();
         if (discriminatorColumnName != null) {
-            WorksheetDefinition worksheetDefinition = WorksheetDefinition.analyzeWorksheet(definition, sheet.getWorkbook());
+            WorksheetDefinition worksheetDefinition = WorksheetDefinition.analyzeWorksheet(entityDefinition, sheet.getWorkbook());
             Integer discriminatorPosition = worksheetDefinition.getColumnPosition(discriminatorColumnName);
             String discriminatorValue = getDiscriminatorValueFromExcelFile(sheet, rowPosition, discriminatorPosition);
-            if ((discriminatorValue != null) && (definition instanceof EntityDefinition<?>)) {
-                EntityDefinition<?> entityDefinition = (EntityDefinition<?>) definition;
                 Class<?> subClass = entityDefinition.getEntitySubClass(discriminatorValue);
                 if (subClass != null) {
                     entityClass = subClass;
                 }
-            }
-
         }
         return entityClass;
     }
