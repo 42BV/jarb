@@ -10,35 +10,35 @@ import org.springframework.context.ApplicationContext;
 
 public class ClassNameDatabaseUpdaterTest {
 
-	@Test
-	public void testInstantiateDelegate() {
-		MyCustomUpdater delegate = new MyCustomUpdater();
-		
-		ApplicationContext context = Mockito.mock(ApplicationContext.class);
-		AutowireCapableBeanFactory factory = Mockito.mock(AutowireCapableBeanFactory.class);
-		Mockito.when(context.getAutowireCapableBeanFactory()).thenReturn(factory);
-		Mockito.when(factory.createBean(MyCustomUpdater.class)).thenReturn(delegate);
-		
-		ClassNameDatabaseUpdater updater = new ClassNameDatabaseUpdater(MyCustomUpdater.class.getName());
-		PropertyAccessorFactory.forDirectFieldAccess(updater).setPropertyValue("applicationContext", context);
-		
-		assertTrue(delegate == updater.getDelegate());
-		// When invoked twice, the value is cached
-		assertTrue(delegate == updater.getDelegate());
-	}
-	
-	@Test(expected = RuntimeException.class)
-	public void testUnknownClass() {
-		new ClassNameDatabaseUpdater("some.unknown.WierdClass").update();
-	}
+    @Test
+    public void testInstantiateDelegate() {
+        MyCustomUpdater delegate = new MyCustomUpdater();
 
-	public static class MyCustomUpdater implements DatabaseUpdater {
+        ApplicationContext context = Mockito.mock(ApplicationContext.class);
+        AutowireCapableBeanFactory factory = Mockito.mock(AutowireCapableBeanFactory.class);
+        Mockito.when(context.getAutowireCapableBeanFactory()).thenReturn(factory);
+        Mockito.when(factory.createBean(MyCustomUpdater.class)).thenReturn(delegate);
 
-		@Override
-		public void update() {
-			// Do nothing
-		}
-		
-	}
-	
+        ClassNameDatabaseUpdater updater = new ClassNameDatabaseUpdater(MyCustomUpdater.class.getName());
+        PropertyAccessorFactory.forDirectFieldAccess(updater).setPropertyValue("applicationContext", context);
+
+        assertTrue(delegate == updater.getDelegate());
+        // When invoked twice, the value is cached
+        assertTrue(delegate == updater.getDelegate());
+    }
+
+    @Test(expected = RuntimeException.class)
+    public void testUnknownClass() {
+        new ClassNameDatabaseUpdater("some.unknown.WierdClass").update();
+    }
+
+    public static class MyCustomUpdater implements DatabaseUpdater {
+
+        @Override
+        public void update() {
+            // Do nothing
+        }
+
+    }
+
 }

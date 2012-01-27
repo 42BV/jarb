@@ -12,9 +12,9 @@ public class RevertingDatabaseUpdaterTest {
     public void testRun() {
         RevertableDatabaseUpdater delegate = mock(RevertableDatabaseUpdater.class);
         RevertingDatabaseUpdater updater = new RevertingDatabaseUpdater(delegate);
-        
+
         updater.update();
-        
+
         verify(delegate, times(1)).revert();
     }
 }

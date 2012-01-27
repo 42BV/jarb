@@ -17,7 +17,7 @@ public class PostingController {
 
     @Autowired
     private PostRepository postRepository;
-    
+
     @Autowired
     private BeanConstraintDescriptor constraintDescriptor;
 
@@ -29,7 +29,8 @@ public class PostingController {
     }
 
     @RequestMapping(method = RequestMethod.POST)
-    public @ResponseBody PostCreateResult post(@Valid Post post) {
+    public @ResponseBody
+    PostCreateResult post(@Valid Post post) {
         boolean success = false;
         String message = null;
         try {
@@ -45,25 +46,25 @@ public class PostingController {
         result.post = post;
         return result;
     }
-    
+
     public static class PostCreateResult {
         private boolean success;
         private String message;
         private Post post;
-        
+
         public boolean isSuccess() {
             return success;
         }
-        
+
         public Post getPost() {
             return post;
         }
-        
+
         public String getMessage() {
             return message;
         }
     }
-    
+
     @RequestMapping(value = "structure", method = RequestMethod.GET)
     public BeanConstraintDescription<Post> structure() {
         return constraintDescriptor.describe(Post.class);

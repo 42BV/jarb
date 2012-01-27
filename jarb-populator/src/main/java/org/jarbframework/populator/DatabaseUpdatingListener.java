@@ -14,26 +14,26 @@ import org.springframework.context.event.ContextRefreshedEvent;
  * @since 02-11-2011
  */
 public class DatabaseUpdatingListener implements ApplicationListener<ApplicationContextEvent> {
-    
+
     /** Describes whether the initializer has already been started. **/
     private final AtomicBoolean started = new AtomicBoolean();
-    
+
     /** Executed when application context is started. **/
     private DatabaseUpdater initializer;
     /** Executed when application context is stopped. **/
     private DatabaseUpdater destroyer;
-    
+
     @Override
     public void onApplicationEvent(ApplicationContextEvent event) {
-        if(event instanceof ContextRefreshedEvent && started.compareAndSet(false, true)) {
+        if (event instanceof ContextRefreshedEvent && started.compareAndSet(false, true)) {
             execute(initializer);
-        } else if(event instanceof ContextClosedEvent) {
+        } else if (event instanceof ContextClosedEvent) {
             execute(destroyer);
         }
     }
-    
+
     private void execute(DatabaseUpdater updater) {
-        if(updater != null) {
+        if (updater != null) {
             updater.update();
         }
     }
@@ -41,7 +41,7 @@ public class DatabaseUpdatingListener implements ApplicationListener<Application
     public void setInitializer(DatabaseUpdater initializer) {
         this.initializer = initializer;
     }
-    
+
     public void setDestroyer(DatabaseUpdater destroyer) {
         this.destroyer = destroyer;
     }

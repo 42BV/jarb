@@ -48,7 +48,7 @@ import org.springframework.stereotype.Repository;
  * @since 17-05-2011
  */
 public class DatabaseConstraintExceptionTranslatingBeanPostProcessor extends AdvisorAddingBeanPostProcessor implements InitializingBean {
-    
+
     /** Generated serial version ID. */
     private static final long serialVersionUID = -4629879504141581723L;
     /** Indicates where exception translation should be plugged into. */
@@ -85,7 +85,7 @@ public class DatabaseConstraintExceptionTranslatingBeanPostProcessor extends Adv
     public void setTranslator(DatabaseConstraintExceptionTranslator translator) {
         this.translator = translator;
     }
-    
+
     private class ExceptionTranslatingAdvisor extends AbstractPointcutAdvisor {
 
         /** Generated serial version ID. */
@@ -99,7 +99,7 @@ public class DatabaseConstraintExceptionTranslatingBeanPostProcessor extends Adv
         @Override
         public Advice getAdvice() {
             return new MethodInterceptor() {
-                
+
                 @Override
                 public Object invoke(MethodInvocation invocation) throws Throwable {
                     try {
@@ -109,7 +109,7 @@ public class DatabaseConstraintExceptionTranslatingBeanPostProcessor extends Adv
                         throw translatedException != null ? translatedException : exception;
                     }
                 }
-                
+
             };
         }
     }

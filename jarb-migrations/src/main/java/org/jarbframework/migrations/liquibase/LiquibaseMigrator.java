@@ -42,14 +42,14 @@ public class LiquibaseMigrator implements DatabaseMigrator {
 
     /** Configure this property whenever an output file should be created. **/
     private String outputFilePath;
-    
+
     /**
      * Construct a new {@link LiquibaseMigrator} that runs from the current working directory.
      */
     public LiquibaseMigrator() {
         this(new FileSystemResourceAccessor());
     }
-    
+
     /**
      * Construct a new {@link LiquibaseMigrator} from a specific base path.
      * @param basePath the base path to run from
@@ -57,7 +57,7 @@ public class LiquibaseMigrator implements DatabaseMigrator {
     public LiquibaseMigrator(String basePath) {
         this(new FileSystemResourceAccessor(basePath));
     }
-    
+
     /**
      * Construct a new {@link LiquibaseMigrator} with a specific resource accessor.
      * @param resourceAccessor the resource accessor that should be applied

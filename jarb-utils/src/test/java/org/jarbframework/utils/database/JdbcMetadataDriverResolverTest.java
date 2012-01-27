@@ -13,9 +13,9 @@ public class JdbcMetadataDriverResolverTest {
         dataSource.setDriverClassName("org.hsqldb.jdbcDriver");
         dataSource.setUrl("jdbc:hsqldb:mem:jarb");
         dataSource.setUsername("sa");
-        
+
         JdbcMetadataDatabaseTypeResolver databaseTypeResolver = new JdbcMetadataDatabaseTypeResolver();
         assertEquals(DatabaseType.HSQL, databaseTypeResolver.resolve(dataSource));
     }
-    
+
 }

@@ -20,21 +20,21 @@ public class MigratingDataSourceTest {
 
     @Autowired
     private DataSource dataSource;
-    
+
     private JdbcTemplate jdbcTemplate;
 
     @Before
     public void migrateAndBuildTemplate() {
         MigratingDataSource migratingDataSource = new MigratingDataSource();
         migratingDataSource.setDelegate(dataSource);
-        
+
         LiquibaseMigrator liquibaseMigrator = new LiquibaseMigrator("src/test/resources");
         liquibaseMigrator.setChangeLogPath("create-schema.groovy");
         migratingDataSource.setMigrator(liquibaseMigrator);
-        
+
         jdbcTemplate = new JdbcTemplate(migratingDataSource);
     }
-    
+
     @After
     public void dropCreatedTables() {
         jdbcTemplate.execute("DROP TABLE persons");

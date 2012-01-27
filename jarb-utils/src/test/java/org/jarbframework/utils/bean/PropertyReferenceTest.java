@@ -11,5 +11,5 @@ public class PropertyReferenceTest {
         PropertyReference propertyRef = new PropertyReference(Object.class, "some.property");
         assertArrayEquals(new String[] { "some", "property" }, propertyRef.getPath());
     }
-    
+
 }

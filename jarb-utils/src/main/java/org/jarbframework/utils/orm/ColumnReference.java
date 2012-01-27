@@ -25,7 +25,7 @@ public class ColumnReference {
     public ColumnReference(String columnName) {
         this.columnName = hasText(columnName, "Column name is required");
     }
-    
+
     /**
      * Create a new database column reference.
      * @param tableName name of the table

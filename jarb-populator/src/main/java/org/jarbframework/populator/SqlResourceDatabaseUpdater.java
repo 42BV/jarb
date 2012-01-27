@@ -20,20 +20,20 @@ import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
  * @since 01-06-2011
  */
 public class SqlResourceDatabaseUpdater implements DatabaseUpdater {
-    
+
     /** Data source being populated. **/
     private DataSource dataSource;
     /** SQL resource that should be executed. **/
     private Resource sqlResource;
-    
+
     public void setDataSource(DataSource dataSource) {
         this.dataSource = dataSource;
     }
-    
+
     public void setSqlResource(Resource sqlResource) {
         this.sqlResource = sqlResource;
     }
-    
+
     /**
      * Construct a new {@link SqlResourceDatabaseUpdater} that skips
      * whenever the specified resource does not exist. Use this type of
@@ -50,19 +50,19 @@ public class SqlResourceDatabaseUpdater implements DatabaseUpdater {
         updater.setDataSource(dataSource);
         return new ConditionalDatabaseUpdater(updater, new ResourceExists(sqlResource));
     }
-    
+
     @Override
     public void update() {
         final ResourceDatabasePopulator populator = new ResourceDatabasePopulator();
         populator.addScript(notNull(sqlResource, "SQL resource cannot be null"));
         JdbcUtils.doWithConnection(dataSource, new JdbcConnectionCallback<Void>() {
-            
+
             @Override
             public Void doWork(Connection connection) throws SQLException {
                 populator.populate(connection);
                 return null;
             }
-            
+
         });
     }
 

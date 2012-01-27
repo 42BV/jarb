@@ -18,14 +18,14 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "classpath:application-context.xml" })
 public class JdbcColumnMetadataRepositoryTest {
-    
+
     /*
      * HSQLDB uses a " as quote identifier, also the tables and columns are stored in upper case.
      */
 
     @Autowired
     private DataSource dataSource;
-    
+
     private JdbcColumnMetadataRepository jdbcMetadataRepository;
 
     @Before
@@ -46,7 +46,7 @@ public class JdbcColumnMetadataRepositoryTest {
         assertEquals(Integer.valueOf(6), licenseNumberConstraint.getMaximumLength());
         assertNull(licenseNumberConstraint.getFractionLength()); // Has not been defined
     }
-    
+
     /**
      * Quoted identifiers are matched case sensitive, meaning we have to specify the table and column name in uppercase.
      */
@@ -60,7 +60,7 @@ public class JdbcColumnMetadataRepositoryTest {
         assertEquals(Integer.valueOf(6), licenseNumberConstraint.getMaximumLength());
         assertNull(licenseNumberConstraint.getFractionLength()); // Has not been defined
     }
-    
+
     /**
      * Whenever a quoted identifier has an invalid casing, no result will be found.
      */

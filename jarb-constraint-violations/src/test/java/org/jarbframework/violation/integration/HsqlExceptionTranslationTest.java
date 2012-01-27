@@ -20,29 +20,29 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "classpath:hsql-context.xml", "classpath:translation-context.xml" })
 public class HsqlExceptionTranslationTest {
-    
+
     @Autowired
     private DatabaseConstraintExceptionTranslator exceptionTranslator;
-    
+
     @Autowired
     private DataSource dataSource;
-    
+
     private JdbcTemplate jdbcTemplate;
-    
+
     @Before
     public void buildTemplate() {
         jdbcTemplate = new JdbcTemplate(dataSource);
     }
-    
+
     @Test
     public void testNotNull() {
         try {
             jdbcTemplate.execute("INSERT INTO cars (price) VALUES (1.23)");
             fail("Expected an exception");
-        } catch(RuntimeException rawException) {
+        } catch (RuntimeException rawException) {
             Throwable translatedException = exceptionTranslator.translateExceptionIfPossible(rawException);
             assertTrue(translatedException instanceof NotNullViolationException);
         }
     }
-    
+
 }

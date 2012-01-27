@@ -18,7 +18,7 @@ import java.lang.annotation.Target;
  * @date Aug 16, 2011
  */
 @Documented
-@Target({FIELD,METHOD})
+@Target({ FIELD, METHOD })
 @Retention(RUNTIME)
 public @interface DatabaseGenerated {
 

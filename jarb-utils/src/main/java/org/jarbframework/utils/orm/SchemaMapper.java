@@ -25,14 +25,14 @@ public interface SchemaMapper {
      * @throws NotAnEntityException whenever the specified bean class could not be recognized as entity
      */
     ColumnReference columnOf(PropertyReference property);
-    
+
     /**
      * Determine if a class could be recognized as entity.
      * @param clazz type of bean that should be checked
      * @return {@code true} whenever the class is recognized as entity, else {@code false}
      */
     boolean isEntity(Class<?> clazz);
-    
+
     /**
      * Determine if a class could be recognized as embeddable. Embeddable beans can contain properties
      * that actually belong inside the entity's database table.

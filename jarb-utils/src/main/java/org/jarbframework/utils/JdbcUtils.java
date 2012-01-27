@@ -13,9 +13,9 @@ import javax.sql.DataSource;
 public final class JdbcUtils {
 
     /** Utility class, do not instantiate. */
-    private JdbcUtils(){ 
+    private JdbcUtils() {
     }
-    
+
     /**
      * Open a data source connection and provide callback functionality
      * on that connection. After the callback has been invoked, the newly
@@ -49,7 +49,7 @@ public final class JdbcUtils {
             throw new RuntimeException(e);
         }
     }
-    
+
     /**
      * Commits the connection whenver auto commit has been disabled.
      * @param connection our connection to commit
@@ -61,5 +61,5 @@ public final class JdbcUtils {
             throw new RuntimeException(e);
         }
     }
-    
+
 }

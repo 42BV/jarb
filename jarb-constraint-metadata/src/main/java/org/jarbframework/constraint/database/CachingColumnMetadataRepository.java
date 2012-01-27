@@ -12,13 +12,13 @@ import org.jarbframework.utils.orm.ColumnReference;
  * @since 24-05-2011
  */
 public class CachingColumnMetadataRepository implements ColumnMetadataRepository {
-    
+
     /** Maintains all constraint meta-data in memory **/
     private final MapColumnMetadataRepository columnMetadataCache = new MapColumnMetadataRepository();
-    
+
     /** Capable of filling our cache with constraint meta-data **/
     private final ColumnMetadataRepository columnMetadataRepository;
-    
+
     /**
      * Construct a new {@link CachingColumnMetadataRepository}.
      * @param columnMetadataRepository provides column meta-data for our cache
@@ -30,7 +30,7 @@ public class CachingColumnMetadataRepository implements ColumnMetadataRepository
     @Override
     public ColumnMetadata getColumnMetadata(ColumnReference columnReference) {
         ColumnMetadata columnMetadata = columnMetadataCache.getColumnMetadata(columnReference);
-        if(columnMetadata == null) {
+        if (columnMetadata == null) {
             columnMetadata = lookupAndCacheColumnMetadata(columnReference);
         }
         return columnMetadata;
@@ -38,7 +38,7 @@ public class CachingColumnMetadataRepository implements ColumnMetadataRepository
 
     private ColumnMetadata lookupAndCacheColumnMetadata(ColumnReference columnReference) {
         ColumnMetadata columnMetadata = columnMetadataRepository.getColumnMetadata(columnReference);
-        if(columnMetadata != null) {
+        if (columnMetadata != null) {
             columnMetadataCache.add(columnMetadata);
         }
         return columnMetadata;

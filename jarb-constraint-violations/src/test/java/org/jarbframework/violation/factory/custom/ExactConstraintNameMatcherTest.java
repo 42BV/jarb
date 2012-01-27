@@ -10,7 +10,7 @@ import org.junit.Test;
 
 public class ExactConstraintNameMatcherTest {
     private ConstraintNameMatcher matcher = ConstraintNameMatcher.exact("uk_persons_name");
-    
+
     @Test
     public void testMatch() {
         assertTrue(matcher.matches("uk_persons_name"));

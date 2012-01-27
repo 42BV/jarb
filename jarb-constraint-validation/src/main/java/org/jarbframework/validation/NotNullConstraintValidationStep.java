@@ -7,7 +7,7 @@ import org.jarbframework.constraint.database.DatabaseGenerated;
 import org.jarbframework.utils.bean.PropertyReference;
 
 public class NotNullConstraintValidationStep implements DatabaseConstraintValidationStep {
-    
+
     private static final String NOT_NULL_VIOLATION_TEMPLATE = "{javax.validation.constraints.NotNull.message}";
 
     @Override
@@ -24,5 +24,5 @@ public class NotNullConstraintValidationStep implements DatabaseConstraintValida
     private boolean isGeneratable(PropertyReference propertyRef, ColumnMetadata columnMetadata) {
         return columnMetadata.isGeneratable() || fieldOrGetter().hasAnnotation(propertyRef, DatabaseGenerated.class);
     }
-    
+
 }

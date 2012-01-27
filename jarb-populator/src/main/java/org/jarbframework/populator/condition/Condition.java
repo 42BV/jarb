@@ -11,12 +11,12 @@ import java.util.List;
  * @since 21-06-2011
  */
 public interface Condition {
-    
+
     /**
      * Determine if a condition has been satisfied.
      */
     ConditionEvaluation evaluate();
-    
+
     /**
      * Result type from {@link Condition#evaluate()}. The condition has been
      * met whenever {@link #isSatisfied()} evaluates into {@code true}. If
@@ -31,11 +31,11 @@ public interface Condition {
         protected ConditionEvaluation() {
             failures = new ArrayList<String>();
         }
-        
+
         protected static ConditionEvaluation sucess() {
             return new ConditionEvaluation();
         }
-        
+
         /**
          * Check whether a certain state is {@code true}, whenever not achieved
          * include a failure using the {@link #addFailure(String)}.
@@ -44,7 +44,7 @@ public interface Condition {
          * @return this evaluation, for chaining
          */
         protected ConditionEvaluation state(boolean state, String message) {
-            if(!state) {
+            if (!state) {
                 addFailure(message);
             }
             return this;
@@ -76,5 +76,5 @@ public interface Condition {
             return unmodifiableList(failures);
         }
     }
-    
+
 }

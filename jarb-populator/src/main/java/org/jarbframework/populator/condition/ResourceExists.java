@@ -10,7 +10,7 @@ import org.springframework.core.io.Resource;
  * @since 21-06-2011
  */
 public class ResourceExists implements Condition {
-    
+
     /** Resource being checked on existence. **/
     private final Resource resource;
 
@@ -28,5 +28,5 @@ public class ResourceExists implements Condition {
         evaluation.state(resource.exists(), "Resource '" + resource + "' does not exist.");
         return evaluation;
     }
-    
+
 }

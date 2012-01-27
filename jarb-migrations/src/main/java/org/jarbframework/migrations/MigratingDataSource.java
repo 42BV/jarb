@@ -14,52 +14,52 @@ import java.sql.SQLException;
  */
 public class MigratingDataSource extends DataSourceDelegate {
     private boolean migrated = false;
-    
+
     /** Performs the actual database migration on a JDBC connection. **/
     private DatabaseMigrator migrator;
-    
+
     /** Migration username, whenever left empty we use the data source username. **/
     private String username;
     /** Migration passowrd, only used whenever the username property is not blank. **/
     private String password;
-    
+
     @Override
     public Connection getConnection() throws SQLException {
         migrateOnDemand();
         return super.getConnection();
     }
-    
+
     @Override
     public Connection getConnection(String username, String password) throws SQLException {
         migrateOnDemand();
         return super.getConnection(username, password);
     }
-    
+
     /**
      * Run the database migration, whenever it hasn't been executed yet.
      */
     private void migrateOnDemand() throws SQLException {
-        if(shouldMigrate()) {
+        if (shouldMigrate()) {
             doMigrate();
             migrated = true;
         }
     }
-    
+
     private boolean shouldMigrate() {
         return !migrated;
     }
-    
+
     private void doMigrate() throws SQLException {
         Connection connection = openMigrationConnection();
         migrator.migrate(connection);
         commitSafely(connection);
         closeQuietly(connection);
     }
-    
+
     private Connection openMigrationConnection() throws SQLException {
         return isBlank(username) ? super.getConnection() : super.getConnection(username, password);
     }
-    
+
     public void setMigrator(DatabaseMigrator migrator) {
         this.migrator = migrator;
     }
@@ -67,9 +67,9 @@ public class MigratingDataSource extends DataSourceDelegate {
     public void setUsername(String username) {
         this.username = username;
     }
-    
+
     public void setPassword(String password) {
         this.password = password;
     }
-    
+
 }

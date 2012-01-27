@@ -32,7 +32,7 @@ public class ConfigurableConstraintExceptionFactory implements DatabaseConstrain
     public ConfigurableConstraintExceptionFactory() {
         this(new SimpleConstraintExceptionFactory());
     }
-    
+
     public ConfigurableConstraintExceptionFactory(DatabaseConstraintExceptionFactory defaultFactory) {
         this.defaultFactory = notNull(defaultFactory, "Default violation exception factory cannot be null.");
     }
@@ -62,7 +62,7 @@ public class ConfigurableConstraintExceptionFactory implements DatabaseConstrain
         }
         return factory;
     }
-    
+
     /**
      * Register a custom exception class for specific database constraints.
      * @param constraintName name of the constraint that our factory applies to
@@ -82,7 +82,7 @@ public class ConfigurableConstraintExceptionFactory implements DatabaseConstrain
     public ConfigurableConstraintExceptionFactory registerException(ConstraintViolationMatcher violationMatcher, Class<? extends Throwable> exceptionClass) {
         return registerFactory(violationMatcher, new ReflectionConstraintExceptionFactory(exceptionClass));
     }
-    
+
     /**
      * Register a custom exception factory for specific database constraints.
      * @param constraintName name of the constraint that our factory applies to
@@ -99,10 +99,11 @@ public class ConfigurableConstraintExceptionFactory implements DatabaseConstrain
      * @param exceptionFactory reference to the factory that should be used
      * @return this factory instance for chaining
      */
-    public ConfigurableConstraintExceptionFactory registerFactory(ConstraintViolationMatcher violationMatcher, DatabaseConstraintExceptionFactory exceptionFactory) {
+    public ConfigurableConstraintExceptionFactory registerFactory(ConstraintViolationMatcher violationMatcher,
+            DatabaseConstraintExceptionFactory exceptionFactory) {
         return registerMapping(new ExceptionFactoryMapping(violationMatcher, exceptionFactory));
     }
-    
+
     /**
      * Register a custom exception factory for specific database constraints.
      * @param exceptionFactoryMapping describes the mapping of an exception factory on constraint violations.

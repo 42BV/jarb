@@ -33,7 +33,7 @@ import org.springframework.transaction.annotation.Transactional;
 @ContextConfiguration(locations = { "classpath:hsql-context.xml" })
 public class DatabaseConstraintViolationResolverFactoryTest {
     private DatabaseConstraintViolationResolver violationResolver;
-    
+
     @Autowired
     private DataSource dataSource;
 

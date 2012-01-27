@@ -13,7 +13,7 @@ import org.jarbframework.violation.factory.DatabaseConstraintExceptionFactory;
 public class LicenseNumberAlreadyExistsException extends UniqueKeyViolationException {
     private static final long serialVersionUID = 8122213238219945641L;
     private DatabaseConstraintExceptionFactory factory;
-    
+
     public LicenseNumberAlreadyExistsException(DatabaseConstraintViolation violation) {
         super(violation);
     }

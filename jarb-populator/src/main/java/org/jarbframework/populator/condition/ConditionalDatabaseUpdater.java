@@ -14,7 +14,7 @@ import org.slf4j.LoggerFactory;
  * @since 17-06-2011
  */
 public class ConditionalDatabaseUpdater extends DelegatingDatabaseUpdater {
-    
+
     private final Logger logger = LoggerFactory.getLogger(ConditionalDatabaseUpdater.class);
 
     /** Checks if the desired condition has been satisfied **/

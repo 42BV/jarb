@@ -19,21 +19,21 @@ import org.w3c.dom.Element;
  * @since 22-09-2011
  */
 public class EnableTranslationsBeanDefinitionParser extends AbstractBeanDefinitionParser {
-    
+
     @Override
     protected AbstractBeanDefinition parseInternal(Element element, ParserContext parserContext) {
         BeanDefinitionBuilder builder = genericBeanDefinition(DatabaseConstraintExceptionTranslatingBeanPostProcessor.class);
         builder.addPropertyValue("translator", parseTranslator(element, parserContext, builder.getBeanDefinition()));
-        if(element.hasAttribute("pointcut")) {
+        if (element.hasAttribute("pointcut")) {
             builder.addPropertyValue("pointcut", createPointcut(element.getAttribute("pointcut")));
         }
         return builder.getBeanDefinition();
     }
-    
+
     private Object parseTranslator(Element element, ParserContext parserContext, BeanDefinition parentDefinition) {
         return parsePropertyFromAttributeOrChild(element, "translator", parserContext, parentDefinition);
     }
-    
+
     private BeanDefinition createPointcut(String expression) {
         RootBeanDefinition beanDefinition = new RootBeanDefinition(AspectJExpressionPointcut.class);
         beanDefinition.setScope(BeanDefinition.SCOPE_PROTOTYPE);

@@ -127,12 +127,11 @@ public class DatabaseConstraintValidatorTest {
         unknownOverpricedCar.setPrice(42000.123);
 
         assertThat(validator.validate(unknownOverpricedCar),
-            containsInAnyOrder(
-                hasProperty("message", equalTo("cannot be null")),
-                hasProperty("message", equalTo("length cannot be greater than 6")),
-                hasProperty("message", equalTo("cannot have more than 2 numbers behind the comma"))
-            )
-        );
+                containsInAnyOrder(
+                        hasProperty("message", equalTo("cannot be null")),
+                        hasProperty("message", equalTo("length cannot be greater than 6")),
+                        hasProperty("message", equalTo("cannot have more than 2 numbers behind the comma"))
+                ));
     }
 
 }

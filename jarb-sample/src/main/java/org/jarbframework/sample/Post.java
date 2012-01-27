@@ -24,15 +24,15 @@ public class Post {
 
     @Email
     private String author;
-    
+
     @NotEmpty
     private String title;
-    
+
     private String message;
 
     @Column(name = "posted_on")
     private Date postedOn = new Date();
-    
+
     public Long getId() {
         return id;
     }
@@ -64,22 +64,22 @@ public class Post {
     public Date getPostedOn() {
         return postedOn;
     }
-    
+
     /**
      * {@inheritDoc}
      */
     @Override
     public boolean equals(Object obj) {
-        if(obj == this) {
+        if (obj == this) {
             return true;
         }
         boolean equals = false;
-        if(obj instanceof Post) {
+        if (obj instanceof Post) {
             equals = title.equals(((Post) obj).title);
         }
         return equals;
     }
-    
+
     /**
      * {@inheritDoc}
      */

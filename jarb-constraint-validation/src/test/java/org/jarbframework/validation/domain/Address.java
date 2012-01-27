@@ -9,10 +9,10 @@ public class Address {
     @Column(name = "street_and_number")
     private String streetAndNumber;
     private String city;
-    
+
     public Address() {
     }
-    
+
     public Address(String streetAndNumber, String city) {
         this.streetAndNumber = streetAndNumber;
         this.city = city;
@@ -21,9 +21,9 @@ public class Address {
     public String getStreetAndNumber() {
         return streetAndNumber;
     }
-    
+
     public String getCity() {
         return city;
     }
-    
+
 }

@@ -98,7 +98,6 @@ public class JpaHibernateSchemaMapper implements SchemaMapper {
         }
         return tableName;
     }
-    
 
     private Class<?> determineTableClass(Class<?> entityClass) {
         Class<?> tableClass = entityClass;
@@ -138,7 +137,7 @@ public class JpaHibernateSchemaMapper implements SchemaMapper {
 
     @Override
     public ColumnReference columnOf(PropertyReference propertyReference) {
-    	if (isEntity(propertyReference.getBeanClass())) {
+        if (isEntity(propertyReference.getBeanClass())) {
             return createColumnReferenceFromEntity(propertyReference);
         } else if (isEmbeddable(propertyReference.getBeanClass())) {
             return createColumnReferenceFromEmbeddable(propertyReference);
@@ -147,24 +146,24 @@ public class JpaHibernateSchemaMapper implements SchemaMapper {
         }
     }
 
-	private ColumnReference createColumnReferenceFromEmbeddable(PropertyReference propertyReference) {
-		ColumnReference columnReference = null;
-		if (isMappedToColumn(propertyReference)) {
-			String columnName = columnName(propertyReference);
-			columnReference = new ColumnReference(columnName);
-		}
-		return columnReference;
-	}
+    private ColumnReference createColumnReferenceFromEmbeddable(PropertyReference propertyReference) {
+        ColumnReference columnReference = null;
+        if (isMappedToColumn(propertyReference)) {
+            String columnName = columnName(propertyReference);
+            columnReference = new ColumnReference(columnName);
+        }
+        return columnReference;
+    }
 
-	private ColumnReference createColumnReferenceFromEntity(PropertyReference propertyReference) {
-		ColumnReference columnReference = null;
-		if (isMappedToColumn(propertyReference)) {
-		    String tableName = tableForProperty(propertyReference);
-		    String columnName = columnName(propertyReference);
-		    columnReference = new ColumnReference(tableName, columnName);
-		}
-		return columnReference;
-	}
+    private ColumnReference createColumnReferenceFromEntity(PropertyReference propertyReference) {
+        ColumnReference columnReference = null;
+        if (isMappedToColumn(propertyReference)) {
+            String tableName = tableForProperty(propertyReference);
+            String columnName = columnName(propertyReference);
+            columnReference = new ColumnReference(tableName, columnName);
+        }
+        return columnReference;
+    }
 
     private boolean isMappedToColumn(PropertyReference propertyReference) {
         boolean mappedToColumn = false;

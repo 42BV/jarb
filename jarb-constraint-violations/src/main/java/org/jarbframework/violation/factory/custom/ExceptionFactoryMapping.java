@@ -15,16 +15,16 @@ public class ExceptionFactoryMapping {
     private final ConstraintViolationMatcher violationMatcher;
     /** Enables a constraint violation to be translated into an exception. **/
     private final DatabaseConstraintExceptionFactory exceptionFactory;
-    
+
     public ExceptionFactoryMapping(ConstraintViolationMatcher violationMatcher, DatabaseConstraintExceptionFactory exceptionFactory) {
         this.violationMatcher = notNull(violationMatcher, "Violation matcher cannot be null.");
         this.exceptionFactory = notNull(exceptionFactory, "Exception factory cannot be null.");
     }
-    
+
     public boolean supports(DatabaseConstraintViolation violation) {
         return violationMatcher.matches(violation);
     }
-    
+
     public DatabaseConstraintExceptionFactory getExceptionFactory() {
         return exceptionFactory;
     }

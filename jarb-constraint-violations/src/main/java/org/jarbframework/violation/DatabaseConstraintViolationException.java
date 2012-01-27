@@ -21,7 +21,7 @@ public abstract class DatabaseConstraintViolationException extends RuntimeExcept
     public DatabaseConstraintViolationException(DatabaseConstraintViolation violation, String message) {
         this(violation, message, null);
     }
-    
+
     /**
      * Construct a new {@link DatabaseConstraintViolationException}.
      * @param violation constraint violation that triggered this exception
@@ -30,7 +30,7 @@ public abstract class DatabaseConstraintViolationException extends RuntimeExcept
     public DatabaseConstraintViolationException(DatabaseConstraintViolation violation, Throwable cause) {
         this(violation, "Database constraint was violated.", cause);
     }
-    
+
     /**
      * Construct a new {@link DatabaseConstraintViolationException}.
      * @param violation constraint violation that triggered this exception

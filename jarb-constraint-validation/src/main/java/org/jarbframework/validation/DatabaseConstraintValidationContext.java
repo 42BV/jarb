@@ -16,13 +16,13 @@ import org.jarbframework.validation.ViolationMessageBuilder.ViolationMessageTemp
  * @since 20-10-2011
  */
 public final class DatabaseConstraintValidationContext {
-    
+
     /** Context of the global bean validation. **/
     private final ConstraintValidatorContext validatorContext;
-    
+
     /** Used to build database constraint violation messages. **/
     private final ViolationMessageBuilder messageBuilder;
-    
+
     /** Describes if this context is still valid, meaning it has no violations. **/
     private boolean valid = true;
 
@@ -55,10 +55,10 @@ public final class DatabaseConstraintValidationContext {
      * Used to build and include a new constraint violation to our context.
      */
     public class ViolationBuilder {
-        
+
         /** Reference to the property that was rejected **/
         private final PropertyReference propertyReference;
-        
+
         /** Template of the violation message that should be supplied **/
         private ViolationMessageTemplate template;
 

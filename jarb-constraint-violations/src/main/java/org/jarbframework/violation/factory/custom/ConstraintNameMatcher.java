@@ -18,15 +18,15 @@ import org.jarbframework.violation.DatabaseConstraintViolation;
 public abstract class ConstraintNameMatcher implements ConstraintViolationMatcher {
     private final String expression;
     private boolean ignoreCase = true;
-    
+
     public ConstraintNameMatcher(String expression) {
         this.expression = expression;
     }
-    
+
     public static ConstraintNameMatcher exact(String name) {
         return new ExactConstraintNameMatcher(name);
     }
-    
+
     public static ConstraintNameMatcher regex(String namePattern) {
         return new RegexConstraintNameMatcher(namePattern);
     }
@@ -43,30 +43,30 @@ public abstract class ConstraintNameMatcher implements ConstraintViolationMatche
      * @return {@code true} if the name matches our expression, else {@code false}
      */
     protected abstract boolean matches(String constraintName);
-    
+
     public String getExpression() {
         return expression;
     }
-    
+
     public boolean isIgnoreCase() {
         return ignoreCase;
     }
-    
+
     public ConstraintNameMatcher setIgnoreCase(boolean ignoreCase) {
         this.ignoreCase = ignoreCase;
         return this;
     }
-    
+
     private static class ExactConstraintNameMatcher extends ConstraintNameMatcher {
-        
+
         public ExactConstraintNameMatcher(String name) {
             super(name);
         }
-        
+
         @Override
         protected boolean matches(String constraintName) {
             boolean matches;
-            if(isIgnoreCase()) {
+            if (isIgnoreCase()) {
                 matches = StringUtils.endsWithIgnoreCase(constraintName, getExpression());
             } else {
                 matches = StringUtils.equals(constraintName, getExpression());
@@ -74,9 +74,9 @@ public abstract class ConstraintNameMatcher implements ConstraintViolationMatche
             return matches;
         }
     }
-    
+
     private static class RegexConstraintNameMatcher extends ConstraintNameMatcher {
-        
+
         public RegexConstraintNameMatcher(String pattern) {
             super(pattern);
         }

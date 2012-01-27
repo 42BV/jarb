@@ -46,7 +46,7 @@ public final class BeanParsingHelper {
         }
         return result;
     }
-    
+
     /**
      * Parses some custom property from an XML element. During the parsing
      * process we first look for a corresponding property attribute in our
@@ -92,5 +92,5 @@ public final class BeanParsingHelper {
 
     private BeanParsingHelper() {
     }
-    
+
 }

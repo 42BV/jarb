@@ -18,7 +18,7 @@ public class ResourceExistsTest {
         ConditionEvaluation evaluation = new ResourceExists(existingResource).evaluate();
         assertTrue(evaluation.isSatisfied());
     }
-    
+
     @Test
     public void testNonExisting() {
         Resource nonExistingResource = new ClassPathResource("unknown-resource");
@@ -26,5 +26,5 @@ public class ResourceExistsTest {
         assertFalse(evaluation.isSatisfied());
         assertThat(evaluation.getFailures(), contains("Resource 'class path resource [unknown-resource]' does not exist."));
     }
-    
+
 }

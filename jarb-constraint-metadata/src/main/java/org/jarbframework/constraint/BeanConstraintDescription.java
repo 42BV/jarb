@@ -16,7 +16,7 @@ import org.apache.commons.lang3.builder.ToStringStyle;
  * @param <T> type of bean being described
  */
 public class BeanConstraintDescription<T> {
-    
+
     /** Provides a description of all property constraints. **/
     private final Map<String, PropertyConstraintDescription> propertyDescriptionMap = new HashMap<String, PropertyConstraintDescription>();
 
@@ -54,5 +54,5 @@ public class BeanConstraintDescription<T> {
     public String toString() {
         return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
     }
-    
+
 }

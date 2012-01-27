@@ -12,7 +12,7 @@ public class JdbcCachingDatabaseConstraintRepositoryFactoryBean extends Singleto
     private DataSource dataSource;
     private String catalog;
     private String schema;
-    
+
     @Override
     protected DatabaseConstraintRepository createObject() throws Exception {
         DatabaseConstraintRepository databaseConstraintRepository = new DatabaseConstraintRepository();
@@ -20,7 +20,7 @@ public class JdbcCachingDatabaseConstraintRepositoryFactoryBean extends Singleto
         databaseConstraintRepository.setColumnMetadataRepository(buildCachingJdbcColumnRepository());
         return databaseConstraintRepository;
     }
-    
+
     private ColumnMetadataRepository buildCachingJdbcColumnRepository() {
         JdbcColumnMetadataRepository jdbcColumnMetadataRepository = new JdbcColumnMetadataRepository(dataSource);
         jdbcColumnMetadataRepository.setCatalog(catalog);
@@ -35,13 +35,13 @@ public class JdbcCachingDatabaseConstraintRepositoryFactoryBean extends Singleto
     public void setDataSource(DataSource dataSource) {
         this.dataSource = dataSource;
     }
-    
+
     public void setCatalog(String catalog) {
         this.catalog = catalog;
     }
-    
+
     public void setSchema(String schema) {
         this.schema = schema;
     }
-    
+
 }

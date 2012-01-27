@@ -16,12 +16,12 @@ import org.jarbframework.utils.Asserts;
  * @date Aug 29, 2011
  */
 public class PropertyReference {
-    
+
     private static final String PROPERTY_SEPARATOR = ".";
 
     private final String name;
     private final Class<?> beanClass;
-    
+
     //In case of an Embeddable class:
     private final Class<?> enclosingClass;
 
@@ -30,13 +30,13 @@ public class PropertyReference {
         this.beanClass = notNull(beanClass, "Bean class is required");
         this.enclosingClass = null;
     }
-    
+
     public PropertyReference(Class<?> beanClass, Class<?> enclosingClass, String name) {
         this.name = hasText(name, "Property name is required");
         this.beanClass = notNull(beanClass, "Bean class is required");
-        this.enclosingClass = notNull(enclosingClass, "Enclosing class is required");    	
+        this.enclosingClass = notNull(enclosingClass, "Enclosing class is required");
     }
-    
+
     public PropertyReference(PropertyReference parent, String name) {
         this(parent.getBeanClass(), parent.getName() + PROPERTY_SEPARATOR + name);
     }
@@ -52,9 +52,9 @@ public class PropertyReference {
     public Class<?> getBeanClass() {
         return beanClass;
     }
-    
+
     public Class<?> getEnclosingClass() {
-    	return enclosingClass;
+        return enclosingClass;
     }
 
     public boolean isNestedProperty() {
@@ -66,7 +66,7 @@ public class PropertyReference {
         String parentName = StringUtils.substringBeforeLast(name, PROPERTY_SEPARATOR);
         return new PropertyReference(beanClass, parentName);
     }
-    
+
     public String[] getPath() {
         return StringUtils.split(name, PROPERTY_SEPARATOR);
     }

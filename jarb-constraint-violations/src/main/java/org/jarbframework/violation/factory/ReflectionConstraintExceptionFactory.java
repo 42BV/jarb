@@ -50,7 +50,7 @@ public class ReflectionConstraintExceptionFactory implements DatabaseConstraintE
     public Throwable createException(DatabaseConstraintViolation violation, Throwable cause) {
         return instantiateClass(exceptionConstructor, buildArguments(violation, cause));
     }
-    
+
     // Build an array of construction arguments
     private Object[] buildArguments(DatabaseConstraintViolation violation, Throwable cause) {
         final Class<?>[] parameterTypes = exceptionConstructor.getParameterTypes();
@@ -76,7 +76,7 @@ public class ReflectionConstraintExceptionFactory implements DatabaseConstraintE
     @SuppressWarnings("unchecked")
     private static Constructor<? extends Throwable> findBestSupportedConstructor(Class<? extends Throwable> exceptionClass) {
         Constructor<? extends Throwable> supportedConstructor = null;
-        
+
         // Return the first supported constructor, as this will automatically be the "best"
         List<Constructor<?>> declaredConstructors = new ArrayList<Constructor<?>>();
         declaredConstructors.addAll(Arrays.asList(exceptionClass.getDeclaredConstructors()));
@@ -87,7 +87,7 @@ public class ReflectionConstraintExceptionFactory implements DatabaseConstraintE
                 break;
             }
         }
-        
+
         return notNull(supportedConstructor, "Could not find a supported constructor in '" + exceptionClass.getSimpleName() + "'.");
     }
 

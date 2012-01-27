@@ -24,7 +24,7 @@ public class Person {
 
     @Column
     private String age;
-    
+
     @Embedded
     private Contact contact;
 
@@ -51,11 +51,11 @@ public class Person {
     public void setAge(String age) {
         this.age = age;
     }
-    
+
     public Contact getContact() {
         return contact;
     }
-    
+
     public void setContact(Contact contact) {
         this.contact = contact;
     }

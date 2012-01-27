@@ -11,5 +11,5 @@ public interface RevertableDatabaseUpdater extends DatabaseUpdater {
      * Revert the {@link #update()} operation.
      */
     void revert();
-    
+
 }

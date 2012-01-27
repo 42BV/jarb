@@ -19,11 +19,11 @@ import org.jarbframework.violation.resolver.vendor.PostgresViolationResolver;
  */
 public class DatabaseConstraintViolationResolverFactory {
     private DatabaseTypeResolver databaseTypeResolver;
-    
+
     public DatabaseConstraintViolationResolverFactory() {
         this(new JdbcMetadataDatabaseTypeResolver());
     }
-    
+
     public DatabaseConstraintViolationResolverFactory(DatabaseTypeResolver databaseTypeResolver) {
         this.databaseTypeResolver = notNull(databaseTypeResolver, "Database type resolver cannot be null.");
     }

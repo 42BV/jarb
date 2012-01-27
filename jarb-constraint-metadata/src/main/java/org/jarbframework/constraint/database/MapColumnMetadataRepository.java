@@ -12,7 +12,7 @@ import org.jarbframework.utils.orm.ColumnReference;
  * @since 30-05-2011
  */
 public class MapColumnMetadataRepository implements ColumnMetadataRepository {
-    
+
     /** Map containing all column metadata. **/
     private final Map<ColumnReference, ColumnMetadata> columnMetadataMap;
 

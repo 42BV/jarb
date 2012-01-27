@@ -35,31 +35,31 @@ public class ConfigurableConstraintExceptionFactoryBeanDefinitionParser extends 
         factoryBuilder.addPropertyValue("exceptionMappings", parseExceptionMappings(element, parserContext, factoryDefinition));
         return factoryBuilder.getBeanDefinition();
     }
-    
+
     private Object parseDefaultExceptionFactory(Element element, ParserContext parserContext, BeanDefinition parent) {
         return parsePropertyFromAttributeOrChild(element, "default-factory", parserContext, parent);
     }
-    
+
     private ManagedList<Object> parseExceptionMappings(Element element, ParserContext parserContext, BeanDefinition parentDefinition) {
         List<Element> mappingElements = getChildElementsByTagName(element, "exception-mapping");
         ManagedList<Object> mappingDefinitions = new ManagedList<Object>(mappingElements.size());
         mappingDefinitions.setElementTypeName(ExceptionFactoryMapping.class.getName());
         mappingDefinitions.setSource(parentDefinition);
         ExceptionFactoryMappingBeanDefinitionParser mappingParser = new ExceptionFactoryMappingBeanDefinitionParser(parentDefinition);
-        for(Element mappingElement : mappingElements) {
+        for (Element mappingElement : mappingElements) {
             mappingDefinitions.add(mappingParser.parse(mappingElement, parserContext));
         }
         return mappingDefinitions;
     }
-    
+
     static final class ConfigurableConstraintExceptionFactoryParserFactoryBean extends SingletonFactoryBean<ConfigurableConstraintExceptionFactory> {
         private DatabaseConstraintExceptionFactory defaultFactory;
         private Collection<ExceptionFactoryMapping> exceptionMappings;
-        
+
         public void setDefaultFactory(DatabaseConstraintExceptionFactory defaultFactory) {
             this.defaultFactory = defaultFactory;
         }
-        
+
         @Required
         public void setExceptionMappings(Collection<ExceptionFactoryMapping> exceptionMappings) {
             this.exceptionMappings = exceptionMappings;
@@ -70,20 +70,20 @@ public class ConfigurableConstraintExceptionFactoryBeanDefinitionParser extends 
             ConfigurableConstraintExceptionFactory factory = instantateFactory();
             return registerMappings(factory);
         }
-        
+
         private ConfigurableConstraintExceptionFactory instantateFactory() {
             return defaultFactory != null ? new ConfigurableConstraintExceptionFactory(defaultFactory) : new ConfigurableConstraintExceptionFactory();
         }
-        
+
         private ConfigurableConstraintExceptionFactory registerMappings(ConfigurableConstraintExceptionFactory factory) {
-            for(ExceptionFactoryMapping exceptionMapping : exceptionMappings) {
+            for (ExceptionFactoryMapping exceptionMapping : exceptionMappings) {
                 factory.registerMapping(exceptionMapping);
             }
             return factory;
         }
-        
+
     }
-    
+
     @Override
     protected boolean shouldGenerateIdAsFallback() {
         return true;

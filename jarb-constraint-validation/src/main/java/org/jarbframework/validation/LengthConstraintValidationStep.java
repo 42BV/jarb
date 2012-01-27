@@ -6,19 +6,19 @@ import org.jarbframework.constraint.database.ColumnMetadata;
 import org.jarbframework.utils.bean.PropertyReference;
 
 public class LengthConstraintValidationStep implements DatabaseConstraintValidationStep {
-    
+
     private static final String LENGTH_VIOLATION_TEMPLATE = "{org.jarb.validation.DatabaseConstraint.Length.message}";
 
     @Override
     public void validate(Object propertyValue, PropertyReference propertyRef, ColumnMetadata columnMetadata, DatabaseConstraintValidationContext context) {
-        if(lengthExceeded(propertyValue, columnMetadata)) {
+        if (lengthExceeded(propertyValue, columnMetadata)) {
             context.buildViolationWithTemplate(propertyRef, LENGTH_VIOLATION_TEMPLATE)
-                          .attribute("max", columnMetadata.getMaximumLength())
-                          .value(propertyValue)
-                              .addToContext();
+                    .attribute("max", columnMetadata.getMaximumLength())
+                    .value(propertyValue)
+                    .addToContext();
         }
     }
-    
+
     private boolean lengthExceeded(Object propertyValue, ColumnMetadata columnMetadata) {
         boolean lengthExceeded = false;
         if (columnMetadata.hasMaximumLength()) {
@@ -34,5 +34,5 @@ public class LengthConstraintValidationStep implements DatabaseConstraintValidat
     private int numberOfDigits(Number number) {
         return new BigDecimal(number.toString()).precision();
     }
-    
+
 }

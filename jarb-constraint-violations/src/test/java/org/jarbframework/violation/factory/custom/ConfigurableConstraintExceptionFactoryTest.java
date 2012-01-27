@@ -17,7 +17,7 @@ public class ConfigurableConstraintExceptionFactoryTest {
     public void setUp() {
         factory = new ConfigurableConstraintExceptionFactory();
     }
-    
+
     /**
      * Assert that custom exceptions can be provided, whenever registered.
      */
@@ -26,7 +26,7 @@ public class ConfigurableConstraintExceptionFactoryTest {
         factory.registerException("uk_cars_license", LicenseNumberAlreadyExistsException.class);
         Throwable exception = factory.createException(violation(UNIQUE_KEY).constraint("uk_cars_license").build(), null);
         assertTrue(exception instanceof LicenseNumberAlreadyExistsException);
-    }   
+    }
 
     /**
      * Assert that we provide default exception factory behaviour, whenever no

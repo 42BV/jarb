@@ -30,7 +30,7 @@ public class BeanAnnotationScanner {
         this.includeGetter = includeGetter;
         this.includeSetter = includeSetter;
     }
-    
+
     /**
      * Construct a new {@link BeanAnnotationScanner} that only scans fields.
      * @return annotation scanner that only scans fields
@@ -38,7 +38,7 @@ public class BeanAnnotationScanner {
     public static BeanAnnotationScanner field() {
         return new BeanAnnotationScanner(false, false);
     }
-    
+
     /**
      * Construct a new {@link BeanAnnotationScanner} that only scan from
      * fields and "getter" methods.
@@ -84,7 +84,7 @@ public class BeanAnnotationScanner {
             return annotations.iterator().next();
         }
     }
-    
+
     /**
      * Find a specific annotation on the property declaration.
      * @param propertyReference property that should contain the annotation
@@ -93,15 +93,15 @@ public class BeanAnnotationScanner {
      */
     public <T extends Annotation> Collection<T> collectAnnotations(PropertyReference propertyReference, Class<T> annotationType) {
         Collection<T> annotations = new ArrayList<T>();
-        
+
         propertyReference = BeanProperties.lastPropertyIn(propertyReference);
-        
+
         // Attempt to extract annotation from field declaration
         Field field = ReflectionUtils.findField(propertyReference.getBeanClass(), propertyReference.getName());
         if (field != null) {
             addIfNotNull(field.getAnnotation(annotationType), annotations);
         }
-        
+
         // Attempt to extract annotation from getter and setter methods, whenever desired
         PropertyDescriptor propertyDescriptor = BeanUtils.getPropertyDescriptor(propertyReference.getBeanClass(), propertyReference.getName());
         if (propertyDescriptor != null) {
@@ -112,10 +112,10 @@ public class BeanAnnotationScanner {
                 addIfNotNull(AnnotationUtils.findAnnotation(propertyDescriptor.getWriteMethod(), annotationType), annotations);
             }
         }
-        
+
         return annotations;
     }
-    
+
     private <T> void addIfNotNull(T element, Collection<T> collection) {
         if (element != null) {
             collection.add(element);

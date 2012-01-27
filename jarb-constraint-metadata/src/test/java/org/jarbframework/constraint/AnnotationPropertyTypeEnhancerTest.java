@@ -15,13 +15,13 @@ import org.junit.Test;
 public class AnnotationPropertyTypeEnhancerTest {
     private PropertyConstraintDescription description;
     private PropertyConstraintEnhancer enhancer;
-    
+
     @Before
     public void setUp() {
         description = new PropertyConstraintDescription(new PropertyReference(UserBean.class, "email"), String.class);
         enhancer = new AnnotationPropertyTypeEnhancer(Email.class, "email");
     }
-    
+
     /**
      * Assert that the 'email' type is added whenever the property is annotated as @Email.
      */
@@ -31,7 +31,7 @@ public class AnnotationPropertyTypeEnhancerTest {
         enhancer.enhance(description);
         assertThat(description.getTypes(), contains("email"));
     }
-    
+
     /**
      * While the type remains unchanged is no annotation is present.
      */
@@ -45,20 +45,20 @@ public class AnnotationPropertyTypeEnhancerTest {
     }
 
     public class UserBean {
-        
+
         @Email
         private String email;
-        
+
         private String name;
 
         public String getEmail() {
             return email;
         }
-        
+
         public String getName() {
             return name;
         }
-        
+
     }
 
 }

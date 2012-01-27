@@ -16,7 +16,7 @@ import org.slf4j.LoggerFactory;
  * @since 31-05-2011
  */
 public class DatabasePropertyConstraintDescriptionEnhancer implements PropertyConstraintEnhancer {
-    
+
     private final Logger logger = LoggerFactory.getLogger(DatabasePropertyConstraintDescriptionEnhancer.class);
 
     /** Repository used to access database constraint information. **/
@@ -29,7 +29,7 @@ public class DatabasePropertyConstraintDescriptionEnhancer implements PropertyCo
     @Override
     public PropertyConstraintDescription enhance(PropertyConstraintDescription description) {
         PropertyReference propertyReference = description.toPropertyReference();
-        
+
         try {
             ColumnMetadata columnMetadata = databaseConstraintRepository.getColumnMetadata(propertyReference);
             if (columnMetadata != null) {
@@ -45,7 +45,7 @@ public class DatabasePropertyConstraintDescriptionEnhancer implements PropertyCo
         } catch (CouldNotBeMappedToColumnException e) {
             logger.debug("Did not include database property constraints, because '{}' is not a column.", propertyReference);
         }
-        
+
         return description;
     }
 

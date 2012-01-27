@@ -31,7 +31,7 @@ public final class ExcelImporter {
     private StoreExcelRecordValue valueStorer;
     private EntityManagerFactory entityManagerFactory;
     private Map<Definition, Map<Object, ExcelRow>> excelRowMap;
-    
+
     public ExcelImporter(ValueConversionService conversionService, EntityManagerFactory entityManagerFactory) {
         this.entityManagerFactory = entityManagerFactory;
         valueStorer = new StoreExcelRecordValue(conversionService);
@@ -142,10 +142,10 @@ public final class ExcelImporter {
             WorksheetDefinition worksheetDefinition = WorksheetDefinition.analyzeWorksheet(entityDefinition, sheet.getWorkbook());
             Integer discriminatorPosition = worksheetDefinition.getColumnPosition(discriminatorColumnName);
             String discriminatorValue = getDiscriminatorValueFromExcelFile(sheet, rowPosition, discriminatorPosition);
-                Class<?> subClass = entityDefinition.getEntitySubClass(discriminatorValue);
-                if (subClass != null) {
-                    entityClass = subClass;
-                }
+            Class<?> subClass = entityDefinition.getEntitySubClass(discriminatorValue);
+            if (subClass != null) {
+                entityClass = subClass;
+            }
         }
         return entityClass;
     }

@@ -13,30 +13,30 @@ public class DelegatingDatabaseUpdaterTest {
     public void testUpdate() {
         DatabaseUpdater delegate = mock(DatabaseUpdater.class);
         DelegatingDatabaseUpdater updater = new DelegatingDatabaseUpdater(delegate);
-        
+
         updater.update();
-        
+
         verify(delegate, times(1)).update();
     }
-    
+
     @Test
     public void testRevert() {
         RevertableDatabaseUpdater delegate = mock(RevertableDatabaseUpdater.class);
         DelegatingDatabaseUpdater updater = new DelegatingDatabaseUpdater(delegate);
-        
+
         updater.revert();
-        
+
         verify(delegate, times(1)).revert();
     }
-    
+
     @Test
     public void testRevertUnsupported() {
         DatabaseUpdater delegate = mock(DatabaseUpdater.class);
         DelegatingDatabaseUpdater updater = new DelegatingDatabaseUpdater(delegate);
-        
+
         updater.revert();
-        
+
         verifyZeroInteractions(delegate);
     }
-    
+
 }

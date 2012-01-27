@@ -58,20 +58,20 @@ public abstract class AdvisorAddingBeanPostProcessor extends ProxyConfig impleme
 
         Object result = bean;
         if (!(bean instanceof AopInfrastructureBean) && (AopUtils.canApply(advisor, AopUtils.getTargetClass(bean)))) {
-                if (bean instanceof Advised) {
-                    // Bean already has advisors, append new advisor on the desired position
-                    if (addUpFront) {
-                        ((Advised) bean).addAdvisor(0, advisor);
-                    } else {
-                        ((Advised) bean).addAdvisor(advisor);
-                    }
+            if (bean instanceof Advised) {
+                // Bean already has advisors, append new advisor on the desired position
+                if (addUpFront) {
+                    ((Advised) bean).addAdvisor(0, advisor);
                 } else {
-                    // Wrap the bean in a proxy, including our advisor.
-                    ProxyFactory proxyFactory = new ProxyFactory(bean);
-                    proxyFactory.copyFrom(this);
-                    proxyFactory.addAdvisor(advisor);
-                    result = proxyFactory.getProxy(beanClassLoader);
+                    ((Advised) bean).addAdvisor(advisor);
                 }
+            } else {
+                // Wrap the bean in a proxy, including our advisor.
+                ProxyFactory proxyFactory = new ProxyFactory(bean);
+                proxyFactory.copyFrom(this);
+                proxyFactory.addAdvisor(advisor);
+                result = proxyFactory.getProxy(beanClassLoader);
+            }
         }
         return result;
     }

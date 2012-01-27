@@ -16,7 +16,7 @@ import org.slf4j.LoggerFactory;
  * @since 01-06-2011
  */
 public class CompositeDatabaseUpdater implements RevertableDatabaseUpdater {
-	
+
     private final Logger logger = LoggerFactory.getLogger(CompositeDatabaseUpdater.class);
 
     /** Collection of update delegates, executed in order of collection. **/
@@ -29,7 +29,7 @@ public class CompositeDatabaseUpdater implements RevertableDatabaseUpdater {
     public CompositeDatabaseUpdater(List<DatabaseUpdater> updaters) {
         this.updaters = Collections.unmodifiableList(updaters);
     }
-    
+
     public static CompositeDatabaseUpdater composite(DatabaseUpdater... updaters) {
         return new CompositeDatabaseUpdater(Arrays.asList(updaters));
     }
@@ -42,12 +42,12 @@ public class CompositeDatabaseUpdater implements RevertableDatabaseUpdater {
             updater.update();
         }
     }
-    
+
     @Override
     public void revert() {
         logger.info("Reverting {} composed updates...", updaters.size());
         for (DatabaseUpdater updater : updatersInReversedOrder()) {
-            if(updater instanceof RevertableDatabaseUpdater) {
+            if (updater instanceof RevertableDatabaseUpdater) {
                 logger.info("Reverting update '{}'...", updater);
                 ((RevertableDatabaseUpdater) updater).revert();
             } else {
@@ -55,7 +55,7 @@ public class CompositeDatabaseUpdater implements RevertableDatabaseUpdater {
             }
         }
     }
-    
+
     private List<DatabaseUpdater> updatersInReversedOrder() {
         List<DatabaseUpdater> reverse = new ArrayList<DatabaseUpdater>(updaters);
         Collections.reverse(reverse);

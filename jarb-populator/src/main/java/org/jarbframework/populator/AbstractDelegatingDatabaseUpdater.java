@@ -9,17 +9,17 @@ public abstract class AbstractDelegatingDatabaseUpdater implements RevertableDat
 
     @Override
     public void update() {
-    	getDelegate().update();
+        getDelegate().update();
     }
 
     @Override
     public void revert() {
-    	DatabaseUpdater delegate = getDelegate();
-        if(delegate instanceof RevertableDatabaseUpdater) {
+        DatabaseUpdater delegate = getDelegate();
+        if (delegate instanceof RevertableDatabaseUpdater) {
             ((RevertableDatabaseUpdater) delegate).revert();
         }
     }
-    
+
     protected abstract DatabaseUpdater getDelegate();
-	
+
 }

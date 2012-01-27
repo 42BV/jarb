@@ -35,7 +35,7 @@ public class DatabaseConstraintExceptionTranslatorTest {
 
     @Autowired
     private DataSource dataSource;
-    
+
     @PersistenceContext
     private EntityManager entityManager;
 

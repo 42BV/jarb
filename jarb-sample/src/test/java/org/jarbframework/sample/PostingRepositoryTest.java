@@ -21,7 +21,7 @@ public class PostingRepositoryTest {
 
     @Resource
     private PostRepository postRepository;
-    
+
     /**
      * Ensure that posts can be persisted and retrieved.
      */
@@ -34,7 +34,7 @@ public class PostingRepositoryTest {
         post = postRepository.save(post);
         assertTrue(postRepository.exists(post.getId()));
     }
-    
+
     /**
      * Validation can be done based on database column metadata.
      * Note that we have no @NotNull on our author property.
@@ -45,11 +45,11 @@ public class PostingRepositoryTest {
         // Note that we forgot an author
         post.setTitle("some post");
         post.setMessage("my message");
-        
+
         try {
             postRepository.save(post);
             fail("Expected a violation exception");
-        } catch(ConstraintViolationException e) {
+        } catch (ConstraintViolationException e) {
             // Author value cannot be null, as the column is not nullable
             assertEquals(1, e.getConstraintViolations().size());
             javax.validation.ConstraintViolation<?> violation = e.getConstraintViolations().iterator().next();
@@ -57,7 +57,7 @@ public class PostingRepositoryTest {
             assertEquals("cannot be null", violation.getMessage());
         }
     }
-    
+
     /**
      * Database constraint violations are mapped on java exceptions.
      */
@@ -68,16 +68,16 @@ public class PostingRepositoryTest {
         post.setTitle("unique title");
         post.setMessage("my message");
         post = postRepository.save(post);
-        
+
         Post postWithSameTitle = new Post();
         postWithSameTitle.setAuthor("jeroen@42.nl");
         postWithSameTitle.setTitle("unique title");
         postWithSameTitle.setMessage("my message");
-        
+
         try {
             postRepository.save(postWithSameTitle);
             fail("Expected a post already exists exception");
-        } catch(PostTitleAlreadyExistsException e) {
+        } catch (PostTitleAlreadyExistsException e) {
             // We recieve a nice exception message
             assertEquals("Unique key 'uk_posts_title' was violated.", e.getMessage());
             // Violation information is available
@@ -86,5 +86,5 @@ public class PostingRepositoryTest {
             assertTrue(e.getCause() instanceof JpaSystemException);
         }
     }
-    
+
 }

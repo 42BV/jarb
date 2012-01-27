@@ -34,7 +34,7 @@ public class CachingDatabaseMetadataRepositoryTest {
     public void testCache() {
         ColumnReference columnReference = new ColumnReference("my_table", "my_column");
         ColumnMetadata columnMetadata = new ColumnMetadata(columnReference);
-                
+
         when(delegateMetadataRepository.getColumnMetadata(columnReference)).thenReturn(columnMetadata);
 
         for (int i = 0; i < 10; i++) {
@@ -44,7 +44,7 @@ public class CachingDatabaseMetadataRepositoryTest {
         cachingMetadataRepository.clearCache();
 
         Assert.assertEquals(columnMetadata, cachingMetadataRepository.getColumnMetadata(new ColumnReference("my_table", "my_column")));
-        
+
         verify(delegateMetadataRepository, times(2)).getColumnMetadata(columnReference);
     }
 

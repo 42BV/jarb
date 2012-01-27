@@ -18,10 +18,10 @@ public class RevertingDatabaseUpdater implements DatabaseUpdater {
     public RevertingDatabaseUpdater(RevertableDatabaseUpdater delegate) {
         this.delegate = delegate;
     }
-    
+
     @Override
     public void update() {
         delegate.revert();
     }
-    
+
 }

@@ -34,7 +34,7 @@ public class SqlResourceDatabaseUpdaterTest {
         JdbcTemplate template = new JdbcTemplate(dataSource);
         assertEquals("eddie", template.queryForObject("SELECT name FROM persons WHERE id = 1", String.class));
     }
-    
+
     /**
      * Executing with a non-existing script resource causes a runtime exception to be thrown.
      */
@@ -43,11 +43,11 @@ public class SqlResourceDatabaseUpdaterTest {
         try {
             script("unknown.sql").update();
             fail("Expected an exception because unknown.sql does not exist.");
-        } catch(CannotReadScriptException e) {
+        } catch (CannotReadScriptException e) {
             assertEquals("Cannot read SQL script from class path resource [unknown.sql]", e.getMessage());
         }
     }
-    
+
     /**
      * However, we can also create a database populator that skips non existing script resources,
      * preventing any runtime exception from being thrown. Use this type of populator whenever
@@ -57,12 +57,12 @@ public class SqlResourceDatabaseUpdaterTest {
     public void testIgnoreIfScriptNotFound() {
         ignoreIfResourceMissing(new ClassPathResource("unknown.sql"), dataSource).update();
     }
-    
+
     @Test
     public void testToString() {
         assertEquals("SQL(class path resource [create-schema.sql])", script("create-schema.sql").toString());
     }
-    
+
     private SqlResourceDatabaseUpdater script(String name) {
         SqlResourceDatabaseUpdater populator = new SqlResourceDatabaseUpdater();
         populator.setDataSource(dataSource);
