@@ -8,7 +8,6 @@ import java.util.Set;
 
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.metamodel.Attribute;
-import javax.persistence.metamodel.EmbeddableType;
 import javax.persistence.metamodel.EntityType;
 import javax.persistence.metamodel.IdentifiableType;
 import javax.persistence.metamodel.ManagedType;
@@ -56,16 +55,6 @@ public final class ColumnDefinitionsGenerator {
             createSubClassColumnDefinitions(columnDefinitions, subclassEntities);
         }
         return columnDefinitions;
-    }
-
-    @Deprecated
-    //Will be removed in next release
-    public List<PropertyDefinition> createPropertyDefinitions(EmbeddableType<?> embeddableType, EntityType<?> enclosingType) {
-        List<PropertyDefinition> propertyDefinitions = new ArrayList<PropertyDefinition>();
-        Class<?> embeddableClass = embeddableType.getJavaType();
-        Class<?> enclosingClass = enclosingType.getJavaType();
-        addAttributesAsColumnDefinitions(propertyDefinitions, embeddableType, embeddableClass, enclosingClass);
-        return propertyDefinitions;
     }
 
     private void addAttributesAsColumnDefinitions(List<PropertyDefinition> columnDefinitions, ManagedType<?> type, Class<?> entityClass) {

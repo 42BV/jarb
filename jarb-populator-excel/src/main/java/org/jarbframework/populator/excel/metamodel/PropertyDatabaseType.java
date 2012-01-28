@@ -27,13 +27,5 @@ public enum PropertyDatabaseType {
      * An inversed reference means that another entity or ElementCollection is referring to this entity.
      * This can be achieved by having a collection that is either annotated as an ElementCollection or as a @OneToMany with JoinColumn(s)
      */
-    INVERSED_REFERENCE,
-
-    /**
-     * An ElementCollection mapping can be used to define a collection of Embeddable objects. 
-     * This is not a typical usage of Embeddable objects as the objects are not embedded in 
-     * the source object's table, but stored in a separate collection table. 
-     */
-    @Deprecated
-    ELEMENT_COLLECTION;
+    INVERSED_REFERENCE
 }

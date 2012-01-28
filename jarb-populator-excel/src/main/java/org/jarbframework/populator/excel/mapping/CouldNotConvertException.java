@@ -6,6 +6,10 @@ package org.jarbframework.populator.excel.mapping;
  * @since 06-04-2011
  */
 public class CouldNotConvertException extends RuntimeException {
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
     private final Object source;
     private final Class<?> sourceType;
     private final Class<?> targetType;

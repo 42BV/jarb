@@ -4,10 +4,8 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 import java.lang.reflect.Field;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Map.Entry;
 import org.springframework.util.Assert;
 
 /**
@@ -27,8 +25,6 @@ public class PropertyDefinition {
     private String joinColumnName;
     private String inverseJoinColumnName;
     private InverseJoinColumnReferenceProperties inverseJoinColumnReferenceProperties;
-
-    private Map<String, String> elementCollectionJoinColumns;
 
     private PropertyDefinition(Field field) {
         this.field = field;
@@ -89,16 +85,6 @@ public class PropertyDefinition {
 
     public String getInverseJoinColumnName() {
         return inverseJoinColumnName;
-    }
-
-    @Deprecated
-    public Map<String, String> getElementCollectionJoinColumns() {
-        return elementCollectionJoinColumns;
-    }
-
-    @Deprecated
-    public Collection<? extends String> getElementCollectionJoinColumnNames() {
-        return elementCollectionJoinColumns.keySet();
     }
 
     public static class Builder {
@@ -172,11 +158,6 @@ public class PropertyDefinition {
             return this;
         }
 
-        @Deprecated
-        public void putElementCollectionJoinColumnName(String elementCollectionJoinColumnName, String elementCollectionReferencedColumnName) {
-            this.elementCollectionJoinColumns.put(elementCollectionJoinColumnName, elementCollectionReferencedColumnName);
-        }
-
         public PropertyDefinition build() {
             Assert.notNull(databaseType, "Database type cannot be null");
             if (databaseType == PropertyDatabaseType.COLLECTION_REFERENCE) {
@@ -185,19 +166,6 @@ public class PropertyDefinition {
                 Assert.state(isNotBlank(joinTableName), "Join table name cannot be blank");
                 Assert.state(isNotBlank(joinColumnName), "Join column name cannot be blank");
                 Assert.state(isNotBlank(inverseJoinColumnName), "Inverse join column name cannot be blank");
-            } else if (databaseType == PropertyDatabaseType.ELEMENT_COLLECTION) {
-                //TO DO: Remove
-                Assert.state(isBlank(columnName), "Element collection property cannot have a column name");
-                Assert.state(isBlank(inverseJoinColumnName), "Element collection property cannot have an inversed joinColumn name");
-                Assert.state(isBlank(joinTableName), "ElementCollection property cannot have a joinTable name");
-                Assert.state(isBlank(joinColumnName), "ElementCollection property cannot have a join column name");
-                for (Entry<String, String> entry : elementCollectionJoinColumns.entrySet()) {
-                    Assert.state(isNotBlank(entry.getKey()), "ElementCollection property's joinColumn names may not be blank");
-                    if (elementCollectionJoinColumns.size() > 1) {
-                        Assert.state(isNotBlank(entry.getValue()),
-                                "ElementCollection property's referenced column names may not be blank if there's more than 1 JoinColumn");
-                    }
-                }
             } else if (databaseType == PropertyDatabaseType.INVERSED_REFERENCE) {
                 Assert.state(isBlank(columnName), "Element collection property cannot have a column name");
                 Assert.state(isBlank(inverseJoinColumnName), "Element collection property cannot have an inversed joinColumn name");
@@ -214,7 +182,6 @@ public class PropertyDefinition {
             definition.joinTableName = joinTableName;
             definition.joinColumnName = joinColumnName;
             definition.inverseJoinColumnName = inverseJoinColumnName;
-            definition.elementCollectionJoinColumns = elementCollectionJoinColumns;
             definition.generatedValue = generatedValue;
             definition.isIdColumn = isIdColumn;
             definition.inverseJoinColumnReferenceProperties = inverseJoinColumnReferenceProperties;

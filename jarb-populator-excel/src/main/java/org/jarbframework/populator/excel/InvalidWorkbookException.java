@@ -14,6 +14,8 @@ import org.jarbframework.populator.excel.workbook.validator.WorkbookViolation;
  */
 public class InvalidWorkbookException extends RuntimeException {
 
+    private static final long serialVersionUID = -5745586459729712995L;
+
     public InvalidWorkbookException(Set<WorkbookViolation> violations) {
         super("Workbook is invalid:\n - " + collectionToDelimitedString(violations, "\n - "));
     }
