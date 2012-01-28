@@ -91,7 +91,7 @@ public final class ColumnDefinitionsGenerator {
     private List<PropertyDefinition> createColumnsForField(Field field, Class<?> entityClass, Class<?> enclosingClass) {
         List<PropertyDefinition> columnDefinitions = new ArrayList<PropertyDefinition>();
 
-        PropertyReference propertyReference = createPropertyReference(field, entityClass, enclosingClass);
+        PropertyReference propertyReference = new PropertyReference(entityClass, field.getName());
 
         if ((field.getAnnotation(javax.persistence.Embedded.class) != null)) {
             columnDefinitions.addAll(embeddedColumnGenerator.createColumnDefinitionsForEmbeddedField(propertyReference));
@@ -102,16 +102,6 @@ public final class ColumnDefinitionsGenerator {
             }
         }
         return columnDefinitions;
-    }
-
-    private PropertyReference createPropertyReference(Field field, Class<?> entityClass, Class<?> enclosingClass) {
-        PropertyReference propertyReference = null;
-        if (enclosingClass == null) {
-            propertyReference = new PropertyReference(entityClass, field.getName());
-        } else {
-            propertyReference = new PropertyReference(entityClass, enclosingClass, field.getName());
-        }
-        return propertyReference;
     }
 
     private void createSuperTypeColumnDefinitions(List<PropertyDefinition> columnDefinitions, ManagedType<?> type, Class<?> entityClass) {

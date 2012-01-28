@@ -57,9 +57,9 @@ public class JpaMetaModelGenerator implements MetaModelGenerator {
     private Collection<Definition> returnDefinitionsForElementCollectionsFromEntity(EntityDefinition<?> entityDefinition,
             EntityManagerFactory entityManagerFactory) {
         Collection<Definition> definitions = new HashSet<Definition>();
+        ElementCollectionDefinitionGenerator elementCollectionDefinitionGenerator = new ElementCollectionDefinitionGenerator(entityManagerFactory);
         for (PropertyDefinition propertyDefinition : entityDefinition.properties()) {
-            Definition definition = ElementCollectionDefinitionGenerator.createDefinitionForSingleElementCollectionFromEntity(propertyDefinition,
-                    entityManagerFactory);
+            Definition definition = elementCollectionDefinitionGenerator.createDefinitionForSingleElementCollectionFromEntity(propertyDefinition);
             if (definition != null) {
                 definitions.add(definition);
             }

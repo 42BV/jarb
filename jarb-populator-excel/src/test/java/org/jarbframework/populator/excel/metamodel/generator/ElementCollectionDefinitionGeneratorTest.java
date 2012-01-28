@@ -30,8 +30,9 @@ public class ElementCollectionDefinitionGeneratorTest extends DefaultExcelImport
     @Test
     public void testCreateDefinitionForSingleElementCollectionFromEntity() {
         PropertyDefinition phones = employee.property("phones");
-        EmbeddableElementCollectionDefinition<?> phonesDefinition = (EmbeddableElementCollectionDefinition<?>) ElementCollectionDefinitionGenerator
-                .createDefinitionForSingleElementCollectionFromEntity(phones, entityManagerFactory);
+        ElementCollectionDefinitionGenerator elementCollectionDefinitionGenerator = new ElementCollectionDefinitionGenerator(getEntityManagerFactory());
+        EmbeddableElementCollectionDefinition<?> phonesDefinition = (EmbeddableElementCollectionDefinition<?>) elementCollectionDefinitionGenerator
+                .createDefinitionForSingleElementCollectionFromEntity(phones);
         assertEquals(2, phonesDefinition.properties().size());
     }
 

@@ -2,7 +2,6 @@ package org.jarbframework.populator.excel.mapping.exporter;
 
 import org.jarbframework.populator.excel.entity.EntityRegistry;
 import org.jarbframework.populator.excel.mapping.ValueConversionService;
-import org.jarbframework.populator.excel.metamodel.Definition;
 import org.jarbframework.populator.excel.metamodel.EntityDefinition;
 import org.jarbframework.populator.excel.metamodel.MetaModel;
 import org.jarbframework.populator.excel.metamodel.PropertyDatabaseType;
@@ -74,13 +73,13 @@ public class DefaultEntityExporter implements EntityExporter {
      * Store a specific entity in our sheet.
      * @param <T> type of entity being stored
      * @param entity the entity being stored
-     * @param definition description of the entity class
+     * @param entityDefinition description of the entity class
      * @param sheet the sheet in which we store the entity
      */
-    private <T> void exportEntity(T entity, Definition definition, Sheet sheet) {
+    private <T> void exportEntity(T entity, EntityDefinition<?> entityDefinition, Sheet sheet) {
         Row row = sheet.createRow();
         // Handle each property definition
-        for (PropertyDefinition propertyDefinition : definition.properties()) {
+        for (PropertyDefinition propertyDefinition : entityDefinition.properties()) {
             final PropertyDatabaseType type = propertyDefinition.getDatabaseType();
             if (type == PropertyDatabaseType.COLUMN) {
                 // Retrieve the property value and store it as cell value
@@ -98,13 +97,10 @@ public class DefaultEntityExporter implements EntityExporter {
             }
         }
 
-        if (definition instanceof EntityDefinition<?>) {
-            EntityDefinition<?> entityDefinition = (EntityDefinition<?>) definition;
-            // Include the discriminator value, whenever relevant
-            if (entityDefinition.hasDiscriminatorColumn()) {
-                String discriminatorValue = entityDefinition.getDiscriminatorValue(entity.getClass());
-                row.setCellValueAt(entityDefinition.getDiscriminatorColumnName(), new StringValue(discriminatorValue));
-            }
+        // Include the discriminator value, whenever relevant
+        if (entityDefinition.hasDiscriminatorColumn()) {
+            String discriminatorValue = entityDefinition.getDiscriminatorValue(entity.getClass());
+            row.setCellValueAt(entityDefinition.getDiscriminatorColumnName(), new StringValue(discriminatorValue));
         }
 
         // Define the row identifier of our entity, allowing us to reference it

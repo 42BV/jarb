@@ -22,19 +22,9 @@ public class PropertyReference {
     private final String name;
     private final Class<?> beanClass;
 
-    //In case of an Embeddable class:
-    private final Class<?> enclosingClass;
-
     public PropertyReference(Class<?> beanClass, String name) {
         this.name = hasText(name, "Property name is required");
         this.beanClass = notNull(beanClass, "Bean class is required");
-        this.enclosingClass = null;
-    }
-
-    public PropertyReference(Class<?> beanClass, Class<?> enclosingClass, String name) {
-        this.name = hasText(name, "Property name is required");
-        this.beanClass = notNull(beanClass, "Bean class is required");
-        this.enclosingClass = notNull(enclosingClass, "Enclosing class is required");
     }
 
     public PropertyReference(PropertyReference parent, String name) {
@@ -51,10 +41,6 @@ public class PropertyReference {
 
     public Class<?> getBeanClass() {
         return beanClass;
-    }
-
-    public Class<?> getEnclosingClass() {
-        return enclosingClass;
     }
 
     public boolean isNestedProperty() {

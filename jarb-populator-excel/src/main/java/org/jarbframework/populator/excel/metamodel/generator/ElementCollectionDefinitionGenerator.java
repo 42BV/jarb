@@ -12,12 +12,17 @@ import org.jarbframework.populator.excel.metamodel.InverseJoinColumnReferenceTyp
 import org.jarbframework.populator.excel.metamodel.PropertyDatabaseType;
 import org.jarbframework.populator.excel.metamodel.PropertyDefinition;
 
-public final class ElementCollectionDefinitionGenerator {
+public class ElementCollectionDefinitionGenerator {
 
-    public static Definition createDefinitionForSingleElementCollectionFromEntity(PropertyDefinition propertyDefinition,
-            EntityManagerFactory entityManagerFactory) {
-        Metamodel metamodel = entityManagerFactory.getMetamodel();
+    private final EntityManagerFactory entityManagerFactory;
+
+    public ElementCollectionDefinitionGenerator(EntityManagerFactory entityManagerFactory) {
+        this.entityManagerFactory = entityManagerFactory;
+    }
+
+    public Definition createDefinitionForSingleElementCollectionFromEntity(PropertyDefinition propertyDefinition) {
         ColumnDefinitionsGenerator columnDefinitionsGenerator = new ColumnDefinitionsGenerator(entityManagerFactory);
+        Metamodel metamodel = entityManagerFactory.getMetamodel();
 
         if (propertyDefinition.getDatabaseType() == PropertyDatabaseType.INVERSED_REFERENCE) {
             InverseJoinColumnReferenceProperties inverseJoinColumnReferenceProperties = propertyDefinition.getInverseJoinColumnReferenceProperties();
