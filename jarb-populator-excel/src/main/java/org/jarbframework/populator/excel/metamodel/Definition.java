@@ -75,7 +75,7 @@ public abstract class Definition {
     public Set<String> getColumnNames() {
         Set<String> columnNames = new HashSet<String>();
         for (PropertyDefinition property : propertyDefinitions) {
-            if ((property.hasColumn())) {
+            if (property.hasColumn()) {
                 columnNames.add(property.getColumnName());
             }
         }

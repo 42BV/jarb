@@ -58,14 +58,10 @@ public final class ColumnDefinitionsGenerator {
     }
 
     private void addAttributesAsColumnDefinitions(List<PropertyDefinition> columnDefinitions, ManagedType<?> type, Class<?> entityClass) {
-        addAttributesAsColumnDefinitions(columnDefinitions, type, entityClass, null);
-    }
-
-    private void addAttributesAsColumnDefinitions(List<PropertyDefinition> columnDefinitions, ManagedType<?> type, Class<?> entityClass, Class<?> enclosingClass) {
         for (Attribute<?, ?> attribute : type.getDeclaredAttributes()) {
             Field field = (Field) attribute.getJavaMember();
 
-            List<PropertyDefinition> newlyGeneratedColumnDefinitions = createPropertyDefinitionList(entityClass, enclosingClass, field);
+            List<PropertyDefinition> newlyGeneratedColumnDefinitions = createPropertyDefinitionList(entityClass, field);
 
             for (PropertyDefinition columnDefinition : newlyGeneratedColumnDefinitions) {
                 addPropertyDefinitionIfUnique(columnDefinitions, type, columnDefinition);
@@ -73,11 +69,11 @@ public final class ColumnDefinitionsGenerator {
         }
     }
 
-    private List<PropertyDefinition> createPropertyDefinitionList(Class<?> entityClass, Class<?> enclosingClass, Field field) {
-        return createColumnsForField(field, entityClass, enclosingClass);
+    private List<PropertyDefinition> createPropertyDefinitionList(Class<?> entityClass, Field field) {
+        return createColumnsForField(field, entityClass);
     }
 
-    private List<PropertyDefinition> createColumnsForField(Field field, Class<?> entityClass, Class<?> enclosingClass) {
+    private List<PropertyDefinition> createColumnsForField(Field field, Class<?> entityClass) {
         List<PropertyDefinition> columnDefinitions = new ArrayList<PropertyDefinition>();
 
         PropertyReference propertyReference = new PropertyReference(entityClass, field.getName());
