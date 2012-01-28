@@ -75,9 +75,9 @@ public class ClassDefinitionFinderTest {
 
     @Test
     public void testFindClassDefinitionByPersistentClass() {
-        EntityDefinition<?> definition = (EntityDefinition<?>) DefinitionFinder.findDefinitionByPersistentClass(classDefinitionSet,
+        EntityDefinition<?> entityDefinition = (EntityDefinition<?>) DefinitionFinder.findDefinitionByPersistentClass(classDefinitionSet,
                 domain.entities.Project.class);
-        assertEquals(foreignClass, definition.getDefinedClass());
+        assertEquals(foreignClass, entityDefinition.getDefinedClass());
         assertEquals(null, DefinitionFinder.findDefinitionByPersistentClass(classDefinitionSet, domain.entities.Employee.class));
         assertEquals(null, DefinitionFinder.findDefinitionByPersistentClass(emptyClassDefinitionSet, domain.entities.Project.class));
     }

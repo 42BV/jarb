@@ -8,7 +8,6 @@ import java.util.Set;
 import org.jarbframework.populator.excel.metamodel.Definition;
 import org.jarbframework.populator.excel.metamodel.EntityDefinition;
 import org.jarbframework.populator.excel.metamodel.PropertyDefinition;
-import org.jarbframework.populator.excel.util.JpaUtils;
 import org.jarbframework.populator.excel.workbook.Sheet;
 import org.jarbframework.populator.excel.workbook.Workbook;
 import org.slf4j.Logger;
@@ -35,8 +34,9 @@ public final class StoreJoinTable {
      * @param rowPosition Vertical position number of the excelRecord
      * @param excelRow ExcelRow to save to.
      */
-    public static void storeValue(Workbook excel, Definition classDefinition, PropertyDefinition columnDefinition, Integer rowPosition, ExcelRow excelRow) {
-        Sheet mainSheet = excel.getSheet(JpaUtils.getTableNameOfDefinition(classDefinition));
+    public static void storeValue(Workbook excel, EntityDefinition<?> classDefinition, PropertyDefinition columnDefinition, Integer rowPosition,
+            ExcelRow excelRow) {
+        Sheet mainSheet = excel.getSheet(classDefinition.getTableName());
         String idColumnName = getIdColumnName(classDefinition);
         Object code = mainSheet.getValueAt(rowPosition, idColumnName);
         Sheet joinSheet = excel.getSheet(columnDefinition.getJoinTableName());

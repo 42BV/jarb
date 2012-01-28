@@ -14,9 +14,7 @@ import javax.persistence.metamodel.EntityType;
 import javax.persistence.metamodel.SingularAttribute;
 
 import org.hibernate.proxy.HibernateProxy;
-import org.jarbframework.populator.excel.metamodel.Definition;
 import org.jarbframework.populator.excel.metamodel.EmbeddableElementCollectionDefinition;
-import org.jarbframework.populator.excel.metamodel.EntityDefinition;
 import org.jarbframework.populator.excel.metamodel.InverseJoinColumnReferenceProperties;
 import org.jarbframework.populator.excel.metamodel.InverseJoinColumnReferenceType;
 import org.jarbframework.populator.excel.metamodel.MetaModel;
@@ -57,34 +55,6 @@ public final class JpaUtils {
             entity = ((HibernateProxy) entity).getHibernateLazyInitializer().getImplementation();
         }
         return entityManagerFactory.getPersistenceUnitUtil().getIdentifier(entity);
-    }
-
-    /**
-     * Returns the defined class of passed definition if it possesses one.
-     * @param definition Definition to get defined class from
-     * @return Defined class
-     */
-    @Deprecated
-    public static Class<?> getDefinedClassOfDefinition(Definition definition) {
-        Class<?> definedClass = null;
-        if (definition instanceof EntityDefinition<?>) {
-            definedClass = ((EntityDefinition<?>) definition).getDefinedClass();
-        }
-        return definedClass;
-    }
-
-    /**
-     * Returns the table name of passed definition if it possesses one.
-     * @param definition Definition to get table name from
-     * @return Table name
-     */
-    @Deprecated
-    public static String getTableNameOfDefinition(Definition definition) {
-        String tableName = null;
-        if (definition instanceof EntityDefinition<?>) {
-            tableName = ((EntityDefinition<?>) definition).getTableName();
-        }
-        return tableName;
     }
 
     /**

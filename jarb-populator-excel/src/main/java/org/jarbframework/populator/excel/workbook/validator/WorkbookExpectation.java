@@ -24,8 +24,8 @@ class WorkbookExpectation {
     private Map<String, Set<String>> columnNamesMap = new HashMap<String, Set<String>>();
 
     public WorkbookExpectation(MetaModel metamodel) {
-        for (Definition entity : metamodel.entities()) {
-            final String sheetName = JpaUtils.getTableNameOfDefinition(entity);
+        for (EntityDefinition<?> entity : metamodel.entities()) {
+            final String sheetName = entity.getTableName();
             // Each entity type has a specific sheet name
             sheetNames.add(sheetName);
             Set<String> columnNames = new HashSet<String>();

@@ -92,46 +92,32 @@ public final class ExcelImporter {
     /**
      * Returns a hashmap containing Excel records and their cell values.
      * @param excel Excel file in use to be stored in the objectModel
-     * @param definition Definition containing the columnDefinitions the values will be stored in
+     * @param entityDefinition Definition containing the columnDefinitions the values will be stored in
      * @return Hashmap containing Excel records and their cell values
      * @throws InstantiationException Thrown when function is used on a class that cannot be instantiated (abstract or interface)
      * @throws IllegalAccessException Thrown when function does not have access to the definition of the specified class, field, method or constructor 
      * @throws NoSuchFieldException Thrown when a field is not available
      */
-    public Map<Object, ExcelRow> parseWorksheet(final Workbook excel, final EntityDefinition<?> definition) {
+    public Map<Object, ExcelRow> parseWorksheet(final Workbook excel, final EntityDefinition<?> entityDefinition) {
         Map<Object, ExcelRow> createdInstances = new HashMap<Object, ExcelRow>();
-        Sheet sheet = excel.getSheet(definition.getTableName());
-        String discriminatorColumnName = getDiscriminatorColumnFromDefinition(definition);
+        Sheet sheet = excel.getSheet(entityDefinition.getTableName());
+        String discriminatorColumnName = entityDefinition.getDiscriminatorColumnName();
 
         if (sheet != null) {
             for (Integer rowPosition = 1; rowPosition <= sheet.getLastRowNumber(); rowPosition++) {
                 logger.debug("Importing row {}", rowPosition);
-                ExcelRow excelRow = new ExcelRow(determineEntityClass(sheet, definition, discriminatorColumnName, rowPosition));
-                storeExcelRecordByColumnDefinitions(excel, definition, rowPosition, excelRow);
-                putCreatedInstance(sheet, definition, createdInstances, rowPosition, excelRow);
+                ExcelRow excelRow = new ExcelRow(determineEntityClass(sheet, entityDefinition, discriminatorColumnName, rowPosition));
+                storeExcelRecordByColumnDefinitions(excel, entityDefinition, rowPosition, excelRow);
+                putCreatedInstance(sheet, entityDefinition, createdInstances, rowPosition, excelRow);
             }
         }
         return createdInstances;
     }
 
     /**
-     * Returns the discriminator column name from Definition if it's an EntityDefinition.
-     * @param definition Definition of either an Entity or ElementCollection embeddable
-     * @return Discriminator name
-     */
-    private String getDiscriminatorColumnFromDefinition(Definition definition) {
-        String discriminatorColumnName = null;
-        if (definition instanceof EntityDefinition<?>) {
-            EntityDefinition<?> entityDefinition = (EntityDefinition<?>) definition;
-            discriminatorColumnName = entityDefinition.getDiscriminatorColumnName();
-        }
-        return discriminatorColumnName;
-    }
-
-    /**
      * Determines the entity class of the row being persisted. Could be the Definition's defined class or a subclass.
      * @param sheet Sheet to get WorkbookDefinitions from
-     * @param entityDefinition definition used to get the defined class from.
+     * @param entityDefinition entityDefinition used to get the defined class from.
      * @param discriminatorColumnName DiscriminatorColumnName is used to determine the subtype.
      * @param rowPosition The row number which is currently being processed.
      * @return Entity class
@@ -168,19 +154,15 @@ public final class ExcelImporter {
     /**
      * Puts a new instance in the value map.
      * @param sheet Excel file the data is gathered from
-     * @param classDefinition ClassDefinition representing a database table
+     * @param classDefinition entityDefinition representing an entity
      * @param createdInstances A map of created instances
      * @param rowPosition The rowPosition in the Excel file (0 based) 
      * @param excelRow An excelRow to store in the value map
      */
-    private void putCreatedInstance(final Sheet sheet, final Definition classDefinition, Map<Object, ExcelRow> createdInstances, Integer rowPosition,
+    private void putCreatedInstance(final Sheet sheet, final EntityDefinition<?> classDefinition, Map<Object, ExcelRow> createdInstances, Integer rowPosition,
             ExcelRow excelRow) {
-        if (classDefinition instanceof EntityDefinition<?>) {
-            Object identifier = getIdentifierValue(rowPosition, sheet, sheet.getColumnNameAt(0));
-            addRecordIfIdentifierIsUnique(sheet, classDefinition, createdInstances, rowPosition, excelRow, identifier);
-        } else {
-            logger.error("Could not store row #{} of {}, because the Definition is of an improper type.", new Object[] { rowPosition, sheet.getName() });
-        }
+        Object identifier = getIdentifierValue(rowPosition, sheet, sheet.getColumnNameAt(0));
+        addRecordIfIdentifierIsUnique(sheet, classDefinition, createdInstances, rowPosition, excelRow, identifier);
     }
 
     /**
@@ -203,22 +185,22 @@ public final class ExcelImporter {
     /**
      * Adds the record to the proper map if its identifiers are unique. In case of an ElementCollectionDefinition row it will always be added.
      * @param sheet Excelsheet to get the sheetname from
-     * @param classDefinition Definition which belongs to the ExcelRow
+     * @param classDefinition EntityDefinition which belongs to the ExcelRow
      * @param createdInstances Map of created ExcelRow instances
      * @param createdElementCollectionInstances Map of created ExcelRow instances of ElementCollection type
      * @param rowPosition Current row position
      * @param excelRow Excelrow which is being processed
      * @param identifier Identifier of ExcelRow
      */
-    private void addRecordIfIdentifierIsUnique(final Sheet sheet, final Definition classDefinition, Map<Object, ExcelRow> createdInstances,
+    private void addRecordIfIdentifierIsUnique(final Sheet sheet, final EntityDefinition<?> classDefinition, Map<Object, ExcelRow> createdInstances,
             Integer rowPosition, ExcelRow excelRow, Object identifier) {
         if (!isInvalidIdentifier(identifier)) {
             logger.error("Could not store row #{} of {}, because the identifier is empty.", new Object[] { rowPosition, sheet.getName() });
-        } else if (classDefinition instanceof EntityDefinition<?>) {
+        } else {
             if (!createdInstances.containsKey(identifier)) {
                 createdInstances.put(identifier, excelRow);
             } else {
-                logger.error("IDCOLUMNNAME value '" + identifier + "' in table " + JpaUtils.getTableNameOfDefinition(classDefinition) + " is not unique.");
+                logger.error("IDCOLUMNNAME value '" + identifier + "' in table " + classDefinition.getTableName() + " is not unique.");
             }
         }
     }
@@ -241,14 +223,14 @@ public final class ExcelImporter {
     /**
      * Stores an Excelrecord by ColumnDefinition.
      * @param sheet Excel file
-     * @param definition ClassDefintiion
+     * @param entityDefinition definition representing an entity
      * @param rowPosition The number that represents the current row (0 based!)
      * @param excelRow The excelRecord to save the data to
      * @throws NoSuchFieldException Thrown if field cannot be found
      */
-    private void storeExcelRecordByColumnDefinitions(final Workbook excel, final EntityDefinition<?> definition, Integer rowPosition, ExcelRow excelRow) {
-        for (PropertyDefinition columnDefinition : definition.properties()) {
-            valueStorer.storeValue(excel, definition, columnDefinition, rowPosition, excelRow);
+    private void storeExcelRecordByColumnDefinitions(final Workbook excel, final EntityDefinition<?> entityDefinition, Integer rowPosition, ExcelRow excelRow) {
+        for (PropertyDefinition columnDefinition : entityDefinition.properties()) {
+            valueStorer.storeValue(excel, entityDefinition, columnDefinition, rowPosition, excelRow);
         }
     }
 }

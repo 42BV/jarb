@@ -22,25 +22,25 @@ public final class StoreExcelRecordValue {
      * Calls functions to save data. There are three possible types: Column, JoinColumn and JoinTable. 
      * Each have their own saving rules, for each one the appropriate function is called.
      * @param excel Representation of excel file
-     * @param definition ClassDefinition used to determine columnPosition
+     * @param entityDefinition Definition representing an entity which is used to determine columnPosition
      * @param columnDefinition ColumnDefinition is the superclass of Column, JoinColumn and JoinTable.
      * @param rowPosition Vertical position number of the excelRecord
      * @param excelRow ExcelRow to save to.
      * @throws NoSuchFieldException Thrown when a field is not available
      */
-    public void storeValue(Workbook excel, EntityDefinition<?> definition, PropertyDefinition columnDefinition, Integer rowPosition, ExcelRow excelRow) {
+    public void storeValue(Workbook excel, EntityDefinition<?> entityDefinition, PropertyDefinition columnDefinition, Integer rowPosition, ExcelRow excelRow) {
         switch (columnDefinition.getDatabaseType()) {
         case COLUMN:
-            storeColumn.storeValue(excel, definition, columnDefinition, rowPosition, excelRow);
+            storeColumn.storeValue(excel, entityDefinition, columnDefinition, rowPosition, excelRow);
             break;
         case COLLECTION_REFERENCE:
-            StoreJoinTable.storeValue(excel, definition, columnDefinition, rowPosition, excelRow);
+            StoreJoinTable.storeValue(excel, entityDefinition, columnDefinition, rowPosition, excelRow);
             break;
         case REFERENCE:
-            StoreJoinColumn.storeValue(excel, definition, columnDefinition, rowPosition, excelRow);
+            StoreJoinColumn.storeValue(excel, entityDefinition, columnDefinition, rowPosition, excelRow);
             break;
         case INVERSED_REFERENCE:
-            //StoreInversedJoinColumn.storeValue(excel, definition, columnDefinition, rowPosition, excelRow);
+            StoreInversedJoinColumn.storeValue(excel, entityDefinition, columnDefinition, rowPosition, excelRow);
             break;
         }
     }

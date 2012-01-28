@@ -4,11 +4,10 @@ import static org.jarbframework.utils.bean.BeanProperties.getPropertyType;
 
 import org.jarbframework.populator.excel.mapping.CouldNotConvertException;
 import org.jarbframework.populator.excel.mapping.ValueConversionService;
-import org.jarbframework.populator.excel.metamodel.Definition;
+import org.jarbframework.populator.excel.metamodel.EntityDefinition;
 import org.jarbframework.populator.excel.metamodel.PropertyDefinition;
 import org.jarbframework.populator.excel.metamodel.PropertyNode;
 import org.jarbframework.populator.excel.metamodel.PropertyPath;
-import org.jarbframework.populator.excel.util.JpaUtils;
 import org.jarbframework.populator.excel.workbook.Sheet;
 import org.jarbframework.populator.excel.workbook.Workbook;
 import org.jarbframework.utils.bean.ModifiableBean;
@@ -35,16 +34,16 @@ public final class StoreColumn {
     /**
      * Stores a Column in ExcelRow.
      * @param excel Representation of excel file
-     * @param classDefinition ClassDefinition used to determine columnPosition
+     * @param entityDefinition ClassDefinition used to determine columnPosition
      * @param columnDefinition ColumnDefinition is the superclass of Column, JoinColumn and JoinTable.
      * @param rowPosition Vertical position number of the excelRecord
      * @param excelRow ExcelRow to save to.
      * @throws NoSuchFieldException Thrown when a field is not available
      */
-    public void storeValue(Workbook excel, Definition classDefinition, PropertyDefinition columnDefinition, Integer rowPosition, ExcelRow excelRow) {
-        Sheet sheet = excel.getSheet(JpaUtils.getTableNameOfDefinition(classDefinition));
+    public void storeValue(Workbook excel, EntityDefinition<?> entityDefinition, PropertyDefinition columnDefinition, Integer rowPosition, ExcelRow excelRow) {
+        Sheet sheet = excel.getSheet(entityDefinition.getTableName());
 
-        WorksheetDefinition worksheetDefinition = WorksheetDefinition.analyzeWorksheet(classDefinition, excel);
+        WorksheetDefinition worksheetDefinition = WorksheetDefinition.analyzeWorksheet(entityDefinition, excel);
         Integer columnPosition = worksheetDefinition.getColumnPosition(columnDefinition.getColumnName());
 
         Object cellValue = getCellValue(sheet, rowPosition, columnPosition);

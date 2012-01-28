@@ -1,8 +1,7 @@
 package org.jarbframework.populator.excel.mapping.importer;
 
-import org.jarbframework.populator.excel.metamodel.Definition;
+import org.jarbframework.populator.excel.metamodel.EntityDefinition;
 import org.jarbframework.populator.excel.metamodel.PropertyDefinition;
-import org.jarbframework.populator.excel.util.JpaUtils;
 import org.jarbframework.populator.excel.workbook.Sheet;
 import org.jarbframework.populator.excel.workbook.Workbook;
 import org.slf4j.Logger;
@@ -24,13 +23,14 @@ public final class StoreJoinColumn {
     /**
      * Stores a JoinColumn in ExcelRow.
      * @param excel Representation of excel file
-     * @param definition ClassDefinition used to determine columnPosition
+     * @param entityDefinition ClassDefinition used to determine columnPosition
      * @param columnDefinition ColumnDefinition is the superclass of Column, JoinColumn and JoinTable.
      * @param rowPosition Vertical position number of the excelRecord
      * @param excelRow ExcelRow to save to.
      */
-    public static void storeValue(Workbook excel, Definition definition, PropertyDefinition columnDefinition, Integer rowPosition, ExcelRow excelRow) {
-        Sheet sheet = excel.getSheet(JpaUtils.getTableNameOfDefinition(definition));
+    public static void storeValue(Workbook excel, EntityDefinition<?> entityDefinition, PropertyDefinition columnDefinition, Integer rowPosition,
+            ExcelRow excelRow) {
+        Sheet sheet = excel.getSheet(entityDefinition.getTableName());
         Object cellValue = sheet.getValueAt(rowPosition, columnDefinition.getColumnName());
         LOGGER.debug("field: " + columnDefinition.getName() + " column: " + columnDefinition.getColumnName() + " value:[" + cellValue + "]");
         if (cellValue != null) {

@@ -3,10 +3,8 @@ package org.jarbframework.populator.excel.mapping.importer;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.jarbframework.populator.excel.metamodel.Definition;
 import org.jarbframework.populator.excel.metamodel.EntityDefinition;
 import org.jarbframework.populator.excel.metamodel.PropertyDefinition;
-import org.jarbframework.populator.excel.util.JpaUtils;
 import org.jarbframework.populator.excel.workbook.Sheet;
 import org.jarbframework.populator.excel.workbook.Workbook;
 import org.slf4j.Logger;
@@ -30,9 +28,9 @@ public class WorksheetDefinition {
      * @param excel The Excel file to read from
      * @return WorksheetDefinition with column names and positions
      */
-    public static WorksheetDefinition analyzeWorksheet(final Definition classDefinition, final Workbook excel) {
+    public static WorksheetDefinition analyzeWorksheet(final EntityDefinition<?> classDefinition, final Workbook excel) {
         WorksheetDefinition worksheetDefinition = new WorksheetDefinition();
-        String tableName = JpaUtils.getTableNameOfDefinition(classDefinition);
+        String tableName = classDefinition.getTableName();
         LOGGER.debug("Analyzing worksheet: [" + tableName + "]");
         Sheet sheet = excel.getSheet(tableName);
 
@@ -49,7 +47,7 @@ public class WorksheetDefinition {
         }
 
         if (classDefinition instanceof EntityDefinition<?>) {
-            EntityDefinition<?> entityDefinition = (EntityDefinition<?>) classDefinition;
+            EntityDefinition<?> entityDefinition = classDefinition;
             if (entityDefinition.hasDiscriminatorColumn()) {
                 final String discriminatorColumnName = entityDefinition.getDiscriminatorColumnName();
                 LOGGER.debug("  discriminator column name: [" + discriminatorColumnName + "]");
