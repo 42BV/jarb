@@ -1,7 +1,7 @@
 package org.jarbframework.populator.excel.metamodel;
 
 import java.util.Collection;
-import java.util.HashMap;
+import java.util.Map;
 
 import javax.persistence.metamodel.EmbeddableType;
 
@@ -20,7 +20,7 @@ public final class InverseJoinColumnReferenceProperties {
     private String referencedTableName;
 
     /** JoinColumnNames needed for the reference. Key is the Column name on the enclosing side, Value is the column name on the InversedReference side. */
-    private HashMap<String, String> joinColumnNames;
+    private Map<String, String> joinColumnNames;
 
     /**
      * Returns the destination tablename of the inversed JoinColumn relation.
@@ -42,7 +42,7 @@ public final class InverseJoinColumnReferenceProperties {
      * Returns the column name hashmap.
      * @return Key is the Column name on the enclosing side, Value is the column name on the InversedReference side
      */
-    public HashMap<String, String> getReferencedColumnAndJoinColumnNamesHashMap() {
+    public Map<String, String> getReferencedColumnAndJoinColumnNamesHashMap() {
         return joinColumnNames;
     }
 
@@ -58,7 +58,7 @@ public final class InverseJoinColumnReferenceProperties {
      * Returns the @JoinColumn names the destination table uses the refer back to its owner record.
      * @param joinColumnNames @JoinColumn names
      */
-    public void setJoinColumnNames(HashMap<String, String> joinColumnNames) {
+    public void setJoinColumnNames(Map<String, String> joinColumnNames) {
         this.joinColumnNames = joinColumnNames;
     }
 

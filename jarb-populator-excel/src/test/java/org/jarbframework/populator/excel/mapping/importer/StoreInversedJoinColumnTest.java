@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 
 import javax.persistence.metamodel.EntityType;
 
@@ -52,7 +53,7 @@ public class StoreInversedJoinColumnTest extends DefaultExcelImporterTest {
     public void testStoreValue() {
         PropertyDefinition propertyDefinition = employeeDefinition.property("phones");
         StoreInversedJoinColumn.storeValue(workbook, employeeDefinition, propertyDefinition, 1, excelRow);
-        HashMap<String, Object> keyValues = ((InverseJoinColumnKey) excelRow.getValueMap().get(propertyDefinition)).getKeyValues();
+        Map<String, Object> keyValues = ((InverseJoinColumnKey) excelRow.getValueMap().get(propertyDefinition)).getKeyValues();
         assertEquals(key.getKeyValues(), keyValues);
     }
 

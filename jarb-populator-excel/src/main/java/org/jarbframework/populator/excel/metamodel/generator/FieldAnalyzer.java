@@ -4,7 +4,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Collection;
-import java.util.HashMap;
+import java.util.Map;
 
 import javax.persistence.ElementCollection;
 import javax.persistence.EntityManagerFactory;
@@ -119,7 +119,7 @@ public class FieldAnalyzer {
      */
     private InverseJoinColumnReferenceProperties inverseJoinColumnReferenceProperties(Field field) {
         InverseJoinColumnReferenceProperties inverseJoinColumnReferenceProperties = new InverseJoinColumnReferenceProperties();
-        HashMap<String, String> joinColumnNames = getJpaJoinColumnNamesForInversedReferenceField(field);
+        Map<String, String> joinColumnNames = getJpaJoinColumnNamesForInversedReferenceField(field);
         inverseJoinColumnReferenceProperties.setJoinColumnNames(joinColumnNames);
         String tableName = JpaMetaModelUtils.createTableNameForElementCollection(field, field.getDeclaringClass(), entityManagerFactory);
         inverseJoinColumnReferenceProperties.setReferencedTableName(tableName);
@@ -131,12 +131,12 @@ public class FieldAnalyzer {
      * Returns a hashmap with the referred column names as keys and the Jpa annotated JoinColumn names on the field as values.
      * If the necessary annotations are not present, the JPA2 spec's default will be applied
      * @param field Field to get the names from
-     * @return Hashmap with the referred column names as keys and the Jpa annotated JoinColumn names as values
+     * @return Map with the referred column names as keys and the Jpa annotated JoinColumn names as values
      */
-    private HashMap<String, String> getJpaJoinColumnNamesForInversedReferenceField(Field field) {
+    private Map<String, String> getJpaJoinColumnNamesForInversedReferenceField(Field field) {
         SchemaMapper schemaMapper = JpaHibernateSchemaMapper.usingNamingStrategyOf(entityManagerFactory);
         EntityType<?> entityType = entityManagerFactory.getMetamodel().entity(field.getDeclaringClass());
-        HashMap<String, String> joinColumnNames = JpaUtils.getJoinColumnNamesFromJpaAnnotatedField(schemaMapper, entityType, field);
+        Map<String, String> joinColumnNames = JpaUtils.getJoinColumnNamesFromJpaAnnotatedField(schemaMapper, entityType, field);
         return joinColumnNames;
     }
 

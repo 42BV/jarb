@@ -1,6 +1,7 @@
 package org.jarbframework.populator.excel.mapping.importer;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import org.springframework.util.Assert;
 
@@ -12,8 +13,8 @@ import org.springframework.util.Assert;
  */
 public class InverseJoinColumnKey extends Key {
 
-    /** HashMap with JoinColumn names as keys and objects as values.  */
-    private HashMap<String, Object> foreignKeys;
+    /** Map with JoinColumn names as keys and objects as values.  */
+    private Map<String, Object> foreignKeys;
 
     /** TableName is only needed if it is used for a relation with an ElementCollection of a serializable type.*/
     private String serializableTypeElementCollectionTableName;
@@ -25,15 +26,15 @@ public class InverseJoinColumnKey extends Key {
     @Override
     @SuppressWarnings("unchecked")
     public void setKeyValue(Object foreignKeyMap) {
-        Assert.isInstanceOf(HashMap.class, foreignKeyMap, "Key passed to InverseJoinColumnKey is not of type Hashmap.");
-        this.foreignKeys = (HashMap<String, Object>) foreignKeyMap;
+        Assert.isInstanceOf(Map.class, foreignKeyMap, "Key passed to InverseJoinColumnKey is not of type Hashmap.");
+        this.foreignKeys = (Map<String, Object>) foreignKeyMap;
     }
 
     /**
      * Returns the foreign key values.
-     * @return HashMap with JoinColumn names as keys and objects as values
+     * @return Map with JoinColumn names as keys and objects as values
      */
-    public HashMap<String, Object> getKeyValues() {
+    public Map<String, Object> getKeyValues() {
         return foreignKeys;
     }
 

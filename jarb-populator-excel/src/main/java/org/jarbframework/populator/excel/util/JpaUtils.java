@@ -3,6 +3,8 @@ package org.jarbframework.populator.excel.util;
 import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 import javax.persistence.CollectionTable;
 import javax.persistence.Column;
@@ -62,9 +64,9 @@ public final class JpaUtils {
      * @param schemaMapper JPA schemamapper used to retrieve the table name
      * @param owningEntity EntityType<?> of the Entity owning the passed field
      * @param field Field to get metadata from
-     * @return HashMap with referred Column names as keys and @JoinColumn names as values
+     * @return Map with referred Column names as keys and @JoinColumn names as values
      */
-    public static HashMap<String, String> getJoinColumnNamesFromJpaAnnotatedField(SchemaMapper schemaMapper, EntityType<?> owningEntity, Field field) {
+    public static Map<String, String> getJoinColumnNamesFromJpaAnnotatedField(SchemaMapper schemaMapper, EntityType<?> owningEntity, Field field) {
         if (field.isAnnotationPresent(ElementCollection.class)) {
             return getJoinColumnNamesForElementCollectionField(schemaMapper, owningEntity, field);
         } else {
@@ -78,7 +80,7 @@ public final class JpaUtils {
      * @param metamodel Metamodel to retrieve additional data from
      * @return Set of Column names
      */
-    public static HashSet<String> getElementCollectionColumnNames(PropertyDefinition property, MetaModel metamodel) {
+    public static Set<String> getElementCollectionColumnNames(PropertyDefinition property, MetaModel metamodel) {
         InverseJoinColumnReferenceProperties inverseJoinColumnReferenceProperties = property.getInverseJoinColumnReferenceProperties();
         HashSet<String> columnNames = new HashSet<String>();
         if (inverseJoinColumnReferenceProperties.getInverseJoinColumnReferenceType() == InverseJoinColumnReferenceType.EMBEDDABLE) {
@@ -95,10 +97,10 @@ public final class JpaUtils {
      * @param schemaMapper JPA schemamapper used to retrieve the table name
      * @param owningEntity EntityType<?> of the Entity owning the passed field
      * @param field Field to get @JoinColumns from
-     * @return HashMap with referred Column names as keys and @JoinColumn names as values
+     * @return Map with referred Column names as keys and @JoinColumn names as values
      */
-    private static HashMap<String, String> getJoinColumnNamesForElementCollectionField(SchemaMapper schemaMapper, EntityType<?> owningEntity, Field field) {
-        HashMap<String, String> joinColumnNames = new HashMap<String, String>();
+    private static Map<String, String> getJoinColumnNamesForElementCollectionField(SchemaMapper schemaMapper, EntityType<?> owningEntity, Field field) {
+        Map<String, String> joinColumnNames = new HashMap<String, String>();
         if (field.isAnnotationPresent(CollectionTable.class)) {
             joinColumnNames = createColumnNamesFromCollectionTableAnnotation(field);
         } else if (joinColumnNames.isEmpty()) {
@@ -108,12 +110,12 @@ public final class JpaUtils {
     }
 
     /**
-     * Creates a HashMap with referenced column names as keys and @JoinColumn names as values, with data gathered from the @CollectionTable annotation.
+     * Creates a Map with referenced column names as keys and @JoinColumn names as values, with data gathered from the @CollectionTable annotation.
      * @param field Field to get CollectionTable annotation from
-     * @return HashMap with referred Column names as keys and @JoinColumn names as values
+     * @return Map with referred Column names as keys and @JoinColumn names as values
      */
-    private static HashMap<String, String> createColumnNamesFromCollectionTableAnnotation(Field field) {
-        HashMap<String, String> joinColumnNames = new HashMap<String, String>();
+    private static Map<String, String> createColumnNamesFromCollectionTableAnnotation(Field field) {
+        Map<String, String> joinColumnNames = new HashMap<String, String>();
         CollectionTable collectionTable = field.getAnnotation(CollectionTable.class);
 
         if (collectionTable.joinColumns().length == 1) {
@@ -129,13 +131,13 @@ public final class JpaUtils {
     }
 
     /**
-     * Creates a HashMap with referenced column names as keys and @JoinColumn names as values, from the JPA spec's defaults.
+     * Creates a Map with referenced column names as keys and @JoinColumn names as values, from the JPA spec's defaults.
      * @param schemaMapper 
      * @param owningEntity 
-     * @return HashMap with referred Column names as keys and @JoinColumn names as values
+     * @return Map with referred Column names as keys and @JoinColumn names as values
      */
-    private static HashMap<String, String> createColumnNamesByJPADefault(SchemaMapper schemaMapper, EntityType<?> owningEntity) {
-        HashMap<String, String> joinColumnNames = new HashMap<String, String>();
+    private static Map<String, String> createColumnNamesByJPADefault(SchemaMapper schemaMapper, EntityType<?> owningEntity) {
+        Map<String, String> joinColumnNames = new HashMap<String, String>();
         Class<?> owningClass = owningEntity.getJavaType();
         String owningClassDatabaseTableName = schemaMapper.tableNameOf(owningClass);
         String elementCollectionDatabaseAttributeName = getIdentifierColumnName(owningEntity);
