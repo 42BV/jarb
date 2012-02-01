@@ -11,7 +11,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import org.jarbframework.populator.excel.metamodel.Definition;
 import org.jarbframework.populator.excel.metamodel.EntityDefinition;
 import org.jarbframework.populator.excel.metamodel.InverseJoinColumnReferenceProperties;
 import org.jarbframework.populator.excel.metamodel.MetaModel;
@@ -65,7 +64,7 @@ class WorkbookExpectation {
      * @param columnNames Collection of column names.
      */
     private void addDiscriminatorColumnNameIfApplicable(EntityDefinition<?> entity, Set<String> columnNames) {
-            EntityDefinition<?> entityDefinition = (EntityDefinition<?>) entity;
+            EntityDefinition<?> entityDefinition = entity;
             if (entityDefinition.hasDiscriminatorColumn()) {
                 columnNames.add(entityDefinition.getDiscriminatorColumnName());
             }
