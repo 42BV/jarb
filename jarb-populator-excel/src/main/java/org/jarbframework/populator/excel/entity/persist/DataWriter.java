@@ -61,7 +61,7 @@ public final class DataWriter {
             entityManager.close();
         }
     }
-    
+
     /**
      * Compares two Object's classnames for alphabetical sorting.
      * @author Sander Benschop

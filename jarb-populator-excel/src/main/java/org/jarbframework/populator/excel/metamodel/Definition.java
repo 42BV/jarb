@@ -89,7 +89,7 @@ public abstract class Definition {
     public Set<PropertyDefinition> getProperties() {
         return properties;
     }
-    
+
     /**
      * Sets the Set of PropertyDefinitions.
      * @param properties PropertyDefinitions to set for Definition
@@ -126,7 +126,7 @@ public abstract class Definition {
         public Set<PropertyDefinition> getProperties() {
             return properties;
         }
-        
+
     }
 
 }

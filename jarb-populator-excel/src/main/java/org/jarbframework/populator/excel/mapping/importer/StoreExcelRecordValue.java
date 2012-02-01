@@ -43,7 +43,8 @@ public final class StoreExcelRecordValue {
             StoreInversedJoinColumn.storeValue(excel, entityDefinition, columnDefinition, rowPosition, excelRow);
             break;
         default:
-            throw new RuntimeException("Cannot store ExcelRow value of ColumnDefinition from field '" + columnDefinition.getName() +"'. It is of an unknown DatabaseType.");
+            throw new RuntimeException("Cannot store ExcelRow value of ColumnDefinition from field '" + columnDefinition.getName()
+                    + "'. It is of an unknown DatabaseType.");
         }
     }
 

@@ -103,7 +103,7 @@ public class ExcelTemplateBuilder {
      *
      */
     private static class DefinitionNameComparator implements Comparator<EntityDefinition<?>>, Serializable {
-        
+
         private static final long serialVersionUID = -5317087314381195311L;
 
         /**

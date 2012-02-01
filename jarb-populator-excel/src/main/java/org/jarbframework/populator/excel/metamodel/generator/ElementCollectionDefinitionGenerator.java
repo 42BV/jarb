@@ -42,7 +42,7 @@ public class ElementCollectionDefinitionGenerator {
 
             default:
                 throw new RuntimeException("Passed PropertyDefinition ' " + propertyDefinition.getName() + " ' is not an invesedJoinColumn of a known type.");
-                
+
             }
         }
         return null;

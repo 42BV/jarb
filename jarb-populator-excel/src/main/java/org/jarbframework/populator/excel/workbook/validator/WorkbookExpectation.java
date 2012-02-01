@@ -64,10 +64,10 @@ class WorkbookExpectation {
      * @param columnNames Collection of column names.
      */
     private void addDiscriminatorColumnNameIfApplicable(EntityDefinition<?> entity, Set<String> columnNames) {
-            EntityDefinition<?> entityDefinition = entity;
-            if (entityDefinition.hasDiscriminatorColumn()) {
-                columnNames.add(entityDefinition.getDiscriminatorColumnName());
-            }
+        EntityDefinition<?> entityDefinition = entity;
+        if (entityDefinition.hasDiscriminatorColumn()) {
+            columnNames.add(entityDefinition.getDiscriminatorColumnName());
+        }
     }
 
     public Set<String> getSheetNames() {
