@@ -53,7 +53,7 @@ public final class StoreJoinTable {
      * @param classDefinition Definition to check the id column name of
      * @return Id Column name
      */
-    private static String getIdColumnName(Definition classDefinition) {
+    private static String getIdColumnName(EntityDefinition<?> classDefinition) {
         String idColumnName = "";
         if (classDefinition instanceof EntityDefinition<?>) {
             EntityDefinition<?> entityDefinition = (EntityDefinition<?>) classDefinition;
