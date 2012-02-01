@@ -135,8 +135,7 @@ public class FieldAnalyzer {
     private Map<String, String> getJpaJoinColumnNamesForInversedReferenceField(Field field) {
         SchemaMapper schemaMapper = JpaHibernateSchemaMapper.usingNamingStrategyOf(entityManagerFactory);
         EntityType<?> entityType = entityManagerFactory.getMetamodel().entity(field.getDeclaringClass());
-        Map<String, String> joinColumnNames = JpaUtils.getJoinColumnNamesFromJpaAnnotatedField(schemaMapper, entityType, field);
-        return joinColumnNames;
+        return JpaUtils.getJoinColumnNamesFromJpaAnnotatedField(schemaMapper, entityType, field);
     }
 
     /**

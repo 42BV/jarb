@@ -16,7 +16,7 @@ import org.apache.commons.lang3.StringUtils;
 public abstract class Definition {
 
     /** Description of each defined property. */
-    private Set<PropertyDefinition> propertyDefinitions;
+    private Set<PropertyDefinition> properties;
 
     /**
      * Retrieve all property definitions declared inside this class.
@@ -87,15 +87,15 @@ public abstract class Definition {
      * @return Set of PropertyDefinitions
      */
     public Set<PropertyDefinition> getProperties() {
-        return propertyDefinitions;
+        return properties;
     }
     
     /**
      * Sets the Set of PropertyDefinitions.
-     * @param propertyDefinitions PropertyDefinitions to set for Definition
+     * @param properties PropertyDefinitions to set for Definition
      */
     public void setProperties(Set<PropertyDefinition> propertyDefinitions) {
-        this.propertyDefinitions = propertyDefinitions;
+        this.properties = propertyDefinitions;
     }
 
     /**
@@ -111,7 +111,7 @@ public abstract class Definition {
 
         /**
          * Include a column definition.
-         * @param propertyDefinitions property definitions being added
+         * @param properties property definitions being added
          * @return this for method chaining
          */
         public Builder<T> includeProperties(Collection<PropertyDefinition> propertyDefinitions) {

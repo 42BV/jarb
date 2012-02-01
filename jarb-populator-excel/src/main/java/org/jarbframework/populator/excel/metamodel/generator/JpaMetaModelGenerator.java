@@ -51,13 +51,13 @@ public class JpaMetaModelGenerator implements MetaModelGenerator {
     /**
      * Retrieves all ElementCollectionDefinitions that are connected with a certain EntityDefinition.
      * @param entityDefinition EntityDefinition to search ElementCollectionDefinition occurences of
-     * @param entityManagerFactory JPA's EntityManagerFactory needed for creating ColumnDefinitions
+     * @param jpaEntityManagerFactory JPA's EntityManagerFactory needed for creating ColumnDefinitions
      * @return Collection of Definitions from ElementCollections
      */
     private Collection<Definition> returnDefinitionsForElementCollectionsFromEntity(EntityDefinition<?> entityDefinition,
-            EntityManagerFactory entityManagerFactory) {
+            EntityManagerFactory jpaEntityManagerFactory) {
         Collection<Definition> definitions = new HashSet<Definition>();
-        ElementCollectionDefinitionGenerator elementCollectionDefinitionGenerator = new ElementCollectionDefinitionGenerator(entityManagerFactory);
+        ElementCollectionDefinitionGenerator elementCollectionDefinitionGenerator = new ElementCollectionDefinitionGenerator(jpaEntityManagerFactory);
         for (PropertyDefinition propertyDefinition : entityDefinition.properties()) {
             Definition definition = elementCollectionDefinitionGenerator.createDefinitionForSingleElementCollectionFromEntity(propertyDefinition);
             if (definition != null) {

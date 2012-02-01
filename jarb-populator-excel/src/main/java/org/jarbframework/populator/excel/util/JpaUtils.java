@@ -60,7 +60,8 @@ public final class JpaUtils {
     }
 
     /**
-     * Returns the referred column names and the @JoinColumns names from a JPA annotated field. If no @JoinColumn names are present, the JPA default will be deduced.
+     * Returns the referred column names and the @JoinColumns names from a JPA annotated field. 
+     * If no @JoinColumn names are present, the JPA default will be deduced.
      * @param schemaMapper JPA schemamapper used to retrieve the table name
      * @param owningEntity EntityType<?> of the Entity owning the passed field
      * @param field Field to get metadata from

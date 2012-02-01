@@ -29,9 +29,9 @@ public class MetaModel implements Iterable<EntityDefinition<?>> {
             entityDefinitionsMap.put(classDefinition.getDefinedClass(), classDefinition);
         }
 
-        for (Definition elementCollectionDefinition : elementCollectionDefinitions) {
-            if (elementCollectionDefinition instanceof EmbeddableElementCollectionDefinition<?>) {
-                EmbeddableElementCollectionDefinition<?> embeddableElementCollectionDefinition = (EmbeddableElementCollectionDefinition<?>) elementCollectionDefinition;
+        for (Definition elementCollDef : elementCollectionDefinitions) {
+            if (elementCollDef instanceof EmbeddableElementCollectionDefinition<?>) {
+                EmbeddableElementCollectionDefinition<?> embeddableElementCollectionDefinition = (EmbeddableElementCollectionDefinition<?>) elementCollDef;
                 elementCollectionsMap.put(embeddableElementCollectionDefinition.getDefinedClass(), embeddableElementCollectionDefinition);
             }
         }

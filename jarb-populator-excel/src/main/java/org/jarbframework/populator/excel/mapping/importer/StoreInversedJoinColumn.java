@@ -65,7 +65,7 @@ public final class StoreInversedJoinColumn {
         Integer intValue = null;
         CellValue cellValue = cell.getCellValue();
         if (cellValue instanceof NumericValue) {
-            intValue = (((Number) (cellValue.getValue())).intValue());
+            intValue = ((Number) (cellValue.getValue())).intValue();
         } else {
             LOGGER.warn("Could not convert {} foreign key value to number.", cellValue);
         }

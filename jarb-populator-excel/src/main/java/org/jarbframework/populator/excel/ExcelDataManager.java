@@ -87,7 +87,7 @@ public class ExcelDataManager {
      * Provides access to an excel workbook, enabling its content
      * to be validated, mapped to entities, and persisted.
      */
-    public class WorkbookLoader {
+    public final class WorkbookLoader {
         private final Workbook workbook;
         private EntityRegistry entities;
 
@@ -180,7 +180,7 @@ public class ExcelDataManager {
      * Capable of building an excel template for our meta-model,
      * (database) entities can also be included.
      */
-    public class WorkbookBuilder {
+    public final class WorkbookBuilder {
         private EntityRegistry entities;
 
         /**

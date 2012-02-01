@@ -1,5 +1,6 @@
 package org.jarbframework.populator.excel.mapping.exporter;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -96,8 +97,15 @@ public class ExcelTemplateBuilder {
         storeColumnNames(joinSheet, inversedReferenceColumns);
     }
 
-    // Sorts class definitions based on table name
-    private static class DefinitionNameComparator implements Comparator<EntityDefinition<?>> {
+    /**
+     * Sorts class definitions based on table name.
+     * @author Sander Benschop
+     *
+     */
+    private static class DefinitionNameComparator implements Comparator<EntityDefinition<?>>, Serializable {
+        
+        private static final long serialVersionUID = -5317087314381195311L;
+
         /**
          * {@inheritDoc}
          */

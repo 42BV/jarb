@@ -1,5 +1,6 @@
 package org.jarbframework.populator.excel.entity.persist;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -20,7 +21,6 @@ import org.slf4j.LoggerFactory;
  * @author Sander Benschop
  */
 public final class DataWriter {
-    // TODO: Use JpaTemplate
 
     private static final Logger logger = LoggerFactory.getLogger(DataWriter.class);
 
@@ -61,8 +61,15 @@ public final class DataWriter {
             entityManager.close();
         }
     }
+    
+    /**
+     * Compares two Object's classnames for alphabetical sorting.
+     * @author Sander Benschop
+     *
+     */
+    private static class ObjectClassInstantationComparator implements Comparator<Object>, Serializable {
 
-    private static class ObjectClassInstantationComparator implements Comparator<Object> {
+        private static final long serialVersionUID = -5328478015038668080L;
 
         @Override
         public int compare(Object left, Object right) {

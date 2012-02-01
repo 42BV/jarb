@@ -36,7 +36,7 @@ public final class StoreJoinTable {
     public static void storeValue(Workbook excel, EntityDefinition<?> classDefinition, PropertyDefinition columnDefinition, Integer rowPosition,
             ExcelRow excelRow) {
         Sheet mainSheet = excel.getSheet(classDefinition.getTableName());
-        String idColumnName = getIdColumnName(classDefinition);
+        String idColumnName = classDefinition.getIdColumnName();
         Object code = mainSheet.getValueAt(rowPosition, idColumnName);
         Sheet joinSheet = excel.getSheet(columnDefinition.getJoinTableName());
 
@@ -45,20 +45,6 @@ public final class StoreJoinTable {
             Key keyList = createJoinTableKey(columnDefinition, foreignKeyList);
             excelRow.addValue(columnDefinition, keyList);
         }
-    }
-
-    /**
-     * Returns the ID column name from the passed Definition.
-     * @param classDefinition Definition to check the id column name of
-     * @return Id Column name
-     */
-    private static String getIdColumnName(EntityDefinition<?> classDefinition) {
-        String idColumnName = "";
-        if (classDefinition instanceof EntityDefinition<?>) {
-            EntityDefinition<?> entityDefinition = (EntityDefinition<?>) classDefinition;
-            idColumnName = entityDefinition.getIdColumnName();
-        }
-        return idColumnName;
     }
 
     /**

@@ -18,7 +18,7 @@ public class ExcelDataManagerFactoryBean extends SingletonFactoryBean<ExcelDataM
      * {@inheritDoc}
      */
     @Override
-    protected ExcelDataManager createObject() throws Exception {
+    protected ExcelDataManager createObject() {
         Assert.state(excelDataManagerFactory != null, "Excel data manager factory is required.");
         return excelDataManagerFactory.build();
     }
