@@ -2,6 +2,13 @@ package org.jarbframework.populator.excel.metamodel;
 
 import java.util.Collections;
 
+/**
+ * Definition of an Embeddable that is being used as an ElementCollection. Holds its own properties and has its own defined class.
+ * It does not contain a tableName however, as this definition can be reused for several ElementCollections.
+ * @author Sander Benschop
+ *
+ * @param <T> type of class being described
+ */
 public final class EmbeddableElementCollectionDefinition<T> extends Definition {
 
     /** Entity class being described. */
@@ -9,7 +16,7 @@ public final class EmbeddableElementCollectionDefinition<T> extends Definition {
 
     /**
      * Construct a new {@link EmbeddableElementCollectionDefinition).
-     * @param definedClass class being described
+     * @param entityClass class being described
      */
     private EmbeddableElementCollectionDefinition(Class<T> entityClass) {
         this.definedClass = entityClass;

@@ -11,7 +11,6 @@ import org.apache.commons.lang3.StringUtils;
  * Abstract supertype of Definition classes. Holds the common properties and functions.
  * @author Sander Benschop
  *
- * @param <T> type of class being described
  */
 public abstract class Definition {
 
