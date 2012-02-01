@@ -16,14 +16,14 @@ import org.apache.commons.lang3.StringUtils;
 public abstract class Definition {
 
     /** Description of each defined property. */
-    protected Set<PropertyDefinition> propertyDefinitions;
+    private Set<PropertyDefinition> propertyDefinitions;
 
     /**
      * Retrieve all property definitions declared inside this class.
      * @return definition of each declared property
      */
     public Set<PropertyDefinition> properties() {
-        return Collections.unmodifiableSet(propertyDefinitions);
+        return Collections.unmodifiableSet(getProperties());
     }
 
     /**
@@ -33,7 +33,7 @@ public abstract class Definition {
      */
     public PropertyDefinition property(String propertyName) {
         PropertyDefinition result = null;
-        for (PropertyDefinition property : propertyDefinitions) {
+        for (PropertyDefinition property : getProperties()) {
             if (StringUtils.equalsIgnoreCase(propertyName, property.getName())) {
                 result = property;
             }
@@ -51,7 +51,7 @@ public abstract class Definition {
      */
     public PropertyDefinition propertyByColumnName(String columnName) {
         PropertyDefinition result = null;
-        for (PropertyDefinition property : propertyDefinitions) {
+        for (PropertyDefinition property : getProperties()) {
             if (StringUtils.equalsIgnoreCase(columnName, property.getColumnName())) {
                 result = property;
             }
@@ -74,12 +74,28 @@ public abstract class Definition {
      */
     public Set<String> getColumnNames() {
         Set<String> columnNames = new HashSet<String>();
-        for (PropertyDefinition property : propertyDefinitions) {
+        for (PropertyDefinition property : getProperties()) {
             if (property.hasColumn()) {
                 columnNames.add(property.getColumnName());
             }
         }
         return columnNames;
+    }
+
+    /**
+     * Returns the Set of PropertyDefinitions.
+     * @return Set of PropertyDefinitions
+     */
+    public Set<PropertyDefinition> getProperties() {
+        return propertyDefinitions;
+    }
+    
+    /**
+     * Sets the Set of PropertyDefinitions.
+     * @param propertyDefinitions PropertyDefinitions to set for Definition
+     */
+    public void setProperties(Set<PropertyDefinition> propertyDefinitions) {
+        this.propertyDefinitions = propertyDefinitions;
     }
 
     /**
@@ -91,17 +107,26 @@ public abstract class Definition {
      * @param <T> type of class being described
      */
     public abstract static class Builder<T> {
-        protected Set<PropertyDefinition> properties = new HashSet<PropertyDefinition>();
+        private Set<PropertyDefinition> properties = new HashSet<PropertyDefinition>();
 
         /**
          * Include a column definition.
-         * @param properties property definitions being added
+         * @param propertyDefinitions property definitions being added
          * @return this for method chaining
          */
-        public Builder<T> includeProperties(Collection<PropertyDefinition> properties) {
-            this.properties.addAll(properties);
+        public Builder<T> includeProperties(Collection<PropertyDefinition> propertyDefinitions) {
+            this.getProperties().addAll(propertyDefinitions);
             return this;
         }
+
+        /**
+         * Returns the Set of PropertyDefinitions.
+         * @return Set of PropertyDefinitions
+         */
+        public Set<PropertyDefinition> getProperties() {
+            return properties;
+        }
+        
     }
 
 }

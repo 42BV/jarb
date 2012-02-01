@@ -107,8 +107,8 @@ public class PropertyDefinition {
             this.elementCollectionJoinColumns = new HashMap<String, String>();
         }
 
-        public Builder setColumnName(String columnName) {
-            this.columnName = columnName;
+        public Builder setColumnName(String databaseColumnName) {
+            this.columnName = databaseColumnName;
             return this;
         }
 
@@ -127,34 +127,34 @@ public class PropertyDefinition {
             return this;
         }
 
-        public Builder setEmbeddablePath(PropertyPath embeddablePath) {
-            this.embeddablePath = embeddablePath;
+        public Builder setEmbeddablePath(PropertyPath embeddablePropertyPath) {
+            this.embeddablePath = embeddablePropertyPath;
             return this;
         }
 
-        public Builder setJoinTableName(String joinTableName) {
-            this.joinTableName = joinTableName;
+        public Builder setJoinTableName(String databaseJoinTableName) {
+            this.joinTableName = databaseJoinTableName;
             return this;
         }
 
-        public Builder setJoinColumnName(String joinColumnName) {
-            this.joinColumnName = joinColumnName;
+        public Builder setJoinColumnName(String databaseJoinColumnName) {
+            this.joinColumnName = databaseJoinColumnName;
             return this;
         }
 
-        public Builder setInverseJoinColumnName(String inverseJoinColumnName) {
-            this.inverseJoinColumnName = inverseJoinColumnName;
+        public Builder setInverseJoinColumnName(String databaseInverseJoinColumnName) {
+            this.inverseJoinColumnName = databaseInverseJoinColumnName;
             return this;
         }
 
         /**
          * Sets the InverseJoinColumnReferenceProperties data structure, which holds information needed when coupling @ElementCollection tables 
          * or @OneToMany tables with an @JoinColumn annotation on it.
-         * @param inverseJoinColumnReferenceProperties InverseJoinColumnReferenceProperties data structure
+         * @param referenceProperties InverseJoinColumnReferenceProperties data structure
          * @return This builder for method chaining
          */
-        public Builder setInverseJoinColumnReferenceProperties(InverseJoinColumnReferenceProperties inverseJoinColumnReferenceProperties) {
-            this.inverseJoinColumnReferenceProperties = inverseJoinColumnReferenceProperties;
+        public Builder setInverseJoinColumnReferenceProperties(InverseJoinColumnReferenceProperties referenceProperties) {
+            this.inverseJoinColumnReferenceProperties = referenceProperties;
             return this;
         }
 

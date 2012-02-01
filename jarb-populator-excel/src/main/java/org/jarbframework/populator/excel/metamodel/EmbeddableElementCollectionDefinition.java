@@ -5,7 +5,7 @@ import java.util.Collections;
 public class EmbeddableElementCollectionDefinition<T> extends Definition {
 
     /** Entity class being described. */
-    protected final Class<T> definedClass;
+    private final Class<T> definedClass;
 
     /**
      * Construct a new {@link EmbeddableElementCollectionDefinition).
@@ -35,7 +35,7 @@ public class EmbeddableElementCollectionDefinition<T> extends Definition {
 
     public static class Builder<T> extends Definition.Builder<T> {
 
-        protected final Class<T> definedClass;
+        private final Class<T> definedClass;
 
         /**
          * Construct a new {@link Builder}.
@@ -51,7 +51,7 @@ public class EmbeddableElementCollectionDefinition<T> extends Definition {
          */
         public EmbeddableElementCollectionDefinition<T> build() {
             EmbeddableElementCollectionDefinition<T> embeddableElementCollectionDefinition = new EmbeddableElementCollectionDefinition<T>(definedClass);
-            embeddableElementCollectionDefinition.propertyDefinitions = Collections.unmodifiableSet(properties);
+            embeddableElementCollectionDefinition.setProperties(Collections.unmodifiableSet(getProperties()));
             return embeddableElementCollectionDefinition;
         }
 

@@ -22,7 +22,7 @@ import org.springframework.util.Assert;
 public class EntityDefinition<T> extends Definition {
 
     /** Name of the database table. */
-    protected String tableName;
+    private String tableName;
 
     /** Name of the discriminator column. **/
     private String discriminatorColumnName;
@@ -30,7 +30,7 @@ public class EntityDefinition<T> extends Definition {
     private Map<String, Class<? extends T>> subClasses;
 
     /** Entity class being described. */
-    protected final Class<T> definedClass;
+    private final Class<T> definedClass;
 
     /**
      * Returns the tableName of the classDefinition.
@@ -139,7 +139,7 @@ public class EntityDefinition<T> extends Definition {
         /** Name of the discriminator column. **/
         private String discriminatorColumnName;
 
-        protected final Class<T> definedClass;
+        private final Class<T> definedClass;
 
         /** Mapping of each subclass and the related discriminator value. */
         private Map<String, Class<? extends T>> subClasses = new HashMap<String, Class<? extends T>>();
@@ -163,27 +163,27 @@ public class EntityDefinition<T> extends Definition {
             classDefinition.discriminatorColumnName = discriminatorColumnName;
             classDefinition.subClasses = Collections.unmodifiableMap(subClasses);
             classDefinition.tableName = tableName;
-            classDefinition.propertyDefinitions = Collections.unmodifiableSet(properties);
+            classDefinition.setProperties(Collections.unmodifiableSet(getProperties()));
             return classDefinition;
         }
 
         /**
          * Describe the discriminator column name.
-         * @param discriminatorColumnName discriminator column name
+         * @param databaseTableDiscriminatorColumnName discriminator column name
          * @return this for method chaining
          */
-        public Builder<T> setDiscriminatorColumnName(final String discriminatorColumnName) {
-            this.discriminatorColumnName = discriminatorColumnName;
+        public Builder<T> setDiscriminatorColumnName(final String databaseTableDiscriminatorColumnName) {
+            this.discriminatorColumnName = databaseTableDiscriminatorColumnName;
             return this;
         }
 
         /**
          * Describe the table name of our class.
-         * @param tableName name of the table
+         * @param databaseTableName name of the database table
          * @return this for method chaining
          */
-        public Builder<T> setTableName(final String tableName) {
-            this.tableName = tableName;
+        public Builder<T> setTableName(final String databaseTableName) {
+            this.tableName = databaseTableName;
             return this;
         }
 
