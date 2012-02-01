@@ -39,7 +39,7 @@ public class EntityDefinitionsGenerator {
         if (includeSubClasses) {
             subClassEntities = SubclassRetriever.getSubClassEntities(entity, entities);
         }
-        return createEntityDefinitionFromEntity(entity, entities, subClassEntities);
+        return createEntityDefinitionFromEntity(entity, subClassEntities);
     }
 
     /**
@@ -49,7 +49,7 @@ public class EntityDefinitionsGenerator {
      * @param subClassEntities All subclasses of the Entity
      */
     @SuppressWarnings("unchecked")
-    private <T> EntityDefinition<T> createEntityDefinitionFromEntity(EntityType<T> entity, Set<EntityType<?>> entities, Set<EntityType<?>> subClassEntities) {
+    private <T> EntityDefinition<T> createEntityDefinitionFromEntity(EntityType<T> entity, Set<EntityType<?>> subClassEntities) {
         final Class<T> entityClass = entity.getJavaType();
         EntityDefinition.Builder<T> builder = EntityDefinition.forClass(entityClass);
         SchemaMapper schemaMapper = JpaHibernateSchemaMapper.usingNamingStrategyOf(entityManagerFactory);

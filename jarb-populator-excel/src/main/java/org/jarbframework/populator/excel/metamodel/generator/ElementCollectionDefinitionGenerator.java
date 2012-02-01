@@ -40,6 +40,9 @@ public class ElementCollectionDefinitionGenerator {
             case SERIALIZABLE_CLASS:
                 break;
 
+            default:
+                throw new RuntimeException("Passed PropertyDefinition ' " + propertyDefinition.getName() + " ' is not an invesedJoinColumn of a known type.");
+                
             }
         }
         return null;

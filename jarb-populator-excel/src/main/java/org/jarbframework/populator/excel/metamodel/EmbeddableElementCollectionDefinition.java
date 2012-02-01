@@ -2,7 +2,7 @@ package org.jarbframework.populator.excel.metamodel;
 
 import java.util.Collections;
 
-public class EmbeddableElementCollectionDefinition<T> extends Definition {
+public final class EmbeddableElementCollectionDefinition<T> extends Definition {
 
     /** Entity class being described. */
     private final Class<T> definedClass;

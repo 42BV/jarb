@@ -19,7 +19,7 @@ import org.springframework.util.Assert;
  * @param <T> type of class being described
  * 
  */
-public class EntityDefinition<T> extends Definition {
+public final class EntityDefinition<T> extends Definition {
 
     /** Name of the database table. */
     private String tableName;

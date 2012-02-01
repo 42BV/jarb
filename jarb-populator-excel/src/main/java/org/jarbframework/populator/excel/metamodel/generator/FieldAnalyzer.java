@@ -43,12 +43,11 @@ public class FieldAnalyzer {
         PropertyDefinition.Builder columnDefinitionBuilder = null;
         Field field = BeanProperties.findPropertyField(propertyReference);
         if (isCollection(field)) {
-            JoinTable joinTable = field.getAnnotation(JoinTable.class);
-            ElementCollection elementCollection = field.getAnnotation(ElementCollection.class);
-            if (joinTable != null) {
+            if (field.isAnnotationPresent(JoinTable.class)) {
+                JoinTable joinTable = field.getAnnotation(JoinTable.class);
                 columnDefinitionBuilder = joinTableDefinition(joinTable, field);
-            } else if (elementCollection != null) {
-                columnDefinitionBuilder = inversedReferencePropertyDefinition(elementCollection, field);
+            } else if (field.isAnnotationPresent(ElementCollection.class)) {
+                columnDefinitionBuilder = inversedReferencePropertyDefinition(field);
             }
         } else {
             SchemaMapper schemaMapper = JpaHibernateSchemaMapper.usingNamingStrategyOf(entityManagerFactory);
@@ -104,7 +103,7 @@ public class FieldAnalyzer {
                 .setJoinColumnName(joinColumnName).setInverseJoinColumnName(inverseJoinColumnName);
     }
 
-    private PropertyDefinition.Builder inversedReferencePropertyDefinition(ElementCollection annotation, Field field) {
+    private PropertyDefinition.Builder inversedReferencePropertyDefinition(Field field) {
         PropertyDefinition.Builder propertyDefinition = PropertyDefinition.forField(field);
         propertyDefinition.setDatabaseType(PropertyDatabaseType.INVERSED_REFERENCE);
         propertyDefinition.setInverseJoinColumnReferenceProperties(inverseJoinColumnReferenceProperties(field));

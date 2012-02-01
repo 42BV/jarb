@@ -14,7 +14,7 @@ import org.springframework.util.Assert;
  * @author Willem Eppen
  * @author Sander Benschop
  */
-public class PropertyDefinition {
+public final class PropertyDefinition {
     private final Field field;
     private String columnName;
     private PropertyDatabaseType databaseType;
