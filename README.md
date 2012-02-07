@@ -67,25 +67,36 @@ default it will look for a 'src/main/db/changelog.groovy' file.
 Database populating
 -------------------
 Whenever we require data to be inserted during application startup, the
-database populator interface can be used. Below we demonstrate how to
+database updater interface can be used. Below we demonstrate how to
 insert data using an SQL script and Excel file.
 
-	<bean class="org.jarbframework.populator.DatabasePopulatorExecutor">
-		<constructor-arg>
-			<list>
-				<!-- Using SQL statements -->
-				<bean class="org.jarbframework.populator.SqlResourceDatabasePopulator">
-					<property name="sqlResource" value="classpath:import.sql"/>
-					<property name="dataSource" ref="dataSource"/>
-				</bean>
-				<!-- And an Excel workbook -->
-				<bean class="org.jarbframework.populator.excel.ExcelDatabasePopulator">
-					<property name="excelResource" value="classpath:import.xls"/>
-					<property name="entityManagerFactory" ref="entityManagerFactory"/>
-				</bean>
-			</list>
-		</constructor-arg>
-	</bean>
+	<bean class="org.jarbframework.populator.DatabaseUpdatingListener">
+    	<constructor-arg name="initializer">
+    	   <bean class="org.jarbframework.populator.CompositeDatabaseUpdater">
+    	       <constructor-arg>
+					<list>
+						<bean class="org.jarbframework.populator.SqlResourceDatabaseUpdater">
+							<property name="sqlResource" value="classpath:import.sql"/>
+							<property name="dataSource" ref="dataSource"/>
+						</bean>
+						<bean class="org.jarbframework.populator.excel.ExcelDatabaseUpdater">
+							<property name="excelResource" value="classpath:import.xls"/>
+							<property name="entityManagerFactory" ref="entityManagerFactory"/>
+						</bean>
+						<bean class="org.jarbframework.populator.ClassNameDatabaseUpdater">
+							<constructor-arg value="org.jarbframework.sample.PostUpdater"/>
+						</bean>
+					</list>
+                </constructor-arg>
+			</bean>
+    	</constructor-arg>
+    	<constructor-arg name="destroyer">
+			<bean class="org.jarbframework.populator.SqlResourceDatabaseUpdater">
+			    <property name="sqlResource" value="classpath:clean.sql"/>
+			    <property name="dataSource" ref="dataSource"/>
+			</bean>
+    	</constructor-arg>
+    </bean>
 
 JSR303 database constraints
 ---------------------------
