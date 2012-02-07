@@ -17,8 +17,11 @@ public class ConditionalDatabaseUpdater extends DelegatingDatabaseUpdater {
 
     private final Logger logger = LoggerFactory.getLogger(ConditionalDatabaseUpdater.class);
 
-    /** Checks if the desired condition has been satisfied **/
+    /** Delegate database updater. **/
+	private final DatabaseUpdater delegate;
+    /** Checks if the desired condition has been satisfied. **/
     private final Condition condition;
+    
     /** Determine if an exception should be thrown if the condition is not satisfied. **/
     private boolean throwErrorIfUnsupported = false;
 
@@ -28,16 +31,8 @@ public class ConditionalDatabaseUpdater extends DelegatingDatabaseUpdater {
      * @param condition describes the condition that should be met to perform population
      */
     public ConditionalDatabaseUpdater(DatabaseUpdater delegate, Condition condition) {
-        super(delegate);
+        this.delegate = delegate;
         this.condition = condition;
-    }
-
-    /**
-     * Configure whether an exception should be thrown if the condition is not satisfied.
-     * @param throwErrorIfUnsupported whether an exception should be thrown, or not
-     */
-    public void setThrowExceptionIfUnsupported(boolean throwErrorIfUnsupported) {
-        this.throwErrorIfUnsupported = throwErrorIfUnsupported;
     }
 
     @Override
@@ -64,6 +59,19 @@ public class ConditionalDatabaseUpdater extends DelegatingDatabaseUpdater {
         messageBuilder.append("Update (").append(getDelegate()).append(") was not performed, because:");
         messageBuilder.append("\n - ").append(join(evaluation.getFailures(), "\n - "));
         return messageBuilder.toString();
+    }
+    
+    /**
+     * Configure whether an exception should be thrown if the condition is not satisfied.
+     * @param throwErrorIfUnsupported whether an exception should be thrown, or not
+     */
+    public void setThrowExceptionIfUnsupported(boolean throwErrorIfUnsupported) {
+        this.throwErrorIfUnsupported = throwErrorIfUnsupported;
+    }
+    
+    @Override
+    protected DatabaseUpdater getDelegate() {
+    	return delegate;
     }
 
     @Override

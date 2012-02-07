@@ -3,7 +3,7 @@ package org.jarbframework.populator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 
-public class ClassNameDatabaseUpdater extends AbstractDelegatingDatabaseUpdater {
+public class ClassNameDatabaseUpdater extends DelegatingDatabaseUpdater {
 
     /** Name of the database updater that should run. **/
     private final String className;

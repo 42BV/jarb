@@ -8,12 +8,19 @@ import static org.mockito.Mockito.verifyZeroInteractions;
 import org.junit.Test;
 
 public class DelegatingDatabaseUpdaterTest {
+	
+	private DatabaseUpdater delegate = mock(DatabaseUpdater.class);
+	private DelegatingDatabaseUpdater updater = new DelegatingDatabaseUpdater() {
+		
+		@Override
+		protected DatabaseUpdater getDelegate() {
+			return delegate;
+		}
+		
+	};
 
     @Test
     public void testUpdate() {
-        DatabaseUpdater delegate = mock(DatabaseUpdater.class);
-        DelegatingDatabaseUpdater updater = new DelegatingDatabaseUpdater(delegate);
-
         updater.update();
 
         verify(delegate, times(1)).update();
@@ -21,8 +28,15 @@ public class DelegatingDatabaseUpdaterTest {
 
     @Test
     public void testRevert() {
-        RevertableDatabaseUpdater delegate = mock(RevertableDatabaseUpdater.class);
-        DelegatingDatabaseUpdater updater = new DelegatingDatabaseUpdater(delegate);
+        final RevertableDatabaseUpdater delegate = mock(RevertableDatabaseUpdater.class);
+        DelegatingDatabaseUpdater updater = new DelegatingDatabaseUpdater() {
+    		
+    		@Override
+    		protected DatabaseUpdater getDelegate() {
+    			return delegate;
+    		}
+    		
+    	};
 
         updater.revert();
 
@@ -31,11 +45,8 @@ public class DelegatingDatabaseUpdaterTest {
 
     @Test
     public void testRevertUnsupported() {
-        DatabaseUpdater delegate = mock(DatabaseUpdater.class);
-        DelegatingDatabaseUpdater updater = new DelegatingDatabaseUpdater(delegate);
-
         updater.revert();
-
+        
         verifyZeroInteractions(delegate);
     }
 

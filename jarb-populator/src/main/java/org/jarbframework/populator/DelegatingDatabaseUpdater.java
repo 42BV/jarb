@@ -1,25 +1,25 @@
 package org.jarbframework.populator;
 
 /**
- * Database updater that wraps a delegate updater.
+ * Database updater that run from a delegate updater.
  * @author Jeroen van Schagen
- * @since 26-12-2011
+ * @since 27-1-2012
  */
-public class DelegatingDatabaseUpdater extends AbstractDelegatingDatabaseUpdater {
+public abstract class DelegatingDatabaseUpdater implements RevertableDatabaseUpdater {
 
-    /** Delegate that runs the updates. **/
-    private final DatabaseUpdater delegate;
-
-    /**
-     * Construct a new wrapping database updater.
-     * @param delegate the delegate updater
-     */
-    public DelegatingDatabaseUpdater(DatabaseUpdater delegate) {
-        this.delegate = delegate;
+    protected abstract DatabaseUpdater getDelegate();
+	
+    @Override
+    public void update() {
+        getDelegate().update();
     }
 
-    protected final DatabaseUpdater getDelegate() {
-        return delegate;
+    @Override
+    public void revert() {
+        DatabaseUpdater delegate = getDelegate();
+        if (delegate instanceof RevertableDatabaseUpdater) {
+            ((RevertableDatabaseUpdater) delegate).revert();
+        }
     }
 
 }
