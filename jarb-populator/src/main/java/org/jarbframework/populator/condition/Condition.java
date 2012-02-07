@@ -3,6 +3,8 @@ package org.jarbframework.populator.condition;
 import static java.util.Collections.unmodifiableList;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -18,34 +20,29 @@ public interface Condition {
     ConditionEvaluation evaluate();
 
     /**
-     * Result type from {@link Condition#evaluate()}. The condition has been
-     * met whenever {@link #isSatisfied()} evaluates into {@code true}. If
-     * the condition is not satisfied, look at {@link #getFailures()}.
+     * Capable of building {@link ConditionEvaluation}.
      */
-    public class ConditionEvaluation {
-        private final List<String> failures;
+    public class ConditionEvaluationBuilder {
+        private final List<String> failures = new ArrayList<String>();
 
         /**
-         * Construct a new {@link ConditionEvaluation}.
+         * Create a new condition evaluation builder.
+         * @return new builder
          */
-        protected ConditionEvaluation() {
-            failures = new ArrayList<String>();
+        public static ConditionEvaluationBuilder evaluation() {
+        	return new ConditionEvaluationBuilder();
         }
-
-        protected static ConditionEvaluation sucess() {
-            return new ConditionEvaluation();
-        }
-
+        
         /**
          * Check whether a certain state is {@code true}, whenever not achieved
          * include a failure using the {@link #addFailure(String)}.
          * @param state the state that should be satisfied
          * @param message failure message to include when unsatisfied
-         * @return this evaluation, for chaining
+         * @return this evaluation builder, for chaining
          */
-        protected ConditionEvaluation state(boolean state, String message) {
+        public ConditionEvaluationBuilder state(boolean state, String message) {
             if (!state) {
-                addFailure(message);
+                fail(message);
             }
             return this;
         }
@@ -53,11 +50,49 @@ public interface Condition {
         /**
          * Include a failure, causing {@link #isSatisfied()} to fail.
          * @param message failure message to include
-         * @return this evaluation, for chaining
+         * @return this evaluation builder, for chaining
          */
-        protected ConditionEvaluation addFailure(String message) {
+        public ConditionEvaluationBuilder fail(String message) {
             failures.add(message);
             return this;
+        }
+        
+        /**
+         * Build a {@link ConditionEvaluation}.
+         * @return new evaluation, containing our messages
+         */
+        public ConditionEvaluation build() {
+        	return new ConditionEvaluation(failures);
+        }
+    }
+    
+    /**
+     * Result type from {@link Condition#evaluate()}. The condition has been
+     * met whenever {@link #isSatisfied()} evaluates into {@code true}. If
+     * the condition is not satisfied, look at {@link #getFailures()}.
+     */
+    public class ConditionEvaluation {
+        private final List<String> failures;
+        
+        private ConditionEvaluation(Collection<String> failures) {
+        	this.failures = new ArrayList<String>(failures);
+        }
+        
+        /**
+         * Create a "successful" evaluation, meaning the condition is satisfied.
+         * @return new successful evaluation
+         */
+        public static ConditionEvaluation success() {
+        	return new ConditionEvaluation(Collections.<String> emptyList());
+        }
+        
+        /**
+         * Create a "failed" evaluation, meaning the condition is unsatisfied.
+         * @param failure the message of our failure
+         * @return new failed evaluation
+         */
+        public static ConditionEvaluation fail(String failure) {
+        	return new ConditionEvaluation(Collections.singleton(failure));
         }
 
         /**

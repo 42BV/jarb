@@ -22,9 +22,10 @@ public class DatabaseUpdatingListenerTest {
 
     @Before
     public void setUp() {
-        listener = new DatabaseUpdatingListener();
-        listener.setInitializer(initializer = mock(DatabaseUpdater.class));
-        listener.setDestroyer(destroyer = mock(DatabaseUpdater.class));
+    	initializer = mock(DatabaseUpdater.class);
+    	destroyer = mock(DatabaseUpdater.class);
+    	
+        listener = new DatabaseUpdatingListener(initializer, destroyer);
 
         context = mock(ApplicationContext.class);
     }
@@ -48,7 +49,19 @@ public class DatabaseUpdatingListenerTest {
 
     @Test
     public void testSkipWhenNoUpdater() {
-        listener.setInitializer(null);
-        listener.onApplicationEvent(new ContextRefreshedEvent(context));
+        listener = new DatabaseUpdatingListener(initializer);
+        listener.onApplicationEvent(new ContextClosedEvent(context));
+    }
+    
+    @Test
+    public void testInitializeAndRevert() {
+    	RevertableDatabaseUpdater updater = mock(RevertableDatabaseUpdater.class);
+    	DatabaseUpdatingListener listener = DatabaseUpdatingListener.initializeAndRevert(updater);
+        
+    	listener.onApplicationEvent(new ContextRefreshedEvent(context));
+        verify(updater, times(1)).update();
+        
+        listener.onApplicationEvent(new ContextClosedEvent(context));
+        verify(updater, times(1)).revert();
     }
 }

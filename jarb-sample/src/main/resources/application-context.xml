@@ -37,7 +37,7 @@
 	
 	<!-- Insert content into our database -->
 	<bean class="org.jarbframework.populator.DatabaseUpdatingListener">
-    	<property name="initializer">
+    	<constructor-arg name="initializer">
     	   <bean class="org.jarbframework.populator.CompositeDatabaseUpdater">
     	       <constructor-arg>
 					<list>
@@ -55,13 +55,13 @@
 					</list>
                 </constructor-arg>
 			</bean>
-    	</property>
-    	<property name="destroyer">
+    	</constructor-arg>
+    	<constructor-arg name="destroyer">
 			<bean class="org.jarbframework.populator.SqlResourceDatabaseUpdater">
 			    <property name="sqlResource" value="classpath:clean.sql"/>
 			    <property name="dataSource" ref="dataSource"/>
 			</bean>
-    	</property>
+    	</constructor-arg>
     </bean>
 
     <!-- Object relational mapping using Hibernate and Spring -->

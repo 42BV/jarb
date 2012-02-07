@@ -15,16 +15,16 @@ public class ClassOnClassPath implements Condition {
 
     @Override
     public ConditionEvaluation evaluate() {
-        ConditionEvaluation evaluation = new ConditionEvaluation();
+        ConditionEvaluationBuilder evaluator = new ConditionEvaluationBuilder();
         ClassLoader loader = Thread.currentThread().getContextClassLoader();
         try {
             Class.forName(className, false, loader);
         } catch (ClassNotFoundException e) {
             String failMessage = "Class '" + className + "' is not on classpath.";
             logger.debug(failMessage, e);
-            evaluation.addFailure(failMessage);
+            evaluator.fail(failMessage);
         }
-        return evaluation;
+        return evaluator.build();
     }
 
 }

@@ -1,6 +1,6 @@
 package org.jarbframework.populator.condition;
 
-import static org.jarbframework.populator.condition.Condition.ConditionEvaluation.sucess;
+import static org.jarbframework.populator.condition.Condition.ConditionEvaluation.success;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -25,7 +25,7 @@ public class ConditionalDatabaseUpdaterTest {
 
             @Override
             public ConditionEvaluation evaluate() {
-                return sucess();
+                return ConditionEvaluation.success();
             }
 
         };
@@ -38,30 +38,30 @@ public class ConditionalDatabaseUpdaterTest {
 
     @Test
     public void testSkip() {
-        ConditionalDatabaseUpdater updater = skippingUpdater();
+        ConditionalDatabaseUpdater updater = neverRunningUpdater();
         updater.update();
 
         verify(delegate, never()).update();
     }
 
-    private ConditionalDatabaseUpdater skippingUpdater() {
+    @Test(expected = IllegalStateException.class)
+    public void testSkipWithException() {
+        ConditionalDatabaseUpdater updater = neverRunningUpdater();
+        updater.setThrowExceptionIfUnsupported(true);
+        updater.update();
+    }
+
+    private ConditionalDatabaseUpdater neverRunningUpdater() {
         Condition never = new Condition() {
 
             @Override
             public ConditionEvaluation evaluate() {
-                return new ConditionEvaluation().addFailure("Never succeed");
+                return ConditionEvaluation.fail("Never succeed");
             }
 
         };
 
         return new ConditionalDatabaseUpdater(delegate, never);
     }
-
-    @Test(expected = IllegalStateException.class)
-    public void testSkipWithException() {
-        ConditionalDatabaseUpdater updater = skippingUpdater();
-        updater.setThrowExceptionIfUnsupported(true);
-        updater.update();
-    }
-
+    
 }

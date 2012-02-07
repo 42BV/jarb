@@ -1,5 +1,6 @@
 package org.jarbframework.populator.condition;
 
+import static org.jarbframework.populator.condition.Condition.ConditionEvaluationBuilder.evaluation;
 import static org.jarbframework.utils.Asserts.notNull;
 
 import org.springframework.core.io.Resource;
@@ -24,9 +25,7 @@ public class ResourceExists implements Condition {
 
     @Override
     public ConditionEvaluation evaluate() {
-        ConditionEvaluation evaluation = new ConditionEvaluation();
-        evaluation.state(resource.exists(), "Resource '" + resource + "' does not exist.");
-        return evaluation;
+        return evaluation().state(resource.exists(), "Resource '" + resource + "' does not exist.").build();
     }
 
 }
