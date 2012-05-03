@@ -1,6 +1,5 @@
 package org.jarbframework.populator;
 
-import static org.jarbframework.utils.Asserts.state;
 
 /**
  * Combines two update components to both execute and revert an update.
@@ -17,9 +16,6 @@ public class WrappingDatabaseUpdater implements RevertableDatabaseUpdater {
 	private DatabaseUpdater reverter;
 	
 	public WrappingDatabaseUpdater(DatabaseUpdater updater, DatabaseUpdater reverter) {
-		state(!(updater instanceof RevertingDatabaseUpdater), "Wrapped database updater cannot be revertable.");
-		state(!(reverter instanceof RevertingDatabaseUpdater), "Wrapped database reverter cannot be revertable.");
-
 		this.updater = updater;
 		this.reverter = reverter;
 	}
