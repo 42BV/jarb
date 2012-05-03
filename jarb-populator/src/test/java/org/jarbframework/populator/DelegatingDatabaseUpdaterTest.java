@@ -22,24 +22,35 @@ public class DelegatingDatabaseUpdaterTest {
     @Test
     public void testUpdate() {
         updater.update();
-
+        
         verify(delegate, times(1)).update();
+    }
+    
+    @Test
+    public void testCannotUpdateWhenNoDelegate() {
+    	new DelegatingDatabaseUpdater() {
+    		
+    		@Override
+    		protected DatabaseUpdater getDelegate() {
+    			return null;
+    		}
+    		
+    	}.update();
     }
 
     @Test
     public void testRevert() {
         final RevertableDatabaseUpdater delegate = mock(RevertableDatabaseUpdater.class);
-        DelegatingDatabaseUpdater updater = new DelegatingDatabaseUpdater() {
+        
+        new DelegatingDatabaseUpdater() {
     		
     		@Override
     		protected DatabaseUpdater getDelegate() {
     			return delegate;
     		}
     		
-    	};
-
-        updater.revert();
-
+    	}.revert();
+    	
         verify(delegate, times(1)).revert();
     }
 

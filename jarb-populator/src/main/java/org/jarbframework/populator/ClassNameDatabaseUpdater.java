@@ -1,14 +1,15 @@
 package org.jarbframework.populator;
 
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 
 public class ClassNameDatabaseUpdater extends DelegatingDatabaseUpdater {
 
-    /** Name of the database updater that should run. **/
+    /** Full name of the database updater class that should run. **/
     private final String className;
 
-    /** Application context used to create the updater. **/
     @Autowired
     private ApplicationContext applicationContext;
 
@@ -27,14 +28,18 @@ public class ClassNameDatabaseUpdater extends DelegatingDatabaseUpdater {
     }
 
     private DatabaseUpdater instantiate() {
-        Class<?> updaterClass = getUpdaterClass(); // Ensures the class is valid before accessing factory
-        return (DatabaseUpdater) applicationContext.getAutowireCapableBeanFactory().createBean(updaterClass);
+    	DatabaseUpdater updater = null;
+    	if(isNotBlank(className)) {
+            Class<? extends DatabaseUpdater> updaterClass = resolveUpdaterClass();
+            updater = applicationContext.getAutowireCapableBeanFactory().createBean(updaterClass);
+    	}
+        return updater;
     }
 
-    private Class<?> getUpdaterClass() {
-        Class<?> updaterClass;
+    private Class<? extends DatabaseUpdater> resolveUpdaterClass() {
+        Class<? extends DatabaseUpdater> updaterClass;
         try {
-            updaterClass = Class.forName(className);
+            updaterClass = Class.forName(className).asSubclass(DatabaseUpdater.class);
         } catch (ClassNotFoundException e) {
             throw new RuntimeException(e);
         }

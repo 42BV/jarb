@@ -1,10 +1,12 @@
 package org.jarbframework.populator;
 
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+import static org.springframework.beans.PropertyAccessorFactory.forDirectFieldAccess;
 
 import org.junit.Test;
-import org.mockito.Mockito;
-import org.springframework.beans.PropertyAccessorFactory;
 import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
 import org.springframework.context.ApplicationContext;
 
@@ -14,22 +16,26 @@ public class ClassNameDatabaseUpdaterTest {
     public void testInstantiateDelegate() {
         MyCustomUpdater delegate = new MyCustomUpdater();
 
-        ApplicationContext context = Mockito.mock(ApplicationContext.class);
-        AutowireCapableBeanFactory factory = Mockito.mock(AutowireCapableBeanFactory.class);
-        Mockito.when(context.getAutowireCapableBeanFactory()).thenReturn(factory);
-        Mockito.when(factory.createBean(MyCustomUpdater.class)).thenReturn(delegate);
+        ApplicationContext context = mock(ApplicationContext.class);
+        AutowireCapableBeanFactory factory = mock(AutowireCapableBeanFactory.class);
+        when(context.getAutowireCapableBeanFactory()).thenReturn(factory);
+        when(factory.createBean(MyCustomUpdater.class)).thenReturn(delegate);
 
         ClassNameDatabaseUpdater updater = new ClassNameDatabaseUpdater(MyCustomUpdater.class.getName());
-        PropertyAccessorFactory.forDirectFieldAccess(updater).setPropertyValue("applicationContext", context);
+        forDirectFieldAccess(updater).setPropertyValue("applicationContext", context);
 
         assertTrue(delegate == updater.getDelegate());
-        // When invoked twice, the value is cached
-        assertTrue(delegate == updater.getDelegate());
+        assertTrue(delegate == updater.getDelegate()); // When invoked twice, the value is cached
+    }
+    
+    @Test
+    public void testNoClass() {
+    	assertNull(new ClassNameDatabaseUpdater("").getDelegate());
     }
 
     @Test(expected = RuntimeException.class)
     public void testUnknownClass() {
-        new ClassNameDatabaseUpdater("some.unknown.WierdClass").update();
+        new ClassNameDatabaseUpdater("some.unknown.WierdClass").getDelegate();
     }
 
     public static class MyCustomUpdater implements DatabaseUpdater {

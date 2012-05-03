@@ -11,7 +11,10 @@ public abstract class DelegatingDatabaseUpdater implements RevertableDatabaseUpd
 	
     @Override
     public void update() {
-        getDelegate().update();
+        DatabaseUpdater delegate = getDelegate();
+        if(delegate != null) {
+        	delegate.update();
+        }
     }
 
     @Override
