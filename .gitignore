@@ -6,4 +6,5 @@ target
 */.project
 .settings
 */.settings
+.idea
 jarb-populator-excel/src/test/resources/excel/generated
