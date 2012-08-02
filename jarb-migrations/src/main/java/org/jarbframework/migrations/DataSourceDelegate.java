@@ -3,6 +3,8 @@ package org.jarbframework.migrations;
 import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.sql.SQLFeatureNotSupportedException;
+import java.util.logging.Logger;
 
 import javax.sql.DataSource;
 
@@ -49,6 +51,14 @@ public class DataSourceDelegate implements DataSource {
     @Override
     public int getLoginTimeout() throws SQLException {
         return delegate.getLoginTimeout();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Logger getParentLogger() throws SQLFeatureNotSupportedException {
+        return delegate.getParentLogger();
     }
 
     /**
