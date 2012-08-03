@@ -1,17 +1,5 @@
 package org.jarbframework.utils.orm.jpa;
 
-import static java.lang.String.format;
-import static org.apache.commons.lang3.StringUtils.isNotBlank;
-import static org.jarbframework.utils.Asserts.hasText;
-import static org.jarbframework.utils.Asserts.instanceOf;
-import static org.jarbframework.utils.Asserts.notNull;
-import static org.jarbframework.utils.bean.BeanAnnotationScanner.fieldOrGetter;
-import static org.jarbframework.utils.bean.BeanProperties.getDeclaringClass;
-import static org.jarbframework.utils.bean.BeanProperties.getPropertyNames;
-import static org.jarbframework.utils.bean.BeanProperties.getPropertyType;
-import static org.jarbframework.utils.orm.jpa.JpaMetaModelUtils.findRootEntityClass;
-import static org.springframework.beans.BeanUtils.instantiateClass;
-
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;
@@ -36,6 +24,18 @@ import org.jarbframework.utils.bean.PropertyReference;
 import org.jarbframework.utils.orm.ColumnReference;
 import org.jarbframework.utils.orm.NotAnEntityException;
 import org.jarbframework.utils.orm.SchemaMapper;
+
+import static java.lang.String.format;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
+import static org.jarbframework.utils.Asserts.hasText;
+import static org.jarbframework.utils.Asserts.instanceOf;
+import static org.jarbframework.utils.Asserts.notNull;
+import static org.jarbframework.utils.bean.BeanAnnotationScanner.fieldOrGetter;
+import static org.jarbframework.utils.bean.BeanProperties.getDeclaringClass;
+import static org.jarbframework.utils.bean.BeanProperties.getPropertyNames;
+import static org.jarbframework.utils.bean.BeanProperties.getPropertyType;
+import static org.jarbframework.utils.orm.jpa.JpaMetaModelUtils.findRootEntityClass;
+import static org.springframework.beans.BeanUtils.instantiateClass;
 
 /**
  * Hibernate JPA implementation of {@link SchemaMapper}.
@@ -221,14 +221,26 @@ public class JpaHibernateSchemaMapper implements SchemaMapper {
     }
 
     private String includeAttributeOverrides(String columnName, PropertyReference propertyReference) {
-        for (AttributeOverride attributeOverride : collectAttributeOverrides(propertyReference.getParent())) {
-            if (propertyReference.getSimpleName().equals(attributeOverride.name())) {
-                if (hasColumnName(attributeOverride.column())) {
-                    columnName = namingStrategy.columnName(attributeOverride.column().name());
+        PropertyReference propertyRef = propertyReference;
+        StringBuilder restOfProperty = new StringBuilder();
+        // We'll be searching overrides on the property, it's parent, etc., where the last override found is used. We'll search at least once.
+        do {
+            AttributeOverride[] attributeOverrides = collectAttributeOverrides(propertyRef.getParent());
+            for (AttributeOverride attributeOverride : attributeOverrides) {
+                String name = propertyRef.getNestedName() + restOfProperty;
+                if (name.equals(attributeOverride.name())) {
+                    if (hasColumnName(attributeOverride.column())) {
+                        columnName = namingStrategy.columnName(attributeOverride.column().name());
+                    }
+                    break;
                 }
-                break;
             }
-        }
+
+            // The next round we'll search the parent of the property, but we need to remember the rest of the name to match on the entire name.
+            restOfProperty.insert(0, propertyRef.getSimpleName()).insert(0, '.');
+            propertyRef = propertyRef.getParent();
+        } while (propertyRef.isNestedProperty());
+
         return columnName;
     }
 

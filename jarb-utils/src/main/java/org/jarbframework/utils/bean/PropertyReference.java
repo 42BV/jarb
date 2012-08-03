@@ -1,13 +1,14 @@
 package org.jarbframework.utils.bean;
 
-import static org.apache.commons.lang3.StringUtils.substringAfterLast;
-import static org.jarbframework.utils.Asserts.hasText;
-import static org.jarbframework.utils.Asserts.notNull;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.jarbframework.utils.Asserts;
+
+import static org.apache.commons.lang3.StringUtils.substringAfter;
+import static org.apache.commons.lang3.StringUtils.substringAfterLast;
+import static org.jarbframework.utils.Asserts.hasText;
+import static org.jarbframework.utils.Asserts.notNull;
 
 /**
  * References a bean property.
@@ -45,6 +46,10 @@ public class PropertyReference {
 
     public boolean isNestedProperty() {
         return name.contains(PROPERTY_SEPARATOR);
+    }
+
+    public String getNestedName() {
+        return isNestedProperty() ? substringAfter(name, PROPERTY_SEPARATOR) : name;
     }
 
     public PropertyReference getParent() {
