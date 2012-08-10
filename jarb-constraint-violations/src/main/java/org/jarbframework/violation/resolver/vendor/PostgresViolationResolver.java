@@ -23,9 +23,13 @@ public class PostgresViolationResolver extends RootCauseMessageViolationResolver
     /* Provided: column definition (including length) */
     private static final Pattern LENGTH_EXCEEDED = Pattern.compile("ERROR: value too long for type (.+)");
     /* Provided: source table name, constraint name, column name, value, target table name */
-    private static final Pattern FOREIGN_KEY_VIOLATION = Pattern.compile(
+    private static final Pattern FOREIGN_KEY_VIOLATION_1 = Pattern.compile(
             "ERROR: insert or update on table \"(.+)\" violates foreign key constraint \"(.+)\"\\s+"
             + "Detail: Key \\((.+)\\)=\\((.+)\\) is not present in table \"(.+)\"\\.");
+    /* Provided: target table name, constraint name, source table name, column name, value */
+    private static final Pattern FOREIGN_KEY_VIOLATION_2 = Pattern.compile(
+            "ERROR: update or delete on table \"(.+)\" violates foreign key constraint \"(.+)\" on table \"(.+)\"\\s+"
+            + "Detail: Key \\((.+)\\)=\\((.+)\\) is still referenced from table \".+\"\\.");
     /* Provided: constraint name, column name, value */
     private static final Pattern UNIQUE_VIOLATION = Pattern
             .compile("ERROR: duplicate key value violates unique constraint \"(.+)\"\\s+Detail: Key \\((.+)\\)=\\((.+)\\) already exists\\.");
@@ -48,8 +52,10 @@ public class PostgresViolationResolver extends RootCauseMessageViolationResolver
             violation = resolveNotNullViolation(matcher);
         } else if ((matcher = LENGTH_EXCEEDED.matcher(message)).matches()) {
             violation = resolveLengthViolation(matcher);
-        } else if ((matcher = FOREIGN_KEY_VIOLATION.matcher(message)).matches()) {
-            violation = resolveForeignKeyViolation(matcher);
+        } else if ((matcher = FOREIGN_KEY_VIOLATION_1.matcher(message)).matches()) {
+            violation = resolveForeignKeyViolationOnInsertOrUpdate(matcher);
+        } else if ((matcher = FOREIGN_KEY_VIOLATION_2.matcher(message)).matches()) {
+            violation = resolveForeignKeyViolationOnUpdateOrDelete(matcher);
         } else if ((matcher = UNIQUE_VIOLATION.matcher(message)).matches()) {
             violation = resolveUniqueKeyViolation(matcher);
         } else if ((matcher = CHECK_FAILED.matcher(message)).matches()) {
@@ -78,13 +84,25 @@ public class PostgresViolationResolver extends RootCauseMessageViolationResolver
         return violationBuilder.build();
     }
 
-    private DatabaseConstraintViolation resolveForeignKeyViolation(Matcher matcher) {
+    private DatabaseConstraintViolation resolveForeignKeyViolationOnInsertOrUpdate(Matcher matcher) {
 
         DatabaseConstraintViolation.DatabaseConstraintViolationBuilder violationBuilder = violation(DatabaseConstraintViolationType.FOREIGN_KEY);
-        violationBuilder.table(matcher.group(1));
         violationBuilder.constraint(matcher.group(2));
+        violationBuilder.table(matcher.group(1));
         violationBuilder.column(matcher.group(3));
         violationBuilder.value(matcher.group(4));
+        // matcher.group(5) // referencing table not used
+        return violationBuilder.build();
+    }
+
+    private DatabaseConstraintViolation resolveForeignKeyViolationOnUpdateOrDelete(Matcher matcher) {
+
+        DatabaseConstraintViolation.DatabaseConstraintViolationBuilder violationBuilder = violation(DatabaseConstraintViolationType.FOREIGN_KEY);
+        violationBuilder.constraint(matcher.group(2));
+        violationBuilder.table(matcher.group(1));
+        violationBuilder.column(matcher.group(4));
+        violationBuilder.value(matcher.group(5));
+        // matcher.group(3) // referenced table not used
         return violationBuilder.build();
     }
 

@@ -37,7 +37,7 @@ public class PostgresViolationResolverTest {
     }
 
     @Test
-    public void testForeignKey() {
+    public void testForeignKey1() {
 
         DatabaseConstraintViolation violation = resolver.resolveByMessage(
                 "ERROR: insert or update on table \"kantoren\" violates foreign key constraint \"fk_kantoren_rayon_id\"\n"
@@ -47,6 +47,19 @@ public class PostgresViolationResolverTest {
         assertEquals("kantoren", violation.getTableName());
         assertEquals("rayon_id", violation.getColumnName());
         assertEquals("4", violation.getValue());
+    }
+
+    @Test
+    public void testForeignKey2() {
+
+        DatabaseConstraintViolation violation = resolver.resolveByMessage(
+                "ERROR: update or delete on table \"rayons\" violates foreign key constraint \"fk_kantoren_rayon_id\" on table \"kantoren\"\n"
+                + "  Detail: Key (id)=(1) is still referenced from table \"kantoren\".");
+        assertEquals(DatabaseConstraintViolationType.FOREIGN_KEY, violation.getViolationType());
+        assertEquals("fk_kantoren_rayon_id", violation.getConstraintName());
+        assertEquals("rayons", violation.getTableName());
+        assertEquals("id", violation.getColumnName());
+        assertEquals("1", violation.getValue());
     }
 
     @Test
