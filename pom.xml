@@ -30,6 +30,7 @@
 	</licenses>
 
 	<modules>
+		<module>jarb-constraints</module>
 		<module>jarb-constraint-metadata</module>
 		<module>jarb-constraint-validation</module>
 		<module>jarb-constraint-violations</module>
