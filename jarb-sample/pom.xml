@@ -23,7 +23,7 @@
         </dependency>
         <dependency>
             <groupId>org.jarbframework</groupId>
-            <artifactId>jarb-populator</artifactId>
+            <artifactId>jarb-constraints</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
@@ -31,17 +31,7 @@
             <artifactId>jarb-populator-excel</artifactId>
             <version>${project.version}</version>
         </dependency>
-        <dependency>
-            <groupId>org.jarbframework</groupId>
-            <artifactId>jarb-constraints</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.jarbframework</groupId>
-            <artifactId>jarb-constraint-violations</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        	 
+
         <!-- Web application -->
         <dependency>
             <groupId>org.springframework</groupId>

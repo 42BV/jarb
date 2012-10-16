@@ -15,9 +15,7 @@ databaseChangeLog() {
 			column(name: "price", type: "decimal(6,2)")
 			column(name: "owner_id", type: "bigint")
 		}
-		
-		addUniqueConstraint(tableName: "cars", columnNames: "license_number", constraintName: "uk_cars_license_number")
-		
+				
 		createTable(tableName: "persons") {
 			column(name: "id", type: "bigint", autoIncrement: true) {
 				constraints(
@@ -59,6 +57,24 @@ databaseChangeLog() {
 			}
 			column(name: "name", type: "varchar(255)") { constraints(nullable: false) }
 		}
+	}
+	
+	changeSet(author: "jeroen@42.nl", id: "3") {
+		comment("Create violation testing tables.")
+
+		createTable(tableName: "users") {
+			column(name: "id", type: "bigint", autoIncrement: true) {
+				constraints(
+					nullable: false,
+					primaryKey: true,
+					primaryKeyName: "pk_users_id"
+				)
+			}
+			column(name: "name", type: "varchar(10)") { constraints(nullable: false) }
+			column(name: "active", type: "boolean")
+		}
+	
+		addUniqueConstraint(tableName: "users", columnNames: "name", constraintName: "uk_users_name")
 	}
 	
 }

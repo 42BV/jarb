@@ -31,7 +31,6 @@
 
 	<modules>
 		<module>jarb-constraints</module>
-		<module>jarb-constraint-violations</module>
 		<module>jarb-migrations</module>
 		<module>jarb-populator</module>
 		<module>jarb-populator-excel</module>
