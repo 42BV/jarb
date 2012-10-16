@@ -1,4 +1,4 @@
-package org.jarbframework.validation.domain;
+package org.jarbframework.constraint.validation.domain;
 
 import javax.persistence.Embeddable;
 import javax.persistence.Embedded;

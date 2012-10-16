@@ -3,8 +3,8 @@ package org.jarbframework.constraint.metadata;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import org.jarbframework.constraint.domain.Car;
 import org.jarbframework.constraint.metadata.database.DatabaseConstraintRepository;
+import org.jarbframework.constraint.metadata.domain.Wine;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -33,12 +33,12 @@ public class BeanConstraintDescriptorFactoryBeanTest {
     @Test
     public void testGeneratedObject() throws Exception {
         BeanConstraintDescriptor descriptor = factoryBean.getObject();
-        BeanConstraintDescription<Car> carDescription = descriptor.describe(Car.class);
-        PropertyConstraintDescription licenseDescription = carDescription.getPropertyDescription("licenseNumber");
-        assertEquals(String.class, licenseDescription.getJavaType()); // Retrieved by introspection
-        assertTrue(licenseDescription.isRequired()); // Retrieved from database
-        assertEquals(Integer.valueOf(6), licenseDescription.getMinimumLength()); // Retrieved from @Length
-        assertEquals(Integer.valueOf(6), licenseDescription.getMaximumLength()); // Merged @Length and database
+        BeanConstraintDescription<Wine> wineDescription = descriptor.describe(Wine.class);
+        PropertyConstraintDescription nameDescription = wineDescription.getPropertyDescription("name");
+        assertEquals(String.class, nameDescription.getJavaType()); // Retrieved by introspection
+        assertTrue(nameDescription.isRequired()); // Retrieved from database
+        assertEquals(Integer.valueOf(6), nameDescription.getMinimumLength()); // Retrieved from @Length
+        assertEquals(Integer.valueOf(6), nameDescription.getMaximumLength()); // Merged @Length and database
     }
 
 }

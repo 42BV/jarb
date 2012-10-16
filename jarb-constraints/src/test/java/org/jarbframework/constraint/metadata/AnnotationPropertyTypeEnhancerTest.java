@@ -11,13 +11,13 @@ import org.junit.Test;
 
 public class AnnotationPropertyTypeEnhancerTest {
     
-    private PropertyConstraintDescription description;
-    private PropertyConstraintEnhancer enhancer;
+    private PropertyConstraintEnhancer constraintEnhancer;
+    private PropertyConstraintDescription emailDescription;
 
     @Before
     public void setUp() {
-        description = new PropertyConstraintDescription(new PropertyReference(UserBean.class, "email"), String.class);
-        enhancer = new AnnotationPropertyTypeEnhancer(Email.class, "email");
+        constraintEnhancer = new AnnotationPropertyTypeEnhancer(Email.class, "email");
+        emailDescription = new PropertyConstraintDescription(new PropertyReference(User.class, "email"), String.class);
     }
 
     /**
@@ -25,9 +25,9 @@ public class AnnotationPropertyTypeEnhancerTest {
      */
     @Test
     public void testEnhance() {
-        assertTrue(description.getTypes().isEmpty());
-        enhancer.enhance(description);
-        assertThat(description.getTypes(), contains("email"));
+        assertTrue(emailDescription.getTypes().isEmpty());
+        constraintEnhancer.enhance(emailDescription);
+        assertThat(emailDescription.getTypes(), contains("email"));
     }
 
     /**
@@ -35,14 +35,14 @@ public class AnnotationPropertyTypeEnhancerTest {
      */
     @Test
     public void testNoAnnotation() {
-        description = new PropertyConstraintDescription(new PropertyReference(UserBean.class, "name"), String.class);
+        emailDescription = new PropertyConstraintDescription(new PropertyReference(User.class, "name"), String.class);
 
-        assertTrue(description.getTypes().isEmpty());
-        enhancer.enhance(description);
-        assertTrue(description.getTypes().isEmpty());
+        assertTrue(emailDescription.getTypes().isEmpty());
+        constraintEnhancer.enhance(emailDescription);
+        assertTrue(emailDescription.getTypes().isEmpty());
     }
 
-    public class UserBean {
+    public class User {
 
         @Email
         private String email;

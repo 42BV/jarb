@@ -28,4 +28,13 @@
         <property name="dataSource" ref="dataSource"/>
     </bean>
     
+    <!-- Validates entities based on annotations and validator implementations -->
+    <bean id="validator" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean">
+        <property name="validationMessageSource">
+            <bean class="org.springframework.context.support.ResourceBundleMessageSource">
+                <property name="basename" value="messages"/>
+            </bean>
+        </property>
+    </bean>
+    
 </beans>

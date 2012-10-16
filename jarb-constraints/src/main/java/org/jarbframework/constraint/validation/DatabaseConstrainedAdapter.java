@@ -1,4 +1,4 @@
-package org.jarbframework.validation;
+package org.jarbframework.constraint.validation;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;

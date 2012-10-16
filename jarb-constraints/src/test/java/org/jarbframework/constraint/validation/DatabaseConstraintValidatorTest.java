@@ -1,4 +1,4 @@
-package org.jarbframework.validation;
+package org.jarbframework.constraint.validation;
 
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.equalTo;
@@ -12,10 +12,10 @@ import java.util.Set;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
 
-import org.jarbframework.validation.domain.Address;
-import org.jarbframework.validation.domain.Car;
-import org.jarbframework.validation.domain.Contact;
-import org.jarbframework.validation.domain.Person;
+import org.jarbframework.constraint.validation.domain.Address;
+import org.jarbframework.constraint.validation.domain.Car;
+import org.jarbframework.constraint.validation.domain.Contact;
+import org.jarbframework.constraint.validation.domain.Person;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -122,6 +122,7 @@ public class DatabaseConstraintValidatorTest {
      * </ul>
      */
     @Test
+    @SuppressWarnings("unchecked")
     public void testMultipleViolations() {
         Car unknownOverpricedCar = new Car();
         unknownOverpricedCar.setPrice(42000.123);

@@ -2,7 +2,7 @@ package org.jarbframework.constraint.metadata;
 
 import static org.junit.Assert.assertEquals;
 
-import org.jarbframework.constraint.domain.Car;
+import org.jarbframework.constraint.metadata.domain.Wine;
 import org.jarbframework.utils.bean.PropertyReference;
 import org.junit.Before;
 import org.junit.Test;
@@ -14,46 +14,46 @@ import org.junit.Test;
  */
 public class PropertyConstraintDescriptionTest {
     
-    private PropertyConstraintDescription description;
+    private PropertyConstraintDescription constraintDescription;
 
     @Before
     public void setUp() {
-        PropertyReference reference = new PropertyReference(Car.class, "name");
-        description = new PropertyConstraintDescription(reference, String.class);
+        PropertyReference reference = new PropertyReference(Wine.class, "name");
+        constraintDescription = new PropertyConstraintDescription(reference, String.class);
     }
 
     @Test
     public void testModifyLength() {
-        description.setMinimumLength(4);
-        description.setMaximumLength(42);
-        assertEquals(Integer.valueOf(4), description.getMinimumLength());
-        assertEquals(Integer.valueOf(42), description.getMaximumLength());
+        constraintDescription.setMinimumLength(4);
+        constraintDescription.setMaximumLength(42);
+        assertEquals(Integer.valueOf(4), constraintDescription.getMinimumLength());
+        assertEquals(Integer.valueOf(42), constraintDescription.getMaximumLength());
     }
 
     @Test(expected = IllegalStateException.class)
     public void testNegativeMinimumLength() {
-        description.setMinimumLength(-1);
+        constraintDescription.setMinimumLength(-1);
     }
 
     @Test(expected = IllegalStateException.class)
     public void testNegativeMaximumLength() {
-        description.setMaximumLength(-1);
+        constraintDescription.setMaximumLength(-1);
     }
 
     @Test(expected = IllegalStateException.class)
     public void testMinimLengthGreaterThanMaximum() {
-        description.setMaximumLength(24);
-        description.setMinimumLength(42);
+        constraintDescription.setMaximumLength(24);
+        constraintDescription.setMinimumLength(42);
     }
 
     @Test
     public void testModifyFractionLength() {
-        description.setFractionLength(4);
-        assertEquals(Integer.valueOf(4), description.getFractionLength());
+        constraintDescription.setFractionLength(4);
+        assertEquals(Integer.valueOf(4), constraintDescription.getFractionLength());
     }
 
     @Test(expected = IllegalStateException.class)
     public void testnegativeFractionLength() {
-        description.setFractionLength(-1);
+        constraintDescription.setFractionLength(-1);
     }
 }

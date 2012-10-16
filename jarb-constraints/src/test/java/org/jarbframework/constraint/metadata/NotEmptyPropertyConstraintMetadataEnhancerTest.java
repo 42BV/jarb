@@ -3,21 +3,21 @@ package org.jarbframework.constraint.metadata;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
-import org.jarbframework.constraint.domain.Car;
+import org.jarbframework.constraint.metadata.domain.Wine;
 import org.jarbframework.utils.bean.PropertyReference;
 import org.junit.Before;
 import org.junit.Test;
 
 public class NotEmptyPropertyConstraintMetadataEnhancerTest {
     
-    private NotEmptyPropertyConstraintEnhancer enhancer;
-    private PropertyConstraintDescription licenseMetadata;
+    private NotEmptyPropertyConstraintEnhancer constraintEnhancer;
+    private PropertyConstraintDescription nameDescription;
 
     @Before
     public void setUp() {
-        enhancer = new NotEmptyPropertyConstraintEnhancer();
-        PropertyReference reference = new PropertyReference(Car.class, "licenseNumber");
-        licenseMetadata = new PropertyConstraintDescription(reference, String.class);
+        constraintEnhancer = new NotEmptyPropertyConstraintEnhancer();
+        PropertyReference reference = new PropertyReference(Wine.class, "name");
+        nameDescription = new PropertyConstraintDescription(reference, String.class);
     }
 
     /**
@@ -27,9 +27,9 @@ public class NotEmptyPropertyConstraintMetadataEnhancerTest {
      */
     @Test
     public void testEnhanceIfNull() {
-        assertNull(licenseMetadata.getMinimumLength());
-        enhancer.enhance(licenseMetadata);
-        assertEquals(Integer.valueOf(1), licenseMetadata.getMinimumLength());
+        assertNull(nameDescription.getMinimumLength());
+        constraintEnhancer.enhance(nameDescription);
+        assertEquals(Integer.valueOf(1), nameDescription.getMinimumLength());
     }
 
     /**
@@ -38,9 +38,9 @@ public class NotEmptyPropertyConstraintMetadataEnhancerTest {
      */
     @Test
     public void testEnhanceIfZero() {
-        licenseMetadata.setMinimumLength(0);
-        enhancer.enhance(licenseMetadata);
-        assertEquals(Integer.valueOf(1), licenseMetadata.getMinimumLength());
+        nameDescription.setMinimumLength(0);
+        constraintEnhancer.enhance(nameDescription);
+        assertEquals(Integer.valueOf(1), nameDescription.getMinimumLength());
     }
 
     /**
@@ -50,9 +50,9 @@ public class NotEmptyPropertyConstraintMetadataEnhancerTest {
      */
     @Test
     public void testSkipIfAlreadyHasPositiveMin() {
-        licenseMetadata.setMinimumLength(42);
-        enhancer.enhance(licenseMetadata);
-        assertEquals(Integer.valueOf(42), licenseMetadata.getMinimumLength());
+        nameDescription.setMinimumLength(42);
+        constraintEnhancer.enhance(nameDescription);
+        assertEquals(Integer.valueOf(42), nameDescription.getMinimumLength());
     }
 
     /**
@@ -60,10 +60,10 @@ public class NotEmptyPropertyConstraintMetadataEnhancerTest {
      */
     @Test
     public void testSkipUnmarkedProperty() {
-        PropertyReference reference = new PropertyReference(Car.class, "price");
-        PropertyConstraintDescription priceMetadata = new PropertyConstraintDescription(reference, String.class);
-        enhancer.enhance(priceMetadata);
-        assertNull(priceMetadata.getMinimumLength());
+        PropertyReference reference = new PropertyReference(Wine.class, "price");
+        PropertyConstraintDescription priceDescription = new PropertyConstraintDescription(reference, String.class);
+        constraintEnhancer.enhance(priceDescription);
+        assertNull(priceDescription.getMinimumLength());
     }
 
 }

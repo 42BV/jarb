@@ -4,7 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 import org.easymock.EasyMock;
-import org.jarbframework.constraint.domain.Person;
+import org.jarbframework.constraint.metadata.domain.Wine;
 import org.jarbframework.utils.bean.PropertyReference;
 import org.jarbframework.utils.orm.ColumnReference;
 import org.jarbframework.utils.orm.SchemaMapper;
@@ -34,17 +34,17 @@ public class DatabaseConstraintRepositoryTest {
     }
 
     /**
-     * Entity class and property are converted into "persons.name" and constraint is retrieved.
+     * Entity class and property are converted into "wines.name" and constraint is retrieved.
      */
     @Test
     public void testForProperty() {
-        ColumnReference columnReference = new ColumnReference("persons", "name");
-        EasyMock.expect(schemaMapper.columnOf(new PropertyReference(Person.class, "name"))).andReturn(columnReference);
+        ColumnReference columnReference = new ColumnReference("wines", "name");
+        EasyMock.expect(schemaMapper.columnOf(new PropertyReference(Wine.class, "name"))).andReturn(columnReference);
         ColumnMetadata columnConstraint = new ColumnMetadata(columnReference);
-        EasyMock.expect(columnMetadataRepository.getColumnMetadata(new ColumnReference("persons", "name"))).andReturn(columnConstraint);
+        EasyMock.expect(columnMetadataRepository.getColumnMetadata(new ColumnReference("wines", "name"))).andReturn(columnConstraint);
         EasyMock.replay(schemaMapper, columnMetadataRepository);
 
-        ColumnMetadata result = databaseConstraintRepository.getColumnMetadata(new PropertyReference(Person.class, "name"));
+        ColumnMetadata result = databaseConstraintRepository.getColumnMetadata(new PropertyReference(Wine.class, "name"));
 
         EasyMock.verify(schemaMapper, columnMetadataRepository);
 
@@ -56,14 +56,14 @@ public class DatabaseConstraintRepositoryTest {
      */
     @Test
     public void testForPropertyNoMappedColumn() {
-        EasyMock.expect(schemaMapper.columnOf(new PropertyReference(Person.class, "name"))).andReturn(null);
+        EasyMock.expect(schemaMapper.columnOf(new PropertyReference(Wine.class, "name"))).andReturn(null);
         EasyMock.replay(schemaMapper, columnMetadataRepository);
 
         try {
-            databaseConstraintRepository.getColumnMetadata(new PropertyReference(Person.class, "name"));
+            databaseConstraintRepository.getColumnMetadata(new PropertyReference(Wine.class, "name"));
             fail("Should throw an illegal argument exception");
         } catch (CouldNotBeMappedToColumnException e) {
-            assertEquals("Property 'Person.name' could not be mapped to a column.", e.getMessage());
+            assertEquals("Property 'Wine.name' could not be mapped to a column.", e.getMessage());
         }
 
         EasyMock.verify(schemaMapper, columnMetadataRepository);

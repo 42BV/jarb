@@ -2,18 +2,18 @@ package org.jarbframework.constraint.metadata;
 
 import static org.junit.Assert.assertEquals;
 
-import org.jarbframework.constraint.domain.Car;
-import org.jarbframework.constraint.domain.Person;
+import org.jarbframework.constraint.metadata.domain.Country;
+import org.jarbframework.constraint.metadata.domain.Wine;
 import org.junit.Before;
 import org.junit.Test;
 
 public class BeanConstraintDescriptorImplTest {
     
-    private BeanConstraintDescriptorImpl describtor;
+    private BeanConstraintDescriptorImpl constraintDescriptor;
 
     @Before
     public void setUp() {
-        describtor = new BeanConstraintDescriptorImpl();
+        constraintDescriptor = new BeanConstraintDescriptorImpl();
     }
 
     /**
@@ -21,12 +21,12 @@ public class BeanConstraintDescriptorImplTest {
      */
     @Test
     public void testPropertiesAreDescribed() {
-        BeanConstraintDescription<Car> carDescription = describtor.describe(Car.class);
-        assertEquals(Long.class, carDescription.getPropertyDescription("id").getJavaType());
-        assertEquals(String.class, carDescription.getPropertyDescription("licenseNumber").getJavaType());
-        assertEquals(Double.class, carDescription.getPropertyDescription("price").getJavaType());
-        assertEquals(Person.class, carDescription.getPropertyDescription("owner").getJavaType());
-        assertEquals(Class.class, carDescription.getPropertyDescription("class").getJavaType());
+        BeanConstraintDescription<Wine> wineDescription = constraintDescriptor.describe(Wine.class);
+        assertEquals(Long.class, wineDescription.getPropertyDescription("id").getJavaType());
+        assertEquals(String.class, wineDescription.getPropertyDescription("name").getJavaType());
+        assertEquals(Double.class, wineDescription.getPropertyDescription("price").getJavaType());
+        assertEquals(Country.class, wineDescription.getPropertyDescription("country").getJavaType());
+        assertEquals(Class.class, wineDescription.getPropertyDescription("class").getJavaType());
     }
 
     /**
@@ -34,10 +34,9 @@ public class BeanConstraintDescriptorImplTest {
      */
     @Test
     public void testPropertyDescriptionEnhancers() {
-        describtor.registerEnhancer(new LengthPropertyConstraintEnhancer());
-        BeanConstraintDescription<Car> carDescription = describtor.describe(Car.class);
-        PropertyConstraintDescription licenseDescription = carDescription.getPropertyDescription("licenseNumber");
-        assertEquals(Integer.valueOf(6), licenseDescription.getMinimumLength());
+        constraintDescriptor.registerEnhancer(new LengthPropertyConstraintEnhancer());
+        BeanConstraintDescription<Wine> wineDescription = constraintDescriptor.describe(Wine.class);
+        assertEquals(Integer.valueOf(6), wineDescription.getPropertyDescription("name").getMinimumLength());
     }
 
 }

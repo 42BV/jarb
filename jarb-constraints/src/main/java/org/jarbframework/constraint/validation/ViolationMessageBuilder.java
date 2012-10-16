@@ -1,4 +1,4 @@
-package org.jarbframework.validation;
+package org.jarbframework.constraint.validation;
 
 import static java.util.Collections.emptyList;
 import static java.util.Collections.emptySet;

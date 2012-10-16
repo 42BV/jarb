@@ -1,40 +1,22 @@
-package org.jarbframework.validation.domain;
+package org.jarbframework.constraint.validation.domain;
 
-import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.Table;
 
-import org.jarbframework.validation.DatabaseConstrained;
+import org.jarbframework.constraint.AbstractEntity;
+import org.jarbframework.constraint.validation.DatabaseConstrained;
 
 @Entity
 @Table(name = "persons")
 @DatabaseConstrained
-public class Person {
+public class Person extends AbstractEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @Column
     private String name;
-
-    @Column
     private String age;
-
+    
     @Embedded
     private Contact contact;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public String getName() {
         return name;
@@ -51,7 +33,7 @@ public class Person {
     public void setAge(String age) {
         this.age = age;
     }
-
+    
     public Contact getContact() {
         return contact;
     }

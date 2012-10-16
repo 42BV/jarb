@@ -1,4 +1,4 @@
-package org.jarbframework.validation;
+package org.jarbframework.constraint.validation;
 
 import static org.jarbframework.utils.bean.BeanAnnotationScanner.fieldOrGetter;
 

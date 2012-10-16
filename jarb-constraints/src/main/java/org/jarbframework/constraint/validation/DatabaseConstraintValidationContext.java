@@ -1,12 +1,12 @@
-package org.jarbframework.validation;
+package org.jarbframework.constraint.validation;
 
 import javax.validation.ConstraintValidatorContext;
 import javax.validation.ConstraintValidatorContext.ConstraintViolationBuilder;
 import javax.validation.ConstraintValidatorContext.ConstraintViolationBuilder.NodeBuilderCustomizableContext;
 import javax.validation.ConstraintValidatorContext.ConstraintViolationBuilder.NodeBuilderDefinedContext;
 
+import org.jarbframework.constraint.validation.ViolationMessageBuilder.ViolationMessageTemplate;
 import org.jarbframework.utils.bean.PropertyReference;
-import org.jarbframework.validation.ViolationMessageBuilder.ViolationMessageTemplate;
 
 /**
  * Context of a specific bean validation. Bean violations can be

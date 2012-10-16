@@ -33,7 +33,7 @@
         </dependency>
         <dependency>
             <groupId>org.jarbframework</groupId>
-            <artifactId>jarb-constraint-validation</artifactId>
+            <artifactId>jarb-constraints</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>

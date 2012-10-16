@@ -1,7 +1,7 @@
 databaseChangeLog() {
 
 	changeSet(author: "jeroen@42.nl", id: "1") {
-		comment("UPGRADE: Create domain tables for testing.")
+		comment("Create meta-data testing tables.")
 
 		createTable(tableName: "cars") {
 			column(name: "id", type: "bigint", autoIncrement: true) {
@@ -28,21 +28,36 @@ databaseChangeLog() {
 			}
 			column(name: "name", type: "varchar(255)") { constraints(nullable: false) }
 			column(name: "age", type: "bigint")
+			column(name: "street_and_number", type: "varchar(255)") { constraints(nullable: false) }
+			column(name: "city", type: "varchar(255)") { constraints(nullable: false) }
 		}
 	}
 	
 	changeSet(author: "jeroen@42.nl", id: "2") {
-		comment("UPGRADE: Create database constraint tables.")
+		comment("Create validation testing tables.")
 		
-		createTable(tableName: "named_constraint_metadata") {
-			column(name: "name", type: "varchar(255)") {
+		createTable(tableName: "wines") {
+			column(name: "id", type: "bigint", autoIncrement: true) {
 				constraints(
 					nullable: false,
 					primaryKey: true,
-					primaryKeyName: "pk_named_constraint_name"
+					primaryKeyName: "pk_wines_id"
 				)
 			}
-			column(name: "type", type: "varchar(255)") { constraints(nullable: false) }
+			column(name: "name", type: "varchar(6)") { constraints(nullable: false) }
+			column(name: "price", type: "decimal(6,2)")
+			column(name: "country_id", type: "bigint")
+		}
+		
+		createTable(tableName: "countries") {
+			column(name: "id", type: "bigint", autoIncrement: true) {
+				constraints(
+					nullable: false,
+					primaryKey: true,
+					primaryKeyName: "pk_countries_id"
+				)
+			}
+			column(name: "name", type: "varchar(255)") { constraints(nullable: false) }
 		}
 	}
 	
