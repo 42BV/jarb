@@ -17,7 +17,7 @@
 	<dependencies>
         <dependency>
             <groupId>org.jarbframework</groupId>
-            <artifactId>jarb-constraint-metadata</artifactId>
+            <artifactId>jarb-constraints</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>

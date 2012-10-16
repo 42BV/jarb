@@ -3,7 +3,7 @@ package org.jarbframework.validation;
 import javax.validation.MessageInterpolator;
 import javax.validation.ValidatorFactory;
 
-import org.jarbframework.constraint.database.DatabaseConstraintRepository;
+import org.jarbframework.constraint.metadata.database.DatabaseConstraintRepository;
 import org.jarbframework.utils.orm.SchemaMapper;
 import org.jarbframework.utils.orm.jpa.JpaHibernateSchemaMapper;
 import org.jarbframework.utils.spring.BeanSearcher;

@@ -8,13 +8,13 @@
         http://www.springframework.org/schema/context
         http://www.springframework.org/schema/context/spring-context-3.0.xsd">
 
-    <bean id="dataSource" class="org.jarbframework.migrations.MigratingDataSource">
+	<bean id="dataSource" class="org.jarbframework.migrations.MigratingDataSource">
         <property name="delegate">
             <bean class="org.springframework.jdbc.datasource.DriverManagerDataSource">
-                <property name="driverClassName" value="org.hsqldb.jdbcDriver"/>
-                <property name="url" value="jdbc:hsqldb:mem:jarb"/>
-                <property name="username" value="sa"/>
-            </bean>
+		        <property name="driverClassName" value="org.hsqldb.jdbcDriver"/>
+		        <property name="url" value="jdbc:hsqldb:mem:jarb"/>
+		        <property name="username" value="sa"/>
+		    </bean>
         </property>
         <property name="migrator">
             <bean class="org.jarbframework.migrations.liquibase.LiquibaseMigrator">
@@ -26,15 +26,6 @@
     <!-- Provides access to column meta-data, using entity and property names -->
     <bean class="org.jarbframework.constraint.metadata.database.JdbcCachingDatabaseConstraintRepositoryFactoryBean">
         <property name="dataSource" ref="dataSource"/>
-    </bean>
-    
-    <!-- Validates entities based on annotations and validator implementations -->
-    <bean id="validator" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean">
-        <property name="validationMessageSource">
-            <bean class="org.springframework.context.support.ResourceBundleMessageSource">
-                <property name="basename" value="messages"/>
-            </bean>
-        </property>
     </bean>
     
 </beans>

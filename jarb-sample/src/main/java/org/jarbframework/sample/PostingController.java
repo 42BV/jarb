@@ -2,8 +2,8 @@ package org.jarbframework.sample;
 
 import javax.validation.Valid;
 
-import org.jarbframework.constraint.BeanConstraintDescription;
-import org.jarbframework.constraint.BeanConstraintDescriptor;
+import org.jarbframework.constraint.metadata.BeanConstraintDescription;
+import org.jarbframework.constraint.metadata.BeanConstraintDescriptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;

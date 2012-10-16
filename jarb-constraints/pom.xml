@@ -21,18 +21,26 @@
 			<version>${project.version}</version>
 		</dependency>
 		
-		<dependency>
-	    	<!-- Hibernate configuration constants -->
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-core</artifactId>
-            <version>${hibernate.version}</version>
-            <optional>true</optional>
-        </dependency>
-	    <dependency>
-	    	<!-- JPA integrating database resolvers -->
+        <dependency>
+            <!-- Java persistence API -->
             <groupId>org.hibernate.javax.persistence</groupId>
             <artifactId>hibernate-jpa-2.0-api</artifactId>
             <version>1.0.0.Final</version>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <!-- Hibernate validator API -->
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-validator</artifactId>
+            <version>4.1.0.Final</version>
+            <optional>true</optional>
+        </dependency>
+		
+		<dependency>
+	    	<!-- Hibernate constants -->
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-core</artifactId>
+            <version>${hibernate.version}</version>
             <optional>true</optional>
         </dependency>
 

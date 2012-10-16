@@ -2,7 +2,7 @@ package org.jarbframework.validation;
 
 import java.math.BigDecimal;
 
-import org.jarbframework.constraint.database.ColumnMetadata;
+import org.jarbframework.constraint.metadata.database.ColumnMetadata;
 import org.jarbframework.utils.bean.PropertyReference;
 
 public class LengthConstraintValidationStep implements DatabaseConstraintValidationStep {
