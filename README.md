@@ -135,9 +135,7 @@ whenever the "uk_posts_title" database constraint is violated.
 
 Components
 ----------
- * constraint-metadata (describes bean constraint using atleast JDBC metadata and JSR303 annotations)
- * constraint-validation (automatic JSR303 database constraint validation)
- * constraint-violations (translates JDBC driver exceptions into constrain violation exceptions)
+ * constraints (simplifies the managing of (database) constraints by preventing and translating JDBC exceptions)
  * migrations (automated database migrations on application startup, with Liquibase implementation)
  * populator (populate the database with data on startup, SQL script implementation and building blocks)
  * populator-excel (excel driven database populator)
