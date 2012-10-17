@@ -46,6 +46,6 @@ public class InvalidTypeException extends DatabaseConstraintViolationException {
      */
     public InvalidTypeException(DatabaseConstraintViolation violation, String message, Throwable cause) {
         super(violation, message, cause);
-        state(violation.getViolationType() == INVALID_TYPE, "Invalid type exception can only occur for invalid type violations.");
+        state(violation.getConstraintType() == INVALID_TYPE, "Invalid type exception can only occur for invalid type violations.");
     }
 }

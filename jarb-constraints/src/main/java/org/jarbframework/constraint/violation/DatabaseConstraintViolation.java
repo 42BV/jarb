@@ -20,7 +20,7 @@ public final class DatabaseConstraintViolation {
     private String referencingTableName;
     private Object value;
     private String valueType;
-    private String expectedType;
+    private String expectedValueType;
     private Long maximumLength;
 
     public DatabaseConstraintViolation(DatabaseConstraintType constraintType) {
@@ -57,7 +57,7 @@ public final class DatabaseConstraintViolation {
         return new DatabaseConstraintViolationBuilder(constraintType);
     }
 
-    public DatabaseConstraintType getViolationType() {
+    public DatabaseConstraintType getConstraintType() {
         return constraintType;
     }
 
@@ -85,8 +85,8 @@ public final class DatabaseConstraintViolation {
         return valueType;
     }
 
-    public String getExpectedType() {
-        return expectedType;
+    public String getExpectedValueType() {
+        return expectedValueType;
     }
 
     public Long getMaximumLength() {
@@ -173,7 +173,7 @@ public final class DatabaseConstraintViolation {
             violation.referencingTableName = referencingTableName;
             violation.value = value;
             violation.valueType = valueType;
-            violation.expectedType = expectedValueType;
+            violation.expectedValueType = expectedValueType;
             violation.maximumLength = maximumLength;
             return violation;
         }

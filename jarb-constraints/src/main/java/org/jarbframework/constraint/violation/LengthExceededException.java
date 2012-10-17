@@ -46,6 +46,6 @@ public class LengthExceededException extends DatabaseConstraintViolationExceptio
      */
     public LengthExceededException(DatabaseConstraintViolation violation, String message, Throwable cause) {
         super(violation, message, cause);
-        state(violation.getViolationType() == LENGTH_EXCEEDED, "Length exceeded exception can only occur for length exceeded violations.");
+        state(violation.getConstraintType() == LENGTH_EXCEEDED, "Length exceeded exception can only occur for length exceeded violations.");
     }
 }

@@ -8,7 +8,6 @@ import org.jarbframework.constraint.violation.resolver.vendor.HsqlViolationResol
 import org.jarbframework.constraint.violation.resolver.vendor.MysqlViolationResolver;
 import org.jarbframework.constraint.violation.resolver.vendor.OracleViolationResolver;
 import org.jarbframework.constraint.violation.resolver.vendor.PostgresViolationResolver;
-import org.jarbframework.utils.database.DatabaseType;
 import org.jarbframework.utils.database.DatabaseTypeResolver;
 import org.jarbframework.utils.database.JdbcMetadataDatabaseTypeResolver;
 
@@ -19,7 +18,7 @@ import org.jarbframework.utils.database.JdbcMetadataDatabaseTypeResolver;
  */
 public class DatabaseConstraintViolationResolverFactory {
     
-    private DatabaseTypeResolver databaseTypeResolver;
+    private final DatabaseTypeResolver databaseTypeResolver;
 
     public DatabaseConstraintViolationResolverFactory() {
         this(new JdbcMetadataDatabaseTypeResolver());
@@ -32,29 +31,36 @@ public class DatabaseConstraintViolationResolverFactory {
     /**
      * Build a default constraint violation resolver. Returned resolver instance
      * are capable of resolving constraint violation for HSQL, MySQL, Oracle and
-     * PostgreSQL databases.
+     * PostgreSQL databases. Whenever the database specific resolver cannot handle
+     * our exception we fallback to the hibernate resolver (when on classpath).
      * 
      * @param dataSource the data source for which we build a resolver
      * @return new "default" constraint violation resolver
      */
     public DatabaseConstraintViolationResolver build(DataSource dataSource) {
-        DatabaseConstraintViolationResolver resolver = null;
-        DatabaseType databaseType = databaseTypeResolver.resolve(dataSource);
-        switch (databaseType) {
+        ViolationResolverChain resolverChain = new ViolationResolverChain();
+        resolverChain.addToChain(buildResolverForDatabase(dataSource));
+        resolverChain.addToChain(new HibernateViolationResolver());
+        return resolverChain;
+    }
+    
+    private DatabaseConstraintViolationResolver buildResolverForDatabase(DataSource dataSource) {
+        DatabaseConstraintViolationResolver databaseSpecificResolver = null;
+        switch (databaseTypeResolver.resolve(dataSource)) {
         case HSQL:
-            resolver = new HsqlViolationResolver();
+            databaseSpecificResolver = new HsqlViolationResolver();
             break;
         case MYSQL:
-            resolver = new MysqlViolationResolver();
+            databaseSpecificResolver = new MysqlViolationResolver();
             break;
         case ORACLE:
-            resolver = new OracleViolationResolver();
+            databaseSpecificResolver = new OracleViolationResolver();
             break;
         case POSTGRESQL:
-            resolver = new PostgresViolationResolver();
+            databaseSpecificResolver = new PostgresViolationResolver();
             break;
         }
-        return resolver;
+        return databaseSpecificResolver;
     }
 
 }

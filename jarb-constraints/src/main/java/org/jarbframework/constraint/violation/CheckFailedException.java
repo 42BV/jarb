@@ -46,6 +46,6 @@ public class CheckFailedException extends DatabaseConstraintViolationException {
      */
     public CheckFailedException(DatabaseConstraintViolation violation, String message, Throwable cause) {
         super(violation, message, cause);
-        state(violation.getViolationType() == CHECK_FAILED, "Check failed exception can only occur for check violations.");
+        state(violation.getConstraintType() == CHECK_FAILED, "Check failed exception can only occur for check violations.");
     }
 }

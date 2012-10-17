@@ -45,6 +45,6 @@ public class UniqueKeyViolationException extends DatabaseConstraintViolationExce
      */
     public UniqueKeyViolationException(DatabaseConstraintViolation violation, String message, Throwable cause) {
         super(violation, message, cause);
-        state(violation.getViolationType() == UNIQUE_KEY, "Unique key exception can only occur for unique key violations.");
+        state(violation.getConstraintType() == UNIQUE_KEY, "Unique key exception can only occur for unique key violations.");
     }
 }

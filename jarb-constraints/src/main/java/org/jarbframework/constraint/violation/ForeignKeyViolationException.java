@@ -48,7 +48,7 @@ public class ForeignKeyViolationException extends DatabaseConstraintViolationExc
      */
     public ForeignKeyViolationException(DatabaseConstraintViolation violation, String message, Throwable cause) {
         super(violation, message, cause);
-        state(violation.getViolationType() == FOREIGN_KEY, "Foreign key exception can only occur for foreign key violations");
+        state(violation.getConstraintType() == FOREIGN_KEY, "Foreign key exception can only occur for foreign key violations");
     }
 
 }

@@ -23,7 +23,7 @@ public class SimpleConstraintExceptionFactory implements DatabaseConstraintExcep
     @Override
     public DatabaseConstraintViolationException createException(DatabaseConstraintViolation violation, Throwable cause) {
         DatabaseConstraintViolationException exception = null;
-        switch (violation.getViolationType()) {
+        switch (violation.getConstraintType()) {
         case NOT_NULL:
             exception = new NotNullViolationException(violation, cause);
             break;

@@ -59,7 +59,7 @@ public class DatabaseConstraintViolationResolverFactoryTest {
             fail("Expected a runtime exception");
         } catch (RuntimeException e) {
             DatabaseConstraintViolation violation = violationResolver.resolve(e);
-            assertEquals(NOT_NULL, violation.getViolationType());
+            assertEquals(NOT_NULL, violation.getConstraintType());
             assertTrue(violation.getConstraintName().startsWith("sys_ct_"));
             assertEquals("users", violation.getTableName());
             assertEquals("name", violation.getColumnName());
@@ -77,7 +77,7 @@ public class DatabaseConstraintViolationResolverFactoryTest {
             fail("Expected a runtime exception");
         } catch (RuntimeException e) {
             DatabaseConstraintViolation violation = violationResolver.resolve(e);
-            assertEquals(UNIQUE_KEY, violation.getViolationType());
+            assertEquals(UNIQUE_KEY, violation.getConstraintType());
             assertEquals("uk_users_name", violation.getConstraintName());
             assertEquals("users", violation.getTableName());
         }
@@ -93,7 +93,7 @@ public class DatabaseConstraintViolationResolverFactoryTest {
             fail("Expected a runtime exception");
         } catch (RuntimeException e) {
             DatabaseConstraintViolation violation = violationResolver.resolve(e);
-            assertEquals(LENGTH_EXCEEDED, violation.getViolationType());
+            assertEquals(LENGTH_EXCEEDED, violation.getConstraintType());
         }
     }
 
@@ -109,7 +109,7 @@ public class DatabaseConstraintViolationResolverFactoryTest {
             fail("Expected a runtime exception");
         } catch (RuntimeException e) {
             DatabaseConstraintViolation violation = violationResolver.resolve(e);
-            assertEquals(INVALID_TYPE, violation.getViolationType());
+            assertEquals(INVALID_TYPE, violation.getConstraintType());
         }
     }
 

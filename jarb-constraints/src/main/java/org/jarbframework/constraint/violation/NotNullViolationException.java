@@ -46,6 +46,6 @@ public class NotNullViolationException extends DatabaseConstraintViolationExcept
      */
     public NotNullViolationException(DatabaseConstraintViolation violation, String message, Throwable cause) {
         super(violation, message, cause);
-        state(violation.getViolationType() == NOT_NULL, "Not null exception can only occur for not null violations");
+        state(violation.getConstraintType() == NOT_NULL, "Not null exception can only occur for not null violations");
     }
 }

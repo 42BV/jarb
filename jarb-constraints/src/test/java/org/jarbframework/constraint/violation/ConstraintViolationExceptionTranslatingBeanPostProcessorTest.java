@@ -44,7 +44,7 @@ public class ConstraintViolationExceptionTranslatingBeanPostProcessorTest {
             fail("Expected a license number already exists exception");
         } catch (UsernameAlreadyExistsException e) {
             DatabaseConstraintViolation violation = e.getViolation();
-            assertEquals(DatabaseConstraintType.UNIQUE_KEY, violation.getViolationType());
+            assertEquals(DatabaseConstraintType.UNIQUE_KEY, violation.getConstraintType());
             assertEquals("uk_users_name", violation.getConstraintName());
         }
     }
@@ -62,7 +62,7 @@ public class ConstraintViolationExceptionTranslatingBeanPostProcessorTest {
         } catch (NotNullViolationException e) {
             assertEquals("Column 'name' cannot be null.", e.getMessage());
             DatabaseConstraintViolation violation = e.getViolation();
-            assertEquals(NOT_NULL, violation.getViolationType());
+            assertEquals(NOT_NULL, violation.getConstraintType());
             assertEquals("name", violation.getColumnName());
         }
     }
