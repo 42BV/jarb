@@ -2,13 +2,13 @@ package org.jarbframework.constraint.violation.resolver.vendor;
 
 import static org.apache.commons.lang3.StringUtils.substringBefore;
 import static org.apache.commons.lang3.StringUtils.substringBetween;
-import static org.jarbframework.constraint.violation.DatabaseConstraintViolation.builder;
-import static org.jarbframework.constraint.violation.DatabaseConstraintViolationType.CHECK_FAILED;
-import static org.jarbframework.constraint.violation.DatabaseConstraintViolationType.FOREIGN_KEY;
-import static org.jarbframework.constraint.violation.DatabaseConstraintViolationType.INVALID_TYPE;
-import static org.jarbframework.constraint.violation.DatabaseConstraintViolationType.LENGTH_EXCEEDED;
-import static org.jarbframework.constraint.violation.DatabaseConstraintViolationType.NOT_NULL;
-import static org.jarbframework.constraint.violation.DatabaseConstraintViolationType.UNIQUE_KEY;
+import static org.jarbframework.constraint.violation.DatabaseConstraintType.CHECK_FAILED;
+import static org.jarbframework.constraint.violation.DatabaseConstraintType.FOREIGN_KEY;
+import static org.jarbframework.constraint.violation.DatabaseConstraintType.INVALID_TYPE;
+import static org.jarbframework.constraint.violation.DatabaseConstraintType.LENGTH_EXCEEDED;
+import static org.jarbframework.constraint.violation.DatabaseConstraintType.NOT_NULL;
+import static org.jarbframework.constraint.violation.DatabaseConstraintType.UNIQUE_KEY;
+import static org.jarbframework.constraint.violation.DatabaseConstraintViolation.violaton;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -78,7 +78,9 @@ public class PostgresViolationResolver extends RootCauseMessageViolationResolver
     }
 
     private DatabaseConstraintViolation resolveNotNullViolation(Matcher matcher) {
-        return builder(NOT_NULL).column(matcher.group(1)).build();
+        return violaton(NOT_NULL)
+                .column(matcher.group(1))
+                    .build();
     }
 
     private DatabaseConstraintViolation resolveLengthViolation(Matcher matcher) {
@@ -87,11 +89,14 @@ public class PostgresViolationResolver extends RootCauseMessageViolationResolver
         String columnType = substringBefore(columnDefinition, "(");
         String columnLength = substringBetween(columnDefinition, "(", ")");
         
-        return builder(LENGTH_EXCEEDED).expectedType(columnType).maximumLength(Long.valueOf(columnLength)).build();
+        return violaton(LENGTH_EXCEEDED)
+                .expectedValueType(columnType)
+                .maximumLength(columnLength)
+                    .build();
     }
 
     private DatabaseConstraintViolation resolveForeignKeyViolationOnInsertOrUpdate(Matcher matcher) {
-        return builder(FOREIGN_KEY)
+        return violaton(FOREIGN_KEY)
                 .constraint(matcher.group(2))
                 .table(matcher.group(1))
                 .column(matcher.group(3))
@@ -101,7 +106,7 @@ public class PostgresViolationResolver extends RootCauseMessageViolationResolver
     }
 
     private DatabaseConstraintViolation resolveForeignKeyViolationOnUpdateOrDelete(Matcher matcher) {
-        return builder(FOREIGN_KEY)
+        return violaton(FOREIGN_KEY)
                 .constraint(matcher.group(2))
                 .table(matcher.group(1))
                 .column(matcher.group(4))
@@ -111,7 +116,7 @@ public class PostgresViolationResolver extends RootCauseMessageViolationResolver
     }
 
     private DatabaseConstraintViolation resolveUniqueKeyViolation(Matcher matcher) {
-        return builder(UNIQUE_KEY)
+        return violaton(UNIQUE_KEY)
                 .constraint(matcher.group(1))
                 .column(matcher.group(2))
                 .value(matcher.group(3))
@@ -119,16 +124,16 @@ public class PostgresViolationResolver extends RootCauseMessageViolationResolver
     }
 
     private DatabaseConstraintViolation resolveCheckViolation(Matcher matcher) {
-        return builder(CHECK_FAILED)
+        return violaton(CHECK_FAILED)
                 .constraint(matcher.group(2))
                 .table(matcher.group(1))
                     .build();
     }
 
     private DatabaseConstraintViolation resolveTypeViolation(Matcher matcher) {
-        return builder(INVALID_TYPE)
+        return violaton(INVALID_TYPE)
                 .column(matcher.group(1))
-                .expectedType(matcher.group(2))
+                .expectedValueType(matcher.group(2))
                 .valueType(matcher.group(3))
                     .build();
     }

@@ -1,6 +1,6 @@
 package org.jarbframework.constraint.violation;
 
-import static org.jarbframework.constraint.violation.DatabaseConstraintViolationType.LENGTH_EXCEEDED;
+import static org.jarbframework.constraint.violation.DatabaseConstraintType.LENGTH_EXCEEDED;
 import static org.jarbframework.utils.Asserts.state;
 
 /**

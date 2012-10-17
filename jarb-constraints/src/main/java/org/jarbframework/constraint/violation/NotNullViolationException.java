@@ -1,6 +1,6 @@
 package org.jarbframework.constraint.violation;
 
-import static org.jarbframework.constraint.violation.DatabaseConstraintViolationType.NOT_NULL;
+import static org.jarbframework.constraint.violation.DatabaseConstraintType.NOT_NULL;
 import static org.jarbframework.utils.Asserts.state;
 
 /**

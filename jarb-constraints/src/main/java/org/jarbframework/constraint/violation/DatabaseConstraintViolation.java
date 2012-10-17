@@ -1,7 +1,5 @@
 package org.jarbframework.constraint.violation;
 
-import static org.jarbframework.utils.Asserts.notNull;
-
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
@@ -13,8 +11,9 @@ import org.apache.commons.lang3.builder.ToStringStyle;
  */
 public final class DatabaseConstraintViolation {
     
-    private final DatabaseConstraintViolationType violationType;
-    private String constraintName;
+    private final DatabaseConstraintType constraintType;
+    private final String constraintName;
+    
     private String tableName;
     private String columnName;
 
@@ -24,25 +23,42 @@ public final class DatabaseConstraintViolation {
     private String expectedType;
     private Long maximumLength;
 
-    public DatabaseConstraintViolation(DatabaseConstraintViolationType violationType) {
-        this.violationType = violationType;
+    public DatabaseConstraintViolation(DatabaseConstraintType constraintType) {
+        this(constraintType, null);
     }
     
-    public DatabaseConstraintViolation(DatabaseConstraintViolationType violationType, String constraintName) {
-        this.violationType = violationType;
+    public DatabaseConstraintViolation(String constraintName) {
+        this(null, constraintName);
+    }
+    
+    public DatabaseConstraintViolation(DatabaseConstraintType constraintType, String constraintName) {
+        if(constraintType == null && (constraintName == null || constraintName.length() == 0)) {
+            throw new IllegalArgumentException("Should provide a constraint type or name.");
+        }
+        this.constraintType = constraintType;
+        this.constraintName = constraintName;
     }
 
     /**
      * Start building a new {@link DatabaseConstraintViolation}.
-     * @param violationType the type of constraint violation
+     * @param constraintType the type of constraint violation
      * @return new constraint violation builder
      */
-    public static DatabaseConstraintViolationBuilder builder(DatabaseConstraintViolationType violationType) {
-        return new DatabaseConstraintViolationBuilder(violationType);
+    public static DatabaseConstraintViolationBuilder builder() {
+        return violaton(null);
+    }
+    
+    /**
+     * Start building a new {@link DatabaseConstraintViolation}.
+     * @param constraintType the type of constraint violation
+     * @return new constraint violation builder
+     */
+    public static DatabaseConstraintViolationBuilder violaton(DatabaseConstraintType constraintType) {
+        return new DatabaseConstraintViolationBuilder(constraintType);
     }
 
-    public DatabaseConstraintViolationType getViolationType() {
-        return violationType;
+    public DatabaseConstraintType getViolationType() {
+        return constraintType;
     }
 
     public String getConstraintName() {
@@ -84,20 +100,21 @@ public final class DatabaseConstraintViolation {
      */
     public static final class DatabaseConstraintViolationBuilder {
         
-        private final DatabaseConstraintViolationType violationType;
-
+        private final DatabaseConstraintType constraintType;
         private String constraintName;
+        
         private String tableName;
         private String columnName;
-
+        
         private String referencingTableName;
+        
         private Object value;
         private String valueType;
-        private String expectedType;
+        private String expectedValueType;
         private Long maximumLength;
 
-        private DatabaseConstraintViolationBuilder(DatabaseConstraintViolationType violationType) {
-            this.violationType = notNull(violationType, "Violation type cannot be null");
+        private DatabaseConstraintViolationBuilder(DatabaseConstraintType constraintType) {
+            this.constraintType = constraintType;
         }
 
         public DatabaseConstraintViolationBuilder constraint(String constraintName) {
@@ -130,9 +147,13 @@ public final class DatabaseConstraintViolation {
             return this;
         }
 
-        public DatabaseConstraintViolationBuilder expectedType(String expectedType) {
-            this.expectedType = expectedType;
+        public DatabaseConstraintViolationBuilder expectedValueType(String expectedValueType) {
+            this.expectedValueType = expectedValueType;
             return this;
+        }
+        
+        public DatabaseConstraintViolationBuilder maximumLength(String maximumLength) {
+            return this.maximumLength(Long.valueOf(maximumLength));
         }
 
         public DatabaseConstraintViolationBuilder maximumLength(Long maximumLength) {
@@ -140,17 +161,21 @@ public final class DatabaseConstraintViolation {
             return this;
         }
 
+        /**
+         * Build the actual constraint violation. Note that the either a constraint type or name
+         * must have been declared before building, or an exception will be thrown.
+         * @return the database constraint violation
+         */
         public DatabaseConstraintViolation build() {
-            DatabaseConstraintViolation constraintViolation = new DatabaseConstraintViolation(violationType);
-            constraintViolation.constraintName = constraintName;
-            constraintViolation.tableName = tableName;
-            constraintViolation.columnName = columnName;
-            constraintViolation.referencingTableName = referencingTableName;
-            constraintViolation.value = value;
-            constraintViolation.valueType = valueType;
-            constraintViolation.expectedType = expectedType;
-            constraintViolation.maximumLength = maximumLength;
-            return constraintViolation;
+            DatabaseConstraintViolation violation = new DatabaseConstraintViolation(constraintType, constraintName);
+            violation.tableName = tableName;
+            violation.columnName = columnName;
+            violation.referencingTableName = referencingTableName;
+            violation.value = value;
+            violation.valueType = valueType;
+            violation.expectedType = expectedValueType;
+            violation.maximumLength = maximumLength;
+            return violation;
         }
         
     }

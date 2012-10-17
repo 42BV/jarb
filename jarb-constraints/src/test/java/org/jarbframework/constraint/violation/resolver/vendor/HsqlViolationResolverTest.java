@@ -4,7 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
 import org.jarbframework.constraint.violation.DatabaseConstraintViolation;
-import org.jarbframework.constraint.violation.DatabaseConstraintViolationType;
+import org.jarbframework.constraint.violation.DatabaseConstraintType;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -21,7 +21,7 @@ public class HsqlViolationResolverTest {
     public void testNotNull() {
         DatabaseConstraintViolation violation = resolver
                 .resolveByMessage("integrity constraint violation: NOT NULL check constraint; SYS_CT_10041 table: CARS column: NAME");
-        assertEquals(DatabaseConstraintViolationType.NOT_NULL, violation.getViolationType());
+        assertEquals(DatabaseConstraintType.NOT_NULL, violation.getViolationType());
         assertEquals("sys_ct_10041", violation.getConstraintName());
         assertEquals("cars", violation.getTableName());
         assertEquals("name", violation.getColumnName());
@@ -31,7 +31,7 @@ public class HsqlViolationResolverTest {
     public void testUnique() {
         DatabaseConstraintViolation violation = resolver
                 .resolveByMessage("integrity constraint violation: unique constraint or index violation; UK_CARS_LICENSE table: CARS");
-        assertEquals(DatabaseConstraintViolationType.UNIQUE_KEY, violation.getViolationType());
+        assertEquals(DatabaseConstraintType.UNIQUE_KEY, violation.getViolationType());
         assertEquals("uk_cars_license", violation.getConstraintName());
         assertEquals("cars", violation.getTableName());
     }
@@ -39,7 +39,7 @@ public class HsqlViolationResolverTest {
     @Test
     public void testForeignKey() {
         DatabaseConstraintViolation violation = resolver.resolveByMessage("integrity constraint violation: foreign key no action; FK_CARS_OWNER table: CARS");
-        assertEquals(DatabaseConstraintViolationType.FOREIGN_KEY, violation.getViolationType());
+        assertEquals(DatabaseConstraintType.FOREIGN_KEY, violation.getViolationType());
         assertEquals("fk_cars_owner", violation.getConstraintName());
         assertEquals("cars", violation.getTableName());
     }
@@ -47,14 +47,14 @@ public class HsqlViolationResolverTest {
     @Test
     public void testLength() {
         DatabaseConstraintViolation violation = resolver.resolveByMessage("data exception: string data, right truncation");
-        assertEquals(DatabaseConstraintViolationType.LENGTH_EXCEEDED, violation.getViolationType());
+        assertEquals(DatabaseConstraintType.LENGTH_EXCEEDED, violation.getViolationType());
         assertEquals("string", violation.getValueType());
     }
 
     @Test
     public void testType() {
         DatabaseConstraintViolation violation = resolver.resolveByMessage("data exception: invalid character value for cast");
-        assertEquals(DatabaseConstraintViolationType.INVALID_TYPE, violation.getViolationType());
+        assertEquals(DatabaseConstraintType.INVALID_TYPE, violation.getViolationType());
         assertEquals("character", violation.getValueType());
     }
 

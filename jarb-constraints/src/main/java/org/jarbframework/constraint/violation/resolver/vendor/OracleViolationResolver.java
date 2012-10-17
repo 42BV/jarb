@@ -1,14 +1,18 @@
 package org.jarbframework.constraint.violation.resolver.vendor;
 
-import static org.jarbframework.constraint.violation.DatabaseConstraintViolation.builder;
+import static org.jarbframework.constraint.violation.DatabaseConstraintType.CHECK_FAILED;
+import static org.jarbframework.constraint.violation.DatabaseConstraintType.FOREIGN_KEY;
+import static org.jarbframework.constraint.violation.DatabaseConstraintType.INVALID_TYPE;
+import static org.jarbframework.constraint.violation.DatabaseConstraintType.LENGTH_EXCEEDED;
+import static org.jarbframework.constraint.violation.DatabaseConstraintType.NOT_NULL;
+import static org.jarbframework.constraint.violation.DatabaseConstraintType.UNIQUE_KEY;
+import static org.jarbframework.constraint.violation.DatabaseConstraintViolation.violaton;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.jarbframework.constraint.violation.DatabaseConstraintViolation;
-import org.jarbframework.constraint.violation.DatabaseConstraintViolationType;
 import org.jarbframework.constraint.violation.resolver.RootCauseMessageViolationResolver;
-import org.springframework.util.Assert;
 
 /**
  * Oracle based constraint violation resolver.
@@ -18,29 +22,23 @@ import org.springframework.util.Assert;
  */
 public class OracleViolationResolver extends RootCauseMessageViolationResolver {
 
-    private static final String CHECK_FAILED_PATTERN
     /* Provided: schema and check name */
-    = "(.+): check constraint \\((.+)\\.(.+)\\) violated\n";
+    private static final Pattern CHECK_FAILED_PATTERN = Pattern.compile("(.+): check constraint \\((.+)\\.(.+)\\) violated\n");
 
-    private static final String CANNOT_BE_NULL_PATTERN
     /* Provided: schema, table and column name */
-    = "(.+): cannot insert NULL into \\(\"(.+)\"\\.\"(.+)\"\\.\"(.+)\"\\)\n";
+    private static final Pattern CANNOT_BE_NULL_PATTERN = Pattern.compile("(.+): cannot insert NULL into \\(\"(.+)\"\\.\"(.+)\"\\.\"(.+)\"\\)\n");
 
-    private static final String UNIQUE_VIOLATION_PATTERN
     /* Provided: schema and constraint name */
-    = "(.+): unique constraint \\((.+)\\.(.+)\\) violated\n";
+    private static final Pattern UNIQUE_VIOLATION_PATTERN = Pattern.compile("(.+): unique constraint \\((.+)\\.(.+)\\) violated\n");
 
-    private static final String FK_VIOLATION_PATTERN
     /* Provided: schema and constraint name */
-    = "(.+): integrity constraint \\((.+)\\.(.+)\\) violated - child record found\n";
+    private static final Pattern FK_VIOLATION_PATTERN = Pattern.compile("(.+): integrity constraint \\((.+)\\.(.+)\\) violated - child record found\n");
 
-    private static final String LENGTH_EXCEEDED_PATTERN
     /* Provided: schema, table and column name, actual length, maximum length */
-    = "(.+): value too large for column \"(.+)\"\\.\"(.+)\"\\.\"(.+)\" \\(actual: (\\d+), maximum: (\\d+)\\)\n";
+    private static final Pattern LENGTH_EXCEEDED_PATTERN = Pattern.compile("(.+): value too large for column \"(.+)\"\\.\"(.+)\"\\.\"(.+)\" \\(actual: (\\d+), maximum: (\\d+)\\)\n");
 
-    private static final String INVALID_TYPE_PATTERN
     /* Provided: column type */
-    = "(.+): invalid (.+)\n";
+    private static final Pattern INVALID_TYPE_PATTERN = Pattern.compile("(.+): invalid (.+)\n");
 
     /**
      * {@inheritDoc}
@@ -48,70 +46,61 @@ public class OracleViolationResolver extends RootCauseMessageViolationResolver {
     @Override
     protected DatabaseConstraintViolation resolveByMessage(String message) {
         DatabaseConstraintViolation violation = null;
-        if (message.matches(CHECK_FAILED_PATTERN)) {
-            violation = resolveCheckViolation(message);
-        } else if (message.matches(CANNOT_BE_NULL_PATTERN)) {
-            violation = resolveNotNullViolation(message);
-        } else if (message.matches(UNIQUE_VIOLATION_PATTERN)) {
-            violation = resolveUniqueKeyViolation(message);
-        } else if (message.matches(FK_VIOLATION_PATTERN)) {
-            violation = resolveForeignKeyViolation(message);
-        } else if (message.matches(LENGTH_EXCEEDED_PATTERN)) {
-            violation = resolveLengthViolation(message);
-        } else if (message.matches(INVALID_TYPE_PATTERN)) {
-            violation = resolveTypeViolation(message);
+        
+        Matcher matcher;
+        if ((matcher = CHECK_FAILED_PATTERN.matcher(message)).matches()) {
+            violation = resolveCheckViolation(matcher);
+        } else if ((matcher = CANNOT_BE_NULL_PATTERN.matcher(message)).matches()) {
+            violation = resolveNotNullViolation(matcher);
+        } else if ((matcher = UNIQUE_VIOLATION_PATTERN.matcher(message)).matches()) {
+            violation = resolveUniqueKeyViolation(matcher);
+        } else if ((matcher = FK_VIOLATION_PATTERN.matcher(message)).matches()) {
+            violation = resolveForeignKeyViolation(matcher);
+        } else if ((matcher = LENGTH_EXCEEDED_PATTERN.matcher(message)).matches()) {
+            violation = resolveLengthViolation(matcher);
+        } else if ((matcher = INVALID_TYPE_PATTERN.matcher(message)).matches()) {
+            violation = resolveTypeViolation(matcher);
         }
+        
         return violation;
     }
 
-    private DatabaseConstraintViolation resolveCheckViolation(String message) {
-        DatabaseConstraintViolation.DatabaseConstraintViolationBuilder violationBuilder = builder(DatabaseConstraintViolationType.CHECK_FAILED);
-        Matcher matcher = Pattern.compile(CHECK_FAILED_PATTERN).matcher(message);
-        Assert.isTrue(matcher.matches()); // Retrieve group information
-        violationBuilder.constraint(matcher.group(3));
-        return violationBuilder.build();
+    private DatabaseConstraintViolation resolveCheckViolation(Matcher matcher) {
+        return violaton(CHECK_FAILED)
+                .constraint(matcher.group(3))
+                    .build();
     }
 
-    private DatabaseConstraintViolation resolveUniqueKeyViolation(String message) {
-        DatabaseConstraintViolation.DatabaseConstraintViolationBuilder violationBuilder = builder(DatabaseConstraintViolationType.UNIQUE_KEY);
-        Matcher matcher = Pattern.compile(UNIQUE_VIOLATION_PATTERN).matcher(message);
-        Assert.isTrue(matcher.matches()); // Retrieve group information
-        violationBuilder.constraint(matcher.group(3));
-        return violationBuilder.build();
+    private DatabaseConstraintViolation resolveUniqueKeyViolation(Matcher matcher) {
+        return violaton(UNIQUE_KEY)
+                .constraint(matcher.group(3))
+                    .build();
     }
 
-    private DatabaseConstraintViolation resolveForeignKeyViolation(String message) {
-        DatabaseConstraintViolation.DatabaseConstraintViolationBuilder violationBuilder = builder(DatabaseConstraintViolationType.FOREIGN_KEY);
-        Matcher matcher = Pattern.compile(FK_VIOLATION_PATTERN).matcher(message);
-        Assert.isTrue(matcher.matches()); // Retrieve group information
-        violationBuilder.constraint(matcher.group(3));
-        return violationBuilder.build();
+    private DatabaseConstraintViolation resolveForeignKeyViolation(Matcher matcher) {
+        return violaton(FOREIGN_KEY)
+                .constraint(matcher.group(3))
+                    .build();
     }
 
-    private DatabaseConstraintViolation resolveNotNullViolation(String message) {
-        DatabaseConstraintViolation.DatabaseConstraintViolationBuilder violationBuilder = builder(DatabaseConstraintViolationType.NOT_NULL);
-        Matcher matcher = Pattern.compile(CANNOT_BE_NULL_PATTERN).matcher(message);
-        Assert.isTrue(matcher.matches()); // Retrieve group information
-        violationBuilder.table(matcher.group(3));
-        violationBuilder.column(matcher.group(4));
-        return violationBuilder.build();
+    private DatabaseConstraintViolation resolveNotNullViolation(Matcher matcher) {
+        return violaton(NOT_NULL)
+                .table(matcher.group(3))
+                .column(matcher.group(4))
+                    .build();
     }
 
-    private DatabaseConstraintViolation resolveLengthViolation(String message) {
-        DatabaseConstraintViolation.DatabaseConstraintViolationBuilder violationBuilder = builder(DatabaseConstraintViolationType.LENGTH_EXCEEDED);
-        Matcher matcher = Pattern.compile(LENGTH_EXCEEDED_PATTERN).matcher(message);
-        Assert.isTrue(matcher.matches()); // Retrieve group information
-        violationBuilder.table(matcher.group(3));
-        violationBuilder.column(matcher.group(4));
-        violationBuilder.maximumLength(Long.valueOf(matcher.group(6)));
-        return violationBuilder.build();
+    private DatabaseConstraintViolation resolveLengthViolation(Matcher matcher) {
+        return violaton(LENGTH_EXCEEDED)
+                .table(matcher.group(3))
+                .column(matcher.group(4))
+                .maximumLength(matcher.group(6))
+                    .build();
     }
 
-    private DatabaseConstraintViolation resolveTypeViolation(String message) {
-        DatabaseConstraintViolation.DatabaseConstraintViolationBuilder violationBuilder = builder(DatabaseConstraintViolationType.INVALID_TYPE);
-        Matcher matcher = Pattern.compile(INVALID_TYPE_PATTERN).matcher(message);
-        Assert.isTrue(matcher.matches()); // Retrieve group information
-        violationBuilder.expectedType(matcher.group(2));
-        return violationBuilder.build();
+    private DatabaseConstraintViolation resolveTypeViolation(Matcher matcher) {
+        return violaton(INVALID_TYPE)
+                .expectedValueType(matcher.group(2))
+                    .build();
     }
 }

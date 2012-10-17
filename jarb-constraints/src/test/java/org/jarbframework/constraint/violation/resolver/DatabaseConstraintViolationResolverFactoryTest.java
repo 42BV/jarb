@@ -1,9 +1,9 @@
 package org.jarbframework.constraint.violation.resolver;
 
-import static org.jarbframework.constraint.violation.DatabaseConstraintViolationType.INVALID_TYPE;
-import static org.jarbframework.constraint.violation.DatabaseConstraintViolationType.LENGTH_EXCEEDED;
-import static org.jarbframework.constraint.violation.DatabaseConstraintViolationType.NOT_NULL;
-import static org.jarbframework.constraint.violation.DatabaseConstraintViolationType.UNIQUE_KEY;
+import static org.jarbframework.constraint.violation.DatabaseConstraintType.INVALID_TYPE;
+import static org.jarbframework.constraint.violation.DatabaseConstraintType.LENGTH_EXCEEDED;
+import static org.jarbframework.constraint.violation.DatabaseConstraintType.NOT_NULL;
+import static org.jarbframework.constraint.violation.DatabaseConstraintType.UNIQUE_KEY;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;

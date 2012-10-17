@@ -1,6 +1,6 @@
 package org.jarbframework.constraint.violation;
 
-import static org.jarbframework.constraint.violation.DatabaseConstraintViolationType.NOT_NULL;
+import static org.jarbframework.constraint.violation.DatabaseConstraintType.NOT_NULL;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
@@ -44,7 +44,7 @@ public class ConstraintViolationExceptionTranslatingBeanPostProcessorTest {
             fail("Expected a license number already exists exception");
         } catch (UsernameAlreadyExistsException e) {
             DatabaseConstraintViolation violation = e.getViolation();
-            assertEquals(DatabaseConstraintViolationType.UNIQUE_KEY, violation.getViolationType());
+            assertEquals(DatabaseConstraintType.UNIQUE_KEY, violation.getViolationType());
             assertEquals("uk_users_name", violation.getConstraintName());
         }
     }

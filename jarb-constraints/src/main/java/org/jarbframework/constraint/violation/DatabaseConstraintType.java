@@ -1,12 +1,12 @@
 package org.jarbframework.constraint.violation;
 
 /**
- * Type of constraint violations that can occur.
+ * Type of database constraints (that can be violated).
  * 
  * @author Jeroen van Schagen
  * @since 16-05-2011
  */
-public enum DatabaseConstraintViolationType {
+public enum DatabaseConstraintType {
 
     /**
      * Unique key already exists in database.

@@ -3,7 +3,7 @@
  */
 package org.jarbframework.constraint.violation;
 
-import static org.jarbframework.constraint.violation.DatabaseConstraintViolationType.FOREIGN_KEY;
+import static org.jarbframework.constraint.violation.DatabaseConstraintType.FOREIGN_KEY;
 import static org.jarbframework.utils.Asserts.state;
 
 /**

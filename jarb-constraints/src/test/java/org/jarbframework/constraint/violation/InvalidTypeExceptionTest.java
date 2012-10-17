@@ -1,7 +1,7 @@
 package org.jarbframework.constraint.violation;
 
-import static org.jarbframework.constraint.violation.DatabaseConstraintViolation.builder;
-import static org.jarbframework.constraint.violation.DatabaseConstraintViolationType.INVALID_TYPE;
+import static org.jarbframework.constraint.violation.DatabaseConstraintViolation.violaton;
+import static org.jarbframework.constraint.violation.DatabaseConstraintType.INVALID_TYPE;
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
@@ -11,7 +11,7 @@ public class InvalidTypeExceptionTest {
     private final DatabaseConstraintViolation violation;
 
     public InvalidTypeExceptionTest() {
-        violation = builder(INVALID_TYPE).build();
+        violation = violaton(INVALID_TYPE).build();
     }
 
     @Test
