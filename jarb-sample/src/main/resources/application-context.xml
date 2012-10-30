@@ -93,21 +93,17 @@
     <bean id="validator" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean">
         <property name="validationMessageSource" ref="messageSource"/>
     </bean>
+
+    <bean id="schemaMapper" class="org.jarbframework.utils.orm.SimpleHibernateJpaSchemaMapper">
+        <constructor-arg ref="entityManagerFactory"/>
+    </bean>
     
-	<!-- Provides column meta-data, required for validation and bean description -->
-	<bean id="databaseConstraintRepository"  class="org.jarbframework.constraint.metadata.database.JdbcCachingDatabaseConstraintRepositoryFactoryBean">
+    <bean id="columnMetadataRepository" class="org.jarbframework.constraint.metadata.database.JdbcCachingColumnMetadataRepositoryFactoryBean">
         <property name="dataSource" ref="dataSource"/>
-        <property name="schemaMapper">
-            <bean class="org.jarbframework.utils.orm.jpa.JpaHibernateSchemaMapper" factory-method="usingNamingStrategyOf">
-                <constructor-arg ref="entityManagerFactory"/>
-            </bean>
-        </property>
     </bean>
     
     <!-- Provides a bean constraint meta-data, required for front-end -->
-    <bean class="org.jarbframework.constraint.metadata.BeanConstraintDescriptorFactoryBean">
-    	<property name="databaseConstraintRepository" ref="databaseConstraintRepository"/>
-    </bean>
+    <bean class="org.jarbframework.constraint.metadata.BeanConstraintDescriptorFactoryBean"/>
     
     <!-- Translate JDBC driver exceptions into Java exceptions -->
     <violations:translator id="translator" data-source="dataSource">

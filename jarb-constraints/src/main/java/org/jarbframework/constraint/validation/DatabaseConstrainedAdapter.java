@@ -8,6 +8,12 @@ import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
+/**
+ * Adapts the {@link DatabaseConstraintValidator} to the JSR303 interface.
+ * 
+ * @author Jeroen van Schagen
+ * @since 30-10-2012
+ */
 public class DatabaseConstrainedAdapter implements ConstraintValidator<DatabaseConstrained, Object>, ApplicationContextAware {
     
     /** Delegate component that performs the actual constraint checking **/

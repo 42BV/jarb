@@ -6,6 +6,7 @@ import java.beans.PropertyDescriptor;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.jarbframework.constraint.metadata.enhance.PropertyConstraintEnhancer;
 import org.jarbframework.utils.bean.PropertyReference;
 import org.springframework.beans.BeanUtils;
 

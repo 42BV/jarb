@@ -3,8 +3,9 @@ package org.jarbframework.constraint.metadata;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import org.jarbframework.constraint.metadata.database.DatabaseConstraintRepository;
+import org.jarbframework.constraint.metadata.database.ColumnMetadataRepository;
 import org.jarbframework.constraint.metadata.domain.Wine;
+import org.jarbframework.utils.orm.SchemaMapper;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -19,12 +20,16 @@ public class BeanConstraintDescriptorFactoryBeanTest {
     private BeanConstraintDescriptorFactoryBean factoryBean;
 
     @Autowired
-    private DatabaseConstraintRepository databaseConstraintRepository;
+    private SchemaMapper schemaMapper;
+    
+    @Autowired
+    private ColumnMetadataRepository columnMetadataRepository;
 
     @Before
     public void setUp() throws Exception {
         factoryBean = new BeanConstraintDescriptorFactoryBean();
-        factoryBean.setDatabaseConstraintRepository(databaseConstraintRepository);
+        factoryBean.setSchemaMapper(schemaMapper);
+        factoryBean.setColumnMetadataRepository(columnMetadataRepository);
     }
 
     /**

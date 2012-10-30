@@ -4,10 +4,18 @@ import java.util.Date;
 
 import org.hibernate.validator.constraints.CreditCardNumber;
 import org.hibernate.validator.constraints.Email;
-import org.jarbframework.constraint.metadata.database.DatabaseConstraintRepository;
-import org.jarbframework.constraint.metadata.database.DatabaseGeneratedPropertyConstraintEnhancer;
-import org.jarbframework.constraint.metadata.database.DatabasePropertyConstraintDescriptionEnhancer;
+import org.jarbframework.constraint.metadata.database.ColumnMetadataRepository;
+import org.jarbframework.constraint.metadata.enhance.AnnotationPropertyTypeEnhancer;
+import org.jarbframework.constraint.metadata.enhance.ClassPropertyTypeEnhancer;
+import org.jarbframework.constraint.metadata.enhance.DatabaseGeneratedPropertyConstraintEnhancer;
+import org.jarbframework.constraint.metadata.enhance.DatabaseSchemaPropertyConstraintEnhancer;
+import org.jarbframework.constraint.metadata.enhance.DigitsPropertyConstraintEnhancer;
+import org.jarbframework.constraint.metadata.enhance.LengthPropertyConstraintEnhancer;
+import org.jarbframework.constraint.metadata.enhance.NotEmptyPropertyConstraintEnhancer;
+import org.jarbframework.constraint.metadata.enhance.NotNullPropertyConstraintEnhancer;
+import org.jarbframework.utils.orm.SchemaMapper;
 import org.jarbframework.utils.spring.SingletonFactoryBean;
+import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * Builds a default bean constraint metadata generator.
@@ -17,16 +25,23 @@ import org.jarbframework.utils.spring.SingletonFactoryBean;
  */
 public class BeanConstraintDescriptorFactoryBean extends SingletonFactoryBean<BeanConstraintDescriptor> {
     
-    private DatabaseConstraintRepository databaseConstraintRepository;
+    private SchemaMapper schemaMapper;
+    private ColumnMetadataRepository columnMetadataRepository;
 
-    public void setDatabaseConstraintRepository(DatabaseConstraintRepository databaseConstraintRepository) {
-        this.databaseConstraintRepository = databaseConstraintRepository;
+    @Autowired
+    public void setColumnMetadataRepository(ColumnMetadataRepository columnMetadataRepository) {
+        this.columnMetadataRepository = columnMetadataRepository;
     }
-
+    
+    @Autowired
+    public void setSchemaMapper(SchemaMapper schemaMapper) {
+        this.schemaMapper = schemaMapper;
+    }
+    
     @Override
     protected BeanConstraintDescriptor createObject() throws Exception {
         BeanConstraintDescriptorImpl accessor = new BeanConstraintDescriptorImpl();
-        accessor.registerEnhancer(new DatabasePropertyConstraintDescriptionEnhancer(databaseConstraintRepository));
+        accessor.registerEnhancer(new DatabaseSchemaPropertyConstraintEnhancer(schemaMapper, columnMetadataRepository));
         accessor.registerEnhancer(new DatabaseGeneratedPropertyConstraintEnhancer());
         
         // Basic constraint annotations

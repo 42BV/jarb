@@ -1,9 +1,9 @@
-package org.jarbframework.constraint.metadata.database;
+package org.jarbframework.constraint.metadata.enhance;
 
 import static org.jarbframework.utils.bean.BeanAnnotationScanner.fieldOrGetter;
 
 import org.jarbframework.constraint.metadata.PropertyConstraintDescription;
-import org.jarbframework.constraint.metadata.PropertyConstraintEnhancer;
+import org.jarbframework.constraint.metadata.database.DatabaseGenerated;
 
 /**
  * Properties annotated with @DatabaseGenerated are never set to required

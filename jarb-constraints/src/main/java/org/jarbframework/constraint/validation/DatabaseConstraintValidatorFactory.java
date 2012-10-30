@@ -3,22 +3,22 @@ package org.jarbframework.constraint.validation;
 import javax.validation.MessageInterpolator;
 import javax.validation.ValidatorFactory;
 
-import org.jarbframework.constraint.metadata.database.DatabaseConstraintRepository;
+import org.jarbframework.constraint.metadata.database.ColumnMetadataRepository;
 import org.jarbframework.utils.orm.SchemaMapper;
-import org.jarbframework.utils.orm.jpa.JpaHibernateSchemaMapper;
 import org.jarbframework.utils.spring.BeanSearcher;
-import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 
 /**
- * Builds a default {@link DatabaseConstraintValidator}.
+ * Factory that builds a default constraint validator, when none is available.
  *
  * @author Jeroen van Schagen
  * @since 20-10-2011
  */
 public class DatabaseConstraintValidatorFactory {
-    public static final String DEFAULT_CONSTRAINT_REPO_ID = "databaseConstraintRepository";
-    public static final String DEFAULT_VALIDATOR_FACTORY_ID = "validator";
+    
     public static final String DEFAULT_SCHEMA_MAPPER_ID = "schemaMapper";
+    public static final String DEFAULT_COLUMN_METADATA_REPOSITORY_ID = "databaseConstraintRepository";
+    
+    public static final String DEFAULT_VALIDATOR_FACTORY_ID = "validator";
 
     private final BeanSearcher beanSearcher;
 
@@ -28,22 +28,19 @@ public class DatabaseConstraintValidatorFactory {
 
     public DatabaseConstraintValidator build() {
         DatabaseConstraintValidator validator = new DatabaseConstraintValidator();
-        validator.setConstraintRepository(beanSearcher.findBean(DatabaseConstraintRepository.class, null, DEFAULT_CONSTRAINT_REPO_ID));
-        validator.setMessageInterpolator(findMessageInterpolator());
-        validator.setSchemaMapper(findOrBuildSchemaMapper());
+        validator.setSchemaMapper(beanSearcher.findBean(SchemaMapper.class, null, DEFAULT_SCHEMA_MAPPER_ID));
+        validator.setColumnMetadataRepository(beanSearcher.findBean(ColumnMetadataRepository.class, null, DEFAULT_COLUMN_METADATA_REPOSITORY_ID));
+        validator.setMessageInterpolator(getMessageInterpolatorFromValidatorFactory());
         return validator;
     }
 
-    private MessageInterpolator findMessageInterpolator() {
+    /**
+     * Extracts the message interpolator from the JSR303 validator factory.
+     * @return the message interpolator in our validator factory
+     */
+    private MessageInterpolator getMessageInterpolatorFromValidatorFactory() {
         ValidatorFactory validatorFactory = beanSearcher.findBean(ValidatorFactory.class, null, DEFAULT_VALIDATOR_FACTORY_ID);
         return validatorFactory.getMessageInterpolator();
     }
 
-    private SchemaMapper findOrBuildSchemaMapper() {
-        try {
-            return beanSearcher.findBean(SchemaMapper.class, null, DEFAULT_SCHEMA_MAPPER_ID);
-        } catch (NoSuchBeanDefinitionException e) {
-            return new JpaHibernateSchemaMapper();
-        }
-    }
 }

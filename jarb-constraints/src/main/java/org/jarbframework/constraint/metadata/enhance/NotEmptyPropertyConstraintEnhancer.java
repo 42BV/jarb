@@ -1,8 +1,9 @@
-package org.jarbframework.constraint.metadata;
+package org.jarbframework.constraint.metadata.enhance;
 
 import static org.jarbframework.utils.bean.BeanAnnotationScanner.fieldOrGetter;
 
 import org.hibernate.validator.constraints.NotEmpty;
+import org.jarbframework.constraint.metadata.PropertyConstraintDescription;
 
 /**
  * Whenever a property is annotated as @NotEmpty , the minimum length has to be at least 1.

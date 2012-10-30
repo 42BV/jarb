@@ -1,10 +1,13 @@
-package org.jarbframework.constraint.metadata;
+package org.jarbframework.constraint.metadata.enhance;
 
 import static org.hamcrest.Matchers.contains;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 import org.hibernate.validator.constraints.Email;
+import org.jarbframework.constraint.metadata.PropertyConstraintDescription;
+import org.jarbframework.constraint.metadata.enhance.AnnotationPropertyTypeEnhancer;
+import org.jarbframework.constraint.metadata.enhance.PropertyConstraintEnhancer;
 import org.jarbframework.utils.bean.PropertyReference;
 import org.junit.Before;
 import org.junit.Test;

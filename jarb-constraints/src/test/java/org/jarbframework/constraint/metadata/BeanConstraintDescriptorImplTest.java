@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 
 import org.jarbframework.constraint.metadata.domain.Country;
 import org.jarbframework.constraint.metadata.domain.Wine;
+import org.jarbframework.constraint.metadata.enhance.LengthPropertyConstraintEnhancer;
 import org.junit.Before;
 import org.junit.Test;
 

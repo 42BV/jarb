@@ -9,7 +9,7 @@ import javax.validation.ConstraintValidatorContext;
 import javax.validation.MessageInterpolator;
 
 import org.jarbframework.constraint.metadata.database.ColumnMetadata;
-import org.jarbframework.constraint.metadata.database.DatabaseConstraintRepository;
+import org.jarbframework.constraint.metadata.database.ColumnMetadataRepository;
 import org.jarbframework.utils.bean.BeanProperties;
 import org.jarbframework.utils.bean.ModifiableBean;
 import org.jarbframework.utils.bean.PropertyReference;
@@ -43,9 +43,11 @@ public class DatabaseConstraintValidator {
     private final List<DatabaseConstraintValidationStep> validationSteps;
 
     /** Retrieves the column meta-data that we use for validation **/
-    private DatabaseConstraintRepository constraintRepository;
+    private ColumnMetadataRepository columnMetadataRepository;
+    
     /** Used to build violation messages **/
     private ViolationMessageBuilder messageBuilder;
+    
     /** Maps bean properties to database columns, for which we query meta-data **/
     private SchemaMapper schemaMapper;
 
@@ -98,7 +100,7 @@ public class DatabaseConstraintValidator {
     private void validateDirectProperty(Object bean, PropertyReference propertyRef, DatabaseConstraintValidationContext validation) {
         ColumnReference columnRef = schemaMapper.getColumnReference(propertyRef);
         if (columnRef != null) {
-            ColumnMetadata columnMetadata = constraintRepository.getColumnMetadata(columnRef);
+            ColumnMetadata columnMetadata = columnMetadataRepository.getColumnMetadata(columnRef);
             if (columnMetadata != null) {
                 Object propertyValue = null;
                 try {
@@ -119,11 +121,12 @@ public class DatabaseConstraintValidator {
         messageBuilder = new ViolationMessageBuilder(messageInterpolator);
     }
 
-    public void setConstraintRepository(DatabaseConstraintRepository constraintRepository) {
-        this.constraintRepository = constraintRepository;
-    }
-
     public void setSchemaMapper(SchemaMapper schemaMapper) {
         this.schemaMapper = schemaMapper;
     }
+    
+    public void setColumnMetadataRepository(ColumnMetadataRepository columnMetadataRepository) {
+        this.columnMetadataRepository = columnMetadataRepository;
+    }
+    
 }

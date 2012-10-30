@@ -1,4 +1,4 @@
-package org.jarbframework.constraint.metadata.database;
+package org.jarbframework.constraint.metadata.enhance;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -6,8 +6,10 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import org.jarbframework.constraint.metadata.PropertyConstraintDescription;
+import org.jarbframework.constraint.metadata.database.ColumnMetadataRepository;
 import org.jarbframework.constraint.metadata.domain.Wine;
 import org.jarbframework.utils.bean.PropertyReference;
+import org.jarbframework.utils.orm.SchemaMapper;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -17,16 +19,19 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "classpath:application-context.xml" })
-public class DatabasePropertyConstraintDescriptionEnhancerTest {
+public class DatabaseSchemaPropertyConstraintEnhancerTest {
     
-    private DatabasePropertyConstraintDescriptionEnhancer enhancer;
+    private DatabaseSchemaPropertyConstraintEnhancer propertyEnhancer;
 
     @Autowired
-    private DatabaseConstraintRepository databaseConstraintRepository;
+    private SchemaMapper schemaMapper;
+    
+    @Autowired
+    private ColumnMetadataRepository columnMetadataRepository;
 
     @Before
     public void setUp() {
-        enhancer = new DatabasePropertyConstraintDescriptionEnhancer(databaseConstraintRepository);
+        propertyEnhancer = new DatabaseSchemaPropertyConstraintEnhancer(schemaMapper, columnMetadataRepository);
     }
 
     /**
@@ -36,7 +41,7 @@ public class DatabasePropertyConstraintDescriptionEnhancerTest {
     public void testEnhance() {
         PropertyReference propertyReference = new PropertyReference(Wine.class, "name");
         PropertyConstraintDescription nameDescription = new PropertyConstraintDescription(propertyReference, String.class);
-        nameDescription = enhancer.enhance(nameDescription);
+        nameDescription = propertyEnhancer.enhance(nameDescription);
         assertTrue(nameDescription.isRequired());
         assertEquals(Integer.valueOf(6), nameDescription.getMaximumLength());
         assertNull(nameDescription.getFractionLength());
@@ -50,7 +55,7 @@ public class DatabasePropertyConstraintDescriptionEnhancerTest {
     public void testNotRequiredIfGeneratable() {
         PropertyReference propertyReference = new PropertyReference(Wine.class, "id");
         PropertyConstraintDescription idDescription = new PropertyConstraintDescription(propertyReference, Long.class);
-        idDescription = enhancer.enhance(idDescription);
+        idDescription = propertyEnhancer.enhance(idDescription);
         assertFalse(idDescription.isRequired());
     }
 
@@ -63,7 +68,7 @@ public class DatabasePropertyConstraintDescriptionEnhancerTest {
     public void testSkipPropertyWithoutMetadata() {
         PropertyReference propertyReference = new PropertyReference(Wine.class, "unmappedProperty");
         PropertyConstraintDescription unmappedPropertyDescription = new PropertyConstraintDescription(propertyReference, String.class);
-        unmappedPropertyDescription = enhancer.enhance(unmappedPropertyDescription);
+        unmappedPropertyDescription = propertyEnhancer.enhance(unmappedPropertyDescription);
         assertNull(unmappedPropertyDescription.getMaximumLength());
     }
 
@@ -75,7 +80,7 @@ public class DatabasePropertyConstraintDescriptionEnhancerTest {
     public void testSkipUnmappedProperty() {
         PropertyReference propertyReference = new PropertyReference(Wine.class, "unknownProperty");
         PropertyConstraintDescription unknownPropertyDescription = new PropertyConstraintDescription(propertyReference, String.class);
-        unknownPropertyDescription = enhancer.enhance(unknownPropertyDescription);
+        unknownPropertyDescription = propertyEnhancer.enhance(unknownPropertyDescription);
         assertNull(unknownPropertyDescription.getMaximumLength());
     }
 
@@ -87,7 +92,7 @@ public class DatabasePropertyConstraintDescriptionEnhancerTest {
     public void testSkipUnmappedBeans() {
         PropertyReference propertyReference = new PropertyReference(NotAnEntity.class, "name");
         PropertyConstraintDescription nameDescription = new PropertyConstraintDescription(propertyReference, String.class);
-        nameDescription = enhancer.enhance(nameDescription);
+        nameDescription = propertyEnhancer.enhance(nameDescription);
         assertNull(nameDescription.getMaximumLength());
     }
 

@@ -1,4 +1,6 @@
-package org.jarbframework.constraint.metadata;
+package org.jarbframework.constraint.metadata.enhance;
+
+import org.jarbframework.constraint.metadata.PropertyConstraintDescription;
 
 /**
  * Enhances property constraint description with additional information.

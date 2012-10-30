@@ -36,10 +36,12 @@ import org.jarbframework.utils.bean.PropertyReference;
 import org.jarbframework.utils.orm.ColumnReference;
 import org.jarbframework.utils.orm.NotAnEntityException;
 import org.jarbframework.utils.orm.SchemaMapper;
+import org.jarbframework.utils.orm.SimpleHibernateJpaSchemaMapper;
 
 /**
  * Hibernate JPA implementation of {@link SchemaMapper}.
  *
+ * @deprecated Should use the {@link SimpleHibernateJpaSchemaMapper}
  * @author Jeroen van Schagen
  * @date Aug 16, 2011
  */
