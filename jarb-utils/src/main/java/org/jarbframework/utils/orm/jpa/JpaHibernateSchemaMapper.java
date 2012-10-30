@@ -1,5 +1,17 @@
 package org.jarbframework.utils.orm.jpa;
 
+import static java.lang.String.format;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
+import static org.jarbframework.utils.Asserts.hasText;
+import static org.jarbframework.utils.Asserts.instanceOf;
+import static org.jarbframework.utils.Asserts.notNull;
+import static org.jarbframework.utils.bean.BeanAnnotationScanner.fieldOrGetter;
+import static org.jarbframework.utils.bean.BeanProperties.getDeclaringClass;
+import static org.jarbframework.utils.bean.BeanProperties.getPropertyNames;
+import static org.jarbframework.utils.bean.BeanProperties.getPropertyType;
+import static org.jarbframework.utils.orm.jpa.JpaMetaModelUtils.findRootEntityClass;
+import static org.springframework.beans.BeanUtils.instantiateClass;
+
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;
@@ -24,18 +36,6 @@ import org.jarbframework.utils.bean.PropertyReference;
 import org.jarbframework.utils.orm.ColumnReference;
 import org.jarbframework.utils.orm.NotAnEntityException;
 import org.jarbframework.utils.orm.SchemaMapper;
-
-import static java.lang.String.format;
-import static org.apache.commons.lang3.StringUtils.isNotBlank;
-import static org.jarbframework.utils.Asserts.hasText;
-import static org.jarbframework.utils.Asserts.instanceOf;
-import static org.jarbframework.utils.Asserts.notNull;
-import static org.jarbframework.utils.bean.BeanAnnotationScanner.fieldOrGetter;
-import static org.jarbframework.utils.bean.BeanProperties.getDeclaringClass;
-import static org.jarbframework.utils.bean.BeanProperties.getPropertyNames;
-import static org.jarbframework.utils.bean.BeanProperties.getPropertyType;
-import static org.jarbframework.utils.orm.jpa.JpaMetaModelUtils.findRootEntityClass;
-import static org.springframework.beans.BeanUtils.instantiateClass;
 
 /**
  * Hibernate JPA implementation of {@link SchemaMapper}.
@@ -77,8 +77,7 @@ public class JpaHibernateSchemaMapper implements SchemaMapper {
         return (NamingStrategy) instantiateClass(namingStrategyClass);
     }
 
-    @Override
-    public boolean isEntity(Class<?> clazz) {
+    private boolean isEntity(Class<?> clazz) {
         return JpaMetaModelUtils.isEntity(clazz);
     }
 
@@ -90,7 +89,7 @@ public class JpaHibernateSchemaMapper implements SchemaMapper {
     // Table mapping
 
     @Override
-    public String tableNameOf(Class<?> entityClass) {
+    public String getTableName(Class<?> entityClass) {
         String tableName = null;
         if (isEntity(entityClass)) {
             Class<?> tableClass = determineTableClass(entityClass);
@@ -136,7 +135,7 @@ public class JpaHibernateSchemaMapper implements SchemaMapper {
     // Column mapping
 
     @Override
-    public ColumnReference columnOf(PropertyReference propertyReference) {
+    public ColumnReference getColumnReference(PropertyReference propertyReference) {
         if (isEntity(propertyReference.getBeanClass())) {
             return createColumnReferenceFromEntity(propertyReference);
         } else if (isEmbeddable(propertyReference.getBeanClass())) {
@@ -272,7 +271,7 @@ public class JpaHibernateSchemaMapper implements SchemaMapper {
             return namingStrategy.columnName(joinColumn.name());
         } else {
             String referencedPropertyName = getIdentifierPropertyName(referencingClass);
-            ColumnReference referencedColumn = columnOf(new PropertyReference(referencingClass, referencedPropertyName));
+            ColumnReference referencedColumn = getColumnReference(new PropertyReference(referencingClass, referencedPropertyName));
             return namingStrategy.foreignKeyColumnName(propertyReference.getName(), referencingClass.getName(), referencedColumn.getTableName(),
                     referencedColumn.getColumnName());
         }

@@ -13,7 +13,7 @@ import org.jarbframework.utils.orm.SchemaMapper;
  * @author Jeroen van Schagen
  * @date Sep 6, 2011
  */
-public class DatabaseConstraintRepository {
+public class PropertyAwareColumnMetadataRepository {
 
     /** Retrieves column meta-data. **/
     private ColumnMetadataRepository columnMetadataRepository;
@@ -35,7 +35,7 @@ public class DatabaseConstraintRepository {
      * @param beanClass class of the bean containing our property
      * @param propertyName name of the property
      * @return description of the column, if any
-     * @throws CouldNotBeMappedToColumnException whenever some property could not be mapped to a column
+     * @throws CouldNotMapToColumnException whenever some property could not be mapped to a column
      */
     public ColumnMetadata getColumnMetadata(Class<?> beanClass, String propertyName) {
         return getColumnMetadata(new PropertyReference(beanClass, propertyName));
@@ -45,18 +45,26 @@ public class DatabaseConstraintRepository {
      * Retrieve the meta-data of a specific database column.
      * @param propertyReference reference to a property
      * @return description of the column, if any
-     * @throws CouldNotBeMappedToColumnException whenever some property could not be mapped to a column
+     * @throws CouldNotMapToColumnException whenever some property could not be mapped to a column
      */
     public ColumnMetadata getColumnMetadata(PropertyReference propertyReference) {
         ColumnReference columnReference = schemaMapper.getColumnReference(propertyReference);
         if (columnReference == null) {
-            throw new CouldNotBeMappedToColumnException("Property '" + propertyReference + "' could not be mapped to a column.");
+            throw new CouldNotMapToColumnException("Property '" + propertyReference + "' could not be mapped to a column.");
         }
         return getColumnMetadata(columnReference);
+    }
+    
+    public ColumnMetadataRepository getColumnMetadataRepository() {
+        return columnMetadataRepository;
     }
 
     public void setColumnMetadataRepository(ColumnMetadataRepository columnMetadataRepository) {
         this.columnMetadataRepository = columnMetadataRepository;
+    }
+    
+    public SchemaMapper getSchemaMapper() {
+        return schemaMapper;
     }
 
     public void setSchemaMapper(SchemaMapper schemaMapper) {

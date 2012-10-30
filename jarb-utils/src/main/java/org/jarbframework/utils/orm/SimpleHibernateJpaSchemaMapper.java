@@ -3,7 +3,6 @@ package org.jarbframework.utils.orm;
 import static org.springframework.core.annotation.AnnotationUtils.findAnnotation;
 
 import javax.persistence.Embeddable;
-import javax.persistence.Entity;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 
@@ -29,7 +28,7 @@ public class SimpleHibernateJpaSchemaMapper implements SchemaMapper {
     }
     
     @Override
-    public String tableNameOf(Class<?> beanClass) {
+    public String getTableName(Class<?> beanClass) {
         return getClassMetadata(beanClass).getTableName();
     }
 
@@ -38,7 +37,7 @@ public class SimpleHibernateJpaSchemaMapper implements SchemaMapper {
     }
     
     @Override
-    public ColumnReference columnOf(PropertyReference propertyReference) {
+    public ColumnReference getColumnReference(PropertyReference propertyReference) {
         AbstractEntityPersister classMetadata = getClassMetadata(propertyReference.getBeanClass());
         String[] columnNames = classMetadata.getPropertyColumnNames(propertyReference.getName());
         if(columnNames.length == 1) {
@@ -51,11 +50,6 @@ public class SimpleHibernateJpaSchemaMapper implements SchemaMapper {
     @Override
     public boolean isEmbeddable(Class<?> beanClass) {
         return findAnnotation(beanClass, Embeddable.class) != null;
-    }
-
-    @Override
-    public boolean isEntity(Class<?> beanClass) {
-        return findAnnotation(beanClass, Entity.class) != null;
     }
 
 }

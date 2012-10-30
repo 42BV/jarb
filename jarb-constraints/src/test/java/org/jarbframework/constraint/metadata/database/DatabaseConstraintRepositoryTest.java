@@ -39,7 +39,7 @@ public class DatabaseConstraintRepositoryTest {
     @Test
     public void testForProperty() {
         ColumnReference columnReference = new ColumnReference("wines", "name");
-        EasyMock.expect(schemaMapper.columnOf(new PropertyReference(Wine.class, "name"))).andReturn(columnReference);
+        EasyMock.expect(schemaMapper.getColumnReference(new PropertyReference(Wine.class, "name"))).andReturn(columnReference);
         ColumnMetadata columnConstraint = new ColumnMetadata(columnReference);
         EasyMock.expect(columnMetadataRepository.getColumnMetadata(new ColumnReference("wines", "name"))).andReturn(columnConstraint);
         EasyMock.replay(schemaMapper, columnMetadataRepository);
@@ -56,7 +56,7 @@ public class DatabaseConstraintRepositoryTest {
      */
     @Test
     public void testForPropertyNoMappedColumn() {
-        EasyMock.expect(schemaMapper.columnOf(new PropertyReference(Wine.class, "name"))).andReturn(null);
+        EasyMock.expect(schemaMapper.getColumnReference(new PropertyReference(Wine.class, "name"))).andReturn(null);
         EasyMock.replay(schemaMapper, columnMetadataRepository);
 
         try {

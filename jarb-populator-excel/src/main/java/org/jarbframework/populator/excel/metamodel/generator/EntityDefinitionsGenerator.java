@@ -53,7 +53,7 @@ public class EntityDefinitionsGenerator {
         final Class<T> entityClass = entity.getJavaType();
         EntityDefinition.Builder<T> builder = EntityDefinition.forClass(entityClass);
         SchemaMapper schemaMapper = JpaHibernateSchemaMapper.usingNamingStrategyOf(entityManagerFactory);
-        builder.setTableName(schemaMapper.tableNameOf(entityClass));
+        builder.setTableName(schemaMapper.getTableName(entityClass));
         ColumnDefinitionsGenerator columnDefinitionsGenerator = new ColumnDefinitionsGenerator(entityManagerFactory);
         builder.includeProperties(columnDefinitionsGenerator.createPropertyDefinitions(subClassEntities, entity, entityClass));
         if (!subClassEntities.isEmpty()) {

@@ -51,8 +51,7 @@ public class FieldAnalyzer {
             }
         } else {
             SchemaMapper schemaMapper = JpaHibernateSchemaMapper.usingNamingStrategyOf(entityManagerFactory);
-            String referencedColumnName = "";
-            referencedColumnName = schemaMapper.columnOf(propertyReference).getColumnName();
+            String referencedColumnName = schemaMapper.getColumnReference(propertyReference).getColumnName();
 
             if (!referencedColumnName.isEmpty()) {
                 columnDefinitionBuilder = PropertyDefinition.forField(field).setColumnName(referencedColumnName);

@@ -140,7 +140,7 @@ public final class JpaUtils {
     private static Map<String, String> createColumnNamesByJPADefault(SchemaMapper schemaMapper, EntityType<?> owningEntity) {
         Map<String, String> joinColumnNames = new HashMap<String, String>();
         Class<?> owningClass = owningEntity.getJavaType();
-        String owningClassDatabaseTableName = schemaMapper.tableNameOf(owningClass);
+        String owningClassDatabaseTableName = schemaMapper.getTableName(owningClass);
         String elementCollectionDatabaseAttributeName = getIdentifierColumnName(owningEntity);
         String concatinatedJoinColumnName = owningClassDatabaseTableName + "_" + elementCollectionDatabaseAttributeName;
         joinColumnNames.put(ROW_IDENTIFIER_COLUMN_NAME, concatinatedJoinColumnName);

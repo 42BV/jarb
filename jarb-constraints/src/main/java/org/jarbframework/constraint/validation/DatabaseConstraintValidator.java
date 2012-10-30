@@ -96,7 +96,7 @@ public class DatabaseConstraintValidator {
     }
 
     private void validateDirectProperty(Object bean, PropertyReference propertyRef, DatabaseConstraintValidationContext validation) {
-        ColumnReference columnRef = schemaMapper.columnOf(propertyRef);
+        ColumnReference columnRef = schemaMapper.getColumnReference(propertyRef);
         if (columnRef != null) {
             ColumnMetadata columnMetadata = constraintRepository.getColumnMetadata(columnRef);
             if (columnMetadata != null) {

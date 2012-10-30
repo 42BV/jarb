@@ -108,7 +108,7 @@ public final class JpaMetaModelUtils {
      */
     private static String createElementCollectionTableNameByJPADefault(Class<?> enclosingClass, String fieldName, EntityManagerFactory entityManagerFactory) {
         SchemaMapper schemaMapper = JpaHibernateSchemaMapper.usingNamingStrategyOf(entityManagerFactory);
-        String enclosingTypeTableName = schemaMapper.tableNameOf(enclosingClass);
+        String enclosingTypeTableName = schemaMapper.getTableName(enclosingClass);
         return enclosingTypeTableName + "_" + fieldName;
     }
 
