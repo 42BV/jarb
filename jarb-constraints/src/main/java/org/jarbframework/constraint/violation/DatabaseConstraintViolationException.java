@@ -10,7 +10,7 @@ import static org.jarbframework.utils.Asserts.notNull;
  */
 public abstract class DatabaseConstraintViolationException extends RuntimeException {
 
-    /** Constraint violation that occured. */
+    /** Constraint violation that occurred. */
     private final DatabaseConstraintViolation violation;
 
     /**
@@ -49,4 +49,5 @@ public abstract class DatabaseConstraintViolationException extends RuntimeExcept
     public DatabaseConstraintViolation getViolation() {
         return violation;
     }
+    
 }

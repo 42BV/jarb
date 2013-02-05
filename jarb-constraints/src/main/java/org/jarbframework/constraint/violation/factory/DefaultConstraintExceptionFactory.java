@@ -10,16 +10,13 @@ import org.jarbframework.constraint.violation.NotNullViolationException;
 import org.jarbframework.constraint.violation.UniqueKeyViolationException;
 
 /**
- * Provides a type specific constraint violation exception.
+ * Default exception factory that creates an exception based on type.
  * 
  * @author Jeroen van Schagen
  * @since 12-05-2011
  */
-public class SimpleConstraintExceptionFactory implements DatabaseConstraintExceptionFactory {
+public class DefaultConstraintExceptionFactory implements DatabaseConstraintExceptionFactory {
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public DatabaseConstraintViolationException createException(DatabaseConstraintViolation violation, Throwable cause) {
         DatabaseConstraintViolationException exception = null;

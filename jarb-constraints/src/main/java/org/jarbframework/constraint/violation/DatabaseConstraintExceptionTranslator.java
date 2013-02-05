@@ -3,7 +3,7 @@ package org.jarbframework.constraint.violation;
 import static org.jarbframework.utils.Asserts.notNull;
 
 import org.jarbframework.constraint.violation.factory.DatabaseConstraintExceptionFactory;
-import org.jarbframework.constraint.violation.factory.SimpleConstraintExceptionFactory;
+import org.jarbframework.constraint.violation.factory.DefaultConstraintExceptionFactory;
 import org.jarbframework.constraint.violation.resolver.DatabaseConstraintViolationResolver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,10 +17,12 @@ import org.slf4j.LoggerFactory;
  * @since 17-05-2011
  */
 public class DatabaseConstraintExceptionTranslator {
+	
     private final Logger logger = LoggerFactory.getLogger(DatabaseConstraintExceptionTranslator.class);
 
     /** Resolves the constraint violation from an exception. **/
     private final DatabaseConstraintViolationResolver violationResolver;
+    
     /** Creates an exception for some constraint violation. **/
     private final DatabaseConstraintExceptionFactory exceptionFactory;
 
@@ -29,7 +31,7 @@ public class DatabaseConstraintExceptionTranslator {
      * @param resolver resolves the constraint violation from an exception
      */
     public DatabaseConstraintExceptionTranslator(DatabaseConstraintViolationResolver resolver) {
-        this(resolver, new SimpleConstraintExceptionFactory());
+        this(resolver, new DefaultConstraintExceptionFactory());
     }
 
     /**

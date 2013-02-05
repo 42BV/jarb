@@ -1,6 +1,3 @@
-/*
- * (C) 2011 Nidera (www.nidera.com). All rights reserved.
- */
 package org.jarbframework.constraint.violation;
 
 import static org.jarbframework.constraint.violation.DatabaseConstraintType.FOREIGN_KEY;

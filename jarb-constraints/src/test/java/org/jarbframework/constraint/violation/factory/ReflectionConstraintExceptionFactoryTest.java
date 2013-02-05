@@ -85,7 +85,7 @@ public class ReflectionConstraintExceptionFactoryTest {
             new ReflectionConstraintExceptionFactory(unsupportedConstructor);
             fail("Expected an illegal argument exception, as an unsupported constructor was provided!");
         } catch (IllegalStateException e) {
-            assertEquals("Constructor contains unsupported parameter types", e.getMessage());
+            assertEquals("Constructor contains unsupported parameter types.", e.getMessage());
         }
     }
 

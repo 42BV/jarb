@@ -9,7 +9,7 @@ import java.util.List;
 import org.jarbframework.constraint.violation.DatabaseConstraintViolation;
 import org.jarbframework.constraint.violation.factory.DatabaseConstraintExceptionFactory;
 import org.jarbframework.constraint.violation.factory.ReflectionConstraintExceptionFactory;
-import org.jarbframework.constraint.violation.factory.SimpleConstraintExceptionFactory;
+import org.jarbframework.constraint.violation.factory.DefaultConstraintExceptionFactory;
 
 /**
  * Configurable constraint violation exception factory. Enables users
@@ -30,7 +30,7 @@ public class ConfigurableConstraintExceptionFactory implements DatabaseConstrain
      * Construct a new {@link ConfigurableConstraintExceptionFactory}.
      */
     public ConfigurableConstraintExceptionFactory() {
-        this(new SimpleConstraintExceptionFactory());
+        this(new DefaultConstraintExceptionFactory());
     }
 
     public ConfigurableConstraintExceptionFactory(DatabaseConstraintExceptionFactory defaultFactory) {

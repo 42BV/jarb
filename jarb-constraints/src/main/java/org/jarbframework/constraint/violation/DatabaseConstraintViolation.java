@@ -1,5 +1,6 @@
 package org.jarbframework.constraint.violation;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
@@ -32,7 +33,7 @@ public final class DatabaseConstraintViolation {
     }
     
     public DatabaseConstraintViolation(DatabaseConstraintType constraintType, String constraintName) {
-        if(constraintType == null && (constraintName == null || constraintName.length() == 0)) {
+        if(constraintType == null && StringUtils.isBlank(constraintName)) {
             throw new IllegalArgumentException("Should provide a constraint type or name.");
         }
         this.constraintType = constraintType;
