@@ -15,7 +15,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Initializes beans dynamically based on the provided arguments. This initializer
- * automatically places the provided arguments in the desired order.
+ * automatically places the provided arguments in the required constructor order.
  * 
  * @author Jeroen van Schagen
  * @since 05-02-2013
