@@ -13,15 +13,21 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 public final class DatabaseConstraintViolation {
     
     private final DatabaseConstraintType constraintType;
+    
     private final String constraintName;
     
     private String tableName;
+    
     private String columnName;
 
     private String referencingTableName;
+    
     private Object value;
+    
     private String valueType;
+    
     private String expectedValueType;
+    
     private Long maximumLength;
 
     public DatabaseConstraintViolation(DatabaseConstraintType constraintType) {

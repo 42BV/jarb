@@ -1,19 +1,16 @@
 package org.jarbframework.constraint.violation.factory;
 
-import static org.jarbframework.constraint.violation.DatabaseConstraintViolation.violaton;
 import static org.jarbframework.constraint.violation.DatabaseConstraintType.UNIQUE_KEY;
+import static org.jarbframework.constraint.violation.DatabaseConstraintViolation.violaton;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
-import java.lang.reflect.Constructor;
 import java.math.BigDecimal;
 import java.sql.SQLException;
+import java.util.NoSuchElementException;
 
 import org.jarbframework.constraint.violation.DatabaseConstraintViolation;
 import org.jarbframework.constraint.violation.domain.UsernameAlreadyExistsException;
-import org.jarbframework.constraint.violation.factory.DatabaseConstraintExceptionFactory;
-import org.jarbframework.constraint.violation.factory.ReflectionConstraintExceptionFactory;
 import org.junit.Test;
 
 public class ReflectionConstraintExceptionFactoryTest {
@@ -55,56 +52,34 @@ public class ReflectionConstraintExceptionFactoryTest {
      */
     @Test
     public void testInstantiateNullary() {
-        DatabaseConstraintExceptionFactory factory = new ReflectionConstraintExceptionFactory(ExceptionWithOnlyNullaryConstructor.class);
+        DatabaseConstraintExceptionFactory factory = new ReflectionConstraintExceptionFactory(NoArgException.class);
         DatabaseConstraintViolation violation = violaton(UNIQUE_KEY).build();
         final Throwable cause = new SQLException("Database exception 'uk_cars_license_number' violated !");
         Throwable exception = factory.createException(violation, cause);
-        assertTrue(exception instanceof ExceptionWithOnlyNullaryConstructor);
+        assertTrue(exception instanceof NoArgException);
     }
 
     /**
      * Whenever an exception has no supported constructors at all, we throw a runtime exception.
      */
-    @Test
+    @Test(expected = NoSuchElementException.class)
     public void testNoMatchingConstructor() {
-        try {
-            new ReflectionConstraintExceptionFactory(ExceptionWithUnsupportedConstructor.class);
-            fail("Expected an illegal state exception, as no supported constructor could be found!");
-        } catch (IllegalStateException e) {
-            assertEquals("Could not find a supported constructor in 'ExceptionWithUnsupportedConstructor'.", e.getMessage());
-        }
+        new ReflectionConstraintExceptionFactory(UnsupportedArgException.class);
     }
 
-    /**
-     * Unsupported constructors cannot be used.
-     */
-    @Test
-    public void testUnsupportedConstructor() throws SecurityException, NoSuchMethodException {
-        Constructor<? extends Throwable> unsupportedConstructor = ExceptionWithUnsupportedConstructor.class.getConstructor(BigDecimal.class);
-        try {
-            new ReflectionConstraintExceptionFactory(unsupportedConstructor);
-            fail("Expected an illegal argument exception, as an unsupported constructor was provided!");
-        } catch (IllegalStateException e) {
-            assertEquals("Constructor contains unsupported parameter types.", e.getMessage());
-        }
-    }
+    public static class NoArgException extends RuntimeException {
 
-    // Exception with a no-arg as only supported constructor
-    public static class ExceptionWithOnlyNullaryConstructor extends RuntimeException {
-        private static final long serialVersionUID = -8084276175092538738L;
-
-        public ExceptionWithOnlyNullaryConstructor() {
+        public NoArgException() {
             super();
         }
     }
 
-    // Exception with unsupported constructor, cannot be created
-    public static class ExceptionWithUnsupportedConstructor extends RuntimeException {
-        private static final long serialVersionUID = -8084276175092538738L;
+    public static class UnsupportedArgException extends RuntimeException {
 
-        public ExceptionWithUnsupportedConstructor(BigDecimal arg) {
+        public UnsupportedArgException(BigDecimal bigDecimal) {
             super();
         }
+        
     }
 
 }

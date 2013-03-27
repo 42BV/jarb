@@ -10,7 +10,6 @@ import static org.jarbframework.utils.Asserts.state;
  * @since 27-05-2011
  */
 public class InvalidTypeException extends DatabaseConstraintViolationException {
-    private static final long serialVersionUID = -4828293558481913477L;
 
     /**
      * Construct a new {@link InvalidTypeException}.

@@ -5,7 +5,6 @@ package org.jarbframework.constraint.violation.factory.custom;
 
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static org.apache.commons.lang3.StringUtils.lowerCase;
-import static org.jarbframework.utils.Asserts.notNull;
 
 import org.apache.commons.lang3.StringUtils;
 import org.jarbframework.constraint.violation.DatabaseConstraintViolation;
@@ -15,8 +14,10 @@ import org.jarbframework.constraint.violation.DatabaseConstraintViolation;
  * @author Jeroen van Schagen
  * @since Sep 2, 2011
  */
-public abstract class ConstraintNameMatcher implements ConstraintViolationMatcher {
+public abstract class ConstraintNameMatcher implements DatabaseConstraintViolationMatcher {
+    
     private final String expression;
+    
     private boolean ignoreCase = true;
 
     public ConstraintNameMatcher(String expression) {
@@ -33,8 +34,7 @@ public abstract class ConstraintNameMatcher implements ConstraintViolationMatche
 
     @Override
     public final boolean matches(DatabaseConstraintViolation violation) {
-        String constraintName = notNull(violation, "Constraint violation cannot be null.").getConstraintName();
-        return matches(constraintName);
+        return matches(violation.getConstraintName());
     }
 
     /**

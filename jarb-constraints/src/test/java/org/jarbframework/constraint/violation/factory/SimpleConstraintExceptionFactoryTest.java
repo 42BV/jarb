@@ -23,11 +23,11 @@ import org.junit.Test;
 
 public class SimpleConstraintExceptionFactoryTest {
     
-    private DefaultConstraintExceptionFactory factory;
+    private TypeBasedConstraintExceptionFactory factory;
 
     @Before
     public void setUp() {
-        factory = new DefaultConstraintExceptionFactory();
+        factory = new TypeBasedConstraintExceptionFactory();
     }
 
     @Test

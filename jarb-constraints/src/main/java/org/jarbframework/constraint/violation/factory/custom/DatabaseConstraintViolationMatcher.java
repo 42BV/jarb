@@ -7,7 +7,7 @@ import org.jarbframework.constraint.violation.DatabaseConstraintViolation;
  * @author Jeroen van Schagen
  * @since Aug 31, 2011
  */
-public interface ConstraintViolationMatcher {
+public interface DatabaseConstraintViolationMatcher {
 
     /**
      * Determine if a specific constraint matches our criteria.

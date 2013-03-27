@@ -9,7 +9,7 @@ import java.util.List;
 import org.jarbframework.constraint.violation.DatabaseConstraintViolation;
 import org.jarbframework.constraint.violation.factory.DatabaseConstraintExceptionFactory;
 import org.jarbframework.constraint.violation.factory.ReflectionConstraintExceptionFactory;
-import org.jarbframework.constraint.violation.factory.DefaultConstraintExceptionFactory;
+import org.jarbframework.constraint.violation.factory.TypeBasedConstraintExceptionFactory;
 
 /**
  * Configurable constraint violation exception factory. Enables users
@@ -30,7 +30,7 @@ public class ConfigurableConstraintExceptionFactory implements DatabaseConstrain
      * Construct a new {@link ConfigurableConstraintExceptionFactory}.
      */
     public ConfigurableConstraintExceptionFactory() {
-        this(new DefaultConstraintExceptionFactory());
+        this(new TypeBasedConstraintExceptionFactory());
     }
 
     public ConfigurableConstraintExceptionFactory(DatabaseConstraintExceptionFactory defaultFactory) {
@@ -79,7 +79,7 @@ public class ConfigurableConstraintExceptionFactory implements DatabaseConstrain
      * @param exceptionClass class of the exception that should be thrown
      * @return this factory instance for chaining
      */
-    public ConfigurableConstraintExceptionFactory registerException(ConstraintViolationMatcher violationMatcher, Class<? extends Throwable> exceptionClass) {
+    public ConfigurableConstraintExceptionFactory registerException(DatabaseConstraintViolationMatcher violationMatcher, Class<? extends Throwable> exceptionClass) {
         return registerFactory(violationMatcher, new ReflectionConstraintExceptionFactory(exceptionClass));
     }
 
@@ -99,7 +99,7 @@ public class ConfigurableConstraintExceptionFactory implements DatabaseConstrain
      * @param exceptionFactory reference to the factory that should be used
      * @return this factory instance for chaining
      */
-    public ConfigurableConstraintExceptionFactory registerFactory(ConstraintViolationMatcher violationMatcher,
+    public ConfigurableConstraintExceptionFactory registerFactory(DatabaseConstraintViolationMatcher violationMatcher,
             DatabaseConstraintExceptionFactory exceptionFactory) {
         return registerMapping(new ExceptionFactoryMapping(violationMatcher, exceptionFactory));
     }
