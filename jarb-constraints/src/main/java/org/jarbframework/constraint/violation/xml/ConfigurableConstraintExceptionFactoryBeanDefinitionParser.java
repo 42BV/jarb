@@ -9,7 +9,7 @@ import java.util.List;
 
 import org.jarbframework.constraint.violation.factory.DatabaseConstraintExceptionFactory;
 import org.jarbframework.constraint.violation.factory.custom.ConfigurableConstraintExceptionFactory;
-import org.jarbframework.constraint.violation.factory.custom.ExceptionFactoryMapping;
+import org.jarbframework.constraint.violation.factory.custom.DatabaseConstraintExceptionFactoryMapping;
 import org.jarbframework.utils.spring.SingletonFactoryBean;
 import org.springframework.beans.factory.annotation.Required;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -43,7 +43,7 @@ public class ConfigurableConstraintExceptionFactoryBeanDefinitionParser extends 
     private ManagedList<Object> parseExceptionMappings(Element element, ParserContext parserContext, BeanDefinition parentDefinition) {
         List<Element> mappingElements = getChildElementsByTagName(element, "exception-mapping");
         ManagedList<Object> mappingDefinitions = new ManagedList<Object>(mappingElements.size());
-        mappingDefinitions.setElementTypeName(ExceptionFactoryMapping.class.getName());
+        mappingDefinitions.setElementTypeName(DatabaseConstraintExceptionFactoryMapping.class.getName());
         mappingDefinitions.setSource(parentDefinition);
         ExceptionFactoryMappingBeanDefinitionParser mappingParser = new ExceptionFactoryMappingBeanDefinitionParser(parentDefinition);
         for (Element mappingElement : mappingElements) {
@@ -54,14 +54,14 @@ public class ConfigurableConstraintExceptionFactoryBeanDefinitionParser extends 
 
     static final class ConfigurableConstraintExceptionFactoryParserFactoryBean extends SingletonFactoryBean<ConfigurableConstraintExceptionFactory> {
         private DatabaseConstraintExceptionFactory defaultFactory;
-        private Collection<ExceptionFactoryMapping> exceptionMappings;
+        private Collection<DatabaseConstraintExceptionFactoryMapping> exceptionMappings;
 
         public void setDefaultFactory(DatabaseConstraintExceptionFactory defaultFactory) {
             this.defaultFactory = defaultFactory;
         }
 
         @Required
-        public void setExceptionMappings(Collection<ExceptionFactoryMapping> exceptionMappings) {
+        public void setExceptionMappings(Collection<DatabaseConstraintExceptionFactoryMapping> exceptionMappings) {
             this.exceptionMappings = exceptionMappings;
         }
 
@@ -76,8 +76,8 @@ public class ConfigurableConstraintExceptionFactoryBeanDefinitionParser extends 
         }
 
         private ConfigurableConstraintExceptionFactory registerMappings(ConfigurableConstraintExceptionFactory factory) {
-            for (ExceptionFactoryMapping exceptionMapping : exceptionMappings) {
-                factory.registerMapping(exceptionMapping);
+            for (DatabaseConstraintExceptionFactoryMapping exceptionMapping : exceptionMappings) {
+                factory.register(exceptionMapping);
             }
             return factory;
         }

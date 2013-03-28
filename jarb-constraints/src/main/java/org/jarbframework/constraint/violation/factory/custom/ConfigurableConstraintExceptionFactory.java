@@ -1,6 +1,5 @@
 package org.jarbframework.constraint.violation.factory.custom;
 
-import static org.jarbframework.constraint.violation.factory.custom.ConstraintNameMatcher.exact;
 import static org.jarbframework.utils.Asserts.notNull;
 
 import java.util.ArrayList;
@@ -21,14 +20,13 @@ import org.jarbframework.constraint.violation.factory.TypeBasedConstraintExcepti
  * @since 12-05-2011
  */
 public class ConfigurableConstraintExceptionFactory implements DatabaseConstraintExceptionFactory {
+    
     /** Registered custom exception factories. **/
-    private final List<ExceptionFactoryMapping> customFactoryMappings = new ArrayList<ExceptionFactoryMapping>();
+    private final List<DatabaseConstraintExceptionFactoryMapping> customFactoryMappings = new ArrayList<DatabaseConstraintExceptionFactoryMapping>();
+    
     /** Factory used whenever no custom factory could be determined. **/
     private final DatabaseConstraintExceptionFactory defaultFactory;
 
-    /**
-     * Construct a new {@link ConfigurableConstraintExceptionFactory}.
-     */
     public ConfigurableConstraintExceptionFactory() {
         this(new TypeBasedConstraintExceptionFactory());
     }
@@ -37,9 +35,6 @@ public class ConfigurableConstraintExceptionFactory implements DatabaseConstrain
         this.defaultFactory = notNull(defaultFactory, "Default violation exception factory cannot be null.");
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Throwable createException(DatabaseConstraintViolation violation, Throwable cause) {
         notNull(violation, "Cannot create exception for a null violation.");
@@ -54,8 +49,8 @@ public class ConfigurableConstraintExceptionFactory implements DatabaseConstrain
      */
     private DatabaseConstraintExceptionFactory findFactoryFor(DatabaseConstraintViolation violation) {
         DatabaseConstraintExceptionFactory factory = defaultFactory;
-        for (ExceptionFactoryMapping customFactoryMapping : customFactoryMappings) {
-            if (customFactoryMapping.supports(violation)) {
+        for (DatabaseConstraintExceptionFactoryMapping customFactoryMapping : customFactoryMappings) {
+            if (customFactoryMapping.isSupported(violation)) {
                 factory = customFactoryMapping.getExceptionFactory();
                 break;
             }
@@ -63,45 +58,26 @@ public class ConfigurableConstraintExceptionFactory implements DatabaseConstrain
         return factory;
     }
 
-    /**
-     * Register a custom exception class for specific database constraints.
-     * @param constraintName name of the constraint that our factory applies to
-     * @param exceptionClass class of the exception that should be thrown
-     * @return this factory instance for chaining
-     */
-    public ConfigurableConstraintExceptionFactory registerException(String constraintName, Class<? extends Throwable> exceptionClass) {
-        return registerException(exact(constraintName), exceptionClass);
+    public ConfigurableConstraintExceptionFactory register(String constraintName, Class<? extends Exception> exceptionClass) {
+        return register(constraintName, NameMatchingStrategy.EXACT_IGNORE_CASE, exceptionClass);
     }
-
-    /**
-     * Register a custom exception class for specific database constraints.
-     * @param violationMatcher describes the constraint(s) that our factory applies to
-     * @param exceptionClass class of the exception that should be thrown
-     * @return this factory instance for chaining
-     */
-    public ConfigurableConstraintExceptionFactory registerException(DatabaseConstraintViolationMatcher violationMatcher, Class<? extends Throwable> exceptionClass) {
-        return registerFactory(violationMatcher, new ReflectionConstraintExceptionFactory(exceptionClass));
+    
+    public ConfigurableConstraintExceptionFactory register(String constraintName, NameMatchingStrategy nameMatchingStrategy, Class<? extends Exception> exceptionClass) {
+        return register(new DatabaseConstraintNameMatcher(constraintName, nameMatchingStrategy), exceptionClass);
     }
-
-    /**
-     * Register a custom exception factory for specific database constraints.
-     * @param constraintName name of the constraint that our factory applies to
-     * @param exceptionFactory reference to the factory that should be used
-     * @return this factory instance for chaining
-     */
-    public ConfigurableConstraintExceptionFactory registerFactory(String constraintName, DatabaseConstraintExceptionFactory exceptionFactory) {
-        return registerFactory(exact(constraintName), exceptionFactory);
+    
+    public ConfigurableConstraintExceptionFactory register(DatabaseConstraintViolationMatcher violationMatcher, Class<? extends Exception> exceptionClass) {
+        return register(violationMatcher, new ReflectionConstraintExceptionFactory(exceptionClass));
     }
-
+    
     /**
      * Register a custom exception factory for specific database constraints.
      * @param violationMatcher describes the constraint(s) that our factory applies to
      * @param exceptionFactory reference to the factory that should be used
      * @return this factory instance for chaining
      */
-    public ConfigurableConstraintExceptionFactory registerFactory(DatabaseConstraintViolationMatcher violationMatcher,
-            DatabaseConstraintExceptionFactory exceptionFactory) {
-        return registerMapping(new ExceptionFactoryMapping(violationMatcher, exceptionFactory));
+    public ConfigurableConstraintExceptionFactory register(DatabaseConstraintViolationMatcher violationMatcher, DatabaseConstraintExceptionFactory exceptionFactory) {
+        return register(new DatabaseConstraintExceptionFactoryMapping(violationMatcher, exceptionFactory));
     }
 
     /**
@@ -109,8 +85,8 @@ public class ConfigurableConstraintExceptionFactory implements DatabaseConstrain
      * @param exceptionFactoryMapping describes the mapping of an exception factory on constraint violations.
      * @return this factory instance for chaining
      */
-    public ConfigurableConstraintExceptionFactory registerMapping(ExceptionFactoryMapping exceptionFactoryMapping) {
-        customFactoryMappings.add(notNull(exceptionFactoryMapping, "Exception factory mapping cannot be null."));
+    public ConfigurableConstraintExceptionFactory register(DatabaseConstraintExceptionFactoryMapping exceptionFactoryMapping) {
+        customFactoryMappings.add(exceptionFactoryMapping);
         return this;
     }
 
