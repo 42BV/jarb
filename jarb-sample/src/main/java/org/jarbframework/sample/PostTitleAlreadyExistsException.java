@@ -2,14 +2,15 @@ package org.jarbframework.sample;
 
 import org.jarbframework.constraint.violation.DatabaseConstraintViolation;
 import org.jarbframework.constraint.violation.UniqueKeyViolationException;
+import org.jarbframework.constraint.violation.factory.custom.DatabaseConstraintMapping;
 
 /**
  * Thrown whenever a post is being inserted with a title that already exists.
  * @author Jeroen van Schagen
  * @since 8-6-2011
  */
+@DatabaseConstraintMapping("uk_posts_title")
 public class PostTitleAlreadyExistsException extends UniqueKeyViolationException {
-    private static final long serialVersionUID = -7112473482705797922L;
 
     /**
      * Construct a new {@link PostTitleAlreadyExistsException}.
@@ -19,4 +20,5 @@ public class PostTitleAlreadyExistsException extends UniqueKeyViolationException
     public PostTitleAlreadyExistsException(DatabaseConstraintViolation violation, Throwable cause) {
         super(violation, cause);
     }
+    
 }

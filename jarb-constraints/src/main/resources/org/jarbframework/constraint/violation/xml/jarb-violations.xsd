@@ -209,7 +209,7 @@
             <xsd:attribute name="scan-exceptions" type="xsd:string">
                 <xsd:annotation>
                     <xsd:documentation>
-                       The package to scan for @DatabaseConstraint annotations.
+                       Base package to scan for annotated exceptions.
                     </xsd:documentation>
                 </xsd:annotation>
             </xsd:attribute>

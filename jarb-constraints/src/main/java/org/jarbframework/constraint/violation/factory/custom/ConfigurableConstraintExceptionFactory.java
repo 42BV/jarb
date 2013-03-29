@@ -105,12 +105,12 @@ public class ConfigurableConstraintExceptionFactory implements DatabaseConstrain
     
     public ConfigurableConstraintExceptionFactory registerAll(String basePackage) {
         ClassPathScanningCandidateComponentProvider componentProvider = new ClassPathScanningCandidateComponentProvider(false);
-        componentProvider.addIncludeFilter(new AnnotationTypeFilter(DatabaseConstraint.class));
+        componentProvider.addIncludeFilter(new AnnotationTypeFilter(DatabaseConstraintMapping.class));
         
         Set<BeanDefinition> annotatedBeans = componentProvider.findCandidateComponents(basePackage);
         for(BeanDefinition annotatedBean : annotatedBeans) {
             Class<?> beanClass = Classes.forName(annotatedBean.getBeanClassName());
-            DatabaseConstraint annotation = AnnotationUtils.findAnnotation(beanClass, DatabaseConstraint.class);
+            DatabaseConstraintMapping annotation = AnnotationUtils.findAnnotation(beanClass, DatabaseConstraintMapping.class);
             register(annotation.value(), annotation.strategy(), beanClass.asSubclass(Exception.class));
         }
         

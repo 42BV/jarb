@@ -10,9 +10,7 @@
         http://www.jarbframework.org/schema/violations http://www.jarbframework.org/schema/violations/jarb-violations.xsd">
     
     <violations:translator id="translator">
-	    <violations:configurable-exception-factory>
-	        <violations:exception-mapping constraint="uk_users_name" exception="org.jarbframework.constraint.violation.domain.UsernameAlreadyExistsException"/>
-	    </violations:configurable-exception-factory>
+	    <violations:configurable-exception-factory scan-exceptions="org.jarbframework.constraint.violation.domain"/>
     </violations:translator>
 
     <violations:enable-translations translator="translator"/>
