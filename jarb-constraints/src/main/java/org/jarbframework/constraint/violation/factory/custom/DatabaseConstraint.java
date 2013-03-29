@@ -13,7 +13,7 @@ import java.lang.annotation.Target;
  */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface DatabaseConstraintMapping {
+public @interface DatabaseConstraint {
 
     /**
      * Name of the constraint {@code required}.

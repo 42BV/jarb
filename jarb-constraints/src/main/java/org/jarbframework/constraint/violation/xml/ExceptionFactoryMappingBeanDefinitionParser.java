@@ -4,8 +4,8 @@ import static org.jarbframework.utils.spring.xml.BeanParsingHelper.parseProperty
 import static org.springframework.beans.factory.support.BeanDefinitionBuilder.genericBeanDefinition;
 
 import org.jarbframework.constraint.violation.factory.ReflectionConstraintExceptionFactory;
-import org.jarbframework.constraint.violation.factory.custom.DatabaseConstraintExceptionFactoryMapping;
-import org.jarbframework.constraint.violation.factory.custom.DatabaseConstraintNameMatcher;
+import org.jarbframework.constraint.violation.factory.custom.ExceptionFactoryMapping;
+import org.jarbframework.constraint.violation.factory.custom.ViolationNamePredicate;
 import org.jarbframework.constraint.violation.factory.custom.NameMatchingStrategy;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
@@ -14,7 +14,7 @@ import org.springframework.beans.factory.xml.ParserContext;
 import org.w3c.dom.Element;
 
 /**
- * Parses a {@link DatabaseConstraintExceptionFactoryMapping} from XML.
+ * Parses a {@link ExceptionFactoryMapping} from XML.
  * @author Jeroen van Schagen
  * @since 22-09-2011
  */
@@ -27,7 +27,7 @@ public class ExceptionFactoryMappingBeanDefinitionParser implements BeanDefiniti
 
     @Override
     public BeanDefinition parse(Element element, ParserContext parserContext) {
-        BeanDefinitionBuilder mappingBuilder = genericBeanDefinition(DatabaseConstraintExceptionFactoryMapping.class);
+        BeanDefinitionBuilder mappingBuilder = genericBeanDefinition(ExceptionFactoryMapping.class);
         mappingBuilder.addConstructorArgValue(parseViolationMatcher(element, parserContext));
         Object exceptionFactory = parseMappedExceptionFactory(element, parserContext);
         if (exceptionFactory != null) {
@@ -49,7 +49,7 @@ public class ExceptionFactoryMappingBeanDefinitionParser implements BeanDefiniti
     private BeanDefinition parseNameBasedViolationMatcher(Element element, ParserContext parserContext) {
         final String matchingStrategyName = element.getAttribute("name-matching").toUpperCase();
         
-        BeanDefinitionBuilder matcherBuilder = genericBeanDefinition(DatabaseConstraintNameMatcher.class);
+        BeanDefinitionBuilder matcherBuilder = genericBeanDefinition(ViolationNamePredicate.class);
         matcherBuilder.addConstructorArgValue(element.getAttribute("constraint"));
         matcherBuilder.addConstructorArgValue(NameMatchingStrategy.valueOf(matchingStrategyName));
         return matcherBuilder.getBeanDefinition();

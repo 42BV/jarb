@@ -3,6 +3,7 @@ package org.jarbframework.constraint.violation.domain;
 import org.jarbframework.constraint.violation.DatabaseConstraintViolation;
 import org.jarbframework.constraint.violation.UniqueKeyViolationException;
 import org.jarbframework.constraint.violation.factory.DatabaseConstraintExceptionFactory;
+import org.jarbframework.constraint.violation.factory.custom.DatabaseConstraint;
 
 /**
  * User names can only be used once.
@@ -10,6 +11,7 @@ import org.jarbframework.constraint.violation.factory.DatabaseConstraintExceptio
  * @author Jeroen van Schagen
  * @since 27-05-2011
  */
+@DatabaseConstraint("uk_users_name")
 public class UsernameAlreadyExistsException extends UniqueKeyViolationException {
 
     private DatabaseConstraintExceptionFactory exceptionFactory;
@@ -27,10 +29,6 @@ public class UsernameAlreadyExistsException extends UniqueKeyViolationException 
         this.exceptionFactory = exceptionFactory;
     }
 
-    /**
-     * Retrieve the factory that generated this exception.
-     * @return exception factory
-     */
     public DatabaseConstraintExceptionFactory getExceptionFactory() {
         return exceptionFactory;
     }
