@@ -81,6 +81,7 @@
 		            <xsd:element ref="configurable-exception-factory"/>
 		        </xsd:choice>
             </xsd:sequence>
+            
             <xsd:attribute name="id" type="xsd:ID">
                 <xsd:annotation>
                     <xsd:documentation>
@@ -126,7 +127,7 @@
                 <xsd:element name="exception-mapping" minOccurs="0" maxOccurs="unbounded">
                     <xsd:complexType>
                         <xsd:all>
-                            <xsd:element name="matcher" minOccurs="0">
+                            <xsd:element name="predicate" minOccurs="0">
                                 <xsd:annotation>
                                     <xsd:documentation>
                                         Determines whether a violation is supported by our mapping.
@@ -147,7 +148,8 @@
                                 </xsd:complexType>
                             </xsd:element>
                         </xsd:all>
-                        <xsd:attribute name="matcher" type="xsd:string">
+                        
+                        <xsd:attribute name="predicate" type="xsd:string">
                             <xsd:annotation>
                                 <xsd:documentation>
                                     Determines whether a violation is supported by our mapping.
@@ -161,7 +163,7 @@
                                 </xsd:documentation>
                             </xsd:annotation>
                         </xsd:attribute>
-                        <xsd:attribute name="name-matching" default="exact">
+                        <xsd:attribute name="strategy" default="exact_ignore_case">
                             <xsd:annotation>
                                 <xsd:documentation>
                                    Determines how constraint expressions are matched.
@@ -170,17 +172,15 @@
                             <xsd:simpleType>
                                 <xsd:restriction base="xsd:string">
                                     <xsd:enumeration value="exact"/>
+                                    <xsd:enumeration value="exact_ignore_case"/>
+                                    <xsd:enumeration value="starts_with"/>
+                                    <xsd:enumeration value="ends_with"/>
+                                    <xsd:enumeration value="contains"/>
                                     <xsd:enumeration value="regex"/>
                                 </xsd:restriction>
                             </xsd:simpleType>
                         </xsd:attribute>
-                        <xsd:attribute name="ignore-case" default="true" type="xsd:boolean">
-                            <xsd:annotation>
-                                <xsd:documentation>
-                                   Determines how constraint expressions are matched.
-                                </xsd:documentation>
-                            </xsd:annotation>
-                        </xsd:attribute>
+                        
                         <xsd:attribute name="exception" type="xsd:string">
                             <xsd:annotation>
                                 <xsd:documentation>
@@ -197,21 +197,19 @@
                         </xsd:attribute>
                     </xsd:complexType>
                 </xsd:element>
-                <xsd:element name="default-factory" minOccurs="0">
-                    <xsd:annotation>
-                        <xsd:documentation>
-                            Factory used to generate exceptions whenever there is no supported mapping.
-                        </xsd:documentation>
-                    </xsd:annotation>
-                    <xsd:complexType>
-                        <xsd:group ref="beanElementGroup"/>
-                    </xsd:complexType>
-                </xsd:element>
             </xsd:sequence>
+            
             <xsd:attribute name="id" type="xsd:ID">
                 <xsd:annotation>
                     <xsd:documentation>
                        Identifier of the generated exception factory.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:attribute>
+            <xsd:attribute name="scan-exceptions" type="xsd:string">
+                <xsd:annotation>
+                    <xsd:documentation>
+                       The package to scan for @DatabaseConstraint annotations.
                     </xsd:documentation>
                 </xsd:annotation>
             </xsd:attribute>

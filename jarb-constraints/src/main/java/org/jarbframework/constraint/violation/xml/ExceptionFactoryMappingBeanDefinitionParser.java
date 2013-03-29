@@ -5,8 +5,8 @@ import static org.springframework.beans.factory.support.BeanDefinitionBuilder.ge
 
 import org.jarbframework.constraint.violation.factory.ReflectionConstraintExceptionFactory;
 import org.jarbframework.constraint.violation.factory.custom.ExceptionFactoryMapping;
-import org.jarbframework.constraint.violation.factory.custom.ViolationNamePredicate;
 import org.jarbframework.constraint.violation.factory.custom.NameMatchingStrategy;
+import org.jarbframework.constraint.violation.factory.custom.ViolationNamePredicate;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.xml.BeanDefinitionParser;
@@ -19,6 +19,7 @@ import org.w3c.dom.Element;
  * @since 22-09-2011
  */
 public class ExceptionFactoryMappingBeanDefinitionParser implements BeanDefinitionParser {
+    
     private final BeanDefinition parentDefinition;
 
     public ExceptionFactoryMappingBeanDefinitionParser(BeanDefinition parentDefinition) {
@@ -39,7 +40,7 @@ public class ExceptionFactoryMappingBeanDefinitionParser implements BeanDefiniti
     }
 
     private Object parseViolationMatcher(Element element, ParserContext parserContext) {
-        Object matcher = parsePropertyFromAttributeOrChild(element, "matcher", parserContext, parentDefinition);
+        Object matcher = parsePropertyFromAttributeOrChild(element, "predicate", parserContext, parentDefinition);
         if (matcher == null) {
             matcher = parseNameBasedViolationMatcher(element, parserContext);
         }
@@ -47,7 +48,7 @@ public class ExceptionFactoryMappingBeanDefinitionParser implements BeanDefiniti
     }
 
     private BeanDefinition parseNameBasedViolationMatcher(Element element, ParserContext parserContext) {
-        final String matchingStrategyName = element.getAttribute("name-matching").toUpperCase();
+        final String matchingStrategyName = element.getAttribute("strategy").toUpperCase();
         
         BeanDefinitionBuilder matcherBuilder = genericBeanDefinition(ViolationNamePredicate.class);
         matcherBuilder.addConstructorArgValue(element.getAttribute("constraint"));

@@ -53,6 +53,7 @@ public class ConfigurableConstraintExceptionFactoryBeanDefinitionParser extends 
     }
 
     static final class ConfigurableConstraintExceptionFactoryParserFactoryBean extends SingletonFactoryBean<ConfigurableConstraintExceptionFactory> {
+        
         private DatabaseConstraintExceptionFactory defaultFactory;
         private Collection<ExceptionFactoryMapping> exceptionMappings;
 

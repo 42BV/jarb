@@ -69,6 +69,7 @@ public class DatabaseConstraintExceptionTranslatorBeanDefinitionParser extends A
     }
 
     static final class DatabaseConstraintViolationResolverParserFactoryBean extends SingletonFactoryBean<DatabaseConstraintViolationResolver> {
+        
         private DataSource dataSource;
 
         @Required
@@ -80,6 +81,7 @@ public class DatabaseConstraintExceptionTranslatorBeanDefinitionParser extends A
         protected DatabaseConstraintViolationResolver createObject() throws Exception {
             return new DatabaseConstraintViolationResolverFactory().build(dataSource);
         }
+        
     }
 
     @Override
