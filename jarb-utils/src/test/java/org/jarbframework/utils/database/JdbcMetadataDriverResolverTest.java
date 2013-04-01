@@ -15,7 +15,7 @@ public class JdbcMetadataDriverResolverTest {
         dataSource.setUsername("sa");
 
         JdbcMetadataDatabaseTypeResolver databaseTypeResolver = new JdbcMetadataDatabaseTypeResolver();
-        assertEquals(DatabaseType.HSQL, databaseTypeResolver.resolve(dataSource));
+        assertEquals(DatabaseType.HSQL, databaseTypeResolver.resolveDatabaseType(dataSource));
     }
 
 }

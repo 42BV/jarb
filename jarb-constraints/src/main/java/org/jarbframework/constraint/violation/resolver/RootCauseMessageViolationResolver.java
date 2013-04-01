@@ -1,6 +1,7 @@
 package org.jarbframework.constraint.violation.resolver;
 
-import org.apache.commons.lang3.StringUtils;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
+
 import org.jarbframework.constraint.violation.DatabaseConstraintViolation;
 
 /**
@@ -9,26 +10,31 @@ import org.jarbframework.constraint.violation.DatabaseConstraintViolation;
  * @author Jeroen van Schagen
  * @since 16-05-2011
  */
-public abstract class RootCauseMessageViolationResolver implements DatabaseConstraintViolationResolver {
+public class RootCauseMessageViolationResolver implements DatabaseConstraintViolationResolver {
 
+    private final ViolationMessageResolver messageViolationResolver;
+    
+    public RootCauseMessageViolationResolver(ViolationMessageResolver messageViolationResolver) {
+        this.messageViolationResolver = messageViolationResolver;
+    }
+    
     /**
      * {@inheritDoc}
      */
     @Override
     public final DatabaseConstraintViolation resolve(Throwable throwable) {
         DatabaseConstraintViolation violation = null;
-        String rootMessage = ExceptionFinder.getRootCause(throwable).getMessage();
-        if (StringUtils.isNotBlank(rootMessage)) {
-            violation = resolveByMessage(rootMessage);
+        
+        String rootCauseMessage = getRootCauseMessage(throwable);
+        if (isNotBlank(rootCauseMessage)) {
+            violation = messageViolationResolver.resolveByMessage(rootCauseMessage);
         }
+        
         return violation;
     }
 
-    /**
-     * Resolve the constraint violation based on our root cause message.
-     * @param message root cause exception message
-     * @return constraint violation
-     */
-    protected abstract DatabaseConstraintViolation resolveByMessage(String message);
+    private String getRootCauseMessage(Throwable throwable) {
+        return ExceptionFinder.getRootCause(throwable).getMessage();
+    }
 
 }

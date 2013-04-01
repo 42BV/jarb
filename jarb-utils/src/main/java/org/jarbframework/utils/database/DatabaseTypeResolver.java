@@ -17,6 +17,6 @@ public interface DatabaseTypeResolver {
      * @throws UnrecognizedDatabaseException whenever we
      * could not recognize the type of database
      */
-    DatabaseType resolve(DataSource dataSource);
+    DatabaseType resolveDatabaseType(DataSource dataSource);
 
 }

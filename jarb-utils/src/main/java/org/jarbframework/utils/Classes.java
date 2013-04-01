@@ -11,4 +11,13 @@ public class Classes {
         }
     }
     
+    public static boolean isOnClasspath(String className) {
+        try {
+            Class.forName(className);
+            return true;
+        } catch(ClassNotFoundException e) {
+            return false;
+        }
+    }
+    
 }

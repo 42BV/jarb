@@ -18,7 +18,7 @@ import org.jarbframework.utils.JdbcConnectionCallback;
 public class JdbcMetadataDatabaseTypeResolver implements DatabaseTypeResolver {
 
     @Override
-    public DatabaseType resolve(DataSource dataSource) {
+    public DatabaseType resolveDatabaseType(DataSource dataSource) {
         String databaseProductName = doWithConnection(dataSource, new JdbcConnectionCallback<String>() {
 
             @Override

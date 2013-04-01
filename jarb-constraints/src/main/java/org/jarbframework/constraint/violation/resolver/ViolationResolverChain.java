@@ -16,10 +16,10 @@ import org.jarbframework.constraint.violation.DatabaseConstraintViolation;
  */
 public class ViolationResolverChain implements DatabaseConstraintViolationResolver {
     
-    private final List<DatabaseConstraintViolationResolver> violationResolvers;
+    private final List<DatabaseConstraintViolationResolver> resolvers;
 
     public ViolationResolverChain() {
-        violationResolvers = new ArrayList<DatabaseConstraintViolationResolver>();
+        resolvers = new ArrayList<DatabaseConstraintViolationResolver>();
     }
 
     /**
@@ -27,23 +27,25 @@ public class ViolationResolverChain implements DatabaseConstraintViolationResolv
      */
     @Override
     public DatabaseConstraintViolation resolve(Throwable throwable) {
-        for (DatabaseConstraintViolationResolver violationResolver : violationResolvers) {
-            DatabaseConstraintViolation violation = violationResolver.resolve(throwable);
+        DatabaseConstraintViolation result = null;
+        for (DatabaseConstraintViolationResolver resolver : resolvers) {
+            DatabaseConstraintViolation violation = resolver.resolve(throwable);
             if (violation != null) {
-                return violation;
+                result = violation;
+                break;
             }
         }
-        return null; // Could not determine a constraint violation
+        return result;
     }
 
     /**
      * Add a violation resolver to the back of this chain.
-     * @param violationResolver violation resolver instance we are adding
-     * @return  this instance, enabling the use of method chaining
+     * @param resolver violation resolver instance we are adding
+     * @return {@code this} instance, enabling the use of method chaining
      */
-    public ViolationResolverChain addToChain(DatabaseConstraintViolationResolver violationResolver) {
-        if(violationResolver != null) {
-            violationResolvers.add(violationResolver);
+    public ViolationResolverChain addToChain(DatabaseConstraintViolationResolver resolver) {
+        if(resolver != null) {
+            resolvers.add(resolver);
         }
         return this;
     }
