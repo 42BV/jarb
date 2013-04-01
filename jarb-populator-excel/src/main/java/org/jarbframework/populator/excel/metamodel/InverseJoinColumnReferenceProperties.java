@@ -5,8 +5,6 @@ import java.util.Map;
 
 import javax.persistence.metamodel.EmbeddableType;
 
-import org.apache.poi.hssf.record.formula.functions.T;
-
 /**
  * Data structure for storing information needed for an inversed JoinColumn relation (ElementCollection or OneToMany with JoinColumn).
  * @author Sander Benschop
@@ -16,7 +14,7 @@ public final class InverseJoinColumnReferenceProperties {
 
     private InverseJoinColumnReferenceType inverseJoinColumnReferenceType = InverseJoinColumnReferenceType.SERIALIZABLE_CLASS;
 
-    private EmbeddableType<T> embeddableType;
+    private EmbeddableType<?> embeddableType;
     private String referencedTableName;
 
     /** JoinColumnNames needed for the reference. Key is the Column name on the enclosing side, Value is the column name on the InversedReference side. */
@@ -70,11 +68,11 @@ public final class InverseJoinColumnReferenceProperties {
         return inverseJoinColumnReferenceType;
     }
 
-    public void setEmbeddableType(EmbeddableType<T> embeddableType) {
+    public void setEmbeddableType(EmbeddableType<?> embeddableType) {
         this.embeddableType = embeddableType;
     }
 
-    public EmbeddableType<T> getEmbeddableType() {
+    public EmbeddableType<?> getEmbeddableType() {
         return embeddableType;
     }
 

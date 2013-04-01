@@ -6,7 +6,7 @@ import java.sql.SQLException;
 
 import org.hibernate.HibernateException;
 import org.hibernate.dialect.Dialect;
-import org.hibernate.engine.SessionImplementor;
+import org.hibernate.engine.spi.SessionImplementor;
 import org.hibernate.id.AbstractPostInsertGenerator;
 import org.hibernate.id.IdentifierGeneratorHelper;
 import org.hibernate.id.PostInsertIdentityPersister;
@@ -14,6 +14,7 @@ import org.hibernate.id.SequenceIdentityGenerator.NoCommentsInsert;
 import org.hibernate.id.insert.AbstractReturningDelegate;
 import org.hibernate.id.insert.IdentifierGeneratingInsert;
 import org.hibernate.id.insert.InsertGeneratedIdentifierDelegate;
+import org.hibernate.type.Type;
 
 /**
  * A generator with immediate retrieval through JDBC3 {@link java.sql.Connection#prepareStatement(String, String[]) getGeneratedKeys}.
@@ -27,27 +28,33 @@ import org.hibernate.id.insert.InsertGeneratedIdentifierDelegate;
  *
  * @author Jean-Pol Landrain
  * @author Bas de Vos
+ * @author Jeroen van Schagen
  */
 public class DatabaseAssignedIdentifierGenerator extends AbstractPostInsertGenerator {
 
     @Override
-    public InsertGeneratedIdentifierDelegate getInsertGeneratedIdentifierDelegate(PostInsertIdentityPersister persister, Dialect dialect,
-            boolean isGetGeneratedKeysEnabled) {
+    public InsertGeneratedIdentifierDelegate getInsertGeneratedIdentifierDelegate(PostInsertIdentityPersister persister, Dialect dialect, boolean isGetGeneratedKeysEnabled) {
         return new Delegate(persister, dialect);
     }
 
     public static class Delegate extends AbstractReturningDelegate {
+        
         private final Dialect dialect;
-        private final String[] keyColumns;
+        
+        private final String keyColumnName;
+        private final Type keyType;
 
         public Delegate(PostInsertIdentityPersister persister, Dialect dialect) {
             super(persister);
+            
             this.dialect = dialect;
-            this.keyColumns = getPersister().getRootTableKeyColumnNames();
-            if (keyColumns.length > 1) {
+            
+            String[] keyColumnNames = getPersister().getRootTableKeyColumnNames();
+            if (keyColumnNames.length > 1) {
                 throw new HibernateException("The identity generator cannot be used with multi-column keys");
             } else {
-                keyColumns[0] = keyColumns[0].toUpperCase();
+                keyColumnName = keyColumnNames[0].toUpperCase();
+                keyType = getPersister().getIdentifierType();
             }
         }
 
@@ -58,14 +65,15 @@ public class DatabaseAssignedIdentifierGenerator extends AbstractPostInsertGener
 
         @Override
         protected PreparedStatement prepare(String insertSQL, SessionImplementor session) throws SQLException {
-            return session.getBatcher().prepareStatement(insertSQL, keyColumns);
+            return session.getTransactionCoordinator().getJdbcCoordinator().getStatementPreparer().prepareStatement(insertSQL, new String[] { keyColumnName });
+        }
+        
+        @Override
+        protected Serializable executeAndExtract(PreparedStatement insert, SessionImplementor session) throws SQLException {
+            session.getTransactionCoordinator().getJdbcCoordinator().getResultSetReturn().executeUpdate(insert);
+            return IdentifierGeneratorHelper.getGeneratedIdentity(insert.getGeneratedKeys(), keyColumnName, keyType);
         }
 
-        @Override
-        protected Serializable executeAndExtract(PreparedStatement insert) throws SQLException {
-            insert.executeUpdate();
-            return IdentifierGeneratorHelper.getGeneratedIdentity(insert.getGeneratedKeys(), getPersister().getIdentifierType());
-        }
     }
 
 }

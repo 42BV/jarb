@@ -4,7 +4,6 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.metamodel.EmbeddableType;
 import javax.persistence.metamodel.Metamodel;
 
-import org.apache.poi.hssf.record.formula.functions.T;
 import org.jarbframework.populator.excel.metamodel.Definition;
 import org.jarbframework.populator.excel.metamodel.EmbeddableElementCollectionDefinition;
 import org.jarbframework.populator.excel.metamodel.InverseJoinColumnReferenceProperties;
@@ -31,18 +30,15 @@ public class ElementCollectionDefinitionGenerator {
             switch (inverseJoinColumnReferenceType) {
 
             case EMBEDDABLE:
-                EmbeddableType<T> embeddableType = inverseJoinColumnReferenceProperties.getEmbeddableType();
-                Class<T> embeddableClass = embeddableType.getJavaType();
-                EmbeddableElementCollectionDefinition.Builder<T> builder = EmbeddableElementCollectionDefinition.forClass(embeddableClass);
+                EmbeddableType<?> embeddableType = inverseJoinColumnReferenceProperties.getEmbeddableType();
+                Class<?> embeddableClass = embeddableType.getJavaType();
+                EmbeddableElementCollectionDefinition.Builder<?> builder = EmbeddableElementCollectionDefinition.forClass(embeddableClass);
                 builder.includeProperties(columnDefinitionsGenerator.createPropertyDefinitions(metamodel.embeddable(embeddableClass), embeddableClass));
                 return builder.build();
-
             case SERIALIZABLE_CLASS:
                 break;
-
             default:
                 throw new RuntimeException("Passed PropertyDefinition ' " + propertyDefinition.getName() + " ' is not an invesedJoinColumn of a known type.");
-
             }
         }
         return null;

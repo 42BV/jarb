@@ -42,7 +42,7 @@
 		<property name="jpaProperties">
 			<props>
 				<prop key="hibernate.hbm2ddl.auto">update</prop>
-				<prop key="hibernate.ejb.event.merge">org.springframework.orm.hibernate3.support.IdTransferringMergeEventListener</prop>
+				<prop key="hibernate.ejb.event.merge">org.jarbframework.utils.orm.hibernate.Hibernate4IdTransferringMergeEventListener</prop>
 			</props>
 		</property>
 	</bean>

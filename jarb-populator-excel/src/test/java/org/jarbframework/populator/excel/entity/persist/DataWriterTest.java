@@ -22,9 +22,7 @@ import org.jarbframework.populator.excel.workbook.reader.PoiWorkbookParser;
 import org.junit.Before;
 import org.junit.Test;
 
-import domain.entities.CompanyVehicle;
 import domain.entities.Customer;
-import domain.entities.Employee;
 import domain.entities.Project;
 import domain.entities.ServiceLevelAgreement;
 
@@ -74,25 +72,4 @@ public class DataWriterTest extends DefaultExcelTestDataCase {
         DataWriter.saveEntity(entityRegistry, getEntityManagerFactory());
     }
 
-    @Test
-    public void testEntityReferencing() throws InstantiationException, ClassNotFoundException, IllegalAccessException, NoSuchFieldException,
-            InvalidFormatException, IOException {
-        List<EntityDefinition<?>> classDefinitionList = new ArrayList<EntityDefinition<?>>();
-        excel = new PoiWorkbookParser().parse(new FileInputStream("src/test/resources/ExcelEmployeesVehicles.xls"));
-
-        EntityType<?> employeeEntity = jpaMetamodel.entity(Employee.class);
-        EntityType<?> vehicleEntity = jpaMetamodel.entity(CompanyVehicle.class);
-
-        EntityDefinition<?> employee = entityDefinitionsGenerator.createSingleEntityDefinitionFromMetamodel(employeeEntity, false);
-        EntityDefinition<?> vehicle = entityDefinitionsGenerator.createSingleEntityDefinitionFromMetamodel(vehicleEntity, true);
-        //  project = EntityDefinitionsGenerator.createSingleClassDefinitionFromMetamodel(entityManagerFactory, projectEntity, true);
-
-        classDefinitionList.add(employee);
-        classDefinitionList.add(vehicle);
-        //  classDefinitionList.add(project);
-
-        EntityRegistry entityRegistry = new ExcelImporter(ValueConversionService.defaultConversions(), getEntityManagerFactory()).parseExcelToRegistry(excel,
-                classDefinitionList);
-        DataWriter.saveEntity(entityRegistry, getEntityManagerFactory());
-    }
 }

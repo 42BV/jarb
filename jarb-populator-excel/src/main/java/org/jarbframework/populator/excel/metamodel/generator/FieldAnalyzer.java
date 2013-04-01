@@ -16,7 +16,6 @@ import javax.persistence.OneToOne;
 import javax.persistence.metamodel.EmbeddableType;
 import javax.persistence.metamodel.EntityType;
 
-import org.apache.poi.hssf.record.formula.functions.T;
 import org.jarbframework.populator.excel.metamodel.InverseJoinColumnReferenceProperties;
 import org.jarbframework.populator.excel.metamodel.InverseJoinColumnReferenceType;
 import org.jarbframework.populator.excel.metamodel.PropertyDatabaseType;
@@ -142,14 +141,13 @@ public class FieldAnalyzer {
      * @param field Field to check the type arguments of
      * @param inverseJoinColumnReferenceProperties Properties datastructure to mutate
      */
-    @SuppressWarnings("unchecked")
     private void addPropertiesForEmbeddableElementCollection(Field field, InverseJoinColumnReferenceProperties inverseJoinColumnReferenceProperties) {
         ParameterizedType type = (ParameterizedType) field.getGenericType();
 
         for (Type actualType : type.getActualTypeArguments()) {
-            Class<T> typeClass = (Class<T>) actualType;
+            Class<?> typeClass = (Class<?>) actualType;
             if (JpaMetaModelUtils.isEmbeddable(typeClass)) {
-                EmbeddableType<T> embeddableType = entityManagerFactory.getMetamodel().embeddable(typeClass);
+                EmbeddableType<?> embeddableType = entityManagerFactory.getMetamodel().embeddable(typeClass);
                 inverseJoinColumnReferenceProperties.setEmbeddableType(embeddableType);
                 inverseJoinColumnReferenceProperties.setInverseJoinColumnReferenceType(InverseJoinColumnReferenceType.EMBEDDABLE);
                 break;
