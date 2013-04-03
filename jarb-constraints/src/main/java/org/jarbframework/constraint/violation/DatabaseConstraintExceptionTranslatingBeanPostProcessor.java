@@ -104,7 +104,7 @@ public class DatabaseConstraintExceptionTranslatingBeanPostProcessor extends Adv
                     try {
                         return invocation.proceed();
                     } catch (RuntimeException exception) {
-                        Throwable translatedException = translator.translateExceptionIfPossible(exception);
+                        Throwable translatedException = translator.translate(exception);
                         throw translatedException != null ? translatedException : exception;
                     }
                 }

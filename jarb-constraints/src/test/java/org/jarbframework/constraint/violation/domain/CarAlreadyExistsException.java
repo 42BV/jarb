@@ -6,25 +6,25 @@ import org.jarbframework.constraint.violation.factory.DatabaseConstraintExceptio
 import org.jarbframework.constraint.violation.factory.custom.DatabaseConstraintMapping;
 
 /**
- * User names can only be used once.
+ * Car licenses can only be used once.
  * 
  * @author Jeroen van Schagen
  * @since 27-05-2011
  */
-@DatabaseConstraintMapping("uk_users_name")
-public class UsernameAlreadyExistsException extends UniqueKeyViolationException {
+@DatabaseConstraintMapping("uk_cars_license_number")
+public class CarAlreadyExistsException extends UniqueKeyViolationException {
 
     private DatabaseConstraintExceptionFactory exceptionFactory;
 
-    public UsernameAlreadyExistsException(DatabaseConstraintViolation violation) {
+    public CarAlreadyExistsException(DatabaseConstraintViolation violation) {
         super(violation);
     }
 
-    public UsernameAlreadyExistsException(DatabaseConstraintViolation violation, Throwable cause) {
+    public CarAlreadyExistsException(DatabaseConstraintViolation violation, Throwable cause) {
         super(violation, cause);
     }
 
-    public UsernameAlreadyExistsException(DatabaseConstraintViolation violation, Throwable cause, DatabaseConstraintExceptionFactory exceptionFactory) {
+    public CarAlreadyExistsException(DatabaseConstraintViolation violation, Throwable cause, DatabaseConstraintExceptionFactory exceptionFactory) {
         super(violation, cause);
         this.exceptionFactory = exceptionFactory;
     }

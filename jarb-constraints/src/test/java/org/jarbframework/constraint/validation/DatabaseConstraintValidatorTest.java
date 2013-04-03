@@ -12,10 +12,10 @@ import java.util.Set;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
 
-import org.jarbframework.constraint.validation.domain.Address;
-import org.jarbframework.constraint.validation.domain.Car;
-import org.jarbframework.constraint.validation.domain.Contact;
-import org.jarbframework.constraint.validation.domain.Person;
+import org.jarbframework.constraint.domain.Address;
+import org.jarbframework.constraint.domain.Car;
+import org.jarbframework.constraint.domain.Contact;
+import org.jarbframework.constraint.domain.Person;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,8 +33,7 @@ public class DatabaseConstraintValidatorTest {
 
     @Test
     public void testValid() {
-        Car car = new Car();
-        car.setLicenseNumber("AB1337");
+        Car car = new Car("AB1337");
 
         Set<ConstraintViolation<Car>> violations = validator.validate(car);
         assertTrue("Expected no violations", violations.isEmpty());
@@ -44,7 +43,7 @@ public class DatabaseConstraintValidatorTest {
 
     @Test
     public void testNotNull() {
-        Car carWithoutLicense = new Car();
+        Car carWithoutLicense = new Car(null);
 
         Set<ConstraintViolation<Car>> violations = validator.validate(carWithoutLicense);
         assertEquals(1, violations.size());
@@ -56,8 +55,7 @@ public class DatabaseConstraintValidatorTest {
 
     @Test
     public void testViolateStringMaxLength() {
-        Car carWithoutLicense = new Car();
-        carWithoutLicense.setLicenseNumber("longerthansixcharacters");
+        Car carWithoutLicense = new Car("longerthansixcharacters");
 
         Set<ConstraintViolation<Car>> violations = validator.validate(carWithoutLicense);
         assertEquals(1, violations.size());
@@ -69,8 +67,7 @@ public class DatabaseConstraintValidatorTest {
 
     @Test
     public void testViolateNumberMaxLength() {
-        Car carWithHighPrice = new Car();
-        carWithHighPrice.setLicenseNumber("abcdef");
+        Car carWithHighPrice = new Car("abcdef");
         carWithHighPrice.setPrice(1000000D);
 
         Set<ConstraintViolation<Car>> violations = validator.validate(carWithHighPrice);
@@ -83,8 +80,7 @@ public class DatabaseConstraintValidatorTest {
 
     @Test
     public void testViolateMaxFractionLength() {
-        Car carWithHighPrice = new Car();
-        carWithHighPrice.setLicenseNumber("abcdef");
+        Car carWithHighPrice = new Car("abcdef");
         carWithHighPrice.setPrice(42.123);
 
         Set<ConstraintViolation<Car>> violations = validator.validate(carWithHighPrice);
@@ -126,7 +122,7 @@ public class DatabaseConstraintValidatorTest {
     @Test
     @SuppressWarnings("unchecked")
     public void testMultipleViolations() {
-        Car unknownOverpricedCar = new Car();
+        Car unknownOverpricedCar = new Car(null);
         unknownOverpricedCar.setPrice(42000.123);
 
         assertThat(validator.validate(unknownOverpricedCar),

@@ -2,7 +2,7 @@ package org.jarbframework.constraint.metadata;
 
 import static org.junit.Assert.assertEquals;
 
-import org.jarbframework.constraint.metadata.domain.Wine;
+import org.jarbframework.constraint.domain.Wine;
 import org.jarbframework.utils.bean.PropertyReference;
 import org.junit.Before;
 import org.junit.Test;

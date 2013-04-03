@@ -5,9 +5,9 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import org.jarbframework.constraint.domain.Wine;
 import org.jarbframework.constraint.metadata.PropertyConstraintDescription;
 import org.jarbframework.constraint.metadata.database.ColumnMetadataRepository;
-import org.jarbframework.constraint.metadata.domain.Wine;
 import org.jarbframework.utils.bean.PropertyReference;
 import org.jarbframework.utils.orm.SchemaMapper;
 import org.junit.Before;

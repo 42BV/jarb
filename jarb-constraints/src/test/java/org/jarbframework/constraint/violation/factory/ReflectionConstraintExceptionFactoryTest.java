@@ -10,7 +10,7 @@ import java.sql.SQLException;
 import java.util.NoSuchElementException;
 
 import org.jarbframework.constraint.violation.DatabaseConstraintViolation;
-import org.jarbframework.constraint.violation.domain.UsernameAlreadyExistsException;
+import org.jarbframework.constraint.violation.domain.CarAlreadyExistsException;
 import org.junit.Test;
 
 public class ReflectionConstraintExceptionFactoryTest {
@@ -21,16 +21,16 @@ public class ReflectionConstraintExceptionFactoryTest {
      */
     @Test
     public void testInstantiateWithBestConstructor() {
-        DatabaseConstraintExceptionFactory factory = new ReflectionConstraintExceptionFactory(UsernameAlreadyExistsException.class);
+        DatabaseConstraintExceptionFactory factory = new ReflectionConstraintExceptionFactory(CarAlreadyExistsException.class);
         DatabaseConstraintViolation violation = violaton(UNIQUE_KEY).constraint("uk_cars_license_number").build();
         final Throwable cause = new SQLException("Database exception 'uk_cars_license_number' violated !");
         Throwable exception = factory.createException(violation, cause);
         // Ensure we created an instance of the correct type
-        assertTrue(exception instanceof UsernameAlreadyExistsException);
+        assertTrue(exception instanceof CarAlreadyExistsException);
         // Ensure the correct constructor was invoked (violation + cause)
         assertEquals("Unique key 'uk_cars_license_number' was violated.", exception.getMessage());
         assertEquals(cause, exception.getCause());
-        assertEquals(factory, ((UsernameAlreadyExistsException) exception).getExceptionFactory());
+        assertEquals(factory, ((CarAlreadyExistsException) exception).getExceptionFactory());
     }
 
     /**

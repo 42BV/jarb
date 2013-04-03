@@ -1,25 +1,27 @@
 package org.jarbframework.constraint.violation.domain;
 
+import org.jarbframework.constraint.domain.Car;
+
 
 /**
  * Holds user instances.
  * @author Jeroen van Schagen
  * @since 17-05-2011
  */
-public interface UserRepository {
+public interface CarRepository {
 
     /**
-     * Store a user in our repository.
-     * @param user the user to add
-     * @return added user instance
+     * Store a car in our repository.
+     * @param car the car to add
+     * @return added car instance
      */
-    User add(User user);
+    Car add(Car user);
 
     /**
      * Throws a checked exception.
-     * @throws UserInactiveException always
+     * @throws CarInactiveException always
      */
-    void throwCheckedException() throws UserInactiveException;
+    void throwCheckedException() throws CarInactiveException;
 
     /**
      * Throws a runtime exception.

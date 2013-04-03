@@ -1,4 +1,4 @@
-package org.jarbframework.constraint.metadata.domain;
+package org.jarbframework.constraint.domain;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;

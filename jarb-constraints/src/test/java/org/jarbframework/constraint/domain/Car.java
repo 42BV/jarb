@@ -1,4 +1,4 @@
-package org.jarbframework.constraint.validation.domain;
+package org.jarbframework.constraint.domain;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -20,9 +20,18 @@ public class Car extends AbstractEntity {
 
     @ManyToOne
     private Person owner;
+    
+    private String active;
 
     private transient String unmappedProperty;
 
+    Car() {
+    }
+    
+    public Car(String licenseNumber) {
+        this.licenseNumber = licenseNumber;
+    }
+    
     public String getLicenseNumber() {
         return licenseNumber;
     }
@@ -47,6 +56,14 @@ public class Car extends AbstractEntity {
         this.owner = owner;
     }
 
+    public String getActive() {
+        return active;
+    }
+    
+    public void setActive(String active) {
+        this.active = active;
+    }
+    
     public String getUnmappedProperty() {
         return unmappedProperty;
     }

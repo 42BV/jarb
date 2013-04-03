@@ -4,10 +4,10 @@ import static org.jarbframework.constraint.violation.DatabaseConstraintType.NOT_
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
-import org.jarbframework.constraint.violation.domain.User;
-import org.jarbframework.constraint.violation.domain.UserInactiveException;
-import org.jarbframework.constraint.violation.domain.UserRepository;
-import org.jarbframework.constraint.violation.domain.UsernameAlreadyExistsException;
+import org.jarbframework.constraint.domain.Car;
+import org.jarbframework.constraint.violation.domain.CarAlreadyExistsException;
+import org.jarbframework.constraint.violation.domain.CarInactiveException;
+import org.jarbframework.constraint.violation.domain.CarRepository;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,41 +25,41 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 @RunWith(SpringJUnit4ClassRunner.class)
 @ActiveProfiles("hsqldb")
-@ContextConfiguration(locations = { "classpath:application-context.xml", "classpath:translation-context.xml" })
+@ContextConfiguration(locations = { "classpath:translation-context.xml" })
 public class ConstraintViolationExceptionTranslatingBeanPostProcessorTest {
 
     @Autowired
-    private UserRepository users;
+    private CarRepository users;
 
     /**
-     * HSQL throws a native exception, stating that "uk_user_name" was violated.
+     * HSQL throws a native exception, stating that "uk_cars_license_number" was violated.
      * Because we registered a custom exception factory for that constraint, our custom
-     * "user name already exists" exception should be thrown.
+     * "car already exists" exception should be thrown.
      */
     @Test
     public void testUniqueWithCustomException() {
-        User user = new User("iarpro");
-        users.add(user);
-        User userWithSameName = new User("iarpro");
+        Car car = new Car("iarpro");
+        users.add(car);
+        Car sameCar = new Car("iarpro");
         try {
-            users.add(userWithSameName);
+            users.add(sameCar);
             fail("Expected a license number already exists exception");
-        } catch (UsernameAlreadyExistsException e) {
+        } catch (CarAlreadyExistsException e) {
             DatabaseConstraintViolation violation = e.getViolation();
             assertEquals(DatabaseConstraintType.UNIQUE_KEY, violation.getConstraintType());
-            assertEquals("uk_users_name", violation.getConstraintName());
+            assertEquals("uk_cars_license_number", violation.getConstraintName());
         }
     }
 
     /**
-     * HSQL throws a native exception, starting that name cannot be null. Our
+     * HSQL throws a native exception, starting that license number cannot be null. Our
      * translator should convert this into the default "not null" violation exception.
      */
     @Test
     public void testNotNullDefaultException() {
-        User userWithoutName = new User(null);
+        Car carWithoutLicense = new Car(null);
         try {
-            users.add(userWithoutName);
+            users.add(carWithoutLicense);
             fail("Expected a not null exception");
         } catch (NotNullViolationException e) {
             assertEquals("Column 'name' cannot be null.", e.getMessage());
@@ -71,10 +71,10 @@ public class ConstraintViolationExceptionTranslatingBeanPostProcessorTest {
 
     /**
      * Checked exceptions should not be affected by our translation.
-     * @throws UserInactiveException always, but expected
+     * @throws CarInactiveException always, but expected
      */
-    @Test(expected = UserInactiveException.class)
-    public void testCheckedExceptionUnaffected() throws UserInactiveException {
+    @Test(expected = CarInactiveException.class)
+    public void testCheckedExceptionUnaffected() throws CarInactiveException {
         users.throwCheckedException();
     }
 

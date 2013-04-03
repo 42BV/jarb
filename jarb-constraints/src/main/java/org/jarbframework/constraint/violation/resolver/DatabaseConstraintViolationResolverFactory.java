@@ -1,16 +1,17 @@
 package org.jarbframework.constraint.violation.resolver;
 
+import java.util.Map;
+
 import javax.sql.DataSource;
 
+import org.jarbframework.constraint.violation.resolver.vendor.H2ViolationResolver;
 import org.jarbframework.constraint.violation.resolver.vendor.HsqlViolationResolver;
-import org.jarbframework.constraint.violation.resolver.vendor.MysqlViolationResolver;
-import org.jarbframework.constraint.violation.resolver.vendor.OracleViolationResolver;
-import org.jarbframework.constraint.violation.resolver.vendor.PostgresViolationResolver;
 import org.jarbframework.utils.database.DatabaseType;
 import org.jarbframework.utils.database.DatabaseTypeResolver;
 import org.jarbframework.utils.database.JdbcMetadataDatabaseTypeResolver;
 
 import com.google.common.base.Preconditions;
+import com.google.common.collect.Maps;
 
 /**
  * Capable of building a default constraint violation resolver.
@@ -20,6 +21,8 @@ import com.google.common.base.Preconditions;
 public class DatabaseConstraintViolationResolverFactory {
     
     private final DatabaseTypeResolver databaseTypeResolver;
+    
+    private final Map<DatabaseType, ViolationMessageResolver> violationMessageResolvers;
 
     public DatabaseConstraintViolationResolverFactory() {
         this(new JdbcMetadataDatabaseTypeResolver());
@@ -27,6 +30,13 @@ public class DatabaseConstraintViolationResolverFactory {
 
     public DatabaseConstraintViolationResolverFactory(DatabaseTypeResolver databaseTypeResolver) {
         this.databaseTypeResolver = Preconditions.checkNotNull(databaseTypeResolver, "Database type resolver cannot be null.");
+        
+        violationMessageResolvers = Maps.newHashMap();
+        violationMessageResolvers.put(DatabaseType.HSQL, new HsqlViolationResolver());
+        violationMessageResolvers.put(DatabaseType.H2, new H2ViolationResolver());
+        violationMessageResolvers.put(DatabaseType.MYSQL, new HsqlViolationResolver());
+        violationMessageResolvers.put(DatabaseType.ORACLE, new HsqlViolationResolver());
+        violationMessageResolvers.put(DatabaseType.POSTGRESQL, new HsqlViolationResolver());
     }
 
     /**
@@ -44,34 +54,14 @@ public class DatabaseConstraintViolationResolverFactory {
         resolverChain.addToChain(new HibernateViolationResolver());
         return resolverChain;
     }
-    
+
     private DatabaseConstraintViolationResolver buildResolverForDataSource(DataSource dataSource) {
-        DatabaseConstraintViolationResolver violationResolver = null;
         DatabaseType databaseType = databaseTypeResolver.resolveDatabaseType(dataSource);
-        ViolationMessageResolver messageResolver = getVendorSpecificMessageResolver(databaseType);
-        if (messageResolver != null) {
-            violationResolver = new RootCauseMessageViolationResolver(messageResolver);
+        ViolationMessageResolver violationMessageResolver = violationMessageResolvers.get(databaseType);
+        if (violationMessageResolver == null) {
+            throw new UnsupportedOperationException("No violation message resolver registered for database: " + databaseType);
         }
-        return violationResolver;
-    }
-    
-    private ViolationMessageResolver getVendorSpecificMessageResolver(DatabaseType databaseType) {
-        ViolationMessageResolver messageResolver = null;
-        switch (databaseType) {
-        case HSQL:
-            messageResolver = new HsqlViolationResolver();
-            break;
-        case MYSQL:
-            messageResolver = new MysqlViolationResolver();
-            break;
-        case ORACLE:
-            messageResolver = new OracleViolationResolver();
-            break;
-        case POSTGRESQL:
-            messageResolver = new PostgresViolationResolver();
-            break;
-        }
-        return messageResolver;
+        return new RootCauseMessageViolationResolver(violationMessageResolver);
     }
 
 }

@@ -10,7 +10,7 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceException;
 import javax.sql.DataSource;
 
-import org.jarbframework.constraint.violation.domain.User;
+import org.jarbframework.constraint.domain.Car;
 import org.jarbframework.constraint.violation.resolver.DatabaseConstraintViolationResolver;
 import org.jarbframework.constraint.violation.resolver.DatabaseConstraintViolationResolverFactory;
 import org.junit.Before;
@@ -54,12 +54,12 @@ public class DatabaseConstraintExceptionTranslatorTest {
      */
     @Test
     public void testClean() {
-        User user = new User(null);
+        Car car = new Car(null);
         try {
-            entityManager.persist(user);
+            entityManager.persist(car);
             fail("Expected a runtime exception");
         } catch (final PersistenceException exception) {
-            Throwable violationException = translator.translateExceptionIfPossible(exception);
+            Throwable violationException = translator.translate(exception);
             assertTrue(violationException instanceof NotNullViolationException);
             assertEquals("Column 'name' cannot be null.", violationException.getMessage());
         }
@@ -71,7 +71,7 @@ public class DatabaseConstraintExceptionTranslatorTest {
     @Test
     public void testDoNothing() {
         final IllegalArgumentException exception = new IllegalArgumentException("Something went wrong!");
-        assertNull(translator.translateExceptionIfPossible(exception));
+        assertNull(translator.translate(exception));
     }
 
 }

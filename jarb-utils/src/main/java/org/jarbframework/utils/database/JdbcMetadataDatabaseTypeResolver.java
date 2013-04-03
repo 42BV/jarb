@@ -19,7 +19,16 @@ public class JdbcMetadataDatabaseTypeResolver implements DatabaseTypeResolver {
 
     @Override
     public DatabaseType resolveDatabaseType(DataSource dataSource) {
-        String databaseProductName = doWithConnection(dataSource, new JdbcConnectionCallback<String>() {
+        String productName = getProductName(dataSource);
+        DatabaseType databaseType = lookupDatabaseType(productName);
+        if (databaseType == null) {
+            throw new UnrecognizedDatabaseException("Could not determine database type for '" + productName + "'");
+        }
+        return databaseType;
+    }
+
+    private String getProductName(DataSource dataSource) {
+        return doWithConnection(dataSource, new JdbcConnectionCallback<String>() {
 
             @Override
             public String doWork(Connection connection) throws SQLException {
@@ -27,22 +36,17 @@ public class JdbcMetadataDatabaseTypeResolver implements DatabaseTypeResolver {
             }
 
         });
-        DatabaseType databaseType = lookupDatabaseType(databaseProductName);
-        if (databaseType == null) {
-            throw new UnrecognizedDatabaseException("Could not determine database type for '" + databaseProductName + "'");
-        }
-        return databaseType;
     }
 
     /**
      * Resolve the database type for a specific product name.
-     * @param databaseProductName name of the database product
+     * @param productName name of the database product
      * @return matching database type, if it could be resolved
      */
-    private DatabaseType lookupDatabaseType(String databaseProductName) {
+    private DatabaseType lookupDatabaseType(String productName) {
         DatabaseType databaseType = null;
         for (DatabaseType supportedType : DatabaseType.values()) {
-            if (startsWithIgnoreCase(databaseProductName, supportedType.name())) {
+            if (startsWithIgnoreCase(productName, supportedType.name())) {
                 databaseType = supportedType;
                 break;
             }
