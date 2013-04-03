@@ -4,24 +4,9 @@
     xmlns:context="http://www.springframework.org/schema/context"
     xsi:schemaLocation="
         http://www.springframework.org/schema/beans
-        http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+        http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
         http://www.springframework.org/schema/context
-        http://www.springframework.org/schema/context/spring-context-3.0.xsd">
-
-	<bean id="dataSource" class="org.jarbframework.migrations.MigratingDataSource">
-        <property name="delegate">
-            <bean class="org.springframework.jdbc.datasource.DriverManagerDataSource">
-		        <property name="driverClassName" value="org.hsqldb.jdbcDriver"/>
-		        <property name="url" value="jdbc:hsqldb:mem:jarb"/>
-		        <property name="username" value="sa"/>
-		    </bean>
-        </property>
-        <property name="migrator">
-            <bean class="org.jarbframework.migrations.liquibase.LiquibaseMigrator">
-                <property name="changeLogPath" value="src/test/resources/create-schema.groovy"/>
-            </bean>
-        </property>
-    </bean>
+        http://www.springframework.org/schema/context/spring-context-3.2.xsd">
     
     <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
         <property name="dataSource" ref="dataSource" />
@@ -29,7 +14,6 @@
             <map>
                 <entry key="hibernate.ejb.naming_strategy" value="org.hibernate.cfg.ImprovedNamingStrategy"/>
                 <entry key="hibernate.dialect" value="org.hibernate.dialect.HSQLDialect"/>
-                <!-- Ensure the spring aware validation factory is used -->
                 <entry key="javax.persistence.validation.factory" value-ref="validator"/>
             </map>
         </property>
@@ -47,6 +31,10 @@
         <constructor-arg ref="entityManagerFactory"/>
     </bean>
     
+    <bean id="schemaMigrator" class="org.jarbframework.migrations.liquibase.LiquibaseMigrator">
+        <property name="changeLogPath" value="src/test/resources/create-schema.groovy"/>
+    </bean>
+    
     <bean id="validator" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean">
         <property name="validationMessageSource">
             <bean class="org.springframework.context.support.ResourceBundleMessageSource">
@@ -54,5 +42,35 @@
             </bean>
         </property>
     </bean>
+    
+    <beans profile="hsqldb">
+    
+        <bean id="dataSource" class="org.jarbframework.migrations.MigratingDataSource">
+	        <property name="delegate">
+	            <bean class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+	                <property name="driverClassName" value="org.hsqldb.jdbcDriver"/>
+	                <property name="url" value="jdbc:hsqldb:mem:jarb"/>
+	                <property name="username" value="sa"/>
+	            </bean>
+	        </property>
+	        <property name="migrator" ref="schemaMigrator"/>
+	    </bean>
+	    
+    </beans>
+    
+    <beans profile="h2">
+    
+        <bean id="dataSource" class="org.jarbframework.migrations.MigratingDataSource">
+            <property name="delegate">
+                <bean class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+                    <property name="driverClassName" value="org.h2.Driver"/>
+                    <property name="url" value="jdbc:h2:mem:jarb"/>
+                    <property name="username" value="sa"/>
+                </bean>
+            </property>
+            <property name="migrator" ref="schemaMigrator"/>
+        </bean>
+        
+    </beans>
     
 </beans>

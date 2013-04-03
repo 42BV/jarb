@@ -13,11 +13,13 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.annotation.IfProfileValue;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-@IfProfileValue(name = "hsqldb.test", value = "true")
+@IfProfileValue(name = "integration", value = "hsqldb")
 @RunWith(SpringJUnit4ClassRunner.class)
+@ActiveProfiles("hsqldb")
 @ContextConfiguration(locations = { "classpath:application-context.xml", "classpath:translation-context.xml" })
 public class HsqlExceptionTranslationTest {
 
