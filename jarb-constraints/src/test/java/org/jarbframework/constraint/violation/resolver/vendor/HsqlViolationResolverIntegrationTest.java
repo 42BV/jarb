@@ -5,6 +5,7 @@ import static org.jarbframework.constraint.violation.DatabaseConstraintType.LENG
 import static org.jarbframework.constraint.violation.DatabaseConstraintType.NOT_NULL;
 import static org.jarbframework.constraint.violation.DatabaseConstraintType.UNIQUE_KEY;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -107,6 +108,12 @@ public class HsqlViolationResolverIntegrationTest {
             DatabaseConstraintViolation violation = violationResolver.resolve(e);
             assertEquals(INVALID_TYPE, violation.getConstraintType());
         }
+    }
+    
+    @Test
+    public void testUnknown() {
+        DatabaseConstraintViolation violation = violationResolver.resolve(new RuntimeException());
+        assertNull(violation);
     }
 
 }
