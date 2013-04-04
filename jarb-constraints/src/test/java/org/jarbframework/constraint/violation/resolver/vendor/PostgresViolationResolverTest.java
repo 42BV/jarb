@@ -3,19 +3,13 @@ package org.jarbframework.constraint.violation.resolver.vendor;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
-import org.jarbframework.constraint.violation.DatabaseConstraintViolation;
 import org.jarbframework.constraint.violation.DatabaseConstraintType;
-import org.junit.Before;
+import org.jarbframework.constraint.violation.DatabaseConstraintViolation;
 import org.junit.Test;
 
 public class PostgresViolationResolverTest {
 
-    private PostgresViolationResolver resolver;
-
-    @Before
-    public void setUp() {
-        resolver = new PostgresViolationResolver();
-    }
+    private final PostgresViolationResolver resolver = new PostgresViolationResolver();
 
     @Test
     public void testCheck() {

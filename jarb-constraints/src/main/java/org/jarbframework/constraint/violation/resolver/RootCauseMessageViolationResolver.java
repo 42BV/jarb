@@ -19,13 +19,13 @@ public class RootCauseMessageViolationResolver implements DatabaseConstraintViol
     /**
      * Determines the constraint violation based on a message.
      */
-    private final MessageViolationResolver messageResolver;
+    private final MessageBasedViolationResolver messageResolver;
     
     /**
      * Construct a new root cause message violation resolver.
      * @param messageResolver the resolver of our root cause message
      */
-    public RootCauseMessageViolationResolver(MessageViolationResolver messageResolver) {
+    public RootCauseMessageViolationResolver(MessageBasedViolationResolver messageResolver) {
         this.messageResolver = messageResolver;
     }
     

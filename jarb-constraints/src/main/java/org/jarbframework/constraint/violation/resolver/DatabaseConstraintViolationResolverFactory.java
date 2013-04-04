@@ -22,7 +22,7 @@ public class DatabaseConstraintViolationResolverFactory {
     
     private final DatabaseTypeResolver databaseTypeResolver;
     
-    private final Map<DatabaseType, MessageViolationResolver> violationMessageResolvers;
+    private final Map<DatabaseType, MessageBasedViolationResolver> violationMessageResolvers;
 
     public DatabaseConstraintViolationResolverFactory() {
         this(new JdbcMetadataDatabaseTypeResolver());
@@ -57,7 +57,7 @@ public class DatabaseConstraintViolationResolverFactory {
 
     private DatabaseConstraintViolationResolver buildResolverForDataSource(DataSource dataSource) {
         DatabaseType databaseType = databaseTypeResolver.resolveDatabaseType(dataSource);
-        MessageViolationResolver violationMessageResolver = violationMessageResolvers.get(databaseType);
+        MessageBasedViolationResolver violationMessageResolver = violationMessageResolvers.get(databaseType);
         if (violationMessageResolver == null) {
             throw new UnsupportedOperationException("No violation message resolver registered for database: " + databaseType);
         }

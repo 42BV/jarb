@@ -12,7 +12,7 @@ import org.jarbframework.constraint.violation.DatabaseConstraintViolation;
  * @author Jeroen van Schagen
  * @since 04-03-2012
  */
-public class RegexViolationResolver implements MessageViolationResolver {
+public class RegexViolationResolver implements MessageBasedViolationResolver {
     
     /**
      * All registered violation pattern.

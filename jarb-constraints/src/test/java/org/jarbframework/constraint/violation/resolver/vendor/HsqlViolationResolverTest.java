@@ -5,17 +5,11 @@ import static org.junit.Assert.assertNull;
 
 import org.jarbframework.constraint.violation.DatabaseConstraintType;
 import org.jarbframework.constraint.violation.DatabaseConstraintViolation;
-import org.junit.Before;
 import org.junit.Test;
 
 public class HsqlViolationResolverTest {
     
-    private HsqlViolationResolver resolver;
-
-    @Before
-    public void setUp() {
-        resolver = new HsqlViolationResolver();
-    }
+    private final HsqlViolationResolver resolver = new HsqlViolationResolver();
 
     @Test
     public void testNotNull() {
