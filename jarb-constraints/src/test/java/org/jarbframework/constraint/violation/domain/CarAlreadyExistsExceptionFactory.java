@@ -15,7 +15,7 @@ public class CarAlreadyExistsExceptionFactory implements DatabaseConstraintExcep
      * {@inheritDoc}
      */
     @Override
-    public DatabaseConstraintViolationException createException(DatabaseConstraintViolation violation, Throwable cause) {
+    public DatabaseConstraintViolationException buildException(DatabaseConstraintViolation violation, Throwable cause) {
         return new CarAlreadyExistsException(violation, cause, this);
     }
 

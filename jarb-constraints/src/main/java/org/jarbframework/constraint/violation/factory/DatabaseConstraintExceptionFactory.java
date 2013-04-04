@@ -16,6 +16,6 @@ public interface DatabaseConstraintExceptionFactory {
      * @param cause original exception that triggered our violation
      * @return exception that describes our violation
      */
-    Throwable createException(DatabaseConstraintViolation violation, Throwable cause);
+    Throwable buildException(DatabaseConstraintViolation violation, Throwable cause);
 
 }

@@ -13,6 +13,7 @@ import org.springframework.core.GenericTypeResolver;
  * @param <T> type of singleton instance
  */
 public abstract class SingletonFactoryBean<T> implements FactoryBean<T> {
+    
     /** Singleton instance, initially {@code null} **/
     private T instance;
 

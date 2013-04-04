@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsd:schema version="2.0"
-    xmlns="http://www.jarbframework.org/schema/violations"
+    xmlns="http://www.jarbframework.org/schema/constraints"
     xmlns:xsd="http://www.w3.org/2001/XMLSchema"
     xmlns:beans="http://www.springframework.org/schema/beans"
     xmlns:tool="http://www.springframework.org/schema/tool"
-    targetNamespace="http://www.jarbframework.org/schema/violations"
+    targetNamespace="http://www.jarbframework.org/schema/constraints"
     elementFormDefault="qualified"
     attributeFormDefault="unqualified">
 
@@ -20,7 +20,7 @@
     <xsd:element name="translate-exceptions">
         <xsd:annotation>
             <xsd:documentation>
-                Enable database constraint violation exception translation.
+                Translates JDBC driver exceptions into more specific exceptions.
             </xsd:documentation>
         </xsd:annotation>
         <xsd:complexType>

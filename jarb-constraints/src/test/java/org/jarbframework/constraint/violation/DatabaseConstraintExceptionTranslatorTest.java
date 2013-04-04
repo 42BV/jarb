@@ -8,15 +8,15 @@ import static org.junit.Assert.fail;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceException;
-import javax.sql.DataSource;
 
 import org.jarbframework.constraint.domain.Car;
 import org.jarbframework.constraint.violation.resolver.DatabaseConstraintViolationResolver;
-import org.jarbframework.constraint.violation.resolver.DatabaseConstraintViolationResolverFactory;
+import org.jarbframework.constraint.violation.resolver.MessageBasedViolationResolver;
+import org.jarbframework.constraint.violation.resolver.RootCauseViolationResolver;
+import org.jarbframework.constraint.violation.resolver.vendor.HsqlViolationResolver;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -34,18 +34,16 @@ import org.springframework.transaction.annotation.Transactional;
 @ContextConfiguration(locations = { "classpath:application-context.xml" })
 public class DatabaseConstraintExceptionTranslatorTest {
     
-    private DatabaseConstraintExceptionTranslator translator;
-
-    @Autowired
-    private DataSource dataSource;
+    private DatabaseConstraintExceptionTranslator exceptionTranslator;
 
     @PersistenceContext
     private EntityManager entityManager;
 
     @Before
     public void setUpResolver() {
-        DatabaseConstraintViolationResolver violationResolver = new DatabaseConstraintViolationResolverFactory().build(dataSource);
-        translator = new DatabaseConstraintExceptionTranslator(violationResolver);
+        MessageBasedViolationResolver messageResolver = new HsqlViolationResolver();
+        DatabaseConstraintViolationResolver violationResolver = new RootCauseViolationResolver(messageResolver);
+        exceptionTranslator = new DatabaseConstraintExceptionTranslator(violationResolver);
     }
 
     /**
@@ -59,7 +57,7 @@ public class DatabaseConstraintExceptionTranslatorTest {
             entityManager.persist(car);
             fail("Expected a runtime exception");
         } catch (final PersistenceException exception) {
-            Throwable violationException = translator.translate(exception);
+            Throwable violationException = exceptionTranslator.translate(exception);
             assertTrue(violationException instanceof NotNullViolationException);
             assertEquals("Column 'license_number' cannot be null.", violationException.getMessage());
         }
@@ -70,8 +68,7 @@ public class DatabaseConstraintExceptionTranslatorTest {
      */
     @Test
     public void testDoNothing() {
-        final IllegalArgumentException exception = new IllegalArgumentException("Something went wrong!");
-        assertNull(translator.translate(exception));
+        assertNull(exceptionTranslator.translate(new IllegalArgumentException("Something went wrong!")));
     }
 
 }

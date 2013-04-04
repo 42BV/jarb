@@ -44,9 +44,9 @@ public class ConfigurableConstraintExceptionFactory implements DatabaseConstrain
     }
 
     @Override
-    public Throwable createException(DatabaseConstraintViolation violation, Throwable cause) {
+    public Throwable buildException(DatabaseConstraintViolation violation, Throwable cause) {
         Preconditions.checkNotNull(violation, "Cannot create exception for a null violation.");
-        return findFactoryFor(violation).createException(violation, cause);
+        return findFactoryFor(violation).buildException(violation, cause);
     }
 
     /**

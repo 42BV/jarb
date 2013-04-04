@@ -5,8 +5,6 @@ import static org.jarbframework.utils.Asserts.notNull;
 import org.jarbframework.constraint.violation.factory.DatabaseConstraintExceptionFactory;
 import org.jarbframework.constraint.violation.factory.TypeBasedConstraintExceptionFactory;
 import org.jarbframework.constraint.violation.resolver.DatabaseConstraintViolationResolver;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Possibly translates database exceptions into, a more clear,
@@ -18,8 +16,6 @@ import org.slf4j.LoggerFactory;
  */
 public class DatabaseConstraintExceptionTranslator {
 	
-    private final Logger logger = LoggerFactory.getLogger(DatabaseConstraintExceptionTranslator.class);
-
     /** Resolves the constraint violation from an exception. **/
     private final DatabaseConstraintViolationResolver violationResolver;
     
@@ -49,17 +45,12 @@ public class DatabaseConstraintExceptionTranslator {
      * @return a constraint violation exception, or {@code null} if no translation could be done
      */
     public Throwable translate(Throwable throwable) {
-        Throwable translatedException = null;
+        Throwable translation = null;
         DatabaseConstraintViolation violation = violationResolver.resolve(throwable);
         if (violation != null) {
-            translatedException = notNull(exceptionFactory.createException(violation, throwable), "Could not build an exception for " + violation);
-            logger.info("Translated {} into {}", describeThrowable(throwable), describeThrowable(translatedException));
+            translation = exceptionFactory.buildException(violation, throwable);
         }
-        return translatedException;
-    }
-
-    private String describeThrowable(Throwable throwable) {
-        return throwable.getClass().getSimpleName();
+        return translation;
     }
 
 }

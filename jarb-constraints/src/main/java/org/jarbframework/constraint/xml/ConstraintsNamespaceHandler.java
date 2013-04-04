@@ -1,5 +1,12 @@
 package org.jarbframework.constraint.xml;
 
-public class ConstraintsNamespaceHandler {
+import org.springframework.beans.factory.xml.NamespaceHandlerSupport;
+
+public class ConstraintsNamespaceHandler extends NamespaceHandlerSupport {
+
+    @Override
+    public void init() {
+        registerBeanDefinitionParser("translate-exceptions", new TranslateExceptionsBeanDefinitionParser());
+    }
 
 }

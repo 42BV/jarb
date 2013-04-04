@@ -2,13 +2,11 @@ package org.jarbframework.constraint.violation.resolver.vendor;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.sql.DataSource;
 
 import org.jarbframework.constraint.violation.DatabaseConstraintViolation;
 import org.jarbframework.constraint.violation.resolver.DatabaseConstraintViolationResolver;
-import org.jarbframework.constraint.violation.resolver.DatabaseConstraintViolationResolverFactory;
-import org.junit.Before;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.jarbframework.constraint.violation.resolver.MessageBasedViolationResolver;
+import org.jarbframework.constraint.violation.resolver.RootCauseViolationResolver;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,17 +14,13 @@ import org.springframework.transaction.annotation.Transactional;
 @ContextConfiguration(locations = { "classpath:application-context.xml" })
 public abstract class ViolationResolverIntegrationTestTemplate {
     
-    private DatabaseConstraintViolationResolver violationResolver;
-
-    @Autowired
-    private DataSource dataSource;
+    private final DatabaseConstraintViolationResolver violationResolver;
 
     @PersistenceContext
     private EntityManager entityManager;
 
-    @Before
-    public void setUpResolver() {
-        violationResolver = new DatabaseConstraintViolationResolverFactory().build(dataSource);
+    public ViolationResolverIntegrationTestTemplate(MessageBasedViolationResolver messageResolver) {
+        this.violationResolver = new RootCauseViolationResolver(messageResolver);
     }
     
     protected DatabaseConstraintViolation persistWithViolation(final Object object) {
@@ -36,7 +30,7 @@ public abstract class ViolationResolverIntegrationTestTemplate {
         } catch (RuntimeException e) {
             DatabaseConstraintViolation violation = resolve(e);
             if (violation == null) {
-                throw new IllegalStateException("Could not determine violation", e);
+                throw new IllegalStateException("Could not resolve violation from exception.", e);
             }
             return violation;
         }

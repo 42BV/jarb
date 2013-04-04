@@ -33,7 +33,7 @@ public class SimpleConstraintExceptionFactoryTest {
     @Test
     public void testCheckFailed() {
         DatabaseConstraintViolation violation = violaton(CHECK_FAILED).constraint("ck_name_cannot_be_henk").build();
-        DatabaseConstraintViolationException exception = factory.createException(violation, null);
+        DatabaseConstraintViolationException exception = factory.buildException(violation, null);
         assertTrue(exception instanceof CheckFailedException);
         assertEquals("Check 'ck_name_cannot_be_henk' failed.", exception.getMessage());
         assertEquals(violation, exception.getViolation());
@@ -42,7 +42,7 @@ public class SimpleConstraintExceptionFactoryTest {
     @Test
     public void testUniqueKeyViolated() {
         DatabaseConstraintViolation violation = violaton(UNIQUE_KEY).constraint("uk_persons_name").build();
-        DatabaseConstraintViolationException exception = factory.createException(violation, null);
+        DatabaseConstraintViolationException exception = factory.buildException(violation, null);
         assertTrue(exception instanceof UniqueKeyViolationException);
         assertEquals("Unique key 'uk_persons_name' was violated.", exception.getMessage());
         assertEquals(violation, exception.getViolation());
@@ -51,7 +51,7 @@ public class SimpleConstraintExceptionFactoryTest {
     @Test
     public void testForeignKeyViolated() {
         DatabaseConstraintViolation violation = violaton(FOREIGN_KEY).constraint("fk_persons_parent").build();
-        DatabaseConstraintViolationException exception = factory.createException(violation, null);
+        DatabaseConstraintViolationException exception = factory.buildException(violation, null);
         assertTrue(exception instanceof ForeignKeyViolationException);
         assertEquals("Foreign key 'fk_persons_parent' was violated.", exception.getMessage());
         assertEquals(violation, exception.getViolation());
@@ -60,7 +60,7 @@ public class SimpleConstraintExceptionFactoryTest {
     @Test
     public void testNotNullViolated() {
         DatabaseConstraintViolation violation = violaton(NOT_NULL).column("name").build();
-        DatabaseConstraintViolationException exception = factory.createException(violation, null);
+        DatabaseConstraintViolationException exception = factory.buildException(violation, null);
         assertTrue(exception instanceof NotNullViolationException);
         assertEquals("Column 'name' cannot be null.", exception.getMessage());
         assertEquals(violation, exception.getViolation());
@@ -69,7 +69,7 @@ public class SimpleConstraintExceptionFactoryTest {
     @Test
     public void testInvalidType() {
         DatabaseConstraintViolation violation = violaton(INVALID_TYPE).build();
-        DatabaseConstraintViolationException exception = factory.createException(violation, null);
+        DatabaseConstraintViolationException exception = factory.buildException(violation, null);
         assertTrue(exception instanceof InvalidTypeException);
         assertEquals("Column is of an invalid type.", exception.getMessage());
         assertEquals(violation, exception.getViolation());
@@ -78,7 +78,7 @@ public class SimpleConstraintExceptionFactoryTest {
     @Test
     public void testLengthExceeded() {
         DatabaseConstraintViolation violation = violaton(LENGTH_EXCEEDED).build();
-        DatabaseConstraintViolationException exception = factory.createException(violation, null);
+        DatabaseConstraintViolationException exception = factory.buildException(violation, null);
         assertTrue(exception instanceof LengthExceededException);
         assertEquals("Column maximum length was exceeded.", exception.getMessage());
         assertEquals(violation, exception.getViolation());

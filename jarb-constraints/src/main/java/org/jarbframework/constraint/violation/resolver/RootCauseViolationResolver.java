@@ -12,7 +12,7 @@ import org.slf4j.LoggerFactory;
  * @author Jeroen van Schagen
  * @since 16-05-2011
  */
-public class RootCauseMessageViolationResolver implements DatabaseConstraintViolationResolver {
+public class RootCauseViolationResolver implements DatabaseConstraintViolationResolver {
     
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -25,7 +25,7 @@ public class RootCauseMessageViolationResolver implements DatabaseConstraintViol
      * Construct a new root cause message violation resolver.
      * @param messageResolver the resolver of our root cause message
      */
-    public RootCauseMessageViolationResolver(MessageBasedViolationResolver messageResolver) {
+    public RootCauseViolationResolver(MessageBasedViolationResolver messageResolver) {
         this.messageResolver = messageResolver;
     }
     

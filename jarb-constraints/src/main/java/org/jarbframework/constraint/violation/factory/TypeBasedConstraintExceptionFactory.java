@@ -18,7 +18,7 @@ import org.jarbframework.constraint.violation.UniqueKeyViolationException;
 public class TypeBasedConstraintExceptionFactory implements DatabaseConstraintExceptionFactory {
 
     @Override
-    public DatabaseConstraintViolationException createException(DatabaseConstraintViolation violation, Throwable cause) {
+    public DatabaseConstraintViolationException buildException(DatabaseConstraintViolation violation, Throwable cause) {
         DatabaseConstraintViolationException exception = null;
         switch (violation.getConstraintType()) {
         case NOT_NULL:

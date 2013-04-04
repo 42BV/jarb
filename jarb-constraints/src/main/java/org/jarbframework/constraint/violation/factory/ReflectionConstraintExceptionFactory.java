@@ -31,7 +31,7 @@ public class ReflectionConstraintExceptionFactory implements DatabaseConstraintE
 
 	/** {@inheritDoc} */
     @Override
-    public Throwable createException(DatabaseConstraintViolation violation, Throwable cause) {
+    public Throwable buildException(DatabaseConstraintViolation violation, Throwable cause) {
         return exceptionBuilder.instantiate(violation, cause, this);
     }
 

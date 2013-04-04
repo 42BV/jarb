@@ -20,6 +20,10 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @RunWith(SpringJUnit4ClassRunner.class)
 public class HsqlViolationResolverIntegrationTest extends ViolationResolverIntegrationTestTemplate {
  
+    public HsqlViolationResolverIntegrationTest() {
+        super(new HsqlViolationResolver());
+    }
+    
     @Test
     public void testNotNull() {
         DatabaseConstraintViolation violation = persistWithViolation(new Car(null));

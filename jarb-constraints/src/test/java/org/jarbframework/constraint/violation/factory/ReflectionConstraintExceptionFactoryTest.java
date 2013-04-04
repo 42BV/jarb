@@ -24,7 +24,7 @@ public class ReflectionConstraintExceptionFactoryTest {
         DatabaseConstraintExceptionFactory factory = new ReflectionConstraintExceptionFactory(CarAlreadyExistsException.class);
         DatabaseConstraintViolation violation = violaton(UNIQUE_KEY).constraint("uk_cars_license_number").build();
         final Throwable cause = new SQLException("Database exception 'uk_cars_license_number' violated !");
-        Throwable exception = factory.createException(violation, cause);
+        Throwable exception = factory.buildException(violation, cause);
         // Ensure we created an instance of the correct type
         assertTrue(exception instanceof CarAlreadyExistsException);
         // Ensure the correct constructor was invoked (violation + cause)
@@ -41,7 +41,7 @@ public class ReflectionConstraintExceptionFactoryTest {
         DatabaseConstraintExceptionFactory factory = new ReflectionConstraintExceptionFactory(IllegalStateException.class);
         DatabaseConstraintViolation violation = violaton(UNIQUE_KEY).constraint("uk_cars_license_number").build();
         final Throwable cause = new SQLException("Database exception 'uk_cars_license_number' violated !");
-        Throwable exception = factory.createException(violation, cause);
+        Throwable exception = factory.buildException(violation, cause);
         // The only supported constructor is (Throwable)
         assertTrue(exception instanceof IllegalStateException);
         assertEquals(cause, exception.getCause());
@@ -55,7 +55,7 @@ public class ReflectionConstraintExceptionFactoryTest {
         DatabaseConstraintExceptionFactory factory = new ReflectionConstraintExceptionFactory(NoArgException.class);
         DatabaseConstraintViolation violation = violaton(UNIQUE_KEY).build();
         final Throwable cause = new SQLException("Database exception 'uk_cars_license_number' violated !");
-        Throwable exception = factory.createException(violation, cause);
+        Throwable exception = factory.buildException(violation, cause);
         assertTrue(exception instanceof NoArgException);
     }
 

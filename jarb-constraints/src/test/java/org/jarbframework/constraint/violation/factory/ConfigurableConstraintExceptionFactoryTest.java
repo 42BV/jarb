@@ -24,20 +24,20 @@ public class ConfigurableConstraintExceptionFactoryTest {
     @Test
     public void testCustomException() {
         exceptionFactory.register(violation.getConstraintName(), CarAlreadyExistsException.class);
-        Throwable exception = exceptionFactory.createException(violation, null);
+        Throwable exception = exceptionFactory.buildException(violation, null);
         assertTrue(exception instanceof CarAlreadyExistsException);
     }
 
     @Test
     public void testDefaultException() {
-        Throwable exception = exceptionFactory.createException(violation, null);
+        Throwable exception = exceptionFactory.buildException(violation, null);
         assertTrue(exception instanceof UniqueKeyViolationException);
     }
     
     @Test
     public void testRegisterByAnnotation() {
         exceptionFactory.registerAll(CarAlreadyExistsException.class.getPackage().getName());
-        Throwable exception = exceptionFactory.createException(violation, null);
+        Throwable exception = exceptionFactory.buildException(violation, null);
         assertTrue(exception instanceof CarAlreadyExistsException);
     }
 

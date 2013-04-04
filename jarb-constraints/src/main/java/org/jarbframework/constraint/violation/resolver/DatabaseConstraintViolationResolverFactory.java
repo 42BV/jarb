@@ -48,7 +48,7 @@ public class DatabaseConstraintViolationResolverFactory {
      * @param dataSource the data source for which we build a resolver
      * @return new "default" constraint violation resolver
      */
-    public DatabaseConstraintViolationResolver build(DataSource dataSource) {
+    public DatabaseConstraintViolationResolver createResolver(DataSource dataSource) {
         ViolationResolverChain resolverChain = new ViolationResolverChain();
         resolverChain.addToChain(buildResolverForDataSource(dataSource));
         resolverChain.addToChain(new HibernateViolationResolver());
@@ -61,7 +61,7 @@ public class DatabaseConstraintViolationResolverFactory {
         if (violationMessageResolver == null) {
             throw new UnsupportedOperationException("No violation message resolver registered for database: " + databaseType);
         }
-        return new RootCauseMessageViolationResolver(violationMessageResolver);
+        return new RootCauseViolationResolver(violationMessageResolver);
     }
 
 }
