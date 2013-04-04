@@ -17,15 +17,22 @@ public class TranslateExceptionsBeanDefinitionParser extends AbstractBeanDefinit
     @Override
     protected AbstractBeanDefinition parseInternal(Element element, ParserContext parserContext) {
         BeanDefinitionBuilder builder = genericBeanDefinition(DatabaseConstraintExceptionTranslatingBeanPostProcessor.class);
-        if (element.hasAttribute("translator")) {
-            // TODO
-        } else {
-            // TODO
-        }        
+        builder.addPropertyValue("translator", buildTranslator(element));
         if (element.hasAttribute("pointcut")) {
             builder.addPropertyValue("pointcut", parsePointcut(element.getAttribute("pointcut")));
         }
         return builder.getBeanDefinition();
+    }
+
+    // TODO: Create the correct bean definition
+    private BeanDefinition buildTranslator(Element element) {
+        if (element.hasAttribute("translator")) {
+            String translatorId = element.getAttribute("translator");
+        } else {
+            String basePackage = element.getAttribute("base-package");
+            String dataSourceId = element.getAttribute("data-source");
+        }
+        return null;
     }
 
     private BeanDefinition parsePointcut(String expression) {
