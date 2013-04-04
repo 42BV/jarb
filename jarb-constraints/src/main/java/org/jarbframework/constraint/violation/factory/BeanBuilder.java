@@ -1,4 +1,4 @@
-package org.jarbframework.constraint.violation.factory.bean;
+package org.jarbframework.constraint.violation.factory;
 
 import static org.springframework.beans.BeanUtils.instantiateClass;
 
@@ -15,7 +15,7 @@ import com.google.common.base.Preconditions;
  *
  * @param <T> type of the bean
  */
-public class BeanBuilder<T> {
+class BeanBuilder<T> {
         
     private final Constructor<T> constructor;
 
@@ -40,14 +40,16 @@ public class BeanBuilder<T> {
     }
 
     private Object findFirstOfType(Class<?> requiredType, Object[] values) {
-        Object result = null;
         for(Object value : values) {
-            if(value != null && requiredType.isAssignableFrom(value.getClass())) {
-                result = value;
-                break;
+            if(isOfType(value, requiredType)) {
+                return value;
             }
         }
-        return result;
+        return null;
+    }
+
+    private boolean isOfType(Object value, Class<?> requiredType) {
+        return value != null && requiredType.isAssignableFrom(value.getClass());
     }
     
 }

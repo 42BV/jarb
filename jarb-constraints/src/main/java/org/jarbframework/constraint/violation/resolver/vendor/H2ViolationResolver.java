@@ -11,7 +11,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.jarbframework.constraint.violation.DatabaseConstraintViolation;
-import org.jarbframework.constraint.violation.resolver.ViolationMessageResolver;
+import org.jarbframework.constraint.violation.resolver.MessageViolationResolver;
 
 /**
  * H2 based constraint violation resolver.
@@ -19,7 +19,7 @@ import org.jarbframework.constraint.violation.resolver.ViolationMessageResolver;
  * @author Jeroen van Schagen
  * @since 03-04-2013
  */
-public class H2ViolationResolver implements ViolationMessageResolver {
+public class H2ViolationResolver implements MessageViolationResolver {
 
     /*
      * NULL not allowed for column "LICENSE_NUMBER"; SQL statement:
@@ -55,7 +55,7 @@ public class H2ViolationResolver implements ViolationMessageResolver {
      * {@inheritDoc}
      */
     @Override
-    public DatabaseConstraintViolation resolveByMessage(String message) {
+    public DatabaseConstraintViolation resolve(String message) {
         DatabaseConstraintViolation violation = null;
         
         Matcher matcher;

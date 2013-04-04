@@ -3,7 +3,7 @@ package org.jarbframework.constraint.violation.domain;
 import org.jarbframework.constraint.violation.DatabaseConstraintViolation;
 import org.jarbframework.constraint.violation.UniqueKeyViolationException;
 import org.jarbframework.constraint.violation.factory.DatabaseConstraintExceptionFactory;
-import org.jarbframework.constraint.violation.factory.custom.DatabaseConstraintMapping;
+import org.jarbframework.constraint.violation.factory.mapping.DatabaseConstraintMapping;
 
 /**
  * Car licenses can only be used once.

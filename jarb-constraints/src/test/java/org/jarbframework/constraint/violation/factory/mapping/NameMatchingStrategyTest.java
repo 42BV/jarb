@@ -1,8 +1,9 @@
-package org.jarbframework.constraint.violation.factory.custom;
+package org.jarbframework.constraint.violation.factory.mapping;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import org.jarbframework.constraint.violation.factory.mapping.NameMatchingStrategy;
 import org.junit.Test;
 
 public class NameMatchingStrategyTest {

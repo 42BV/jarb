@@ -1,6 +1,6 @@
-package org.jarbframework.constraint.violation.factory.custom;
+package org.jarbframework.constraint.violation.factory.mapping;
 
-import static org.jarbframework.constraint.violation.factory.custom.NameMatchingStrategy.EXACT_IGNORE_CASE;
+import static org.jarbframework.constraint.violation.factory.mapping.NameMatchingStrategy.EXACT_IGNORE_CASE;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

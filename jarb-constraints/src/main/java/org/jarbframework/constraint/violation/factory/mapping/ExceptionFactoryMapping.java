@@ -1,4 +1,4 @@
-package org.jarbframework.constraint.violation.factory.custom;
+package org.jarbframework.constraint.violation.factory.mapping;
 
 import org.jarbframework.constraint.violation.DatabaseConstraintViolation;
 import org.jarbframework.constraint.violation.factory.DatabaseConstraintExceptionFactory;

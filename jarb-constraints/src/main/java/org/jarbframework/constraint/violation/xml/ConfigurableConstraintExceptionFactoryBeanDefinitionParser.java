@@ -8,9 +8,9 @@ import java.util.Collection;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
+import org.jarbframework.constraint.violation.factory.ConfigurableConstraintExceptionFactory;
 import org.jarbframework.constraint.violation.factory.DatabaseConstraintExceptionFactory;
-import org.jarbframework.constraint.violation.factory.custom.ConfigurableConstraintExceptionFactory;
-import org.jarbframework.constraint.violation.factory.custom.ExceptionFactoryMapping;
+import org.jarbframework.constraint.violation.factory.mapping.ExceptionFactoryMapping;
 import org.jarbframework.utils.spring.SingletonFactoryBean;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.support.AbstractBeanDefinition;

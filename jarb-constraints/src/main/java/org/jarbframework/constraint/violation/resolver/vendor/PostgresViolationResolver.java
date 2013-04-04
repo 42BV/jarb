@@ -14,7 +14,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.jarbframework.constraint.violation.DatabaseConstraintViolation;
-import org.jarbframework.constraint.violation.resolver.ViolationMessageResolver;
+import org.jarbframework.constraint.violation.resolver.MessageViolationResolver;
 
 /**
  * PostgreSQL based constraint violation resolver.
@@ -22,7 +22,7 @@ import org.jarbframework.constraint.violation.resolver.ViolationMessageResolver;
  * @author Jeroen van Schagen
  * @since 16-05-2011
  */
-public class PostgresViolationResolver implements ViolationMessageResolver {
+public class PostgresViolationResolver implements MessageViolationResolver {
 
     /* Provided: column name */
     private static final Pattern CANNOT_BE_NULL_PATTERN = Pattern.compile("ERROR: null value in column \"(.+)\" violates not-null constraint");
@@ -54,7 +54,7 @@ public class PostgresViolationResolver implements ViolationMessageResolver {
      * {@inheritDoc}
      */
     @Override
-    public DatabaseConstraintViolation resolveByMessage(String message) {
+    public DatabaseConstraintViolation resolve(String message) {
         DatabaseConstraintViolation violation = null;
 
         Matcher matcher;

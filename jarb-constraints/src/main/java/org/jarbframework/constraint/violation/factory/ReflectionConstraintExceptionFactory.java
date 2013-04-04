@@ -3,8 +3,6 @@ package org.jarbframework.constraint.violation.factory;
 import java.lang.reflect.Constructor;
 
 import org.jarbframework.constraint.violation.DatabaseConstraintViolation;
-import org.jarbframework.constraint.violation.factory.bean.BeanBuilder;
-import org.jarbframework.constraint.violation.factory.bean.SupportedConstructorFinder;
 
 /**
  * Creates constraint violation exceptions using reflection. Whenever no

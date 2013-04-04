@@ -1,7 +1,7 @@
 /*
  * (C) 2011 Nidera (www.nidera.com). All rights reserved.
  */
-package org.jarbframework.constraint.violation.factory.custom;
+package org.jarbframework.constraint.violation.factory.mapping;
 
 import org.jarbframework.constraint.violation.DatabaseConstraintViolation;
 

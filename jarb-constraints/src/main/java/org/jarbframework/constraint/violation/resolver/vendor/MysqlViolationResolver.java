@@ -6,11 +6,8 @@ import static org.jarbframework.constraint.violation.DatabaseConstraintType.NOT_
 import static org.jarbframework.constraint.violation.DatabaseConstraintType.UNIQUE_KEY;
 import static org.jarbframework.constraint.violation.DatabaseConstraintViolation.violaton;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import org.jarbframework.constraint.violation.DatabaseConstraintViolation;
-import org.jarbframework.constraint.violation.resolver.ViolationMessageResolver;
+import org.jarbframework.constraint.violation.resolver.RegexViolationResolver;
 
 /**
  * MySQL based constraint violation resolver.
@@ -18,65 +15,61 @@ import org.jarbframework.constraint.violation.resolver.ViolationMessageResolver;
  * @author Jeroen van Schagen
  * @since 16-05-2011
  */
-public class MysqlViolationResolver implements ViolationMessageResolver {
+public class MysqlViolationResolver extends RegexViolationResolver {
 
-    /* Provided: column name */
-    private static final Pattern CANNOT_BE_NULL_PATTERN = Pattern.compile("Column '(.+)' cannot be null");
-
-    /* Provided: value, constraint name */
-    private static final Pattern UNIQUE_VIOLATION_PATTERN = Pattern.compile("Duplicate entry '(.+)' for key '(.+)'");
-
-    /* Provided: column name */
-    private static final Pattern LENGTH_EXCEEDED_PATTERN = Pattern.compile("Data truncation: Data too long for column '(.+)' at row (\\d+)");
-
-    /* Provided: column type, value, column name */
-    private static final Pattern INVALID_TYPE_PATTERN = Pattern.compile("Incorrect (\\w+) value: '(.+)' for column '(.+)' at row (\\d+)");
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public DatabaseConstraintViolation resolveByMessage(String message) {
-        DatabaseConstraintViolation violation = null;
-        
-        Matcher matcher;
-        if ((matcher = CANNOT_BE_NULL_PATTERN.matcher(message)).matches()) {
-            violation = resolveNotNullViolation(matcher);
-        } else if ((matcher = UNIQUE_VIOLATION_PATTERN.matcher(message)).matches()) {
-            violation = resolveUniqueKeyViolation(matcher);
-        } else if ((matcher = LENGTH_EXCEEDED_PATTERN.matcher(message)).matches()) {
-            violation = resolveLengthViolation(matcher);
-        } else if ((matcher = INVALID_TYPE_PATTERN.matcher(message)).matches()) {
-            violation = resolveTypeViolation(matcher);
-        }
-        
-        return violation;
+    public MysqlViolationResolver() {
+        registerNotNull();
+        registerUniqueKey();        
+        registerLengthExceeded();
+        registerInvalidType();
+    }
+    
+    private void registerNotNull() {
+        registerPattern("Column '(.+)' cannot be null", new DatabaseConstraintViolationBuilder() {
+            
+            @Override
+            public DatabaseConstraintViolation build(VariableAccessor variables) {
+                return violaton(NOT_NULL).column(variables.get(1)).build();
+            }
+            
+        });
+    }
+    
+    private void registerUniqueKey() {
+        registerPattern("Duplicate entry '(.+)' for key '(.+)'", new DatabaseConstraintViolationBuilder() {
+            
+            @Override
+            public DatabaseConstraintViolation build(VariableAccessor variables) {
+                return violaton(UNIQUE_KEY).value(variables.get(1)).constraint(variables.get(2)).build();
+            }
+            
+        });
     }
 
-    private DatabaseConstraintViolation resolveNotNullViolation(Matcher matcher) {
-        return violaton(NOT_NULL)
-                .column(matcher.group(1))
-                    .build();
+    private void registerLengthExceeded() {
+        registerPattern("Data truncation: Data too long for column '(.+)' at row (\\d+)", new DatabaseConstraintViolationBuilder() {
+            
+            @Override
+            public DatabaseConstraintViolation build(VariableAccessor variables) {
+                return violaton(LENGTH_EXCEEDED).column(variables.get(1)).build();
+            }
+            
+        });
     }
 
-    private DatabaseConstraintViolation resolveUniqueKeyViolation(Matcher matcher) {
-        return violaton(UNIQUE_KEY)
-                .value(matcher.group(1))
-                .constraint(matcher.group(2))
-                    .build();
+    private void registerInvalidType() {
+        registerPattern("Incorrect (\\w+) value: '(.+)' for column '(.+)' at row (\\d+)", new DatabaseConstraintViolationBuilder() {
+            
+            @Override
+            public DatabaseConstraintViolation build(VariableAccessor variables) {
+                return violaton(INVALID_TYPE)
+                        .expectedValueType(variables.get(1))
+                        .value(variables.get(2))
+                        .column(variables.get(3))
+                            .build();
+            }
+            
+        });
     }
 
-    private DatabaseConstraintViolation resolveLengthViolation(Matcher matcher) {
-        return violaton(LENGTH_EXCEEDED)
-                .column(matcher.group(1))
-                    .build();
-    }
-
-    private DatabaseConstraintViolation resolveTypeViolation(Matcher matcher) {
-        return violaton(INVALID_TYPE)
-                .expectedValueType(matcher.group(1))
-                .value(matcher.group(2))
-                .column(matcher.group(3))
-                    .build();
-    }
 }

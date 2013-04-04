@@ -2,7 +2,7 @@ package org.jarbframework.sample;
 
 import org.jarbframework.constraint.violation.DatabaseConstraintViolation;
 import org.jarbframework.constraint.violation.UniqueKeyViolationException;
-import org.jarbframework.constraint.violation.factory.custom.DatabaseConstraintMapping;
+import org.jarbframework.constraint.violation.factory.mapping.DatabaseConstraintMapping;
 
 /**
  * Thrown whenever a post is being inserted with a title that already exists.

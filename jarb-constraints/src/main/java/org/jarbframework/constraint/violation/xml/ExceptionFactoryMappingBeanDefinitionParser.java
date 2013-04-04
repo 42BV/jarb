@@ -4,9 +4,9 @@ import static org.jarbframework.utils.spring.xml.BeanParsingHelper.parseProperty
 import static org.springframework.beans.factory.support.BeanDefinitionBuilder.genericBeanDefinition;
 
 import org.jarbframework.constraint.violation.factory.ReflectionConstraintExceptionFactory;
-import org.jarbframework.constraint.violation.factory.custom.ExceptionFactoryMapping;
-import org.jarbframework.constraint.violation.factory.custom.NameMatchingStrategy;
-import org.jarbframework.constraint.violation.factory.custom.ViolationNamePredicate;
+import org.jarbframework.constraint.violation.factory.mapping.ExceptionFactoryMapping;
+import org.jarbframework.constraint.violation.factory.mapping.NameMatchingStrategy;
+import org.jarbframework.constraint.violation.factory.mapping.ViolationNamePredicate;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.xml.BeanDefinitionParser;

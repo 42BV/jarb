@@ -7,11 +7,8 @@ import static org.jarbframework.constraint.violation.DatabaseConstraintType.NOT_
 import static org.jarbframework.constraint.violation.DatabaseConstraintType.UNIQUE_KEY;
 import static org.jarbframework.constraint.violation.DatabaseConstraintViolation.violaton;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import org.jarbframework.constraint.violation.DatabaseConstraintViolation;
-import org.jarbframework.constraint.violation.resolver.ViolationMessageResolver;
+import org.jarbframework.constraint.violation.resolver.RegexViolationResolver;
 
 /**
  * Hypersonic SQL based constraint violation resolver.
@@ -19,78 +16,79 @@ import org.jarbframework.constraint.violation.resolver.ViolationMessageResolver;
  * @author Jeroen van Schagen
  * @since 16-05-2011
  */
-public class HsqlViolationResolver implements ViolationMessageResolver {
+public class HsqlViolationResolver extends RegexViolationResolver {
 
-    /* Provided: constraint name, table name, column name */
-    private static final Pattern CANNOT_BE_NULL_PATTERN = Pattern.compile("integrity constraint violation: NOT NULL check constraint; (.+) table: (.+) column: (.+)");
-
-    /* Provided: constraint name, table name */
-    private static final Pattern UNIQUE_VIOLATION_PATTERN = Pattern.compile("integrity constraint violation: unique constraint or index violation; (.+) table: (.+)");
-    
-    /* Provided: constraint name, table name */
-    private static final Pattern FK_VIOLATION_PATTERN = Pattern.compile("integrity constraint violation: foreign key no \\w+; (.+) table: (.+)");
-
-    /* Provided: value type */
-    private static final Pattern LENGTH_EXCEEDED_PATTERN = Pattern.compile("data exception: (.+) data, right truncation");
-
-    /* Provided: value type */
-    private static final Pattern INVALID_TYPE_PATTERN = Pattern.compile("data exception: invalid (.+) value for cast");
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public DatabaseConstraintViolation resolveByMessage(String message) {
-        DatabaseConstraintViolation violation = null;
-        
-        Matcher matcher;
-        if ((matcher = CANNOT_BE_NULL_PATTERN.matcher(message)).matches()) {
-            violation = resolveNotNullViolation(matcher);
-        } else if ((matcher = UNIQUE_VIOLATION_PATTERN.matcher(message)).matches()) {
-            violation = resolveUniqueViolation(matcher);
-        } else if ((matcher = FK_VIOLATION_PATTERN.matcher(message)).matches()) {
-            violation = resolveForeignKeyViolation(matcher);
-        } else if ((matcher = LENGTH_EXCEEDED_PATTERN.matcher(message)).matches()) {
-            violation = resolveLengthViolation(matcher);
-        } else if ((matcher = INVALID_TYPE_PATTERN.matcher(message)).matches()) {
-            violation = resolveTypeViolation(matcher);
-        }
-        
-        return violation;
+    public HsqlViolationResolver() {
+        registerNotNull();
+        registerUniqueKey();
+        registerForeignKey();
+        registerLengthExceeded();
+        registerInvalidType();
     }
 
-    private DatabaseConstraintViolation resolveForeignKeyViolation(Matcher matcher) {
-        return violaton(FOREIGN_KEY)
-                .constraint(matcher.group(1).toLowerCase())
-                .table(matcher.group(2).toLowerCase())
-                    .build();
+    private void registerNotNull() {
+        registerPattern("integrity constraint violation: NOT NULL check constraint; (.+) table: (.+) column: (.+)", new DatabaseConstraintViolationBuilder() {
+            
+            @Override
+            public DatabaseConstraintViolation build(VariableAccessor variables) {
+                return violaton(NOT_NULL)
+                            .constraint(variables.get(1).toLowerCase())
+                            .table(variables.get(2).toLowerCase())
+                            .column(variables.get(3).toLowerCase())
+                                .build();
+            }
+            
+        });
     }
 
-    private DatabaseConstraintViolation resolveNotNullViolation(Matcher matcher) {
-        return violaton(NOT_NULL)
-                .constraint(matcher.group(1).toLowerCase())
-                .table(matcher.group(2).toLowerCase())
-                .column(matcher.group(3).toLowerCase())
-                    .build();
+    private void registerUniqueKey() {
+        registerPattern("integrity constraint violation: unique constraint or index violation; (.+) table: (.+)", new DatabaseConstraintViolationBuilder() {
+            
+            @Override
+            public DatabaseConstraintViolation build(VariableAccessor variables) {
+                return violaton(UNIQUE_KEY)
+                            .constraint(variables.get(1).toLowerCase())
+                            .table(variables.get(2).toLowerCase())
+                                .build();
+            }
+            
+        });
     }
 
-    private DatabaseConstraintViolation resolveUniqueViolation(Matcher matcher) {
-        return violaton(UNIQUE_KEY)
-                .constraint(matcher.group(1).toLowerCase())
-                .table(matcher.group(2).toLowerCase())
-                    .build();
+    private void registerForeignKey() {
+        registerPattern("integrity constraint violation: foreign key no \\w+; (.+) table: (.+)", new DatabaseConstraintViolationBuilder() {
+            
+            @Override
+            public DatabaseConstraintViolation build(VariableAccessor variables) {
+                return violaton(FOREIGN_KEY)
+                        .constraint(variables.get(1).toLowerCase())
+                        .table(variables.get(2).toLowerCase())
+                            .build();
+            }
+            
+        });
     }
 
-    private DatabaseConstraintViolation resolveLengthViolation(Matcher matcher) {
-        return violaton(LENGTH_EXCEEDED)
-                .valueType(matcher.group(1).toLowerCase())
-                    .build();
+    private void registerLengthExceeded() {
+        registerPattern("data exception: (.+) data, right truncation", new DatabaseConstraintViolationBuilder() {
+            
+            @Override
+            public DatabaseConstraintViolation build(VariableAccessor variables) {
+                return violaton(LENGTH_EXCEEDED).valueType(variables.get(1).toLowerCase()).build();
+            }
+            
+        });
     }
 
-    private DatabaseConstraintViolation resolveTypeViolation(Matcher matcher) {
-        return violaton(INVALID_TYPE)
-                .valueType(matcher.group(1).toLowerCase())
-                    .build();
+    private void registerInvalidType() {
+        registerPattern("data exception: invalid (.+) value for cast", new DatabaseConstraintViolationBuilder() {
+            
+            @Override
+            public DatabaseConstraintViolation build(VariableAccessor variables) {
+                return violaton(INVALID_TYPE).valueType(variables.get(1).toLowerCase()).build();
+            }
+            
+        });
     }
 
 }

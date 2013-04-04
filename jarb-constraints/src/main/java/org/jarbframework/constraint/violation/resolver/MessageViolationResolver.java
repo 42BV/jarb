@@ -2,8 +2,8 @@ package org.jarbframework.constraint.violation.resolver;
 
 import org.jarbframework.constraint.violation.DatabaseConstraintViolation;
 
-public interface ViolationMessageResolver {
+public interface MessageViolationResolver {
 
-    DatabaseConstraintViolation resolveByMessage(String message);
+    DatabaseConstraintViolation resolve(String message);
     
 }

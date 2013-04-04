@@ -1,4 +1,4 @@
-package org.jarbframework.constraint.violation.factory.bean;
+package org.jarbframework.constraint.violation.factory;
 
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
@@ -10,7 +10,7 @@ import java.util.List;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 
-public final class SupportedConstructorFinder {
+final class SupportedConstructorFinder {
 	
     /**
      * Find the constructor in a bean that has the most supported argument types.

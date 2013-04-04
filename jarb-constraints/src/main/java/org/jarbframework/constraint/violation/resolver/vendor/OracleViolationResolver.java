@@ -12,7 +12,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.jarbframework.constraint.violation.DatabaseConstraintViolation;
-import org.jarbframework.constraint.violation.resolver.ViolationMessageResolver;
+import org.jarbframework.constraint.violation.resolver.MessageViolationResolver;
 
 /**
  * Oracle based constraint violation resolver.
@@ -20,7 +20,7 @@ import org.jarbframework.constraint.violation.resolver.ViolationMessageResolver;
  * @author Jeroen van Schagen
  * @since 16-05-2011
  */
-public class OracleViolationResolver implements ViolationMessageResolver {
+public class OracleViolationResolver implements MessageViolationResolver {
 
     /* Provided: schema and check name */
     private static final Pattern CHECK_FAILED_PATTERN = Pattern.compile("(.+): check constraint \\((.+)\\.(.+)\\) violated\n");
@@ -44,7 +44,7 @@ public class OracleViolationResolver implements ViolationMessageResolver {
      * {@inheritDoc}
      */
     @Override
-    public DatabaseConstraintViolation resolveByMessage(String message) {
+    public DatabaseConstraintViolation resolve(String message) {
         DatabaseConstraintViolation violation = null;
         
         Matcher matcher;

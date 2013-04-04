@@ -1,13 +1,14 @@
-package org.jarbframework.constraint.violation.factory.custom;
+package org.jarbframework.constraint.violation.factory;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
 import org.jarbframework.constraint.violation.DatabaseConstraintViolation;
-import org.jarbframework.constraint.violation.factory.DatabaseConstraintExceptionFactory;
-import org.jarbframework.constraint.violation.factory.ReflectionConstraintExceptionFactory;
-import org.jarbframework.constraint.violation.factory.TypeBasedConstraintExceptionFactory;
+import org.jarbframework.constraint.violation.factory.mapping.DatabaseConstraintMapping;
+import org.jarbframework.constraint.violation.factory.mapping.ExceptionFactoryMapping;
+import org.jarbframework.constraint.violation.factory.mapping.NameMatchingStrategy;
+import org.jarbframework.constraint.violation.factory.mapping.ViolationNamePredicate;
 import org.jarbframework.utils.Classes;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider;

@@ -20,7 +20,7 @@ public class PostgresViolationResolverTest {
     @Test
     public void testCheck() {
         DatabaseConstraintViolation violation = resolver
-                .resolveByMessage("ERROR: new row for relation \"employees\" violates check constraint \"ck_employees_salary_min\"");
+                .resolve("ERROR: new row for relation \"employees\" violates check constraint \"ck_employees_salary_min\"");
         assertEquals(DatabaseConstraintType.CHECK_FAILED, violation.getConstraintType());
         assertEquals("employees", violation.getTableName());
         assertEquals("ck_employees_salary_min", violation.getConstraintName());
@@ -29,7 +29,7 @@ public class PostgresViolationResolverTest {
     @Test
     public void testNotNull() {
 
-        DatabaseConstraintViolation violation = resolver.resolveByMessage("ERROR: null value in column \"name\" violates not-null constraint");
+        DatabaseConstraintViolation violation = resolver.resolve("ERROR: null value in column \"name\" violates not-null constraint");
         assertEquals(DatabaseConstraintType.NOT_NULL, violation.getConstraintType());
         assertEquals("name", violation.getColumnName());
     }
@@ -37,7 +37,7 @@ public class PostgresViolationResolverTest {
     @Test
     public void testForeignKey1() {
 
-        DatabaseConstraintViolation violation = resolver.resolveByMessage(
+        DatabaseConstraintViolation violation = resolver.resolve(
                 "ERROR: insert or update on table \"kantoren\" violates foreign key constraint \"fk_kantoren_rayon_id\"\n"
                 + "  Detail: Key (rayon_id)=(4) is not present in table \"rayons\".");
         assertEquals(DatabaseConstraintType.FOREIGN_KEY, violation.getConstraintType());
@@ -50,7 +50,7 @@ public class PostgresViolationResolverTest {
     @Test
     public void testForeignKey2() {
 
-        DatabaseConstraintViolation violation = resolver.resolveByMessage(
+        DatabaseConstraintViolation violation = resolver.resolve(
                 "ERROR: update or delete on table \"rayons\" violates foreign key constraint \"fk_kantoren_rayon_id\" on table \"kantoren\"\n"
                 + "  Detail: Key (id)=(1) is still referenced from table \"kantoren\".");
         assertEquals(DatabaseConstraintType.FOREIGN_KEY, violation.getConstraintType());
@@ -63,7 +63,7 @@ public class PostgresViolationResolverTest {
     @Test
     public void testUnique() {
 
-        DatabaseConstraintViolation violation = resolver.resolveByMessage(
+        DatabaseConstraintViolation violation = resolver.resolve(
                 "ERROR: duplicate key value violates unique constraint \"un_employees_first_name\" Detail: Key (first_name)=(Emp6) already exists.");
         assertEquals(DatabaseConstraintType.UNIQUE_KEY, violation.getConstraintType());
         assertEquals("un_employees_first_name", violation.getConstraintName());
@@ -74,7 +74,7 @@ public class PostgresViolationResolverTest {
     @Test
     public void testLength() {
 
-        DatabaseConstraintViolation violation = resolver.resolveByMessage("ERROR: value too long for type character varying(50)");
+        DatabaseConstraintViolation violation = resolver.resolve("ERROR: value too long for type character varying(50)");
         assertEquals(DatabaseConstraintType.LENGTH_EXCEEDED, violation.getConstraintType());
         assertEquals("character varying", violation.getExpectedValueType());
         assertEquals(Long.valueOf(50), violation.getMaximumLength());
@@ -83,7 +83,7 @@ public class PostgresViolationResolverTest {
     @Test
     public void testType() {
 
-        DatabaseConstraintViolation violation = resolver.resolveByMessage(
+        DatabaseConstraintViolation violation = resolver.resolve(
                 "ERROR: column \"name\" is of type integer but expression is of type character varying\nHint: You'll need to rewrite or cast the expression.");
         assertEquals(DatabaseConstraintType.INVALID_TYPE, violation.getConstraintType());
         assertEquals("name", violation.getColumnName());
@@ -94,6 +94,6 @@ public class PostgresViolationResolverTest {
     @Test
     public void testOther() {
 
-        assertNull(resolver.resolveByMessage("unknown"));
+        assertNull(resolver.resolve("unknown"));
     }
 }

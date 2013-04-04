@@ -1,4 +1,4 @@
-package org.jarbframework.constraint.violation.factory.custom;
+package org.jarbframework.constraint.violation.factory.mapping;
 
 /**
  * Different strategies for matching a constraint name.
