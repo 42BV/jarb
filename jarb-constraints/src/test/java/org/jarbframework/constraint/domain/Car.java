@@ -1,5 +1,6 @@
 package org.jarbframework.constraint.domain;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
@@ -14,6 +15,9 @@ public class Car extends AbstractEntity {
     private Double price;
 
     private String active;
+    
+    @Column(name = "owner_id")
+    private Long ownerId;
 
     Car() {
     }
@@ -44,6 +48,14 @@ public class Car extends AbstractEntity {
     
     public void setActive(String active) {
         this.active = active;
+    }
+    
+    public Long getOwnerId() {
+        return ownerId;
+    }
+    
+    public void setOwnerId(Long ownerId) {
+        this.ownerId = ownerId;
     }
 
 }

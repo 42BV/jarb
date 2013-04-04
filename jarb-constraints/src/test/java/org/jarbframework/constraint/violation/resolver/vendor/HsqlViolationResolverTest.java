@@ -3,8 +3,8 @@ package org.jarbframework.constraint.violation.resolver.vendor;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
-import org.jarbframework.constraint.violation.DatabaseConstraintViolation;
 import org.jarbframework.constraint.violation.DatabaseConstraintType;
+import org.jarbframework.constraint.violation.DatabaseConstraintViolation;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -38,7 +38,7 @@ public class HsqlViolationResolverTest {
 
     @Test
     public void testForeignKey() {
-        DatabaseConstraintViolation violation = resolver.resolveByMessage("integrity constraint violation: foreign key no action; FK_CARS_OWNER table: CARS");
+        DatabaseConstraintViolation violation = resolver.resolveByMessage("integrity constraint violation: foreign key no parent; FK_CARS_OWNER table: CARS");
         assertEquals(DatabaseConstraintType.FOREIGN_KEY, violation.getConstraintType());
         assertEquals("fk_cars_owner", violation.getConstraintName());
         assertEquals("cars", violation.getTableName());

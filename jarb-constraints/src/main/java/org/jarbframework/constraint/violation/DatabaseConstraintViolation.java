@@ -22,13 +22,19 @@ public final class DatabaseConstraintViolation {
 
     private String referencingTableName;
     
+    private String referencingColumnName;
+
     private Object value;
     
     private String valueType;
     
     private String expectedValueType;
-    
+        
     private Long maximumLength;
+    
+    private String statement;
+    
+    private String number;
 
     public DatabaseConstraintViolation(DatabaseConstraintType constraintType) {
         this(constraintType, null);
@@ -42,6 +48,7 @@ public final class DatabaseConstraintViolation {
         if(constraintType == null && StringUtils.isBlank(constraintName)) {
             throw new IllegalArgumentException("Should provide a constraint type or name.");
         }
+        
         this.constraintType = constraintType;
         this.constraintName = constraintName;
     }
@@ -84,6 +91,10 @@ public final class DatabaseConstraintViolation {
         return referencingTableName;
     }
 
+    public String getReferencingColumnName() {
+        return referencingColumnName;
+    }
+    
     public Object getValue() {
         return value;
     }
@@ -99,7 +110,15 @@ public final class DatabaseConstraintViolation {
     public Long getMaximumLength() {
         return maximumLength;
     }
+    
+    public String getStatement() {
+        return statement;
+    }
 
+    public String getNumber() {
+        return number;
+    }
+    
     /**
      * Component that simplifies building a database constraint violation.
      * @author Jeroen van Schagen
@@ -108,18 +127,29 @@ public final class DatabaseConstraintViolation {
     public static final class DatabaseConstraintViolationBuilder {
         
         private final DatabaseConstraintType constraintType;
+        
         private String constraintName;
         
         private String tableName;
+        
         private String columnName;
         
         private String referencingTableName;
         
+        private String referencingColumnName;
+        
         private Object value;
+        
         private String valueType;
+        
         private String expectedValueType;
+        
         private Long maximumLength;
+        
+        private String statement;
 
+        private String number;
+        
         private DatabaseConstraintViolationBuilder(DatabaseConstraintType constraintType) {
             this.constraintType = constraintType;
         }
@@ -141,6 +171,11 @@ public final class DatabaseConstraintViolation {
         
         public DatabaseConstraintViolationBuilder referencingTable(String referencingTableName) {
             this.referencingTableName = referencingTableName;
+            return this;
+        }
+        
+        public DatabaseConstraintViolationBuilder referencingColumn(String referencingColumnName) {
+            this.referencingColumnName = referencingColumnName;
             return this;
         }
 
@@ -167,6 +202,16 @@ public final class DatabaseConstraintViolation {
             this.maximumLength = maximumLength;
             return this;
         }
+        
+        public DatabaseConstraintViolationBuilder statement(String statement) {
+            this.statement = statement;
+            return this;
+        }
+        
+        public DatabaseConstraintViolationBuilder number(String number) {
+            this.number = number;
+            return this;
+        }
 
         /**
          * Build the actual constraint violation. Note that the either a constraint type or name
@@ -178,10 +223,13 @@ public final class DatabaseConstraintViolation {
             violation.tableName = tableName;
             violation.columnName = columnName;
             violation.referencingTableName = referencingTableName;
+            violation.referencingColumnName = referencingColumnName;
             violation.value = value;
             violation.valueType = valueType;
             violation.expectedValueType = expectedValueType;
             violation.maximumLength = maximumLength;
+            violation.statement = statement;
+            violation.number = number;
             return violation;
         }
         

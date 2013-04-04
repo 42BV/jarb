@@ -18,7 +18,7 @@ databaseChangeLog() {
 		}
 		
 		addUniqueConstraint(tableName: "cars", columnNames: "license_number", constraintName: "uk_cars_license_number")
-				
+
 		createTable(tableName: "persons") {
 			column(name: "id", type: "bigint", autoIncrement: true) {
 				constraints(
@@ -32,6 +32,9 @@ databaseChangeLog() {
 			column(name: "street_and_number", type: "varchar(255)") { constraints(nullable: false) }
 			column(name: "city", type: "varchar(255)") { constraints(nullable: false) }
 		}
+		
+		addForeignKeyConstraint(constraintName: "fk_cars_owner", baseTableName: "cars", baseColumnNames: "owner_id", referencedTableName: "persons", referencedColumnNames: "id")
+		
 	}
 	
 	changeSet(author: "jeroen@42.nl", id: "2") {

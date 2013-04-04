@@ -28,7 +28,7 @@ public class HsqlViolationResolver implements ViolationMessageResolver {
     private static final Pattern UNIQUE_VIOLATION_PATTERN = Pattern.compile("integrity constraint violation: unique constraint or index violation; (.+) table: (.+)");
     
     /* Provided: constraint name, table name */
-    private static final Pattern FK_VIOLATION_PATTERN = Pattern.compile("integrity constraint violation: foreign key no action; (.+) table: (.+)");
+    private static final Pattern FK_VIOLATION_PATTERN = Pattern.compile("integrity constraint violation: foreign key no \\w+; (.+) table: (.+)");
 
     /* Provided: value type */
     private static final Pattern LENGTH_EXCEEDED_PATTERN = Pattern.compile("data exception: (.+) data, right truncation");
