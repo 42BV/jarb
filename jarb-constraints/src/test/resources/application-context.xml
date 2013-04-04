@@ -64,7 +64,7 @@
             <property name="delegate">
                 <bean class="org.springframework.jdbc.datasource.DriverManagerDataSource">
                     <property name="driverClassName" value="org.h2.Driver"/>
-                    <property name="url" value="jdbc:h2:mem:jarb"/>
+                    <property name="url" value="jdbc:h2:file:target/jarb.db"/>
                     <property name="username" value="sa"/>
                 </bean>
             </property>
