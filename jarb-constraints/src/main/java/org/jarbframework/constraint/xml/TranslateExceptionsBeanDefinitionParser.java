@@ -1,6 +1,5 @@
-package org.jarbframework.constraint.violation.xml;
+package org.jarbframework.constraint.xml;
 
-import static org.jarbframework.utils.spring.xml.BeanParsingHelper.parsePropertyFromAttributeOrChild;
 import static org.springframework.beans.factory.support.BeanDefinitionBuilder.genericBeanDefinition;
 
 import org.jarbframework.constraint.violation.DatabaseConstraintExceptionTranslatingBeanPostProcessor;
@@ -13,28 +12,23 @@ import org.springframework.beans.factory.xml.AbstractBeanDefinitionParser;
 import org.springframework.beans.factory.xml.ParserContext;
 import org.w3c.dom.Element;
 
-/**
- * Parses a {@link DatabaseConstraintExceptionTranslatingBeanPostProcessor} from XML.
- * @author Jeroen van Schagen
- * @since 22-09-2011
- */
-public class EnableTranslationsBeanDefinitionParser extends AbstractBeanDefinitionParser {
+public class TranslateExceptionsBeanDefinitionParser extends AbstractBeanDefinitionParser {
 
     @Override
     protected AbstractBeanDefinition parseInternal(Element element, ParserContext parserContext) {
         BeanDefinitionBuilder builder = genericBeanDefinition(DatabaseConstraintExceptionTranslatingBeanPostProcessor.class);
-        builder.addPropertyValue("translator", parseTranslator(element, parserContext, builder.getBeanDefinition()));
+        if (element.hasAttribute("translator")) {
+            // TODO
+        } else {
+            // TODO
+        }        
         if (element.hasAttribute("pointcut")) {
-            builder.addPropertyValue("pointcut", createPointcut(element.getAttribute("pointcut")));
+            builder.addPropertyValue("pointcut", parsePointcut(element.getAttribute("pointcut")));
         }
         return builder.getBeanDefinition();
     }
 
-    private Object parseTranslator(Element element, ParserContext parserContext, BeanDefinition parentDefinition) {
-        return parsePropertyFromAttributeOrChild(element, "translator", parserContext, parentDefinition);
-    }
-
-    private BeanDefinition createPointcut(String expression) {
+    private BeanDefinition parsePointcut(String expression) {
         RootBeanDefinition beanDefinition = new RootBeanDefinition(AspectJExpressionPointcut.class);
         beanDefinition.setScope(BeanDefinition.SCOPE_PROTOTYPE);
         beanDefinition.setSynthetic(true);

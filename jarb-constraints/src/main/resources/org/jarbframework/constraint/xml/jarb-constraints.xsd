@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema version="2.0"
+    xmlns="http://www.jarbframework.org/schema/violations"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    xmlns:beans="http://www.springframework.org/schema/beans"
+    xmlns:tool="http://www.springframework.org/schema/tool"
+    targetNamespace="http://www.jarbframework.org/schema/violations"
+    elementFormDefault="qualified"
+    attributeFormDefault="unqualified">
+
+    <xsd:import namespace="http://www.springframework.org/schema/beans"/>
+    <xsd:import namespace="http://www.springframework.org/schema/tool"/>
+
+    <xsd:annotation>
+        <xsd:documentation>
+            Defines all configuration elements for the constraint module.
+        </xsd:documentation>
+    </xsd:annotation>
+
+    <xsd:element name="translate-exceptions">
+        <xsd:annotation>
+            <xsd:documentation>
+                Enable database constraint violation exception translation.
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexType>
+            <xsd:attribute name="translator" type="xsd:string">
+	            <xsd:annotation>
+	                <xsd:documentation>
+	                    Reference to the exception translator.
+	                </xsd:documentation>
+	            </xsd:annotation>
+            </xsd:attribute>
+            <xsd:attribute name="base-package" type="xsd:string">
+                <xsd:annotation>
+                    <xsd:documentation>
+                        Base package to scan for annotated exception classes.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:attribute>
+            <xsd:attribute name="data-source" type="xsd:string">
+                <xsd:annotation>
+                    <xsd:documentation>
+                        Data source reference to recognize the underlying database product.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:attribute>
+            <xsd:attribute name="pointcut" type="xsd:string">
+                <xsd:annotation>
+                    <xsd:documentation>
+                        Pointcut expression that declares where to attempt translations.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:attribute>
+        </xsd:complexType>
+    </xsd:element>
+    
+</xsd:schema>

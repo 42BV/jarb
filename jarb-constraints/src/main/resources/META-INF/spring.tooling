@@ -1,4 +1,4 @@
 # Tooling related information for the beans namespace
-http\://www.jarbframework.org/schema/violations@name=Violations Namespace
-http\://www.jarbframework.org/schema/violations@prefix=violations
-http\://www.jarbframework.org/schema/violations@icon=org/springframework/beans/factory/xml/spring-beans.gif
+http\://www.jarbframework.org/schema/constraints@name=JARB Constraints Namespace
+http\://www.jarbframework.org/schema/constraints@prefix=constraints
+http\://www.jarbframework.org/schema/constraints@icon=org/springframework/beans/factory/xml/spring-beans.gif

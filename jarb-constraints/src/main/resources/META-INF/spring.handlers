@@ -1,1 +1,1 @@
-http\://www.jarbframework.org/schema/violations=org.jarbframework.constraint.violation.xml.DatabaseConstraintViolationNamespaceHandler
+http\://www.jarbframework.org/schema/constraints=org.jarbframework.constraint.xml.ConstraintsNamespaceHandler

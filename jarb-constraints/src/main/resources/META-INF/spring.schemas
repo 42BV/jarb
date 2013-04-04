@@ -1,1 +1,1 @@
-http\://www.jarbframework.org/schema/violations/jarb-violations.xsd=org/jarbframework/constraint/violation/xml/jarb-violations.xsd
+http\://www.jarbframework.org/schema/constraints/jarb-constraints.xsd=org/jarbframework/constraint/xml/jarb-constraints.xsd
