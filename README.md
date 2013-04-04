@@ -118,20 +118,18 @@ Database constraint exceptions
 Whenever a database constraint is violated, the JDBC driver will convert it
 into a runtime exception. This SQLException is hard to use in the application
 because all metadata is held inside its message. By using exception translation
-we can convert the driver exception into a more intuitive constraint violation
-exception. It is even possible to map custom exceptions on to named constraints.
+we can convert the driver exception into a more intuitive exception, e.g. the
+UniqueKeyAlreadyExistsException. Inside our translated exception we have full
+access to the constraint violation and any desired metadata.
 
-    <violations:translator id="translator" data-source="dataSource">
-        <violations:configurable-exception-factory>
-            <violations:exception-mapping constraint="uk_posts_title"
-                exception="org.jarbframework.sample.PostTitleAlreadyExistsException"/>
-        </violations:configurable-exception-factory>
-    </violations:translator>
+It is even possible to map custom exceptions on named constraints.
 
-    <violations:enable-translations translator="translator"/>
+	<constraints:translate-exceptions data-source="dataSource" base-package="org.jarbframework.sample"/>
 
-By using our exception translator, we now recieve a PostTitleAlreadyExistsException
-whenever the "uk_posts_title" database constraint is violated.
+	@DatabaseConstraint("uk_posts_title")
+	public class PostTitleAlreadyExistsException extends UniqueKeyViolationException {
+		...
+	}
 
 Components
 ----------

@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.jarbframework.constraint.violation.DatabaseConstraintViolation;
-import org.jarbframework.constraint.violation.factory.mapping.DatabaseConstraintMapping;
+import org.jarbframework.constraint.violation.factory.mapping.DatabaseConstraint;
 import org.jarbframework.constraint.violation.factory.mapping.ExceptionFactoryMapping;
 import org.jarbframework.constraint.violation.factory.mapping.NameMatchingStrategy;
 import org.jarbframework.constraint.violation.factory.mapping.ViolationNamePredicate;
@@ -106,12 +106,12 @@ public class ConfigurableConstraintExceptionFactory implements DatabaseConstrain
     
     public ConfigurableConstraintExceptionFactory registerAll(String basePackage) {
         ClassPathScanningCandidateComponentProvider componentProvider = new ClassPathScanningCandidateComponentProvider(false);
-        componentProvider.addIncludeFilter(new AnnotationTypeFilter(DatabaseConstraintMapping.class));
+        componentProvider.addIncludeFilter(new AnnotationTypeFilter(DatabaseConstraint.class));
         
         Set<BeanDefinition> annotatedBeans = componentProvider.findCandidateComponents(basePackage);
         for(BeanDefinition annotatedBean : annotatedBeans) {
             Class<?> beanClass = Classes.forName(annotatedBean.getBeanClassName());
-            DatabaseConstraintMapping annotation = AnnotationUtils.findAnnotation(beanClass, DatabaseConstraintMapping.class);
+            DatabaseConstraint annotation = AnnotationUtils.findAnnotation(beanClass, DatabaseConstraint.class);
             register(annotation.value(), annotation.strategy(), beanClass.asSubclass(Exception.class));
         }
         

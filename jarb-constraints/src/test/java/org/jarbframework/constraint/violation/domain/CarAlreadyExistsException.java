@@ -3,7 +3,7 @@ package org.jarbframework.constraint.violation.domain;
 import org.jarbframework.constraint.violation.DatabaseConstraintViolation;
 import org.jarbframework.constraint.violation.UniqueKeyViolationException;
 import org.jarbframework.constraint.violation.factory.DatabaseConstraintExceptionFactory;
-import org.jarbframework.constraint.violation.factory.mapping.DatabaseConstraintMapping;
+import org.jarbframework.constraint.violation.factory.mapping.DatabaseConstraint;
 
 /**
  * Car licenses can only be used once.
@@ -11,7 +11,7 @@ import org.jarbframework.constraint.violation.factory.mapping.DatabaseConstraint
  * @author Jeroen van Schagen
  * @since 27-05-2011
  */
-@DatabaseConstraintMapping("uk_cars_license_number")
+@DatabaseConstraint("uk_cars_license_number")
 public class CarAlreadyExistsException extends UniqueKeyViolationException {
 
     private DatabaseConstraintExceptionFactory exceptionFactory;
