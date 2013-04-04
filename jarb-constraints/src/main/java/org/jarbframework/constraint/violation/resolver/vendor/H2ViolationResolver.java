@@ -25,7 +25,7 @@ public class H2ViolationResolver implements ViolationMessageResolver {
      * NULL not allowed for column "LICENSE_NUMBER"; SQL statement:
      * insert into cars (id, active, license_number, price) values (default, ?, ?, ?) [23502-171]
      */
-    private static final Pattern CANNOT_BE_NULL_PATTERN = Pattern.compile(".*");
+    private static final Pattern CANNOT_BE_NULL_PATTERN = Pattern.compile("NULL not allowed for column \"(.+)\"; SQL statement:(.*) \\[(.*)\\]");
 
     /*
      * Unique index or primary key violation: "UK_CARS_LICENSE_NUMBER_INDEX_1 ON PUBLIC.CARS(LICENSE_NUMBER)"; SQL statement:
