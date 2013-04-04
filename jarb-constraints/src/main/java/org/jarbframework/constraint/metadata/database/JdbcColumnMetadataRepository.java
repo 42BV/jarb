@@ -49,14 +49,18 @@ public class JdbcColumnMetadataRepository implements ColumnMetadataRepository {
         Connection connection = null;
         try {
             connection = dataSource.getConnection();
+            
             DatabaseMetaData databaseMetaData = connection.getMetaData();
             if (databaseIdentifierCaser == null) {
                 databaseIdentifierCaser = new DatabaseIdentifierCaser(databaseMetaData);
             }
+            
             String tableName = databaseIdentifierCaser.caseIdentifier(columnReference.getTableName());
             String columnName = databaseIdentifierCaser.caseIdentifier(columnReference.getColumnName());
+            
             logger.debug("Querying column metadata for table: {}, column: {}.", tableName, columnName);
             ResultSet resultSet = databaseMetaData.getColumns(catalog, schema, tableName, columnName);
+            
             return mapToColumnMetadata(columnReference, resultSet);
         } catch (SQLException e) {
             throw new RuntimeException(e);

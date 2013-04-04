@@ -1,9 +1,11 @@
 package org.jarbframework.constraint.violation.resolver;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
+import java.util.LinkedList;
 
 import org.jarbframework.constraint.violation.DatabaseConstraintViolation;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Chain of responsiblity for constraint violation resolvers. Whenever a violation
@@ -16,10 +18,18 @@ import org.jarbframework.constraint.violation.DatabaseConstraintViolation;
  */
 public class ViolationResolverChain implements DatabaseConstraintViolationResolver {
     
-    private final List<DatabaseConstraintViolationResolver> resolvers;
+    private final Logger logger = LoggerFactory.getLogger(getClass());
+    
+    /**
+     * Collection of violation resolvers that should be attempted in sequence.
+     */
+    private final Collection<DatabaseConstraintViolationResolver> violationResolvers;
 
+    /**
+     * Construct a new chain of violation resolvers.
+     */
     public ViolationResolverChain() {
-        resolvers = new ArrayList<DatabaseConstraintViolationResolver>();
+        violationResolvers = new LinkedList<DatabaseConstraintViolationResolver>();
     }
 
     /**
@@ -27,15 +37,15 @@ public class ViolationResolverChain implements DatabaseConstraintViolationResolv
      */
     @Override
     public DatabaseConstraintViolation resolve(Throwable throwable) {
-        DatabaseConstraintViolation result = null;
-        for (DatabaseConstraintViolationResolver resolver : resolvers) {
-            DatabaseConstraintViolation violation = resolver.resolve(throwable);
+        for (DatabaseConstraintViolationResolver violationResolver : violationResolvers) {
+            logger.debug("Attempting to resolve violation with {}", violationResolver.getClass());
+            DatabaseConstraintViolation violation = violationResolver.resolve(throwable);
             if (violation != null) {
-                result = violation;
-                break;
+                return violation;
             }
         }
-        return result;
+        
+        return null;
     }
 
     /**
@@ -45,7 +55,7 @@ public class ViolationResolverChain implements DatabaseConstraintViolationResolv
      */
     public ViolationResolverChain addToChain(DatabaseConstraintViolationResolver resolver) {
         if(resolver != null) {
-            resolvers.add(resolver);
+            violationResolvers.add(resolver);
         }
         return this;
     }

@@ -62,10 +62,10 @@ public class ConstraintViolationExceptionTranslatingBeanPostProcessorTest {
             users.add(carWithoutLicense);
             fail("Expected a not null exception");
         } catch (NotNullViolationException e) {
-            assertEquals("Column 'name' cannot be null.", e.getMessage());
+            assertEquals("Column 'license_number' cannot be null.", e.getMessage());
             DatabaseConstraintViolation violation = e.getViolation();
             assertEquals(NOT_NULL, violation.getConstraintType());
-            assertEquals("name", violation.getColumnName());
+            assertEquals("license_number", violation.getColumnName());
         }
     }
 

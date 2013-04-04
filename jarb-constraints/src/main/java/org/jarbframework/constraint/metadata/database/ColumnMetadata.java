@@ -123,7 +123,11 @@ public class ColumnMetadata {
     }
 
     void setMaximumLength(Integer maximumLength) {
-        this.maximumLength = maximumLength;
+        if (maximumLength > 0) {
+            this.maximumLength = maximumLength;
+        } else {
+            this.maximumLength = null;
+        }
     }
 
     /**

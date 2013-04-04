@@ -61,7 +61,7 @@ public class DatabaseConstraintExceptionTranslatorTest {
         } catch (final PersistenceException exception) {
             Throwable violationException = translator.translate(exception);
             assertTrue(violationException instanceof NotNullViolationException);
-            assertEquals("Column 'name' cannot be null.", violationException.getMessage());
+            assertEquals("Column 'license_number' cannot be null.", violationException.getMessage());
         }
     }
 

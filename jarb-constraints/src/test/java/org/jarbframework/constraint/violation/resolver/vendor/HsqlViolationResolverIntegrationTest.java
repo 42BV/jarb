@@ -74,8 +74,8 @@ public class HsqlViolationResolverIntegrationTest {
         } catch (RuntimeException e) {
             DatabaseConstraintViolation violation = violationResolver.resolve(e);
             assertEquals(UNIQUE_KEY, violation.getConstraintType());
-            assertEquals("uk_users_name", violation.getConstraintName());
-            assertEquals("users", violation.getTableName());
+            assertEquals("uk_cars_license_number", violation.getConstraintName());
+            assertEquals("cars", violation.getTableName());
         }
     }
 

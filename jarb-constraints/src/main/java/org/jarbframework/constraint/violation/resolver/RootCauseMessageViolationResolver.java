@@ -3,6 +3,8 @@ package org.jarbframework.constraint.violation.resolver;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 import org.jarbframework.constraint.violation.DatabaseConstraintViolation;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Looks at the message of our root cause to determine the constraint violation.
@@ -11,11 +13,20 @@ import org.jarbframework.constraint.violation.DatabaseConstraintViolation;
  * @since 16-05-2011
  */
 public class RootCauseMessageViolationResolver implements DatabaseConstraintViolationResolver {
-
-    private final ViolationMessageResolver messageViolationResolver;
     
-    public RootCauseMessageViolationResolver(ViolationMessageResolver messageViolationResolver) {
-        this.messageViolationResolver = messageViolationResolver;
+    private final Logger logger = LoggerFactory.getLogger(getClass());
+
+    /**
+     * Determines the constraint violation based on a message.
+     */
+    private final ViolationMessageResolver messageResolver;
+    
+    /**
+     * Construct a new root cause message violation resolver.
+     * @param messageResolver the resolver of our root cause message
+     */
+    public RootCauseMessageViolationResolver(ViolationMessageResolver messageResolver) {
+        this.messageResolver = messageResolver;
     }
     
     /**
@@ -27,7 +38,8 @@ public class RootCauseMessageViolationResolver implements DatabaseConstraintViol
         
         String rootCauseMessage = getRootCauseMessage(throwable);
         if (isNotBlank(rootCauseMessage)) {
-            violation = messageViolationResolver.resolveByMessage(rootCauseMessage);
+            logger.debug("Attempting to resolve violation based on message: {}", rootCauseMessage);
+            violation = messageResolver.resolveByMessage(rootCauseMessage);
         }
         
         return violation;
