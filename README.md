@@ -7,19 +7,19 @@ http://www.jarbframework.org
 
 Features
 --------
- * Database initialization
-  * Automate database migrations on application startup
-  * Populate database on application startup
-   + SQL script based (using Spring JDBC)
-   + Excel based
-   + Building blocks: compound, conditional, fail-safe
  * (Database) constraints 
   * Automate database constraint validation with JSR303
   * Translate JDBC exceptions into constraint violation exceptions
    + Full access to constraint violation metadata
    + Map custom exceptions to named constraints
   * Describe bean constraint metadata, with content from JDBC and JSR303
-  
+ * Database initialization
+  * Automate database migrations on application startup
+  * Populate database on application startup
+   + SQL script based (using Spring JDBC)
+   + Excel based
+   + Building blocks: compound, conditional, fail-safe
+
 Developers
 ----------
  * Jeroen van Schagen (jeroen@42.nl)
@@ -39,6 +39,39 @@ License
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
+
+JSR303 database constraints
+---------------------------
+To validate database constraints with JSR303 validation, we often need to
+duplicate constraint information in both the database and entity class.
+Duplication is never good, so we made a @DatabaseConstrained annotation that
+dynamically validates all simple database constraints based on JDBC metadata.
+
+	@DatabaseConstrained @Entity
+	public class Person {
+		@Id @GeneratedValue
+		private Long id;
+		private String name;
+		...
+	}
+
+Database constraint exceptions
+------------------------------
+Whenever a database constraint is violated, the JDBC driver will convert it
+into a runtime exception. This SQLException is hard to use in the application
+because all metadata is held inside its message. By using exception translation
+we can convert the driver exception into a more intuitive exception, e.g. the
+UniqueKeyAlreadyExistsException. Inside our translated exception we have full
+access to the constraint violation and any desired metadata.
+
+It is even possible to map custom exceptions on named constraints.
+
+	<constraints:translate-exceptions data-source="dataSource" base-package="org.jarbframework.sample"/>
+
+	@DatabaseConstraint("uk_posts_title")
+	public class PostTitleAlreadyExistsException extends UniqueKeyViolationException {
+		...
+	}
 
 Database migrations (schema)
 ----------------------------
@@ -97,39 +130,6 @@ insert data using an SQL script and Excel file.
 			</bean>
     	</constructor-arg>
     </bean>
-
-JSR303 database constraints
----------------------------
-To validate database constraints with JSR303 validation, we often need to
-duplicate constraint information in both the database and entity class.
-Duplication is never good, so we made a @DatabaseConstrained annotation that
-dynamically validates all simple database constraints based on JDBC metadata.
-
-	@DatabaseConstrained @Entity
-	public class Person {
-		@Id @GeneratedValue
-		private Long id;
-		private String name;
-		...
-	}
-
-Database constraint exceptions
-------------------------------
-Whenever a database constraint is violated, the JDBC driver will convert it
-into a runtime exception. This SQLException is hard to use in the application
-because all metadata is held inside its message. By using exception translation
-we can convert the driver exception into a more intuitive exception, e.g. the
-UniqueKeyAlreadyExistsException. Inside our translated exception we have full
-access to the constraint violation and any desired metadata.
-
-It is even possible to map custom exceptions on named constraints.
-
-	<constraints:translate-exceptions data-source="dataSource" base-package="org.jarbframework.sample"/>
-
-	@DatabaseConstraint("uk_posts_title")
-	public class PostTitleAlreadyExistsException extends UniqueKeyViolationException {
-		...
-	}
 
 Components
 ----------
