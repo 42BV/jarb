@@ -33,7 +33,7 @@ public class DatabaseSchemaPropertyConstraintEnhancerTest {
 
     @Before
     public void setUp() {
-        propertyEnhancer = new DatabaseSchemaPropertyConstraintEnhancer(schemaMapper, columnMetadataRepository);
+        propertyEnhancer = new DatabaseSchemaPropertyConstraintEnhancer(columnMetadataRepository, schemaMapper);
     }
 
     /**

@@ -1,5 +1,12 @@
 package org.jarbframework.constraint.metadata.database;
 
+import static org.apache.commons.lang3.StringUtils.endsWith;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
+import static org.apache.commons.lang3.StringUtils.lowerCase;
+import static org.apache.commons.lang3.StringUtils.startsWith;
+import static org.apache.commons.lang3.StringUtils.substringBetween;
+import static org.apache.commons.lang3.StringUtils.upperCase;
+
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
@@ -7,9 +14,9 @@ import java.sql.SQLException;
 
 import javax.sql.DataSource;
 
-import org.apache.commons.lang3.StringUtils;
-import org.jarbframework.utils.Asserts;
-import org.jarbframework.utils.JdbcUtils;
+import org.jarbframework.constraint.metadata.database.connection.ConnectionHandler;
+import org.jarbframework.constraint.metadata.database.connection.DataSourceConnectionHandler;
+import org.jarbframework.utils.JdbcConnectionCallback;
 import org.jarbframework.utils.orm.ColumnReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,49 +31,43 @@ public class JdbcColumnMetadataRepository implements ColumnMetadataRepository {
 
     private final Logger logger = LoggerFactory.getLogger(JdbcColumnMetadataRepository.class);
 
-    /** Provides access to our database using JDBC. **/
-    private final DataSource dataSource;
+    private final ConnectionHandler connectionHandler;
 
-    /** Applies the correct casing on identifiers. **/
-    private DatabaseIdentifierCaser databaseIdentifierCaser;
+    private DatabaseIdentifierCaser identifierCaser;
 
-    /** Database catalog name, can be {@code null} **/
     private String catalog;
-
-    /** Database schema name, can be {@code null} **/
+    
     private String schema;
-
-    /**
-     * Construct a new {@link JdbcColumnMetadataRepository}.
-     * @param dataSource data source reference
-     */
+    
     public JdbcColumnMetadataRepository(DataSource dataSource) {
-        this.dataSource = Asserts.notNull(dataSource, "Data source cannot be null.");
+        this(new DataSourceConnectionHandler(dataSource));
+    }
+    
+    public JdbcColumnMetadataRepository(ConnectionHandler connectionHandler) {
+        this.connectionHandler = connectionHandler;
     }
 
     @Override
-    public ColumnMetadata getColumnMetadata(ColumnReference columnReference) {
-        Connection connection = null;
-        try {
-            connection = dataSource.getConnection();
-            
-            DatabaseMetaData databaseMetaData = connection.getMetaData();
-            if (databaseIdentifierCaser == null) {
-                databaseIdentifierCaser = new DatabaseIdentifierCaser(databaseMetaData);
+    public ColumnMetadata getColumnMetadata(final ColumnReference columnReference) {
+        return connectionHandler.execute(new JdbcConnectionCallback<ColumnMetadata>() {
+           
+            @Override
+            public ColumnMetadata doWork(Connection connection) throws SQLException {
+                DatabaseMetaData databaseMetaData = connection.getMetaData();
+                if (identifierCaser == null) {
+                    identifierCaser = new DatabaseIdentifierCaser(databaseMetaData);
+                }
+                
+                String tableName = identifierCaser.apply(columnReference.getTableName());
+                String columnName = identifierCaser.apply(columnReference.getColumnName());
+                
+                logger.debug("Querying column metadata for table: {}, column: {}.", tableName, columnName);
+                ResultSet resultSet = databaseMetaData.getColumns(catalog, schema, tableName, columnName);
+                
+                return mapToColumnMetadata(columnReference, resultSet);
             }
             
-            String tableName = databaseIdentifierCaser.caseIdentifier(columnReference.getTableName());
-            String columnName = databaseIdentifierCaser.caseIdentifier(columnReference.getColumnName());
-            
-            logger.debug("Querying column metadata for table: {}, column: {}.", tableName, columnName);
-            ResultSet resultSet = databaseMetaData.getColumns(catalog, schema, tableName, columnName);
-            
-            return mapToColumnMetadata(columnReference, resultSet);
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        } finally {
-            JdbcUtils.closeQuietly(connection);
-        }
+        });
     }
 
     /**
@@ -90,11 +91,12 @@ public class JdbcColumnMetadataRepository implements ColumnMetadataRepository {
     }
 
     private Integer getValueAsInteger(ResultSet resultSet, String columnLabel) throws SQLException {
+        Integer value = null;
         String numberAsString = resultSet.getString(columnLabel);
-        if (StringUtils.isBlank(numberAsString)) {
-            return null;
+        if (isNotBlank(numberAsString)) {
+            value = Integer.parseInt(numberAsString);
         }
-        return Integer.parseInt(numberAsString);
+        return value;
     }
 
     private Object getOptionalValue(ResultSet resultSet, String columnLabel) {
@@ -102,7 +104,7 @@ public class JdbcColumnMetadataRepository implements ColumnMetadataRepository {
         try {
             value = resultSet.getObject(columnLabel);
         } catch (SQLException e) {
-            logger.debug("Column '" + columnLabel + "'  value could not be extracted from result set", e);
+            logger.trace("Column '" + columnLabel + "'  value could not be extracted from result set", e);
         }
         return value;
     }
@@ -117,31 +119,30 @@ public class JdbcColumnMetadataRepository implements ColumnMetadataRepository {
 
     private static class DatabaseIdentifierCaser {
 
-        /** String used to quote an identifier **/
-        private final String identifierQuoteString;
+        private final String quoteString;
 
-        private final boolean storesUpperCaseIdentifiers;
-        private final boolean storesUpperCaseQuotedIdentifiers;
+        private final boolean storeUpperCase;
+        private final boolean storeUpperCaseQuoted;
 
-        private final boolean storesLowerCaseIdentifiers;
-        private final boolean storesLowerCaseQuotedIdentifiers;
+        private final boolean storeLowerCase;
+        private final boolean storeLowerCaseQuoted;
 
         public DatabaseIdentifierCaser(DatabaseMetaData databaseMetaData) throws SQLException {
-            identifierQuoteString = databaseMetaData.getIdentifierQuoteString();
-            storesUpperCaseIdentifiers = databaseMetaData.storesUpperCaseIdentifiers();
-            storesUpperCaseQuotedIdentifiers = databaseMetaData.storesUpperCaseQuotedIdentifiers();
-            storesLowerCaseIdentifiers = databaseMetaData.storesLowerCaseIdentifiers();
-            storesLowerCaseQuotedIdentifiers = databaseMetaData.storesLowerCaseQuotedIdentifiers();
+            quoteString = databaseMetaData.getIdentifierQuoteString();
+            storeUpperCase = databaseMetaData.storesUpperCaseIdentifiers();
+            storeUpperCaseQuoted = databaseMetaData.storesUpperCaseQuotedIdentifiers();
+            storeLowerCase = databaseMetaData.storesLowerCaseIdentifiers();
+            storeLowerCaseQuoted = databaseMetaData.storesLowerCaseQuotedIdentifiers();
         }
 
-        public String caseIdentifier(String identifier) {
+        public String apply(String identifier) {
             if (isQuoted(identifier)) {
-                identifier = caseQuotedIdentifier(identifier);
+                identifier = applyQuoted(identifier);
             } else {
-                if (storesLowerCaseIdentifiers) {
-                    identifier = StringUtils.lowerCase(identifier);
-                } else if (storesUpperCaseIdentifiers) {
-                    identifier = StringUtils.upperCase(identifier);
+                if (storeLowerCase) {
+                    identifier = lowerCase(identifier);
+                } else if (storeUpperCase) {
+                    identifier = upperCase(identifier);
                 }
             }
             return identifier;
@@ -149,18 +150,18 @@ public class JdbcColumnMetadataRepository implements ColumnMetadataRepository {
 
         private boolean isQuoted(String identifier) {
             boolean quoted = false;
-            if (StringUtils.isNotBlank(identifierQuoteString)) {
-                quoted = StringUtils.startsWith(identifier, identifierQuoteString) && StringUtils.endsWith(identifier, identifierQuoteString);
+            if (isNotBlank(quoteString)) {
+                quoted = startsWith(identifier, quoteString) && endsWith(identifier, quoteString);
             }
             return quoted;
         }
 
-        private String caseQuotedIdentifier(String identifier) {
-            String unquotedIdentifier = StringUtils.substringBetween(identifier, identifierQuoteString);
-            if (storesLowerCaseQuotedIdentifiers) {
-                unquotedIdentifier = StringUtils.lowerCase(unquotedIdentifier);
-            } else if (storesUpperCaseQuotedIdentifiers) {
-                unquotedIdentifier = StringUtils.upperCase(unquotedIdentifier);
+        private String applyQuoted(String identifier) {
+            String unquotedIdentifier = substringBetween(identifier, quoteString);
+            if (storeLowerCaseQuoted) {
+                unquotedIdentifier = lowerCase(unquotedIdentifier);
+            } else if (storeUpperCaseQuoted) {
+                unquotedIdentifier = upperCase(unquotedIdentifier);
             }
             return unquotedIdentifier;
         }

@@ -16,18 +16,20 @@ import org.jarbframework.constraint.metadata.PropertyConstraintDescription;
  * @date Sep 7, 2011
  */
 public class AnnotationPropertyTypeEnhancer implements PropertyConstraintEnhancer {
-    private final Class<? extends Annotation> annotationType;
-    private final String type;
+    
+    private final Class<? extends Annotation> annotationClass;
+    
+    private final String typeName;
 
-    public AnnotationPropertyTypeEnhancer(Class<? extends Annotation> annotationType, String type) {
-        this.annotationType = notNull(annotationType, "Annotation type cannot be null");
-        this.type = hasText(type, "Type needs to have text");
+    public AnnotationPropertyTypeEnhancer(Class<? extends Annotation> annotationClass, String typeName) {
+        this.annotationClass = notNull(annotationClass, "Annotation class cannot be null");
+        this.typeName = hasText(typeName, "Type name needs to have text");
     }
 
     @Override
     public PropertyConstraintDescription enhance(PropertyConstraintDescription description) {
-        if (fieldOrGetter().hasAnnotation(description.toPropertyReference(), annotationType)) {
-            description.addType(type);
+        if (fieldOrGetter().hasAnnotation(description.toPropertyReference(), annotationClass)) {
+            description.addType(typeName);
         }
         return description;
     }

@@ -94,16 +94,7 @@
         <property name="validationMessageSource" ref="messageSource"/>
     </bean>
 
-    <bean id="schemaMapper" class="org.jarbframework.utils.orm.SimpleHibernateJpaSchemaMapper">
-        <constructor-arg ref="entityManagerFactory"/>
-    </bean>
-    
-    <bean id="columnMetadataRepository" class="org.jarbframework.constraint.metadata.database.JdbcCachingColumnMetadataRepositoryFactoryBean">
-        <property name="dataSource" ref="dataSource"/>
-    </bean>
-    
-    <bean class="org.jarbframework.constraint.metadata.BeanConstraintDescriptorFactoryBean"/>
-    
+    <constraints:enable-metadata entity-manager-factory="entityManagerFactory"/>
     <constraints:translate-exceptions data-source="dataSource" base-package="org.jarbframework.sample"/>
 
     <jpa:repositories base-package="org.jarbframework.sample"/>

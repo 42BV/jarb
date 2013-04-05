@@ -16,18 +16,20 @@ import org.jarbframework.constraint.metadata.PropertyConstraintDescription;
  * @date Sep 7, 2011
  */
 public class ClassPropertyTypeEnhancer implements PropertyConstraintEnhancer {
+    
     private final Class<?> propertyClass;
-    private final String type;
+    
+    private final String typeName;
 
-    public ClassPropertyTypeEnhancer(Class<?> propertyClass, String type) {
+    public ClassPropertyTypeEnhancer(Class<?> propertyClass, String typeName) {
         this.propertyClass = notNull(propertyClass, "Property class cannot be null");
-        this.type = hasText(type, "Type needs to have text");
+        this.typeName = hasText(typeName, "Type name should have text");
     }
 
     @Override
     public PropertyConstraintDescription enhance(PropertyConstraintDescription description) {
         if (propertyClass.isAssignableFrom(description.getJavaType())) {
-            description.addType(type);
+            description.addType(typeName);
         }
         return description;
     }

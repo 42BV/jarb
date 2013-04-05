@@ -13,8 +13,9 @@ import org.mockito.Mockito;
 
 public class CachingDatabaseMetadataRepositoryTest {
     
+    private ColumnMetadataRepository delegateMetadataRepository;    
+    
     private CachingColumnMetadataRepository cachingMetadataRepository;
-    private ColumnMetadataRepository delegateMetadataRepository;
 
     @Before
     public void setUp() {

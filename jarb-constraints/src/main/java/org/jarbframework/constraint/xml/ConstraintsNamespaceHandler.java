@@ -6,6 +6,7 @@ public class ConstraintsNamespaceHandler extends NamespaceHandlerSupport {
 
     @Override
     public void init() {
+        registerBeanDefinitionParser("enable-metadata", new EnableMetadataBeanDefinitionParser());
         registerBeanDefinitionParser("translate-exceptions", new TranslateExceptionsBeanDefinitionParser());
     }
 

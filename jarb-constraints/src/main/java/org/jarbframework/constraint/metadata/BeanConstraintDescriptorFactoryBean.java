@@ -15,7 +15,6 @@ import org.jarbframework.constraint.metadata.enhance.NotEmptyPropertyConstraintE
 import org.jarbframework.constraint.metadata.enhance.NotNullPropertyConstraintEnhancer;
 import org.jarbframework.utils.orm.SchemaMapper;
 import org.jarbframework.utils.spring.SingletonFactoryBean;
-import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * Builds a default bean constraint metadata generator.
@@ -26,37 +25,36 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class BeanConstraintDescriptorFactoryBean extends SingletonFactoryBean<BeanConstraintDescriptor> {
     
     private SchemaMapper schemaMapper;
+    
     private ColumnMetadataRepository columnMetadataRepository;
-
-    @Autowired
+    
+    @Override
+    protected BeanConstraintDescriptor createObject() throws Exception {
+        BeanConstraintDescriptorImpl descriptor = new BeanConstraintDescriptorImpl();
+        descriptor.registerEnhancer(new DatabaseSchemaPropertyConstraintEnhancer(columnMetadataRepository, schemaMapper));
+        descriptor.registerEnhancer(new DatabaseGeneratedPropertyConstraintEnhancer());
+        
+        // Basic constraint annotations
+        descriptor.registerEnhancer(new LengthPropertyConstraintEnhancer());
+        descriptor.registerEnhancer(new DigitsPropertyConstraintEnhancer());
+        descriptor.registerEnhancer(new NotNullPropertyConstraintEnhancer());
+        descriptor.registerEnhancer(new NotEmptyPropertyConstraintEnhancer());
+        
+        // Type recognition
+        descriptor.registerEnhancer(new ClassPropertyTypeEnhancer(String.class, "text"));
+        descriptor.registerEnhancer(new ClassPropertyTypeEnhancer(Date.class, "date"));
+        descriptor.registerEnhancer(new ClassPropertyTypeEnhancer(Number.class, "number"));
+        descriptor.registerEnhancer(new AnnotationPropertyTypeEnhancer(Email.class, "email"));
+        descriptor.registerEnhancer(new AnnotationPropertyTypeEnhancer(CreditCardNumber.class, "credid_card"));
+        return descriptor;
+    }
+    
     public void setColumnMetadataRepository(ColumnMetadataRepository columnMetadataRepository) {
         this.columnMetadataRepository = columnMetadataRepository;
     }
     
-    @Autowired
     public void setSchemaMapper(SchemaMapper schemaMapper) {
         this.schemaMapper = schemaMapper;
-    }
-    
-    @Override
-    protected BeanConstraintDescriptor createObject() throws Exception {
-        BeanConstraintDescriptorImpl accessor = new BeanConstraintDescriptorImpl();
-        accessor.registerEnhancer(new DatabaseSchemaPropertyConstraintEnhancer(schemaMapper, columnMetadataRepository));
-        accessor.registerEnhancer(new DatabaseGeneratedPropertyConstraintEnhancer());
-        
-        // Basic constraint annotations
-        accessor.registerEnhancer(new LengthPropertyConstraintEnhancer());
-        accessor.registerEnhancer(new DigitsPropertyConstraintEnhancer());
-        accessor.registerEnhancer(new NotNullPropertyConstraintEnhancer());
-        accessor.registerEnhancer(new NotEmptyPropertyConstraintEnhancer());
-        
-        // Type recognition
-        accessor.registerEnhancer(new ClassPropertyTypeEnhancer(String.class, "text"));
-        accessor.registerEnhancer(new ClassPropertyTypeEnhancer(Date.class, "date"));
-        accessor.registerEnhancer(new ClassPropertyTypeEnhancer(Number.class, "number"));
-        accessor.registerEnhancer(new AnnotationPropertyTypeEnhancer(Email.class, "email"));
-        accessor.registerEnhancer(new AnnotationPropertyTypeEnhancer(CreditCardNumber.class, "credid_card"));
-        return accessor;
     }
 
 }

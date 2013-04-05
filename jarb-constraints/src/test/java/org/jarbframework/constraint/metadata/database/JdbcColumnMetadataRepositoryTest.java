@@ -21,10 +21,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @ContextConfiguration(locations = { "classpath:application-context.xml" })
 public class JdbcColumnMetadataRepositoryTest {
 
-    /*
-     * HSQLDB uses a " as quote identifier, also the tables and columns are stored in upper case.
-     */
-
     @Autowired
     private DataSource dataSource;
 
@@ -40,13 +36,14 @@ public class JdbcColumnMetadataRepositoryTest {
      */
     @Test
     public void testGetColumnMetaData() {
-        ColumnReference licenseNumberReference = new ColumnReference("cars", "license_number");
-        ColumnMetadata licenseNumberConstraint = jdbcMetadataRepository.getColumnMetadata(licenseNumberReference);
-        assertEquals(licenseNumberReference, licenseNumberConstraint.getColumnReference());
-        assertTrue(licenseNumberConstraint.isRequired());
-        assertFalse(licenseNumberConstraint.isAutoIncrement());
-        assertEquals(Integer.valueOf(6), licenseNumberConstraint.getMaximumLength());
-        assertNull(licenseNumberConstraint.getFractionLength()); // Has not been defined
+        ColumnReference reference = new ColumnReference("cars", "license_number");
+        
+        ColumnMetadata metadata = jdbcMetadataRepository.getColumnMetadata(reference);
+        assertEquals(reference, metadata.getColumnReference());
+        assertTrue(metadata.isRequired());
+        assertFalse(metadata.isAutoIncrement());
+        assertEquals(Integer.valueOf(6), metadata.getMaximumLength());
+        assertNull(metadata.getFractionLength()); // Has not been defined
     }
 
     /**
@@ -54,13 +51,14 @@ public class JdbcColumnMetadataRepositoryTest {
      */
     @Test
     public void testGetQuotedColumnMetaData() {
-        ColumnReference licenseNumberReference = new ColumnReference("\"CARS\"", "\"LICENSE_NUMBER\"");
-        ColumnMetadata licenseNumberConstraint = jdbcMetadataRepository.getColumnMetadata(licenseNumberReference);
-        assertEquals(licenseNumberReference, licenseNumberConstraint.getColumnReference());
-        assertTrue(licenseNumberConstraint.isRequired());
-        assertFalse(licenseNumberConstraint.isAutoIncrement());
-        assertEquals(Integer.valueOf(6), licenseNumberConstraint.getMaximumLength());
-        assertNull(licenseNumberConstraint.getFractionLength()); // Has not been defined
+        ColumnReference reference = new ColumnReference("\"CARS\"", "\"LICENSE_NUMBER\"");
+        
+        ColumnMetadata metadata = jdbcMetadataRepository.getColumnMetadata(reference);
+        assertEquals(reference, metadata.getColumnReference());
+        assertTrue(metadata.isRequired());
+        assertFalse(metadata.isAutoIncrement());
+        assertEquals(Integer.valueOf(6), metadata.getMaximumLength());
+        assertNull(metadata.getFractionLength()); // Has not been defined
     }
 
     /**
@@ -68,8 +66,9 @@ public class JdbcColumnMetadataRepositoryTest {
      */
     @Test
     public void testInvalidCasingWhenQuoted() {
-        ColumnReference licenseNumberReference = new ColumnReference("\"cars\"", "\"license_number\"");
-        assertNull(jdbcMetadataRepository.getColumnMetadata(licenseNumberReference));
+        ColumnReference reference = new ColumnReference("\"cars\"", "\"license_number\"");
+        
+        assertNull(jdbcMetadataRepository.getColumnMetadata(reference));
     }
 
 }

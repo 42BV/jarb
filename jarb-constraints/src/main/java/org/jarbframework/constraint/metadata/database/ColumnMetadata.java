@@ -18,14 +18,19 @@ public class ColumnMetadata {
 
     /** Determines if a not-null value is required **/
     private boolean required;
+    
     /** Determines if the database can auto increment **/
     private boolean autoIncrement;
+    
     /** Describes the default value of our column **/
     private String defaultValue;
+    
     /** Maximum length of the column **/
     private Integer maximumLength;
+    
     /** Number radix, only used for numeric values **/
     private Integer radix;
+    
     /** Number of fractional digits, only for numeric values **/
     private Integer fractionLength;
 
@@ -186,4 +191,5 @@ public class ColumnMetadata {
     public String toString() {
         return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
     }
+    
 }

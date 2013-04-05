@@ -39,7 +39,7 @@ public class CachingColumnMetadataRepository implements ColumnMetadataRepository
     private ColumnMetadata lookupAndCacheColumnMetadata(ColumnReference columnReference) {
         ColumnMetadata columnMetadata = columnMetadataRepository.getColumnMetadata(columnReference);
         if (columnMetadata != null) {
-            columnMetadataCache.add(columnMetadata);
+            columnMetadataCache.addColumnMetadata(columnMetadata);
         }
         return columnMetadata;
     }

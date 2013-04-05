@@ -28,7 +28,7 @@ public class MapColumnMetadataRepository implements ColumnMetadataRepository {
      * @param columnMetadata column constraint that should be added
      * @return the same repository instance, for chaining
      */
-    public MapColumnMetadataRepository add(ColumnMetadata columnMetadata) {
+    public MapColumnMetadataRepository addColumnMetadata(ColumnMetadata columnMetadata) {
         columnMetadataMap.put(columnMetadata.getColumnReference(), columnMetadata);
         return this;
     }
@@ -46,4 +46,5 @@ public class MapColumnMetadataRepository implements ColumnMetadataRepository {
     public ColumnMetadata getColumnMetadata(ColumnReference columnReference) {
         return columnMetadataMap.get(columnReference);
     }
+    
 }
