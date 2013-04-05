@@ -140,7 +140,7 @@ public class PostgresViolationResolver extends VendorViolationResolver {
     
     @Override
     public boolean supports(DatabaseProduct product) {
-        return StringUtils.startsWithIgnoreCase(product.getName(), "postgresql");
+        return StringUtils.startsWithIgnoreCase(product.getName(), "postgres");
     }
 
 }

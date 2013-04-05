@@ -6,7 +6,7 @@ import javax.sql.DataSource;
 
 import org.jarbframework.constraint.violation.resolver.recognize.DatabaseProduct;
 import org.jarbframework.constraint.violation.resolver.recognize.DatabaseProductResolver;
-import org.jarbframework.constraint.violation.resolver.vendor.DatabaseProductSpecific;
+import org.jarbframework.constraint.violation.resolver.recognize.DatabaseProductSpecific;
 import org.jarbframework.constraint.violation.resolver.vendor.H2ViolationResolver;
 import org.jarbframework.constraint.violation.resolver.vendor.HsqlViolationResolver;
 import org.jarbframework.constraint.violation.resolver.vendor.MysqlViolationResolver;
