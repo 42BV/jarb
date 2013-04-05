@@ -19,20 +19,27 @@ public class ReflectionConstraintExceptionFactory implements DatabaseConstraintE
                         	    Throwable.class
                     	    };
     
-	private final BeanBuilder<? extends Throwable> exceptionBuilder;
+	private final BeanBuilder<?> beanBuilder;
 
-    public ReflectionConstraintExceptionFactory(Class<? extends Throwable> exceptionClass) {
+    public ReflectionConstraintExceptionFactory(Class<?> exceptionClass) {
         this(SupportedConstructorFinder.findMostSupportedConstructor(exceptionClass, SUPPORTED_PARAMETER_TYPES));
     }
     
-    public <T extends Throwable> ReflectionConstraintExceptionFactory(Constructor<T> constructor) {
-        this.exceptionBuilder = new BeanBuilder<T>(constructor);
+    public <T> ReflectionConstraintExceptionFactory(Constructor<T> constructor) {
+        this.beanBuilder = new BeanBuilder<T>(constructor);
     }
 
-	/** {@inheritDoc} */
     @Override
     public Throwable buildException(DatabaseConstraintViolation violation, Throwable cause) {
-        return exceptionBuilder.instantiate(violation, cause, this);
+        Object bean = beanBuilder.instantiate(violation, cause, this);
+
+        if (bean instanceof DatabaseConstraintExceptionFactory) {
+            return ((DatabaseConstraintExceptionFactory) bean).buildException(violation, cause);
+        } else if (bean instanceof Throwable) {
+            return (Throwable) bean;
+        } else {
+            throw new UnsupportedOperationException("Unable to create exception from: " + bean);
+        }
     }
 
 }
