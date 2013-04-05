@@ -70,7 +70,7 @@ public class TranslateExceptionsBeanDefinitionParser extends AbstractBeanDefinit
         }
         
         private DatabaseConstraintViolationResolver createViolationResolver() {
-            return new DatabaseConstraintViolationResolverFactory().createResolver(dataSource);
+            return new DatabaseConstraintViolationResolverFactory().createResolver(basePackage, dataSource);
         }
         
         private DatabaseConstraintExceptionFactory createExceptionFactory() {

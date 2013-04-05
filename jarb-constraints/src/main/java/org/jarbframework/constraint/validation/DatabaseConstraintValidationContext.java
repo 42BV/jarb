@@ -42,7 +42,7 @@ public final class DatabaseConstraintValidationContext {
 
     /**
      * Start building a new database constraint violation. Note that the violation will only
-     * be stored after invoking {@link DatabaseConstraintViolationBuilder#addToContext()}.
+     * be stored after invoking {@link ViolationBuilder#addToContext()}.
      * @param propertyReference reference to the property that was violated
      * @param templateName name of the message template
      * @return new database constraint violation builder

@@ -6,8 +6,11 @@ import static org.jarbframework.constraint.violation.DatabaseConstraintType.NOT_
 import static org.jarbframework.constraint.violation.DatabaseConstraintType.UNIQUE_KEY;
 import static org.jarbframework.constraint.violation.DatabaseConstraintViolation.violaton;
 
+import org.apache.commons.lang3.StringUtils;
 import org.jarbframework.constraint.violation.DatabaseConstraintViolation;
-import org.jarbframework.constraint.violation.resolver.RegexViolationResolver;
+import org.jarbframework.constraint.violation.resolver.recognize.DatabaseProduct;
+import org.jarbframework.constraint.violation.resolver.vendor.ViolationMessagePatterns.VariableAccessor;
+import org.jarbframework.constraint.violation.resolver.vendor.ViolationMessagePatterns.ViolationBuilder;
 
 /**
  * MySQL based constraint violation resolver.
@@ -15,7 +18,7 @@ import org.jarbframework.constraint.violation.resolver.RegexViolationResolver;
  * @author Jeroen van Schagen
  * @since 16-05-2011
  */
-public class MysqlViolationResolver extends RegexViolationResolver {
+public class MysqlViolationResolver extends VendorViolationResolver {
 
     public MysqlViolationResolver() {
         registerNotNull();
@@ -25,7 +28,7 @@ public class MysqlViolationResolver extends RegexViolationResolver {
     }
     
     private void registerNotNull() {
-        registerPattern("Column '(.+)' cannot be null", new DatabaseConstraintViolationBuilder() {
+        registerPattern("Column '(.+)' cannot be null", new ViolationBuilder() {
             
             @Override
             public DatabaseConstraintViolation build(VariableAccessor variables) {
@@ -36,7 +39,7 @@ public class MysqlViolationResolver extends RegexViolationResolver {
     }
     
     private void registerUniqueKey() {
-        registerPattern("Duplicate entry '(.+)' for key '(.+)'", new DatabaseConstraintViolationBuilder() {
+        registerPattern("Duplicate entry '(.+)' for key '(.+)'", new ViolationBuilder() {
             
             @Override
             public DatabaseConstraintViolation build(VariableAccessor variables) {
@@ -47,7 +50,7 @@ public class MysqlViolationResolver extends RegexViolationResolver {
     }
 
     private void registerLengthExceeded() {
-        registerPattern("Data truncation: Data too long for column '(.+)' at row (\\d+)", new DatabaseConstraintViolationBuilder() {
+        registerPattern("Data truncation: Data too long for column '(.+)' at row (\\d+)", new ViolationBuilder() {
             
             @Override
             public DatabaseConstraintViolation build(VariableAccessor variables) {
@@ -58,7 +61,7 @@ public class MysqlViolationResolver extends RegexViolationResolver {
     }
 
     private void registerInvalidType() {
-        registerPattern("Incorrect (\\w+) value: '(.+)' for column '(.+)' at row (\\d+)", new DatabaseConstraintViolationBuilder() {
+        registerPattern("Incorrect (\\w+) value: '(.+)' for column '(.+)' at row (\\d+)", new ViolationBuilder() {
             
             @Override
             public DatabaseConstraintViolation build(VariableAccessor variables) {
@@ -70,6 +73,11 @@ public class MysqlViolationResolver extends RegexViolationResolver {
             }
             
         });
+    }
+    
+    @Override
+    public boolean supports(DatabaseProduct product) {
+        return StringUtils.startsWithIgnoreCase(product.getName(), "mysql");
     }
 
 }

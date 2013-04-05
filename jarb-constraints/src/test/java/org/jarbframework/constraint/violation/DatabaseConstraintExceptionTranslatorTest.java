@@ -10,9 +10,6 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceException;
 
 import org.jarbframework.constraint.domain.Car;
-import org.jarbframework.constraint.violation.resolver.DatabaseConstraintViolationResolver;
-import org.jarbframework.constraint.violation.resolver.MessageBasedViolationResolver;
-import org.jarbframework.constraint.violation.resolver.RootCauseViolationResolver;
 import org.jarbframework.constraint.violation.resolver.vendor.HsqlViolationResolver;
 import org.junit.Before;
 import org.junit.Test;
@@ -41,9 +38,7 @@ public class DatabaseConstraintExceptionTranslatorTest {
 
     @Before
     public void setUpResolver() {
-        MessageBasedViolationResolver messageResolver = new HsqlViolationResolver();
-        DatabaseConstraintViolationResolver violationResolver = new RootCauseViolationResolver(messageResolver);
-        exceptionTranslator = new DatabaseConstraintExceptionTranslator(violationResolver);
+        exceptionTranslator = new DatabaseConstraintExceptionTranslator(new HsqlViolationResolver());
     }
 
     /**

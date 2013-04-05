@@ -7,6 +7,7 @@ import java.util.Set;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider;
 import org.springframework.core.type.filter.AnnotationTypeFilter;
+import org.springframework.core.type.filter.AssignableTypeFilter;
 import org.springframework.core.type.filter.TypeFilter;
 
 public class Classes {
@@ -27,6 +28,10 @@ public class Classes {
         } catch(ClassNotFoundException e) {
             return false;
         }
+    }
+    
+    public static Set<Class<?>> getAllOfType(String basePackage, Class<?> targetType) {
+        return getAll(basePackage, new AssignableTypeFilter(targetType));
     }
     
     public static Set<Class<?>> getAllWithAnnotation(String basePackage, Class<? extends Annotation> annotationClass) {

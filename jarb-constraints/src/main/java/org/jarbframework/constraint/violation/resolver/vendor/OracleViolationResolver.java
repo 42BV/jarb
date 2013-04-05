@@ -8,8 +8,11 @@ import static org.jarbframework.constraint.violation.DatabaseConstraintType.NOT_
 import static org.jarbframework.constraint.violation.DatabaseConstraintType.UNIQUE_KEY;
 import static org.jarbframework.constraint.violation.DatabaseConstraintViolation.violaton;
 
+import org.apache.commons.lang3.StringUtils;
 import org.jarbframework.constraint.violation.DatabaseConstraintViolation;
-import org.jarbframework.constraint.violation.resolver.RegexViolationResolver;
+import org.jarbframework.constraint.violation.resolver.recognize.DatabaseProduct;
+import org.jarbframework.constraint.violation.resolver.vendor.ViolationMessagePatterns.VariableAccessor;
+import org.jarbframework.constraint.violation.resolver.vendor.ViolationMessagePatterns.ViolationBuilder;
 
 /**
  * Oracle based constraint violation resolver.
@@ -17,7 +20,7 @@ import org.jarbframework.constraint.violation.resolver.RegexViolationResolver;
  * @author Jeroen van Schagen
  * @since 16-05-2011
  */
-public class OracleViolationResolver extends RegexViolationResolver {
+public class OracleViolationResolver extends VendorViolationResolver {
 
     public OracleViolationResolver() {
         registerCheck();
@@ -29,7 +32,7 @@ public class OracleViolationResolver extends RegexViolationResolver {
     }
 
     private void registerCheck() {
-        registerPattern("(.+): check constraint \\((.+)\\.(.+)\\) violated\n", new DatabaseConstraintViolationBuilder() {
+        registerPattern("(.+): check constraint \\((.+)\\.(.+)\\) violated\n", new ViolationBuilder() {
             
             @Override
             public DatabaseConstraintViolation build(VariableAccessor variables) {
@@ -43,7 +46,7 @@ public class OracleViolationResolver extends RegexViolationResolver {
     }
 
     private void registerNotNull() {
-        registerPattern("(.+): cannot insert NULL into \\(\"(.+)\"\\.\"(.+)\"\\.\"(.+)\"\\)\n", new DatabaseConstraintViolationBuilder() {
+        registerPattern("(.+): cannot insert NULL into \\(\"(.+)\"\\.\"(.+)\"\\.\"(.+)\"\\)\n", new ViolationBuilder() {
             
             @Override
             public DatabaseConstraintViolation build(VariableAccessor variables) {
@@ -58,7 +61,7 @@ public class OracleViolationResolver extends RegexViolationResolver {
     }
 
     private void registerUniqueKey() {
-        registerPattern("(.+): unique constraint \\((.+)\\.(.+)\\) violated\n", new DatabaseConstraintViolationBuilder() {
+        registerPattern("(.+): unique constraint \\((.+)\\.(.+)\\) violated\n", new ViolationBuilder() {
             
             @Override
             public DatabaseConstraintViolation build(VariableAccessor variables) {
@@ -72,7 +75,7 @@ public class OracleViolationResolver extends RegexViolationResolver {
     }
 
     private void registerForeignKey() {
-        registerPattern("(.+): integrity constraint \\((.+)\\.(.+)\\) violated - child record found\n", new DatabaseConstraintViolationBuilder() {
+        registerPattern("(.+): integrity constraint \\((.+)\\.(.+)\\) violated - child record found\n", new ViolationBuilder() {
             
             @Override
             public DatabaseConstraintViolation build(VariableAccessor variables) {
@@ -86,7 +89,7 @@ public class OracleViolationResolver extends RegexViolationResolver {
     }
 
     private void registerLengthExceeded() {
-        registerPattern("(.+): value too large for column \"(.+)\"\\.\"(.+)\"\\.\"(.+)\" \\(actual: (\\d+), maximum: (\\d+)\\)\n", new DatabaseConstraintViolationBuilder() {
+        registerPattern("(.+): value too large for column \"(.+)\"\\.\"(.+)\"\\.\"(.+)\" \\(actual: (\\d+), maximum: (\\d+)\\)\n", new ViolationBuilder() {
             
             @Override
             public DatabaseConstraintViolation build(VariableAccessor variables) {
@@ -102,7 +105,7 @@ public class OracleViolationResolver extends RegexViolationResolver {
     }
 
     private void registerInvalidType() {
-        registerPattern("(.+): invalid (.+)\n", new DatabaseConstraintViolationBuilder() {
+        registerPattern("(.+): invalid (.+)\n", new ViolationBuilder() {
             
             @Override
             public DatabaseConstraintViolation build(VariableAccessor variables) {
@@ -113,6 +116,11 @@ public class OracleViolationResolver extends RegexViolationResolver {
             }
             
         });
+    }
+    
+    @Override
+    public boolean supports(DatabaseProduct product) {
+        return StringUtils.startsWithIgnoreCase(product.getName(), "oracle");
     }
 
 }

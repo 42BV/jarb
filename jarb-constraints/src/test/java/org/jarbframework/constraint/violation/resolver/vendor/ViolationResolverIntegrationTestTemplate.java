@@ -5,8 +5,6 @@ import javax.persistence.PersistenceContext;
 
 import org.jarbframework.constraint.violation.DatabaseConstraintViolation;
 import org.jarbframework.constraint.violation.resolver.DatabaseConstraintViolationResolver;
-import org.jarbframework.constraint.violation.resolver.MessageBasedViolationResolver;
-import org.jarbframework.constraint.violation.resolver.RootCauseViolationResolver;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,8 +17,8 @@ public abstract class ViolationResolverIntegrationTestTemplate {
     @PersistenceContext
     private EntityManager entityManager;
 
-    public ViolationResolverIntegrationTestTemplate(MessageBasedViolationResolver messageResolver) {
-        this.violationResolver = new RootCauseViolationResolver(messageResolver);
+    public ViolationResolverIntegrationTestTemplate(DatabaseConstraintViolationResolver violationResolver) {
+        this.violationResolver = violationResolver;
     }
     
     protected DatabaseConstraintViolation persistWithViolation(final Object object) {

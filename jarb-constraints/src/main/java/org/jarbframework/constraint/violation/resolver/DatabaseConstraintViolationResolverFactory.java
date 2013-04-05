@@ -1,17 +1,19 @@
 package org.jarbframework.constraint.violation.resolver;
 
-import java.util.Map;
+import java.util.Set;
 
 import javax.sql.DataSource;
 
+import org.jarbframework.constraint.violation.resolver.recognize.DatabaseProduct;
+import org.jarbframework.constraint.violation.resolver.recognize.DatabaseProductResolver;
+import org.jarbframework.constraint.violation.resolver.vendor.DatabaseProductSpecific;
 import org.jarbframework.constraint.violation.resolver.vendor.H2ViolationResolver;
 import org.jarbframework.constraint.violation.resolver.vendor.HsqlViolationResolver;
-import org.jarbframework.utils.database.DatabaseType;
-import org.jarbframework.utils.database.DatabaseTypeResolver;
-import org.jarbframework.utils.database.JdbcMetadataDatabaseTypeResolver;
-
-import com.google.common.base.Preconditions;
-import com.google.common.collect.Maps;
+import org.jarbframework.constraint.violation.resolver.vendor.MysqlViolationResolver;
+import org.jarbframework.constraint.violation.resolver.vendor.OracleViolationResolver;
+import org.jarbframework.constraint.violation.resolver.vendor.PostgresViolationResolver;
+import org.jarbframework.utils.Classes;
+import org.springframework.beans.BeanUtils;
 
 /**
  * Capable of building a default constraint violation resolver.
@@ -19,49 +21,51 @@ import com.google.common.collect.Maps;
  * @since 16-05-2011
  */
 public class DatabaseConstraintViolationResolverFactory {
-    
-    private final DatabaseTypeResolver databaseTypeResolver;
-    
-    private final Map<DatabaseType, MessageBasedViolationResolver> violationMessageResolvers;
-
-    public DatabaseConstraintViolationResolverFactory() {
-        this(new JdbcMetadataDatabaseTypeResolver());
-    }
-
-    public DatabaseConstraintViolationResolverFactory(DatabaseTypeResolver databaseTypeResolver) {
-        this.databaseTypeResolver = Preconditions.checkNotNull(databaseTypeResolver, "Database type resolver cannot be null.");
         
-        violationMessageResolvers = Maps.newHashMap();
-        violationMessageResolvers.put(DatabaseType.HSQL, new HsqlViolationResolver());
-        violationMessageResolvers.put(DatabaseType.H2, new H2ViolationResolver());
-        violationMessageResolvers.put(DatabaseType.MYSQL, new HsqlViolationResolver());
-        violationMessageResolvers.put(DatabaseType.ORACLE, new HsqlViolationResolver());
-        violationMessageResolvers.put(DatabaseType.POSTGRESQL, new HsqlViolationResolver());
+    private final DatabaseProductResolver databaseProductResolver = new DatabaseProductResolver();
+
+    public DatabaseConstraintViolationResolver createResolver(String basePackage, DataSource dataSource) {
+        final DatabaseProduct product = databaseProductResolver.getDatabaseProduct(dataSource);
+
+        ViolationResolverChain chain = new ViolationResolverChain();
+        addCustomResolvers(basePackage, chain, product);
+        addVendorResolvers(chain, product);
+        chain.addToChain(new HibernateViolationResolver());
+        return chain;
     }
 
-    /**
-     * Build a default constraint violation resolver. Returned resolver instance
-     * are capable of resolving constraint violation for HSQL, MySQL, Oracle and
-     * PostgreSQL databases. Whenever the database specific resolver cannot handle
-     * our exception we fallback to the hibernate resolver (when on classpath).
-     * 
-     * @param dataSource the data source for which we build a resolver
-     * @return new "default" constraint violation resolver
-     */
-    public DatabaseConstraintViolationResolver createResolver(DataSource dataSource) {
-        ViolationResolverChain resolverChain = new ViolationResolverChain();
-        resolverChain.addToChain(buildResolverForDataSource(dataSource));
-        resolverChain.addToChain(new HibernateViolationResolver());
-        return resolverChain;
-    }
-
-    private DatabaseConstraintViolationResolver buildResolverForDataSource(DataSource dataSource) {
-        DatabaseType databaseType = databaseTypeResolver.resolveDatabaseType(dataSource);
-        MessageBasedViolationResolver violationMessageResolver = violationMessageResolvers.get(databaseType);
-        if (violationMessageResolver == null) {
-            throw new UnsupportedOperationException("No violation message resolver registered for database: " + databaseType);
+    private void addCustomResolvers(String basePackage, ViolationResolverChain chain, DatabaseProduct product) {
+        Set<Class<?>> resolverClasses = Classes.getAllOfType(basePackage, DatabaseConstraintViolationResolver.class);
+        for (Class<?> resolverClass : resolverClasses) {
+            addToChainWhenSupported(chain, resolverClass, product);
         }
-        return new RootCauseViolationResolver(violationMessageResolver);
+    }
+
+    private void addToChainWhenSupported(ViolationResolverChain chain, Class<?> resolverClass, DatabaseProduct product) {
+        DatabaseConstraintViolationResolver resolver = (DatabaseConstraintViolationResolver) BeanUtils.instantiateClass(resolverClass);
+        addToChainWhenSupported(chain, resolver, product);
+    }
+
+    private void addVendorResolvers(ViolationResolverChain chain, DatabaseProduct product) {
+        addToChainWhenSupported(chain, new H2ViolationResolver(), product);
+        addToChainWhenSupported(chain, new HsqlViolationResolver(), product);
+        addToChainWhenSupported(chain, new MysqlViolationResolver(), product);
+        addToChainWhenSupported(chain, new OracleViolationResolver(), product);
+        addToChainWhenSupported(chain, new PostgresViolationResolver(), product);
+    }
+
+    private void addToChainWhenSupported(ViolationResolverChain chain, DatabaseConstraintViolationResolver resolver, DatabaseProduct product) {
+        if (isSupported(resolver, product)) {
+            chain.addToChain(resolver);
+        }
+    }
+    
+    private boolean isSupported(DatabaseConstraintViolationResolver resolver, DatabaseProduct product) {
+        boolean supported = true;
+        if (resolver instanceof DatabaseProductSpecific) {
+            supported = ((DatabaseProductSpecific) resolver).supports(product);
+        }
+        return supported;
     }
 
 }

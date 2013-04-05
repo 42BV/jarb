@@ -7,8 +7,11 @@ import static org.jarbframework.constraint.violation.DatabaseConstraintType.NOT_
 import static org.jarbframework.constraint.violation.DatabaseConstraintType.UNIQUE_KEY;
 import static org.jarbframework.constraint.violation.DatabaseConstraintViolation.violaton;
 
+import org.apache.commons.lang3.StringUtils;
 import org.jarbframework.constraint.violation.DatabaseConstraintViolation;
-import org.jarbframework.constraint.violation.resolver.RegexViolationResolver;
+import org.jarbframework.constraint.violation.resolver.recognize.DatabaseProduct;
+import org.jarbframework.constraint.violation.resolver.vendor.ViolationMessagePatterns.VariableAccessor;
+import org.jarbframework.constraint.violation.resolver.vendor.ViolationMessagePatterns.ViolationBuilder;
 
 /**
  * Hypersonic SQL based constraint violation resolver.
@@ -16,7 +19,7 @@ import org.jarbframework.constraint.violation.resolver.RegexViolationResolver;
  * @author Jeroen van Schagen
  * @since 16-05-2011
  */
-public class HsqlViolationResolver extends RegexViolationResolver {
+public class HsqlViolationResolver extends VendorViolationResolver {
 
     public HsqlViolationResolver() {
         registerNotNull();
@@ -27,7 +30,7 @@ public class HsqlViolationResolver extends RegexViolationResolver {
     }
 
     private void registerNotNull() {
-        registerPattern("integrity constraint violation: NOT NULL check constraint; (.+) table: (.+) column: (.+)", new DatabaseConstraintViolationBuilder() {
+        registerPattern("integrity constraint violation: NOT NULL check constraint; (.+) table: (.+) column: (.+)", new ViolationBuilder() {
             
             @Override
             public DatabaseConstraintViolation build(VariableAccessor variables) {
@@ -42,7 +45,7 @@ public class HsqlViolationResolver extends RegexViolationResolver {
     }
 
     private void registerUniqueKey() {
-        registerPattern("integrity constraint violation: unique constraint or index violation; (.+) table: (.+)", new DatabaseConstraintViolationBuilder() {
+        registerPattern("integrity constraint violation: unique constraint or index violation; (.+) table: (.+)", new ViolationBuilder() {
             
             @Override
             public DatabaseConstraintViolation build(VariableAccessor variables) {
@@ -56,7 +59,7 @@ public class HsqlViolationResolver extends RegexViolationResolver {
     }
 
     private void registerForeignKey() {
-        registerPattern("integrity constraint violation: foreign key no \\w+; (.+) table: (.+)", new DatabaseConstraintViolationBuilder() {
+        registerPattern("integrity constraint violation: foreign key no \\w+; (.+) table: (.+)", new ViolationBuilder() {
             
             @Override
             public DatabaseConstraintViolation build(VariableAccessor variables) {
@@ -70,7 +73,7 @@ public class HsqlViolationResolver extends RegexViolationResolver {
     }
 
     private void registerLengthExceeded() {
-        registerPattern("data exception: (.+) data, right truncation", new DatabaseConstraintViolationBuilder() {
+        registerPattern("data exception: (.+) data, right truncation", new ViolationBuilder() {
             
             @Override
             public DatabaseConstraintViolation build(VariableAccessor variables) {
@@ -81,7 +84,7 @@ public class HsqlViolationResolver extends RegexViolationResolver {
     }
 
     private void registerInvalidType() {
-        registerPattern("data exception: invalid (.+) value for cast", new DatabaseConstraintViolationBuilder() {
+        registerPattern("data exception: invalid (.+) value for cast", new ViolationBuilder() {
             
             @Override
             public DatabaseConstraintViolation build(VariableAccessor variables) {
@@ -89,6 +92,11 @@ public class HsqlViolationResolver extends RegexViolationResolver {
             }
             
         });
+    }
+    
+    @Override
+    public boolean supports(DatabaseProduct product) {
+        return StringUtils.startsWithIgnoreCase(product.getName(), "hsql");
     }
 
 }

@@ -1,4 +1,4 @@
-package org.jarbframework.constraint.violation.resolver;
+package org.jarbframework.constraint.violation.resolver.vendor;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -7,12 +7,7 @@ import java.util.regex.Pattern;
 
 import org.jarbframework.constraint.violation.DatabaseConstraintViolation;
 
-/**
- * Regex based message resolver.
- * @author Jeroen van Schagen
- * @since 04-03-2012
- */
-public class RegexViolationResolver implements MessageBasedViolationResolver {
+public final class ViolationMessagePatterns {
     
     /**
      * All registered violation pattern.
@@ -24,12 +19,16 @@ public class RegexViolationResolver implements MessageBasedViolationResolver {
      * @param regex a regex based description of our exception message
      * @param builder converts our message into a constraint violaton
      */
-    public void registerPattern(String regex, DatabaseConstraintViolationBuilder builder) {
+    public void register(String regex, ViolationBuilder builder) {
         violationPatterns.add(new ViolationPattern(regex, builder));
     }
     
-    @Override
-    public final DatabaseConstraintViolation resolve(String message) {
+    /**
+     * Resolve the violation based on an exception message.
+     * @param message the exception message
+     * @return the resolved violation, if any
+     */
+    public DatabaseConstraintViolation resolve(String message) {
         DatabaseConstraintViolation violation = null;
         for (ViolationPattern violationPattern : violationPatterns) {
             violation = violationPattern.match(message);
@@ -43,7 +42,7 @@ public class RegexViolationResolver implements MessageBasedViolationResolver {
     /**
      * Creates a new database constraint violation.
      */
-    protected interface DatabaseConstraintViolationBuilder {
+    protected interface ViolationBuilder {
         
         /**
          * Build a database constraint violation.
@@ -89,9 +88,9 @@ public class RegexViolationResolver implements MessageBasedViolationResolver {
         /**
          * Builder used to create a new violation based on our message.
          */
-        private final DatabaseConstraintViolationBuilder builder;
+        private final ViolationBuilder builder;
         
-        private ViolationPattern(String regex, DatabaseConstraintViolationBuilder builder) {
+        private ViolationPattern(String regex, ViolationBuilder builder) {
             this.pattern = Pattern.compile(regex);
             this.builder = builder;
         }

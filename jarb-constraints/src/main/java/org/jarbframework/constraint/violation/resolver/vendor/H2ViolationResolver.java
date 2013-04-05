@@ -7,8 +7,11 @@ import static org.jarbframework.constraint.violation.DatabaseConstraintType.NOT_
 import static org.jarbframework.constraint.violation.DatabaseConstraintType.UNIQUE_KEY;
 import static org.jarbframework.constraint.violation.DatabaseConstraintViolation.violaton;
 
+import org.apache.commons.lang3.StringUtils;
 import org.jarbframework.constraint.violation.DatabaseConstraintViolation;
-import org.jarbframework.constraint.violation.resolver.RegexViolationResolver;
+import org.jarbframework.constraint.violation.resolver.recognize.DatabaseProduct;
+import org.jarbframework.constraint.violation.resolver.vendor.ViolationMessagePatterns.VariableAccessor;
+import org.jarbframework.constraint.violation.resolver.vendor.ViolationMessagePatterns.ViolationBuilder;
 
 /**
  * Hypersonic 2 based constraint violation resolver.
@@ -16,7 +19,7 @@ import org.jarbframework.constraint.violation.resolver.RegexViolationResolver;
  * @author Jeroen van Schagen
  * @since 03-04-2013
  */
-public class H2ViolationResolver extends RegexViolationResolver {
+public class H2ViolationResolver extends VendorViolationResolver {
 
     private static final String REGEX_SUFFIX = " SQL statement:(.*) \\[(.*)\\]";
     
@@ -29,7 +32,7 @@ public class H2ViolationResolver extends RegexViolationResolver {
     }
 
     private void registerNotNull() {
-        registerPattern("NULL not allowed for column \"(.+)\";" + REGEX_SUFFIX, new DatabaseConstraintViolationBuilder() {
+        registerPattern("NULL not allowed for column \"(.+)\";" + REGEX_SUFFIX, new ViolationBuilder() {
             
             @Override
             public DatabaseConstraintViolation build(VariableAccessor variables) {
@@ -44,9 +47,7 @@ public class H2ViolationResolver extends RegexViolationResolver {
     }
 
     private void registerUniqueKey() {
-        registerPattern(
-                "Unique index or primary key violation: \"(\\w+)_INDEX_\\d+ ON (.+)\\.(.+)\\((.+)\\)\";" + REGEX_SUFFIX,
-                new DatabaseConstraintViolationBuilder() {
+        registerPattern("Unique index or primary key violation: \"(\\w+)_INDEX_\\d+ ON (.+)\\.(.+)\\((.+)\\)\";" + REGEX_SUFFIX, new ViolationBuilder() {
             
             @Override
             public DatabaseConstraintViolation build(VariableAccessor variables) {
@@ -63,9 +64,7 @@ public class H2ViolationResolver extends RegexViolationResolver {
     }
 
     private void registerForeignKey() {
-        registerPattern(
-                "Referential integrity constraint violation: \"(.+): (.+)\\.(.+) FOREIGN KEY\\((.+)\\) REFERENCES (.+)\\.(.+)\\((.+)\\) \\((.+)\\)\";" + REGEX_SUFFIX,
-                new DatabaseConstraintViolationBuilder() {
+        registerPattern("Referential integrity constraint violation: \"(.+): (.+)\\.(.+) FOREIGN KEY\\((.+)\\) REFERENCES (.+)\\.(.+)\\((.+)\\) \\((.+)\\)\";" + REGEX_SUFFIX, new ViolationBuilder() {
             
             @Override
             public DatabaseConstraintViolation build(VariableAccessor variables) {
@@ -85,7 +84,7 @@ public class H2ViolationResolver extends RegexViolationResolver {
     }
 
     private void registerLengthExceeded() {
-        registerPattern("Value too long for column \"(.+) (.+)\\((.+)\\).*\": \"'(.+)' \\((.+)\\)\";" + REGEX_SUFFIX, new DatabaseConstraintViolationBuilder() {
+        registerPattern("Value too long for column \"(.+) (.+)\\((.+)\\).*\": \"'(.+)' \\((.+)\\)\";" + REGEX_SUFFIX, new ViolationBuilder() {
             
             @Override
             public DatabaseConstraintViolation build(VariableAccessor variables) {
@@ -103,7 +102,7 @@ public class H2ViolationResolver extends RegexViolationResolver {
     }
 
     private void registerInvalidType() {
-        registerPattern("Data conversion error converting \"'(.+)' \\((.+): (.+) (.+)\\)\";" + REGEX_SUFFIX, new DatabaseConstraintViolationBuilder() {
+        registerPattern("Data conversion error converting \"'(.+)' \\((.+): (.+) (.+)\\)\";" + REGEX_SUFFIX, new ViolationBuilder() {
             
             @Override
             public DatabaseConstraintViolation build(VariableAccessor variables) {
@@ -117,6 +116,11 @@ public class H2ViolationResolver extends RegexViolationResolver {
             }
             
         });
+    }
+    
+    @Override
+    public boolean supports(DatabaseProduct product) {
+        return StringUtils.startsWithIgnoreCase(product.getName(), "h2");
     }
 
 }

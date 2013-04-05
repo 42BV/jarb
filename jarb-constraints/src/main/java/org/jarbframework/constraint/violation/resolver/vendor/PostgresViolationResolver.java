@@ -8,8 +8,11 @@ import static org.jarbframework.constraint.violation.DatabaseConstraintType.NOT_
 import static org.jarbframework.constraint.violation.DatabaseConstraintType.UNIQUE_KEY;
 import static org.jarbframework.constraint.violation.DatabaseConstraintViolation.violaton;
 
+import org.apache.commons.lang3.StringUtils;
 import org.jarbframework.constraint.violation.DatabaseConstraintViolation;
-import org.jarbframework.constraint.violation.resolver.RegexViolationResolver;
+import org.jarbframework.constraint.violation.resolver.recognize.DatabaseProduct;
+import org.jarbframework.constraint.violation.resolver.vendor.ViolationMessagePatterns.VariableAccessor;
+import org.jarbframework.constraint.violation.resolver.vendor.ViolationMessagePatterns.ViolationBuilder;
 
 /**
  * PostgreSQL based constraint violation resolver.
@@ -17,7 +20,7 @@ import org.jarbframework.constraint.violation.resolver.RegexViolationResolver;
  * @author Jeroen van Schagen
  * @since 16-05-2011
  */
-public class PostgresViolationResolver extends RegexViolationResolver {
+public class PostgresViolationResolver extends VendorViolationResolver {
 
     public PostgresViolationResolver() {
         registerNotNull();
@@ -29,7 +32,7 @@ public class PostgresViolationResolver extends RegexViolationResolver {
     }
 
     private void registerNotNull() {
-        registerPattern("ERROR: null value in column \"(.+)\" violates not-null constraint", new DatabaseConstraintViolationBuilder() {
+        registerPattern("ERROR: null value in column \"(.+)\" violates not-null constraint", new ViolationBuilder() {
             
             @Override
             public DatabaseConstraintViolation build(VariableAccessor variables) {
@@ -40,7 +43,7 @@ public class PostgresViolationResolver extends RegexViolationResolver {
     }
 
     private void registerLengthExceeded() {
-        registerPattern("ERROR: value too long for type (.+)\\((.+)\\)", new DatabaseConstraintViolationBuilder() {
+        registerPattern("ERROR: value too long for type (.+)\\((.+)\\)", new ViolationBuilder() {
             
             @Override
             public DatabaseConstraintViolation build(VariableAccessor variables) {
@@ -56,7 +59,7 @@ public class PostgresViolationResolver extends RegexViolationResolver {
     private void registerForeignKey() {
         registerPattern(
                 "ERROR: insert or update on table \"(.+)\" violates foreign key constraint \"(.+)\"\\s+"
-                + "Detail: Key \\((.+)\\)=\\((.+)\\) is not present in table \"(.+)\"\\.", new DatabaseConstraintViolationBuilder() {
+                + "Detail: Key \\((.+)\\)=\\((.+)\\) is not present in table \"(.+)\"\\.", new ViolationBuilder() {
                     
                     @Override
                     public DatabaseConstraintViolation build(VariableAccessor variables) {
@@ -73,7 +76,7 @@ public class PostgresViolationResolver extends RegexViolationResolver {
         
         registerPattern(
                 "ERROR: update or delete on table \"(.+)\" violates foreign key constraint \"(.+)\" on table \"(.+)\"\\s+"
-                + "Detail: Key \\((.+)\\)=\\((.+)\\) is still referenced from table \".+\"\\.", new DatabaseConstraintViolationBuilder() {
+                + "Detail: Key \\((.+)\\)=\\((.+)\\) is still referenced from table \".+\"\\.", new ViolationBuilder() {
                     
                     @Override
                     public DatabaseConstraintViolation build(VariableAccessor variables) {
@@ -92,7 +95,7 @@ public class PostgresViolationResolver extends RegexViolationResolver {
     private void registerUniqueKey() {
         registerPattern(
                 "ERROR: duplicate key value violates unique constraint \"(.+)\"\\s+"
-                + "Detail: Key \\((.+)\\)=\\((.+)\\) already exists\\.", new DatabaseConstraintViolationBuilder() {
+                + "Detail: Key \\((.+)\\)=\\((.+)\\) already exists\\.", new ViolationBuilder() {
             
             @Override
             public DatabaseConstraintViolation build(VariableAccessor variables) {
@@ -107,21 +110,21 @@ public class PostgresViolationResolver extends RegexViolationResolver {
     }
 
     private void registerCheck() {
-        registerPattern("ERROR: new row for relation \"(.+)\" violates check constraint \"(.+)\"", new DatabaseConstraintViolationBuilder() {
+        registerPattern("ERROR: new row for relation \"(.+)\" violates check constraint \"(.+)\"", new ViolationBuilder() {
             
             @Override
             public DatabaseConstraintViolation build(VariableAccessor variables) {
                 return violaton(CHECK_FAILED)
-                    .constraint(variables.get(2))
-                    .table(variables.get(1))
-                        .build();
+                        .constraint(variables.get(2))
+                        .table(variables.get(1))
+                            .build();
             }
             
         });
     }
 
     private void registerInvalidType() {
-        registerPattern("ERROR: column \"(.+)\" is of type (.+) but expression is of type (.+)\\nHint: .*", new DatabaseConstraintViolationBuilder() {
+        registerPattern("ERROR: column \"(.+)\" is of type (.+) but expression is of type (.+)\\nHint: .*", new ViolationBuilder() {
             
             @Override
             public DatabaseConstraintViolation build(VariableAccessor variables) {
@@ -133,6 +136,11 @@ public class PostgresViolationResolver extends RegexViolationResolver {
             }
             
         });
+    }
+    
+    @Override
+    public boolean supports(DatabaseProduct product) {
+        return StringUtils.startsWithIgnoreCase(product.getName(), "postgresql");
     }
 
 }

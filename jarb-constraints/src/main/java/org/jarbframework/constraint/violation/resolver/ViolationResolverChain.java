@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.LinkedList;
 
 import org.jarbframework.constraint.violation.DatabaseConstraintViolation;
+import org.jarbframework.utils.Asserts;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,28 +20,20 @@ import org.slf4j.LoggerFactory;
 public class ViolationResolverChain implements DatabaseConstraintViolationResolver {
     
     private final Logger logger = LoggerFactory.getLogger(getClass());
-    
-    /**
-     * Collection of violation resolvers that should be attempted in sequence.
-     */
-    private final Collection<DatabaseConstraintViolationResolver> violationResolvers;
 
-    /**
-     * Construct a new chain of violation resolvers.
-     */
+    private final Collection<DatabaseConstraintViolationResolver> resolvers;
+
     public ViolationResolverChain() {
-        violationResolvers = new LinkedList<DatabaseConstraintViolationResolver>();
+        resolvers = new LinkedList<DatabaseConstraintViolationResolver>();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public DatabaseConstraintViolation resolve(Throwable throwable) {
-        for (DatabaseConstraintViolationResolver violationResolver : violationResolvers) {
-            logger.debug("Attempting to resolve violation with {}", violationResolver.getClass());
-            DatabaseConstraintViolation violation = violationResolver.resolve(throwable);
+        for (DatabaseConstraintViolationResolver resolver : resolvers) {
+            logger.debug("Attempting to resolve violation with: {}", resolver);
+            DatabaseConstraintViolation violation = resolver.resolve(throwable);
             if (violation != null) {
+                logger.debug("Violation was resolved by: {}", resolver);
                 return violation;
             }
         }
@@ -54,9 +47,9 @@ public class ViolationResolverChain implements DatabaseConstraintViolationResolv
      * @return {@code this} instance, enabling the use of method chaining
      */
     public ViolationResolverChain addToChain(DatabaseConstraintViolationResolver resolver) {
-        if(resolver != null) {
-            violationResolvers.add(resolver);
-        }
+        Asserts.notNull(resolver, "Cannot add a null resolver to the chain.");
+        resolvers.add(resolver);
+        logger.trace("Added {} to resolver chain.", resolver);
         return this;
     }
     
