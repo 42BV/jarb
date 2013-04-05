@@ -55,6 +55,10 @@ dynamically validates all simple database constraints based on JDBC metadata.
 		...
 	}
 
+With the following configuration all required beans are registered:
+
+	<constraints:enable-metadata entity-manager-factory="entityManagerFactory"/>
+
 Database constraint exceptions
 ------------------------------
 Whenever a database constraint is violated, the JDBC driver will convert it
@@ -66,12 +70,14 @@ access to the constraint violation and any desired metadata.
 
 It is even possible to map custom exceptions on named constraints.
 
-	<constraints:translate-exceptions data-source="dataSource" base-package="org.jarbframework.sample"/>
-
 	@DatabaseConstraint("uk_posts_title")
 	public class PostTitleAlreadyExistsException extends UniqueKeyViolationException {
 		...
 	}
+	
+And the configuration:	
+
+	<constraints:translate-exceptions data-source="dataSource" base-package="org.jarbframework.sample"/>
 
 Database migrations (schema)
 ----------------------------
