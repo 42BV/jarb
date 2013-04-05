@@ -39,8 +39,6 @@ public class DatabaseConstraintValidatorTest {
         assertTrue("Expected no violations", violations.isEmpty());
     }
 
-    // Direct property violations
-
     @Test
     public void testNotNull() {
         ValidatingCar carWithoutLicense = new ValidatingCar(null);
@@ -90,8 +88,6 @@ public class DatabaseConstraintValidatorTest {
         assertEquals("price", licenseViolation.getPropertyPath().toString());
         assertEquals("cannot have more than 2 numbers behind the comma", licenseViolation.getMessage());
     }
-
-    // Embedded
 
     @Test
     public void testEmbeddedViolation() {

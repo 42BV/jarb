@@ -1,6 +1,6 @@
 package org.jarbframework.populator.excel.entity.query;
 
-import static org.jarbframework.utils.orm.jpa.JpaMetaModelUtils.getRootEntities;
+import static org.jarbframework.populator.excel.util.JpaMetaModelUtils.getRootEntities;
 import static org.springframework.orm.jpa.EntityManagerFactoryUtils.getTransactionalEntityManager;
 
 import java.util.List;

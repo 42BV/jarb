@@ -8,7 +8,6 @@ import javax.validation.constraints.Digits;
 
 import org.jarbframework.constraint.metadata.PropertyConstraintDescription;
 
-
 /**
  * Enhance the property constraint descriptor with @Digits information.
  * 

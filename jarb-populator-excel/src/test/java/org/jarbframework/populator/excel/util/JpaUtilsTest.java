@@ -18,7 +18,6 @@ import org.jarbframework.populator.excel.metamodel.PropertyDefinition;
 import org.jarbframework.populator.excel.metamodel.generator.ColumnDefinitionsGenerator;
 import org.jarbframework.populator.excel.metamodel.generator.JpaMetaModelGenerator;
 import org.jarbframework.utils.orm.SchemaMapper;
-import org.jarbframework.utils.orm.jpa.JpaHibernateSchemaMapper;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -55,7 +54,7 @@ public class JpaUtilsTest extends DefaultExcelTestDataCase {
         HashMap<String, String> joinColumnNames = new HashMap<String, String>();
         joinColumnNames.put("#", "owner");
         PropertyDefinition phones = employeeDefinition.property("phones");
-        SchemaMapper schemaMapper = JpaHibernateSchemaMapper.usingNamingStrategyOf(getEntityManagerFactory());
+        SchemaMapper schemaMapper = AnnotationJpaHibernateSchemaMapper.usingNamingStrategyOf(getEntityManagerFactory());
         assertEquals(joinColumnNames, JpaUtils.getJoinColumnNamesFromJpaAnnotatedField(schemaMapper, metamodel.entity(Employee.class), phones.getField()));
     }
 
@@ -64,7 +63,7 @@ public class JpaUtilsTest extends DefaultExcelTestDataCase {
         HashMap<String, String> joinColumnNames = new HashMap<String, String>();
         joinColumnNames.put("#", "employees_employee_id");
         PropertyDefinition emailAdresses = employeeDefinition.property("emailAddresses");
-        SchemaMapper schemaMapper = JpaHibernateSchemaMapper.usingNamingStrategyOf(getEntityManagerFactory());
+        SchemaMapper schemaMapper = AnnotationJpaHibernateSchemaMapper.usingNamingStrategyOf(getEntityManagerFactory());
         assertEquals(joinColumnNames,
                 JpaUtils.getJoinColumnNamesFromJpaAnnotatedField(schemaMapper, metamodel.entity(Employee.class), emailAdresses.getField()));
     }

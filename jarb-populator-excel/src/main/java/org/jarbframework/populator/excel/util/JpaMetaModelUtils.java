@@ -1,4 +1,4 @@
-package org.jarbframework.utils.orm.jpa;
+package org.jarbframework.populator.excel.util;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
@@ -15,11 +15,11 @@ import javax.persistence.Embeddable;
 import javax.persistence.Entity;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Id;
-import javax.persistence.metamodel.Attribute.PersistentAttributeType;
 import javax.persistence.metamodel.EmbeddableType;
 import javax.persistence.metamodel.EntityType;
 import javax.persistence.metamodel.Metamodel;
 import javax.persistence.metamodel.PluralAttribute;
+import javax.persistence.metamodel.Attribute.PersistentAttributeType;
 
 import org.jarbframework.utils.orm.NotAnEntityException;
 import org.jarbframework.utils.orm.SchemaMapper;
@@ -107,7 +107,7 @@ public final class JpaMetaModelUtils {
      * @return Table name
      */
     private static String createElementCollectionTableNameByJPADefault(Class<?> enclosingClass, String fieldName, EntityManagerFactory entityManagerFactory) {
-        SchemaMapper schemaMapper = JpaHibernateSchemaMapper.usingNamingStrategyOf(entityManagerFactory);
+        SchemaMapper schemaMapper = AnnotationJpaHibernateSchemaMapper.usingNamingStrategyOf(entityManagerFactory);
         String enclosingTypeTableName = schemaMapper.getTableName(enclosingClass);
         return enclosingTypeTableName + "_" + fieldName;
     }

@@ -1,4 +1,4 @@
-package org.jarbframework.utils.orm;
+package org.jarbframework.utils.orm.hibernate;
 
 import static org.springframework.core.annotation.AnnotationUtils.findAnnotation;
 
@@ -12,25 +12,27 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.persister.entity.AbstractEntityPersister;
 import org.jarbframework.utils.bean.PropertyReference;
+import org.jarbframework.utils.orm.ColumnReference;
+import org.jarbframework.utils.orm.SchemaMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class SimpleHibernateJpaSchemaMapper implements SchemaMapper {
+public class HibernateJpaSchemaMapper implements SchemaMapper {
     
     private final Logger logger = LoggerFactory.getLogger(getClass());
     
     /** Provides access to the class mapping meta-data. **/
     private final SessionFactory sessionFactory;
     
-    public SimpleHibernateJpaSchemaMapper(SessionFactory sessionFactory) {
+    public HibernateJpaSchemaMapper(SessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;
     }
     
-    public SimpleHibernateJpaSchemaMapper(EntityManager entityManager) {
+    public HibernateJpaSchemaMapper(EntityManager entityManager) {
         this(((Session) entityManager.getDelegate()).getSessionFactory());
     }
     
-    public SimpleHibernateJpaSchemaMapper(EntityManagerFactory entityManagerFactory) {
+    public HibernateJpaSchemaMapper(EntityManagerFactory entityManagerFactory) {
         this(entityManagerFactory.createEntityManager());
     }
     

@@ -9,8 +9,8 @@ import javax.persistence.metamodel.EntityType;
 import javax.persistence.metamodel.Metamodel;
 
 import org.jarbframework.populator.excel.metamodel.EntityDefinition;
+import org.jarbframework.populator.excel.util.AnnotationJpaHibernateSchemaMapper;
 import org.jarbframework.utils.orm.SchemaMapper;
-import org.jarbframework.utils.orm.jpa.JpaHibernateSchemaMapper;
 
 /**
  * Class which is responsible for generating a list of ready-to-be-used ClassDefinitions containing columns, a persistent class, etc.
@@ -52,7 +52,7 @@ public class EntityDefinitionsGenerator {
     private <T> EntityDefinition<T> createEntityDefinitionFromEntity(EntityType<T> entity, Set<EntityType<?>> subClassEntities) {
         final Class<T> entityClass = entity.getJavaType();
         EntityDefinition.Builder<T> builder = EntityDefinition.forClass(entityClass);
-        SchemaMapper schemaMapper = JpaHibernateSchemaMapper.usingNamingStrategyOf(entityManagerFactory);
+        SchemaMapper schemaMapper = AnnotationJpaHibernateSchemaMapper.usingNamingStrategyOf(entityManagerFactory);
         builder.setTableName(schemaMapper.getTableName(entityClass));
         ColumnDefinitionsGenerator columnDefinitionsGenerator = new ColumnDefinitionsGenerator(entityManagerFactory);
         builder.includeProperties(columnDefinitionsGenerator.createPropertyDefinitions(subClassEntities, entity, entityClass));

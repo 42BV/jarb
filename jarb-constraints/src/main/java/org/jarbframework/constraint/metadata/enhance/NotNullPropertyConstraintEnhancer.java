@@ -6,7 +6,6 @@ import javax.validation.constraints.NotNull;
 
 import org.jarbframework.constraint.metadata.PropertyConstraintDescription;
 
-
 /**
  * Whenever a property is annotated as @NotNull , it is required.
  * 

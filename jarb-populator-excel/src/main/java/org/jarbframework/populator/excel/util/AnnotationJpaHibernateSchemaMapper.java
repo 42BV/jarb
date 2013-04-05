@@ -1,7 +1,8 @@
-package org.jarbframework.utils.orm.jpa;
+package org.jarbframework.populator.excel.util;
 
 import static java.lang.String.format;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
+import static org.jarbframework.populator.excel.util.JpaMetaModelUtils.findRootEntityClass;
 import static org.jarbframework.utils.Asserts.hasText;
 import static org.jarbframework.utils.Asserts.instanceOf;
 import static org.jarbframework.utils.Asserts.notNull;
@@ -9,7 +10,6 @@ import static org.jarbframework.utils.bean.BeanAnnotationScanner.fieldOrGetter;
 import static org.jarbframework.utils.bean.BeanProperties.getDeclaringClass;
 import static org.jarbframework.utils.bean.BeanProperties.getPropertyNames;
 import static org.jarbframework.utils.bean.BeanProperties.getPropertyType;
-import static org.jarbframework.utils.orm.jpa.JpaMetaModelUtils.findRootEntityClass;
 import static org.springframework.beans.BeanUtils.instantiateClass;
 
 import javax.persistence.AttributeOverride;
@@ -36,36 +36,37 @@ import org.jarbframework.utils.bean.PropertyReference;
 import org.jarbframework.utils.orm.ColumnReference;
 import org.jarbframework.utils.orm.NotAnEntityException;
 import org.jarbframework.utils.orm.SchemaMapper;
-import org.jarbframework.utils.orm.SimpleHibernateJpaSchemaMapper;
+import org.jarbframework.utils.orm.hibernate.HibernateJpaSchemaMapper;
 
 /**
  * Hibernate JPA implementation of {@link SchemaMapper}.
  *
- * @deprecated Should use the {@link SimpleHibernateJpaSchemaMapper}
+ * @deprecated Should use the {@link HibernateJpaSchemaMapper}.
  * @author Jeroen van Schagen
  * @date Aug 16, 2011
  */
-public class JpaHibernateSchemaMapper implements SchemaMapper {
+public class AnnotationJpaHibernateSchemaMapper implements SchemaMapper {
+    
     private static final String NAMING_STRATEGY_KEY = "hibernate.ejb.naming_strategy";
 
     private final BeanAnnotationScanner annotationScanner = fieldOrGetter();
     private final NamingStrategy namingStrategy;
 
-    public JpaHibernateSchemaMapper() {
+    public AnnotationJpaHibernateSchemaMapper() {
         this(new DefaultNamingStrategy());
     }
 
-    public JpaHibernateSchemaMapper(NamingStrategy namingStrategy) {
+    public AnnotationJpaHibernateSchemaMapper(NamingStrategy namingStrategy) {
         this.namingStrategy = notNull(namingStrategy, "Naming strategy property is required.");
     }
 
-    public static JpaHibernateSchemaMapper usingNamingStrategyOf(EntityManagerFactory entityManagerFactory) {
+    public static AnnotationJpaHibernateSchemaMapper usingNamingStrategyOf(EntityManagerFactory entityManagerFactory) {
         Object namingStrategyProperty = entityManagerFactory.getProperties().get(NAMING_STRATEGY_KEY);
         if (namingStrategyProperty == null) {
-            return new JpaHibernateSchemaMapper();
+            return new AnnotationJpaHibernateSchemaMapper();
         } else {
             String namingStrategyClass = instanceOf(namingStrategyProperty, String.class, format("Property '%s' should be a String.", NAMING_STRATEGY_KEY));
-            return new JpaHibernateSchemaMapper(instantiateStrategy(namingStrategyClass));
+            return new AnnotationJpaHibernateSchemaMapper(instantiateStrategy(namingStrategyClass));
         }
     }
 

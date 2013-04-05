@@ -2,7 +2,7 @@ package org.jarbframework.constraint.xml;
 
 import org.jarbframework.constraint.metadata.BeanConstraintDescriptorFactoryBean;
 import org.jarbframework.constraint.metadata.database.HibernateJpaColumnMetadataRepositoryFactoryBean;
-import org.jarbframework.utils.orm.SimpleHibernateJpaSchemaMapper;
+import org.jarbframework.utils.orm.hibernate.HibernateJpaSchemaMapper;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.xml.BeanDefinitionParser;
@@ -27,7 +27,7 @@ public class EnableMetadataBeanDefinitionParser implements BeanDefinitionParser 
     }
 
     private String registerSchemaMapper(Element element, ParserContext parserContext) {
-        BeanDefinitionBuilder schemaMapperBuilder = BeanDefinitionBuilder.genericBeanDefinition(SimpleHibernateJpaSchemaMapper.class);
+        BeanDefinitionBuilder schemaMapperBuilder = BeanDefinitionBuilder.genericBeanDefinition(HibernateJpaSchemaMapper.class);
         schemaMapperBuilder.addConstructorArgReference(element.getAttribute("entity-manager-factory"));
         return registerWithGeneratedName(parserContext, schemaMapperBuilder.getBeanDefinition());
     }

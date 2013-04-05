@@ -10,7 +10,7 @@ import org.jarbframework.populator.excel.metamodel.Definition;
 import org.jarbframework.populator.excel.metamodel.EntityDefinition;
 import org.jarbframework.populator.excel.metamodel.MetaModel;
 import org.jarbframework.populator.excel.metamodel.PropertyDefinition;
-import org.jarbframework.utils.orm.jpa.JpaMetaModelUtils;
+import org.jarbframework.populator.excel.util.JpaMetaModelUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

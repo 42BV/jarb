@@ -37,7 +37,8 @@ import org.springframework.beans.NullValueInNestedPathException;
  * @since 23-05-2011
  */
 public class DatabaseConstraintValidator {
-    private final Logger logger = LoggerFactory.getLogger(DatabaseConstraintValidator.class);
+    
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
     /** Concrete validation logic that should be performed **/
     private final List<DatabaseConstraintValidationStep> validationSteps;
@@ -79,42 +80,47 @@ public class DatabaseConstraintValidator {
         }
     }
 
-    private void validateProperty(Object bean, PropertyReference propertyRef, DatabaseConstraintValidationContext validation) {
-        Field propertyField = BeanProperties.findPropertyField(propertyRef);
+    private void validateProperty(Object bean, PropertyReference property, DatabaseConstraintValidationContext validation) {
+        Field propertyField = BeanProperties.findPropertyField(property);
         if (!Modifier.isStatic(propertyField.getModifiers())) {
             Class<?> propertyClass = propertyField.getType();
             if (schemaMapper.isEmbeddable(propertyClass)) {
-                validateNestedProperty(bean, propertyRef, validation, propertyClass);
+                validateNestedProperty(bean, property, validation, propertyClass);
             } else {
-                validateDirectProperty(bean, propertyRef, validation);
+                validateDirectProperty(bean, property, validation);
             }
         }
     }
 
-    private void validateNestedProperty(Object bean, PropertyReference propertyRef, DatabaseConstraintValidationContext validation, Class<?> propertyClass) {
-        for (String embbededPropertyName : BeanProperties.getFieldNames(propertyClass)) {
-            validateProperty(bean, new PropertyReference(propertyRef, embbededPropertyName), validation);
+    private void validateNestedProperty(Object bean, PropertyReference parent, DatabaseConstraintValidationContext validation, Class<?> propertyClass) {
+        for (String propertyName : BeanProperties.getFieldNames(propertyClass)) {
+            validateProperty(bean, new PropertyReference(parent, propertyName), validation);
         }
     }
 
-    private void validateDirectProperty(Object bean, PropertyReference propertyRef, DatabaseConstraintValidationContext validation) {
-        ColumnReference columnRef = schemaMapper.getColumnReference(propertyRef);
-        if (columnRef != null) {
-            ColumnMetadata columnMetadata = columnMetadataRepository.getColumnMetadata(columnRef);
+    private void validateDirectProperty(Object bean, PropertyReference property, DatabaseConstraintValidationContext validation) {
+        ColumnReference column = schemaMapper.getColumnReference(property);
+        if (column != null) {
+            ColumnMetadata columnMetadata = columnMetadataRepository.getColumnMetadata(column);
             if (columnMetadata != null) {
-                Object propertyValue = null;
-                try {
-                    propertyValue = ModifiableBean.wrap(bean).getPropertyValue(propertyRef.getName());
-                } catch (NullValueInNestedPathException e) {
-                    logger.debug("Could not retrieve actual property value.", e);
-                }
-                for (DatabaseConstraintValidationStep step : validationSteps) {
-                    step.validate(propertyValue, propertyRef, columnMetadata, validation);
+                Object propertyValue = getPropertyValue(bean, property);
+                for (DatabaseConstraintValidationStep validationStep : validationSteps) {
+                    validationStep.validate(propertyValue, property, columnMetadata, validation);
                 }
             } else {
-                logger.warn("Skipped validation because no metadata could be found for column '{}'.", columnRef);
+                logger.warn("Skipped validation because no metadata could be found for column '{}'.", column);
             }
         }
+    }
+
+    private Object getPropertyValue(Object bean, PropertyReference property) {
+        Object propertyValue = null;
+        try {
+            propertyValue = ModifiableBean.wrap(bean).getPropertyValue(property.getName());
+        } catch (NullValueInNestedPathException e) {
+            logger.debug("Could not retrieve actual property value.", e);
+        }
+        return propertyValue;
     }
 
     public void setMessageInterpolator(MessageInterpolator messageInterpolator) {

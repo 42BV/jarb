@@ -20,12 +20,12 @@ import org.jarbframework.populator.excel.metamodel.InverseJoinColumnReferencePro
 import org.jarbframework.populator.excel.metamodel.InverseJoinColumnReferenceType;
 import org.jarbframework.populator.excel.metamodel.PropertyDatabaseType;
 import org.jarbframework.populator.excel.metamodel.PropertyDefinition;
+import org.jarbframework.populator.excel.util.AnnotationJpaHibernateSchemaMapper;
+import org.jarbframework.populator.excel.util.JpaMetaModelUtils;
 import org.jarbframework.populator.excel.util.JpaUtils;
 import org.jarbframework.utils.bean.BeanProperties;
 import org.jarbframework.utils.bean.PropertyReference;
 import org.jarbframework.utils.orm.SchemaMapper;
-import org.jarbframework.utils.orm.jpa.JpaHibernateSchemaMapper;
-import org.jarbframework.utils.orm.jpa.JpaMetaModelUtils;
 
 /**
  * Creates a ColumnDefinition from a field.
@@ -49,7 +49,7 @@ public class FieldAnalyzer {
                 columnDefinitionBuilder = inversedReferencePropertyDefinition(field);
             }
         } else {
-            SchemaMapper schemaMapper = JpaHibernateSchemaMapper.usingNamingStrategyOf(entityManagerFactory);
+            SchemaMapper schemaMapper = AnnotationJpaHibernateSchemaMapper.usingNamingStrategyOf(entityManagerFactory);
             String referencedColumnName = schemaMapper.getColumnReference(propertyReference).getColumnName();
 
             if (!referencedColumnName.isEmpty()) {
@@ -131,7 +131,7 @@ public class FieldAnalyzer {
      * @return Map with the referred column names as keys and the Jpa annotated JoinColumn names as values
      */
     private Map<String, String> getJpaJoinColumnNamesForInversedReferenceField(Field field) {
-        SchemaMapper schemaMapper = JpaHibernateSchemaMapper.usingNamingStrategyOf(entityManagerFactory);
+        SchemaMapper schemaMapper = AnnotationJpaHibernateSchemaMapper.usingNamingStrategyOf(entityManagerFactory);
         EntityType<?> entityType = entityManagerFactory.getMetamodel().entity(field.getDeclaringClass());
         return JpaUtils.getJoinColumnNamesFromJpaAnnotatedField(schemaMapper, entityType, field);
     }

@@ -13,11 +13,12 @@ import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.util.ReflectionUtils;
 
 /**
- * Searches for annotations in class and property declarations.
+ * Searches for annotations in class and property declarations. 
  * @author Jeroen van Schagen
  * @date Aug 29, 2011
  */
 public class BeanAnnotationScanner {
+    
     private final boolean includeGetter;
     private final boolean includeSetter;
 
