@@ -1,10 +1,8 @@
 package org.jarbframework.constraint.metadata.database;
 
 import javax.persistence.EntityManagerFactory;
+import javax.sql.DataSource;
 
-import org.hibernate.Session;
-import org.jarbframework.constraint.metadata.database.connection.ConnectionHandler;
-import org.jarbframework.constraint.metadata.database.connection.HibernateConnectionHandler;
 import org.jarbframework.utils.orm.hibernate.HibernateUtils;
 import org.jarbframework.utils.spring.SingletonFactoryBean;
 
@@ -28,10 +26,9 @@ public class HibernateJpaColumnMetadataRepositoryFactoryBean extends SingletonFa
     }
 
     private JdbcColumnMetadataRepository createJdbcColumnMetadataRepository() {
-        Session session = HibernateUtils.getSession(entityManagerFactory);
-        ConnectionHandler connectionHandler = new HibernateConnectionHandler(session);
+        DataSource dataSource = HibernateUtils.getDataSource(entityManagerFactory);
         
-        JdbcColumnMetadataRepository jdbcColumnMetadataRepository = new JdbcColumnMetadataRepository(connectionHandler);
+        JdbcColumnMetadataRepository jdbcColumnMetadataRepository = new JdbcColumnMetadataRepository(dataSource);
         jdbcColumnMetadataRepository.setCatalog(catalog);
         jdbcColumnMetadataRepository.setSchema(schema);
         return jdbcColumnMetadataRepository;

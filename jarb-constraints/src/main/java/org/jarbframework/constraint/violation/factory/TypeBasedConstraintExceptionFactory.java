@@ -1,6 +1,7 @@
 package org.jarbframework.constraint.violation.factory;
 
 import org.jarbframework.constraint.violation.CheckFailedException;
+import org.jarbframework.constraint.violation.DatabaseConstraintType;
 import org.jarbframework.constraint.violation.DatabaseConstraintViolation;
 import org.jarbframework.constraint.violation.DatabaseConstraintViolationException;
 import org.jarbframework.constraint.violation.ForeignKeyViolationException;
@@ -19,28 +20,20 @@ public class TypeBasedConstraintExceptionFactory implements DatabaseConstraintEx
 
     @Override
     public DatabaseConstraintViolationException buildException(DatabaseConstraintViolation violation, Throwable cause) {
-        DatabaseConstraintViolationException exception = null;
-        switch (violation.getConstraintType()) {
-        case NOT_NULL:
-            exception = new NotNullViolationException(violation, cause);
-            break;
-        case CHECK_FAILED:
-            exception = new CheckFailedException(violation, cause);
-            break;
-        case INVALID_TYPE:
-            exception = new InvalidTypeException(violation, cause);
-            break;
-        case LENGTH_EXCEEDED:
-            exception = new LengthExceededException(violation, cause);
-            break;
-        case UNIQUE_KEY:
-            exception = new UniqueKeyViolationException(violation, cause);
-            break;
-        case FOREIGN_KEY:
-            exception = new ForeignKeyViolationException(violation, cause);
-            break;
+        DatabaseConstraintType constraintType = violation.getConstraintType();
+        if (constraintType == null) {
+            return new DatabaseConstraintViolationException(violation, cause);
         }
-        return exception;
+        
+        switch (constraintType) {
+            case CHECK_FAILED:      return new CheckFailedException(violation, cause);
+            case FOREIGN_KEY:       return new ForeignKeyViolationException(violation, cause);
+            case INVALID_TYPE:      return new InvalidTypeException(violation, cause);
+            case LENGTH_EXCEEDED:   return new LengthExceededException(violation, cause);
+            case NOT_NULL:          return new NotNullViolationException(violation, cause);
+            case UNIQUE_KEY:        return new UniqueKeyViolationException(violation, cause);
+            default:                return new DatabaseConstraintViolationException(violation, cause);
+        }
     }
 
 }

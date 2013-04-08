@@ -8,7 +8,7 @@ import static org.jarbframework.utils.Asserts.notNull;
  * @author Jeroen van Schagen
  * @since 12-05-2011
  */
-public abstract class DatabaseConstraintViolationException extends RuntimeException {
+public class DatabaseConstraintViolationException extends RuntimeException {
 
     /** Constraint violation that occurred. */
     private final DatabaseConstraintViolation violation;
@@ -28,7 +28,7 @@ public abstract class DatabaseConstraintViolationException extends RuntimeExcept
      * @param cause the cause of this constraint violation exception, can be {@code null}
      */
     public DatabaseConstraintViolationException(DatabaseConstraintViolation violation, Throwable cause) {
-        this(violation, "Database constraint was violated.", cause);
+        this(violation, "Database constraint '" + violation.getConstraintName() + "' was violated.", cause);
     }
 
     /**

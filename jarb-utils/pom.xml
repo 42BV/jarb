@@ -15,23 +15,21 @@
 	<description>Provides common utilities</description>
 	
 	<dependencies>
-	    <dependency>
-            <!-- JDBC utilities -->
+        <dependency>
             <groupId>org.springframework</groupId>
-            <artifactId>spring-jdbc</artifactId>
+            <artifactId>spring-orm</artifactId>
             <version>${spring.version}</version>
+            <optional>true</optional>
         </dependency>
 		<dependency>
-		    <!-- JPA annotations -->
 		    <groupId>org.hibernate.javax.persistence</groupId>
 		    <artifactId>hibernate-jpa-2.0-api</artifactId>
 		    <version>1.0.0.Final</version>
             <optional>true</optional>
 		</dependency>
         <dependency>
-            <!-- Naming strategies -->
             <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-core</artifactId>
+            <artifactId>hibernate-entitymanager</artifactId>
             <version>${hibernate.version}</version>
             <optional>true</optional>
         </dependency>

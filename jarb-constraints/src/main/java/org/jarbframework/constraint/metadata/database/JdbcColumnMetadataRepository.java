@@ -14,9 +14,8 @@ import java.sql.SQLException;
 
 import javax.sql.DataSource;
 
-import org.jarbframework.constraint.metadata.database.connection.ConnectionHandler;
-import org.jarbframework.constraint.metadata.database.connection.DataSourceConnectionHandler;
 import org.jarbframework.utils.JdbcConnectionCallback;
+import org.jarbframework.utils.JdbcUtils;
 import org.jarbframework.utils.orm.ColumnReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,7 +30,7 @@ public class JdbcColumnMetadataRepository implements ColumnMetadataRepository {
 
     private final Logger logger = LoggerFactory.getLogger(JdbcColumnMetadataRepository.class);
 
-    private final ConnectionHandler connectionHandler;
+    private final DataSource dataSource;
 
     private DatabaseIdentifierCaser identifierCaser;
 
@@ -40,16 +39,12 @@ public class JdbcColumnMetadataRepository implements ColumnMetadataRepository {
     private String schema;
     
     public JdbcColumnMetadataRepository(DataSource dataSource) {
-        this(new DataSourceConnectionHandler(dataSource));
-    }
-    
-    public JdbcColumnMetadataRepository(ConnectionHandler connectionHandler) {
-        this.connectionHandler = connectionHandler;
+        this.dataSource = dataSource;
     }
 
     @Override
     public ColumnMetadata getColumnMetadata(final ColumnReference columnReference) {
-        return connectionHandler.execute(new JdbcConnectionCallback<ColumnMetadata>() {
+        return JdbcUtils.doWithConnection(dataSource, new JdbcConnectionCallback<ColumnMetadata>() {
            
             @Override
             public ColumnMetadata doWork(Connection connection) throws SQLException {

@@ -1,18 +1,21 @@
 package org.jarbframework.utils.orm.hibernate;
 
-import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.sql.DataSource;
 
-import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.ejb.HibernateEntityManagerFactory;
+import org.springframework.orm.hibernate4.SessionFactoryUtils;
 
 public class HibernateUtils {
 
-    public static Session getSession(EntityManager entityManager) {
-        return (Session) entityManager.getDelegate();
+    public static DataSource getDataSource(EntityManagerFactory entityManagerFactory) {
+        SessionFactory sessionFactory = getSessionFactory(entityManagerFactory);
+        return SessionFactoryUtils.getDataSource(sessionFactory);
     }
     
-    public static Session getSession(EntityManagerFactory entityManagerFactory) {
-        return getSession(entityManagerFactory.createEntityManager());
+    private static SessionFactory getSessionFactory(EntityManagerFactory entityManagerFactory) {
+        return ((HibernateEntityManagerFactory) entityManagerFactory).getSessionFactory();
     }
     
 }
