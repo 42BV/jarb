@@ -9,7 +9,7 @@ import static org.jarbframework.constraint.violation.DatabaseConstraintViolation
 
 import org.apache.commons.lang3.StringUtils;
 import org.jarbframework.constraint.violation.DatabaseConstraintViolation;
-import org.jarbframework.constraint.violation.resolver.recognize.DatabaseProduct;
+import org.jarbframework.constraint.violation.resolver.product.DatabaseProduct;
 import org.jarbframework.constraint.violation.resolver.vendor.ViolationMessagePatterns.VariableAccessor;
 import org.jarbframework.constraint.violation.resolver.vendor.ViolationMessagePatterns.ViolationBuilder;
 

@@ -4,7 +4,6 @@ import static org.jarbframework.utils.Asserts.notNull;
 
 /**
  * Thrown whenever a database constraint violation has occured.
- * 
  * @author Jeroen van Schagen
  * @since 12-05-2011
  */

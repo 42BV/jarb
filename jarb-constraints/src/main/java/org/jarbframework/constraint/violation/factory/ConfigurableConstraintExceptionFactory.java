@@ -5,9 +5,9 @@ import java.util.List;
 import java.util.Set;
 
 import org.jarbframework.constraint.violation.DatabaseConstraintViolation;
-import org.jarbframework.constraint.violation.factory.mapping.DatabaseConstraint;
+import org.jarbframework.constraint.violation.factory.mapping.NamedConstraint;
 import org.jarbframework.constraint.violation.factory.mapping.NameMatchingStrategy;
-import org.jarbframework.constraint.violation.factory.mapping.ViolationNamePredicate;
+import org.jarbframework.constraint.violation.factory.mapping.NamePredicate;
 import org.jarbframework.utils.Classes;
 import org.springframework.core.annotation.AnnotationUtils;
 
@@ -82,7 +82,7 @@ public class ConfigurableConstraintExceptionFactory implements DatabaseConstrain
      * @return this factory instance, for chaining
      */
     public ConfigurableConstraintExceptionFactory register(String constraintName, NameMatchingStrategy matchingStrategy, DatabaseConstraintExceptionFactory exceptionFactory) {
-        ViolationNamePredicate violationPredicate = new ViolationNamePredicate(constraintName, matchingStrategy);
+        NamePredicate violationPredicate = new NamePredicate(constraintName, matchingStrategy);
         return register(violationPredicate, exceptionFactory);
     }
 
@@ -105,9 +105,9 @@ public class ConfigurableConstraintExceptionFactory implements DatabaseConstrain
      * @return this factory instance, for chaining
      */
     public ConfigurableConstraintExceptionFactory registerAll(String basePackage) {
-        Set<Class<?>> annotatedClasses = Classes.getAllWithAnnotation(basePackage, DatabaseConstraint.class);
+        Set<Class<?>> annotatedClasses = Classes.getAllWithAnnotation(basePackage, NamedConstraint.class);
         for(Class<?> annotatedClass : annotatedClasses) {
-            DatabaseConstraint annotation = AnnotationUtils.findAnnotation(annotatedClass, DatabaseConstraint.class);
+            NamedConstraint annotation = AnnotationUtils.findAnnotation(annotatedClass, NamedConstraint.class);
             register(annotation.value(), annotation.strategy(), annotatedClass);
         }
         

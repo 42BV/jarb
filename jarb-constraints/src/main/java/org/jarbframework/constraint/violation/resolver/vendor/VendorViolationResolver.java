@@ -2,7 +2,7 @@ package org.jarbframework.constraint.violation.resolver.vendor;
 
 import org.jarbframework.constraint.violation.DatabaseConstraintViolation;
 import org.jarbframework.constraint.violation.resolver.RootCauseMessageViolationResolver;
-import org.jarbframework.constraint.violation.resolver.recognize.DatabaseProductSpecific;
+import org.jarbframework.constraint.violation.resolver.product.DatabaseProductSpecific;
 import org.jarbframework.constraint.violation.resolver.vendor.ViolationMessagePatterns.ViolationBuilder;
 
 /**

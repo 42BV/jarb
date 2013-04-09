@@ -1,4 +1,4 @@
-package org.jarbframework.constraint.violation.resolver.recognize;
+package org.jarbframework.constraint.violation.resolver.product;
 
 public interface DatabaseProductSpecific {
     

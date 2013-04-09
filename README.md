@@ -70,7 +70,7 @@ access to the constraint violation and any desired metadata.
 
 It is even possible to map custom exceptions on named constraints.
 
-	@DatabaseConstraint("uk_posts_title")
+	@NamedConstraint("uk_posts_title")
 	public class PostTitleAlreadyExistsException extends UniqueKeyViolationException {
 		...
 	}
