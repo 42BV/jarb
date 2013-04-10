@@ -6,7 +6,7 @@
  */
 
 $(document).ready(function() {
-    var createForm = $('.create form');
+    var createForm = $('#create-post form');
     createForm.validate(); // Init validator
     
     createForm.submit(function(e) {
@@ -18,25 +18,27 @@ $(document).ready(function() {
 				type: 'POST',
 				data: createForm.serialize(),
 				success: function(data) {
-					$('.status p').text(data.status);
+					$('.status p').text(data.message);
+					
 					if(data.success) {
 						// New post has been accepted accepted
 						// Append post to the index, meaning we dont have to refresh
-						var newPost = '<li>';
-						newPost += '<h2>' + data.post.title + '</h2>';
-						newPost += '<span class="author">' + data.post.author + '</span>'
-						newPost += '<span class="date">' + data.post.postedOn + '</span>'
-						newPost += '<span class="message">' + data.post.message + '</span>'
-						newPost += '</li>'
-						$('.posts ul').append(newPost);
-						$('.posts li:last').hide();
-						$('.posts li:last').fadeIn();
+						var newPost = '<tr>';
+						newPost += '<td>' + data.post.title + '</td>';
+						newPost += '<td class="author">' + data.post.author + '</td>'
+						newPost += '<td class="date">' + data.post.postedOn + '</td>'
+						newPost += '<td class="message">' + data.post.message + '</td>'
+						newPost += '</tr>'
+						$('.posts tbody').append(newPost);
+						$('.posts tbody tr:last').hide();
+						$('.posts tbody tr:last').fadeIn();
+						
 						// Clear creation form
-						$(':input', '.create')
+						$(':input', '#create-post')
 							.not(':button, :submit, :reset, :hidden')
 							.removeAttr('checked')
 							.removeAttr('selected')
-							.val('');
+								.val('');
 						validator.resetForm();
 					}
 				}

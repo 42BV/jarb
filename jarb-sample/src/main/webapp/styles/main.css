@@ -5,3 +5,36 @@ body {
 	color: #000;
 	font: 12px/1.5 'helvetica neue', helvetica, arial, sans-serif;
 }
+
+table {
+    text-align: left;
+    margin: 5px;
+}
+
+td, th {
+    padding: 0px 2px;
+}
+
+th {
+    border-bottom: 1px solid black;
+}
+
+h1 {
+    font-size: 24px;
+}
+
+h2 {
+    font-size: 18px;
+}
+
+header {
+	margin-left: 5px;
+}
+
+#create-post {
+    margin: 5px;
+}
+
+#notes {
+    display: none;
+}

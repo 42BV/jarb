@@ -12,25 +12,30 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 @Controller
-@RequestMapping("posts")
+@RequestMapping("/")
 public class PostingController {
 
     @Autowired
     private PostRepository postRepository;
 
     @Autowired
-    private BeanConstraintDescriptor constraintDescriptor;
+    private BeanConstraintDescriptor beanConstraintDescriptor;
 
     @RequestMapping(method = RequestMethod.GET)
     public ModelAndView index() {
-        ModelAndView mav = new ModelAndView("posts/index");
+        ModelAndView mav = new ModelAndView("posts");
         mav.addObject("posts", postRepository.findAll());
         return mav;
     }
+    
+    @RequestMapping(value = "structure", method = RequestMethod.GET)
+    public BeanConstraintDescription<Post> structure() {
+        return beanConstraintDescriptor.describe(Post.class);
+    }
 
+    @ResponseBody
     @RequestMapping(method = RequestMethod.POST)
-    public @ResponseBody
-    PostCreateResult post(@Valid Post post) {
+    public PostCreateResult post(@Valid Post post) {
         boolean success = false;
         String message = null;
         try {
@@ -40,17 +45,22 @@ public class PostingController {
         } catch (PostTitleAlreadyExistsException e) {
             message = "Post title '" + post.getTitle() + "' already exists";
         }
-        PostCreateResult result = new PostCreateResult();
-        result.success = success;
-        result.message = message;
-        result.post = post;
-        return result;
+        return new PostCreateResult(success, message, post);
     }
 
     public static class PostCreateResult {
-        private boolean success;
-        private String message;
-        private Post post;
+        
+        private final boolean success;
+        
+        private final String message;
+        
+        private final Post post;
+
+        public PostCreateResult(boolean success, String message, Post post) {
+            this.success = success;
+            this.message = message;
+            this.post = post;
+        }
 
         public boolean isSuccess() {
             return success;
@@ -63,11 +73,7 @@ public class PostingController {
         public String getMessage() {
             return message;
         }
-    }
-
-    @RequestMapping(value = "structure", method = RequestMethod.GET)
-    public BeanConstraintDescription<Post> structure() {
-        return constraintDescriptor.describe(Post.class);
+        
     }
 
 }

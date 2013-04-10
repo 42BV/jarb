@@ -4,8 +4,7 @@
  * 
  * @author Jeroen van Schagen
  */
-
-$.getJSON('posts/structure.json', function(data) {
+$.getJSON('structure.json', function(data) {
 
 	$.each(data.beanConstraintDescription.propertyDescriptions, function(index, propertyDescription) {
 		var inputField = $('input[name=' + propertyDescription.name + ']');
