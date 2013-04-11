@@ -1,18 +1,17 @@
 @import url('reset.css');
 
 body {
-	background: #fff;
+	background: #F4F2EA;
 	color: #000;
 	font: 12px/1.5 'helvetica neue', helvetica, arial, sans-serif;
 }
 
 table {
     text-align: left;
-    margin: 5px;
 }
 
 td, th {
-    padding: 0px 2px;
+    padding-right: 2px;
 }
 
 th {
@@ -20,21 +19,50 @@ th {
 }
 
 h1 {
+    margin: 5px 0px;
     font-size: 24px;
 }
 
 h2 {
+	margin: 5px 0px;
     font-size: 18px;
+}
+
+label.error {
+    color: red;
+}
+
+#container {
+    border: 1px solid #BBB;
+    margin: 5px 100px;
+    background-color: #FFF;
+    padding: 5px;
 }
 
 header {
 	margin-left: 5px;
+	text-align: center;
 }
 
-#create-post {
-    margin: 5px;
+#title {
+}
+
+#title .description {
+    font-size: 15px;
+    font-style: italic;
 }
 
 #notes {
-    display: none;
+    position: fixed;
+    bottom: 0px;
+    right: 0px;
+}
+
+#notes li {
+	max-width: 200px;
+	border: 1px solid;
+	color: #9F6000;
+	background-color: #FEEFB3;
+	margin: 5px;
+	padding: 2px;
 }
