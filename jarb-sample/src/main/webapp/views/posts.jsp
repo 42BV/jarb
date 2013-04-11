@@ -7,9 +7,9 @@
 		<meta charset="utf-8" />
 		<title>Posts</title>
 		<link rel="stylesheet" href="styles/main.css" media="screen"/>
-		<script type="text/javascript" src="scripts/jquery.js"></script>
-		<script type="text/javascript" src="scripts/jquery.validate.js"></script>
-		<script type="text/javascript" src="scripts/posts_structure.js"></script>
+		<script type="text/javascript" src="scripts/lib/jquery-1.9.1.js"></script>
+		<script type="text/javascript" src="scripts/lib/jquery.validate-1.11.1.js"></script>
+		<script type="text/javascript" src="scripts/custom/jquery.form.constraints.js"></script>
 		<script type="text/javascript" src="scripts/posts_submit.js"></script>
 	</head>
 	<body>

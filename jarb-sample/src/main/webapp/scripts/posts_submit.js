@@ -7,6 +7,8 @@
 
 $(document).ready(function() {
     var createForm = $('#create-post form');
+    
+    createForm.constraints('constraints.json');
     createForm.validate(); // Init validator
     
     createForm.submit(function(e) {

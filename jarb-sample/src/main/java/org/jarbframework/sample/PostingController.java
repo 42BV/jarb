@@ -28,7 +28,7 @@ public class PostingController {
         return mav;
     }
     
-    @RequestMapping(value = "structure", method = RequestMethod.GET)
+    @RequestMapping(value = "constraints", method = RequestMethod.GET)
     public BeanConstraintDescription<Post> structure() {
         return beanConstraintDescriptor.describe(Post.class);
     }
