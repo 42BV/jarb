@@ -1,9 +1,9 @@
 @import url('reset.css');
 
 body {
-	background: #F4F2EA;
 	color: #000;
 	font: 12px/1.5 'helvetica neue', helvetica, arial, sans-serif;
+	margin: 0px;
 }
 
 table {
@@ -32,16 +32,9 @@ label.error {
     color: red;
 }
 
-#container {
-    border: 1px solid #BBB;
-    margin: 5px 100px;
-    background-color: #FFF;
-    padding: 5px;
-}
-
 header {
-	margin-left: 5px;
 	text-align: center;
+	width: 100%;
 }
 
 #title {
@@ -50,6 +43,10 @@ header {
 #title .description {
     font-size: 15px;
     font-style: italic;
+}
+
+#content {
+    padding: 5px;
 }
 
 #notes {

@@ -13,16 +13,14 @@
 		<script type="text/javascript" src="scripts/application.js"></script>
 	</head>
 	<body>
-	    <section id="container">
-		    <header>
-	           <h1 id="title">Messages board <p class="description">JaRB sample</p></h1>
-	        </header>
-	        
-	        <!-- TODO: Make working again. -->
-	        <section id="status">
-	           <p></p>
-	        </section>
-	
+        <header>
+           <h1 id="title">Messages board <p class="description">JaRB sample</p></h1>
+        </header>
+        
+        <!-- TODO: Make working again. -->
+        <section id="status"></section>
+
+        <section id="content">
 	        <section class="posts">
 	          <h2>Posts</h2>
 	          <table>
@@ -66,7 +64,7 @@
 	                <button type="submit">Submit</button>
 	            </form>
 	        </section>
-	    </section>
+        </section>
 		
 		<ul id="notes">
 			<li>Form input fields are enriched with backend constraints.</li>
