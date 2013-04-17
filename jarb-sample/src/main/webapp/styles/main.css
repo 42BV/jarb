@@ -1,9 +1,10 @@
 @import url('reset.css');
 
 body {
+	font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+	font-size: 13px;
+	line-height: 18px;
 	color: #000;
-	font: 12px/1.5 'helvetica neue', helvetica, arial, sans-serif;
-	margin: 0px;
 }
 
 table {
@@ -18,14 +19,18 @@ th {
     border-bottom: 1px solid black;
 }
 
+h1, h2, h3 {
+    font-weight: bold;
+}
+
 h1 {
-    margin: 5px 0px;
-    font-size: 24px;
+	font-size: 30px;
+	line-height: 36px;
 }
 
 h2 {
-	margin: 5px 0px;
-    font-size: 18px;
+	line-height: 27px;
+	font-size: 18px;
 }
 
 label.error {
