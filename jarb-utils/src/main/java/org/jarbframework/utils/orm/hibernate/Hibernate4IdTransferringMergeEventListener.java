@@ -29,16 +29,14 @@ import org.hibernate.persister.entity.EntityPersister;
  * <p>Typically specified as entry for LocalSessionFactoryBean's "eventListeners"
  * map, with key "merge".
  *
+ * @deprecated Remove when annotation based JPA schema mapper is factored out
  * @author Juergen Hoeller
  * @since 1.2
  * @see org.springframework.orm.hibernate3.LocalSessionFactoryBean#setEventListeners(java.util.Map)
  */
-@SuppressWarnings("serial")
+@SuppressWarnings({ "serial", "unchecked"})
 public class Hibernate4IdTransferringMergeEventListener extends DefaultMergeEventListener {
 
-    /**
-     * Hibernate 3.1 implementation of ID transferral.
-     */
     @Override
     protected void entityIsTransient(MergeEvent event, Map copyCache) {
         super.entityIsTransient(event, copyCache);
