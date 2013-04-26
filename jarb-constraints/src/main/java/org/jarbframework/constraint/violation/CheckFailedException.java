@@ -1,7 +1,6 @@
 package org.jarbframework.constraint.violation;
 
 import static org.jarbframework.constraint.violation.DatabaseConstraintType.CHECK_FAILED;
-import static org.jarbframework.utils.Asserts.state;
 
 /**
  * Exception thrown whenever a database check fails.
@@ -10,8 +9,14 @@ import static org.jarbframework.utils.Asserts.state;
  * @since 27-05-2011
  */
 public class CheckFailedException extends DatabaseConstraintViolationException {
-    private static final long serialVersionUID = -1855882672284167793L;
 
+    /**
+     * Construct a new {@link CheckFailedException}.
+     */
+    public CheckFailedException() {
+        this(new DatabaseConstraintViolation(CHECK_FAILED));
+    }
+    
     /**
      * Construct a new {@link CheckFailedException}.
      * @param violation constraint violation that triggered this exception
@@ -46,6 +51,6 @@ public class CheckFailedException extends DatabaseConstraintViolationException {
      */
     public CheckFailedException(DatabaseConstraintViolation violation, String message, Throwable cause) {
         super(violation, message, cause);
-        state(violation.getConstraintType() == CHECK_FAILED, "Check failed exception can only occur for check violations.");
     }
+    
 }

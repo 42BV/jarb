@@ -1,4 +1,4 @@
-package org.jarbframework.constraint.xml;
+package org.jarbframework.constraint;
 
 import org.springframework.beans.factory.xml.NamespaceHandlerSupport;
 

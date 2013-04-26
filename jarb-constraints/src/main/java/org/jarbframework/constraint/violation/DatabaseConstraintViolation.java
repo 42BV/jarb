@@ -1,6 +1,7 @@
 package org.jarbframework.constraint.violation;
 
-import org.apache.commons.lang3.StringUtils;
+import static org.apache.commons.lang3.StringUtils.isBlank;
+
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
@@ -45,21 +46,12 @@ public final class DatabaseConstraintViolation {
     }
     
     public DatabaseConstraintViolation(DatabaseConstraintType constraintType, String constraintName) {
-        if(constraintType == null && StringUtils.isBlank(constraintName)) {
+        if(constraintType == null && isBlank(constraintName)) {
             throw new IllegalArgumentException("Should provide a constraint type or name.");
         }
         
         this.constraintType = constraintType;
         this.constraintName = constraintName;
-    }
-
-    /**
-     * Start building a new {@link DatabaseConstraintViolation}.
-     * @param constraintType the type of constraint violation
-     * @return new constraint violation builder
-     */
-    public static DatabaseConstraintViolationBuilder builder() {
-        return violaton(null);
     }
     
     /**
@@ -67,8 +59,8 @@ public final class DatabaseConstraintViolation {
      * @param constraintType the type of constraint violation
      * @return new constraint violation builder
      */
-    public static DatabaseConstraintViolationBuilder violaton(DatabaseConstraintType constraintType) {
-        return new DatabaseConstraintViolationBuilder(constraintType);
+    public static Builder builder(DatabaseConstraintType constraintType) {
+        return new Builder(constraintType);
     }
 
     public DatabaseConstraintType getConstraintType() {
@@ -124,7 +116,7 @@ public final class DatabaseConstraintViolation {
      * @author Jeroen van Schagen
      * @date Aug 5, 2011
      */
-    public static final class DatabaseConstraintViolationBuilder {
+    public static final class Builder {
         
         private final DatabaseConstraintType constraintType;
         
@@ -150,65 +142,65 @@ public final class DatabaseConstraintViolation {
 
         private String number;
         
-        private DatabaseConstraintViolationBuilder(DatabaseConstraintType constraintType) {
+        private Builder(DatabaseConstraintType constraintType) {
             this.constraintType = constraintType;
         }
 
-        public DatabaseConstraintViolationBuilder constraint(String constraintName) {
+        public Builder constraint(String constraintName) {
             this.constraintName = constraintName;
             return this;
         }
 
-        public DatabaseConstraintViolationBuilder table(String tableName) {
+        public Builder table(String tableName) {
             this.tableName = tableName;
             return this;
         }
 
-        public DatabaseConstraintViolationBuilder column(String columnName) {
+        public Builder column(String columnName) {
             this.columnName = columnName;
             return this;
         }
         
-        public DatabaseConstraintViolationBuilder referencingTable(String referencingTableName) {
+        public Builder referencingTable(String referencingTableName) {
             this.referencingTableName = referencingTableName;
             return this;
         }
         
-        public DatabaseConstraintViolationBuilder referencingColumn(String referencingColumnName) {
+        public Builder referencingColumn(String referencingColumnName) {
             this.referencingColumnName = referencingColumnName;
             return this;
         }
 
-        public DatabaseConstraintViolationBuilder value(Object value) {
+        public Builder value(Object value) {
             this.value = value;
             return this;
         }
 
-        public DatabaseConstraintViolationBuilder valueType(String valueType) {
+        public Builder valueType(String valueType) {
             this.valueType = valueType;
             return this;
         }
 
-        public DatabaseConstraintViolationBuilder expectedValueType(String expectedValueType) {
+        public Builder expectedValueType(String expectedValueType) {
             this.expectedValueType = expectedValueType;
             return this;
         }
         
-        public DatabaseConstraintViolationBuilder maximumLength(String maximumLength) {
+        public Builder maximumLength(String maximumLength) {
             return this.maximumLength(Long.valueOf(maximumLength));
         }
 
-        public DatabaseConstraintViolationBuilder maximumLength(Long maximumLength) {
+        public Builder maximumLength(Long maximumLength) {
             this.maximumLength = maximumLength;
             return this;
         }
         
-        public DatabaseConstraintViolationBuilder statement(String statement) {
+        public Builder statement(String statement) {
             this.statement = statement;
             return this;
         }
         
-        public DatabaseConstraintViolationBuilder number(String number) {
+        public Builder number(String number) {
             this.number = number;
             return this;
         }

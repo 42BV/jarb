@@ -27,7 +27,7 @@ public class DatabaseConstraintViolationException extends RuntimeException {
      * @param cause the cause of this constraint violation exception, can be {@code null}
      */
     public DatabaseConstraintViolationException(DatabaseConstraintViolation violation, Throwable cause) {
-        this(violation, "Database constraint '" + violation.getConstraintName() + "' was violated.", cause);
+        this(violation, createDefaultMessage(violation), cause);
     }
 
     /**
@@ -39,6 +39,10 @@ public class DatabaseConstraintViolationException extends RuntimeException {
     public DatabaseConstraintViolationException(DatabaseConstraintViolation violation, String message, Throwable cause) {
         super(message, cause);
         this.violation = notNull(violation, "Constraint violation cannot be null.");
+    }
+    
+    protected static String createDefaultMessage(DatabaseConstraintViolation violation) {
+        return "Database constraint '" + violation.getConstraintName() + "' was violated.";
     }
 
     /**

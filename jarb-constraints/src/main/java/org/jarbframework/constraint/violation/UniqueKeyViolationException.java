@@ -1,7 +1,6 @@
 package org.jarbframework.constraint.violation;
 
 import static org.jarbframework.constraint.violation.DatabaseConstraintType.UNIQUE_KEY;
-import static org.jarbframework.utils.Asserts.state;
 
 /**
  * Thrown whenever a unique key value already exists.
@@ -11,6 +10,13 @@ import static org.jarbframework.utils.Asserts.state;
  */
 public class UniqueKeyViolationException extends DatabaseConstraintViolationException {
 
+    /**
+     * Construct a new {@link UniqueKeyViolationException}.
+     */
+    public UniqueKeyViolationException() {
+        this(new DatabaseConstraintViolation(UNIQUE_KEY));
+    }
+    
     /**
      * Construct a new {@link UniqueKeyViolationException}.
      * @param violation constraint violation that triggered this exception
@@ -45,6 +51,6 @@ public class UniqueKeyViolationException extends DatabaseConstraintViolationExce
      */
     public UniqueKeyViolationException(DatabaseConstraintViolation violation, String message, Throwable cause) {
         super(violation, message, cause);
-        state(violation.getConstraintType() == UNIQUE_KEY, "Unique key exception can only occur for unique key violations.");
     }
+    
 }

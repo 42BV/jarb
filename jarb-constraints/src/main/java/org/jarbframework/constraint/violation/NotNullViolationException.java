@@ -1,7 +1,6 @@
 package org.jarbframework.constraint.violation;
 
 import static org.jarbframework.constraint.violation.DatabaseConstraintType.NOT_NULL;
-import static org.jarbframework.utils.Asserts.state;
 
 /**
  * Thrown whenever a {@code null} value was provided for a not nullable column.
@@ -10,8 +9,14 @@ import static org.jarbframework.utils.Asserts.state;
  * @since 27-05-2011
  */
 public class NotNullViolationException extends DatabaseConstraintViolationException {
-    private static final long serialVersionUID = -2973693606821549440L;
 
+    /**
+     * Construct a new {@link NotNullViolationException}.
+     */
+    public NotNullViolationException() {
+        this(new DatabaseConstraintViolation(NOT_NULL));
+    }
+    
     /**
      * Construct a new {@link NotNullViolationException}.
      * @param violation constraint violation that triggered this exception
@@ -46,6 +51,6 @@ public class NotNullViolationException extends DatabaseConstraintViolationExcept
      */
     public NotNullViolationException(DatabaseConstraintViolation violation, String message, Throwable cause) {
         super(violation, message, cause);
-        state(violation.getConstraintType() == NOT_NULL, "Not null exception can only occur for not null violations");
     }
+    
 }

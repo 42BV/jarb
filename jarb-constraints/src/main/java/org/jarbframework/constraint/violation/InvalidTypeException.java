@@ -1,7 +1,6 @@
 package org.jarbframework.constraint.violation;
 
 import static org.jarbframework.constraint.violation.DatabaseConstraintType.INVALID_TYPE;
-import static org.jarbframework.utils.Asserts.state;
 
 /**
  * Thrown whenever the expression type does not match the column type.
@@ -10,6 +9,13 @@ import static org.jarbframework.utils.Asserts.state;
  * @since 27-05-2011
  */
 public class InvalidTypeException extends DatabaseConstraintViolationException {
+    
+    /**
+     * Construct a new {@link InvalidTypeException}.
+     */
+    public InvalidTypeException() {
+        this(new DatabaseConstraintViolation(INVALID_TYPE));
+    }
 
     /**
      * Construct a new {@link InvalidTypeException}.
@@ -45,6 +51,6 @@ public class InvalidTypeException extends DatabaseConstraintViolationException {
      */
     public InvalidTypeException(DatabaseConstraintViolation violation, String message, Throwable cause) {
         super(violation, message, cause);
-        state(violation.getConstraintType() == INVALID_TYPE, "Invalid type exception can only occur for invalid type violations.");
     }
+    
 }

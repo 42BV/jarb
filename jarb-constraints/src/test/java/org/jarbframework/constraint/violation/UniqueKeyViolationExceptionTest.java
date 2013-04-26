@@ -1,6 +1,6 @@
 package org.jarbframework.constraint.violation;
 
-import static org.jarbframework.constraint.violation.DatabaseConstraintViolation.violaton;
+import static org.jarbframework.constraint.violation.DatabaseConstraintViolation.builder;
 import static org.jarbframework.constraint.violation.DatabaseConstraintType.UNIQUE_KEY;
 import static org.junit.Assert.assertEquals;
 
@@ -11,7 +11,7 @@ public class UniqueKeyViolationExceptionTest {
     private final DatabaseConstraintViolation violation;
 
     public UniqueKeyViolationExceptionTest() {
-        violation = violaton(UNIQUE_KEY).constraint("uk_persons_name").build();
+        violation = builder(UNIQUE_KEY).constraint("uk_persons_name").build();
     }
 
     @Test

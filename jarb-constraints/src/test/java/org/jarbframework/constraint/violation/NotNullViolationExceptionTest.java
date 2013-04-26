@@ -1,6 +1,6 @@
 package org.jarbframework.constraint.violation;
 
-import static org.jarbframework.constraint.violation.DatabaseConstraintViolation.violaton;
+import static org.jarbframework.constraint.violation.DatabaseConstraintViolation.builder;
 import static org.jarbframework.constraint.violation.DatabaseConstraintType.NOT_NULL;
 import static org.junit.Assert.assertEquals;
 
@@ -11,7 +11,7 @@ public class NotNullViolationExceptionTest {
     private final DatabaseConstraintViolation violation;
 
     public NotNullViolationExceptionTest() {
-        violation = violaton(NOT_NULL).column("column_name").build();
+        violation = builder(NOT_NULL).column("column_name").build();
     }
 
     @Test

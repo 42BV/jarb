@@ -6,7 +6,7 @@ import static org.jarbframework.constraint.violation.DatabaseConstraintType.INVA
 import static org.jarbframework.constraint.violation.DatabaseConstraintType.LENGTH_EXCEEDED;
 import static org.jarbframework.constraint.violation.DatabaseConstraintType.NOT_NULL;
 import static org.jarbframework.constraint.violation.DatabaseConstraintType.UNIQUE_KEY;
-import static org.jarbframework.constraint.violation.DatabaseConstraintViolation.violaton;
+import static org.jarbframework.constraint.violation.DatabaseConstraintViolation.builder;
 
 import org.apache.commons.lang3.StringUtils;
 import org.jarbframework.constraint.violation.DatabaseConstraintViolation;
@@ -36,7 +36,7 @@ public class PostgresViolationResolver extends VendorViolationResolver {
             
             @Override
             public DatabaseConstraintViolation build(VariableAccessor variables) {
-                return violaton(NOT_NULL).column(variables.get(1)).build();
+                return builder(NOT_NULL).column(variables.get(1)).build();
             }
             
         });
@@ -47,7 +47,7 @@ public class PostgresViolationResolver extends VendorViolationResolver {
             
             @Override
             public DatabaseConstraintViolation build(VariableAccessor variables) {
-                return violaton(LENGTH_EXCEEDED)
+                return builder(LENGTH_EXCEEDED)
                         .expectedValueType(variables.get(1))
                         .maximumLength(variables.get(2))
                             .build();
@@ -63,7 +63,7 @@ public class PostgresViolationResolver extends VendorViolationResolver {
                     
                     @Override
                     public DatabaseConstraintViolation build(VariableAccessor variables) {
-                        return violaton(FOREIGN_KEY)
+                        return builder(FOREIGN_KEY)
                                 .table(variables.get(1))
                                 .constraint(variables.get(2))
                                 .column(variables.get(3))
@@ -80,7 +80,7 @@ public class PostgresViolationResolver extends VendorViolationResolver {
                     
                     @Override
                     public DatabaseConstraintViolation build(VariableAccessor variables) {
-                        return violaton(FOREIGN_KEY)
+                        return builder(FOREIGN_KEY)
                                 .table(variables.get(1))
                                 .constraint(variables.get(2))
                                 .referencingTable(variables.get(3))
@@ -99,7 +99,7 @@ public class PostgresViolationResolver extends VendorViolationResolver {
             
             @Override
             public DatabaseConstraintViolation build(VariableAccessor variables) {
-                return violaton(UNIQUE_KEY)
+                return builder(UNIQUE_KEY)
                         .constraint(variables.get(1))
                         .column(variables.get(2))
                         .value(variables.get(3))
@@ -114,7 +114,7 @@ public class PostgresViolationResolver extends VendorViolationResolver {
             
             @Override
             public DatabaseConstraintViolation build(VariableAccessor variables) {
-                return violaton(CHECK_FAILED)
+                return builder(CHECK_FAILED)
                         .constraint(variables.get(2))
                         .table(variables.get(1))
                             .build();
@@ -128,7 +128,7 @@ public class PostgresViolationResolver extends VendorViolationResolver {
             
             @Override
             public DatabaseConstraintViolation build(VariableAccessor variables) {
-                return violaton(INVALID_TYPE)
+                return builder(INVALID_TYPE)
                         .column(variables.get(1))
                         .expectedValueType(variables.get(2))
                         .valueType(variables.get(3))

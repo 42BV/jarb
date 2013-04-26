@@ -1,4 +1,4 @@
-package org.jarbframework.constraint.xml;
+package org.jarbframework.constraint;
 
 import org.jarbframework.constraint.metadata.BeanConstraintDescriptorFactoryBean;
 import org.jarbframework.constraint.metadata.database.HibernateJpaColumnMetadataRepositoryFactoryBean;

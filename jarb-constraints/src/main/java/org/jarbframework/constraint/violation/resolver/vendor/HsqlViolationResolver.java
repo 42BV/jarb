@@ -5,7 +5,7 @@ import static org.jarbframework.constraint.violation.DatabaseConstraintType.INVA
 import static org.jarbframework.constraint.violation.DatabaseConstraintType.LENGTH_EXCEEDED;
 import static org.jarbframework.constraint.violation.DatabaseConstraintType.NOT_NULL;
 import static org.jarbframework.constraint.violation.DatabaseConstraintType.UNIQUE_KEY;
-import static org.jarbframework.constraint.violation.DatabaseConstraintViolation.violaton;
+import static org.jarbframework.constraint.violation.DatabaseConstraintViolation.builder;
 
 import org.apache.commons.lang3.StringUtils;
 import org.jarbframework.constraint.violation.DatabaseConstraintViolation;
@@ -34,7 +34,7 @@ public class HsqlViolationResolver extends VendorViolationResolver {
             
             @Override
             public DatabaseConstraintViolation build(VariableAccessor variables) {
-                return violaton(NOT_NULL)
+                return builder(NOT_NULL)
                             .constraint(variables.get(1).toLowerCase())
                             .table(variables.get(2).toLowerCase())
                             .column(variables.get(3).toLowerCase())
@@ -49,7 +49,7 @@ public class HsqlViolationResolver extends VendorViolationResolver {
             
             @Override
             public DatabaseConstraintViolation build(VariableAccessor variables) {
-                return violaton(UNIQUE_KEY)
+                return builder(UNIQUE_KEY)
                             .constraint(variables.get(1).toLowerCase())
                             .table(variables.get(2).toLowerCase())
                                 .build();
@@ -63,7 +63,7 @@ public class HsqlViolationResolver extends VendorViolationResolver {
             
             @Override
             public DatabaseConstraintViolation build(VariableAccessor variables) {
-                return violaton(FOREIGN_KEY)
+                return builder(FOREIGN_KEY)
                         .constraint(variables.get(1).toLowerCase())
                         .table(variables.get(2).toLowerCase())
                             .build();
@@ -77,7 +77,7 @@ public class HsqlViolationResolver extends VendorViolationResolver {
             
             @Override
             public DatabaseConstraintViolation build(VariableAccessor variables) {
-                return violaton(LENGTH_EXCEEDED).valueType(variables.get(1).toLowerCase()).build();
+                return builder(LENGTH_EXCEEDED).valueType(variables.get(1).toLowerCase()).build();
             }
             
         });
@@ -88,7 +88,7 @@ public class HsqlViolationResolver extends VendorViolationResolver {
             
             @Override
             public DatabaseConstraintViolation build(VariableAccessor variables) {
-                return violaton(INVALID_TYPE).valueType(variables.get(1).toLowerCase()).build();
+                return builder(INVALID_TYPE).valueType(variables.get(1).toLowerCase()).build();
             }
             
         });

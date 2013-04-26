@@ -4,7 +4,7 @@ import static org.jarbframework.constraint.violation.DatabaseConstraintType.INVA
 import static org.jarbframework.constraint.violation.DatabaseConstraintType.LENGTH_EXCEEDED;
 import static org.jarbframework.constraint.violation.DatabaseConstraintType.NOT_NULL;
 import static org.jarbframework.constraint.violation.DatabaseConstraintType.UNIQUE_KEY;
-import static org.jarbframework.constraint.violation.DatabaseConstraintViolation.violaton;
+import static org.jarbframework.constraint.violation.DatabaseConstraintViolation.builder;
 
 import org.apache.commons.lang3.StringUtils;
 import org.jarbframework.constraint.violation.DatabaseConstraintViolation;
@@ -32,7 +32,7 @@ public class MysqlViolationResolver extends VendorViolationResolver {
             
             @Override
             public DatabaseConstraintViolation build(VariableAccessor variables) {
-                return violaton(NOT_NULL).column(variables.get(1)).build();
+                return builder(NOT_NULL).column(variables.get(1)).build();
             }
             
         });
@@ -43,7 +43,7 @@ public class MysqlViolationResolver extends VendorViolationResolver {
             
             @Override
             public DatabaseConstraintViolation build(VariableAccessor variables) {
-                return violaton(UNIQUE_KEY).value(variables.get(1)).constraint(variables.get(2)).build();
+                return builder(UNIQUE_KEY).value(variables.get(1)).constraint(variables.get(2)).build();
             }
             
         });
@@ -54,7 +54,7 @@ public class MysqlViolationResolver extends VendorViolationResolver {
             
             @Override
             public DatabaseConstraintViolation build(VariableAccessor variables) {
-                return violaton(LENGTH_EXCEEDED).column(variables.get(1)).build();
+                return builder(LENGTH_EXCEEDED).column(variables.get(1)).build();
             }
             
         });
@@ -65,7 +65,7 @@ public class MysqlViolationResolver extends VendorViolationResolver {
             
             @Override
             public DatabaseConstraintViolation build(VariableAccessor variables) {
-                return violaton(INVALID_TYPE)
+                return builder(INVALID_TYPE)
                         .expectedValueType(variables.get(1))
                         .value(variables.get(2))
                         .column(variables.get(3))

@@ -1,6 +1,6 @@
 package org.jarbframework.constraint.violation;
 
-import static org.jarbframework.constraint.violation.DatabaseConstraintViolation.violaton;
+import static org.jarbframework.constraint.violation.DatabaseConstraintViolation.builder;
 import static org.jarbframework.constraint.violation.DatabaseConstraintType.LENGTH_EXCEEDED;
 import static org.junit.Assert.assertEquals;
 
@@ -11,7 +11,7 @@ public class LengthExceededExceptionTest {
     private final DatabaseConstraintViolation violation;
 
     public LengthExceededExceptionTest() {
-        violation = violaton(LENGTH_EXCEEDED).build();
+        violation = builder(LENGTH_EXCEEDED).build();
     }
 
     @Test

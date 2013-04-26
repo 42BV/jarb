@@ -1,6 +1,6 @@
 package org.jarbframework.constraint.violation;
 
-import static org.jarbframework.constraint.violation.DatabaseConstraintViolation.violaton;
+import static org.jarbframework.constraint.violation.DatabaseConstraintViolation.builder;
 import static org.jarbframework.constraint.violation.DatabaseConstraintType.CHECK_FAILED;
 import static org.junit.Assert.assertEquals;
 
@@ -11,7 +11,7 @@ public class CheckFailedExceptionTest {
     private final DatabaseConstraintViolation violation;
 
     public CheckFailedExceptionTest() {
-        violation = violaton(CHECK_FAILED).constraint("ck_person_birth_before_now").build();
+        violation = builder(CHECK_FAILED).constraint("ck_person_birth_before_now").build();
     }
 
     @Test

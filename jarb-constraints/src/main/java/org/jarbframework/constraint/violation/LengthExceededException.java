@@ -1,7 +1,6 @@
 package org.jarbframework.constraint.violation;
 
 import static org.jarbframework.constraint.violation.DatabaseConstraintType.LENGTH_EXCEEDED;
-import static org.jarbframework.utils.Asserts.state;
 
 /**
  * Thrown whenever the expression value is longer than our column length.
@@ -10,8 +9,14 @@ import static org.jarbframework.utils.Asserts.state;
  * @since 27-05-2011
  */
 public class LengthExceededException extends DatabaseConstraintViolationException {
-    private static final long serialVersionUID = -5897315011236651753L;
 
+    /**
+     * Construct a new {@link LengthExceededException}.
+     */
+    public LengthExceededException() {
+        this(new DatabaseConstraintViolation(LENGTH_EXCEEDED));
+    }
+    
     /**
      * Construct a new {@link LengthExceededException}.
      * @param violation constraint violation that triggered this exception
@@ -46,6 +51,6 @@ public class LengthExceededException extends DatabaseConstraintViolationExceptio
      */
     public LengthExceededException(DatabaseConstraintViolation violation, String message, Throwable cause) {
         super(violation, message, cause);
-        state(violation.getConstraintType() == LENGTH_EXCEEDED, "Length exceeded exception can only occur for length exceeded violations.");
     }
+    
 }
