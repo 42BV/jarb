@@ -102,6 +102,14 @@
 			            <version>${hsqldb.version}</version>
 			        </dependency>
                 </dependencies>
+                <configuration>
+                    <systemProperties>
+                        <systemProperty>
+                            <name>spring.profiles.active</name>
+                            <value>test</value>
+                        </systemProperty>
+                    </systemProperties>
+                </configuration>
 			</plugin>
 		</plugins>
 	</build>
