@@ -23,7 +23,7 @@
 
     <!-- Create database -->
     <jdbc:embedded-database id="dataSource" type="HSQL"/>
-    <migrations:migrate data-source="dataSource" path="src/main/db/changelog.groovy"/>
+    <migrations:migrate data-source="dataSource" base="file:src/main/db" path="changelog.groovy"/>
 	
 	<!-- Insert content into our database -->
 	<bean class="org.jarbframework.populator.DatabaseUpdatingListener">

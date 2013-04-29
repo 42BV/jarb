@@ -1,6 +1,6 @@
 package org.jarbframework.migrations;
 
-import org.jarbframework.migrations.liquibase.LiquibaseMigrator;
+import org.jarbframework.migrations.liquibase.LiquibaseMigratorFactoryBean;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
@@ -47,7 +47,8 @@ public class MigrationsNamespaceHandler extends NamespaceHandlerSupport {
         }
 
         private BeanDefinition buildLiquibaseMigrator(Element element) {
-            BeanDefinitionBuilder liquibaseMigratorBuilder = BeanDefinitionBuilder.genericBeanDefinition(LiquibaseMigrator.class);
+            BeanDefinitionBuilder liquibaseMigratorBuilder = BeanDefinitionBuilder.genericBeanDefinition(LiquibaseMigratorFactoryBean.class);
+            liquibaseMigratorBuilder.addPropertyValue("basePath", element.getAttribute("base"));
             liquibaseMigratorBuilder.addPropertyValue("changeLogPath", element.getAttribute("path"));
             return liquibaseMigratorBuilder.getBeanDefinition();
         }

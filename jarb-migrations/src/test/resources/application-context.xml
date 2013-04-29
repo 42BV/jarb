@@ -14,6 +14,6 @@
 	    <property name="password" value=""/>
 	</bean>
 
-	<migrations:migrate data-source="dataSource" path="src/test/resources/changelog.groovy"/>
+	<migrations:migrate data-source="dataSource" path="classpath:changelog.groovy"/>
 
 </beans>
