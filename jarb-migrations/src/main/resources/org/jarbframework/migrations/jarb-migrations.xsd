@@ -31,10 +31,37 @@
                     </xsd:documentation>
                 </xsd:annotation>
             </xsd:attribute>
-            <xsd:attribute name="migrator" type="xsd:string" use="required">
+
+            <!-- Hard reference to the migrator -->            
+            <xsd:attribute name="migrator" type="xsd:string">
                 <xsd:annotation>
                     <xsd:documentation>
                         Reference to the migrator.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:attribute>
+            
+            <!-- Creation options for our mgirator -->
+            <xsd:attribute name="path" type="xsd:string">
+                <xsd:annotation>
+                    <xsd:documentation>
+                        Relative change log file path.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:attribute>
+            
+            <!-- Optional properties for the data source -->
+            <xsd:attribute name="username" type="xsd:string">
+                <xsd:annotation>
+                    <xsd:documentation>
+                        Username for migrations, using default when empty.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:attribute>
+            <xsd:attribute name="password" type="xsd:string">
+                <xsd:annotation>
+                    <xsd:documentation>
+                        Password for migrations, using default when empty.
                     </xsd:documentation>
                 </xsd:annotation>
             </xsd:attribute>

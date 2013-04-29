@@ -13,11 +13,7 @@
 	    <property name="username" value="sa"/>
 	    <property name="password" value=""/>
 	</bean>
-	
-	<bean id="migrator" class="org.jarbframework.migrations.liquibase.LiquibaseMigrator">
-        <constructor-arg value="src/test/resources"/>
-    </bean>
-	
-	<migrations:migrate data-source="dataSource" migrator="migrator"/>
+
+	<migrations:migrate data-source="dataSource" path="src/test/resources/changelog.groovy"/>
 
 </beans>

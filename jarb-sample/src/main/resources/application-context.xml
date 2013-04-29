@@ -23,12 +23,7 @@
 
     <!-- Create database -->
     <jdbc:embedded-database id="dataSource" type="HSQL"/>
-
-    <bean id="migrator" class="org.jarbframework.migrations.liquibase.LiquibaseMigrator">
-        <constructor-arg value="src/main/db"/>
-    </bean>
-    
-    <migrations:migrate data-source="dataSource" migrator="migrator"/>
+    <migrations:migrate data-source="dataSource" path="src/main/db/changelog.groovy"/>
 	
 	<!-- Insert content into our database -->
 	<bean class="org.jarbframework.populator.DatabaseUpdatingListener">
