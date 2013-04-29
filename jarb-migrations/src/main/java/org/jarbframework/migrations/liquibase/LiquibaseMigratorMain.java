@@ -91,9 +91,8 @@ public final class LiquibaseMigratorMain {
          * @return new DatabaseMigrator, capable of performing database migrations
          */
         private DatabaseMigrator createMigrator() {
-            LiquibaseMigrator migrator = new LiquibaseMigrator();
+            LiquibaseMigrator migrator = new LiquibaseMigrator(createResourceAccessor());
             migrator.setChangeLogPath(changeLogPath);
-            migrator.setResourceAccessor(createResourceAccessor());
             migrator.setOutputFilePath(sqlOutputPath);
             migrator.setDropFirst(dropFirst);
             return migrator;

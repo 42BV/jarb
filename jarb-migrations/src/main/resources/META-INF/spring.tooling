@@ -1,0 +1,4 @@
+# Tooling related information for the beans namespace
+http\://www.jarbframework.org/schema/constraints@name=JARB Migrations Namespace
+http\://www.jarbframework.org/schema/constraints@prefix=migrations
+http\://www.jarbframework.org/schema/constraints@icon=org/springframework/beans/factory/xml/spring-beans.gif

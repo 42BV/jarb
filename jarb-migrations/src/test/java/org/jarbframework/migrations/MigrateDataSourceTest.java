@@ -4,8 +4,6 @@ import static org.junit.Assert.assertEquals;
 
 import javax.sql.DataSource;
 
-import org.jarbframework.migrations.liquibase.LiquibaseMigrator;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -16,7 +14,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "classpath:application-context.xml")
-public class MigratingDataSourceTest {
+public class MigrateDataSourceTest {
 
     @Autowired
     private DataSource dataSource;
@@ -25,20 +23,7 @@ public class MigratingDataSourceTest {
 
     @Before
     public void migrateAndBuildTemplate() {
-        MigratingDataSource migratingDataSource = new MigratingDataSource();
-        migratingDataSource.setDelegate(dataSource);
-
-        LiquibaseMigrator liquibaseMigrator = new LiquibaseMigrator("src/test/resources");
-        liquibaseMigrator.setChangeLogPath("create-schema.groovy");
-        migratingDataSource.setMigrator(liquibaseMigrator);
-
-        jdbcTemplate = new JdbcTemplate(migratingDataSource);
-    }
-
-    @After
-    public void dropCreatedTables() {
-        jdbcTemplate.execute("DROP TABLE persons");
-        jdbcTemplate.execute("DROP TABLE databasechangelog");
+        jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
     /**
@@ -60,7 +45,10 @@ public class MigratingDataSourceTest {
     @Test
     public void testMigrateAndFeed() {
         jdbcTemplate.execute("INSERT INTO persons (id) values (1)");
-        assertEquals("henk", jdbcTemplate.queryForObject("SELECT name FROM persons WHERE id = 1", String.class));
+        assertEquals(
+                "henk",
+                jdbcTemplate.queryForObject("SELECT name FROM persons WHERE id = 1", String.class)
+            );
     }
 
 }

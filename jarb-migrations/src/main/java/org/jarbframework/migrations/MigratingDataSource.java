@@ -13,6 +13,7 @@ import java.sql.SQLException;
  * @since 28-04-2011
  */
 public class MigratingDataSource extends DataSourceDelegate {
+    
     private boolean migrated = false;
 
     /** Performs the actual database migration on a JDBC connection. **/
@@ -20,7 +21,8 @@ public class MigratingDataSource extends DataSourceDelegate {
 
     /** Migration username, whenever left empty we use the data source username. **/
     private String username;
-    /** Migration passowrd, only used whenever the username property is not blank. **/
+    
+    /** Migration password, only used whenever the username property is not blank. **/
     private String password;
 
     @Override

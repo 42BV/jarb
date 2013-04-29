@@ -13,6 +13,7 @@ import javax.sql.DataSource;
  * @since 28-04-2011
  */
 public class DataSourceDelegate implements DataSource {
+    
     private DataSource delegate;
 
     public void setDelegate(DataSource delegate) {

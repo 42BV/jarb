@@ -27,20 +27,23 @@ import org.slf4j.LoggerFactory;
  * @since 28-04-2011
  */
 public class LiquibaseMigrator implements DatabaseMigrator {
-    private final Logger logger = LoggerFactory.getLogger(LiquibaseMigrator.class);
+    
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
-    // Required liquibase information
+    private final ResourceAccessor resourceAccessor;
+    
     private String changeLogPath = "changelog.groovy";
-    private ResourceAccessor resourceAccessor;
 
-    // Optional migration details
     private boolean dropFirst = false;
+
     private Map<String, String> parameters;
+    
     private String defaultSchemaName;
+    
     private String contexts = "";
+    
     private int changesToApply = 0;
 
-    /** Configure this property whenever an output file should be created. **/
     private String outputFilePath;
 
     /**
@@ -72,7 +75,7 @@ public class LiquibaseMigrator implements DatabaseMigrator {
     @Override
     public final void migrate(Connection connection) {
         try {
-            final Liquibase liquibase = createLiquibase(connection);
+            final Liquibase liquibase = buildLiquibase(connection);
             if (dropFirst) {
                 liquibase.dropAll();
             }
@@ -82,10 +85,12 @@ public class LiquibaseMigrator implements DatabaseMigrator {
             migrateDatabase(liquibase);
         } catch (LiquibaseException e) {
             throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 
-    private Liquibase createLiquibase(Connection connection) throws LiquibaseException {
+    private Liquibase buildLiquibase(Connection connection) throws LiquibaseException {
         Liquibase liquibase = new Liquibase(changeLogPath, resourceAccessor, connectionToDatabase(connection));
         if (parameters != null) {
             for (Map.Entry<String, String> entry : parameters.entrySet()) {
@@ -133,53 +138,25 @@ public class LiquibaseMigrator implements DatabaseMigrator {
     /**
      * Convert the changes to SQL, and write them away.
      * @param liquibase provides migration functionality
+     * @throws LiquibaseException 
+     * @throws IOException 
      */
-    private void writeSqlOutput(Liquibase liquibase) {
-        Writer writer;
-        try {
-            writer = newSqlOutputWriter();
-        } catch (IOException e) {
-            logger.error("Could not construct a writer for our generated change-set SQL.", e);
-            return; // Continue running, SQL file generation is not critical
-        }
+    private void writeSqlOutput(Liquibase liquibase) throws LiquibaseException, IOException {
         logger.info("Writing the generated change-set SQL to '{}'...", outputFilePath);
+        Writer writer = new FileWriter(outputFilePath, true);
         try {
-            doWriteSqlOutput(liquibase, writer);
-        } catch (LiquibaseException e) {
-            logger.error("Could not write out the generated change-set SQL.", e);
-            return; // Continue running, SQL file generation is not critical
-        }
-    }
-
-    /**
-     * Construct a writer for our generated SQL files.
-     * @return new writer that can write SQL files
-     * @throws IOException whenever an IO based exception occurs
-     */
-    protected Writer newSqlOutputWriter() throws IOException {
-        return new FileWriter(outputFilePath, true);
-    }
-
-    /**
-     * Perform the actual writing of our generated SQL.
-     * @param liquibase used to convert our change sets into SQL
-     * @param writer writes the generated SQL into our output
-     * @throws LiquibaseException whenever liquibase encouters a critical problem
-     */
-    private void doWriteSqlOutput(Liquibase liquibase, Writer writer) throws LiquibaseException {
-        if (changesToApply > 0) {
-            liquibase.update(changesToApply, contexts, writer);
-        } else {
-            liquibase.update(contexts, writer);
+            if (changesToApply > 0) {
+                liquibase.update(changesToApply, contexts, writer);
+            } else {
+                liquibase.update(contexts, writer);
+            }
+        } finally {
+            writer.close();
         }
     }
 
     public void setChangeLogPath(String changeLogPath) {
         this.changeLogPath = changeLogPath;
-    }
-
-    public void setResourceAccessor(ResourceAccessor resourceAccessor) {
-        this.resourceAccessor = resourceAccessor;
     }
 
     public void setDropFirst(boolean dropFirst) {

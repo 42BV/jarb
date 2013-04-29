@@ -1,6 +1,6 @@
 package org.jarbframework.migrations.liquibase;
 
-import static junit.framework.Assert.assertTrue;
+import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
@@ -15,7 +15,7 @@ public class LiquibaseMigratorMainTest {
     @Test
     public void testDbMigration() {
         LiquibaseMigratorMain.main(new String[] {
-                "-changeLogPath", "src/test/resources/create-schema.groovy",
+                "-changeLogPath", "src/test/resources/changelog.groovy",
                 "-dbPassword", "",
                 "-dbUrl", "jdbc:hsqldb:mem:com.nidera.pcat",
                 "-dbUser", "sa",
@@ -31,7 +31,7 @@ public class LiquibaseMigratorMainTest {
     public void testDbMigrationRelativePath() {
         LiquibaseMigratorMain.main(new String[] {
                 "-changeLogBaseDir", "src/test/resources",
-                "-changeLogPath", "create-schema.groovy",
+                "-changeLogPath", "changelog.groovy",
                 "-dbPassword", "",
                 "-dbUrl", "jdbc:hsqldb:mem:com.nidera.pcat",
                 "-dbUser", "sa",

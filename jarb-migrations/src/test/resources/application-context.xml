@@ -1,14 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans
     xmlns="http://www.springframework.org/schema/beans"
+    xmlns:migrations="http://www.jarbframework.org/schema/migrations"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+    xsi:schemaLocation="
+        http://www.jarbframework.org/schema/migrations http://www.jarbframework.org/schema/migrations/jarb-migrations.xsd
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
     
-	<bean class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+	<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
 	    <property name="driverClassName" value="org.hsqldb.jdbcDriver"/>
 	    <property name="url" value="jdbc:hsqldb:mem:jarb"/>
 	    <property name="username" value="sa"/>
 	    <property name="password" value=""/>
 	</bean>
+	
+	<bean id="migrator" class="org.jarbframework.migrations.liquibase.LiquibaseMigrator">
+        <constructor-arg value="src/test/resources"/>
+    </bean>
+	
+	<migrations:migrate data-source="dataSource" migrator="migrator"/>
 
 </beans>

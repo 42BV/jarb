@@ -11,19 +11,19 @@ import java.sql.SQLException;
 import javax.sql.DataSource;
 
 import org.easymock.EasyMock;
-import org.jarbframework.migrations.DataSourceDelegate;
 import org.junit.Before;
 import org.junit.Test;
 
 /**
- * Simple test that ensures all method calls are
- * provided to our delegate data source.
+ * Simple test that ensures all method calls are delegated to our underlying data source.
  * 
  * @author Jeroen van Schagen
  * @since 02-05-2011
  */
 public class DataSourceDelegateTest {
+    
     private DataSource dataSourceMock;
+    
     private DataSourceDelegate delegatingDataSource;
 
     @Before
