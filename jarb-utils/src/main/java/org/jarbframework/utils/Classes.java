@@ -43,7 +43,7 @@ public class Classes {
         componentProvider.addIncludeFilter(filter);
         Set<BeanDefinition> beanDefinitions = componentProvider.findCandidateComponents(basePackage);
         Set<Class<?>> beanClasses = new HashSet<Class<?>>(beanDefinitions.size());
-        for(BeanDefinition beanDefinition : beanDefinitions) {
+        for (BeanDefinition beanDefinition : beanDefinitions) {
             Class<?> beanClass = forName(beanDefinition.getBeanClassName());
             beanClasses.add(beanClass);
         }

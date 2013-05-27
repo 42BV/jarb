@@ -11,22 +11,25 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.event.ContextClosedEvent;
 import org.springframework.context.event.ContextRefreshedEvent;
 
-public class DatabaseUpdatingListenerTest {
+public class DatabasePopulateListenerTest {
 
-    private DatabaseUpdatingListener listener;
+    private DatabasePopulateListener listener;
 
-    private DatabaseUpdater initializer;
-    private DatabaseUpdater destroyer;
+    private DatabasePopulator initializer;
+    
+    private DatabasePopulator destroyer;
 
     private ApplicationContext context;
 
     @Before
     public void setUp() {
-    	initializer = mock(DatabaseUpdater.class);
-    	destroyer = mock(DatabaseUpdater.class);
+    	initializer = mock(DatabasePopulator.class);
+    	destroyer = mock(DatabasePopulator.class);
     	
-        listener = new DatabaseUpdatingListener(initializer, destroyer);
-
+        listener = new DatabasePopulateListener();
+        listener.setInitializer(initializer);
+        listener.setDestroyer(destroyer);
+        
         context = mock(ApplicationContext.class);
     }
 
@@ -34,7 +37,7 @@ public class DatabaseUpdatingListenerTest {
     public void testInitialize() {
         // Upon the first context refreshed event the update is executed
         listener.onApplicationEvent(new ContextRefreshedEvent(context));
-        verify(initializer, times(1)).update();
+        verify(initializer, times(1)).populate();
 
         // Other refresh events are ignored
         listener.onApplicationEvent(new ContextRefreshedEvent(context));
@@ -44,24 +47,13 @@ public class DatabaseUpdatingListenerTest {
     @Test
     public void testDestroy() {
         listener.onApplicationEvent(new ContextClosedEvent(context));
-        verify(destroyer, times(1)).update();
+        verify(destroyer, times(1)).populate();
     }
 
     @Test
     public void testSkipWhenNoUpdater() {
-        listener = new DatabaseUpdatingListener(initializer);
+        listener.setDestroyer(null);
         listener.onApplicationEvent(new ContextClosedEvent(context));
     }
-    
-    @Test
-    public void testInitializeAndRevert() {
-    	RevertableDatabaseUpdater updater = mock(RevertableDatabaseUpdater.class);
-    	DatabaseUpdatingListener listener = DatabaseUpdatingListener.initializeAndRevert(updater);
-        
-    	listener.onApplicationEvent(new ContextRefreshedEvent(context));
-        verify(updater, times(1)).update();
-        
-        listener.onApplicationEvent(new ContextClosedEvent(context));
-        verify(updater, times(1)).revert();
-    }
+
 }

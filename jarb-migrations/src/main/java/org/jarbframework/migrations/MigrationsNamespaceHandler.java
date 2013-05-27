@@ -24,12 +24,12 @@ public class MigrationsNamespaceHandler extends NamespaceHandlerSupport {
             BeanDefinitionRegistry beanRegistry = parserContext.getRegistry();
             
             // Overwrite our existing data source definition with the migrating data source
-            BeanDefinition migratingDataSource = buildMigratingDataSource(element, dataSourceId, beanRegistry);
+            BeanDefinition migratingDataSource = createMigratingDataSource(element, dataSourceId, beanRegistry);
             beanRegistry.registerBeanDefinition(dataSourceId, migratingDataSource);
             return null;
         }
 
-        private BeanDefinition buildMigratingDataSource(Element element, String dataSourceId, BeanDefinitionRegistry beanRegistry) {
+        private BeanDefinition createMigratingDataSource(Element element, String dataSourceId, BeanDefinitionRegistry beanRegistry) {
             BeanDefinitionBuilder migratingDataSourceBuilder = BeanDefinitionBuilder.genericBeanDefinition(MigratingDataSource.class);
             migratingDataSourceBuilder.addPropertyValue("delegate", beanRegistry.getBeanDefinition(dataSourceId));
             migratingDataSourceBuilder.addPropertyValue("username", element.getAttribute("username"));
@@ -38,15 +38,15 @@ public class MigrationsNamespaceHandler extends NamespaceHandlerSupport {
             return migratingDataSourceBuilder.getBeanDefinition();
         }
 
-        private void addMigratorProperty(Element element, BeanDefinitionBuilder dataSourceBuilder) {
+        private void addMigratorProperty(Element element, BeanDefinitionBuilder migratingDataSourceBuilder) {
             if (element.hasAttribute("migrator")) {
-                dataSourceBuilder.addPropertyReference("migrator", element.getAttribute("migrator"));
+                migratingDataSourceBuilder.addPropertyReference("migrator", element.getAttribute("migrator"));
             } else {
-                dataSourceBuilder.addPropertyValue("migrator", buildLiquibaseMigrator(element));
+                migratingDataSourceBuilder.addPropertyValue("migrator", createLiquibaseMigrator(element));
             }
         }
 
-        private BeanDefinition buildLiquibaseMigrator(Element element) {
+        private BeanDefinition createLiquibaseMigrator(Element element) {
             BeanDefinitionBuilder liquibaseMigratorBuilder = BeanDefinitionBuilder.genericBeanDefinition(LiquibaseMigratorFactoryBean.class);
             liquibaseMigratorBuilder.addPropertyValue("basePath", element.getAttribute("base"));
             liquibaseMigratorBuilder.addPropertyValue("changeLogPath", element.getAttribute("path"));

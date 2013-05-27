@@ -1,15 +1,15 @@
 package org.jarbframework.sample;
 
-import org.jarbframework.populator.DatabaseUpdater;
+import org.jarbframework.populator.DatabasePopulator;
 import org.springframework.beans.factory.annotation.Autowired;
 
-public class PostUpdater implements DatabaseUpdater {
+public class PostPopulator implements DatabasePopulator {
 
     @Autowired
     private PostRepository postRepository;
 
     @Override
-    public void update() {
+    public void populate() {
         Post post = new Post();
         post.setAuthor("jeroen@42.nl");
         post.setTitle("inserted via java");
