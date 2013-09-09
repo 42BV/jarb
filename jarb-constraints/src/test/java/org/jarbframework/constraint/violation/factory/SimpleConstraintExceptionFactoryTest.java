@@ -23,17 +23,17 @@ import org.junit.Test;
 
 public class SimpleConstraintExceptionFactoryTest {
     
-    private TypeBasedConstraintExceptionFactory factory;
+    private SimpleConstraintExceptionFactory exceptionFactory;
 
     @Before
     public void setUp() {
-        factory = new TypeBasedConstraintExceptionFactory();
+        exceptionFactory = new SimpleConstraintExceptionFactory();
     }
 
     @Test
     public void testCheckFailed() {
         DatabaseConstraintViolation violation = builder(CHECK_FAILED).constraint("ck_name_cannot_be_henk").build();
-        DatabaseConstraintViolationException exception = factory.buildException(violation, null);
+        DatabaseConstraintViolationException exception = exceptionFactory.buildException(violation, null);
         assertTrue(exception instanceof CheckFailedException);
         assertEquals("Check 'ck_name_cannot_be_henk' failed.", exception.getMessage());
         assertEquals(violation, exception.getViolation());
@@ -42,7 +42,7 @@ public class SimpleConstraintExceptionFactoryTest {
     @Test
     public void testUniqueKeyViolated() {
         DatabaseConstraintViolation violation = builder(UNIQUE_KEY).constraint("uk_persons_name").build();
-        DatabaseConstraintViolationException exception = factory.buildException(violation, null);
+        DatabaseConstraintViolationException exception = exceptionFactory.buildException(violation, null);
         assertTrue(exception instanceof UniqueKeyViolationException);
         assertEquals("Unique key 'uk_persons_name' was violated.", exception.getMessage());
         assertEquals(violation, exception.getViolation());
@@ -51,7 +51,7 @@ public class SimpleConstraintExceptionFactoryTest {
     @Test
     public void testForeignKeyViolated() {
         DatabaseConstraintViolation violation = builder(FOREIGN_KEY).constraint("fk_persons_parent").build();
-        DatabaseConstraintViolationException exception = factory.buildException(violation, null);
+        DatabaseConstraintViolationException exception = exceptionFactory.buildException(violation, null);
         assertTrue(exception instanceof ForeignKeyViolationException);
         assertEquals("Foreign key 'fk_persons_parent' was violated.", exception.getMessage());
         assertEquals(violation, exception.getViolation());
@@ -60,7 +60,7 @@ public class SimpleConstraintExceptionFactoryTest {
     @Test
     public void testNotNullViolated() {
         DatabaseConstraintViolation violation = builder(NOT_NULL).column("name").build();
-        DatabaseConstraintViolationException exception = factory.buildException(violation, null);
+        DatabaseConstraintViolationException exception = exceptionFactory.buildException(violation, null);
         assertTrue(exception instanceof NotNullViolationException);
         assertEquals("Column 'name' cannot be null.", exception.getMessage());
         assertEquals(violation, exception.getViolation());
@@ -69,7 +69,7 @@ public class SimpleConstraintExceptionFactoryTest {
     @Test
     public void testInvalidType() {
         DatabaseConstraintViolation violation = builder(INVALID_TYPE).build();
-        DatabaseConstraintViolationException exception = factory.buildException(violation, null);
+        DatabaseConstraintViolationException exception = exceptionFactory.buildException(violation, null);
         assertTrue(exception instanceof InvalidTypeException);
         assertEquals("Column is of an invalid type.", exception.getMessage());
         assertEquals(violation, exception.getViolation());
@@ -78,7 +78,7 @@ public class SimpleConstraintExceptionFactoryTest {
     @Test
     public void testLengthExceeded() {
         DatabaseConstraintViolation violation = builder(LENGTH_EXCEEDED).build();
-        DatabaseConstraintViolationException exception = factory.buildException(violation, null);
+        DatabaseConstraintViolationException exception = exceptionFactory.buildException(violation, null);
         assertTrue(exception instanceof LengthExceededException);
         assertEquals("Column maximum length was exceeded.", exception.getMessage());
         assertEquals(violation, exception.getViolation());

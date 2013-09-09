@@ -3,7 +3,7 @@ package org.jarbframework.constraint.violation;
 import static org.jarbframework.utils.Asserts.notNull;
 
 import org.jarbframework.constraint.violation.factory.DatabaseConstraintExceptionFactory;
-import org.jarbframework.constraint.violation.factory.TypeBasedConstraintExceptionFactory;
+import org.jarbframework.constraint.violation.factory.SimpleConstraintExceptionFactory;
 import org.jarbframework.constraint.violation.resolver.DatabaseConstraintViolationResolver;
 
 /**
@@ -27,16 +27,16 @@ public class DatabaseConstraintExceptionTranslator {
      * @param resolver resolves the constraint violation from an exception
      */
     public DatabaseConstraintExceptionTranslator(DatabaseConstraintViolationResolver resolver) {
-        this(resolver, new TypeBasedConstraintExceptionFactory());
+        this(resolver, new SimpleConstraintExceptionFactory());
     }
 
     /**
      * Construct a new {@link DatabaseConstraintExceptionTranslator}.
-     * @param resolver resolves the constraint violation from an exception
+     * @param violationResolver resolves the constraint violation from an exception
      * @param exceptionFactory creates an exception for some constraint violation
      */
-    public DatabaseConstraintExceptionTranslator(DatabaseConstraintViolationResolver resolver, DatabaseConstraintExceptionFactory exceptionFactory) {
-        this.violationResolver = notNull(resolver, "Violation resolver cannot be null");
+    public DatabaseConstraintExceptionTranslator(DatabaseConstraintViolationResolver violationResolver, DatabaseConstraintExceptionFactory exceptionFactory) {
+        this.violationResolver = notNull(violationResolver, "Violation resolver cannot be null");
         this.exceptionFactory = notNull(exceptionFactory, "Exception factory cannot be null");
     }
 

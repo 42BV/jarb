@@ -2,7 +2,6 @@ package org.jarbframework.constraint;
 
 import javax.sql.DataSource;
 
-import org.apache.commons.lang3.StringUtils;
 import org.jarbframework.constraint.violation.DatabaseConstraintExceptionTranslatingBeanPostProcessor;
 import org.jarbframework.constraint.violation.DatabaseConstraintExceptionTranslator;
 import org.jarbframework.constraint.violation.factory.ConfigurableConstraintExceptionFactory;
@@ -38,8 +37,11 @@ public class TranslateExceptionsBeanDefinitionParser extends AbstractBeanDefinit
 
     private BeanDefinition parseTranslator(Element element) {
         BeanDefinitionBuilder translatorBuilder = BeanDefinitionBuilder.genericBeanDefinition(TranslatorFactoryBean.class);
-        translatorBuilder.addPropertyReference("dataSource", element.getAttribute("data-source"));
         translatorBuilder.addPropertyValue("basePackage", element.getAttribute("base-package"));
+        translatorBuilder.addPropertyReference("dataSource", element.getAttribute("data-source"));
+        if (element.hasAttribute("default-factory")) {
+            translatorBuilder.addPropertyReference("defaultExceptionFactory", element.getAttribute("default-factory"));
+        }
         return translatorBuilder.getBeanDefinition();
     }
 
@@ -57,37 +59,35 @@ public class TranslateExceptionsBeanDefinitionParser extends AbstractBeanDefinit
     }
     
     public static final class TranslatorFactoryBean extends SingletonFactoryBean<DatabaseConstraintExceptionTranslator> {
-        
+    	
+        private String basePackage;
+    	
         private DataSource dataSource;
 
-        private String basePackage;
-        
+    	private DatabaseConstraintExceptionFactory defaultExceptionFactory;
+
         @Override
         protected DatabaseConstraintExceptionTranslator createObject() throws Exception {
-            DatabaseConstraintViolationResolver violationResolver = createViolationResolver();
+            DatabaseConstraintViolationResolver violationResolver = DatabaseConstraintViolationResolverFactory.createResolver(basePackage, dataSource);
             DatabaseConstraintExceptionFactory exceptionFactory = createExceptionFactory();
             return new DatabaseConstraintExceptionTranslator(violationResolver, exceptionFactory);
         }
-        
-        private DatabaseConstraintViolationResolver createViolationResolver() {
-            return new DatabaseConstraintViolationResolverFactory().createResolver(basePackage, dataSource);
-        }
-        
-        private DatabaseConstraintExceptionFactory createExceptionFactory() {
-            ConfigurableConstraintExceptionFactory exceptionFactory = new ConfigurableConstraintExceptionFactory();
-            if (StringUtils.isNotBlank(basePackage)) {
-                exceptionFactory.registerAll(basePackage);
-            }
-            return exceptionFactory;
-        }
 
-        public void setDataSource(DataSource dataSource) {
-            this.dataSource = dataSource;
+        private DatabaseConstraintExceptionFactory createExceptionFactory() {
+            return new ConfigurableConstraintExceptionFactory(defaultExceptionFactory).registerAll(basePackage);
         }
         
         public void setBasePackage(String basePackage) {
             this.basePackage = basePackage;
         }
+        
+        public void setDataSource(DataSource dataSource) {
+            this.dataSource = dataSource;
+        }
+        
+        public void setDefaultExceptionFactory(DatabaseConstraintExceptionFactory defaultExceptionFactory) {
+			this.defaultExceptionFactory = defaultExceptionFactory;
+		}
                 
     }
 

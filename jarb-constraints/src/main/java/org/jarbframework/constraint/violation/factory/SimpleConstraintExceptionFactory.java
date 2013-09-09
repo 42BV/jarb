@@ -1,7 +1,6 @@
 package org.jarbframework.constraint.violation.factory;
 
 import org.jarbframework.constraint.violation.CheckFailedException;
-import org.jarbframework.constraint.violation.DatabaseConstraintType;
 import org.jarbframework.constraint.violation.DatabaseConstraintViolation;
 import org.jarbframework.constraint.violation.DatabaseConstraintViolationException;
 import org.jarbframework.constraint.violation.ForeignKeyViolationException;
@@ -16,16 +15,15 @@ import org.jarbframework.constraint.violation.UniqueKeyViolationException;
  * @author Jeroen van Schagen
  * @since 12-05-2011
  */
-public class TypeBasedConstraintExceptionFactory implements DatabaseConstraintExceptionFactory {
+public class SimpleConstraintExceptionFactory implements DatabaseConstraintExceptionFactory {
 
     @Override
     public DatabaseConstraintViolationException buildException(DatabaseConstraintViolation violation, Throwable cause) {
-        DatabaseConstraintType constraintType = violation.getConstraintType();
-        if (constraintType == null) {
+        if (violation.getConstraintType() == null) {
             return new DatabaseConstraintViolationException(violation, cause);
         }
         
-        switch (constraintType) {
+        switch (violation.getConstraintType()) {
             case CHECK_FAILED:      return new CheckFailedException(violation, cause);
             case FOREIGN_KEY:       return new ForeignKeyViolationException(violation, cause);
             case INVALID_TYPE:      return new InvalidTypeException(violation, cause);

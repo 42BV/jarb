@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.lang3.StringUtils;
 import org.jarbframework.constraint.violation.DatabaseConstraintViolation;
 import org.jarbframework.constraint.violation.factory.mapping.NamedConstraint;
 import org.jarbframework.constraint.violation.factory.mapping.NameMatchingStrategy;
@@ -32,11 +33,15 @@ public class ConfigurableConstraintExceptionFactory implements DatabaseConstrain
     private final DatabaseConstraintExceptionFactory defaultExceptionFactory;
 
     public ConfigurableConstraintExceptionFactory() {
-        this(new TypeBasedConstraintExceptionFactory());
+        this(null);
     }
 
     public ConfigurableConstraintExceptionFactory(DatabaseConstraintExceptionFactory defaultExceptionFactory) {
-        this.defaultExceptionFactory = Preconditions.checkNotNull(defaultExceptionFactory, "Default violation exception factory cannot be null.");
+    	if (defaultExceptionFactory != null) {
+    		this.defaultExceptionFactory = defaultExceptionFactory;
+    	} else {
+    		this.defaultExceptionFactory = new SimpleConstraintExceptionFactory();
+    	}
     }
 
     @Override
@@ -102,10 +107,12 @@ public class ConfigurableConstraintExceptionFactory implements DatabaseConstrain
      * @return this factory instance, for chaining
      */
     public ConfigurableConstraintExceptionFactory registerAll(String basePackage) {
-        Set<Class<?>> annotatedClasses = Classes.getAllWithAnnotation(basePackage, NamedConstraint.class);
-        for(Class<?> annotatedClass : annotatedClasses) {
-            NamedConstraint annotation = AnnotationUtils.findAnnotation(annotatedClass, NamedConstraint.class);
-            register(annotation.value(), annotation.strategy(), annotatedClass);
+        if (StringUtils.isNotBlank(basePackage)) {
+	        Set<Class<?>> annotatedClasses = Classes.getAllWithAnnotation(basePackage, NamedConstraint.class);
+	        for(Class<?> annotatedClass : annotatedClasses) {
+	            NamedConstraint annotation = AnnotationUtils.findAnnotation(annotatedClass, NamedConstraint.class);
+	            register(annotation.value(), annotation.strategy(), annotatedClass);
+	        }
         }
         return this;
     }

@@ -9,7 +9,8 @@
     
     <import resource="classpath:application-context.xml"/>
 
-    <constraints:translate-exceptions data-source="dataSource" base-package="org.jarbframework.constraint.violation.domain"/>
+	<bean id="defaultExceptionFactory" class="org.jarbframework.constraint.violation.factory.SimpleConstraintExceptionFactory"/>
+    <constraints:translate-exceptions default-factory="defaultExceptionFactory" data-source="dataSource" base-package="org.jarbframework.constraint.violation.domain"/>
 
     <!-- Repository used for testing -->
     <bean class="org.jarbframework.constraint.violation.domain.JpaCarRepository"/>
