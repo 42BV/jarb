@@ -1,7 +1,7 @@
 package org.jarbframework.constraint.violation.factory.mapping;
 
 /**
- * Different strategies for matching a constraint name.
+ * Different strategies for matching a name.
  * @author Jeroen van Schagen
  */
 public enum NameMatchingStrategy {

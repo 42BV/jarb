@@ -7,7 +7,7 @@ import java.util.Set;
 import org.jarbframework.constraint.violation.DatabaseConstraintViolation;
 import org.jarbframework.constraint.violation.factory.mapping.NamedConstraint;
 import org.jarbframework.constraint.violation.factory.mapping.NameMatchingStrategy;
-import org.jarbframework.constraint.violation.factory.mapping.NamePredicate;
+import org.jarbframework.constraint.violation.factory.mapping.NameMatchingPredicate;
 import org.jarbframework.utils.Classes;
 import org.springframework.core.annotation.AnnotationUtils;
 
@@ -26,23 +26,23 @@ import com.google.common.base.Predicate;
 public class ConfigurableConstraintExceptionFactory implements DatabaseConstraintExceptionFactory {
     
     /** Registered custom exception factories. **/
-    private final List<CustomFactoryMapping> customFactoryMappings = new ArrayList<CustomFactoryMapping>();
+    private final List<ExceptionFactoryMapping> exceptionFactoryMappings = new ArrayList<ExceptionFactoryMapping>();
     
     /** Factory used whenever no custom factory could be determined. **/
-    private final DatabaseConstraintExceptionFactory defaultFactory;
+    private final DatabaseConstraintExceptionFactory defaultExceptionFactory;
 
     public ConfigurableConstraintExceptionFactory() {
         this(new TypeBasedConstraintExceptionFactory());
     }
 
-    public ConfigurableConstraintExceptionFactory(DatabaseConstraintExceptionFactory defaultFactory) {
-        this.defaultFactory = Preconditions.checkNotNull(defaultFactory, "Default violation exception factory cannot be null.");
+    public ConfigurableConstraintExceptionFactory(DatabaseConstraintExceptionFactory defaultExceptionFactory) {
+        this.defaultExceptionFactory = Preconditions.checkNotNull(defaultExceptionFactory, "Default violation exception factory cannot be null.");
     }
 
     @Override
     public Throwable buildException(DatabaseConstraintViolation violation, Throwable cause) {
-        Preconditions.checkNotNull(violation, "Cannot create exception for a null violation.");
-        return findFactoryFor(violation).buildException(violation, cause);
+        Preconditions.checkNotNull(violation, "Cannot create exception for a null database constraint violation.");
+        return getFirstSupportedFactory(violation).buildException(violation, cause);
     }
 
     /**
@@ -51,15 +51,15 @@ public class ConfigurableConstraintExceptionFactory implements DatabaseConstrain
      * @param violation reference to our constraint violation
      * @return factory capable of building a violation exception for our constraint
      */
-    private DatabaseConstraintExceptionFactory findFactoryFor(DatabaseConstraintViolation violation) {
-        DatabaseConstraintExceptionFactory resultFactory = defaultFactory;
-        for (CustomFactoryMapping customFactoryMapping : customFactoryMappings) {
-            if (customFactoryMapping.isSupported(violation)) {
-                resultFactory = customFactoryMapping.getExceptionFactory();
+    private DatabaseConstraintExceptionFactory getFirstSupportedFactory(DatabaseConstraintViolation violation) {
+        DatabaseConstraintExceptionFactory supportedExceptionFactory = defaultExceptionFactory;
+        for (ExceptionFactoryMapping exceptionFactoryMapping : exceptionFactoryMappings) {
+            if (exceptionFactoryMapping.isSupported(violation)) {
+                supportedExceptionFactory = exceptionFactoryMapping.getExceptionFactory();
                 break;
             }
         }
-        return resultFactory;
+        return supportedExceptionFactory;
     }
 
     /**
@@ -70,8 +70,7 @@ public class ConfigurableConstraintExceptionFactory implements DatabaseConstrain
      * @return this factory instance, for chaining
      */
     public ConfigurableConstraintExceptionFactory register(String constraintName, NameMatchingStrategy matchingStrategy, Class<?> exceptionClass) {
-        ReflectionConstraintExceptionFactory exceptionFactory = new ReflectionConstraintExceptionFactory(exceptionClass);
-        return register(constraintName, matchingStrategy, exceptionFactory);
+        return register(constraintName, matchingStrategy, new ReflectionConstraintExceptionFactory(exceptionClass));
     }
     
     /**
@@ -82,8 +81,7 @@ public class ConfigurableConstraintExceptionFactory implements DatabaseConstrain
      * @return this factory instance, for chaining
      */
     public ConfigurableConstraintExceptionFactory register(String constraintName, NameMatchingStrategy matchingStrategy, DatabaseConstraintExceptionFactory exceptionFactory) {
-        NamePredicate violationPredicate = new NamePredicate(constraintName, matchingStrategy);
-        return register(violationPredicate, exceptionFactory);
+        return register(new NameMatchingPredicate(constraintName, matchingStrategy), exceptionFactory);
     }
 
     /**
@@ -93,13 +91,12 @@ public class ConfigurableConstraintExceptionFactory implements DatabaseConstrain
      * @return this factory instance, for chaining
      */
     public ConfigurableConstraintExceptionFactory register(Predicate<DatabaseConstraintViolation> violationPredicate, DatabaseConstraintExceptionFactory exceptionFactory) {
-        CustomFactoryMapping customFactoryMapping = new CustomFactoryMapping(violationPredicate, exceptionFactory);
-        customFactoryMappings.add(customFactoryMapping);
+        exceptionFactoryMappings.add(new ExceptionFactoryMapping(violationPredicate, exceptionFactory));
         return this;
     }
 
     /**
-     * Register all {@code @DatabaseConstraint} annotated exception (factories) inside
+     * Register all {@code NamedConstraint} annotated exception (factories) inside
      * the specified base package. Use this method to quickly register all exceptions.
      * @param basePackage the base package to search in
      * @return this factory instance, for chaining
@@ -110,17 +107,16 @@ public class ConfigurableConstraintExceptionFactory implements DatabaseConstrain
             NamedConstraint annotation = AnnotationUtils.findAnnotation(annotatedClass, NamedConstraint.class);
             register(annotation.value(), annotation.strategy(), annotatedClass);
         }
-        
         return this;
     }
     
-    private static class CustomFactoryMapping {
+    private static class ExceptionFactoryMapping {
         
         private final Predicate<DatabaseConstraintViolation> violationPredicate;
         
         private final DatabaseConstraintExceptionFactory exceptionFactory;
 
-        public CustomFactoryMapping(Predicate<DatabaseConstraintViolation> violationPredicate, DatabaseConstraintExceptionFactory exceptionFactory) {
+        public ExceptionFactoryMapping(Predicate<DatabaseConstraintViolation> violationPredicate, DatabaseConstraintExceptionFactory exceptionFactory) {
             this.violationPredicate = Preconditions.checkNotNull(violationPredicate, "Violation predicate cannot be null.");
             this.exceptionFactory = Preconditions.checkNotNull(exceptionFactory, "Exception factory cannot be null.");
         }

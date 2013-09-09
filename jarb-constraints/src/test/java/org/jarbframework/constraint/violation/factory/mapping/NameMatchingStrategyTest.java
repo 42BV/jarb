@@ -43,5 +43,5 @@ public class NameMatchingStrategyTest {
         assertTrue(NameMatchingStrategy.REGEX.matches("\\w+_persons_\\w+", "uk_persons_name"));
         assertFalse(NameMatchingStrategy.REGEX.matches("\\w+_persons_\\w+", "uk_cars_license"));
     }
-    
+
 }
