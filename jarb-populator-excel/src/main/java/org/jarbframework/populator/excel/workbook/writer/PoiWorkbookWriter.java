@@ -2,23 +2,19 @@ package org.jarbframework.populator.excel.workbook.writer;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Date;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.ObjectUtils;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.CreationHelper;
-import org.jarbframework.populator.excel.workbook.BooleanValue;
 import org.jarbframework.populator.excel.workbook.Cell;
-import org.jarbframework.populator.excel.workbook.CellValue;
-import org.jarbframework.populator.excel.workbook.DateValue;
-import org.jarbframework.populator.excel.workbook.FormulaValue;
-import org.jarbframework.populator.excel.workbook.NumericValue;
 import org.jarbframework.populator.excel.workbook.Row;
 import org.jarbframework.populator.excel.workbook.Sheet;
-import org.jarbframework.populator.excel.workbook.StringValue;
 import org.jarbframework.populator.excel.workbook.Workbook;
 
 /**
@@ -67,18 +63,18 @@ public class PoiWorkbookWriter implements WorkbookWriter {
 
     protected void createAndAddCell(Cell cell, HSSFRow poiRow, int colNo) {
         HSSFCell poiCell = poiRow.createCell(colNo);
-        final CellValue cellValue = cell.getCellValue();
-        if (cellValue instanceof BooleanValue) {
-            poiCell.setCellValue(((BooleanValue) cellValue).getValue());
-        } else if (cellValue instanceof DateValue) {
-            poiCell.setCellValue(((DateValue) cellValue).getValue());
-            poiCell.setCellStyle(getDateFormatStyle(poiCell));
-        } else if (cellValue instanceof NumericValue) {
-            poiCell.setCellValue(((NumericValue) cellValue).getValue());
-        } else if (cellValue instanceof FormulaValue) {
-            poiCell.setCellFormula(((FormulaValue) cellValue).getFormula());
-        } else if (cellValue instanceof StringValue) {
-            poiCell.setCellValue(((StringValue) cellValue).getValue());
+        final Object cellValue = cell.getValue();
+        if (cellValue != null) {
+        	if (cellValue instanceof Boolean) {
+                poiCell.setCellValue(((Boolean) cellValue).booleanValue());
+            } else if (cellValue instanceof Date) {
+                poiCell.setCellValue((Date) cellValue);
+                poiCell.setCellStyle(getDateFormatStyle(poiCell));
+            } else if (cellValue instanceof Number) {
+                poiCell.setCellValue(((Number) cellValue).doubleValue());
+            } else {
+                poiCell.setCellValue(ObjectUtils.toString(cellValue, ""));
+            }
         }
     }
 

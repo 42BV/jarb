@@ -60,13 +60,13 @@ public class Row implements Iterable<Cell> {
         return sheet.getValueAt(rowNo, columnName);
     }
 
-    public Row setCellValueAt(int colNo, CellValue cellValue) {
-        getCellAt(colNo).setCellValue(cellValue);
+    public Row setCellValueAt(int colNo, Object cellValue) {
+        getCellAt(colNo).setValue(cellValue);
         return this;
     }
 
-    public Row setCellValueAt(String columnName, CellValue cellValue) {
-        getCellAt(columnName).setCellValue(cellValue);
+    public Row setCellValueAt(String columnName, Object cellValue) {
+        getCellAt(columnName).setValue(cellValue);
         return this;
     }
 

@@ -9,7 +9,6 @@ import org.jarbframework.populator.excel.metamodel.PropertyDefinition;
 import org.jarbframework.populator.excel.metamodel.PropertyPath;
 import org.jarbframework.populator.excel.workbook.Row;
 import org.jarbframework.populator.excel.workbook.Sheet;
-import org.jarbframework.populator.excel.workbook.StringValue;
 import org.jarbframework.populator.excel.workbook.Workbook;
 import org.jarbframework.utils.bean.ModifiableBean;
 
@@ -20,10 +19,13 @@ import org.jarbframework.utils.bean.ModifiableBean;
  * @since 12-05-2011
  */
 public class DefaultEntityExporter implements EntityExporter {
+	
     /** Builds the excel template file. **/
     private ExcelTemplateBuilder excelTemplateBuilder = new ExcelTemplateBuilder();
+    
     /** Resolves the row identifier of an entity. **/
     private EntityRowIdResolver entityRowIdResolver = new EntityRowIdResolver();
+    
     /** Generates cell values for any type of property value. **/
     private CellValueGenerator cellValueGenerator;
 
@@ -100,7 +102,7 @@ public class DefaultEntityExporter implements EntityExporter {
         // Include the discriminator value, whenever relevant
         if (entityDefinition.hasDiscriminatorColumn()) {
             String discriminatorValue = entityDefinition.getDiscriminatorValue(entity.getClass());
-            row.setCellValueAt(entityDefinition.getDiscriminatorColumnName(), new StringValue(discriminatorValue));
+            row.setCellValueAt(entityDefinition.getDiscriminatorColumnName(), discriminatorValue);
         }
 
         // Define the row identifier of our entity, allowing us to reference it

@@ -5,10 +5,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import org.jarbframework.populator.excel.workbook.Cell;
-import org.jarbframework.populator.excel.workbook.Row;
-import org.jarbframework.populator.excel.workbook.StringValue;
-import org.jarbframework.populator.excel.workbook.Workbook;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -25,7 +21,7 @@ public class RowTest {
      */
     @Test
     public void testSetAndGetCells() {
-        Cell cell = row.getCellAt(2).setCellValue(new StringValue("test"));
+        Cell cell = row.getCellAt(2).setValue("test");
         assertEquals(cell, row.getCellAt(2));
         assertTrue(row.getCells().contains(cell));
         assertEquals("test", row.getValueAt(2));
@@ -45,8 +41,8 @@ public class RowTest {
 
     @Test
     public void testToString() {
-        row.getCellAt(2).setCellValue(new StringValue("third"));
-        row.getCellAt(0).setCellValue(new StringValue("first"));
+        row.getCellAt(2).setValue("third");
+        row.getCellAt(0).setValue("first");
         assertEquals("{0=first, 2=third}", row.toString());
     }
 

@@ -17,11 +17,15 @@ import org.springframework.util.Assert;
  *
  */
 public class Sheet implements Iterable<Row> {
+	
     public static final int COLUMN_ROW_NO = 0;
+    
     public static final int IDENTIFIER_COLUMN_NO = 0;
 
     private final TreeMap<Integer, Row> rows = new TreeMap<Integer, Row>();
+    
     private final Workbook workbook;
+    
     private String name;
 
     Sheet(Workbook workbook, String name) {
@@ -87,7 +91,7 @@ public class Sheet implements Iterable<Row> {
     }
 
     public void setColumnNameAt(int colNo, String columnName) {
-        getCellAt(COLUMN_ROW_NO, colNo).setCellValue(new StringValue(columnName));
+        getCellAt(COLUMN_ROW_NO, colNo).setValue(columnName);
     }
 
     /**

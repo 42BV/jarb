@@ -25,10 +25,13 @@ import domain.entities.Employee;
 import domain.entities.VeryImportantCustomer;
 
 public class DefaultEntityExporterTest extends DefaultExcelTestDataCase {
+	
     private DefaultEntityExporter exporter;
+    
     private EntityRegistry registry;
 
     private MetaModelGenerator metamodelGenerator;
+    
     private MetaModel metamodel;
 
     @Before
@@ -71,7 +74,7 @@ public class DefaultEntityExporterTest extends DefaultExcelTestDataCase {
         Sheet vehiclesSheet = workbook.getSheet("vehicles");
         assertEquals("bugatti", vehiclesSheet.getValueAt(1, "model"));
         assertEquals(Double.valueOf(999999), vehiclesSheet.getValueAt(1, "price"));
-        assertEquals(Double.valueOf(42), vehiclesSheet.getValueAt(1, "mileage"));
+        assertEquals(42, vehiclesSheet.getValueAt(1, "mileage"));
         assertEquals("MANUAL", vehiclesSheet.getValueAt(1, "gearbox"));
         assertEquals(Boolean.TRUE, vehiclesSheet.getValueAt(1, "airbags"));
     }

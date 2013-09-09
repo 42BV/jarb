@@ -3,11 +3,6 @@ package org.jarbframework.populator.excel.workbook;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
-import org.jarbframework.populator.excel.workbook.Cell;
-import org.jarbframework.populator.excel.workbook.CellValue;
-import org.jarbframework.populator.excel.workbook.NumericValue;
-import org.jarbframework.populator.excel.workbook.StringValue;
-import org.jarbframework.populator.excel.workbook.Workbook;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -26,9 +21,7 @@ public class CellTest {
      */
     @Test
     public void testSetGetCellValue() {
-        final CellValue value = new NumericValue(42);
-        cell.setCellValue(value);
-        assertEquals(value, cell.getCellValue());
+        cell.setValue(42D);
         assertEquals(Double.valueOf(42), cell.getValue());
     }
 
@@ -39,7 +32,7 @@ public class CellTest {
     @Test
     public void testGetCellValueAsString() {
         assertNull(cell.getValueAsString());
-        cell.setCellValue(new NumericValue(42));
+        cell.setValue(42.0);
         assertEquals("42.0", cell.getValueAsString());
     }
 
@@ -50,7 +43,7 @@ public class CellTest {
     @Test
     public void testToString() {
         assertEquals("", cell.toString());
-        cell.setCellValue(new StringValue("test"));
+        cell.setValue("test");
         assertEquals("test", cell.toString());
     }
 

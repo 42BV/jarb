@@ -7,19 +7,16 @@ import static org.junit.Assert.assertTrue;
 import java.util.Date;
 
 import org.jarbframework.populator.excel.DefaultExcelTestDataCase;
-import org.jarbframework.populator.excel.workbook.BooleanValue;
-import org.jarbframework.populator.excel.workbook.DateValue;
-import org.jarbframework.populator.excel.workbook.FormulaValue;
-import org.jarbframework.populator.excel.workbook.NumericValue;
 import org.jarbframework.populator.excel.workbook.Row;
 import org.jarbframework.populator.excel.workbook.Sheet;
-import org.jarbframework.populator.excel.workbook.StringValue;
 import org.jarbframework.populator.excel.workbook.Workbook;
 import org.junit.Before;
 import org.junit.Test;
 
 public class PoiExcelWriterTest extends DefaultExcelTestDataCase {
+	
     private PoiWorkbookWriter writer;
+    
     private Workbook workbook;
 
     @Before
@@ -46,7 +43,7 @@ public class PoiExcelWriterTest extends DefaultExcelTestDataCase {
     public void testString() {
         Sheet sheet = workbook.createSheet("test");
         Row row = sheet.createRow();
-        row.getCellAt(0).setCellValue(new StringValue("haha"));
+        row.getCellAt(0).setValue("haha");
         writer.write(workbook, createOutputStream());
 
         Sheet result = readGeneratedFile().getSheet("test");
@@ -57,8 +54,8 @@ public class PoiExcelWriterTest extends DefaultExcelTestDataCase {
     public void testBoolean() {
         Sheet sheet = workbook.createSheet("test");
         Row row = sheet.createRow();
-        row.getCellAt(0).setCellValue(new BooleanValue(true));
-        row.getCellAt(1).setCellValue(new BooleanValue(false));
+        row.getCellAt(0).setValue(true);
+        row.getCellAt(1).setValue(false);
         writer.write(workbook, createOutputStream());
 
         Sheet result = readGeneratedFile().getSheet("test");
@@ -71,7 +68,7 @@ public class PoiExcelWriterTest extends DefaultExcelTestDataCase {
         Sheet sheet = workbook.createSheet("test");
         Row row = sheet.createRow();
         Date date = new Date();
-        row.getCellAt(0).setCellValue(new DateValue(date));
+        row.getCellAt(0).setValue(date);
         writer.write(workbook, createOutputStream());
 
         Sheet result = readGeneratedFile().getSheet("test");
@@ -83,24 +80,11 @@ public class PoiExcelWriterTest extends DefaultExcelTestDataCase {
         Sheet sheet = workbook.createSheet("test");
         Row row = sheet.createRow();
         Double number = Double.valueOf(42);
-        row.getCellAt(0).setCellValue(new NumericValue(number));
+        row.getCellAt(0).setValue(number);
         writer.write(workbook, createOutputStream());
 
         Sheet result = readGeneratedFile().getSheet("test");
         assertEquals(number, result.getValueAt(0, 0));
-    }
-
-    @Test
-    public void testFormula() {
-        Sheet sheet = workbook.createSheet("test");
-        Row row = sheet.createRow();
-        row.getCellAt(0).setCellValue(new NumericValue(1D));
-        row.getCellAt(1).setCellValue(new NumericValue(2D));
-        row.getCellAt(2).setCellValue(new FormulaValue("SUM(A1:B1)"));
-        writer.write(workbook, createOutputStream());
-
-        Sheet result = readGeneratedFile().getSheet("test");
-        assertEquals(Double.valueOf(3), result.getValueAt(0, 2));
     }
 
     @Test

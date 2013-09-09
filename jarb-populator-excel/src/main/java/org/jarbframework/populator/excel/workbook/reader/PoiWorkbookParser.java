@@ -13,15 +13,9 @@ import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.CreationHelper;
 import org.apache.poi.ss.usermodel.DateUtil;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
-import org.jarbframework.populator.excel.workbook.BooleanValue;
 import org.jarbframework.populator.excel.workbook.Cell;
-import org.jarbframework.populator.excel.workbook.CellValue;
-import org.jarbframework.populator.excel.workbook.DateValue;
-import org.jarbframework.populator.excel.workbook.EmptyValue;
-import org.jarbframework.populator.excel.workbook.NumericValue;
 import org.jarbframework.populator.excel.workbook.Row;
 import org.jarbframework.populator.excel.workbook.Sheet;
-import org.jarbframework.populator.excel.workbook.StringValue;
 import org.jarbframework.populator.excel.workbook.Workbook;
 
 /**
@@ -80,33 +74,37 @@ public class PoiWorkbookParser implements WorkbookParser {
 
     private Cell parseCell(org.apache.poi.ss.usermodel.Cell poiCell, Row row) {
         Cell cell = row.getCellAt(poiCell.getColumnIndex());
-        cell.setCellValue(parseValue(poiCell));
+        cell.setValue(parseValue(poiCell));
         return cell;
     }
 
-    private CellValue parseValue(org.apache.poi.ss.usermodel.Cell poiCell) {
-        CellValue cellValue = new EmptyValue();
+    private Object parseValue(org.apache.poi.ss.usermodel.Cell poiCell) {
+        Object cellValue = null;
         switch (poiCell.getCellType()) {
         case CELL_TYPE_STRING:
-            cellValue = new StringValue(poiCell.getRichStringCellValue().getString());
+            cellValue = poiCell.getRichStringCellValue().getString();
             break;
         case CELL_TYPE_NUMERIC:
             if (DateUtil.isCellDateFormatted(poiCell)) {
-                cellValue = new DateValue(poiCell.getDateCellValue());
+                cellValue = poiCell.getDateCellValue();
             } else {
-                cellValue = new NumericValue(poiCell.getNumericCellValue());
+                cellValue = poiCell.getNumericCellValue();
             }
             break;
         case CELL_TYPE_BOOLEAN:
-            cellValue = new BooleanValue(poiCell.getBooleanCellValue());
+            cellValue = poiCell.getBooleanCellValue();
             break;
         case CELL_TYPE_FORMULA:
-            CreationHelper creationHelper = poiCell.getRow().getSheet().getWorkbook().getCreationHelper();
-            creationHelper.createFormulaEvaluator().evaluateInCell(poiCell);
-            cellValue = parseValue(poiCell);
+            cellValue = parseEvaluatedValue(poiCell);
             break;
         }
         return cellValue;
     }
+
+	private Object parseEvaluatedValue(org.apache.poi.ss.usermodel.Cell poiCell) {
+		CreationHelper creationHelper = poiCell.getRow().getSheet().getWorkbook().getCreationHelper();
+		creationHelper.createFormulaEvaluator().evaluateInCell(poiCell);
+		return parseValue(poiCell);
+	}
 
 }

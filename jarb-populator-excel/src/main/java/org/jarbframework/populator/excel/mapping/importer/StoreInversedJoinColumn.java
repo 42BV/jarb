@@ -8,8 +8,6 @@ import org.jarbframework.populator.excel.metamodel.EntityDefinition;
 import org.jarbframework.populator.excel.metamodel.InverseJoinColumnReferenceProperties;
 import org.jarbframework.populator.excel.metamodel.PropertyDefinition;
 import org.jarbframework.populator.excel.workbook.Cell;
-import org.jarbframework.populator.excel.workbook.CellValue;
-import org.jarbframework.populator.excel.workbook.NumericValue;
 import org.jarbframework.populator.excel.workbook.Row;
 import org.jarbframework.populator.excel.workbook.Sheet;
 import org.jarbframework.populator.excel.workbook.Workbook;
@@ -63,9 +61,9 @@ public final class StoreInversedJoinColumn {
      */
     private static Integer convertCellValueToNumericValue(Cell cell) {
         Integer intValue = null;
-        CellValue cellValue = cell.getCellValue();
-        if (cellValue instanceof NumericValue) {
-            intValue = ((Number) (cellValue.getValue())).intValue();
+        Object cellValue = cell.getValue();
+        if (cellValue instanceof Number) {
+            intValue = ((Number) cellValue).intValue();
         } else {
             LOGGER.warn("Could not convert {} foreign key value to number.", cellValue);
         }

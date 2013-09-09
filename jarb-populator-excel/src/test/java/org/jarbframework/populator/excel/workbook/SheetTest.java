@@ -8,15 +8,11 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Collection;
 
-import org.jarbframework.populator.excel.workbook.Cell;
-import org.jarbframework.populator.excel.workbook.Row;
-import org.jarbframework.populator.excel.workbook.Sheet;
-import org.jarbframework.populator.excel.workbook.StringValue;
-import org.jarbframework.populator.excel.workbook.Workbook;
 import org.junit.Before;
 import org.junit.Test;
 
 public class SheetTest {
+	
     private Sheet sheet;
 
     @Before
@@ -53,7 +49,7 @@ public class SheetTest {
      */
     @Test
     public void testGetCell() {
-        final Cell cell = sheet.getCellAt(0, 0).setCellValue(new StringValue("42"));
+        final Cell cell = sheet.getCellAt(0, 0).setValue("42");
         assertEquals(cell, sheet.getCellAt(0, 0));
         assertEquals("42", sheet.getValueAt(0, 0));
     }
@@ -64,9 +60,9 @@ public class SheetTest {
     @Test
     public void testColumns() {
         final Row columnRow = sheet.getRowAt(0);
-        columnRow.getCellAt(0).setCellValue(new StringValue("first"));
-        columnRow.getCellAt(2).setCellValue(new StringValue("third"));
-        columnRow.getCellAt(3).setCellValue(new StringValue("third"));
+        columnRow.getCellAt(0).setValue("first");
+        columnRow.getCellAt(2).setValue("third");
+        columnRow.getCellAt(3).setValue("third");
         // Column row is directly accessable
         assertEquals(columnRow, sheet.getColumnRow());
         // Names are available, duplicates cause no problems
@@ -85,9 +81,9 @@ public class SheetTest {
     @Test
     public void testGetValueByColumn() {
         Row columnRow = sheet.getRowAt(0);
-        columnRow.getCellAt(0).setCellValue(new StringValue("first"));
+        columnRow.getCellAt(0).setValue("first");
         Row valueRow = sheet.getRowAt(1);
-        valueRow.getCellAt(0).setCellValue(new StringValue("test"));
+        valueRow.getCellAt(0).setValue("test");
         assertEquals("test", sheet.getValueAt(1, "first"));
         assertNull(sheet.getValueAt(1, "unknown"));
     }
@@ -98,8 +94,8 @@ public class SheetTest {
     @Test
     public void testToString() {
         Row row = sheet.getRowAt(0);
-        row.getCellAt(0).setCellValue(new StringValue("first"));
-        row.getCellAt(1).setCellValue(new StringValue("second"));
+        row.getCellAt(0).setValue("first");
+        row.getCellAt(1).setValue("second");
         assertEquals("Sheet 'test' {0={0=first, 1=second}}", sheet.toString());
     }
 
@@ -110,9 +106,9 @@ public class SheetTest {
     public void testGetColumnNamesWithEmptyColumns() {
         Row row = sheet.getRowAt(0);
         assertTrue(row.getCells().isEmpty());
-        row.getCellAt(0).setCellValue(new StringValue("first"));
+        row.getCellAt(0).setValue("first");
         row.getCellAt(1);
-        row.getCellAt(2).setCellValue(new StringValue("third"));
+        row.getCellAt(2).setValue("third");
         Collection<String> headers = sheet.getColumnNames();
         assertTrue(headers.contains("first"));
         assertTrue(headers.contains("third"));
