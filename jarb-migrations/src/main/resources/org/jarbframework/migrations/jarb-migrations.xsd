@@ -20,7 +20,7 @@
     <xsd:element name="migrate">
         <xsd:annotation>
             <xsd:documentation>
-                Causes the data source to be migrated on demand.
+                Causes a data source to be migrated automatically on initialization.
             </xsd:documentation>
         </xsd:annotation>
         <xsd:complexType>
@@ -32,16 +32,14 @@
                 </xsd:annotation>
             </xsd:attribute>
 
-            <!-- Hard reference to the migrator -->            
             <xsd:attribute name="migrator" type="xsd:string">
                 <xsd:annotation>
                     <xsd:documentation>
-                        Reference to the migrator.
+                        Reference to the database migrator.
                     </xsd:documentation>
                 </xsd:annotation>
             </xsd:attribute>
             
-            <!-- Creation options for our mgirator -->
             <xsd:attribute name="base" type="xsd:string">
                 <xsd:annotation>
                     <xsd:documentation>
@@ -57,18 +55,17 @@
                 </xsd:annotation>
             </xsd:attribute>
             
-            <!-- Optional properties for the data source -->
             <xsd:attribute name="username" type="xsd:string">
                 <xsd:annotation>
                     <xsd:documentation>
-                        Username for migrations, using default when empty.
+                        Alternative user name for migration.
                     </xsd:documentation>
                 </xsd:annotation>
             </xsd:attribute>
             <xsd:attribute name="password" type="xsd:string">
                 <xsd:annotation>
                     <xsd:documentation>
-                        Password for migrations, using default when empty.
+                        Alternative password for migrations.
                     </xsd:documentation>
                 </xsd:annotation>
             </xsd:attribute>
