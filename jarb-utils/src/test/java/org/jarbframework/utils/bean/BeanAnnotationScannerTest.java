@@ -60,7 +60,6 @@ public class BeanAnnotationScannerTest {
     public static class ClassWithAnnotatedProperties {
 
         @Column(name = "hidden")
-        @SuppressWarnings("unused")
         private String hiddenProperty;
 
         private String readableProperty;

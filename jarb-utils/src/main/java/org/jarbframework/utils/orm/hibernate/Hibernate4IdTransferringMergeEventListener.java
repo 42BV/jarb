@@ -34,7 +34,7 @@ import org.hibernate.persister.entity.EntityPersister;
  * @since 1.2
  * @see org.springframework.orm.hibernate3.LocalSessionFactoryBean#setEventListeners(java.util.Map)
  */
-@SuppressWarnings({ "serial", "unchecked"})
+@SuppressWarnings({ "serial", "rawtypes" })
 public class Hibernate4IdTransferringMergeEventListener extends DefaultMergeEventListener {
 
     @Override

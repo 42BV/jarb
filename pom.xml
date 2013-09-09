@@ -152,13 +152,6 @@
             <version>1.9.5</version>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <!-- TODO: Factor out and use Mockito -->
-            <groupId>org.easymock</groupId>
-            <artifactId>easymock</artifactId>
-            <version>3.0</version>
-            <scope>test</scope>
-        </dependency>
 		
 		<!-- Supported database drivers -->
         <dependency>

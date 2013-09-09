@@ -18,10 +18,12 @@ import org.springframework.util.ClassUtils;
  * @since 17-05-2011
  */
 public abstract class AdvisorAddingBeanPostProcessor extends ProxyConfig implements BeanPostProcessor, BeanClassLoaderAware {
-    private ClassLoader beanClassLoader = ClassUtils.getDefaultClassLoader();
+    
+	private ClassLoader beanClassLoader = ClassUtils.getDefaultClassLoader();
 
     /** The advisor that should be added **/
     private Advisor advisor = null;
+    
     /** Position of the advisor to add (<b>optional</b>) **/
     private boolean addUpFront = false;
 

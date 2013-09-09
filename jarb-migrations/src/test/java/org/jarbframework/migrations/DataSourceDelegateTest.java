@@ -10,9 +10,9 @@ import java.sql.SQLException;
 
 import javax.sql.DataSource;
 
-import org.easymock.EasyMock;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mockito;
 
 /**
  * Simple test that ensures all method calls are delegated to our underlying data source.
@@ -28,84 +28,66 @@ public class DataSourceDelegateTest {
 
     @Before
     public void setUp() {
-        dataSourceMock = EasyMock.createMock(DataSource.class);
+        dataSourceMock = Mockito.mock(DataSource.class);
         delegatingDataSource = new DataSourceDelegate();
         delegatingDataSource.setDelegate(dataSourceMock);
     }
 
     @Test
     public void testGetConnection() throws SQLException {
-        Connection connection = EasyMock.createMock(Connection.class);
-        EasyMock.expect(dataSourceMock.getConnection()).andReturn(connection);
-        EasyMock.replay(dataSourceMock);
+        Connection connection = Mockito.mock(Connection.class);
+        Mockito.when(dataSourceMock.getConnection()).thenReturn(connection);
         Connection result = delegatingDataSource.getConnection();
-        EasyMock.verify(dataSourceMock);
         assertEquals(connection, result);
     }
 
     @Test
     public void testGetConnectionByParameters() throws SQLException {
-        Connection connection = EasyMock.createMock(Connection.class);
-        EasyMock.expect(dataSourceMock.getConnection("jeroen", "password")).andReturn(connection);
-        EasyMock.replay(dataSourceMock);
+        Connection connection = Mockito.mock(Connection.class);
+        Mockito.when(dataSourceMock.getConnection("jeroen", "password")).thenReturn(connection);
         Connection result = delegatingDataSource.getConnection("jeroen", "password");
-        EasyMock.verify(dataSourceMock);
         assertEquals(connection, result);
     }
 
     @Test
     public void testSetLoginTimeout() throws SQLException {
         final int loginTimeout = 42;
-        dataSourceMock.setLoginTimeout(loginTimeout);
-        EasyMock.expectLastCall();
-        EasyMock.replay(dataSourceMock);
         delegatingDataSource.setLoginTimeout(loginTimeout);
-        EasyMock.verify(dataSourceMock);
+        Mockito.verify(dataSourceMock).setLoginTimeout(loginTimeout);
     }
 
     @Test
     public void testGetLoginTimeout() throws SQLException {
         final int loginTimeout = 42;
-        EasyMock.expect(dataSourceMock.getLoginTimeout()).andReturn(loginTimeout);
-        EasyMock.replay(dataSourceMock);
+        Mockito.when(dataSourceMock.getLoginTimeout()).thenReturn(loginTimeout);
         assertEquals(loginTimeout, delegatingDataSource.getLoginTimeout());
-        EasyMock.verify(dataSourceMock);
     }
 
     @Test
     public void testSetLogWriter() throws SQLException {
         final PrintWriter out = new PrintWriter(new CharArrayWriter());
-        dataSourceMock.setLogWriter(out);
-        EasyMock.expectLastCall();
-        EasyMock.replay(dataSourceMock);
         delegatingDataSource.setLogWriter(out);
-        EasyMock.verify(dataSourceMock);
+        Mockito.verify(dataSourceMock).setLogWriter(out);
     }
 
     @Test
     public void testGetLogWriter() throws SQLException {
         final PrintWriter out = new PrintWriter(new CharArrayWriter());
-        EasyMock.expect(dataSourceMock.getLogWriter()).andReturn(out);
-        EasyMock.replay(dataSourceMock);
+        Mockito.when(dataSourceMock.getLogWriter()).thenReturn(out);
         assertEquals(out, delegatingDataSource.getLogWriter());
-        EasyMock.verify(dataSourceMock);
     }
 
     @Test
     public void testIsWrapperFor() throws SQLException {
-        EasyMock.expect(dataSourceMock.isWrapperFor(String.class)).andReturn(true);
-        EasyMock.replay(dataSourceMock);
+    	Mockito.when(dataSourceMock.isWrapperFor(String.class)).thenReturn(true);
         assertTrue(delegatingDataSource.isWrapperFor(String.class));
-        EasyMock.verify(dataSourceMock);
     }
 
     @Test
     public void testUnwrap() throws SQLException {
         final String value = "test";
-        EasyMock.expect(dataSourceMock.unwrap(String.class)).andReturn(value);
-        EasyMock.replay(dataSourceMock);
+        Mockito.when(dataSourceMock.unwrap(String.class)).thenReturn(value);
         assertEquals(value, delegatingDataSource.unwrap(String.class));
-        EasyMock.verify(dataSourceMock);
     }
 
 }
