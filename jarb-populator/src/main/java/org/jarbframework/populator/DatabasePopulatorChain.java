@@ -3,18 +3,17 @@ package org.jarbframework.populator;
 import java.util.Collection;
 import java.util.LinkedList;
 
-public class CompositeDatabasePopulator implements DatabasePopulator {
+public class DatabasePopulatorChain implements DatabasePopulator {
 
     /**
-     * Delegate populators, run in the sequence they were inserted.
+     * Delegate database populate elements.
      */
     private Collection<DatabasePopulator> populators = new LinkedList<DatabasePopulator>();
     
-    public CompositeDatabasePopulator() {
-        // Start with empty collection, use add method
+    public DatabasePopulatorChain() {
     }
     
-    public CompositeDatabasePopulator(Collection<DatabasePopulator> populators) {
+    public DatabasePopulatorChain(Collection<DatabasePopulator> populators) {
         this.populators.addAll(populators);
     }
     
@@ -25,7 +24,12 @@ public class CompositeDatabasePopulator implements DatabasePopulator {
         }
     }
     
-    public CompositeDatabasePopulator add(DatabasePopulator populator) {
+    /**
+     * Add another populate to this chain.
+     * @param populator the populate to add
+     * @return {@code this} instance for chaining
+     */
+    public DatabasePopulatorChain add(DatabasePopulator populator) {
         populators.add(populator);
         return this;
     }

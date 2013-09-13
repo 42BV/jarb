@@ -11,49 +11,49 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.event.ContextClosedEvent;
 import org.springframework.context.event.ContextRefreshedEvent;
 
-public class DatabasePopulateListenerTest {
+public class DatabasePopulateApplicationListenerTest {
 
-    private DatabasePopulateListener listener;
+    private DatabasePopulatingApplicationListener applicationListener;
 
     private DatabasePopulator initializer;
     
     private DatabasePopulator destroyer;
 
-    private ApplicationContext context;
+    private ApplicationContext applicationContext;
 
     @Before
     public void setUp() {
     	initializer = mock(DatabasePopulator.class);
     	destroyer = mock(DatabasePopulator.class);
     	
-        listener = new DatabasePopulateListener();
-        listener.setInitializer(initializer);
-        listener.setDestroyer(destroyer);
+        applicationListener = new DatabasePopulatingApplicationListener();
+        applicationListener.setInitializer(initializer);
+        applicationListener.setDestroyer(destroyer);
         
-        context = mock(ApplicationContext.class);
+        applicationContext = mock(ApplicationContext.class);
     }
 
     @Test
     public void testInitialize() {
         // Upon the first context refreshed event the update is executed
-        listener.onApplicationEvent(new ContextRefreshedEvent(context));
+        applicationListener.onApplicationEvent(new ContextRefreshedEvent(applicationContext));
         verify(initializer, times(1)).populate();
 
         // Other refresh events are ignored
-        listener.onApplicationEvent(new ContextRefreshedEvent(context));
+        applicationListener.onApplicationEvent(new ContextRefreshedEvent(applicationContext));
         verifyNoMoreInteractions(initializer);
     }
 
     @Test
     public void testDestroy() {
-        listener.onApplicationEvent(new ContextClosedEvent(context));
+        applicationListener.onApplicationEvent(new ContextClosedEvent(applicationContext));
         verify(destroyer, times(1)).populate();
     }
 
     @Test
     public void testSkipWhenNoUpdater() {
-        listener.setDestroyer(null);
-        listener.onApplicationEvent(new ContextClosedEvent(context));
+        applicationListener.setDestroyer(null);
+        applicationListener.onApplicationEvent(new ContextClosedEvent(applicationContext));
     }
 
 }

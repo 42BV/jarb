@@ -9,7 +9,7 @@
     
 	<import resource="classpath:jdbc-context.xml"/>
 
-    <populator:populate init-ref="populator"/>
+    <populator:populate initializer="populator"/>
     
     <bean id="populator" class="org.jarbframework.populator.SqlResourceDatabasePopulator">
         <constructor-arg ref="dataSource"/>

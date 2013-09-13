@@ -24,17 +24,17 @@
             </xsd:documentation>
         </xsd:annotation>
         <xsd:complexType>
-            <xsd:attribute name="init-ref" type="xsd:string">
+            <xsd:attribute name="initializer" type="xsd:string">
 			    <xsd:annotation>
 			        <xsd:documentation>
-			            Reference to the initializing populator.
+			            Reference to the data initializer.
 			        </xsd:documentation>
 			    </xsd:annotation>
 			</xsd:attribute>
-			<xsd:attribute name="destroy-ref" type="xsd:string">
+			<xsd:attribute name="destroyer" type="xsd:string">
 			    <xsd:annotation>
 			        <xsd:documentation>
-			            Reference to the destroying populator.
+			            Reference to the data destroyer.
 			        </xsd:documentation>
 			    </xsd:annotation>
 			</xsd:attribute>

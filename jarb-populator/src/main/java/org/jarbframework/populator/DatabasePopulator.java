@@ -1,7 +1,8 @@
 package org.jarbframework.populator;
 
 /**
- * Populator of the database.
+ * Populate the database with data.
+ * 
  * @author Jeroen van Schagen
  * @since 20-06-2011
  */

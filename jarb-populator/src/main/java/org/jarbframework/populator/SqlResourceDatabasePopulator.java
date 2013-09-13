@@ -14,6 +14,7 @@ import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
 
 /**
  * Update the database by executing an SQL resource.
+ * 
  * @author Jeroen van Schagen
  * @since 01-06-2011
  */
@@ -32,13 +33,13 @@ public class SqlResourceDatabasePopulator implements DatabasePopulator {
     
     @Override
     public void populate() {
-        final ResourceDatabasePopulator resourceDatabasePopulator = new ResourceDatabasePopulator();
-        resourceDatabasePopulator.addScript(notNull(resource, "Resource cannot be null."));
+        final ResourceDatabasePopulator resourcePopulator = new ResourceDatabasePopulator();
+        resourcePopulator.addScript(notNull(resource, "Resource cannot be null."));
         JdbcUtils.doWithConnection(dataSource, new JdbcConnectionCallback<Void>() {
 
             @Override
             public Void doWork(Connection connection) throws SQLException {
-                resourceDatabasePopulator.populate(connection);
+                resourcePopulator.populate(connection);
                 return null;
             }
 

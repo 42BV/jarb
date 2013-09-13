@@ -25,16 +25,14 @@ public class PopulateNamespaceHandler extends NamespaceHandlerSupport {
         }
 
         private AbstractBeanDefinition buildListener(Element element) {
-            BeanDefinitionBuilder listenerBuilder = BeanDefinitionBuilder.genericBeanDefinition(DatabasePopulateListener.class);
-
-            if (element.hasAttribute("init-ref")) {
-                listenerBuilder.addPropertyReference("initializer", element.getAttribute("init-ref"));
+            BeanDefinitionBuilder builder = BeanDefinitionBuilder.genericBeanDefinition(DatabasePopulatingApplicationListener.class);
+            if (element.hasAttribute("initializer")) {
+                builder.addPropertyReference("initializer", element.getAttribute("initializer"));
             }
-            if (element.hasAttribute("destroy-ref")) {
-                listenerBuilder.addPropertyReference("destroyer", element.getAttribute("destroy-ref"));
+            if (element.hasAttribute("destroyer")) {
+                builder.addPropertyReference("destroyer", element.getAttribute("destroyer"));
             }
-
-            return listenerBuilder.getBeanDefinition();
+            return builder.getBeanDefinition();
         }
 
     }

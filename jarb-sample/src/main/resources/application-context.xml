@@ -64,13 +64,13 @@
     <import resource="mvc-context.xml"/>
 
     <beans profile="test">
-        <!-- Create the database schema using liquibase -->
+        <!-- Create the database schema using Liquibase -->
         <migrations:migrate data-source="dataSource" base="file:src/main/db" path="changelog.groovy"/>
 
 		<!-- Populates the database with test data -->
-        <populator:populate init-ref="populator" destroy-ref="destroyer"/>
+        <populator:populate initializer="populator" destroyer="destroyer"/>
 
-        <bean id="populator" class="org.jarbframework.populator.CompositeDatabasePopulator">
+        <bean id="populator" class="org.jarbframework.populator.DatabasePopulatorChain">
            <constructor-arg>
                 <list>
                     <bean class="org.jarbframework.populator.SqlResourceDatabasePopulator">

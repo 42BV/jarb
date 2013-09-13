@@ -10,10 +10,11 @@ import org.springframework.context.event.ContextRefreshedEvent;
 /**
  * Application listener that is capable of updating the database
  * on context initialization and destruction.
+ * 
  * @author Jeroen van Schagen
  * @since 02-11-2011
  */
-public class DatabasePopulateListener implements ApplicationListener<ApplicationContextEvent> {
+public class DatabasePopulatingApplicationListener implements ApplicationListener<ApplicationContextEvent> {
 
     /** Describes whether the initializer has already been started. **/
     private final AtomicBoolean initialized = new AtomicBoolean();
