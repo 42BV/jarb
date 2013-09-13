@@ -14,39 +14,28 @@ import org.springframework.util.ReflectionUtils;
 
 /**
  * Searches for annotations in class and property declarations. 
+ * 
  * @author Jeroen van Schagen
  * @date Aug 29, 2011
  */
 public class BeanAnnotationScanner {
     
     private final boolean includeGetter;
-    private final boolean includeSetter;
 
     /**
      * Construct a new {@link BeanAnnotationScanner}.
      * @param includeGetter determines if getter methods should be scanned
-     * @param includeSetter determines if setter methods should be scanned
      */
-    public BeanAnnotationScanner(boolean includeGetter, boolean includeSetter) {
+    public BeanAnnotationScanner(boolean includeGetter) {
         this.includeGetter = includeGetter;
-        this.includeSetter = includeSetter;
     }
 
-    /**
-     * Construct a new {@link BeanAnnotationScanner} that only scans fields.
-     * @return annotation scanner that only scans fields
-     */
     public static BeanAnnotationScanner field() {
-        return new BeanAnnotationScanner(false, false);
+        return new BeanAnnotationScanner(false);
     }
 
-    /**
-     * Construct a new {@link BeanAnnotationScanner} that only scan from
-     * fields and "getter" methods.
-     * @return annotation scanner that only scans from fields and getters
-     */
     public static BeanAnnotationScanner fieldOrGetter() {
-        return new BeanAnnotationScanner(true, false);
+        return new BeanAnnotationScanner(true);
     }
 
     /**
@@ -77,7 +66,7 @@ public class BeanAnnotationScanner {
      * @return desired annotation, as declared on the property, if any
      */
     public <T extends Annotation> T findAnnotation(PropertyReference propertyReference, Class<T> annotationType) {
-        Collection<T> annotations = collectAnnotations(propertyReference, annotationType);
+        Collection<T> annotations = getAnnotations(propertyReference, annotationType);
         if (annotations.isEmpty()) {
             return null;
         } else {
@@ -92,36 +81,47 @@ public class BeanAnnotationScanner {
      * @param annotationType type of annotation that should be looked for
      * @return desired annotation, as declared on the property, if any
      */
-    public <T extends Annotation> Collection<T> collectAnnotations(PropertyReference propertyReference, Class<T> annotationType) {
+    public <T extends Annotation> Collection<T> getAnnotations(PropertyReference propertyReference, Class<T> annotationType) {
+        propertyReference = BeanProperties.getFinalProperty(propertyReference);
+        
         Collection<T> annotations = new ArrayList<T>();
-
-        propertyReference = BeanProperties.lastPropertyIn(propertyReference);
-
-        // Attempt to extract annotation from field declaration
-        Field field = ReflectionUtils.findField(propertyReference.getBeanClass(), propertyReference.getName());
-        if (field != null) {
-            addIfNotNull(field.getAnnotation(annotationType), annotations);
+                
+        T fieldAnnotation = getFieldAnnotation(propertyReference, annotationType);
+        if (fieldAnnotation != null) {
+        	annotations.add(fieldAnnotation);
         }
-
-        // Attempt to extract annotation from getter and setter methods, whenever desired
-        PropertyDescriptor propertyDescriptor = BeanUtils.getPropertyDescriptor(propertyReference.getBeanClass(), propertyReference.getName());
-        if (propertyDescriptor != null) {
-            if (includeGetter && propertyDescriptor.getReadMethod() != null) {
-                addIfNotNull(AnnotationUtils.findAnnotation(propertyDescriptor.getReadMethod(), annotationType), annotations);
-            }
-            if (includeSetter && propertyDescriptor.getWriteMethod() != null) {
-                addIfNotNull(AnnotationUtils.findAnnotation(propertyDescriptor.getWriteMethod(), annotationType), annotations);
-            }
+        
+        T getterAnnotation = getGetterAnnotation(propertyReference, annotationType);
+        if (getterAnnotation != null) {
+        	annotations.add(getterAnnotation);
         }
-
+        
         return annotations;
     }
 
-    private <T> void addIfNotNull(T element, Collection<T> collection) {
-        if (element != null) {
-            collection.add(element);
+	private <T extends Annotation> T getGetterAnnotation(PropertyReference propertyReference, Class<T> annotationType) {
+		T annotation = null;
+		
+		PropertyDescriptor propertyDescriptor = BeanUtils.getPropertyDescriptor(propertyReference.getBeanClass(), propertyReference.getName());
+        if (propertyDescriptor != null) {
+            if (includeGetter && propertyDescriptor.getReadMethod() != null) {
+            	annotation = AnnotationUtils.findAnnotation(propertyDescriptor.getReadMethod(), annotationType);
+            }
         }
-    }
+        
+        return annotation;
+	}
+
+	private <T extends Annotation> T getFieldAnnotation(PropertyReference propertyReference, Class<T> annotationType) {
+		T annotation = null;
+		
+		Field field = ReflectionUtils.findField(propertyReference.getBeanClass(), propertyReference.getName());
+        if (field != null) {
+        	annotation = field.getAnnotation(annotationType);
+        }
+        
+        return annotation;
+	}
 
     /**
      * Check if a specific property is declared on the property.

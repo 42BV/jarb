@@ -5,7 +5,7 @@ import javax.validation.ValidatorFactory;
 
 import org.jarbframework.constraint.metadata.database.ColumnMetadataRepository;
 import org.jarbframework.utils.orm.SchemaMapper;
-import org.jarbframework.utils.spring.BeanSearcher;
+import org.jarbframework.utils.spring.SpringBeanFinder;
 
 /**
  * Factory that builds a default constraint validator, when none is available.
@@ -20,9 +20,9 @@ public class DatabaseConstraintValidatorFactory {
     
     public static final String DEFAULT_VALIDATOR_FACTORY_ID = "validator";
 
-    private final BeanSearcher beanSearcher;
+    private final SpringBeanFinder beanSearcher;
 
-    public DatabaseConstraintValidatorFactory(BeanSearcher beanSearcher) {
+    public DatabaseConstraintValidatorFactory(SpringBeanFinder beanSearcher) {
         this.beanSearcher = beanSearcher;
     }
 

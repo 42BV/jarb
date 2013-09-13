@@ -18,7 +18,7 @@ public class BeanAnnotationScannerTest {
 
     @Before
     public void setUp() {
-        scanner = new BeanAnnotationScanner(true, true);
+        scanner = new BeanAnnotationScanner(true);
     }
 
     @Test
@@ -43,15 +43,6 @@ public class BeanAnnotationScannerTest {
         Column columnAnnotation = scanner.findAnnotation(propertyReference, Column.class);
         assertNotNull(columnAnnotation);
         assertEquals("readable", columnAnnotation.name());
-    }
-
-    @Test
-    public void testFindForSetter() {
-        PropertyReference propertyReference = new PropertyReference(ClassWithAnnotatedProperties.class, "writableProperty");
-        assertTrue(scanner.hasAnnotation(propertyReference, Column.class));
-        Column columnAnnotation = scanner.findAnnotation(propertyReference, Column.class);
-        assertNotNull(columnAnnotation);
-        assertEquals("writable", columnAnnotation.name());
     }
 
     @Entity
