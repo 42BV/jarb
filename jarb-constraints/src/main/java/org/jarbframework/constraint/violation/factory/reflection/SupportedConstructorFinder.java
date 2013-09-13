@@ -1,4 +1,4 @@
-package org.jarbframework.constraint.violation.factory;
+package org.jarbframework.constraint.violation.factory.reflection;
 
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;

@@ -1,6 +1,3 @@
-/*
- * (C) 2011 Nidera (www.nidera.com). All rights reserved.
- */
 package domain.entities;
 
 import javax.persistence.Column;

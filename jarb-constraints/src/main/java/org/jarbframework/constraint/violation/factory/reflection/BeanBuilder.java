@@ -1,4 +1,4 @@
-package org.jarbframework.constraint.violation.factory;
+package org.jarbframework.constraint.violation.factory.reflection;
 
 import static org.springframework.beans.BeanUtils.instantiateClass;
 

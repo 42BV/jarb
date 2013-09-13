@@ -22,7 +22,7 @@ public class BeanConstraintDescriptorImplTest {
      */
     @Test
     public void testPropertiesAreDescribed() {
-        BeanConstraintDescription<Wine> wineDescription = constraintDescriptor.describe(Wine.class);
+        BeanConstraintDescription wineDescription = constraintDescriptor.describe(Wine.class);
         assertEquals(Long.class, wineDescription.getPropertyDescription("id").getJavaType());
         assertEquals(String.class, wineDescription.getPropertyDescription("name").getJavaType());
         assertEquals(Double.class, wineDescription.getPropertyDescription("price").getJavaType());
@@ -31,12 +31,12 @@ public class BeanConstraintDescriptorImplTest {
     }
 
     /**
-     * Property enhancers can be used to our description with additional information.
+     * Property enhancement can be used to our description with additional information.
      */
     @Test
     public void testPropertyDescriptionEnhancers() {
         constraintDescriptor.registerEnhancer(new LengthPropertyConstraintEnhancer());
-        BeanConstraintDescription<Wine> wineDescription = constraintDescriptor.describe(Wine.class);
+        BeanConstraintDescription wineDescription = constraintDescriptor.describe(Wine.class);
         assertEquals(Integer.valueOf(6), wineDescription.getPropertyDescription("name").getMinimumLength());
     }
 

@@ -21,8 +21,8 @@ public class BeanConstraintDescriptorImpl implements BeanConstraintDescriptor {
     private final List<PropertyConstraintEnhancer> propertyConstraintEnhancers = new ArrayList<PropertyConstraintEnhancer>();
 
     @Override
-    public <T> BeanConstraintDescription<T> describe(Class<T> beanClass) {
-        BeanConstraintDescription<T> beanDescription = new BeanConstraintDescription<T>(beanClass);
+    public BeanConstraintDescription describe(Class<?> beanClass) {
+        BeanConstraintDescription beanDescription = new BeanConstraintDescription(beanClass);
         for (PropertyDescriptor propertyDescriptor : BeanUtils.getPropertyDescriptors(beanClass)) {
             beanDescription.addPropertyDescription(describeProperty(beanClass, propertyDescriptor));
         }

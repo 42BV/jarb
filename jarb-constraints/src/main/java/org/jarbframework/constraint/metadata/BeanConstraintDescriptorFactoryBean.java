@@ -17,7 +17,7 @@ import org.jarbframework.utils.orm.SchemaMapper;
 import org.jarbframework.utils.spring.SingletonFactoryBean;
 
 /**
- * Builds a default bean constraint metadata generator.
+ * Builds a default bean constraint meta data generator.
  * 
  * @author Jeroen van Schagen
  * @since 8-6-2011

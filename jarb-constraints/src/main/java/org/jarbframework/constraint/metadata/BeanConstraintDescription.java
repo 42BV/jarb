@@ -15,31 +15,31 @@ import org.apache.commons.lang3.builder.ToStringStyle;
  *
  * @param <T> type of bean being described
  */
-public class BeanConstraintDescription<T> {
+public class BeanConstraintDescription {
 
     /** Provides a description of all property constraints. **/
-    private final Map<String, PropertyConstraintDescription> propertyDescriptionMap = new HashMap<String, PropertyConstraintDescription>();
+    private final Map<String, PropertyConstraintDescription> propertyDescriptions = new HashMap<String, PropertyConstraintDescription>();
 
-    private final Class<T> beanClass;
+    private final Class<?> beanClass;
 
     /**
      * Construct a new {@link BeanConstraintDescription}.
      * @param beanClass class of the bean being described
      */
-    public BeanConstraintDescription(Class<T> beanClass) {
+    public BeanConstraintDescription(Class<?> beanClass) {
         this.beanClass = beanClass;
     }
 
-    public Class<T> getJavaType() {
+    public Class<?> getJavaType() {
         return beanClass;
     }
 
     public PropertyConstraintDescription getPropertyDescription(String propertyName) {
-        return propertyDescriptionMap.get(propertyName);
+        return propertyDescriptions.get(propertyName);
     }
 
     public Collection<PropertyConstraintDescription> getPropertyDescriptions() {
-        return propertyDescriptionMap.values();
+        return propertyDescriptions.values();
     }
 
     /**
@@ -47,7 +47,7 @@ public class BeanConstraintDescription<T> {
      * @param description description of the property constraints
      */
     void addPropertyDescription(PropertyConstraintDescription description) {
-        propertyDescriptionMap.put(description.getName(), description);
+        propertyDescriptions.put(description.getName(), description);
     }
 
     @Override

@@ -40,7 +40,7 @@ public class BeanConstraintDescriptorFactoryBeanTest {
     @Test
     public void testGeneratedObject() throws Exception {
         BeanConstraintDescriptor descriptor = factoryBean.getObject();
-        BeanConstraintDescription<Wine> wineDescription = descriptor.describe(Wine.class);
+        BeanConstraintDescription wineDescription = descriptor.describe(Wine.class);
         PropertyConstraintDescription nameDescription = wineDescription.getPropertyDescription("name");
         assertEquals(String.class, nameDescription.getJavaType()); // Retrieved by introspection
         assertTrue(nameDescription.isRequired()); // Retrieved from database

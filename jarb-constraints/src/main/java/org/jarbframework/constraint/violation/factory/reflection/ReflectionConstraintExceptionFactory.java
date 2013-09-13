@@ -1,8 +1,9 @@
-package org.jarbframework.constraint.violation.factory;
+package org.jarbframework.constraint.violation.factory.reflection;
 
 import java.lang.reflect.Constructor;
 
 import org.jarbframework.constraint.violation.DatabaseConstraintViolation;
+import org.jarbframework.constraint.violation.factory.DatabaseConstraintExceptionFactory;
 
 /**
  * Creates constraint violation exceptions using reflection. Whenever no
@@ -14,10 +15,10 @@ import org.jarbframework.constraint.violation.DatabaseConstraintViolation;
 public class ReflectionConstraintExceptionFactory implements DatabaseConstraintExceptionFactory {
 	
 	private static final Class<?>[] SUPPORTED_PARAMETER_TYPES = new Class<?>[] {
-                                DatabaseConstraintExceptionFactory.class,
-                                DatabaseConstraintViolation.class,
-                        	    Throwable.class
-                    	    };
+	        DatabaseConstraintExceptionFactory.class,
+	        DatabaseConstraintViolation.class,
+		    Throwable.class
+	    };
     
 	private final BeanBuilder<?> beanBuilder;
 

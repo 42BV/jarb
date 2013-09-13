@@ -22,17 +22,19 @@ import org.jarbframework.utils.bean.PropertyReference;
 public class PropertyConstraintDescription {
 
     private final PropertyReference propertyReference;
+    
     private final Class<?> propertyClass;
 
     private final Set<String> types = new HashSet<String>();
 
-    // Global requirements
     private boolean required;
+    
     private Integer minimumLength;
+    
     private Integer maximumLength;
 
-    // Number specific
     private Integer fractionLength;
+    
     private Integer radix;
 
     /**
@@ -41,8 +43,8 @@ public class PropertyConstraintDescription {
      * @param propertyClass class of the property
      */
     public PropertyConstraintDescription(PropertyReference propertyReference, Class<?> propertyClass) {
-        this.propertyReference = notNull(propertyReference, "Property reference cannot be null");
-        this.propertyClass = notNull(propertyClass, "Property class cannot be null");
+        this.propertyReference = notNull(propertyReference, "Property reference cannot be null.");
+        this.propertyClass = notNull(propertyClass, "Property class cannot be null.");
     }
 
     public String getName() {

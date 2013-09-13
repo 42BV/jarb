@@ -1,4 +1,6 @@
-package org.jarbframework.constraint.violation.factory.mapping;
+package org.jarbframework.constraint.violation.factory;
+
+import static org.jarbframework.constraint.violation.factory.NameMatchingStrategy.*;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -23,6 +25,6 @@ public @interface NamedConstraint {
      * Strategy used to match the name.
      * @return matching strategy
      */
-    NameMatchingStrategy strategy() default NameMatchingStrategy.EXACT_IGNORE_CASE;
+    NameMatchingStrategy strategy() default EXACT_IGNORE_CASE;
     
 }

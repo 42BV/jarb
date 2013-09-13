@@ -1,7 +1,4 @@
-/*
- * (C) 2011 Nidera (www.nidera.com). All rights reserved.
- */
-package org.jarbframework.constraint.violation.factory.mapping;
+package org.jarbframework.constraint.violation.factory;
 
 import org.apache.commons.lang3.StringUtils;
 import org.jarbframework.constraint.violation.DatabaseConstraintViolation;

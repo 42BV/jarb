@@ -11,6 +11,7 @@ import java.util.NoSuchElementException;
 import org.jarbframework.constraint.violation.DatabaseConstraintViolation;
 import org.jarbframework.constraint.violation.domain.CarAlreadyExistsException;
 import org.jarbframework.constraint.violation.domain.CarAlreadyExistsExceptionFactory;
+import org.jarbframework.constraint.violation.factory.reflection.ReflectionConstraintExceptionFactory;
 import org.junit.Test;
 
 public class ReflectionConstraintExceptionFactoryTest {

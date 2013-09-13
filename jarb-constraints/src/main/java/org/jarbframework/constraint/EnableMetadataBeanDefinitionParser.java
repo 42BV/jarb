@@ -10,44 +10,44 @@ import org.springframework.beans.factory.xml.ParserContext;
 import org.w3c.dom.Element;
 
 /**
- * Registers all required beans for constraint meta-data retrieval.
+ * Registers all required beans for constraint meta data management.
+ * <br>This includes the following beans:
+ * <ul>
+ * <li>SchemaMapper</li>
+ * <li>ColumnMetadataRepository</li>
+ * <li>BeanConstraintDescriptor</li>
+ * </ul>
+ * 
  * @author Jeroen van Schagen
  */
 public class EnableMetadataBeanDefinitionParser implements BeanDefinitionParser {
 
     @Override
     public BeanDefinition parse(Element element, ParserContext parserContext) {
-        String schemaMapperName = registerSchemaMapper(element, parserContext);
-        String columnRepositoryName = registerColumnRepository(element, parserContext);
-        
-        BeanDefinition descriptor = buildConstraintDescriptor(schemaMapperName, columnRepositoryName);
-        registerWithGeneratedName(parserContext, descriptor);
-        
+        String schemaMapperName = buildAndRegisterSchemaMapper(element, parserContext);
+        String columnRepositoryName = buildAndRegisterColumnRepository(element, parserContext);
+        buildAndRegisterConstraintDescriptor(schemaMapperName, columnRepositoryName, parserContext);
         return null;
     }
 
-    private String registerSchemaMapper(Element element, ParserContext parserContext) {
+    private String buildAndRegisterSchemaMapper(Element element, ParserContext parserContext) {
         BeanDefinitionBuilder schemaMapperBuilder = BeanDefinitionBuilder.genericBeanDefinition(HibernateJpaSchemaMapper.class);
         schemaMapperBuilder.addConstructorArgReference(element.getAttribute("entity-manager-factory"));
-        return registerWithGeneratedName(parserContext, schemaMapperBuilder.getBeanDefinition());
+        return parserContext.getReaderContext().registerWithGeneratedName(schemaMapperBuilder.getBeanDefinition());
     }
-    
-    private String registerColumnRepository(Element element, ParserContext parserContext) {
+
+    private String buildAndRegisterColumnRepository(Element element, ParserContext parserContext) {
         BeanDefinitionBuilder columnRepositoryBuilder = BeanDefinitionBuilder.genericBeanDefinition(HibernateJpaColumnMetadataRepositoryFactoryBean.class);
         columnRepositoryBuilder.addPropertyReference("entityManagerFactory", element.getAttribute("entity-manager-factory"));
         columnRepositoryBuilder.addPropertyValue("caching", element.getAttribute("caching"));
-        return registerWithGeneratedName(parserContext, columnRepositoryBuilder.getBeanDefinition());
+        return parserContext.getReaderContext().registerWithGeneratedName(columnRepositoryBuilder.getBeanDefinition());
     }
 
-    private String registerWithGeneratedName(ParserContext parserContext, BeanDefinition beanDefintion) {
-        return parserContext.getReaderContext().registerWithGeneratedName(beanDefintion);
-    }
-
-    private BeanDefinition buildConstraintDescriptor(String schemaMapperName, String columnRepositoryName) {
+    private void buildAndRegisterConstraintDescriptor(String schemaMapperName, String columnRepositoryName, ParserContext parserContext) {
         BeanDefinitionBuilder constraintDescriptorBuilder = BeanDefinitionBuilder.genericBeanDefinition(BeanConstraintDescriptorFactoryBean.class);
         constraintDescriptorBuilder.addPropertyReference("schemaMapper", schemaMapperName);
         constraintDescriptorBuilder.addPropertyReference("columnMetadataRepository", columnRepositoryName);
-        return constraintDescriptorBuilder.getBeanDefinition();
+        parserContext.getReaderContext().registerWithGeneratedName(constraintDescriptorBuilder.getBeanDefinition());
     }
-    
+
 }

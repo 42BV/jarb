@@ -27,7 +27,7 @@ import org.springframework.beans.BeanUtils;
  */
 public class DatabaseConstraintViolationResolverFactory {
         
-    public static DatabaseConstraintViolationResolver createResolver(String basePackage, DataSource dataSource) {
+    public static DatabaseConstraintViolationResolver buildViolationResolver(String basePackage, DataSource dataSource) {
         final DatabaseProduct databaseProduct = getDatabaseProduct(dataSource);
 
         ViolationResolverChain violationResolverChain = new ViolationResolverChain();

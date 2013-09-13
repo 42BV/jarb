@@ -2,6 +2,8 @@ package org.jarbframework.constraint.violation.factory.mapping;
 
 import org.jarbframework.constraint.violation.DatabaseConstraintType;
 import org.jarbframework.constraint.violation.DatabaseConstraintViolation;
+import org.jarbframework.constraint.violation.factory.NameMatchingPredicate;
+import org.jarbframework.constraint.violation.factory.NameMatchingStrategy;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;

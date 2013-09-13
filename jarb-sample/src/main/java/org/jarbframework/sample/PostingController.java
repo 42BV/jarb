@@ -29,7 +29,7 @@ public class PostingController {
     }
     
     @RequestMapping(value = "constraints", method = RequestMethod.GET)
-    public BeanConstraintDescription<Post> structure() {
+    public BeanConstraintDescription structure() {
         return beanConstraintDescriptor.describe(Post.class);
     }
 

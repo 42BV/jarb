@@ -9,11 +9,10 @@ package org.jarbframework.constraint.metadata;
 public interface BeanConstraintDescriptor {
 
     /**
-     * Generate bean constraint metadata.
-     * @param <T> type of bean
+     * Generate bean constraint meta data.
      * @param beanClass class of the bean
-     * @return bean constraint metadata
+     * @return bean constraint meta data
      */
-    <T> BeanConstraintDescription<T> describe(Class<T> beanClass);
+    BeanConstraintDescription describe(Class<?> beanClass);
 
 }

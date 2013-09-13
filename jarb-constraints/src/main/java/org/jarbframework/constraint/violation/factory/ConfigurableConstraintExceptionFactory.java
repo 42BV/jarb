@@ -6,9 +6,7 @@ import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 import org.jarbframework.constraint.violation.DatabaseConstraintViolation;
-import org.jarbframework.constraint.violation.factory.mapping.NamedConstraint;
-import org.jarbframework.constraint.violation.factory.mapping.NameMatchingStrategy;
-import org.jarbframework.constraint.violation.factory.mapping.NameMatchingPredicate;
+import org.jarbframework.constraint.violation.factory.reflection.ReflectionConstraintExceptionFactory;
 import org.jarbframework.utils.Classes;
 import org.springframework.core.annotation.AnnotationUtils;
 

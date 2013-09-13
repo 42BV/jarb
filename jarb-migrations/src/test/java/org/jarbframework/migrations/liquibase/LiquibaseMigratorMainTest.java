@@ -17,7 +17,7 @@ public class LiquibaseMigratorMainTest {
         LiquibaseMigratorMain.main(new String[] {
                 "-changeLogPath", "src/test/resources/changelog.groovy",
                 "-dbPassword", "",
-                "-dbUrl", "jdbc:hsqldb:mem:com.nidera.pcat",
+                "-dbUrl", "jdbc:hsqldb:mem:test",
                 "-dbUser", "sa",
                 "-driverClass", "org.hsqldb.jdbcDriver",
                 "-dropFirst"
@@ -33,7 +33,7 @@ public class LiquibaseMigratorMainTest {
                 "-changeLogBaseDir", "src/test/resources",
                 "-changeLogPath", "changelog.groovy",
                 "-dbPassword", "",
-                "-dbUrl", "jdbc:hsqldb:mem:com.nidera.pcat",
+                "-dbUrl", "jdbc:hsqldb:mem:test",
                 "-dbUser", "sa",
                 "-driverClass", "org.hsqldb.jdbcDriver",
                 "-dropFirst"
@@ -49,7 +49,7 @@ public class LiquibaseMigratorMainTest {
                 "-changeLogBaseDir", "src/test/resources",
                 "-changeLogPath", "create-schema.groovy",
                 "-dbPassword", "",
-                "-dbUrl", "jdbc:hsqldb:mem:com.nidera.pcat",
+                "-dbUrl", "jdbc:hsqldb:mem:test",
                 "-dbUser", "sa",
                 "-driverClass", "org.invalid.Driver",
                 "-dropFirst"
@@ -65,7 +65,7 @@ public class LiquibaseMigratorMainTest {
                 "-changeLogBaseDir", "src/test/resources",
                 "-changeLogPath", "create-schema.groovy",
                 "-dbPassword", "",
-                "-dbUrl", "jdbc:hsqldb:mem:com.nidera.pcat",
+                "-dbUrl", "jdbc:hsqldb:mem:test",
                 "-dbUser", "unknown",
                 "-driverClass", "org.hsqldb.jdbcDriver",
                 "-dropFirst"
@@ -81,7 +81,7 @@ public class LiquibaseMigratorMainTest {
                 "-changeLogBaseDir", "src/test/resources",
                 "-changeLogPath", "non-existing.groovy",
                 "-dbPassword", "",
-                "-dbUrl", "jdbc:hsqldb:mem:com.nidera.pcat",
+                "-dbUrl", "jdbc:hsqldb:mem:test",
                 "-dbUser", "sa",
                 "-driverClass", "org.hsqldb.jdbcDriver",
                 "-dropFirst"

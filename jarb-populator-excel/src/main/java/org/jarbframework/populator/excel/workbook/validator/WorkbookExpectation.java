@@ -1,6 +1,3 @@
-/*
- * (C) 2011 Nidera (www.nidera.com). All rights reserved.
- */
 package org.jarbframework.populator.excel.workbook.validator;
 
 import static java.util.Collections.emptySet;

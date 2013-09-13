@@ -1,6 +1,3 @@
-/*
- * (C) 2011 Nidera (www.nidera.com). All rights reserved.
- */
 package org.jarbframework.utils.bean;
 
 import static org.junit.Assert.assertEquals;
@@ -16,6 +13,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class BeanAnnotationScannerTest {
+	
     private BeanAnnotationScanner scanner;
 
     @Before

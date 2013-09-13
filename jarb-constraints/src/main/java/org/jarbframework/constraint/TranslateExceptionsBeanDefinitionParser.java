@@ -18,25 +18,35 @@ import org.springframework.beans.factory.xml.AbstractBeanDefinitionParser;
 import org.springframework.beans.factory.xml.ParserContext;
 import org.w3c.dom.Element;
 
+/**
+ * Causes automatic exception translation on all matching method invocations.
+ * 
+ * @author Jeroen van Schagen
+ */
 public class TranslateExceptionsBeanDefinitionParser extends AbstractBeanDefinitionParser {
 
     @Override
     protected AbstractBeanDefinition parseInternal(Element element, ParserContext parserContext) {
         BeanDefinitionBuilder processorBuilder = BeanDefinitionBuilder.genericBeanDefinition(DatabaseConstraintExceptionTranslatingBeanPostProcessor.class);
+        
+        // Create the exception translator
         if (element.hasAttribute("translator")) {
             processorBuilder.addPropertyReference("translator", element.getAttribute("translator"));
         } else {
-            BeanDefinition translator = parseTranslator(element);
+            BeanDefinition translator = buildExceptionTranslator(element);
             processorBuilder.addPropertyValue("translator", translator);
         }
+        
+        // Define where our translations should take place
         if (element.hasAttribute("pointcut")) {
-            processorBuilder.addPropertyValue("pointcut", parsePointcut(element.getAttribute("pointcut")));
+            processorBuilder.addPropertyValue("pointcut", buildPointcut(element.getAttribute("pointcut")));
         }
+        
         return processorBuilder.getBeanDefinition();
     }
 
-    private BeanDefinition parseTranslator(Element element) {
-        BeanDefinitionBuilder translatorBuilder = BeanDefinitionBuilder.genericBeanDefinition(TranslatorFactoryBean.class);
+    private BeanDefinition buildExceptionTranslator(Element element) {
+        BeanDefinitionBuilder translatorBuilder = BeanDefinitionBuilder.genericBeanDefinition(ExceptionTranslatorFactoryBean.class);
         translatorBuilder.addPropertyValue("basePackage", element.getAttribute("base-package"));
         translatorBuilder.addPropertyReference("dataSource", element.getAttribute("data-source"));
         if (element.hasAttribute("default-factory")) {
@@ -45,7 +55,7 @@ public class TranslateExceptionsBeanDefinitionParser extends AbstractBeanDefinit
         return translatorBuilder.getBeanDefinition();
     }
 
-    private BeanDefinition parsePointcut(String expression) {
+    private BeanDefinition buildPointcut(String expression) {
         RootBeanDefinition beanDefinition = new RootBeanDefinition(AspectJExpressionPointcut.class);
         beanDefinition.setScope(BeanDefinition.SCOPE_PROTOTYPE);
         beanDefinition.setSynthetic(true);
@@ -58,7 +68,12 @@ public class TranslateExceptionsBeanDefinitionParser extends AbstractBeanDefinit
         return true;
     }
     
-    public static final class TranslatorFactoryBean extends SingletonFactoryBean<DatabaseConstraintExceptionTranslator> {
+    /**
+     * Create an exception translator based on a certain package and data source.
+     * 
+     * @author Jeroen van Schagen
+     */
+    public static final class ExceptionTranslatorFactoryBean extends SingletonFactoryBean<DatabaseConstraintExceptionTranslator> {
     	
         private String basePackage;
     	
@@ -68,15 +83,11 @@ public class TranslateExceptionsBeanDefinitionParser extends AbstractBeanDefinit
 
         @Override
         protected DatabaseConstraintExceptionTranslator createObject() throws Exception {
-            DatabaseConstraintViolationResolver violationResolver = DatabaseConstraintViolationResolverFactory.createResolver(basePackage, dataSource);
-            DatabaseConstraintExceptionFactory exceptionFactory = createExceptionFactory();
+            DatabaseConstraintViolationResolver violationResolver = DatabaseConstraintViolationResolverFactory.buildViolationResolver(basePackage, dataSource);
+            DatabaseConstraintExceptionFactory exceptionFactory = new ConfigurableConstraintExceptionFactory(defaultExceptionFactory).registerAll(basePackage);
             return new DatabaseConstraintExceptionTranslator(violationResolver, exceptionFactory);
         }
 
-        private DatabaseConstraintExceptionFactory createExceptionFactory() {
-            return new ConfigurableConstraintExceptionFactory(defaultExceptionFactory).registerAll(basePackage);
-        }
-        
         public void setBasePackage(String basePackage) {
             this.basePackage = basePackage;
         }

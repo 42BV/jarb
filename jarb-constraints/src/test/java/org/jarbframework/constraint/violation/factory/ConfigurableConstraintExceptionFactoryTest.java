@@ -1,7 +1,7 @@
 package org.jarbframework.constraint.violation.factory;
 
 import static org.jarbframework.constraint.violation.DatabaseConstraintType.UNIQUE_KEY;
-import static org.jarbframework.constraint.violation.factory.mapping.NameMatchingStrategy.EXACT;
+import static org.jarbframework.constraint.violation.factory.NameMatchingStrategy.EXACT;
 import static org.junit.Assert.assertTrue;
 
 import org.jarbframework.constraint.violation.DatabaseConstraintViolation;
