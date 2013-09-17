@@ -13,6 +13,7 @@ import org.jarbframework.constraint.validation.DatabaseConstrained;
 public class Person extends AbstractEntity {
 
     private String name;
+    
     private String age;
     
     @Embedded

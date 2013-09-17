@@ -2,12 +2,15 @@ package org.jarbframework.utils.bean;
 
 import static org.jarbframework.utils.Asserts.notNull;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.beans.DirectFieldAccessor;
 import org.springframework.beans.NotReadablePropertyException;
 import org.springframework.beans.NotWritablePropertyException;
+import org.springframework.beans.NullValueInNestedPathException;
 import org.springframework.beans.PropertyAccessor;
 
 /**
@@ -19,9 +22,13 @@ import org.springframework.beans.PropertyAccessor;
  * @date Aug 16, 2011
  */
 public final class ModifiableBean<T> {
+	
+	private static final Logger LOGGER = LoggerFactory.getLogger(ModifiableBean.class);
+	
     private final T bean;
 
     private final BeanWrapper beanWrapper;
+    
     private final PropertyAccessor fieldAccessor;
 
     private ModifiableBean(T bean) {
@@ -60,6 +67,16 @@ public final class ModifiableBean<T> {
         } catch (NotReadablePropertyException e) {
             return fieldAccessor.getPropertyValue(propertyName);
         }
+    }
+    
+    public Object getPropertyValueSafely(String propertyName) {
+        Object propertyValue = null;
+        try {
+            propertyValue = getPropertyValue(propertyName);
+        } catch (NullValueInNestedPathException e) {
+            LOGGER.debug("Could not retrieve actual property value.", e);
+        }
+        return propertyValue;
     }
 
     public boolean isWritableProperty(String propertyName) {

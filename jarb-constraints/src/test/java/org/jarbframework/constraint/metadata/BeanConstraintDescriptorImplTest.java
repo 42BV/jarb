@@ -10,11 +10,11 @@ import org.junit.Test;
 
 public class BeanConstraintDescriptorImplTest {
     
-    private BeanConstraintDescriptorImpl constraintDescriptor;
+    private BeanConstraintDescriptor constraintDescriptor;
 
     @Before
     public void setUp() {
-        constraintDescriptor = new BeanConstraintDescriptorImpl();
+        constraintDescriptor = new BeanConstraintDescriptor();
     }
 
     /**

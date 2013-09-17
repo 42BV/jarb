@@ -30,23 +30,21 @@ public class BeanConstraintDescriptorFactoryBean extends SingletonFactoryBean<Be
     
     @Override
     protected BeanConstraintDescriptor createObject() throws Exception {
-        BeanConstraintDescriptorImpl descriptor = new BeanConstraintDescriptorImpl();
-        descriptor.registerEnhancer(new DatabaseSchemaPropertyConstraintEnhancer(columnMetadataRepository, schemaMapper));
-        descriptor.registerEnhancer(new DatabaseGeneratedPropertyConstraintEnhancer());
+        BeanConstraintDescriptor beanDescriptor = new BeanConstraintDescriptor();
+        beanDescriptor.registerEnhancer(new DatabaseSchemaPropertyConstraintEnhancer(columnMetadataRepository, schemaMapper));
+        beanDescriptor.registerEnhancer(new DatabaseGeneratedPropertyConstraintEnhancer());
         
-        // Basic constraint annotations
-        descriptor.registerEnhancer(new LengthPropertyConstraintEnhancer());
-        descriptor.registerEnhancer(new DigitsPropertyConstraintEnhancer());
-        descriptor.registerEnhancer(new NotNullPropertyConstraintEnhancer());
-        descriptor.registerEnhancer(new NotEmptyPropertyConstraintEnhancer());
+        beanDescriptor.registerEnhancer(new LengthPropertyConstraintEnhancer());
+        beanDescriptor.registerEnhancer(new DigitsPropertyConstraintEnhancer());
+        beanDescriptor.registerEnhancer(new NotNullPropertyConstraintEnhancer());
+        beanDescriptor.registerEnhancer(new NotEmptyPropertyConstraintEnhancer());
         
-        // Type recognition
-        descriptor.registerEnhancer(new ClassPropertyTypeEnhancer(String.class, "text"));
-        descriptor.registerEnhancer(new ClassPropertyTypeEnhancer(Date.class, "date"));
-        descriptor.registerEnhancer(new ClassPropertyTypeEnhancer(Number.class, "number"));
-        descriptor.registerEnhancer(new AnnotationPropertyTypeEnhancer(Email.class, "email"));
-        descriptor.registerEnhancer(new AnnotationPropertyTypeEnhancer(CreditCardNumber.class, "credid_card"));
-        return descriptor;
+        beanDescriptor.registerEnhancer(new ClassPropertyTypeEnhancer(String.class, "text"));
+        beanDescriptor.registerEnhancer(new ClassPropertyTypeEnhancer(Date.class, "date"));
+        beanDescriptor.registerEnhancer(new ClassPropertyTypeEnhancer(Number.class, "number"));
+        beanDescriptor.registerEnhancer(new AnnotationPropertyTypeEnhancer(Email.class, "email"));
+        beanDescriptor.registerEnhancer(new AnnotationPropertyTypeEnhancer(CreditCardNumber.class, "credid_card"));
+        return beanDescriptor;
     }
     
     public void setColumnMetadataRepository(ColumnMetadataRepository columnMetadataRepository) {

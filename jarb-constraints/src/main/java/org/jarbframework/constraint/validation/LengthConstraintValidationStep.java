@@ -11,28 +11,31 @@ public class LengthConstraintValidationStep implements DatabaseConstraintValidat
 
     @Override
     public void validate(Object propertyValue, PropertyReference propertyRef, ColumnMetadata columnMetadata, DatabaseConstraintValidationContext context) {
-        if (lengthExceeded(propertyValue, columnMetadata)) {
+        if (isLengthExceeded(propertyValue, columnMetadata)) {
             context.buildViolationWithTemplate(propertyRef, LENGTH_VIOLATION_TEMPLATE)
                     .attribute("max", columnMetadata.getMaximumLength())
                     .value(propertyValue)
-                    .addToContext();
+                    	.addToContext();
         }
     }
 
-    private boolean lengthExceeded(Object propertyValue, ColumnMetadata columnMetadata) {
+    private boolean isLengthExceeded(Object propertyValue, ColumnMetadata columnMetadata) {
         boolean lengthExceeded = false;
         if (columnMetadata.hasMaximumLength()) {
-            if (propertyValue instanceof String) {
-                lengthExceeded = ((String) propertyValue).length() > columnMetadata.getMaximumLength();
-            } else if (propertyValue instanceof Number) {
-                lengthExceeded = numberOfDigits((Number) propertyValue) > columnMetadata.getMaximumLength();
-            }
+        	int length = getLength(propertyValue);
+			lengthExceeded = length > columnMetadata.getMaximumLength();
         }
         return lengthExceeded;
     }
-
-    private int numberOfDigits(Number number) {
-        return new BigDecimal(number.toString()).precision();
+    
+    private int getLength(Object value) {
+    	int length = -1;
+    	if (value instanceof String) {
+            length = ((String) value).length();
+        } else if (value instanceof Number) {
+            length = new BigDecimal(value.toString()).precision();
+        }
+    	return length;
     }
 
 }

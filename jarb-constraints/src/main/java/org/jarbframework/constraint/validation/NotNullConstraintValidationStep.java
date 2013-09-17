@@ -12,13 +12,13 @@ public class NotNullConstraintValidationStep implements DatabaseConstraintValida
 
     @Override
     public void validate(Object propertyValue, PropertyReference propertyRef, ColumnMetadata columnMetadata, DatabaseConstraintValidationContext context) {
-        if (propertyValue == null && valueIsExpected(propertyRef, columnMetadata)) {
+        if (propertyValue == null && isValueExpected(propertyRef, columnMetadata)) {
             context.buildViolationWithTemplate(propertyRef, NOT_NULL_VIOLATION_TEMPLATE).addToContext();
         }
     }
 
-    private boolean valueIsExpected(PropertyReference propertyRef, ColumnMetadata columnMetadata) {
-        return columnMetadata.isRequired() && !isGeneratable(propertyRef, columnMetadata);
+    private boolean isValueExpected(PropertyReference propertyRef, ColumnMetadata columnMetadata) {
+        return columnMetadata.isRequired() && ! isGeneratable(propertyRef, columnMetadata);
     }
 
     private boolean isGeneratable(PropertyReference propertyRef, ColumnMetadata columnMetadata) {

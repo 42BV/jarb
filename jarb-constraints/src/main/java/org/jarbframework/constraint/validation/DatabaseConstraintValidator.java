@@ -17,7 +17,6 @@ import org.jarbframework.utils.orm.ColumnReference;
 import org.jarbframework.utils.orm.SchemaMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.NullValueInNestedPathException;
 
 /**
  * Validates the property values of a bean satisfy our database constraints.
@@ -65,62 +64,50 @@ public class DatabaseConstraintValidator {
     /**
      * Determine if a bean follows all column constraints defined in the database.
      * @param bean the bean that should be validated
+     * @param beanReference the reference to our bean, or {@code null} if the bean is our root
      * @param validatorContext used to create constraint violations
      * @return whether the bean is valid, or not
      */
-    public boolean isValid(Object bean, ConstraintValidatorContext validatorContext) {
+	public boolean isValid(Object bean, PropertyReference beanReference, ConstraintValidatorContext validatorContext) {
         DatabaseConstraintValidationContext validation = new DatabaseConstraintValidationContext(validatorContext, messageBuilder);
-        validateBean(bean, validation);
+        validateBean(bean, beanReference, validation);
         return validation.isValid();
-    }
+	}
 
-    private void validateBean(Object bean, DatabaseConstraintValidationContext validation) {
+    private void validateBean(Object bean, PropertyReference beanReference, DatabaseConstraintValidationContext validation) {
+    	ModifiableBean<?> beanWrapper = ModifiableBean.wrap(bean);
         for (String propertyName : BeanProperties.getFieldNames(bean.getClass())) {
-            validateProperty(bean, new PropertyReference(bean.getClass(), propertyName), validation);
+			validateProperty(beanWrapper, new PropertyReference(bean.getClass(), propertyName), beanReference, validation);
         }
     }
 
-    private void validateProperty(Object bean, PropertyReference property, DatabaseConstraintValidationContext validation) {
-        Field propertyField = BeanProperties.findPropertyField(property);
-        if (!Modifier.isStatic(propertyField.getModifiers())) {
+    private void validateProperty(ModifiableBean<?> beanWrapper, PropertyReference propertyReference, PropertyReference beanReference, DatabaseConstraintValidationContext validation) {
+        Field propertyField = BeanProperties.findPropertyField(propertyReference);
+        if (! Modifier.isStatic(propertyField.getModifiers())) {
             Class<?> propertyClass = propertyField.getType();
             if (schemaMapper.isEmbeddable(propertyClass)) {
-                validateNestedProperty(bean, property, validation, propertyClass);
-            } else {
-                validateDirectProperty(bean, property, validation);
-            }
-        }
-    }
-
-    private void validateNestedProperty(Object bean, PropertyReference parent, DatabaseConstraintValidationContext validation, Class<?> propertyClass) {
-        for (String propertyName : BeanProperties.getFieldNames(propertyClass)) {
-            validateProperty(bean, new PropertyReference(parent, propertyName), validation);
-        }
-    }
-
-    private void validateDirectProperty(Object bean, PropertyReference property, DatabaseConstraintValidationContext validation) {
-        ColumnReference column = schemaMapper.getColumnReference(property);
-        if (column != null) {
-            ColumnMetadata columnMetadata = columnMetadataRepository.getColumnMetadata(column);
-            if (columnMetadata != null) {
-                Object propertyValue = getPropertyValue(bean, property);
-                for (DatabaseConstraintValidationStep validationStep : validationSteps) {
-                    validationStep.validate(propertyValue, property, columnMetadata, validation);
+            	for (String propertyName : BeanProperties.getFieldNames(propertyClass)) {
+                    validateProperty(beanWrapper, new PropertyReference(propertyReference, propertyName), beanReference, validation);
                 }
             } else {
-                logger.warn("Skipped validation because no metadata could be found for column '{}'.", column);
+                validateSimpleProperty(beanWrapper, propertyReference, beanReference, validation);
             }
         }
     }
 
-    private Object getPropertyValue(Object bean, PropertyReference property) {
-        Object propertyValue = null;
-        try {
-            propertyValue = ModifiableBean.wrap(bean).getPropertyValue(property.getName());
-        } catch (NullValueInNestedPathException e) {
-            logger.debug("Could not retrieve actual property value.", e);
+    private void validateSimpleProperty(ModifiableBean<?> beanWrapper, PropertyReference propertyReference, PropertyReference beanReference, DatabaseConstraintValidationContext validation) {
+        ColumnReference columnReference = schemaMapper.getColumnReference(propertyReference.wrap(beanReference));
+        if (columnReference != null) {
+            ColumnMetadata columnMetadata = columnMetadataRepository.getColumnMetadata(columnReference);
+            if (columnMetadata != null) {
+                Object propertyValue = beanWrapper.getPropertyValueSafely(propertyReference.getName());
+                for (DatabaseConstraintValidationStep validationStep : validationSteps) {
+                    validationStep.validate(propertyValue, propertyReference, columnMetadata, validation);
+                }
+            } else {
+                logger.warn("Skipped validation because no metadata could be found for column '{}'.", columnReference);
+            }
         }
-        return propertyValue;
     }
 
     public void setMessageInterpolator(MessageInterpolator messageInterpolator) {

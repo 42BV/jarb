@@ -4,11 +4,12 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static org.jarbframework.utils.Asserts.notNull;
 
 import org.jarbframework.utils.Asserts;
+import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
-import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 
 /**
- * Provides enhanced bean finding functionality on bean factories.
+ * Retrieves beans from the {@link BeanFactory}.
+ * 
  * @author Jeroen van Schagen
  * @since Sep 8, 2011
  */
@@ -34,6 +35,7 @@ public class SpringBeanFinder {
      */
     public <T> T findBean(Class<T> beanClass, String identifier) {
         notNull(beanClass, "Bean class cannot be null.");
+        
         if (isNotBlank(identifier)) {
             // Find the bean based on its specified non-blank identifier
             return beanFactory.getBean(identifier, beanClass);
@@ -49,19 +51,19 @@ public class SpringBeanFinder {
      * the specified type, we will wire based on the default identifier.
      * @param beanClass type of the bean
      * @param identifier identifier of the bean (<b>optional</b>)
-     * @param defaultIdentifier default bean identifier (<b>required</b>)
+     * @param fallbackIdentifier fall-back bean identifier (<b>required</b>)
      * @return matching bean
      */
-    public <T> T findBean(Class<T> beanClass, String identifier, String defaultIdentifier) {
+    public <T> T findBean(Class<T> beanClass, String identifier, String fallbackIdentifier) {
         try {
             return findBean(beanClass, identifier);
-        } catch (NoSuchBeanDefinitionException noBean) {
+        } catch (BeansException be) {
             // Whenever no regular bean could be found, look for the default bean
             try {
-                Asserts.hasText(defaultIdentifier, "Default bean identifier cannot be empty");
-                return beanFactory.getBean(defaultIdentifier, beanClass);
-            } catch (NoSuchBeanDefinitionException noDefaultBean) {
-                throw noBean; // Throw the original exception
+                Asserts.hasText(fallbackIdentifier, "Fallback bean identifier cannot be empty");
+                return beanFactory.getBean(fallbackIdentifier, beanClass);
+            } catch (BeansException dbe) {
+                throw be; // Throw the original exception
             }
         }
     }

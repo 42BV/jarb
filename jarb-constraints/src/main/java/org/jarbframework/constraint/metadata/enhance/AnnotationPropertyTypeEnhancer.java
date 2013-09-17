@@ -27,11 +27,11 @@ public class AnnotationPropertyTypeEnhancer implements PropertyConstraintEnhance
     }
 
     @Override
-    public PropertyConstraintDescription enhance(PropertyConstraintDescription description) {
-        if (fieldOrGetter().hasAnnotation(description.toPropertyReference(), annotationClass)) {
-            description.addType(typeName);
+    public PropertyConstraintDescription enhance(PropertyConstraintDescription propertyDescription) {
+        if (fieldOrGetter().hasAnnotation(propertyDescription.toReference(), annotationClass)) {
+            propertyDescription.addType(typeName);
         }
-        return description;
+        return propertyDescription;
     }
 
 }

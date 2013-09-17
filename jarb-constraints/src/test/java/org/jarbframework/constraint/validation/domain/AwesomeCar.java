@@ -11,7 +11,7 @@ import org.jarbframework.constraint.validation.DatabaseConstrained;
 @Entity
 @Table(name = "cars")
 @DatabaseConstrained
-public class ValidatingCar extends AbstractEntity {
+public class AwesomeCar extends AbstractEntity {
 
     private String licenseNumber;
 
@@ -25,10 +25,10 @@ public class ValidatingCar extends AbstractEntity {
 
     private transient String unmappedProperty;
 
-    ValidatingCar() {
+    AwesomeCar() {
     }
     
-    public ValidatingCar(String licenseNumber) {
+    public AwesomeCar(String licenseNumber) {
         this.licenseNumber = licenseNumber;
     }
     

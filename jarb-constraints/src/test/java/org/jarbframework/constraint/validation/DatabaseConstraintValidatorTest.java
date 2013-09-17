@@ -13,9 +13,10 @@ import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
 
 import org.jarbframework.constraint.validation.domain.Address;
+import org.jarbframework.constraint.validation.domain.ChangeAddressCommand;
 import org.jarbframework.constraint.validation.domain.Contact;
 import org.jarbframework.constraint.validation.domain.Person;
-import org.jarbframework.constraint.validation.domain.ValidatingCar;
+import org.jarbframework.constraint.validation.domain.AwesomeCar;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,58 +34,58 @@ public class DatabaseConstraintValidatorTest {
 
     @Test
     public void testValid() {
-        ValidatingCar car = new ValidatingCar("AB1337");
+        AwesomeCar car = new AwesomeCar("AB1337");
 
-        Set<ConstraintViolation<ValidatingCar>> violations = validator.validate(car);
+        Set<ConstraintViolation<AwesomeCar>> violations = validator.validate(car);
         assertTrue("Expected no violations", violations.isEmpty());
     }
 
     @Test
     public void testNotNull() {
-        ValidatingCar carWithoutLicense = new ValidatingCar(null);
+        AwesomeCar carWithoutLicense = new AwesomeCar(null);
 
-        Set<ConstraintViolation<ValidatingCar>> violations = validator.validate(carWithoutLicense);
+        Set<ConstraintViolation<AwesomeCar>> violations = validator.validate(carWithoutLicense);
         assertEquals(1, violations.size());
 
-        ConstraintViolation<ValidatingCar> violation = violations.iterator().next();
+        ConstraintViolation<AwesomeCar> violation = violations.iterator().next();
         assertEquals("licenseNumber", violation.getPropertyPath().toString());
         assertEquals("cannot be null", violation.getMessage());
     }
 
     @Test
     public void testViolateStringMaxLength() {
-        ValidatingCar carWithoutLicense = new ValidatingCar("longerthansixcharacters");
+        AwesomeCar carWithoutLicense = new AwesomeCar("longerthansixcharacters");
 
-        Set<ConstraintViolation<ValidatingCar>> violations = validator.validate(carWithoutLicense);
+        Set<ConstraintViolation<AwesomeCar>> violations = validator.validate(carWithoutLicense);
         assertEquals(1, violations.size());
 
-        ConstraintViolation<ValidatingCar> licenseViolation = violations.iterator().next();
+        ConstraintViolation<AwesomeCar> licenseViolation = violations.iterator().next();
         assertEquals("licenseNumber", licenseViolation.getPropertyPath().toString());
         assertEquals("length cannot be greater than 6", licenseViolation.getMessage());
     }
 
     @Test
     public void testViolateNumberMaxLength() {
-        ValidatingCar carWithHighPrice = new ValidatingCar("abcdef");
+        AwesomeCar carWithHighPrice = new AwesomeCar("abcdef");
         carWithHighPrice.setPrice(1000000D);
 
-        Set<ConstraintViolation<ValidatingCar>> violations = validator.validate(carWithHighPrice);
+        Set<ConstraintViolation<AwesomeCar>> violations = validator.validate(carWithHighPrice);
         assertEquals(1, violations.size());
 
-        ConstraintViolation<ValidatingCar> licenseViolation = violations.iterator().next();
+        ConstraintViolation<AwesomeCar> licenseViolation = violations.iterator().next();
         assertEquals("price", licenseViolation.getPropertyPath().toString());
         assertEquals("length cannot be greater than 6", licenseViolation.getMessage());
     }
 
     @Test
     public void testViolateMaxFractionLength() {
-        ValidatingCar carWithHighPrice = new ValidatingCar("abcdef");
+        AwesomeCar carWithHighPrice = new AwesomeCar("abcdef");
         carWithHighPrice.setPrice(42.123);
 
-        Set<ConstraintViolation<ValidatingCar>> violations = validator.validate(carWithHighPrice);
+        Set<ConstraintViolation<AwesomeCar>> violations = validator.validate(carWithHighPrice);
         assertEquals(1, violations.size());
 
-        ConstraintViolation<ValidatingCar> licenseViolation = violations.iterator().next();
+        ConstraintViolation<AwesomeCar> licenseViolation = violations.iterator().next();
         assertEquals("price", licenseViolation.getPropertyPath().toString());
         assertEquals("cannot have more than 2 numbers behind the comma", licenseViolation.getMessage());
     }
@@ -103,8 +104,20 @@ public class DatabaseConstraintValidatorTest {
         assertEquals("contact.address.city", violation.getPropertyPath().toString());
         assertEquals("cannot be null", violation.getMessage());
     }
+    
+    @Test
+    public void testEmbeddedViolationWithoutEntity() {
+    	ChangeAddressCommand command = new ChangeAddressCommand();
+        Address addressWithoutCity = new Address("Testweg 61", null);
+        command.setAddress(addressWithoutCity);
 
-    // Alternative scenario's
+        Set<ConstraintViolation<ChangeAddressCommand>> violations = validator.validate(command);
+        assertEquals(1, violations.size());
+
+        ConstraintViolation<ChangeAddressCommand> violation = violations.iterator().next();
+        assertEquals("address.city", violation.getPropertyPath().toString());
+        assertEquals("cannot be null", violation.getMessage());
+    }
 
     /**
      * Assert that multiple database constraint violations can be validated at once.
@@ -118,7 +131,7 @@ public class DatabaseConstraintValidatorTest {
     @Test
     @SuppressWarnings("unchecked")
     public void testMultipleViolations() {
-        ValidatingCar unknownOverpricedCar = new ValidatingCar(null);
+        AwesomeCar unknownOverpricedCar = new AwesomeCar(null);
         unknownOverpricedCar.setPrice(42000.123);
 
         assertThat(validator.validate(unknownOverpricedCar),

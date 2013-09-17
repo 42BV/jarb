@@ -44,10 +44,10 @@ public class BeanConstraintDescription {
 
     /**
      * Attach the description of a property to this bean description.
-     * @param description description of the property constraints
+     * @param propertyDescription description of the property constraints
      */
-    void addPropertyDescription(PropertyConstraintDescription description) {
-        propertyDescriptions.put(description.getName(), description);
+    void addPropertyDescription(PropertyConstraintDescription propertyDescription) {
+        propertyDescriptions.put(propertyDescription.getName(), propertyDescription);
     }
 
     @Override

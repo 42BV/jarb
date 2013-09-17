@@ -51,10 +51,6 @@ public class PropertyConstraintDescription {
         return propertyReference.getName();
     }
 
-    public PropertyReference toPropertyReference() {
-        return propertyReference;
-    }
-
     public Class<?> getJavaType() {
         return propertyClass;
     }
@@ -85,12 +81,11 @@ public class PropertyConstraintDescription {
         if (minimumLength != null && minimumLength < 0) {
             throw new IllegalStateException("Minimum length cannot be negative.");
         }
-        if (isRange(minimumLength, maximumLength)) {
-            this.minimumLength = minimumLength;
-        } else {
-            String message = String.format("Cannot change minimum length to '%d', as the maximum length '%d' is lower.", minimumLength, maximumLength);
+        if (! isRange(minimumLength, maximumLength)) {
+        	String message = String.format("Cannot change minimum length to '%d', as the maximum length '%d' is lower.", minimumLength, maximumLength);
             throw new IllegalStateException(message);
         }
+        this.minimumLength = minimumLength;
         return this;
     }
 
@@ -102,12 +97,11 @@ public class PropertyConstraintDescription {
         if (maximumLength != null && maximumLength < 0) {
             throw new IllegalStateException("Maximum length cannot be negative.");
         }
-        if (isRange(minimumLength, maximumLength)) {
-            this.maximumLength = maximumLength;
-        } else {
-            String message = String.format("Cannot change maximum length to '%d', as the minimum length '%d' is greater.", maximumLength, minimumLength);
+        if (! isRange(minimumLength, maximumLength)) {
+        	String message = String.format("Cannot change maximum length to '%d', as the minimum length '%d' is greater.", maximumLength, minimumLength);
             throw new IllegalStateException(message);
         }
+        this.maximumLength = maximumLength;
         return this;
     }
 
@@ -139,6 +133,10 @@ public class PropertyConstraintDescription {
     @Override
     public String toString() {
         return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
+    }
+
+    public PropertyReference toReference() {
+        return propertyReference;
     }
 
 }

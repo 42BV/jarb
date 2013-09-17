@@ -11,23 +11,24 @@ public class FractionLengthConstraintValidationStep implements DatabaseConstrain
 
     @Override
     public void validate(Object propertyValue, PropertyReference propertyRef, ColumnMetadata columnMetadata, DatabaseConstraintValidationContext context) {
-        if (fractionLengthExceeded(propertyValue, columnMetadata)) {
+        if (isFractionLengthExceeded(propertyValue, columnMetadata)) {
             context.buildViolationWithTemplate(propertyRef, FRACTION_LENGTH_TEMPLATE)
                     .attribute("max", columnMetadata.getFractionLength())
                     .value(propertyValue)
-                    .addToContext();
+                    	.addToContext();
         }
     }
 
-    private boolean fractionLengthExceeded(Object propertyValue, ColumnMetadata columnMetadata) {
+    private boolean isFractionLengthExceeded(Object propertyValue, ColumnMetadata columnMetadata) {
         boolean lengthExceeded = false;
-        if ((columnMetadata.hasFractionLength()) && (propertyValue instanceof Number)) {
-            lengthExceeded = lengthOfFraction((Number) propertyValue) > columnMetadata.getFractionLength();
+        if (columnMetadata.hasFractionLength() && propertyValue instanceof Number) {
+        	int fractionLength = getFractionLength((Number) propertyValue);
+            lengthExceeded = fractionLength > columnMetadata.getFractionLength();
         }
         return lengthExceeded;
     }
 
-    private int lengthOfFraction(Number number) {
+    private int getFractionLength(Number number) {
         BigDecimal numberAsBigDecimal = new BigDecimal(number.toString());
         return numberAsBigDecimal.scale() < 0 ? 0 : numberAsBigDecimal.scale();
     }

@@ -9,8 +9,7 @@ import org.jarbframework.constraint.validation.ViolationMessageBuilder.Violation
 import org.jarbframework.utils.bean.PropertyReference;
 
 /**
- * Context of a specific bean validation. Bean violations can be
- * retrieved and included to this context.
+ * Context of a specific bean validation. Bean violations can be retrieved and included to this context.
  *
  * @author Jeroen van Schagen
  * @since 20-10-2011
@@ -119,5 +118,7 @@ public final class DatabaseConstraintValidationContext {
         private ConstraintViolationBuilder buildConstraintViolation() {
             return validatorContext.buildConstraintViolationWithTemplate(template.message());
         }
+        
     }
+    
 }

@@ -61,7 +61,7 @@ public class HibernateJpaSchemaMapper implements SchemaMapper {
         ColumnReference columnReference = null;
         try {
             AbstractEntityPersister classMetadata = safelyFindClassMetadata(propertyReference.getBeanClass());
-            if(classMetadata != null) {
+            if (classMetadata != null) {
                 String[] columnNames = classMetadata.getPropertyColumnNames(propertyReference.getName());
                 if(columnNames.length == 1) {
                     columnReference = new ColumnReference(classMetadata.getTableName(), columnNames[0]);

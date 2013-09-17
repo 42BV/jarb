@@ -1,6 +1,5 @@
 package org.jarbframework.constraint.validation;
 
-import javax.validation.MessageInterpolator;
 import javax.validation.ValidatorFactory;
 
 import org.jarbframework.constraint.metadata.database.ColumnMetadataRepository;
@@ -8,7 +7,7 @@ import org.jarbframework.utils.orm.SchemaMapper;
 import org.jarbframework.utils.spring.SpringBeanFinder;
 
 /**
- * Factory that builds a default constraint validator, when none is available.
+ * Constructs {@link DatabaseConstraintValidator} beans.
  *
  * @author Jeroen van Schagen
  * @since 20-10-2011
@@ -17,30 +16,26 @@ public class DatabaseConstraintValidatorFactory {
     
     public static final String DEFAULT_SCHEMA_MAPPER_ID = "schemaMapper";
     public static final String DEFAULT_COLUMN_METADATA_REPOSITORY_ID = "databaseConstraintRepository";
-    
     public static final String DEFAULT_VALIDATOR_FACTORY_ID = "validator";
 
-    private final SpringBeanFinder beanSearcher;
+    private final SpringBeanFinder beanFinder;
 
-    public DatabaseConstraintValidatorFactory(SpringBeanFinder beanSearcher) {
-        this.beanSearcher = beanSearcher;
-    }
-
-    public DatabaseConstraintValidator build() {
-        DatabaseConstraintValidator validator = new DatabaseConstraintValidator();
-        validator.setSchemaMapper(beanSearcher.findBean(SchemaMapper.class, null, DEFAULT_SCHEMA_MAPPER_ID));
-        validator.setColumnMetadataRepository(beanSearcher.findBean(ColumnMetadataRepository.class, null, DEFAULT_COLUMN_METADATA_REPOSITORY_ID));
-        validator.setMessageInterpolator(getMessageInterpolatorFromValidatorFactory());
-        return validator;
+    public DatabaseConstraintValidatorFactory(SpringBeanFinder beanFinder) {
+        this.beanFinder = beanFinder;
     }
 
     /**
-     * Extracts the message interpolator from the JSR303 validator factory.
-     * @return the message interpolator in our validator factory
+     * Build a new {@link DatabaseConstraintValidator}.
+     * @return the database constraint validation bean
      */
-    private MessageInterpolator getMessageInterpolatorFromValidatorFactory() {
-        ValidatorFactory validatorFactory = beanSearcher.findBean(ValidatorFactory.class, null, DEFAULT_VALIDATOR_FACTORY_ID);
-        return validatorFactory.getMessageInterpolator();
+    public DatabaseConstraintValidator build() {
+        DatabaseConstraintValidator validator = new DatabaseConstraintValidator();
+        validator.setSchemaMapper(beanFinder.findBean(SchemaMapper.class, null, DEFAULT_SCHEMA_MAPPER_ID));
+        validator.setColumnMetadataRepository(beanFinder.findBean(ColumnMetadataRepository.class, null, DEFAULT_COLUMN_METADATA_REPOSITORY_ID));
+        
+        ValidatorFactory validatorFactory = beanFinder.findBean(ValidatorFactory.class, null, DEFAULT_VALIDATOR_FACTORY_ID);
+		validator.setMessageInterpolator(validatorFactory.getMessageInterpolator());
+        return validator;
     }
 
 }

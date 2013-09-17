@@ -24,11 +24,11 @@ public class ClassPropertyTypeEnhancer implements PropertyConstraintEnhancer {
     }
 
     @Override
-    public PropertyConstraintDescription enhance(PropertyConstraintDescription description) {
-        if (propertyClass.isAssignableFrom(description.getJavaType())) {
-            description.addType(typeName);
+    public PropertyConstraintDescription enhance(PropertyConstraintDescription propertyDescription) {
+        if (propertyClass.isAssignableFrom(propertyDescription.getJavaType())) {
+            propertyDescription.addType(typeName);
         }
-        return description;
+        return propertyDescription;
     }
 
 }

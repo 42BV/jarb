@@ -17,10 +17,10 @@ import org.jarbframework.constraint.metadata.PropertyConstraintDescription;
 public class DigitsPropertyConstraintEnhancer implements PropertyConstraintEnhancer {
 
     @Override
-    public PropertyConstraintDescription enhance(PropertyConstraintDescription description) {
-        Collection<Digits> digitsAnnotations = fieldOrGetter().getAnnotations(description.toPropertyReference(), Digits.class);
-        Integer maximumLength = description.getMaximumLength();
-        Integer fractionLength = description.getFractionLength();
+    public PropertyConstraintDescription enhance(PropertyConstraintDescription propertyDescription) {
+        Collection<Digits> digitsAnnotations = fieldOrGetter().getAnnotations(propertyDescription.toReference(), Digits.class);
+        Integer maximumLength = propertyDescription.getMaximumLength();
+        Integer fractionLength = propertyDescription.getFractionLength();
         for (Digits digitsAnnotation : digitsAnnotations) {
             if (maximumLength != null) {
                 // Store the lowest maximum length, as this will cause both length restrictions to pass
@@ -35,9 +35,9 @@ public class DigitsPropertyConstraintEnhancer implements PropertyConstraintEnhan
                 fractionLength = digitsAnnotation.fraction();
             }
         }
-        description.setMaximumLength(maximumLength);
-        description.setFractionLength(fractionLength);
-        return description;
+        propertyDescription.setMaximumLength(maximumLength);
+        propertyDescription.setFractionLength(fractionLength);
+        return propertyDescription;
     }
 
 }
