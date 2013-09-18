@@ -17,7 +17,7 @@
 	<packaging>pom</packaging>
 	
 	<name>Java Repository Bridge</name>
-	<version>1.4.2-SNAPSHOT</version>
+	<version>1.4.2</version>
 	<description>Provides support for databases</description>
 	<url>http://www.jarbframework.org</url>
 	<inceptionYear>2011</inceptionYear>
