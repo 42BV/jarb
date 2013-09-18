@@ -22,7 +22,7 @@ public class JpaCarRepository implements CarRepository {
      * {@inheritDoc}
      */
     @Override
-    public Car add(Car car) {
+    public Car save(Car car) {
         entityManager.persist(car);
         return car;
     }

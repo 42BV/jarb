@@ -15,7 +15,7 @@ public interface CarRepository {
      * @param car the car to add
      * @return added car instance
      */
-    Car add(Car user);
+    Car save(Car user);
 
     /**
      * Throws a checked exception.

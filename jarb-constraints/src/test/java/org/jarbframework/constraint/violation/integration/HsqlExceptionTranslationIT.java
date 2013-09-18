@@ -1,10 +1,13 @@
-package org.jarbframework.constraint.violation;
+package org.jarbframework.constraint.violation.integration;
 
 import static org.jarbframework.constraint.violation.DatabaseConstraintType.NOT_NULL;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 import org.jarbframework.constraint.domain.Car;
+import org.jarbframework.constraint.violation.DatabaseConstraintType;
+import org.jarbframework.constraint.violation.DatabaseConstraintViolation;
+import org.jarbframework.constraint.violation.NotNullViolationException;
 import org.jarbframework.constraint.violation.domain.CarAlreadyExistsException;
 import org.jarbframework.constraint.violation.domain.CarInactiveException;
 import org.jarbframework.constraint.violation.domain.CarRepository;
@@ -26,10 +29,10 @@ import org.springframework.transaction.annotation.Transactional;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ActiveProfiles("hsqldb")
 @ContextConfiguration(locations = { "classpath:translation-context.xml" })
-public class ConstraintViolationExceptionTranslatingBeanPostProcessorTest {
+public class HsqlExceptionTranslationIT {
 
     @Autowired
-    private CarRepository users;
+    private CarRepository carRepository;
 
     /**
      * HSQL throws a native exception, stating that "uk_cars_license_number" was violated.
@@ -39,13 +42,14 @@ public class ConstraintViolationExceptionTranslatingBeanPostProcessorTest {
     @Test
     public void testUniqueWithCustomException() {
         Car car = new Car("iarpro");
-        users.add(car);
+        carRepository.save(car);
+        
         Car sameCar = new Car("iarpro");
         try {
-            users.add(sameCar);
+            carRepository.save(sameCar);
             fail("Expected a license number already exists exception");
-        } catch (CarAlreadyExistsException e) {
-            DatabaseConstraintViolation violation = e.getViolation();
+        } catch (CarAlreadyExistsException caee) {
+            DatabaseConstraintViolation violation = caee.getViolation();
             assertEquals(DatabaseConstraintType.UNIQUE_KEY, violation.getConstraintType());
             assertEquals("uk_cars_license_number", violation.getConstraintName());
         }
@@ -59,11 +63,12 @@ public class ConstraintViolationExceptionTranslatingBeanPostProcessorTest {
     public void testNotNullDefaultException() {
         Car carWithoutLicense = new Car(null);
         try {
-            users.add(carWithoutLicense);
+            carRepository.save(carWithoutLicense);
             fail("Expected a not null exception");
-        } catch (NotNullViolationException e) {
-            assertEquals("Column 'license_number' cannot be null.", e.getMessage());
-            DatabaseConstraintViolation violation = e.getViolation();
+        } catch (NotNullViolationException nnve) {
+            assertEquals("Column 'license_number' cannot be null.", nnve.getMessage());
+            
+            DatabaseConstraintViolation violation = nnve.getViolation();
             assertEquals(NOT_NULL, violation.getConstraintType());
             assertEquals("license_number", violation.getColumnName());
         }
@@ -75,7 +80,7 @@ public class ConstraintViolationExceptionTranslatingBeanPostProcessorTest {
      */
     @Test(expected = CarInactiveException.class)
     public void testCheckedExceptionUnaffected() throws CarInactiveException {
-        users.throwCheckedException();
+        carRepository.throwCheckedException();
     }
 
     /**
@@ -83,7 +88,7 @@ public class ConstraintViolationExceptionTranslatingBeanPostProcessorTest {
      */
     @Test(expected = UnsupportedOperationException.class)
     public void testOtherRuntimeExceptionUnaffected() {
-        users.throwUnsupportedOperationException();
+        carRepository.throwUnsupportedOperationException();
     }
 
 }
