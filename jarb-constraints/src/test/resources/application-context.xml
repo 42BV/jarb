@@ -68,4 +68,20 @@
         
     </beans>
     
+    <beans profile="oracle">
+
+        <bean id="dataSource" class="org.jarbframework.migrations.MigratingDataSource">
+            <property name="delegate">
+                <bean class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+                    <property name="driverClassName" value="oracle.jdbc.OracleDriver"/>
+                    <property name="url" value="jdbc:oracle:thin:@//localhost:1521/jarb"/>
+                    <property name="username" value="alm_it3100" />
+            		<property name="password" value="alm_it3100" />
+                </bean>
+            </property>
+            <property name="migrator" ref="schemaMigrator"/>
+        </bean>
+        
+    </beans>
+    
 </beans>

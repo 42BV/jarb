@@ -7,7 +7,7 @@ import org.jarbframework.constraint.violation.DatabaseConstraintExceptionTransla
 import org.jarbframework.constraint.violation.factory.ConfigurableConstraintExceptionFactory;
 import org.jarbframework.constraint.violation.factory.DatabaseConstraintExceptionFactory;
 import org.jarbframework.constraint.violation.resolver.DatabaseConstraintViolationResolver;
-import org.jarbframework.constraint.violation.resolver.DatabaseConstraintViolationResolverFactory;
+import org.jarbframework.constraint.violation.resolver.DefaultViolationResolver;
 import org.jarbframework.utils.spring.SingletonFactoryBean;
 import org.springframework.aop.aspectj.AspectJExpressionPointcut;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -83,7 +83,7 @@ public class TranslateExceptionsBeanDefinitionParser extends AbstractBeanDefinit
 
         @Override
         protected DatabaseConstraintExceptionTranslator createObject() throws Exception {
-            DatabaseConstraintViolationResolver violationResolver = DatabaseConstraintViolationResolverFactory.buildViolationResolver(basePackage, dataSource);
+            DatabaseConstraintViolationResolver violationResolver = new DefaultViolationResolver(dataSource, basePackage);
             DatabaseConstraintExceptionFactory exceptionFactory = new ConfigurableConstraintExceptionFactory(defaultExceptionFactory).registerAll(basePackage);
             return new DatabaseConstraintExceptionTranslator(violationResolver, exceptionFactory);
         }

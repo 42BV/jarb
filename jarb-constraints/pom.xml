@@ -9,7 +9,6 @@
 		<version>1.4.2-SNAPSHOT</version>
 	</parent>
 	
-	<groupId>org.jarbframework</groupId>
 	<artifactId>jarb-constraints</artifactId>
 	<packaging>jar</packaging>
 	<description>Module for handling database constraints</description>

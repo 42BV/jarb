@@ -10,9 +10,9 @@ import static org.jarbframework.constraint.violation.DatabaseConstraintViolation
 
 import org.apache.commons.lang3.StringUtils;
 import org.jarbframework.constraint.violation.DatabaseConstraintViolation;
+import org.jarbframework.constraint.violation.resolver.PatternViolationResolver;
 import org.jarbframework.constraint.violation.resolver.product.DatabaseProduct;
-import org.jarbframework.constraint.violation.resolver.vendor.ViolationMessagePatterns.VariableAccessor;
-import org.jarbframework.constraint.violation.resolver.vendor.ViolationMessagePatterns.ViolationBuilder;
+import org.jarbframework.constraint.violation.resolver.product.DatabaseProductSpecific;
 
 /**
  * PostgreSQL based constraint violation resolver.
@@ -20,7 +20,7 @@ import org.jarbframework.constraint.violation.resolver.vendor.ViolationMessagePa
  * @author Jeroen van Schagen
  * @since 16-05-2011
  */
-public class PostgresViolationResolver extends VendorViolationResolver {
+public class PostgresViolationResolver extends PatternViolationResolver implements DatabaseProductSpecific {
 
     public PostgresViolationResolver() {
         registerNotNull();

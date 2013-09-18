@@ -22,7 +22,6 @@ public class PostgresViolationResolverTest {
 
     @Test
     public void testNotNull() {
-
         DatabaseConstraintViolation violation = resolver.resolve("ERROR: null value in column \"name\" violates not-null constraint");
         assertEquals(DatabaseConstraintType.NOT_NULL, violation.getConstraintType());
         assertEquals("name", violation.getColumnName());
@@ -30,7 +29,6 @@ public class PostgresViolationResolverTest {
 
     @Test
     public void testForeignKey1() {
-
         DatabaseConstraintViolation violation = resolver.resolve(
                 "ERROR: insert or update on table \"kantoren\" violates foreign key constraint \"fk_kantoren_rayon_id\"\n"
                 + "  Detail: Key (rayon_id)=(4) is not present in table \"rayons\".");

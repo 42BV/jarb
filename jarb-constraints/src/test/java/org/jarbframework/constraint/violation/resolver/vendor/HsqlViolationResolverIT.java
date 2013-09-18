@@ -9,21 +9,30 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+
 import org.jarbframework.constraint.domain.Car;
 import org.jarbframework.constraint.violation.DatabaseConstraintViolation;
+import org.jarbframework.constraint.violation.resolver.DatabaseConstraintViolationResolver;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.transaction.annotation.Transactional;
 
+@Transactional
 @ActiveProfiles("hsqldb")
 @RunWith(SpringJUnit4ClassRunner.class)
-public class HsqlViolationResolverIntegrationTest extends ViolationResolverIntegrationTestTemplate {
+@ContextConfiguration(locations = { "classpath:application-context.xml" })
+public class HsqlViolationResolverIT {
  
-    public HsqlViolationResolverIntegrationTest() {
-        super(new HsqlViolationResolver());
-    }
-    
+    private final DatabaseConstraintViolationResolver resolver = new HsqlViolationResolver();
+
+    @PersistenceContext
+    private EntityManager entityManager;
+
     @Test
     public void testNotNull() {
         DatabaseConstraintViolation violation = persistWithViolation(new Car(null));
@@ -72,6 +81,27 @@ public class HsqlViolationResolverIntegrationTest extends ViolationResolverInteg
     @Test
     public void testUnknown() {
         assertNull(resolve(new RuntimeException()));
+    }
+
+    protected DatabaseConstraintViolation persistWithViolation(final Object object) {
+        try {
+            persist(object);
+            throw new AssertionError("Expected a runtime exception while persisting.");
+        } catch (RuntimeException e) {
+            DatabaseConstraintViolation violation = resolve(e);
+            if (violation == null) {
+                throw new IllegalStateException("Could not resolve violation from exception.", e);
+            }
+            return violation;
+        }
+    }
+
+    protected void persist(final Object object) {
+        entityManager.persist(object);
+    }
+
+    protected DatabaseConstraintViolation resolve(RuntimeException exception) {
+        return resolver.resolve(exception);
     }
     
 }

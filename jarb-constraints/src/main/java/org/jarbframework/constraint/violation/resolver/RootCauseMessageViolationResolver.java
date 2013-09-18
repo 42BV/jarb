@@ -16,23 +16,25 @@ public abstract class RootCauseMessageViolationResolver implements DatabaseConst
     
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public final DatabaseConstraintViolation resolve(Throwable throwable) {
         DatabaseConstraintViolation violation = null;
         
-        String rootCauseMessage = getRootCause(throwable).getMessage();
-        if (isNotBlank(rootCauseMessage)) {
-            logger.debug("Resolving violation based on message: {}", rootCauseMessage);
-            violation = resolve(rootCauseMessage);
+        String message = getRootCause(throwable).getMessage();
+        if (isNotBlank(message)) {
+            logger.debug("Resolving violation based on message: {}", message);
+            violation = resolve(message);
         }
         
         return violation;
     }
 
-    protected abstract DatabaseConstraintViolation resolve(String rootCauseMessage);
+    /**
+     * Resolve the database constraint violation based on a message.
+     * @param message the root cause message
+     * @return the resolved violation, if any
+     */
+    public abstract DatabaseConstraintViolation resolve(String message);
 
     /**
      * Retrieve the initial throwable cause, furthest down inside the stack.
