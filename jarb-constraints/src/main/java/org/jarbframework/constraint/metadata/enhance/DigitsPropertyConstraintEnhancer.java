@@ -1,6 +1,6 @@
 package org.jarbframework.constraint.metadata.enhance;
 
-import static org.jarbframework.utils.bean.BeanAnnotationScanner.fieldOrGetter;
+import static org.jarbframework.utils.bean.AnnotationScanner.fieldOrGetter;
 
 import java.util.Collection;
 

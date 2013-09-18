@@ -18,6 +18,7 @@ import org.springframework.util.ReflectionUtils.FieldCallback;
  * @date Aug 29, 2011
  */
 public final class BeanProperties {
+	
     public static Set<String> getPropertyNames(Class<?> beanClass) {
         Set<String> propertyNames = new HashSet<String>();
         for (PropertyDescriptor propertyDescriptor : getPropertyDescriptors(beanClass)) {
@@ -30,10 +31,12 @@ public final class BeanProperties {
     public static Set<String> getFieldNames(Class<?> beanClass) {
         final Set<String> fieldNames = new HashSet<String>();
         ReflectionUtils.doWithFields(beanClass, new FieldCallback() {
+        	
             @Override
             public void doWith(Field field) throws IllegalAccessException {
                 fieldNames.add(field.getName());
             }
+            
         });
         return fieldNames;
     }

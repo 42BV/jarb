@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.jarbframework.utils.bean.ModifiableBean;
+import org.jarbframework.utils.bean.DynamicBeanWrapper;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -26,7 +26,7 @@ public class WordFileTest {
     @Test
     public void testGetID() {
         Long id = new Long(1);
-        ModifiableBean.wrap(wordFile).setPropertyValue("id", id);
+        DynamicBeanWrapper.wrap(wordFile).setPropertyValue("id", id);
         assertEquals(id, wordFile.getId());
     }
 

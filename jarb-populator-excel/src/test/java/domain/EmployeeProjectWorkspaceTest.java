@@ -4,7 +4,7 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.Date;
 
-import org.jarbframework.utils.bean.ModifiableBean;
+import org.jarbframework.utils.bean.DynamicBeanWrapper;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -26,7 +26,7 @@ public class EmployeeProjectWorkspaceTest {
     @Test
     public void testGetId() {
         final Long id = 1L;
-        ModifiableBean.wrap(employeeProjectWorkspace).setPropertyValue("id", id);
+        DynamicBeanWrapper.wrap(employeeProjectWorkspace).setPropertyValue("id", id);
         assertEquals(id, employeeProjectWorkspace.getId());
     }
 

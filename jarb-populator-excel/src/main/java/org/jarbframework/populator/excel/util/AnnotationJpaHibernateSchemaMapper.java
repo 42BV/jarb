@@ -6,7 +6,7 @@ import static org.jarbframework.populator.excel.util.JpaMetaModelUtils.findRootE
 import static org.jarbframework.utils.Asserts.hasText;
 import static org.jarbframework.utils.Asserts.instanceOf;
 import static org.jarbframework.utils.Asserts.notNull;
-import static org.jarbframework.utils.bean.BeanAnnotationScanner.fieldOrGetter;
+import static org.jarbframework.utils.bean.AnnotationScanner.fieldOrGetter;
 import static org.jarbframework.utils.bean.BeanProperties.getDeclaringClass;
 import static org.jarbframework.utils.bean.BeanProperties.getPropertyNames;
 import static org.jarbframework.utils.bean.BeanProperties.getPropertyType;
@@ -31,7 +31,7 @@ import javax.persistence.Transient;
 
 import org.hibernate.cfg.DefaultNamingStrategy;
 import org.hibernate.cfg.NamingStrategy;
-import org.jarbframework.utils.bean.BeanAnnotationScanner;
+import org.jarbframework.utils.bean.AnnotationScanner;
 import org.jarbframework.utils.bean.PropertyReference;
 import org.jarbframework.utils.orm.ColumnReference;
 import org.jarbframework.utils.orm.NotAnEntityException;
@@ -49,7 +49,7 @@ public class AnnotationJpaHibernateSchemaMapper implements SchemaMapper {
     
     private static final String NAMING_STRATEGY_KEY = "hibernate.ejb.naming_strategy";
 
-    private final BeanAnnotationScanner annotationScanner = fieldOrGetter();
+    private final AnnotationScanner annotationScanner = fieldOrGetter();
     private final NamingStrategy namingStrategy;
 
     public AnnotationJpaHibernateSchemaMapper() {

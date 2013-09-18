@@ -18,24 +18,24 @@ import org.springframework.util.ReflectionUtils;
  * @author Jeroen van Schagen
  * @date Aug 29, 2011
  */
-public class BeanAnnotationScanner {
+public class AnnotationScanner {
     
     private final boolean includeGetter;
 
     /**
-     * Construct a new {@link BeanAnnotationScanner}.
+     * Construct a new {@link AnnotationScanner}.
      * @param includeGetter determines if getter methods should be scanned
      */
-    public BeanAnnotationScanner(boolean includeGetter) {
+    public AnnotationScanner(boolean includeGetter) {
         this.includeGetter = includeGetter;
     }
 
-    public static BeanAnnotationScanner field() {
-        return new BeanAnnotationScanner(false);
+    public static AnnotationScanner field() {
+        return new AnnotationScanner(false);
     }
 
-    public static BeanAnnotationScanner fieldOrGetter() {
-        return new BeanAnnotationScanner(true);
+    public static AnnotationScanner fieldOrGetter() {
+        return new AnnotationScanner(true);
     }
 
     /**

@@ -4,7 +4,7 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.Date;
 
-import org.jarbframework.utils.bean.ModifiableBean;
+import org.jarbframework.utils.bean.DynamicBeanWrapper;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -24,7 +24,7 @@ public class DocumentRevisionTest {
     @Test
     public void testSetGetID() {
         Long id = new Long("1");
-        ModifiableBean.wrap(documentRevision).setPropertyValue("id", id);
+        DynamicBeanWrapper.wrap(documentRevision).setPropertyValue("id", id);
         assertEquals(id, documentRevision.getId());
     }
 

@@ -16,6 +16,7 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 public class ColumnReference {
 
     private String tableName;
+    
     private String columnName;
 
     /**

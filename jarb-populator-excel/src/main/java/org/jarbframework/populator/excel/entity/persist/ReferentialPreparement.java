@@ -9,7 +9,7 @@ import javax.persistence.metamodel.Attribute;
 import javax.persistence.metamodel.Metamodel;
 
 import org.jarbframework.populator.excel.util.JpaUtils;
-import org.jarbframework.utils.bean.ModifiableBean;
+import org.jarbframework.utils.bean.DynamicBeanWrapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -60,7 +60,7 @@ public final class ReferentialPreparement {
      * @param attribute Attribute from the Entity   
      */
     private void prepareAttribute(Object entity, Attribute<?, ?> attribute) {
-        Object referencedEntity = ModifiableBean.wrap(entity).getPropertyValue(attribute.getName());
+        Object referencedEntity = DynamicBeanWrapper.wrap(entity).getPropertyValue(attribute.getName());
         if (!AttributeMetadataAnalyzer.hasNecessaryCascadeAnnotations(attribute)) {
             //Attribute DOESN'T hold proper Cascade annotations. We need to persist the entities referenced by this entity first.
             //Otherwise it will generate exceptions upon persistence.
@@ -149,7 +149,7 @@ public final class ReferentialPreparement {
         Object retrievenObject = entityManager.find(referencedEntity.getClass(), identifier);
         if (retrievenObject != null) {
             // Entity has already been persisted, couple to persisted value
-            ModifiableBean.wrap(entity).setPropertyValue(attributeName, retrievenObject);
+            DynamicBeanWrapper.wrap(entity).setPropertyValue(attributeName, retrievenObject);
         } else {
             // Entity claimed to have an identifier, but is not known in database
             cascadeReferencedObject(entity, attributeName, referencedEntity);
@@ -170,7 +170,7 @@ public final class ReferentialPreparement {
         if (!CircularReferenceUtilities.cascadingHasLooped(referencedEntity, cascadedObjects)) {
             referencedEntity = prepareEntityReferences(referencedEntity);
             LOGGER.info("Cascading Excelrow of class: " + referencedEntity.getClass());
-            ModifiableBean.wrap(entity).setPropertyValue(attributeName, entityManager.merge(referencedEntity));
+            DynamicBeanWrapper.wrap(entity).setPropertyValue(attributeName, entityManager.merge(referencedEntity));
         } else {
             resolveCircularReferencing(entity, referencedEntity);
         }
@@ -199,12 +199,12 @@ public final class ReferentialPreparement {
         if (!cascadedObjects.contains(entity)) {
             LOGGER.info("Cascading Excelrow of class: " + referencedEntity.getClass());
             referencedEntity = prepareEntityReferences(referencedEntity);
-            ModifiableBean.wrap(entity).setPropertyValue(refName, entityManager.merge(referencedEntity));
+            DynamicBeanWrapper.wrap(entity).setPropertyValue(refName, entityManager.merge(referencedEntity));
             cascadedObjects.add(entity);
         }
         if (temporaryObject != null) {
             temporaryObject = new ReferentialPreparement(entityManager).prepareEntityReferences(temporaryObject);
-            ModifiableBean.wrap(entity).setPropertyValue(refName, entityManager.merge(temporaryObject));
+            DynamicBeanWrapper.wrap(entity).setPropertyValue(refName, entityManager.merge(temporaryObject));
         }
     }
 }

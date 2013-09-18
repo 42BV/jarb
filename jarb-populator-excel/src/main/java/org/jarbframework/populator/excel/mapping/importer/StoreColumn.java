@@ -10,7 +10,7 @@ import org.jarbframework.populator.excel.metamodel.PropertyNode;
 import org.jarbframework.populator.excel.metamodel.PropertyPath;
 import org.jarbframework.populator.excel.workbook.Sheet;
 import org.jarbframework.populator.excel.workbook.Workbook;
-import org.jarbframework.utils.bean.ModifiableBean;
+import org.jarbframework.utils.bean.DynamicBeanWrapper;
 import org.jarbframework.utils.bean.PropertyReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,7 +54,7 @@ public final class StoreColumn {
             if (columnDefinition.isEmbeddedAttribute()) {
                 bean = getOrCreatePathLeaf(bean, columnDefinition.getEmbeddablePath());
             }
-            if (ModifiableBean.wrap(bean).isWritableProperty(columnDefinition.getName())) {
+            if (DynamicBeanWrapper.wrap(bean).isWritableProperty(columnDefinition.getName())) {
                 setExcelRowFieldValue(bean, columnDefinition.getName(), cellValue);
             }
         }
@@ -71,7 +71,7 @@ public final class StoreColumn {
     private Object getOrCreatePathLeaf(Object root, PropertyPath path) {
         Object current = root;
         for (PropertyNode node : path) {
-            ModifiableBean<?> modifiableBean = ModifiableBean.wrap(current);
+            DynamicBeanWrapper<?> modifiableBean = DynamicBeanWrapper.wrap(current);
             Object value = modifiableBean.getPropertyValue(node.getName());
             if (value == null) {
                 value = BeanUtils.instantiateClass(node.getField().getType());
@@ -86,7 +86,7 @@ public final class StoreColumn {
         Class<?> propertyType = getPropertyType(new PropertyReference(bean.getClass(), propertyName));
         try {
             Object convertedValue = conversionService.convert(value, propertyType);
-            ModifiableBean.wrap(bean).setPropertyValue(propertyName, convertedValue);
+            DynamicBeanWrapper.wrap(bean).setPropertyValue(propertyName, convertedValue);
         } catch (CouldNotConvertException e) {
             logger.warn("Could not convert '{}' into a {}, thus '{}' will remain unchanged.", new Object[] { value, propertyType, propertyName });
         }

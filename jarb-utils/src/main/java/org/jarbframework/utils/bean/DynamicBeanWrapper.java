@@ -21,9 +21,9 @@ import org.springframework.beans.PropertyAccessor;
  * @author Jeroen van Schagen
  * @date Aug 16, 2011
  */
-public final class ModifiableBean<T> {
+public final class DynamicBeanWrapper<T> {
 	
-	private static final Logger LOGGER = LoggerFactory.getLogger(ModifiableBean.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(DynamicBeanWrapper.class);
 	
     private final T bean;
 
@@ -31,7 +31,7 @@ public final class ModifiableBean<T> {
     
     private final PropertyAccessor fieldAccessor;
 
-    private ModifiableBean(T bean) {
+    private DynamicBeanWrapper(T bean) {
         this.bean = notNull(bean, "Wrapped bean cannot be null.");
         this.beanWrapper = new BeanWrapperImpl(bean);
         this.fieldAccessor = new DirectFieldAccessor(bean);
@@ -43,8 +43,8 @@ public final class ModifiableBean<T> {
      * @param bean the bean being wrapped
      * @return modifiable bean, wrapping the specified bean
      */
-    public static <T> ModifiableBean<T> wrap(T bean) {
-        return new ModifiableBean<T>(bean);
+    public static <T> DynamicBeanWrapper<T> wrap(T bean) {
+        return new DynamicBeanWrapper<T>(bean);
     }
 
     /**
@@ -53,7 +53,7 @@ public final class ModifiableBean<T> {
      * @param beanClass class of the bean being created and wrapped
      * @return modifiable bean, wrapping a new bean instance
      */
-    public static <T> ModifiableBean<T> instantiate(Class<T> beanClass) {
+    public static <T> DynamicBeanWrapper<T> instantiate(Class<T> beanClass) {
         return wrap(BeanUtils.instantiateClass(beanClass));
     }
 
@@ -83,7 +83,7 @@ public final class ModifiableBean<T> {
         return beanWrapper.isWritableProperty(propertyName) || fieldAccessor.isWritableProperty(propertyName);
     }
 
-    public ModifiableBean<T> setPropertyValue(String propertyName, Object value) {
+    public DynamicBeanWrapper<T> setPropertyValue(String propertyName, Object value) {
         try {
             beanWrapper.setPropertyValue(propertyName, value);
         } catch (NotWritablePropertyException e) {
@@ -95,4 +95,5 @@ public final class ModifiableBean<T> {
     public T getWrappedBean() {
         return bean;
     }
+    
 }

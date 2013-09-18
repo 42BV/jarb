@@ -2,7 +2,7 @@ package domain;
 
 import static org.junit.Assert.assertEquals;
 
-import org.jarbframework.utils.bean.ModifiableBean;
+import org.jarbframework.utils.bean.DynamicBeanWrapper;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -20,7 +20,7 @@ public class BusinessRelationshipGiftTest {
     @Test
     public void testGetId() {
         final Long id = 1L;
-        ModifiableBean.wrap(gift).setPropertyValue("id", id);
+        DynamicBeanWrapper.wrap(gift).setPropertyValue("id", id);
         assertEquals(id, gift.getId());
     }
 

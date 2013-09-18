@@ -10,7 +10,7 @@ import org.jarbframework.populator.excel.metamodel.PropertyPath;
 import org.jarbframework.populator.excel.workbook.Row;
 import org.jarbframework.populator.excel.workbook.Sheet;
 import org.jarbframework.populator.excel.workbook.Workbook;
-import org.jarbframework.utils.bean.ModifiableBean;
+import org.jarbframework.utils.bean.DynamicBeanWrapper;
 
 /**
  * Default implementation of {@link EntityExporter}.
@@ -139,13 +139,13 @@ public class DefaultEntityExporter implements EntityExporter {
      */
     private Object getPropertyValue(Object entity, PropertyDefinition propertyDefinition) {
         Object value = null;
-        ModifiableBean<Object> propertyAccessor = ModifiableBean.wrap(entity);
+        DynamicBeanWrapper<Object> propertyAccessor = DynamicBeanWrapper.wrap(entity);
         if (propertyDefinition.isEmbeddedAttribute()) {
             // Whenever our property is embedded, retrieve the container
             final PropertyPath embeddablePath = propertyDefinition.getEmbeddablePath();
             if (propertyAccessor.isReadableProperty(embeddablePath.getStart().getName())) {
                 Object leafEmbeddable = embeddablePath.traverse(entity);
-                ModifiableBean<Object> leafAccessor = ModifiableBean.wrap(leafEmbeddable);
+                DynamicBeanWrapper<Object> leafAccessor = DynamicBeanWrapper.wrap(leafEmbeddable);
                 value = leafAccessor.getPropertyValue(propertyDefinition.getName());
             }
         } else if (propertyAccessor.isReadableProperty(propertyDefinition.getName())) {

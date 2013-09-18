@@ -4,18 +4,18 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import org.jarbframework.utils.bean.ModifiableBean;
+import org.jarbframework.utils.bean.DynamicBeanWrapper;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.NotReadablePropertyException;
 import org.springframework.beans.NotWritablePropertyException;
 
 public class ModifiableBeanTest {
-    private ModifiableBean<SomeBean> modifiableBean;
+    private DynamicBeanWrapper<SomeBean> modifiableBean;
 
     @Before
     public void setUp() {
-        modifiableBean = ModifiableBean.instantiate(SomeBean.class);
+        modifiableBean = DynamicBeanWrapper.instantiate(SomeBean.class);
     }
 
     @Test

@@ -2,7 +2,7 @@ package domain;
 
 import static org.junit.Assert.assertEquals;
 
-import org.jarbframework.utils.bean.ModifiableBean;
+import org.jarbframework.utils.bean.DynamicBeanWrapper;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -20,7 +20,7 @@ public class ServiceLevelAgreementTest {
 
     @Test
     public void testGetID() {
-        ModifiableBean.wrap(sla).setPropertyValue("id", 1L);
+        DynamicBeanWrapper.wrap(sla).setPropertyValue("id", 1L);
         assertEquals(new Long("1"), sla.getId());
     }
 

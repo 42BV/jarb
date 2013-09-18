@@ -1,6 +1,6 @@
 package org.jarbframework.constraint.validation.rules;
 
-import static org.jarbframework.utils.bean.BeanAnnotationScanner.fieldOrGetter;
+import static org.jarbframework.utils.bean.AnnotationScanner.fieldOrGetter;
 
 import org.jarbframework.constraint.metadata.database.ColumnMetadata;
 import org.jarbframework.constraint.metadata.database.DatabaseGenerated;
