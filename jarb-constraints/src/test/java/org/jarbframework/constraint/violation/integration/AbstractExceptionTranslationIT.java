@@ -1,12 +1,15 @@
 package org.jarbframework.constraint.violation.integration;
 
-import static org.jarbframework.constraint.violation.DatabaseConstraintType.NOT_NULL;
+import static org.jarbframework.constraint.violation.DatabaseConstraintType.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 import org.jarbframework.constraint.domain.Car;
 import org.jarbframework.constraint.violation.DatabaseConstraintType;
 import org.jarbframework.constraint.violation.DatabaseConstraintViolation;
+import org.jarbframework.constraint.violation.ForeignKeyViolationException;
+import org.jarbframework.constraint.violation.InvalidTypeException;
+import org.jarbframework.constraint.violation.LengthExceededException;
 import org.jarbframework.constraint.violation.NotNullViolationException;
 import org.jarbframework.constraint.violation.domain.CarAlreadyExistsException;
 import org.jarbframework.constraint.violation.domain.CarInactiveException;
@@ -32,20 +35,13 @@ public class AbstractExceptionTranslationIT {
     @Autowired
     private CarRepository carRepository;
 
-    /**
-     * HSQL throws a native exception, stating that "uk_cars_license_number" was violated.
-     * Because we registered a custom exception factory for that constraint, our custom
-     * "car already exists" exception should be thrown.
-     */
     @Test
-    public void testUniqueWithCustomException() {
-        Car car = new Car("iarpro");
-        carRepository.save(car);
+    public void testUniqueKey() {
+        carRepository.save(new Car("123456"));
         
-        Car sameCar = new Car("iarpro");
         try {
-            carRepository.save(sameCar);
-            fail("Expected a license number already exists exception");
+            carRepository.save(new Car("123456"));
+            fail("Expected a CarAlreadyExistsException.");
         } catch (CarAlreadyExistsException caee) {
             DatabaseConstraintViolation violation = caee.getViolation();
             assertEquals(DatabaseConstraintType.UNIQUE_KEY, violation.getConstraintType());
@@ -53,39 +49,61 @@ public class AbstractExceptionTranslationIT {
         }
     }
 
-    /**
-     * HSQL throws a native exception, starting that license number cannot be null. Our
-     * translator should convert this into the default "not null" violation exception.
-     */
     @Test
-    public void testNotNullDefaultException() {
-        Car carWithoutLicense = new Car(null);
+    public void testNotNull() {
         try {
-            carRepository.save(carWithoutLicense);
-            fail("Expected a not null exception");
-        } catch (NotNullViolationException nnve) {
-            assertEquals("Column 'license_number' cannot be null.", nnve.getMessage());
-            
+            carRepository.save(new Car(null));
+            fail("Expected a NotNullViolationException.");
+        } catch (NotNullViolationException nnve) {            
             DatabaseConstraintViolation violation = nnve.getViolation();
             assertEquals(NOT_NULL, violation.getConstraintType());
-            assertEquals("license_number", violation.getColumnName());
+        }
+    }
+    
+    @Test
+    public void testForeignKey() {
+    	Car car = new Car("123456");
+    	car.setOwnerId(Long.valueOf(-1));
+    	try {
+            carRepository.save(car);
+            fail("Expected a InvalidTypeException.");
+        } catch (ForeignKeyViolationException fkve) {            
+            DatabaseConstraintViolation violation = fkve.getViolation();
+            assertEquals(FOREIGN_KEY, violation.getConstraintType());
+        }
+    }
+    
+    @Test
+    public void testLengthExceeded() {
+    	try {
+            carRepository.save(new Car("1234567"));
+            fail("Expected a LengthExceededException.");
+        } catch (LengthExceededException lee) {            
+            DatabaseConstraintViolation violation = lee.getViolation();
+            assertEquals(LENGTH_EXCEEDED, violation.getConstraintType());
+        }
+    }
+    
+    @Test
+    public void testInvalidType() {
+    	Car car = new Car("123456");
+    	car.setActive("Not a boolean");
+    	try {
+            carRepository.save(car);
+            fail("Expected a InvalidTypeException.");
+        } catch (InvalidTypeException ite) {            
+            DatabaseConstraintViolation violation = ite.getViolation();
+            assertEquals(INVALID_TYPE, violation.getConstraintType());
         }
     }
 
-    /**
-     * Checked exceptions should not be affected by our translation.
-     * @throws CarInactiveException always, but expected
-     */
     @Test(expected = CarInactiveException.class)
-    public void testCheckedExceptionUnaffected() throws CarInactiveException {
+    public void testCheckedException() throws CarInactiveException {
         carRepository.throwCheckedException();
     }
 
-    /**
-     * Unrelated runtime exceptions should always remain unaffected by our translation.
-     */
     @Test(expected = UnsupportedOperationException.class)
-    public void testOtherRuntimeExceptionUnaffected() {
+    public void testUnknownRuntimeException() {
         carRepository.throwUnsupportedOperationException();
     }
 

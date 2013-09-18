@@ -7,7 +7,6 @@ import static org.jarbframework.constraint.violation.DatabaseConstraintType.NOT_
 import static org.jarbframework.constraint.violation.DatabaseConstraintType.UNIQUE_KEY;
 import static org.jarbframework.constraint.violation.DatabaseConstraintViolation.builder;
 
-import org.apache.commons.lang3.StringUtils;
 import org.jarbframework.constraint.violation.DatabaseConstraintViolation;
 import org.jarbframework.constraint.violation.resolver.PatternViolationResolver;
 import org.jarbframework.constraint.violation.resolver.product.DatabaseProduct;
@@ -30,7 +29,7 @@ public class HsqlViolationResolver extends PatternViolationResolver implements D
     }
 
     private void registerNotNull() {
-        registerPattern("integrity constraint violation: NOT NULL check constraint; (.+) table: (.+) column: (.+)", new ViolationBuilder() {
+        register("integrity constraint violation: NOT NULL check constraint; (.+) table: (.+) column: (.+)", new ViolationBuilder() {
             
             @Override
             public DatabaseConstraintViolation build(VariableAccessor variables) {
@@ -45,7 +44,7 @@ public class HsqlViolationResolver extends PatternViolationResolver implements D
     }
 
     private void registerUniqueKey() {
-        registerPattern("integrity constraint violation: unique constraint or index violation; (.+) table: (.+)", new ViolationBuilder() {
+        register("integrity constraint violation: unique constraint or index violation; (.+) table: (.+)", new ViolationBuilder() {
             
             @Override
             public DatabaseConstraintViolation build(VariableAccessor variables) {
@@ -59,7 +58,7 @@ public class HsqlViolationResolver extends PatternViolationResolver implements D
     }
 
     private void registerForeignKey() {
-        registerPattern("integrity constraint violation: foreign key no \\w+; (.+) table: (.+)", new ViolationBuilder() {
+        register("integrity constraint violation: foreign key no \\w+; (.+) table: (.+)", new ViolationBuilder() {
             
             @Override
             public DatabaseConstraintViolation build(VariableAccessor variables) {
@@ -73,7 +72,7 @@ public class HsqlViolationResolver extends PatternViolationResolver implements D
     }
 
     private void registerLengthExceeded() {
-        registerPattern("data exception: (.+) data, right truncation", new ViolationBuilder() {
+        register("data exception: (.+) data, right truncation", new ViolationBuilder() {
             
             @Override
             public DatabaseConstraintViolation build(VariableAccessor variables) {
@@ -84,7 +83,7 @@ public class HsqlViolationResolver extends PatternViolationResolver implements D
     }
 
     private void registerInvalidType() {
-        registerPattern("data exception: invalid (.+) value for cast", new ViolationBuilder() {
+        register("data exception: invalid (.+) value for cast", new ViolationBuilder() {
             
             @Override
             public DatabaseConstraintViolation build(VariableAccessor variables) {
@@ -96,7 +95,7 @@ public class HsqlViolationResolver extends PatternViolationResolver implements D
     
     @Override
     public boolean supports(DatabaseProduct product) {
-        return StringUtils.startsWithIgnoreCase(product.getName(), "hsql");
+        return "HSQL Database Engine".equals(product.getName());
     }
 
 }

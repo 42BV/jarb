@@ -32,7 +32,7 @@ public class OracleViolationResolver extends PatternViolationResolver implements
     }
 
     private void registerCheck() {
-        registerPattern("(.+): check constraint \\((.+)\\.(.+)\\) violated\n", new ViolationBuilder() {
+        register("(.+): check constraint \\((.+)\\.(.+)\\) violated\n", new ViolationBuilder() {
             
             @Override
             public DatabaseConstraintViolation build(VariableAccessor variables) {
@@ -46,7 +46,7 @@ public class OracleViolationResolver extends PatternViolationResolver implements
     }
 
     private void registerNotNull() {
-        registerPattern("(.+): cannot insert NULL into \\(\"(.+)\"\\.\"(.+)\"\\.\"(.+)\"\\)\n", new ViolationBuilder() {
+        register("(.+): cannot insert NULL into \\(\"(.+)\"\\.\"(.+)\"\\.\"(.+)\"\\)\n", new ViolationBuilder() {
             
             @Override
             public DatabaseConstraintViolation build(VariableAccessor variables) {
@@ -61,7 +61,7 @@ public class OracleViolationResolver extends PatternViolationResolver implements
     }
 
     private void registerUniqueKey() {
-        registerPattern("(.+): unique constraint \\((.+)\\.(.+)\\) violated\n", new ViolationBuilder() {
+        register("(.+): unique constraint \\((.+)\\.(.+)\\) violated\n", new ViolationBuilder() {
             
             @Override
             public DatabaseConstraintViolation build(VariableAccessor variables) {
@@ -75,7 +75,7 @@ public class OracleViolationResolver extends PatternViolationResolver implements
     }
 
     private void registerForeignKey() {
-        registerPattern("(.+): integrity constraint \\((.+)\\.(.+)\\) violated - child record found\n", new ViolationBuilder() {
+        register("(.+): integrity constraint \\((.+)\\.(.+)\\) violated - child record found\n", new ViolationBuilder() {
             
             @Override
             public DatabaseConstraintViolation build(VariableAccessor variables) {
@@ -89,7 +89,7 @@ public class OracleViolationResolver extends PatternViolationResolver implements
     }
 
     private void registerLengthExceeded() {
-        registerPattern("(.+): value too large for column \"(.+)\"\\.\"(.+)\"\\.\"(.+)\" \\(actual: (\\d+), maximum: (\\d+)\\)\n", new ViolationBuilder() {
+        register("(.+): value too large for column \"(.+)\"\\.\"(.+)\"\\.\"(.+)\" \\(actual: (\\d+), maximum: (\\d+)\\)\n", new ViolationBuilder() {
             
             @Override
             public DatabaseConstraintViolation build(VariableAccessor variables) {
@@ -105,7 +105,7 @@ public class OracleViolationResolver extends PatternViolationResolver implements
     }
 
     private void registerInvalidType() {
-        registerPattern("(.+): invalid (.+)\n", new ViolationBuilder() {
+        register("(.+): invalid (.+)\n", new ViolationBuilder() {
             
             @Override
             public DatabaseConstraintViolation build(VariableAccessor variables) {

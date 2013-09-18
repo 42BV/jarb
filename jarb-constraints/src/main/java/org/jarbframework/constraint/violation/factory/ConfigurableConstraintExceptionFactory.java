@@ -105,8 +105,8 @@ public class ConfigurableConstraintExceptionFactory implements DatabaseConstrain
         if (isNotBlank(basePackage)) {
 	        Set<Class<?>> annotatedClasses = Classes.getAllWithAnnotation(basePackage, NamedConstraint.class);
 	        for(Class<?> annotatedClass : annotatedClasses) {
-	            NamedConstraint annotation = AnnotationUtils.findAnnotation(annotatedClass, NamedConstraint.class);
-	            register(annotation.value(), annotation.strategy(), annotatedClass);
+	            NamedConstraint namedConstraint = AnnotationUtils.findAnnotation(annotatedClass, NamedConstraint.class);
+	            register(namedConstraint.value(), namedConstraint.strategy(), annotatedClass);
 	        }
         }
         return this;

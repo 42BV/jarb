@@ -10,7 +10,7 @@ public class H2ViolationResolverTest {
     
     @Test
     public void testNotNull() {
-        final String message = "NULL not allowed for column \"LICENSE_NUMBER\"; SQL statement:" +
+        final String message = "NULL not allowed for column \"LICENSE_NUMBER\"; SQL statement:\n" +
                                "insert into cars (id, active, license_number, price) values (default, ?, ?, ?) [23502-171]";
         
         DatabaseConstraintViolation violation = resolver.resolve(message);
@@ -22,7 +22,7 @@ public class H2ViolationResolverTest {
 
     @Test
     public void testUniqueKey() {
-        final String message = "Unique index or primary key violation: \"UK_CARS_LICENSE_NUMBER_INDEX_1 ON PUBLIC.CARS(LICENSE_NUMBER)\"; SQL statement:" +
+        final String message = "Unique index or primary key violation: \"UK_CARS_LICENSE_NUMBER_INDEX_1 ON PUBLIC.CARS(LICENSE_NUMBER)\"; SQL statement:\n" +
                                "insert into cars (id, active, license_number, price) values (default, ?, ?, ?) [23505-171]";
         
         DatabaseConstraintViolation violation = resolver.resolve(message);
@@ -36,7 +36,7 @@ public class H2ViolationResolverTest {
 
     @Test
     public void testForeignKey() {
-        final String message = "Referential integrity constraint violation: \"FK_CARS_OWNER: PUBLIC.CARS FOREIGN KEY(OWNER_ID) REFERENCES PUBLIC.PERSONS(ID) (-1)\"; SQL statement:" +
+        final String message = "Referential integrity constraint violation: \"FK_CARS_OWNER: PUBLIC.CARS FOREIGN KEY(OWNER_ID) REFERENCES PUBLIC.PERSONS(ID) (-1)\"; SQL statement:\n" +
                                "insert into cars (id, active, license_number, owner_id, price) values (default, ?, ?, ?, ?) [23506-171]";
         
         DatabaseConstraintViolation violation = resolver.resolve(message);
@@ -53,7 +53,7 @@ public class H2ViolationResolverTest {
 
     @Test
     public void testLengthExceeded() {
-        final String message = "Value too long for column \"LICENSE_NUMBER VARCHAR(6) NOT NULL\": \"'1234567' (7)\"; SQL statement:" +
+        final String message = "Value too long for column \"LICENSE_NUMBER VARCHAR(6) NOT NULL\": \"'1234567' (7)\"; SQL statement:\n" +
                                "insert into cars (id, active, license_number, price) values (default, ?, ?, ?) [22001-171]";
         
         DatabaseConstraintViolation violation = resolver.resolve(message);
@@ -67,15 +67,15 @@ public class H2ViolationResolverTest {
 
     @Test
     public void testInvalidType() {
-        final String message = "Data conversion error converting \"'not a boolean' (CARS: ACTIVE BOOLEAN)\"; SQL statement:" +
-                               "insert into cars (id, active, license_number, price) values (default, ?, ?, ?) -- (, ?1, ?2, ?3) [22018-171]";
-        
+        final String message = "Data conversion error converting \"'Not a boolean' (CARS: ACTIVE BOOLEAN)\"; SQL statement:\n" +
+        		"insert into cars (id, active, license_number, owner_id, price) values (default, ?, ?, ?, ?) -- (, ?1, ?2, ?3, ?4) [22018-171]";
+
         DatabaseConstraintViolation violation = resolver.resolve(message);
         Assert.assertNotNull("Could not resolve violation.", violation);
         Assert.assertEquals("cars", violation.getTableName());
         Assert.assertEquals("active", violation.getColumnName());
         Assert.assertEquals("boolean", violation.getExpectedValueType());
-        Assert.assertEquals("insert into cars (id, active, license_number, price) values (default, ?, ?, ?) -- (, ?1, ?2, ?3)", violation.getStatement());
+        Assert.assertEquals("insert into cars (id, active, license_number, owner_id, price) values (default, ?, ?, ?, ?) -- (, ?1, ?2, ?3, ?4)", violation.getStatement());
         Assert.assertEquals("22018-171", violation.getNumber());
     }
     

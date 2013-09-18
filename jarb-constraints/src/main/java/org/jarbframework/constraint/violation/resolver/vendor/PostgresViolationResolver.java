@@ -32,7 +32,7 @@ public class PostgresViolationResolver extends PatternViolationResolver implemen
     }
 
     private void registerNotNull() {
-        registerPattern("ERROR: null value in column \"(.+)\" violates not-null constraint", new ViolationBuilder() {
+        register("ERROR: null value in column \"(.+)\" violates not-null constraint", new ViolationBuilder() {
             
             @Override
             public DatabaseConstraintViolation build(VariableAccessor variables) {
@@ -43,7 +43,7 @@ public class PostgresViolationResolver extends PatternViolationResolver implemen
     }
 
     private void registerLengthExceeded() {
-        registerPattern("ERROR: value too long for type (.+)\\((.+)\\)", new ViolationBuilder() {
+        register("ERROR: value too long for type (.+)\\((.+)\\)", new ViolationBuilder() {
             
             @Override
             public DatabaseConstraintViolation build(VariableAccessor variables) {
@@ -57,7 +57,7 @@ public class PostgresViolationResolver extends PatternViolationResolver implemen
     }
 
     private void registerForeignKey() {
-        registerPattern(
+        register(
                 "ERROR: insert or update on table \"(.+)\" violates foreign key constraint \"(.+)\"\\s+"
                 + "Detail: Key \\((.+)\\)=\\((.+)\\) is not present in table \"(.+)\"\\.", new ViolationBuilder() {
                     
@@ -74,7 +74,7 @@ public class PostgresViolationResolver extends PatternViolationResolver implemen
                     
                 });
         
-        registerPattern(
+        register(
                 "ERROR: update or delete on table \"(.+)\" violates foreign key constraint \"(.+)\" on table \"(.+)\"\\s+"
                 + "Detail: Key \\((.+)\\)=\\((.+)\\) is still referenced from table \".+\"\\.", new ViolationBuilder() {
                     
@@ -93,7 +93,7 @@ public class PostgresViolationResolver extends PatternViolationResolver implemen
     }
 
     private void registerUniqueKey() {
-        registerPattern(
+        register(
                 "ERROR: duplicate key value violates unique constraint \"(.+)\"\\s+"
                 + "Detail: Key \\((.+)\\)=\\((.+)\\) already exists\\.", new ViolationBuilder() {
             
@@ -110,7 +110,7 @@ public class PostgresViolationResolver extends PatternViolationResolver implemen
     }
 
     private void registerCheck() {
-        registerPattern("ERROR: new row for relation \"(.+)\" violates check constraint \"(.+)\"", new ViolationBuilder() {
+        register("ERROR: new row for relation \"(.+)\" violates check constraint \"(.+)\"", new ViolationBuilder() {
             
             @Override
             public DatabaseConstraintViolation build(VariableAccessor variables) {
@@ -124,7 +124,7 @@ public class PostgresViolationResolver extends PatternViolationResolver implemen
     }
 
     private void registerInvalidType() {
-        registerPattern("ERROR: column \"(.+)\" is of type (.+) but expression is of type (.+)\\nHint: .*", new ViolationBuilder() {
+        register("ERROR: column \"(.+)\" is of type (.+) but expression is of type (.+)\\nHint: .*", new ViolationBuilder() {
             
             @Override
             public DatabaseConstraintViolation build(VariableAccessor variables) {

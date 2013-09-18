@@ -15,7 +15,7 @@ import org.slf4j.LoggerFactory;
  * Chain of responsibility for constraint violation resolvers. Whenever a violation
  * resolver could not resolve the violation, our next resolver is invoked. This
  * process continues until a valid constraint violation gets resolved, or we run
- * out of violation resolvers.
+ * out of violation resolvers, in which case a {@code null} is returned.
  * 
  * @author Jeroen van Schagen
  * @since 16-05-2011
@@ -51,6 +51,7 @@ public class ViolationResolverChain implements DatabaseConstraintViolationResolv
      */
     public ViolationResolverChain addToChain(DatabaseConstraintViolationResolver resolver) {
         resolvers.add(notNull(resolver, "Cannot add a null resolver to the chain."));
+        logger.debug("Registered resolver {} to chain.", resolver);
         return this;
     }
     

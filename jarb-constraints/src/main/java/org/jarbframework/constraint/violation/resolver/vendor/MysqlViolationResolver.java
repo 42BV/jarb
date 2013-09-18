@@ -28,7 +28,7 @@ public class MysqlViolationResolver extends PatternViolationResolver implements 
     }
     
     private void registerNotNull() {
-        registerPattern("Column '(.+)' cannot be null", new ViolationBuilder() {
+        register("Column '(.+)' cannot be null", new ViolationBuilder() {
             
             @Override
             public DatabaseConstraintViolation build(VariableAccessor variables) {
@@ -39,7 +39,7 @@ public class MysqlViolationResolver extends PatternViolationResolver implements 
     }
     
     private void registerUniqueKey() {
-        registerPattern("Duplicate entry '(.+)' for key '(.+)'", new ViolationBuilder() {
+        register("Duplicate entry '(.+)' for key '(.+)'", new ViolationBuilder() {
             
             @Override
             public DatabaseConstraintViolation build(VariableAccessor variables) {
@@ -50,7 +50,7 @@ public class MysqlViolationResolver extends PatternViolationResolver implements 
     }
 
     private void registerLengthExceeded() {
-        registerPattern("Data truncation: Data too long for column '(.+)' at row (\\d+)", new ViolationBuilder() {
+        register("Data truncation: Data too long for column '(.+)' at row (\\d+)", new ViolationBuilder() {
             
             @Override
             public DatabaseConstraintViolation build(VariableAccessor variables) {
@@ -61,7 +61,7 @@ public class MysqlViolationResolver extends PatternViolationResolver implements 
     }
 
     private void registerInvalidType() {
-        registerPattern("Incorrect (\\w+) value: '(.+)' for column '(.+)' at row (\\d+)", new ViolationBuilder() {
+        register("Incorrect (\\w+) value: '(.+)' for column '(.+)' at row (\\d+)", new ViolationBuilder() {
             
             @Override
             public DatabaseConstraintViolation build(VariableAccessor variables) {

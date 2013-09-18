@@ -14,7 +14,7 @@ import org.jarbframework.constraint.violation.DatabaseConstraintViolation;
  * @author Jeroen van Schagen
  */
 public class PatternViolationResolver extends RootCauseMessageViolationResolver {
-
+	
     private final List<ViolationPattern> patterns = new LinkedList<ViolationPattern>();
 
     @Override
@@ -34,7 +34,7 @@ public class PatternViolationResolver extends RootCauseMessageViolationResolver 
      * @param regex the regular expression that matches our message
      * @param builder the builder of our violation
      */
-    protected void registerPattern(String regex, ViolationBuilder builder) {
+    protected void register(String regex, ViolationBuilder builder) {
         patterns.add(new ViolationPattern(regex, builder));
     }
     
@@ -77,8 +77,8 @@ public class PatternViolationResolver extends RootCauseMessageViolationResolver 
     /**
      * Violation pattern that can be registered.
      */
-    private static class ViolationPattern {
-        
+    private class ViolationPattern {
+    	        
         /**
          * Pattern that our message should match.
          */
@@ -101,6 +101,8 @@ public class PatternViolationResolver extends RootCauseMessageViolationResolver 
          */
         public DatabaseConstraintViolation match(String message) {
             DatabaseConstraintViolation violation = null;
+            logger.trace("Matching pattern '{}' to message: {}", pattern, message);
+            
             Matcher matcher = pattern.matcher(message);
             if (matcher.matches()) {
                 violation = builder.build(new VariableAccessor(matcher));

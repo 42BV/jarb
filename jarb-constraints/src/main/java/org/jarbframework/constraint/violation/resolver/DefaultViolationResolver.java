@@ -13,6 +13,13 @@ import org.jarbframework.constraint.violation.resolver.vendor.PostgresViolationR
 import org.jarbframework.utils.Classes;
 import org.springframework.beans.BeanUtils;
 
+/**
+ * Default violation resolver that lazily registers all custom and default
+ * resolvers in a chain. Because the resolver is lazy, the registration is
+ * done on first usage rather than on initialization.
+ * 
+ * @author Jeroen van Schagen
+ */
 public class DefaultViolationResolver extends LazyInitViolationResolver {
 	
 	private final DataSource dataSource;
@@ -28,16 +35,16 @@ public class DefaultViolationResolver extends LazyInitViolationResolver {
 	protected DatabaseConstraintViolationResolver init() {
         final DatabaseProduct databaseProduct = DatabaseProduct.fromDataSource(dataSource);
 
-        ViolationResolverChain chain = new ViolationResolverChain();
-        addCustomResolvers(chain, databaseProduct);
-        addDefaultResolvers(chain, databaseProduct);
-        return chain;
+        ViolationResolverChain resolversChain = new ViolationResolverChain();
+        addCustomResolvers(resolversChain, databaseProduct);
+        addDefaultResolvers(resolversChain, databaseProduct);
+        return resolversChain;
 	}
 
-	private void addCustomResolvers(ViolationResolverChain chain, DatabaseProduct databaseProduct) {
+	private void addCustomResolvers(ViolationResolverChain resolversChain, DatabaseProduct databaseProduct) {
         Set<Class<?>> resolverClasses = Classes.getAllOfType(basePackage, DatabaseConstraintViolationResolver.class);
         for (Class<?> resolverClass : resolverClasses) {
-        	chain.addToChainWhenSupported(buildCustomResolver(resolverClass), databaseProduct);
+        	resolversChain.addToChainWhenSupported(buildCustomResolver(resolverClass), databaseProduct);
         }
     }
 
@@ -45,13 +52,13 @@ public class DefaultViolationResolver extends LazyInitViolationResolver {
 		return (DatabaseConstraintViolationResolver) BeanUtils.instantiateClass(resolverClass);
 	}
 
-	private void addDefaultResolvers(ViolationResolverChain chain, DatabaseProduct databaseProduct) {
-		chain.addToChainWhenSupported(new H2ViolationResolver(), databaseProduct);
-        chain.addToChainWhenSupported(new HsqlViolationResolver(), databaseProduct);
-        chain.addToChainWhenSupported(new MysqlViolationResolver(), databaseProduct);
-        chain.addToChainWhenSupported(new OracleViolationResolver(), databaseProduct);
-        chain.addToChainWhenSupported(new PostgresViolationResolver(), databaseProduct);
-        chain.addToChain(new HibernateViolationResolver());
+	private void addDefaultResolvers(ViolationResolverChain resolversChain, DatabaseProduct databaseProduct) {
+		resolversChain.addToChainWhenSupported(new H2ViolationResolver(), databaseProduct);
+        resolversChain.addToChainWhenSupported(new HsqlViolationResolver(), databaseProduct);
+        resolversChain.addToChainWhenSupported(new MysqlViolationResolver(), databaseProduct);
+        resolversChain.addToChainWhenSupported(new OracleViolationResolver(), databaseProduct);
+        resolversChain.addToChainWhenSupported(new PostgresViolationResolver(), databaseProduct);
+        resolversChain.addToChain(new HibernateViolationResolver());
 	}
 	
 }

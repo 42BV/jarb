@@ -7,7 +7,6 @@ import static org.jarbframework.constraint.violation.DatabaseConstraintType.NOT_
 import static org.jarbframework.constraint.violation.DatabaseConstraintType.UNIQUE_KEY;
 import static org.jarbframework.constraint.violation.DatabaseConstraintViolation.builder;
 
-import org.apache.commons.lang3.StringUtils;
 import org.jarbframework.constraint.violation.DatabaseConstraintViolation;
 import org.jarbframework.constraint.violation.resolver.PatternViolationResolver;
 import org.jarbframework.constraint.violation.resolver.product.DatabaseProduct;
@@ -21,7 +20,7 @@ import org.jarbframework.constraint.violation.resolver.product.DatabaseProductSp
  */
 public class H2ViolationResolver extends PatternViolationResolver implements DatabaseProductSpecific {
 
-    private static final String REGEX_SUFFIX = " SQL statement:(.*) \\[(.*)\\]";
+    private static final String REGEX_SUFFIX = " SQL statement:\n(.*) \\[(.*)\\]";
     
     public H2ViolationResolver() {
         registerNotNull();
@@ -32,7 +31,7 @@ public class H2ViolationResolver extends PatternViolationResolver implements Dat
     }
 
     private void registerNotNull() {
-        registerPattern("NULL not allowed for column \"(.+)\";" + REGEX_SUFFIX, new ViolationBuilder() {
+        register("NULL not allowed for column \"(.+)\";" + REGEX_SUFFIX, new ViolationBuilder() {
             
             @Override
             public DatabaseConstraintViolation build(VariableAccessor variables) {
@@ -47,7 +46,7 @@ public class H2ViolationResolver extends PatternViolationResolver implements Dat
     }
 
     private void registerUniqueKey() {
-        registerPattern("Unique index or primary key violation: \"(\\w+)_INDEX_\\d+ ON (.+)\\.(.+)\\((.+)\\)\";" + REGEX_SUFFIX, new ViolationBuilder() {
+        register("Unique index or primary key violation: \"(\\w+)_INDEX_\\d+ ON (.+)\\.(.+)\\((.+)\\)\";" + REGEX_SUFFIX, new ViolationBuilder() {
             
             @Override
             public DatabaseConstraintViolation build(VariableAccessor variables) {
@@ -64,7 +63,7 @@ public class H2ViolationResolver extends PatternViolationResolver implements Dat
     }
 
     private void registerForeignKey() {
-        registerPattern("Referential integrity constraint violation: \"(.+): (.+)\\.(.+) FOREIGN KEY\\((.+)\\) REFERENCES (.+)\\.(.+)\\((.+)\\) \\((.+)\\)\";" + REGEX_SUFFIX, new ViolationBuilder() {
+        register("Referential integrity constraint violation: \"(.+): (.+)\\.(.+) FOREIGN KEY\\((.+)\\) REFERENCES (.+)\\.(.+)\\((.+)\\) \\((.+)\\)\";" + REGEX_SUFFIX, new ViolationBuilder() {
             
             @Override
             public DatabaseConstraintViolation build(VariableAccessor variables) {
@@ -84,7 +83,7 @@ public class H2ViolationResolver extends PatternViolationResolver implements Dat
     }
 
     private void registerLengthExceeded() {
-        registerPattern("Value too long for column \"(.+) (.+)\\((.+)\\).*\": \"'(.+)' \\((.+)\\)\";" + REGEX_SUFFIX, new ViolationBuilder() {
+        register("Value too long for column \"(.+) (.+)\\((.+)\\).*\": \"'(.+)' \\((.+)\\)\";" + REGEX_SUFFIX, new ViolationBuilder() {
             
             @Override
             public DatabaseConstraintViolation build(VariableAccessor variables) {
@@ -101,8 +100,8 @@ public class H2ViolationResolver extends PatternViolationResolver implements Dat
         });
     }
 
-    private void registerInvalidType() {
-        registerPattern("Data conversion error converting \"'(.+)' \\((.+): (.+) (.+)\\)\";" + REGEX_SUFFIX, new ViolationBuilder() {
+    private void registerInvalidType() {    			
+        register("Data conversion error converting \"'(.+)' \\((.+): (.+) (.+)\\)\";" + REGEX_SUFFIX, new ViolationBuilder() {
             
             @Override
             public DatabaseConstraintViolation build(VariableAccessor variables) {
@@ -120,7 +119,7 @@ public class H2ViolationResolver extends PatternViolationResolver implements Dat
     
     @Override
     public boolean supports(DatabaseProduct product) {
-        return StringUtils.startsWithIgnoreCase(product.getName(), "h2");
+        return "H2".equals(product.getName());
     }
 
 }
