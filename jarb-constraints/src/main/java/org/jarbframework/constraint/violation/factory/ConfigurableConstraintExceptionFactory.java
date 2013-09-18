@@ -1,16 +1,17 @@
 package org.jarbframework.constraint.violation.factory;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.commons.lang3.StringUtils;
 import org.jarbframework.constraint.violation.DatabaseConstraintViolation;
 import org.jarbframework.constraint.violation.factory.reflection.ReflectionConstraintExceptionFactory;
 import org.jarbframework.utils.Classes;
 import org.springframework.core.annotation.AnnotationUtils;
 
-import com.google.common.base.Preconditions;
 import com.google.common.base.Predicate;
 
 /**
@@ -35,16 +36,12 @@ public class ConfigurableConstraintExceptionFactory implements DatabaseConstrain
     }
 
     public ConfigurableConstraintExceptionFactory(DatabaseConstraintExceptionFactory defaultExceptionFactory) {
-    	if (defaultExceptionFactory != null) {
-    		this.defaultExceptionFactory = defaultExceptionFactory;
-    	} else {
-    		this.defaultExceptionFactory = new SimpleConstraintExceptionFactory();
-    	}
+    	this.defaultExceptionFactory = defaultExceptionFactory != null ? defaultExceptionFactory : new DefaultConstraintExceptionFactory();
     }
 
     @Override
     public Throwable buildException(DatabaseConstraintViolation violation, Throwable cause) {
-        Preconditions.checkNotNull(violation, "Cannot create exception for a null database constraint violation.");
+        checkNotNull(violation, "Cannot create exception for a null database constraint violation.");
         return getFirstSupportedFactory(violation).buildException(violation, cause);
     }
 
@@ -55,14 +52,14 @@ public class ConfigurableConstraintExceptionFactory implements DatabaseConstrain
      * @return factory capable of building a violation exception for our constraint
      */
     private DatabaseConstraintExceptionFactory getFirstSupportedFactory(DatabaseConstraintViolation violation) {
-        DatabaseConstraintExceptionFactory supportedExceptionFactory = defaultExceptionFactory;
+        DatabaseConstraintExceptionFactory exceptionFactory = defaultExceptionFactory;
         for (ExceptionFactoryMapping exceptionFactoryMapping : exceptionFactoryMappings) {
             if (exceptionFactoryMapping.isSupported(violation)) {
-                supportedExceptionFactory = exceptionFactoryMapping.getExceptionFactory();
+                exceptionFactory = exceptionFactoryMapping.getExceptionFactory();
                 break;
             }
         }
-        return supportedExceptionFactory;
+        return exceptionFactory;
     }
 
     /**
@@ -105,7 +102,7 @@ public class ConfigurableConstraintExceptionFactory implements DatabaseConstrain
      * @return this factory instance, for chaining
      */
     public ConfigurableConstraintExceptionFactory registerAll(String basePackage) {
-        if (StringUtils.isNotBlank(basePackage)) {
+        if (isNotBlank(basePackage)) {
 	        Set<Class<?>> annotatedClasses = Classes.getAllWithAnnotation(basePackage, NamedConstraint.class);
 	        for(Class<?> annotatedClass : annotatedClasses) {
 	            NamedConstraint annotation = AnnotationUtils.findAnnotation(annotatedClass, NamedConstraint.class);
@@ -122,8 +119,8 @@ public class ConfigurableConstraintExceptionFactory implements DatabaseConstrain
         private final DatabaseConstraintExceptionFactory exceptionFactory;
 
         public ExceptionFactoryMapping(Predicate<DatabaseConstraintViolation> violationPredicate, DatabaseConstraintExceptionFactory exceptionFactory) {
-            this.violationPredicate = Preconditions.checkNotNull(violationPredicate, "Violation predicate cannot be null.");
-            this.exceptionFactory = Preconditions.checkNotNull(exceptionFactory, "Exception factory cannot be null.");
+            this.violationPredicate = checkNotNull(violationPredicate, "Violation predicate cannot be null.");
+            this.exceptionFactory = checkNotNull(exceptionFactory, "Exception factory cannot be null.");
         }
 
         public boolean isSupported(DatabaseConstraintViolation violation) {

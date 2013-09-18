@@ -46,7 +46,7 @@ import org.springframework.stereotype.Repository;
  * @author Jeroen van Schagen
  * @since 17-05-2011
  */
-public class DatabaseConstraintExceptionTranslatingBeanPostProcessor extends AdvisorAddingBeanPostProcessor implements InitializingBean {
+public class TranslateExceptionsBeanPostProcessor extends AdvisorAddingBeanPostProcessor implements InitializingBean {
 
     /** Indicates where exception translation should be plugged into. */
     private Pointcut pointcut = new AnnotationMatchingPointcut(Repository.class, true);
@@ -57,7 +57,7 @@ public class DatabaseConstraintExceptionTranslatingBeanPostProcessor extends Adv
     /**
      * Construct a new translating bean post processor.
      */
-    public DatabaseConstraintExceptionTranslatingBeanPostProcessor() {
+    public TranslateExceptionsBeanPostProcessor() {
         setAdvisor(new ExceptionTranslatingAdvisor());
         setAddUpFront(true);
     }

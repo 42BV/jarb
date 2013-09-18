@@ -3,7 +3,8 @@ package org.jarbframework.constraint.violation;
 import static org.jarbframework.utils.Asserts.notNull;
 
 /**
- * Thrown whenever a database constraint violation has occured.
+ * Thrown whenever a database constraint violation has occurred.
+ * 
  * @author Jeroen van Schagen
  * @since 12-05-2011
  */
@@ -27,7 +28,7 @@ public class DatabaseConstraintViolationException extends RuntimeException {
      * @param cause the cause of this constraint violation exception, can be {@code null}
      */
     public DatabaseConstraintViolationException(DatabaseConstraintViolation violation, Throwable cause) {
-        this(violation, createDefaultMessage(violation), cause);
+        this(violation, "Database constraint '" + violation.getConstraintName() + "' was violated.", cause);
     }
 
     /**
@@ -39,10 +40,6 @@ public class DatabaseConstraintViolationException extends RuntimeException {
     public DatabaseConstraintViolationException(DatabaseConstraintViolation violation, String message, Throwable cause) {
         super(message, cause);
         this.violation = notNull(violation, "Constraint violation cannot be null.");
-    }
-    
-    protected static String createDefaultMessage(DatabaseConstraintViolation violation) {
-        return "Database constraint '" + violation.getConstraintName() + "' was violated.";
     }
 
     /**

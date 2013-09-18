@@ -15,7 +15,7 @@ import org.jarbframework.constraint.violation.UniqueKeyViolationException;
  * @author Jeroen van Schagen
  * @since 12-05-2011
  */
-public class SimpleConstraintExceptionFactory implements DatabaseConstraintExceptionFactory {
+public class DefaultConstraintExceptionFactory implements DatabaseConstraintExceptionFactory {
 
     @Override
     public DatabaseConstraintViolationException buildException(DatabaseConstraintViolation violation, Throwable cause) {

@@ -23,7 +23,7 @@ public class ReflectionConstraintExceptionFactory implements DatabaseConstraintE
 	private final BeanBuilder<?> beanBuilder;
 
     public ReflectionConstraintExceptionFactory(Class<?> exceptionClass) {
-        this(SupportedConstructorFinder.findMostSupportedConstructor(exceptionClass, SUPPORTED_PARAMETER_TYPES));
+        this(ConstructorFinder.findMostSupportedConstructor(exceptionClass, SUPPORTED_PARAMETER_TYPES));
     }
     
     public <T> ReflectionConstraintExceptionFactory(Constructor<T> constructor) {

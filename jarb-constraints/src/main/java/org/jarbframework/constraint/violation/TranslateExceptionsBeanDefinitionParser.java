@@ -1,9 +1,7 @@
-package org.jarbframework.constraint;
+package org.jarbframework.constraint.violation;
 
 import javax.sql.DataSource;
 
-import org.jarbframework.constraint.violation.DatabaseConstraintExceptionTranslatingBeanPostProcessor;
-import org.jarbframework.constraint.violation.DatabaseConstraintExceptionTranslator;
 import org.jarbframework.constraint.violation.factory.ConfigurableConstraintExceptionFactory;
 import org.jarbframework.constraint.violation.factory.DatabaseConstraintExceptionFactory;
 import org.jarbframework.constraint.violation.resolver.DatabaseConstraintViolationResolver;
@@ -27,7 +25,7 @@ public class TranslateExceptionsBeanDefinitionParser extends AbstractBeanDefinit
 
     @Override
     protected AbstractBeanDefinition parseInternal(Element element, ParserContext parserContext) {
-        BeanDefinitionBuilder processorBuilder = BeanDefinitionBuilder.genericBeanDefinition(DatabaseConstraintExceptionTranslatingBeanPostProcessor.class);
+        BeanDefinitionBuilder processorBuilder = BeanDefinitionBuilder.genericBeanDefinition(TranslateExceptionsBeanPostProcessor.class);
         
         // Create the exception translator
         if (element.hasAttribute("translator")) {

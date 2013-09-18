@@ -10,7 +10,7 @@ import java.util.List;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 
-final class SupportedConstructorFinder {
+final class ConstructorFinder {
 	
     /**
      * Find the constructor in a bean that has the most supported argument types.
