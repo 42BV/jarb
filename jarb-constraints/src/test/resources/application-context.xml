@@ -13,8 +13,8 @@
         <property name="dataSource" ref="dataSource" />
         <property name="jpaPropertyMap">
             <map>
+                <entry key="hibernate.dialect" value-ref="hibernateDialect"/>
                 <entry key="hibernate.ejb.naming_strategy" value="org.hibernate.cfg.ImprovedNamingStrategy"/>
-                <entry key="hibernate.dialect" value="org.hibernate.dialect.HSQLDialect"/>
                 <entry key="javax.persistence.validation.factory" value-ref="validator"/>
             </map>
         </property>
@@ -25,11 +25,7 @@
     </bean>
     
     <constraints:enable-metadata entity-manager-factory="entityManagerFactory"/>
-    
-    <bean id="schemaMigrator" class="org.jarbframework.migrations.liquibase.LiquibaseMigrator">
-        <property name="changeLogPath" value="src/test/resources/create-schema.groovy"/>
-    </bean>
-    
+
     <bean id="validator" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean">
         <property name="validationMessageSource">
             <bean class="org.springframework.context.support.ResourceBundleMessageSource">
@@ -37,8 +33,21 @@
             </bean>
         </property>
     </bean>
+        
+    <bean id="migrator" class="org.jarbframework.migrations.liquibase.LiquibaseMigrator">
+        <property name="changeLogPath" value="src/test/resources/create-schema.groovy"/>
+    </bean>
+    
+    <!-- Vendor specific database sources -->
+    <!-- Should only enable one profile at a time -->
     
     <beans profile="hsqldb">
+    
+    	<bean id="hibernateDialect" class="java.lang.String">
+    		<constructor-arg>
+    			<value>org.hibernate.dialect.HSQLDialect</value>
+    		</constructor-arg>
+    	</bean>
     
         <bean id="dataSource" class="org.jarbframework.migrations.MigratingDataSource">
 	        <property name="delegate">
@@ -48,12 +57,18 @@
 	                <property name="username" value="sa"/>
 	            </bean>
 	        </property>
-	        <property name="migrator" ref="schemaMigrator"/>
+	        <property name="migrator" ref="migrator"/>
 	    </bean>
 	    
     </beans>
     
     <beans profile="h2">
+    
+    	<bean id="hibernateDialect" class="java.lang.String">
+    		<constructor-arg>
+    			<value>org.hibernate.dialect.H2Dialect</value>
+    		</constructor-arg>
+    	</bean>
     
         <bean id="dataSource" class="org.jarbframework.migrations.MigratingDataSource">
             <property name="delegate">
@@ -63,25 +78,60 @@
                     <property name="username" value="sa"/>
                 </bean>
             </property>
-            <property name="migrator" ref="schemaMigrator"/>
+            <property name="migrator" ref="migrator"/>
+        </bean>
+        
+    </beans>
+    
+    <beans profile="psql">
+    
+    	<bean id="hibernateDialect" class="java.lang.String">
+    		<constructor-arg>
+    			<value>org.hibernate.dialect.ProgressDialect</value>
+    		</constructor-arg>
+    	</bean>
+
+        <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+            <property name="driverClassName" value="org.postgresql.Driver"/>
+            <property name="url" value="jdbc:postgresql://localhost/jarb"/>
+            <property name="username" value="jarb"/>
+    		<property name="password" value="jarb"/>
+        </bean>
+        
+    </beans>
+    
+    <beans profile="mysql">
+    
+    	<bean id="hibernateDialect" class="java.lang.String">
+    		<constructor-arg>
+    			<value>org.hibernate.dialect.MySQLDialect</value>
+    		</constructor-arg>
+    	</bean>
+
+        <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+            <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
+            <property name="url" value="jdbc:mysql://localhost:3306/jarb"/>
+            <property name="username" value="jarb"/>
+    		<property name="password" value="jarb"/>
         </bean>
         
     </beans>
     
     <beans profile="oracle">
+    
+    	<bean id="hibernateDialect" class="java.lang.String">
+    		<constructor-arg>
+    			<value>org.hibernate.dialect.Oracle10gDialect</value>
+    		</constructor-arg>
+    	</bean>
 
-        <bean id="dataSource" class="org.jarbframework.migrations.MigratingDataSource">
-            <property name="delegate">
-                <bean class="org.springframework.jdbc.datasource.DriverManagerDataSource">
-                    <property name="driverClassName" value="oracle.jdbc.OracleDriver"/>
-                    <property name="url" value="jdbc:oracle:thin:@//localhost:1521/jarb"/>
-                    <property name="username" value="alm_it3100" />
-            		<property name="password" value="alm_it3100" />
-                </bean>
-            </property>
-            <property name="migrator" ref="schemaMigrator"/>
+        <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+            <property name="driverClassName" value="oracle.jdbc.OracleDriver"/>
+            <property name="url" value="jdbc:oracle:thin:@//localhost:1521/jarb"/>
+            <property name="username" value="jarb"/>
+    		<property name="password" value="jarb"/>
         </bean>
         
     </beans>
-    
+
 </beans>

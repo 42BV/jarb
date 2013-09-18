@@ -5,7 +5,7 @@ import org.springframework.test.context.ActiveProfiles;
 
 @Ignore
 @ActiveProfiles("oracle")
-public class OracleExceptionTranslationIT extends AbstractExceptionTranslationIT {
+public class OracleExceptionTranslationTest extends AbstractExceptionTranslationTest {
 
 	// TODO: Fix internal database
 	

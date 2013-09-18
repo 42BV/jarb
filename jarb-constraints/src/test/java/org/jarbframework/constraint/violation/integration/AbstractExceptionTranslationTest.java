@@ -30,7 +30,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "classpath:translation-context.xml" })
-public class AbstractExceptionTranslationIT {
+public abstract class AbstractExceptionTranslationTest {
 
     @Autowired
     private CarRepository carRepository;
