@@ -67,7 +67,7 @@ public class ColumnMetadata {
         return required;
     }
 
-    void setRequired(boolean required) {
+    public void setRequired(boolean required) {
         this.required = required;
     }
 
@@ -79,7 +79,7 @@ public class ColumnMetadata {
         return autoIncrement;
     }
 
-    void setAutoIncrement(boolean autoIncrement) {
+    public void setAutoIncrement(boolean autoIncrement) {
         this.autoIncrement = autoIncrement;
     }
 
@@ -106,7 +106,7 @@ public class ColumnMetadata {
         return defaultValue;
     }
 
-    void setDefaultValue(String defaultValue) {
+    public void setDefaultValue(String defaultValue) {
         this.defaultValue = defaultValue;
     }
 
@@ -127,12 +127,8 @@ public class ColumnMetadata {
         return maximumLength;
     }
 
-    void setMaximumLength(Integer maximumLength) {
-        if (maximumLength > 0) {
-            this.maximumLength = maximumLength;
-        } else {
-            this.maximumLength = null;
-        }
+    public void setMaximumLength(Integer maximumLength) {
+        this.maximumLength = maximumLength;
     }
 
     /**
@@ -143,7 +139,7 @@ public class ColumnMetadata {
         return radix;
     }
 
-    void setRadix(Integer radix) {
+    public void setRadix(Integer radix) {
         this.radix = radix;
     }
 
@@ -169,7 +165,7 @@ public class ColumnMetadata {
         return fractionLength;
     }
 
-    void setFractionLength(Integer fractionLength) {
+    public void setFractionLength(Integer fractionLength) {
         this.fractionLength = fractionLength;
     }
 

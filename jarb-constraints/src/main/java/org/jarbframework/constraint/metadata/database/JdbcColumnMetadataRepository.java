@@ -76,8 +76,17 @@ public class JdbcColumnMetadataRepository implements ColumnMetadataRepository {
         if (resultSet.next()) {
             columnMetadata = new ColumnMetadata(columnReference);
             columnMetadata.setDefaultValue(resultSet.getString("COLUMN_DEF"));
-            columnMetadata.setMaximumLength(getValueAsInteger(resultSet, "COLUMN_SIZE"));
-            columnMetadata.setFractionLength(getValueAsInteger(resultSet, "DECIMAL_DIGITS"));
+            
+            Integer columnSize = getValueAsInteger(resultSet, "COLUMN_SIZE");
+            if (columnSize != null && columnSize > 0) {
+    			columnMetadata.setMaximumLength(columnSize);
+            }
+			
+            Integer fractionLength = getValueAsInteger(resultSet, "DECIMAL_DIGITS");
+            if (fractionLength != null && fractionLength >= 0) {
+    			columnMetadata.setFractionLength(fractionLength);
+            }
+			
             columnMetadata.setRadix(getValueAsInteger(resultSet, "NUM_PREC_RADIX"));
             columnMetadata.setRequired("NO".equals(getOptionalValue(resultSet, "IS_NULLABLE")));
             columnMetadata.setAutoIncrement("YES".equals(getOptionalValue(resultSet, "IS_AUTOINCREMENT")));
