@@ -83,8 +83,8 @@ public class JdbcColumnMetadataRepository implements ColumnMetadataRepository {
             }
 			
             Integer fractionLength = getValueAsInteger(resultSet, "DECIMAL_DIGITS");
-            if (fractionLength != null && fractionLength >= 0) {
-    			columnMetadata.setFractionLength(fractionLength);
+            if (fractionLength != null) {
+    			columnMetadata.setFractionLength(Math.max(fractionLength, 0));
             }
 			
             columnMetadata.setRadix(getValueAsInteger(resultSet, "NUM_PREC_RADIX"));
