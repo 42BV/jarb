@@ -7,18 +7,17 @@ import static org.junit.Assert.fail;
 import javax.annotation.Resource;
 import javax.validation.ConstraintViolationException;
 
+import org.jarbframework.sample.config.ApplicationConfig;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.orm.jpa.JpaSystemException;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { "classpath:application-context.xml" })
-@ActiveProfiles("test")
+@ContextConfiguration(classes = { ApplicationConfig.class })
 public class PostingRepositoryTest {
 
     @Resource

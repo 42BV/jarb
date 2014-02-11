@@ -13,7 +13,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 @Controller
 @RequestMapping("/")
-public class PostingController {
+public class PostController {
 
     @Autowired
     private PostRepository postRepository;
@@ -28,7 +28,7 @@ public class PostingController {
         return mav;
     }
     
-    @RequestMapping(value = "constraints", method = RequestMethod.GET)
+    @RequestMapping(value = "/constraints", method = RequestMethod.GET)
     public BeanConstraintDescription structure() {
         return beanConstraintDescriptor.describe(Post.class);
     }
