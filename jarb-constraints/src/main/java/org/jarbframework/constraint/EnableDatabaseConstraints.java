@@ -3,6 +3,7 @@
  */
 package org.jarbframework.constraint;
 
+import java.lang.annotation.Annotation;
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Inherited;
@@ -11,6 +12,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 import org.springframework.context.annotation.Import;
+import org.springframework.stereotype.Repository;
 
 /**
  * Makes the application aware of database constaints.  
@@ -38,5 +40,13 @@ public @interface EnableDatabaseConstraints {
      * @return the entity manager factory name
      */
     String entityManagerFactory() default "entityManagerFactory";
+    
+    /**
+     * The annotation that should perform the exception translations.
+     * By default we take the {@link Repository} class.
+     * 
+     * @return the annotation that performs exception translations
+     */
+    Class<? extends Annotation> translatingAnnotation() default Repository.class;
 
 }

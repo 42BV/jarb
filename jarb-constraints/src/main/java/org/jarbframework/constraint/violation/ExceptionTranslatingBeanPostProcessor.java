@@ -45,20 +45,20 @@ import org.springframework.stereotype.Repository;
  * @author Jeroen van Schagen
  * @since 17-05-2011
  */
-public class TranslateExceptionsBeanPostProcessor extends AdvisorAddingBeanPostProcessor {
+public class ExceptionTranslatingBeanPostProcessor extends AdvisorAddingBeanPostProcessor {
 
     /** Converted into a persistence exception translator. */
     private final DatabaseConstraintExceptionTranslator translator;
 
     /** Indicates where exception translation should be plugged into. */
     private final Pointcut pointcut;
-    
+
     /**
      * Create a new translate exception bean post processor on @Repository beans.
      * 
      * @param translator the exception translator
      */
-    public TranslateExceptionsBeanPostProcessor(DatabaseConstraintExceptionTranslator translator) {
+    public ExceptionTranslatingBeanPostProcessor(DatabaseConstraintExceptionTranslator translator) {
         this(translator, Repository.class);
     }
     
@@ -68,7 +68,7 @@ public class TranslateExceptionsBeanPostProcessor extends AdvisorAddingBeanPostP
      * @param translator the exception translator
      * @param annotationClass the annotation that should bind our translations
      */
-    public TranslateExceptionsBeanPostProcessor(DatabaseConstraintExceptionTranslator translator, Class<? extends Annotation> annotationClass) {
+    public ExceptionTranslatingBeanPostProcessor(DatabaseConstraintExceptionTranslator translator, Class<? extends Annotation> annotationClass) {
         this(translator, new AnnotationMatchingPointcut(annotationClass, true));
     }
 
@@ -78,7 +78,7 @@ public class TranslateExceptionsBeanPostProcessor extends AdvisorAddingBeanPostP
      * @param translator the exception translator
      * @param pointcut the pointcut
      */
-    public TranslateExceptionsBeanPostProcessor(DatabaseConstraintExceptionTranslator translator, Pointcut pointcut) {
+    public ExceptionTranslatingBeanPostProcessor(DatabaseConstraintExceptionTranslator translator, Pointcut pointcut) {
         this.translator = translator;
         this.pointcut = pointcut;
 

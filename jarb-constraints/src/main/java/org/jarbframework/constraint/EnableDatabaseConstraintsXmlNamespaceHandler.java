@@ -3,7 +3,7 @@ package org.jarbframework.constraint;
 import org.jarbframework.constraint.metadata.BeanConstraintDescriptorFactoryBean;
 import org.jarbframework.constraint.metadata.database.HibernateJpaBeanMetadataRepositoryFactoryBean;
 import org.jarbframework.constraint.violation.DatabaseConstraintExceptionTranslatorFactoryBean;
-import org.jarbframework.constraint.violation.TranslateExceptionsBeanPostProcessor;
+import org.jarbframework.constraint.violation.ExceptionTranslatingBeanPostProcessor;
 import org.springframework.aop.aspectj.AspectJExpressionPointcut;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.support.AbstractBeanDefinition;
@@ -33,7 +33,7 @@ public class EnableDatabaseConstraintsXmlNamespaceHandler extends NamespaceHandl
         
         @Override
         protected AbstractBeanDefinition parseInternal(Element element, ParserContext parserContext) {
-            BeanDefinitionBuilder processorBuilder = BeanDefinitionBuilder.genericBeanDefinition(TranslateExceptionsBeanPostProcessor.class);
+            BeanDefinitionBuilder processorBuilder = BeanDefinitionBuilder.genericBeanDefinition(ExceptionTranslatingBeanPostProcessor.class);
             
             // Create the exception translator
             if (element.hasAttribute("translator")) {

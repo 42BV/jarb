@@ -3,6 +3,7 @@
  */
 package org.jarbframework.constraint;
 
+import java.lang.annotation.Annotation;
 import java.util.Map;
 
 import javax.persistence.EntityManagerFactory;
@@ -14,7 +15,7 @@ import org.jarbframework.constraint.metadata.database.BeanMetadataRepository;
 import org.jarbframework.constraint.metadata.database.HibernateJpaBeanMetadataRepositoryFactoryBean;
 import org.jarbframework.constraint.violation.DatabaseConstraintExceptionTranslator;
 import org.jarbframework.constraint.violation.DatabaseConstraintExceptionTranslatorFactoryBean;
-import org.jarbframework.constraint.violation.TranslateExceptionsBeanPostProcessor;
+import org.jarbframework.constraint.violation.ExceptionTranslatingBeanPostProcessor;
 import org.jarbframework.utils.orm.hibernate.HibernateUtils;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,8 +35,8 @@ import org.springframework.core.type.AnnotationMetadata;
 public class EnableDatabaseConstraintsConfiguration implements ImportAware, InitializingBean {
     
     private static final String ENTITY_MANAGER_FACTORY_REF = "entityManagerFactory";
-    
     private static final String BASE_PACKAGE_REF = "basePackage";
+    private static final String TRANSLATING_ANNOTATION_REF = "translatingAnnotation";
 
     private Map<String, Object> attributes;
 
@@ -54,8 +55,10 @@ public class EnableDatabaseConstraintsConfiguration implements ImportAware, Init
     }
     
     @Bean
-    public TranslateExceptionsBeanPostProcessor translateExceptionBeanPostProcessor() throws Exception {
-        return new TranslateExceptionsBeanPostProcessor(exceptionTranslator());
+    @SuppressWarnings("unchecked")
+    public ExceptionTranslatingBeanPostProcessor exceptionTranslatingBeanPostProcessor() throws Exception {
+        Class<? extends Annotation> annotation = (Class<? extends Annotation>) attributes.get(TRANSLATING_ANNOTATION_REF);
+        return new ExceptionTranslatingBeanPostProcessor(exceptionTranslator(), annotation);
     }
     
     @Bean
