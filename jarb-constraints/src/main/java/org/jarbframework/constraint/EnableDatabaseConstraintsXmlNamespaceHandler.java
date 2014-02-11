@@ -80,7 +80,7 @@ public class EnableDatabaseConstraintsXmlNamespaceHandler extends NamespaceHandl
         @Override
         public BeanDefinition parse(Element element, ParserContext parserContext) {
             String beanMetadataRepositoryName = buildAndRegisterBeanMetadataRepository(element, parserContext);
-            buildAndRegisterConstraintDescriptor(beanMetadataRepositoryName, parserContext);
+            buildAndRegisterConstraintDescriptor(beanMetadataRepositoryName, element, parserContext);
             return null;
         }
         
@@ -90,9 +90,10 @@ public class EnableDatabaseConstraintsXmlNamespaceHandler extends NamespaceHandl
             return parserContext.getReaderContext().registerWithGeneratedName(beanMetadataRepositoryBuilder.getBeanDefinition());
         }
         
-        private void buildAndRegisterConstraintDescriptor(String beanMetadataRepositoryName, ParserContext parserContext) {
+        private void buildAndRegisterConstraintDescriptor(String beanMetadataRepositoryName, Element element, ParserContext parserContext) {
             BeanDefinitionBuilder beanConstraintDescriptorBuilder = BeanDefinitionBuilder.genericBeanDefinition(BeanConstraintDescriptorFactoryBean.class);
             beanConstraintDescriptorBuilder.addConstructorArgReference(beanMetadataRepositoryName);
+            beanConstraintDescriptorBuilder.addConstructorArgValue(element.getAttribute("base-package"));
             parserContext.getReaderContext().registerWithGeneratedName(beanConstraintDescriptorBuilder.getBeanDefinition());
         }
         

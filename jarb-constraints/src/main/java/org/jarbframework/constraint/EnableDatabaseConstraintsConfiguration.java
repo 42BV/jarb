@@ -65,7 +65,7 @@ public class EnableDatabaseConstraintsConfiguration implements ImportAware, Init
     
     @Bean
     public BeanConstraintDescriptor beanConstraintDescriptor() throws Exception {
-        return new BeanConstraintDescriptorFactoryBean(beanMetadataRepository()).getObject();
+        return new BeanConstraintDescriptorFactoryBean(beanMetadataRepository(), basePackage).getObject();
     }
 
     @Override
