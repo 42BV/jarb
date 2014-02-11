@@ -3,11 +3,9 @@ package org.jarbframework.constraint.metadata.enhance;
 import static org.jarbframework.utils.Asserts.notNull;
 
 import org.jarbframework.constraint.metadata.PropertyConstraintDescription;
+import org.jarbframework.constraint.metadata.database.BeanMetadataRepository;
 import org.jarbframework.constraint.metadata.database.ColumnMetadata;
-import org.jarbframework.constraint.metadata.database.ColumnMetadataRepository;
 import org.jarbframework.utils.bean.PropertyReference;
-import org.jarbframework.utils.orm.ColumnReference;
-import org.jarbframework.utils.orm.SchemaMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,35 +19,32 @@ public class DatabaseSchemaPropertyConstraintEnhancer implements PropertyConstra
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
     
-    private final ColumnMetadataRepository columnMetadataRepository;
+    private final BeanMetadataRepository beanMetadataRepository;
 
-    private final SchemaMapper schemaMapper;
-
-    public DatabaseSchemaPropertyConstraintEnhancer(ColumnMetadataRepository columnMetadataRepository, SchemaMapper schemaMapper) {
-        this.columnMetadataRepository = notNull(columnMetadataRepository, "Column metadata repository cannot be null");
-        this.schemaMapper = notNull(schemaMapper, "Schema mapper cannot be null");
+    public DatabaseSchemaPropertyConstraintEnhancer(BeanMetadataRepository beanMetadataRepository) {
+        this.beanMetadataRepository = notNull(beanMetadataRepository, "Bean metadata repository cannot be null");
     }
 
     @Override
     public PropertyConstraintDescription enhance(PropertyConstraintDescription propertyDescription) {
-        PropertyReference propertyReference = propertyDescription.toReference();
-
-        if (! schemaMapper.isEmbeddable(propertyDescription.getJavaType())) {
-            ColumnReference columnReference = schemaMapper.getColumnReference(propertyReference);
-            if (columnReference != null) {
-                ColumnMetadata columnMetadata = columnMetadataRepository.getColumnMetadata(columnReference);
-                if (columnMetadata != null) {
-                    propertyDescription.setRequired(isValueRequired(columnMetadata));
-                    propertyDescription.setMaximumLength(columnMetadata.getMaximumLength());
-                    propertyDescription.setFractionLength(columnMetadata.getFractionLength());
-                    propertyDescription.setRadix(columnMetadata.getRadix());
-                } else {
-                    logger.debug("Could not resolve column metadata for '{}'.", propertyReference);
-                }
+        if (! beanMetadataRepository.isEmbeddable(propertyDescription.getJavaType())) {
+            PropertyReference propertyReference = propertyDescription.toReference();
+            ColumnMetadata columnMetadata = beanMetadataRepository.getColumnMetadata(propertyReference);
+            if (columnMetadata != null) {
+                doEnhance(propertyDescription, columnMetadata);
+            } else {
+                logger.debug("Could not resolve column metadata for '{}'.", propertyReference);
             }
         }
 
         return propertyDescription;
+    }
+
+    private void doEnhance(PropertyConstraintDescription propertyDescription, ColumnMetadata columnMetadata) {
+        propertyDescription.setRequired(isValueRequired(columnMetadata));
+        propertyDescription.setMaximumLength(columnMetadata.getMaximumLength());
+        propertyDescription.setFractionLength(columnMetadata.getFractionLength());
+        propertyDescription.setRadix(columnMetadata.getRadix());
     }
 
     private boolean isValueRequired(ColumnMetadata columnMetadata) {

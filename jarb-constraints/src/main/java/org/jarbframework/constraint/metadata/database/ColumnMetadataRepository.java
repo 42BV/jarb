@@ -12,9 +12,10 @@ public interface ColumnMetadataRepository {
 
     /**
      * Retrieve the meta-data of a specific database column.
+     * 
      * @param columnReference reference to a column
      * @return constraint of the column, or {@code null}
      */
-    ColumnMetadata getColumnMetadata(ColumnReference columnReference);
+    ColumnMetadata getMetadata(ColumnReference columnReference);
 
 }

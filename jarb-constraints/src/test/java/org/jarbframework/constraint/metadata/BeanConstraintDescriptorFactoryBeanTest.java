@@ -4,8 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import org.jarbframework.constraint.domain.Wine;
-import org.jarbframework.constraint.metadata.database.ColumnMetadataRepository;
-import org.jarbframework.utils.orm.SchemaMapper;
+import org.jarbframework.constraint.metadata.database.BeanMetadataRepository;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -19,19 +18,14 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @ContextConfiguration(locations = { "classpath:application-context.xml" })
 public class BeanConstraintDescriptorFactoryBeanTest {
     
-    private BeanConstraintDescriptorFactoryBean factoryBean;
+    private BeanConstraintDescriptorFactoryBean beanConstraintDescriptorFactoryBean;
 
     @Autowired
-    private SchemaMapper schemaMapper;
-    
-    @Autowired
-    private ColumnMetadataRepository columnMetadataRepository;
+    private BeanMetadataRepository beanMetadataRepository;
 
     @Before
     public void setUp() throws Exception {
-        factoryBean = new BeanConstraintDescriptorFactoryBean();
-        factoryBean.setSchemaMapper(schemaMapper);
-        factoryBean.setColumnMetadataRepository(columnMetadataRepository);
+        beanConstraintDescriptorFactoryBean = new BeanConstraintDescriptorFactoryBean(beanMetadataRepository);
     }
 
     /**
@@ -39,7 +33,7 @@ public class BeanConstraintDescriptorFactoryBeanTest {
      */
     @Test
     public void testGeneratedObject() throws Exception {
-        BeanConstraintDescriptor descriptor = factoryBean.getObject();
+        BeanConstraintDescriptor descriptor = beanConstraintDescriptorFactoryBean.getObject();
         BeanConstraintDescription wineDescription = descriptor.describe(Wine.class);
         PropertyConstraintDescription nameDescription = wineDescription.getPropertyDescription("name");
         assertEquals(String.class, nameDescription.getJavaType()); // Retrieved by introspection

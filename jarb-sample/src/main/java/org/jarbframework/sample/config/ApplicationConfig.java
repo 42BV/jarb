@@ -14,10 +14,10 @@ import org.hibernate.dialect.HSQLDialect;
 import org.hibernate.ejb.HibernatePersistence;
 import org.jarbframework.constraint.metadata.BeanConstraintDescriptor;
 import org.jarbframework.constraint.metadata.BeanConstraintDescriptorFactoryBean;
-import org.jarbframework.constraint.metadata.database.ColumnMetadataRepository;
-import org.jarbframework.constraint.metadata.database.HibernateJpaColumnMetadataRepositoryFactoryBean;
+import org.jarbframework.constraint.metadata.database.BeanMetadataRepository;
+import org.jarbframework.constraint.metadata.database.HibernateJpaBeanMetadataRepositoryFactoryBean;
 import org.jarbframework.constraint.violation.DatabaseConstraintExceptionTranslator;
-import org.jarbframework.constraint.violation.TranslateExceptionsBeanDefinitionParser.ExceptionTranslatorFactoryBean;
+import org.jarbframework.constraint.violation.DatabaseConstraintExceptionTranslatorFactoryBean;
 import org.jarbframework.constraint.violation.TranslateExceptionsBeanPostProcessor;
 import org.jarbframework.migrations.MigratingDataSource;
 import org.jarbframework.migrations.liquibase.LiquibaseMigrator;
@@ -27,9 +27,7 @@ import org.jarbframework.populator.ProductSpecificSqlClassPathResourceDatabasePo
 import org.jarbframework.populator.SqlResourceDatabasePopulator;
 import org.jarbframework.populator.excel.ExcelDatabasePopulator;
 import org.jarbframework.sample.PostPopulator;
-import org.jarbframework.utils.orm.SchemaMapper;
 import org.jarbframework.utils.orm.hibernate.ConventionNamingStrategy;
-import org.jarbframework.utils.orm.hibernate.HibernateJpaSchemaMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
@@ -108,43 +106,26 @@ public class ApplicationConfig {
         return transactionManager;
     }
     
-    // TODO: Exception translation
+    // TODO: Simplify initialization of jars
     
     @Bean
     public DatabaseConstraintExceptionTranslator exceptionTranslator() throws Exception {
-        ExceptionTranslatorFactoryBean translatorFactoryBean = new ExceptionTranslatorFactoryBean();
-        translatorFactoryBean.setBasePackage("org.jarbframework.sample");
-        translatorFactoryBean.setDataSource(dataSource());
-        return translatorFactoryBean.getObject();
+        return new DatabaseConstraintExceptionTranslatorFactoryBean("org.jarbframework.sample", dataSource()).getObject();
     }
     
     @Bean
     public TranslateExceptionsBeanPostProcessor translateExceptionBeanPostProcessor() throws Exception {
-        TranslateExceptionsBeanPostProcessor translateExceptionsBeanPostProcessor = new TranslateExceptionsBeanPostProcessor();
-        translateExceptionsBeanPostProcessor.setTranslator(exceptionTranslator());
-        return translateExceptionsBeanPostProcessor;
+        return new TranslateExceptionsBeanPostProcessor(exceptionTranslator());
     }
-    
-    // TODO: Enable metadata
 
     @Bean
-    public SchemaMapper schemaMapper() {
-        return new HibernateJpaSchemaMapper(entityManagerFactory().getObject());
-    }
-    
-    @Bean
-    public ColumnMetadataRepository columnMetadataRepository() throws Exception {
-        HibernateJpaColumnMetadataRepositoryFactoryBean columnMetadataRepositoryFactoryBean = new HibernateJpaColumnMetadataRepositoryFactoryBean();
-        columnMetadataRepositoryFactoryBean.setEntityManagerFactory(entityManagerFactory().getObject());
-        return columnMetadataRepositoryFactoryBean.getObject();
+    public BeanMetadataRepository beanMetadataRepository() throws Exception {
+        return new HibernateJpaBeanMetadataRepositoryFactoryBean(entityManagerFactory().getObject()).getObject();
     }
     
     @Bean
     public BeanConstraintDescriptor beanConstraintDescriptor() throws Exception {
-        BeanConstraintDescriptorFactoryBean beanConstraintDescriptorFactoryBean = new BeanConstraintDescriptorFactoryBean();
-        beanConstraintDescriptorFactoryBean.setColumnMetadataRepository(columnMetadataRepository());
-        beanConstraintDescriptorFactoryBean.setSchemaMapper(schemaMapper());
-        return beanConstraintDescriptorFactoryBean.getObject();
+        return new BeanConstraintDescriptorFactoryBean(beanMetadataRepository()).getObject();
     }
     
     @Profile("demo")

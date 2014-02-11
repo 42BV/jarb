@@ -38,7 +38,7 @@ public class JdbcColumnMetadataRepositoryTest {
     public void testGetColumnMetaData() {
         ColumnReference reference = new ColumnReference("cars", "license_number");
         
-        ColumnMetadata metadata = jdbcMetadataRepository.getColumnMetadata(reference);
+        ColumnMetadata metadata = jdbcMetadataRepository.getMetadata(reference);
         assertEquals(reference, metadata.getColumnReference());
         assertTrue(metadata.isRequired());
         assertFalse(metadata.isAutoIncrement());
@@ -53,7 +53,7 @@ public class JdbcColumnMetadataRepositoryTest {
     public void testGetQuotedColumnMetaData() {
         ColumnReference reference = new ColumnReference("\"CARS\"", "\"LICENSE_NUMBER\"");
         
-        ColumnMetadata metadata = jdbcMetadataRepository.getColumnMetadata(reference);
+        ColumnMetadata metadata = jdbcMetadataRepository.getMetadata(reference);
         assertEquals(reference, metadata.getColumnReference());
         assertTrue(metadata.isRequired());
         assertFalse(metadata.isAutoIncrement());
@@ -68,7 +68,7 @@ public class JdbcColumnMetadataRepositoryTest {
     public void testInvalidCasingWhenQuoted() {
         ColumnReference reference = new ColumnReference("\"cars\"", "\"license_number\"");
         
-        assertNull(jdbcMetadataRepository.getColumnMetadata(reference));
+        assertNull(jdbcMetadataRepository.getMetadata(reference));
     }
 
 }

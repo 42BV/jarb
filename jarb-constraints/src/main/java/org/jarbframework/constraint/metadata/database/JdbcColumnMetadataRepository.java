@@ -43,7 +43,7 @@ public class JdbcColumnMetadataRepository implements ColumnMetadataRepository {
     }
 
     @Override
-    public ColumnMetadata getColumnMetadata(final ColumnReference columnReference) {
+    public ColumnMetadata getMetadata(final ColumnReference columnReference) {
         return JdbcUtils.doWithConnection(dataSource, new JdbcConnectionCallback<ColumnMetadata>() {
            
             @Override

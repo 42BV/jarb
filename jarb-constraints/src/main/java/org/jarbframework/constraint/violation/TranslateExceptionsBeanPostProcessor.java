@@ -1,6 +1,6 @@
 package org.jarbframework.constraint.violation;
 
-import static org.jarbframework.utils.Asserts.notNull;
+import java.lang.annotation.Annotation;
 
 import org.aopalliance.aop.Advice;
 import org.aopalliance.intercept.MethodInterceptor;
@@ -9,15 +9,14 @@ import org.jarbframework.utils.spring.AdvisorAddingBeanPostProcessor;
 import org.springframework.aop.Pointcut;
 import org.springframework.aop.support.AbstractPointcutAdvisor;
 import org.springframework.aop.support.annotation.AnnotationMatchingPointcut;
-import org.springframework.beans.factory.InitializingBean;
 import org.springframework.stereotype.Repository;
 
 /**
- * Wraps @Repository annotated beans with exception translation logic. Whenever possible,
- * runtime exceptions, thrown by the repository bean, are translated into (more obvious)
- * constraint violation exceptions. By using this bean post processor our database exceptions
- * become easier to read, and can be caught programmatically. Also, it is possible to access
- * violation information directly from the exception API.
+ * Wraps beans with exception translation logic. Whenever possible, runtime exceptions, thrown
+ * by the repository bean, are translated into (more obvious) constraint violation exceptions.
+ * By using this bean post processor our database exceptions become easier to read, and can be
+ * caught programmatically. Also, it is possible to access violation information directly
+ * from the exception API.
  * 
  * For example:
  * 
@@ -46,42 +45,45 @@ import org.springframework.stereotype.Repository;
  * @author Jeroen van Schagen
  * @since 17-05-2011
  */
-public class TranslateExceptionsBeanPostProcessor extends AdvisorAddingBeanPostProcessor implements InitializingBean {
+public class TranslateExceptionsBeanPostProcessor extends AdvisorAddingBeanPostProcessor {
+
+    /** Converted into a persistence exception translator. */
+    private final DatabaseConstraintExceptionTranslator translator;
 
     /** Indicates where exception translation should be plugged into. */
-    private Pointcut pointcut = new AnnotationMatchingPointcut(Repository.class, true);
+    private final Pointcut pointcut;
     
-    /** Converted into a persistence exception translator. */
-    private DatabaseConstraintExceptionTranslator translator;
+    /**
+     * Create a new translate exception bean post processor on @Repository beans.
+     * 
+     * @param translator the exception translator
+     */
+    public TranslateExceptionsBeanPostProcessor(DatabaseConstraintExceptionTranslator translator) {
+        this(translator, Repository.class);
+    }
+    
+    /**
+     * Create a new translate exception bean post processor on specific annotated beans.
+     * 
+     * @param translator the exception translator
+     * @param annotationClass the annotation that should bind our translations
+     */
+    public TranslateExceptionsBeanPostProcessor(DatabaseConstraintExceptionTranslator translator, Class<? extends Annotation> annotationClass) {
+        this(translator, new AnnotationMatchingPointcut(annotationClass, true));
+    }
 
     /**
-     * Construct a new translating bean post processor.
+     * Create a new translate exception bean post processors.
+     * 
+     * @param translator the exception translator
+     * @param pointcut the pointcut
      */
-    public TranslateExceptionsBeanPostProcessor() {
+    public TranslateExceptionsBeanPostProcessor(DatabaseConstraintExceptionTranslator translator, Pointcut pointcut) {
+        this.translator = translator;
+        this.pointcut = pointcut;
+
         setAdvisor(new ExceptionTranslatingAdvisor());
         setAddUpFront(true);
-    }
-
-    @Override
-    public void afterPropertiesSet() throws Exception {
-        notNull(pointcut, "Pointcut cannot be null.");
-        notNull(translator, "Translator cannot be null.");
-    }
-
-    /**
-     * Configure where translation logic should be applied.
-     * @param pointcut describes where the translation should be applied
-     */
-    public void setPointcut(Pointcut pointcut) {
-        this.pointcut = pointcut;
-    }
-
-    /**
-     * Configure the exception translator instance. Exceptions will be translated with this instance.
-     * @param translator the translator that will translate our instances
-     */
-    public void setTranslator(DatabaseConstraintExceptionTranslator translator) {
-        this.translator = translator;
     }
 
     private class ExceptionTranslatingAdvisor extends AbstractPointcutAdvisor {
@@ -104,6 +106,12 @@ public class TranslateExceptionsBeanPostProcessor extends AdvisorAddingBeanPostP
                     }
                 }
                 
+                /**
+                 * Attempt to translate the exception.
+                 * 
+                 * @param exception the original exception
+                 * @return the original, or translated, exception
+                 */
                 private Throwable translate(RuntimeException exception) {
                     Throwable translation = translator.translate(exception);
                     return translation != null ? translation : exception;

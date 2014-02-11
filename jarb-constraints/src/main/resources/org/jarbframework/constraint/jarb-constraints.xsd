@@ -31,13 +31,6 @@
                     </xsd:documentation>
                 </xsd:annotation>
             </xsd:attribute>
-            <xsd:attribute name="caching" type="xsd:boolean" default="true">
-                <xsd:annotation>
-                    <xsd:documentation>
-                        Reference to the entity manager factory.
-                    </xsd:documentation>
-                </xsd:annotation>
-            </xsd:attribute>
         </xsd:complexType>
    </xsd:element>
 

@@ -8,13 +8,11 @@ import java.util.List;
 import javax.validation.ConstraintValidatorContext;
 import javax.validation.MessageInterpolator;
 
+import org.jarbframework.constraint.metadata.database.BeanMetadataRepository;
 import org.jarbframework.constraint.metadata.database.ColumnMetadata;
-import org.jarbframework.constraint.metadata.database.ColumnMetadataRepository;
 import org.jarbframework.utils.bean.BeanProperties;
 import org.jarbframework.utils.bean.DynamicBeanWrapper;
 import org.jarbframework.utils.bean.PropertyReference;
-import org.jarbframework.utils.orm.ColumnReference;
-import org.jarbframework.utils.orm.SchemaMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,22 +41,22 @@ public class DatabaseConstraintValidator {
     private final List<DatabaseConstraintValidationStep> validationSteps;
 
     /** Retrieves the column meta-data that we use for validation **/
-    private ColumnMetadataRepository columnMetadataRepository;
+    private BeanMetadataRepository beanMetadataRepository;
     
     /** Used to build violation messages **/
     private ViolationMessageBuilder messageBuilder;
-    
-    /** Maps bean properties to database columns, for which we query meta-data **/
-    private SchemaMapper schemaMapper;
 
     /**
      * Construct a new {@link DatabaseConstraintValidator}.
      */
-    public DatabaseConstraintValidator() {
+    public DatabaseConstraintValidator(BeanMetadataRepository beanMetadataRepository, MessageInterpolator messageInterpolator) {
         validationSteps = new ArrayList<DatabaseConstraintValidationStep>();
         validationSteps.add(new NotNullConstraintValidationStep());
         validationSteps.add(new LengthConstraintValidationStep());
         validationSteps.add(new FractionLengthConstraintValidationStep());
+        
+        this.beanMetadataRepository = beanMetadataRepository;
+        messageBuilder = new ViolationMessageBuilder(messageInterpolator);
     }
 
     /**
@@ -85,7 +83,7 @@ public class DatabaseConstraintValidator {
         Field propertyField = BeanProperties.findPropertyField(propertyReference);
         if (! Modifier.isStatic(propertyField.getModifiers())) {
             Class<?> propertyClass = propertyField.getType();
-            if (schemaMapper.isEmbeddable(propertyClass)) {
+            if (beanMetadataRepository.isEmbeddable(propertyClass)) {
             	for (String propertyName : BeanProperties.getFieldNames(propertyClass)) {
                     validateProperty(beanWrapper, new PropertyReference(propertyReference, propertyName), beanReference, validation);
                 }
@@ -96,30 +94,16 @@ public class DatabaseConstraintValidator {
     }
 
     private void validateSimpleProperty(DynamicBeanWrapper<?> beanWrapper, PropertyReference propertyReference, PropertyReference beanReference, DatabaseConstraintValidationContext validation) {
-        ColumnReference columnReference = schemaMapper.getColumnReference(propertyReference.wrap(beanReference));
-        if (columnReference != null) {
-            ColumnMetadata columnMetadata = columnMetadataRepository.getColumnMetadata(columnReference);
-            if (columnMetadata != null) {
-                Object propertyValue = beanWrapper.getPropertyValueSafely(propertyReference.getName());
-                for (DatabaseConstraintValidationStep validationStep : validationSteps) {
-                    validationStep.validate(propertyValue, propertyReference, columnMetadata, validation);
-                }
-            } else {
-                logger.warn("Skipped validation because no metadata could be found for column '{}'.", columnReference);
+        PropertyReference finalPropertyReference = propertyReference.wrap(beanReference);
+        ColumnMetadata columnMetadata = beanMetadataRepository.getColumnMetadata(finalPropertyReference);
+        if (columnMetadata != null) {
+            Object propertyValue = beanWrapper.getPropertyValueSafely(propertyReference.getName());
+            for (DatabaseConstraintValidationStep validationStep : validationSteps) {
+                validationStep.validate(propertyValue, propertyReference, columnMetadata, validation);
             }
+        } else {
+            logger.warn("Skipped validation because no metadata could be found for property '{}'.", finalPropertyReference);
         }
     }
 
-    public void setMessageInterpolator(MessageInterpolator messageInterpolator) {
-        messageBuilder = new ViolationMessageBuilder(messageInterpolator);
-    }
-
-    public void setSchemaMapper(SchemaMapper schemaMapper) {
-        this.schemaMapper = schemaMapper;
-    }
-    
-    public void setColumnMetadataRepository(ColumnMetadataRepository columnMetadataRepository) {
-        this.columnMetadataRepository = columnMetadataRepository;
-    }
-    
 }

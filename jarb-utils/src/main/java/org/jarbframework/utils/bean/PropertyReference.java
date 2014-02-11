@@ -1,14 +1,14 @@
 package org.jarbframework.utils.bean;
 
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
-import org.jarbframework.utils.Asserts;
-
 import static org.apache.commons.lang3.StringUtils.substringAfter;
 import static org.apache.commons.lang3.StringUtils.substringAfterLast;
 import static org.jarbframework.utils.Asserts.hasText;
 import static org.jarbframework.utils.Asserts.notNull;
+
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.jarbframework.utils.Asserts;
 
 /**
  * References a bean property.
@@ -19,11 +19,11 @@ import static org.jarbframework.utils.Asserts.notNull;
 public class PropertyReference {
 
     private static final String PROPERTY_SEPARATOR = ".";
-
-    private final String name;
     
     private final Class<?> beanClass;
 
+    private final String name;
+    
     public PropertyReference(Class<?> beanClass, String name) {
         this.name = hasText(name, "Property name is required");
         this.beanClass = notNull(beanClass, "Bean class is required");

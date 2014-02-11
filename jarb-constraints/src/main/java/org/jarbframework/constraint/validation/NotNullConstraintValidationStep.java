@@ -2,8 +2,8 @@ package org.jarbframework.constraint.validation;
 
 import static org.jarbframework.utils.bean.AnnotationScanner.fieldOrGetter;
 
+import org.jarbframework.constraint.metadata.DatabaseGenerated;
 import org.jarbframework.constraint.metadata.database.ColumnMetadata;
-import org.jarbframework.constraint.metadata.database.DatabaseGenerated;
 import org.jarbframework.utils.bean.PropertyReference;
 
 public class NotNullConstraintValidationStep implements DatabaseConstraintValidationStep {

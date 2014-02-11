@@ -1,4 +1,4 @@
-package org.jarbframework.constraint.metadata.database;
+package org.jarbframework.constraint.metadata;
 
 import static java.lang.annotation.ElementType.FIELD;
 import static java.lang.annotation.ElementType.METHOD;
