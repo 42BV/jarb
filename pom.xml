@@ -54,8 +54,10 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		
 		<!-- Java version -->
-		<jdk.version>1.6</jdk.version>
+		<jdk.version>1.7</jdk.version>
+		
 		<!-- Dependency versions -->
 		<spring.version>3.2.2.RELEASE</spring.version>
         <hibernate.version>4.2.0.Final</hibernate.version>
@@ -150,6 +152,18 @@
             <version>1.9.5</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+			<groupId>org.powermock</groupId>
+			<artifactId>powermock-api-mockito</artifactId>
+			<version>1.5.1</version>
+			<scope>test</scope>
+		</dependency>
+        <dependency>
+			<groupId>org.powermock</groupId>
+			<artifactId>powermock-module-junit4</artifactId>
+			<version>1.5.1</version>
+			<scope>test</scope>
+		</dependency>
 		
 		<!-- Supported database drivers -->
         <dependency>
