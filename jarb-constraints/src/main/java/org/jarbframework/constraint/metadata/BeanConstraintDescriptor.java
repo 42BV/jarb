@@ -18,10 +18,11 @@ import org.springframework.beans.BeanUtils;
  */
 public class BeanConstraintDescriptor {
 
-    private final List<PropertyConstraintEnhancer> propertyConstraintEnhancers = new ArrayList<PropertyConstraintEnhancer>();
+    private final List<PropertyConstraintEnhancer> enhancers = new ArrayList<PropertyConstraintEnhancer>();
 
     /**
      * Generate bean constraint meta data.
+     * 
      * @param beanClass class of the bean
      * @return bean constraint meta data
      */
@@ -35,25 +36,27 @@ public class BeanConstraintDescriptor {
 
     /**
      * Describe the constraints of a specific property.
+     * 
      * @param beanClass type of bean that contains the property
      * @param propertyDescriptor plain property description from java
      * @return property constraint description
      */
     private PropertyConstraintDescription describeProperty(Class<?> beanClass, PropertyDescriptor propertyDescriptor) {
-        PropertyConstraintDescription propertyDescription = createPropertyDescription(beanClass, propertyDescriptor);
-        for (PropertyConstraintEnhancer propertyConstraintEnhancer : propertyConstraintEnhancers) {
-            propertyDescription = propertyConstraintEnhancer.enhance(propertyDescription);
+        PropertyConstraintDescription propertyDescription = newPropertyDescription(beanClass, propertyDescriptor);
+        for (PropertyConstraintEnhancer enhancer : enhancers) {
+            propertyDescription = enhancer.enhance(propertyDescription);
         }
         return propertyDescription;
     }
 
     /**
      * Construct a new {@link PropertyConstraintDescription} for some property.
+     * 
      * @param beanClass type of bean that contains the property
      * @param propertyDescriptor plain property description from java
      * @return new property constraint description
      */
-    private PropertyConstraintDescription createPropertyDescription(Class<?> beanClass, PropertyDescriptor propertyDescriptor) {
+    private PropertyConstraintDescription newPropertyDescription(Class<?> beanClass, PropertyDescriptor propertyDescriptor) {
         PropertyReference propertyReference = new PropertyReference(beanClass, propertyDescriptor.getName());
         return new PropertyConstraintDescription(propertyReference, propertyDescriptor.getPropertyType());
     }
@@ -61,11 +64,12 @@ public class BeanConstraintDescriptor {
     /**
      * Register a property constraint enhancer to this bean constraint accessor.
      * Whenever a new bean is described, the provided enhancer will be used.
-     * @param propertyConstraintEnhancer enhancer used to improve property constraint descriptions
+     * 
+     * @param enhancer enhancer used to improve property constraint descriptions
      * @return the same bean constraint accessor, used for chaining
      */
-    public BeanConstraintDescriptor registerEnhancer(PropertyConstraintEnhancer propertyConstraintEnhancer) {
-        propertyConstraintEnhancers.add(notNull(propertyConstraintEnhancer, "Cannot add a null property constraint enhancer"));
+    public BeanConstraintDescriptor registerEnhancer(PropertyConstraintEnhancer enhancer) {
+        enhancers.add(notNull(enhancer, "Cannot add a null property constraint enhancer"));
         return this;
     }
 

@@ -12,13 +12,7 @@ import javax.validation.ValidatorFactory;
 
 import org.hibernate.dialect.HSQLDialect;
 import org.hibernate.ejb.HibernatePersistence;
-import org.jarbframework.constraint.metadata.BeanConstraintDescriptor;
-import org.jarbframework.constraint.metadata.BeanConstraintDescriptorFactoryBean;
-import org.jarbframework.constraint.metadata.database.BeanMetadataRepository;
-import org.jarbframework.constraint.metadata.database.HibernateJpaBeanMetadataRepositoryFactoryBean;
-import org.jarbframework.constraint.violation.DatabaseConstraintExceptionTranslator;
-import org.jarbframework.constraint.violation.DatabaseConstraintExceptionTranslatorFactoryBean;
-import org.jarbframework.constraint.violation.TranslateExceptionsBeanPostProcessor;
+import org.jarbframework.constraint.EnableDatabaseConstraints;
 import org.jarbframework.migrations.MigratingDataSource;
 import org.jarbframework.migrations.liquibase.LiquibaseMigrator;
 import org.jarbframework.populator.DatabasePopulatingApplicationListener;
@@ -49,9 +43,9 @@ import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
 @Configuration
 @EnableTransactionManagement
-@ComponentScan(basePackages = "org.jarbframework.sample", 
-               excludeFilters = { @Filter(Controller.class), @Filter(Configuration.class) })
 @EnableJpaRepositories(basePackages = "org.jarbframework.sample")
+@EnableDatabaseConstraints(basePackage = "org.jarbframework.sample")
+@ComponentScan(basePackages = "org.jarbframework.sample", excludeFilters = { @Filter(Controller.class), @Filter(Configuration.class) })
 public class ApplicationConfig {
     
     @Bean
@@ -105,29 +99,7 @@ public class ApplicationConfig {
         transactionManager.setEntityManagerFactory(entityManagerFactory().getObject());
         return transactionManager;
     }
-    
-    // TODO: Simplify initialization of jars
-    
-    @Bean
-    public DatabaseConstraintExceptionTranslator exceptionTranslator() throws Exception {
-        return new DatabaseConstraintExceptionTranslatorFactoryBean("org.jarbframework.sample", dataSource()).getObject();
-    }
-    
-    @Bean
-    public TranslateExceptionsBeanPostProcessor translateExceptionBeanPostProcessor() throws Exception {
-        return new TranslateExceptionsBeanPostProcessor(exceptionTranslator());
-    }
 
-    @Bean
-    public BeanMetadataRepository beanMetadataRepository() throws Exception {
-        return new HibernateJpaBeanMetadataRepositoryFactoryBean(entityManagerFactory().getObject()).getObject();
-    }
-    
-    @Bean
-    public BeanConstraintDescriptor beanConstraintDescriptor() throws Exception {
-        return new BeanConstraintDescriptorFactoryBean(beanMetadataRepository()).getObject();
-    }
-    
     @Profile("demo")
     @Configuration
     public static class DemoConfig {
@@ -149,7 +121,6 @@ public class ApplicationConfig {
             listener.setInitializer(initializerChain);
             
             listener.setDestroyer(new SqlResourceDatabasePopulator(dataSource, new ClassPathResource("clean.sql")));
-            
             return listener;
         }
         

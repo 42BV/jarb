@@ -1,5 +1,7 @@
 package org.jarbframework.constraint.violation.resolver;
 
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
+
 import java.util.Set;
 
 import javax.sql.DataSource;
@@ -42,9 +44,11 @@ public class DefaultViolationResolver extends LazyInitViolationResolver {
 	}
 
 	private void addCustomResolvers(ViolationResolverChain resolversChain, DatabaseProduct databaseProduct) {
-        Set<Class<?>> resolverClasses = Classes.getAllOfType(basePackage, DatabaseConstraintViolationResolver.class);
-        for (Class<?> resolverClass : resolverClasses) {
-        	resolversChain.addToChainWhenSupported(buildCustomResolver(resolverClass), databaseProduct);
+        if (isNotBlank(basePackage)) {
+            Set<Class<?>> resolverClasses = Classes.getAllOfType(basePackage, DatabaseConstraintViolationResolver.class);
+            for (Class<?> resolverClass : resolverClasses) {
+                resolversChain.addToChainWhenSupported(buildCustomResolver(resolverClass), databaseProduct);
+            }
         }
     }
 
