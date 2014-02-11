@@ -25,6 +25,18 @@ import org.springframework.context.annotation.Import;
 @Import(EnableDatabaseConstraintsConfiguration.class)
 public @interface EnableDatabaseConstraints {
 
+    /**
+     * The base package that should be scanned.
+     * 
+     * @return the base package
+     */
     String basePackage() default "";
     
+    /**
+     * The reference to our entity manager factory.
+     * 
+     * @return the entity manager factory name
+     */
+    String entityManagerFactory() default "entityManagerFactory";
+
 }

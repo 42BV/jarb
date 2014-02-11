@@ -15,7 +15,10 @@ import org.jarbframework.constraint.metadata.database.HibernateJpaBeanMetadataRe
 import org.jarbframework.constraint.violation.DatabaseConstraintExceptionTranslator;
 import org.jarbframework.constraint.violation.DatabaseConstraintExceptionTranslatorFactoryBean;
 import org.jarbframework.constraint.violation.TranslateExceptionsBeanPostProcessor;
+import org.jarbframework.utils.orm.hibernate.HibernateUtils;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.ImportAware;
@@ -28,16 +31,23 @@ import org.springframework.core.type.AnnotationMetadata;
  * @since Feb 11, 2014
  */
 @Configuration
-public class EnableDatabaseConstraintsConfiguration implements ImportAware {
+public class EnableDatabaseConstraintsConfiguration implements ImportAware, InitializingBean {
     
-    @Autowired
-    private DataSource dataSource;
+    private static final String ENTITY_MANAGER_FACTORY_REF = "entityManagerFactory";
     
+    private static final String BASE_PACKAGE_REF = "basePackage";
+
+    private Map<String, Object> attributes;
+
     @Autowired
+    private ApplicationContext applicationContext;
+
     private EntityManagerFactory entityManagerFactory;
     
-    private String basePackage;
+    private DataSource dataSource;
     
+    private String basePackage;
+
     @Bean
     public DatabaseConstraintExceptionTranslator exceptionTranslator() throws Exception {
         return new DatabaseConstraintExceptionTranslatorFactoryBean(basePackage, dataSource).getObject();
@@ -60,8 +70,15 @@ public class EnableDatabaseConstraintsConfiguration implements ImportAware {
 
     @Override
     public void setImportMetadata(AnnotationMetadata importMetadata) {
-        Map<String, Object> attributes = importMetadata.getAnnotationAttributes(EnableDatabaseConstraints.class.getName());
-        basePackage = attributes.get("basePackage").toString();
+        attributes = importMetadata.getAnnotationAttributes(EnableDatabaseConstraints.class.getName());
+    }
+
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        String entityManagerFactoryRef = attributes.get(ENTITY_MANAGER_FACTORY_REF).toString();
+        entityManagerFactory = applicationContext.getBean(entityManagerFactoryRef, EntityManagerFactory.class);
+        dataSource = HibernateUtils.getDataSource(entityManagerFactory);
+        basePackage = attributes.get(BASE_PACKAGE_REF).toString();
     }
 
 }
