@@ -4,32 +4,43 @@ $(document).ready(function() {
 		$(this).remove();
 	});
 	
-    var createForm = $('#create-post form');
+    $.ajax('/posts', {
+    	type: 'GET',
+    	success: function(data) {
+    		$('.posts tbody').empty();
+    		$.each(data, function(index, post) {
+    			appendPost(post);
+    		});
+    	}
+    });
     
-    createForm.constraints('constraints.json');
+    var appendPost = function(post) {
+		var newPost = '<tr>';
+		newPost += '<td>' + post.title + '</td>';
+		newPost += '<td class="author">' + post.author + '</td>'
+		newPost += '<td class="date">' + post.postedOn + '</td>'
+		newPost += '<td class="message">' + post.message + '</td>'
+		newPost += '</tr>'
+		$('.posts tbody').append(newPost);
+    }
+    
+    var createForm = $('#create-post form');
+    createForm.constraints('/posts/constraints');
     createForm.validate(); // Init validator
     
     createForm.submit(function(e) {
     	// Perform validation checks before posting
     	var validator = createForm.validate();
-    	if(validator.form()) {
+    	if (validator.form()) {
 	    	// Send post to server
-			$.ajax({  
+			$.ajax('/posts', {  
 				type: 'POST',
 				data: createForm.serialize(),
 				success: function(data) {
 					$('.status p').text(data.message);
 					
-					if(data.success) {
-						// New post has been accepted accepted
-						// Append post to the index, meaning we dont have to refresh
-						var newPost = '<tr>';
-						newPost += '<td>' + data.post.title + '</td>';
-						newPost += '<td class="author">' + data.post.author + '</td>'
-						newPost += '<td class="date">' + data.post.postedOn + '</td>'
-						newPost += '<td class="message">' + data.post.message + '</td>'
-						newPost += '</tr>'
-						$('.posts tbody').append(newPost);
+					if (data.success) {
+						appendPost(data.post);
 						$('.posts tbody tr:last').hide();
 						$('.posts tbody tr:last').fadeIn();
 						
@@ -39,6 +50,7 @@ $(document).ready(function() {
 							.removeAttr('checked')
 							.removeAttr('selected')
 								.val('');
+						
 						validator.resetForm();
 					}
 				}

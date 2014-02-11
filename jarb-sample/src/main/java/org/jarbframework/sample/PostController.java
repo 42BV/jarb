@@ -9,10 +9,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.servlet.ModelAndView;
 
 @Controller
-@RequestMapping("/")
+@RequestMapping("/posts")
 public class PostController {
 
     @Autowired
@@ -21,13 +20,13 @@ public class PostController {
     @Autowired
     private BeanConstraintDescriptor beanConstraintDescriptor;
 
+    @ResponseBody
     @RequestMapping(method = RequestMethod.GET)
-    public ModelAndView index() {
-        ModelAndView mav = new ModelAndView("posts");
-        mav.addObject("posts", postRepository.findAll());
-        return mav;
+    public Iterable<Post> index() {
+        return postRepository.findAll();
     }
     
+    @ResponseBody
     @RequestMapping(value = "/constraints", method = RequestMethod.GET)
     public BeanConstraintDescription structure() {
         return beanConstraintDescriptor.describe(Post.class);

@@ -42,6 +42,7 @@ public class DatabaseAssignedIdentifierGenerator extends AbstractPostInsertGener
         private final Dialect dialect;
         
         private final String keyColumnName;
+
         private final Type keyType;
 
         public Delegate(PostInsertIdentityPersister persister, Dialect dialect) {
@@ -69,8 +70,8 @@ public class DatabaseAssignedIdentifierGenerator extends AbstractPostInsertGener
         }
         
         @Override
-        protected Serializable executeAndExtract(PreparedStatement insert, SessionImplementor session) throws SQLException {
-            session.getTransactionCoordinator().getJdbcCoordinator().getResultSetReturn().executeUpdate(insert);
+        protected Serializable executeAndExtract(PreparedStatement insert) throws SQLException {
+            insert.execute();
             return IdentifierGeneratorHelper.getGeneratedIdentity(insert.getGeneratedKeys(), keyColumnName, keyType);
         }
 

@@ -8,7 +8,7 @@ import org.hibernate.internal.util.StringHelper;
  *
  * @author Jeroen van Schagen
  */
-public class DefaultNamingStrategy extends ImprovedNamingStrategy {
+public class ConventionNamingStrategy extends ImprovedNamingStrategy {
 
     private static final String FOREIGN_KEY_SUFFIX = "_id";
 

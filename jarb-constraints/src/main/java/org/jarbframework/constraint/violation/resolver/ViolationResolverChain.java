@@ -6,8 +6,8 @@ import java.util.Collection;
 import java.util.LinkedList;
 
 import org.jarbframework.constraint.violation.DatabaseConstraintViolation;
-import org.jarbframework.constraint.violation.resolver.product.DatabaseProduct;
-import org.jarbframework.constraint.violation.resolver.product.DatabaseProductSpecific;
+import org.jarbframework.utils.DatabaseProduct;
+import org.jarbframework.utils.DatabaseProductSpecific;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

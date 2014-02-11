@@ -19,9 +19,7 @@
 	var container = this;
 	 
 	$.getJSON(url, function(data) {
-		var beanDescription = data.beanConstraintDescription;
-		
-		$.each(beanDescription.propertyDescriptions, function(index, propertyDescription) {
+		$.each(data.propertyDescriptions, function(index, propertyDescription) {
 			var inputField = container.find('input[name=' + propertyDescription.name + ']');
 			var inputLabel = container.find('label[for=' + propertyDescription.name + "]");
 			

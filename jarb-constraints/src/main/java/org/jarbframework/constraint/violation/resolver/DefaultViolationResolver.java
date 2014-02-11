@@ -4,13 +4,13 @@ import java.util.Set;
 
 import javax.sql.DataSource;
 
-import org.jarbframework.constraint.violation.resolver.product.DatabaseProduct;
 import org.jarbframework.constraint.violation.resolver.vendor.H2ViolationResolver;
 import org.jarbframework.constraint.violation.resolver.vendor.HsqlViolationResolver;
 import org.jarbframework.constraint.violation.resolver.vendor.MysqlViolationResolver;
 import org.jarbframework.constraint.violation.resolver.vendor.OracleViolationResolver;
 import org.jarbframework.constraint.violation.resolver.vendor.PostgresViolationResolver;
 import org.jarbframework.utils.Classes;
+import org.jarbframework.utils.DatabaseProduct;
 import org.springframework.beans.BeanUtils;
 
 /**

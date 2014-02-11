@@ -2,7 +2,7 @@
 
 body {
 	font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
-	font-size: 13px;
+	font-size: 15px;
 	line-height: 18px;
 	color: #000;
 }
@@ -12,7 +12,7 @@ table {
 }
 
 td, th {
-    padding-right: 2px;
+    padding-right: 10px;
 }
 
 th {
@@ -20,6 +20,7 @@ th {
 }
 
 h1, h2, h3 {
+	padding: 10px 0px;
     font-weight: bold;
 }
 
@@ -30,7 +31,7 @@ h1 {
 
 h2 {
 	line-height: 27px;
-	font-size: 18px;
+	font-size: 25px;
 }
 
 label.error {
@@ -45,13 +46,13 @@ header {
 #title {
 }
 
-#title .description {
-    font-size: 15px;
+.description {
+	padding: 5px 0px;
     font-style: italic;
 }
 
 #content {
-    padding: 5px;
+    padding: 15px;
 }
 
 #notes {
@@ -62,9 +63,14 @@ header {
 
 #notes li {
 	max-width: 200px;
-	border: 1px solid;
-	color: #9F6000;
-	background-color: #FEEFB3;
-	margin: 5px;
-	padding: 2px;
+    border: 1px solid #ccc;
+    -moz-border-radius: 8px;
+    -webkit-border-radius: 8px;
+    border-radius: 8px;
+    margin: 10px 15px;
+    padding: 2px 10px;
+    position: relative;
+    cursor: pointer;
+    background: #fcfcfc; 
+    border-color: #8c9fb2;
 }

@@ -1,4 +1,4 @@
-package org.jarbframework.constraint.violation.resolver.product;
+package org.jarbframework.utils;
 
 import static org.jarbframework.utils.JdbcUtils.doWithConnection;
 
@@ -7,8 +7,6 @@ import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
 
 import javax.sql.DataSource;
-
-import org.jarbframework.utils.JdbcConnectionCallback;
 
 /**
  * Describes the product name and version of a specific database.

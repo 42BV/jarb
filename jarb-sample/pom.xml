@@ -10,7 +10,7 @@
 	</parent>
 	
 	<artifactId>jarb-sample</artifactId>
-	<packaging>jar</packaging>
+	<packaging>war</packaging>
 	<description>Sample application that demonstrates all modules.</description>
 
 	<dependencies>   
@@ -38,9 +38,10 @@
             <version>${spring.version}</version>
         </dependency>
 		<dependency>
-		    <groupId>javax.servlet</groupId>
-		    <artifactId>servlet-api</artifactId>
-		    <version>2.5</version>
+			<groupId>javax.servlet</groupId>
+			<artifactId>javax.servlet-api</artifactId>
+			<version>3.0.1</version>
+			<scope>provided</scope>
 		</dependency>
         
         <!-- Marshalling -->
@@ -53,7 +54,6 @@
 		    <groupId>org.codehaus.jackson</groupId>
 		    <artifactId>jackson-jaxrs</artifactId>
 		    <version>1.9.12</version>
-			<scope>runtime</scope>
 		</dependency>
 
         <!-- Data access -->
@@ -91,26 +91,55 @@
 	<build>
 		<plugins>
 			<plugin>
-                <groupId>org.mortbay.jetty</groupId>
-                <artifactId>maven-jetty-plugin</artifactId>
-                <version>6.1.26</version>
-                <dependencies>
-					<dependency>
-			            <groupId>org.hsqldb</groupId>
-			            <artifactId>hsqldb</artifactId>
-			            <version>${hsqldb.version}</version>
-			        </dependency>
-                </dependencies>
-                <configuration>
-                    <systemProperties>
-                        <systemProperty>
-                            <name>spring.profiles.active</name>
-                            <value>test</value>
-                        </systemProperty>
-                    </systemProperties>
-                </configuration>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-war-plugin</artifactId>
+				<version>2.4</version>
+				<configuration>
+					<failOnMissingWebXml>false</failOnMissingWebXml>
+					<archive>
+						<forced>false</forced>
+						<manifest>
+							<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+						</manifest>
+						<manifestEntries>
+							<Build-Time>${timestamp}</Build-Time>
+						</manifestEntries>
+					</archive>
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>
+	
+	<profiles>
+		<profile>
+			<id>tomcat</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<properties>
+				<tomcat.port>8080</tomcat.port>
+				<spring.profiles>default,demo</spring.profiles>
+			</properties>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.tomcat.maven</groupId>
+						<artifactId>tomcat7-maven-plugin</artifactId>
+						<version>2.2</version>
+						<configuration>
+							<charset>${project.reporting.outputEncoding}</charset>
+							<port>${tomcat.port}</port>
+							<path>/</path>
+							<useTestClasspath>true</useTestClasspath>
+							<systemProperties>
+								<org.apache.el.parser.SKIP_IDENTIFIER_CHECK>true</org.apache.el.parser.SKIP_IDENTIFIER_CHECK>
+								<spring.profiles.active>${spring.profiles}</spring.profiles.active>
+							</systemProperties>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 
 </project>
