@@ -66,7 +66,7 @@ public class EnableDatabaseConstraintsConfiguration implements ImportAware, Init
         String basePackage = metadata.get(BASE_PACKAGE_REF).toString();
         ConfigurableViolationResolver violationResolver = new ConfigurableViolationResolver(dataSource, basePackage);
         for (EnableDatabaseConstraintsConfigurer configurer : configurers) {
-            configurer.registerResolvers(violationResolver);
+            configurer.addViolationResolvers(violationResolver);
         }
         return violationResolver;
     }
@@ -76,7 +76,7 @@ public class EnableDatabaseConstraintsConfiguration implements ImportAware, Init
         String basePackage = metadata.get(BASE_PACKAGE_REF).toString();
         ConfigurableConstraintExceptionFactory exceptionFactory = new ConfigurableConstraintExceptionFactory();
         for (EnableDatabaseConstraintsConfigurer configurer : configurers) {
-            configurer.registerExceptions(exceptionFactory);
+            configurer.addConstraintExceptions(exceptionFactory);
         }
         return exceptionFactory.registerAll(basePackage);
     }
@@ -102,7 +102,7 @@ public class EnableDatabaseConstraintsConfiguration implements ImportAware, Init
     public BeanConstraintDescriptor beanConstraintDescriptor() throws Exception {
         BeanConstraintDescriptor beanConstraintDescriptor = new BeanConstraintDescriptorFactoryBean(beanMetadataRepository()).getObject();
         for (EnableDatabaseConstraintsConfigurer configurer : configurers) {
-            configurer.registerPropertyEnhancers(beanConstraintDescriptor);
+            configurer.addPropertyEnhancers(beanConstraintDescriptor);
         }
         return beanConstraintDescriptor;
     }

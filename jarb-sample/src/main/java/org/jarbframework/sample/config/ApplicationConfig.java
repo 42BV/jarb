@@ -12,7 +12,11 @@ import javax.validation.ValidatorFactory;
 
 import org.hibernate.dialect.HSQLDialect;
 import org.hibernate.ejb.HibernatePersistence;
+import org.hibernate.validator.constraints.Email;
 import org.jarbframework.constraint.EnableDatabaseConstraints;
+import org.jarbframework.constraint.EnableDatabaseConstraintsConfigurer;
+import org.jarbframework.constraint.metadata.BeanConstraintDescriptor;
+import org.jarbframework.constraint.metadata.enhance.AnnotationPropertyTypeEnhancer;
 import org.jarbframework.migrations.MigratingEmbeddedDatabaseBuilder;
 import org.jarbframework.populator.DatabasePopulatingApplicationListener;
 import org.jarbframework.populator.DatabasePopulatorChain;
@@ -43,7 +47,7 @@ import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 @EnableJpaRepositories(basePackages = "org.jarbframework.sample")
 @EnableDatabaseConstraints(basePackage = "org.jarbframework.sample")
 @ComponentScan(basePackages = "org.jarbframework.sample", excludeFilters = { @Filter(Controller.class), @Filter(Configuration.class) })
-public class ApplicationConfig {
+public class ApplicationConfig extends EnableDatabaseConstraintsConfigurer {
     
     @Bean
     public DataSource dataSource() {
@@ -87,6 +91,11 @@ public class ApplicationConfig {
         JpaTransactionManager transactionManager = new JpaTransactionManager();
         transactionManager.setEntityManagerFactory(entityManagerFactory().getObject());
         return transactionManager;
+    }
+
+    @Override
+    public void addPropertyEnhancers(BeanConstraintDescriptor beanConstraintDescriptor) {
+        beanConstraintDescriptor.registerEnhancer(new AnnotationPropertyTypeEnhancer(Email.class, "my-email"));
     }
 
     @Profile("demo")

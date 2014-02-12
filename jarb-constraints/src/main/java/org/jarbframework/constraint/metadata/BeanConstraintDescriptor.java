@@ -82,6 +82,7 @@ public class BeanConstraintDescriptor {
      */
     public BeanConstraintDescriptor registerEnhancer(PropertyConstraintEnhancer enhancer) {
         enhancers.add(notNull(enhancer, "Cannot add a null property constraint enhancer"));
+
         return this;
     }
     

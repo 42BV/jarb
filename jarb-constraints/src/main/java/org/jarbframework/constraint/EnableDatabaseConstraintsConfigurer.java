@@ -15,15 +15,15 @@ import org.jarbframework.constraint.violation.resolver.ConfigurableViolationReso
  */
 public abstract class EnableDatabaseConstraintsConfigurer {
     
-    public void registerResolvers(ConfigurableViolationResolver violationResolver) {
+    public void addViolationResolvers(ConfigurableViolationResolver violationResolver) {
         // No operation
     }
 
-    public void registerExceptions(ConfigurableConstraintExceptionFactory exceptionFactory) {
+    public void addConstraintExceptions(ConfigurableConstraintExceptionFactory exceptionFactory) {
         // No operation
     }
 
-    public void registerPropertyEnhancers(BeanConstraintDescriptor beanConstraintDescriptor) {
+    public void addPropertyEnhancers(BeanConstraintDescriptor beanConstraintDescriptor) {
         // No operation
     }
 
