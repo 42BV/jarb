@@ -18,9 +18,8 @@ import org.jarbframework.constraint.EnableDatabaseConstraintsConfigurer;
 import org.jarbframework.constraint.metadata.BeanConstraintDescriptor;
 import org.jarbframework.constraint.metadata.enhance.AnnotationPropertyTypeEnhancer;
 import org.jarbframework.migrations.MigratingEmbeddedDatabaseBuilder;
-import org.jarbframework.populator.DatabasePopulatingApplicationListener;
-import org.jarbframework.populator.DatabasePopulatorChain;
-import org.jarbframework.populator.ProductSpecificSqlClassPathResourceDatabasePopulator;
+import org.jarbframework.populator.DatabasePopulatingListener;
+import org.jarbframework.populator.DatabasePopulatingListenerBuilder;
 import org.jarbframework.populator.SqlResourceDatabasePopulator;
 import org.jarbframework.populator.excel.ExcelDatabasePopulator;
 import org.jarbframework.sample.PostPopulator;
@@ -109,17 +108,16 @@ public class ApplicationConfig extends EnableDatabaseConstraintsConfigurer {
         private EntityManagerFactory entityManagerFactory;
         
         @Bean
-        public DatabasePopulatingApplicationListener databasePopulatingApplicationListener() {
-            DatabasePopulatingApplicationListener listener = new DatabasePopulatingApplicationListener();
-            
-            DatabasePopulatorChain initializers = new DatabasePopulatorChain();
-            initializers.add(new ProductSpecificSqlClassPathResourceDatabasePopulator(dataSource, "import.sql"));
-            initializers.add(new ExcelDatabasePopulator(entityManagerFactory, new ClassPathResource("import.xls")));
-            initializers.add(postPopulator());
-            listener.setInitializer(initializers);
-            
-            listener.setDestroyer(new SqlResourceDatabasePopulator(dataSource, new ClassPathResource("clean.sql")));
-            return listener;
+        public DatabasePopulatingListener databasePopulatingApplicationListener() {
+            return new DatabasePopulatingListenerBuilder()
+                            .initializer()
+                                .add(new SqlResourceDatabasePopulator(dataSource, new ClassPathResource("import.sql")))
+                                .add(new ExcelDatabasePopulator(entityManagerFactory, new ClassPathResource("import.xls")))
+                                .add(postPopulator())
+                                .done()
+                            .destroyer()
+                                .add(new SqlResourceDatabasePopulator(dataSource, new ClassPathResource("clean.sql")))
+                                .build();
         }
         
         @Bean

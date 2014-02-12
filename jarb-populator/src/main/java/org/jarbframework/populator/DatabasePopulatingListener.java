@@ -14,7 +14,7 @@ import org.springframework.context.event.ContextRefreshedEvent;
  * @author Jeroen van Schagen
  * @since 02-11-2011
  */
-public class DatabasePopulatingApplicationListener implements ApplicationListener<ApplicationContextEvent> {
+public class DatabasePopulatingListener implements ApplicationListener<ApplicationContextEvent> {
 
     /** Describes whether the initializer has already been started. **/
     private final AtomicBoolean initialized = new AtomicBoolean();

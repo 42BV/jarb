@@ -13,7 +13,7 @@ import org.springframework.context.event.ContextRefreshedEvent;
 
 public class DatabasePopulateApplicationListenerTest {
 
-    private DatabasePopulatingApplicationListener applicationListener;
+    private DatabasePopulatingListener applicationListener;
 
     private DatabasePopulator initializer;
     
@@ -26,7 +26,7 @@ public class DatabasePopulateApplicationListenerTest {
     	initializer = mock(DatabasePopulator.class);
     	destroyer = mock(DatabasePopulator.class);
     	
-        applicationListener = new DatabasePopulatingApplicationListener();
+        applicationListener = new DatabasePopulatingListener();
         applicationListener.setInitializer(initializer);
         applicationListener.setDestroyer(destroyer);
         

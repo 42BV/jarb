@@ -15,13 +15,13 @@ import org.springframework.core.io.ClassPathResource;
  * @author jeroen
  * @since Jan 17, 2014
  */
-public class ProductSpecificSqlClassPathResourceDatabasePopulator implements DatabasePopulator {
+public class SqlResourceProductSpecificDatabasePopulator implements DatabasePopulator {
 
     private final DataSource dataSource;
 
     private final String resourcePath;
 
-    public ProductSpecificSqlClassPathResourceDatabasePopulator(DataSource dataSource, String resourcePath) {
+    public SqlResourceProductSpecificDatabasePopulator(DataSource dataSource, String resourcePath) {
         this.dataSource = dataSource;
         this.resourcePath = resourcePath;
     }
