@@ -45,14 +45,14 @@ public class ConfigurableViolationResolver extends LazyInitViolationResolver {
 	}
 
     public void registerResolver(DatabaseConstraintViolationResolver resolver) {
-        resolvers.addToChain(resolver);
+        resolvers.add(resolver);
     }
 
     private void registerCustomResolvers(DatabaseProduct databaseProduct) {
         if (isNotBlank(basePackage)) {
             Set<Class<?>> resolverClasses = Classes.getAllOfType(basePackage, DatabaseConstraintViolationResolver.class);
             for (Class<?> resolverClass : resolverClasses) {
-                resolvers.addToChainWhenSupported(newResolver(resolverClass), databaseProduct);
+                resolvers.addIfSupported(newResolver(resolverClass), databaseProduct);
             }
         }
     }
@@ -62,12 +62,12 @@ public class ConfigurableViolationResolver extends LazyInitViolationResolver {
 	}
 
     private void registerDefaultResolvers(DatabaseProduct product) {
-        resolvers.addToChainWhenSupported(new H2ViolationResolver(), product);
-        resolvers.addToChainWhenSupported(new HsqlViolationResolver(), product);
-        resolvers.addToChainWhenSupported(new MysqlViolationResolver(), product);
-        resolvers.addToChainWhenSupported(new OracleViolationResolver(), product);
-        resolvers.addToChainWhenSupported(new PostgresViolationResolver(), product);
-        resolvers.addToChain(new HibernateViolationResolver());
+        resolvers.addIfSupported(new H2ViolationResolver(), product);
+        resolvers.addIfSupported(new HsqlViolationResolver(), product);
+        resolvers.addIfSupported(new MysqlViolationResolver(), product);
+        resolvers.addIfSupported(new OracleViolationResolver(), product);
+        resolvers.addIfSupported(new PostgresViolationResolver(), product);
+        resolvers.add(new HibernateViolationResolver());
 	}
 	
 }

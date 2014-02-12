@@ -112,11 +112,11 @@ public class ApplicationConfig extends EnableDatabaseConstraintsConfigurer {
         public DatabasePopulatingApplicationListener databasePopulatingApplicationListener() {
             DatabasePopulatingApplicationListener listener = new DatabasePopulatingApplicationListener();
             
-            DatabasePopulatorChain initializerChain = new DatabasePopulatorChain();
-            initializerChain.add(new ProductSpecificSqlClassPathResourceDatabasePopulator(dataSource, "import.sql"));
-            initializerChain.add(new ExcelDatabasePopulator(entityManagerFactory, new ClassPathResource("import.xls")));
-            initializerChain.add(postPopulator());
-            listener.setInitializer(initializerChain);
+            DatabasePopulatorChain initializers = new DatabasePopulatorChain();
+            initializers.add(new ProductSpecificSqlClassPathResourceDatabasePopulator(dataSource, "import.sql"));
+            initializers.add(new ExcelDatabasePopulator(entityManagerFactory, new ClassPathResource("import.xls")));
+            initializers.add(postPopulator());
+            listener.setInitializer(initializers);
             
             listener.setDestroyer(new SqlResourceDatabasePopulator(dataSource, new ClassPathResource("clean.sql")));
             return listener;

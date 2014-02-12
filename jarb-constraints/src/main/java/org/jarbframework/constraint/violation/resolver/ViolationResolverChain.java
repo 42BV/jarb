@@ -49,7 +49,7 @@ public class ViolationResolverChain implements DatabaseConstraintViolationResolv
      * @param resolver violation resolver instance we are adding
      * @return {@code this} instance, enabling the use of method chaining
      */
-    public ViolationResolverChain addToChain(DatabaseConstraintViolationResolver resolver) {
+    public ViolationResolverChain add(DatabaseConstraintViolationResolver resolver) {
         resolvers.add(notNull(resolver, "Cannot add a null resolver to the chain."));
         logger.debug("Registered resolver {} to chain.", resolver);
         return this;
@@ -61,9 +61,9 @@ public class ViolationResolverChain implements DatabaseConstraintViolationResolv
      * @param databaseProduct the database product
      * @return {@code this} instance, enabling the use of method chaining
      */
-    public ViolationResolverChain addToChainWhenSupported(DatabaseConstraintViolationResolver resolver, DatabaseProduct databaseProduct) {
+    public ViolationResolverChain addIfSupported(DatabaseConstraintViolationResolver resolver, DatabaseProduct databaseProduct) {
     	if (isSupported(resolver, databaseProduct)) {
-            addToChain(resolver);
+            add(resolver);
         }
     	return this;
     }
