@@ -32,11 +32,11 @@ public class ConfigurableConstraintExceptionFactory implements DatabaseConstrain
     private final DatabaseConstraintExceptionFactory defaultExceptionFactory;
 
     public ConfigurableConstraintExceptionFactory() {
-        this(null);
+        this(new DefaultConstraintExceptionFactory());
     }
 
     public ConfigurableConstraintExceptionFactory(DatabaseConstraintExceptionFactory defaultExceptionFactory) {
-    	this.defaultExceptionFactory = defaultExceptionFactory != null ? defaultExceptionFactory : new DefaultConstraintExceptionFactory();
+        this.defaultExceptionFactory = defaultExceptionFactory;
     }
 
     @Override

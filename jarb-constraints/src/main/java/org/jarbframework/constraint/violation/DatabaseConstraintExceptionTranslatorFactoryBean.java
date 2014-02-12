@@ -3,12 +3,15 @@
  */
 package org.jarbframework.constraint.violation;
 
+import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 
 import org.jarbframework.constraint.violation.factory.ConfigurableConstraintExceptionFactory;
 import org.jarbframework.constraint.violation.factory.DatabaseConstraintExceptionFactory;
+import org.jarbframework.constraint.violation.factory.DefaultConstraintExceptionFactory;
+import org.jarbframework.constraint.violation.resolver.ConfigurableViolationResolver;
 import org.jarbframework.constraint.violation.resolver.DatabaseConstraintViolationResolver;
-import org.jarbframework.constraint.violation.resolver.DefaultViolationResolver;
+import org.jarbframework.utils.orm.hibernate.HibernateUtils;
 import org.jarbframework.utils.spring.SingletonFactoryBean;
 
 /**
@@ -18,27 +21,33 @@ import org.jarbframework.utils.spring.SingletonFactoryBean;
  */
 public final class DatabaseConstraintExceptionTranslatorFactoryBean extends SingletonFactoryBean<DatabaseConstraintExceptionTranslator> {
 	
-    private final String basePackage;
+    private String basePackage;
 	
-    private final DataSource dataSource;
+    private DataSource dataSource;
 
-    private final DatabaseConstraintExceptionFactory defaultFactory;
+    private DatabaseConstraintExceptionFactory defaultExceptionFactory = new DefaultConstraintExceptionFactory();
     
-    public DatabaseConstraintExceptionTranslatorFactoryBean(String basePackage, DataSource dataSource) {
-        this(basePackage, dataSource, null);
-    }
-    
-    public DatabaseConstraintExceptionTranslatorFactoryBean(String basePackage, DataSource dataSource, DatabaseConstraintExceptionFactory defaultFactory) {
-        this.basePackage = basePackage;
-        this.dataSource = dataSource;
-        this.defaultFactory = defaultFactory;
-    }
-
     @Override
     protected DatabaseConstraintExceptionTranslator createObject() throws Exception {
-        DatabaseConstraintViolationResolver violationResolver = new DefaultViolationResolver(dataSource, basePackage);
-        DatabaseConstraintExceptionFactory exceptionFactory = new ConfigurableConstraintExceptionFactory(defaultFactory).registerAll(basePackage);
+        DatabaseConstraintViolationResolver violationResolver = new ConfigurableViolationResolver(dataSource, basePackage);
+        DatabaseConstraintExceptionFactory exceptionFactory = new ConfigurableConstraintExceptionFactory(defaultExceptionFactory).registerAll(basePackage);
         return new DatabaseConstraintExceptionTranslator(violationResolver, exceptionFactory);
+    }
+    
+    public void setBasePackage(String basePackage) {
+        this.basePackage = basePackage;
+    }
+    
+    public void setDataSource(DataSource dataSource) {
+        this.dataSource = dataSource;
+    }
+    
+    public void setEntityManagerFactory(EntityManagerFactory entityManagerFactory) {
+        setDataSource(HibernateUtils.getDataSource(entityManagerFactory));
+    }
+
+    public void setDefaultExceptionFactory(DatabaseConstraintExceptionFactory defaultExceptionFactory) {
+        this.defaultExceptionFactory = defaultExceptionFactory;
     }
 
 }

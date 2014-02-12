@@ -22,47 +22,52 @@ import org.springframework.beans.BeanUtils;
  * 
  * @author Jeroen van Schagen
  */
-public class DefaultViolationResolver extends LazyInitViolationResolver {
+public class ConfigurableViolationResolver extends LazyInitViolationResolver {
 	
+    private final ViolationResolverChain resolvers = new ViolationResolverChain();
+
 	private final DataSource dataSource;
 	
 	private final String basePackage;
 
-	public DefaultViolationResolver(DataSource dataSource, String basePackage) {
+	public ConfigurableViolationResolver(DataSource dataSource, String basePackage) {
 		this.dataSource = dataSource;
 		this.basePackage = basePackage;
 	}
 
 	@Override
 	protected DatabaseConstraintViolationResolver init() {
-        final DatabaseProduct databaseProduct = DatabaseProduct.fromDataSource(dataSource);
+        final DatabaseProduct product = DatabaseProduct.fromDataSource(dataSource);
 
-        ViolationResolverChain resolversChain = new ViolationResolverChain();
-        addCustomResolvers(resolversChain, databaseProduct);
-        addDefaultResolvers(resolversChain, databaseProduct);
-        return resolversChain;
+        registerCustomResolvers(product);
+        registerDefaultResolvers(product);
+        return resolvers;
 	}
 
-	private void addCustomResolvers(ViolationResolverChain resolversChain, DatabaseProduct databaseProduct) {
+    public void registerResolver(DatabaseConstraintViolationResolver resolver) {
+        resolvers.addToChain(resolver);
+    }
+
+    private void registerCustomResolvers(DatabaseProduct databaseProduct) {
         if (isNotBlank(basePackage)) {
             Set<Class<?>> resolverClasses = Classes.getAllOfType(basePackage, DatabaseConstraintViolationResolver.class);
             for (Class<?> resolverClass : resolverClasses) {
-                resolversChain.addToChainWhenSupported(buildCustomResolver(resolverClass), databaseProduct);
+                resolvers.addToChainWhenSupported(newResolver(resolverClass), databaseProduct);
             }
         }
     }
 
-	private DatabaseConstraintViolationResolver buildCustomResolver(Class<?> resolverClass) {
+	private DatabaseConstraintViolationResolver newResolver(Class<?> resolverClass) {
 		return (DatabaseConstraintViolationResolver) BeanUtils.instantiateClass(resolverClass);
 	}
 
-	private void addDefaultResolvers(ViolationResolverChain resolversChain, DatabaseProduct databaseProduct) {
-		resolversChain.addToChainWhenSupported(new H2ViolationResolver(), databaseProduct);
-        resolversChain.addToChainWhenSupported(new HsqlViolationResolver(), databaseProduct);
-        resolversChain.addToChainWhenSupported(new MysqlViolationResolver(), databaseProduct);
-        resolversChain.addToChainWhenSupported(new OracleViolationResolver(), databaseProduct);
-        resolversChain.addToChainWhenSupported(new PostgresViolationResolver(), databaseProduct);
-        resolversChain.addToChain(new HibernateViolationResolver());
+    private void registerDefaultResolvers(DatabaseProduct product) {
+        resolvers.addToChainWhenSupported(new H2ViolationResolver(), product);
+        resolvers.addToChainWhenSupported(new HsqlViolationResolver(), product);
+        resolvers.addToChainWhenSupported(new MysqlViolationResolver(), product);
+        resolvers.addToChainWhenSupported(new OracleViolationResolver(), product);
+        resolvers.addToChainWhenSupported(new PostgresViolationResolver(), product);
+        resolvers.addToChain(new HibernateViolationResolver());
 	}
 	
 }

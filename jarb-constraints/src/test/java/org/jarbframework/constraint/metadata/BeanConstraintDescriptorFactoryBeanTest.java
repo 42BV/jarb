@@ -25,7 +25,7 @@ public class BeanConstraintDescriptorFactoryBeanTest {
 
     @Before
     public void setUp() throws Exception {
-        beanConstraintDescriptorFactoryBean = new BeanConstraintDescriptorFactoryBean(beanMetadataRepository, "");
+        beanConstraintDescriptorFactoryBean = new BeanConstraintDescriptorFactoryBean(beanMetadataRepository);
     }
 
     /**

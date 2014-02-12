@@ -4,7 +4,9 @@
 package org.jarbframework.constraint;
 
 import java.lang.annotation.Annotation;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
@@ -14,8 +16,11 @@ import org.jarbframework.constraint.metadata.BeanConstraintDescriptorFactoryBean
 import org.jarbframework.constraint.metadata.database.BeanMetadataRepository;
 import org.jarbframework.constraint.metadata.database.HibernateJpaBeanMetadataRepositoryFactoryBean;
 import org.jarbframework.constraint.violation.DatabaseConstraintExceptionTranslator;
-import org.jarbframework.constraint.violation.DatabaseConstraintExceptionTranslatorFactoryBean;
 import org.jarbframework.constraint.violation.ExceptionTranslatingBeanPostProcessor;
+import org.jarbframework.constraint.violation.factory.ConfigurableConstraintExceptionFactory;
+import org.jarbframework.constraint.violation.factory.DatabaseConstraintExceptionFactory;
+import org.jarbframework.constraint.violation.resolver.ConfigurableViolationResolver;
+import org.jarbframework.constraint.violation.resolver.DatabaseConstraintViolationResolver;
 import org.jarbframework.utils.orm.hibernate.HibernateUtils;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,11 +39,16 @@ import org.springframework.core.type.AnnotationMetadata;
 @Configuration
 public class EnableDatabaseConstraintsConfiguration implements ImportAware, InitializingBean {
     
-    private static final String ENTITY_MANAGER_FACTORY_REF = "entityManagerFactory";
+    // Meta-data constants
+
     private static final String BASE_PACKAGE_REF = "basePackage";
+    private static final String ENTITY_MANAGER_FACTORY_REF = "entityManagerFactory";
     private static final String TRANSLATING_ANNOTATION_REF = "translatingAnnotation";
 
-    private Map<String, Object> attributes;
+    private Map<String, Object> metadata;
+    
+    @Autowired(required = false)
+    private Set<EnableDatabaseConstraintsConfigurer> configurers = new HashSet<>();
 
     @Autowired
     private ApplicationContext applicationContext;
@@ -47,17 +57,39 @@ public class EnableDatabaseConstraintsConfiguration implements ImportAware, Init
     
     private DataSource dataSource;
     
-    private String basePackage;
-
+    //
+    // Register the required beans
+    //
+    
+    @Bean
+    public DatabaseConstraintViolationResolver violationResolver() {
+        String basePackage = metadata.get(BASE_PACKAGE_REF).toString();
+        ConfigurableViolationResolver violationResolver = new ConfigurableViolationResolver(dataSource, basePackage);
+        for (EnableDatabaseConstraintsConfigurer configurer : configurers) {
+            configurer.registerResolvers(violationResolver);
+        }
+        return violationResolver;
+    }
+    
+    @Bean
+    public DatabaseConstraintExceptionFactory exceptionFactory() {
+        String basePackage = metadata.get(BASE_PACKAGE_REF).toString();
+        ConfigurableConstraintExceptionFactory exceptionFactory = new ConfigurableConstraintExceptionFactory();
+        for (EnableDatabaseConstraintsConfigurer configurer : configurers) {
+            configurer.registerExceptions(exceptionFactory);
+        }
+        return exceptionFactory.registerAll(basePackage);
+    }
+    
     @Bean
     public DatabaseConstraintExceptionTranslator exceptionTranslator() throws Exception {
-        return new DatabaseConstraintExceptionTranslatorFactoryBean(basePackage, dataSource).getObject();
+        return new DatabaseConstraintExceptionTranslator(violationResolver(), exceptionFactory());
     }
     
     @Bean
     @SuppressWarnings("unchecked")
     public ExceptionTranslatingBeanPostProcessor exceptionTranslatingBeanPostProcessor() throws Exception {
-        Class<? extends Annotation> annotation = (Class<? extends Annotation>) attributes.get(TRANSLATING_ANNOTATION_REF);
+        Class<? extends Annotation> annotation = (Class<? extends Annotation>) metadata.get(TRANSLATING_ANNOTATION_REF);
         return new ExceptionTranslatingBeanPostProcessor(exceptionTranslator(), annotation);
     }
     
@@ -68,20 +100,27 @@ public class EnableDatabaseConstraintsConfiguration implements ImportAware, Init
     
     @Bean
     public BeanConstraintDescriptor beanConstraintDescriptor() throws Exception {
-        return new BeanConstraintDescriptorFactoryBean(beanMetadataRepository(), basePackage).getObject();
+        BeanConstraintDescriptor beanConstraintDescriptor = new BeanConstraintDescriptorFactoryBean(beanMetadataRepository()).getObject();
+        for (EnableDatabaseConstraintsConfigurer configurer : configurers) {
+            configurer.registerPropertyEnhancers(beanConstraintDescriptor);
+        }
+        return beanConstraintDescriptor;
     }
+    
+    //
+    // Extract meta-data from @EnableDatabaseConstraints
+    //
 
     @Override
     public void setImportMetadata(AnnotationMetadata importMetadata) {
-        attributes = importMetadata.getAnnotationAttributes(EnableDatabaseConstraints.class.getName());
+        metadata = importMetadata.getAnnotationAttributes(EnableDatabaseConstraints.class.getName());
     }
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        String entityManagerFactoryRef = attributes.get(ENTITY_MANAGER_FACTORY_REF).toString();
+        String entityManagerFactoryRef = metadata.get(ENTITY_MANAGER_FACTORY_REF).toString();
         entityManagerFactory = applicationContext.getBean(entityManagerFactoryRef, EntityManagerFactory.class);
         dataSource = HibernateUtils.getDataSource(entityManagerFactory);
-        basePackage = attributes.get(BASE_PACKAGE_REF).toString();
     }
 
 }

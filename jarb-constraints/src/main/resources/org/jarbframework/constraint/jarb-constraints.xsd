@@ -17,64 +17,43 @@
         </xsd:documentation>
     </xsd:annotation>
     
-    <xsd:element name="enable-metadata">
+    <xsd:element name="enable-constraints">
         <xsd:annotation>
             <xsd:documentation>
-                Enable accessors to our database metadata.
+                Make our application aware of database constraints.
             </xsd:documentation>
         </xsd:annotation>
         <xsd:complexType>
-            <xsd:attribute name="entity-manager-factory" type="xsd:string" use="required">
-                <xsd:annotation>
-                    <xsd:documentation>
-                        Reference to the entity manager factory.
-                    </xsd:documentation>
-                </xsd:annotation>
-            </xsd:attribute>
             <xsd:attribute name="base-package" type="xsd:string">
                 <xsd:annotation>
                     <xsd:documentation>
-                        Base package to scan for property constraint enhancers.
+                        Base package to scan for components.
                     </xsd:documentation>
                 </xsd:annotation>
             </xsd:attribute>
-        </xsd:complexType>
-   </xsd:element>
-
-    <xsd:element name="translate-exceptions">
-        <xsd:annotation>
-            <xsd:documentation>
-                Translates JDBC driver exceptions into more specific exceptions.
-            </xsd:documentation>
-        </xsd:annotation>
-        <xsd:complexType>
-            <xsd:attribute name="translator" type="xsd:string">
-	            <xsd:annotation>
-	                <xsd:documentation>
-	                    Reference to the exception translator.
-	                </xsd:documentation>
-	            </xsd:annotation>
-            </xsd:attribute>
-            <xsd:attribute name="default-factory" type="xsd:string">
-	            <xsd:annotation>
-	                <xsd:documentation>
-	                    Reference to the default exception factory.
-	                </xsd:documentation>
-	            </xsd:annotation>
-            </xsd:attribute>
-            <xsd:attribute name="base-package" type="xsd:string">
+            <xsd:attribute name="entity-manager-factory" type="xsd:string">
                 <xsd:annotation>
                     <xsd:documentation>
-                        Base package to scan for annotated exception classes.
+                        Reference to the entity manager factory. This will be used
+                        for mapping our properties on to columns and resolving the
+                        database product for exception translation.
                     </xsd:documentation>
                 </xsd:annotation>
             </xsd:attribute>
             <xsd:attribute name="data-source" type="xsd:string">
                 <xsd:annotation>
                     <xsd:documentation>
-                        Data source reference to recognize the underlying database product.
+                        Reference to the data source. This will be used for resolving
+                        the database product for exception translation.
                     </xsd:documentation>
                 </xsd:annotation>
+            </xsd:attribute>
+            <xsd:attribute name="default-exception-factory" type="xsd:string">
+	            <xsd:annotation>
+	                <xsd:documentation>
+	                    Reference to the default exception factory.
+	                </xsd:documentation>
+	            </xsd:annotation>
             </xsd:attribute>
             <xsd:attribute name="pointcut" type="xsd:string">
                 <xsd:annotation>
@@ -84,6 +63,6 @@
                 </xsd:annotation>
             </xsd:attribute>
         </xsd:complexType>
-    </xsd:element>
+   </xsd:element>
     
 </xsd:schema>

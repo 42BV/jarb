@@ -1,13 +1,11 @@
 package org.jarbframework.constraint.metadata;
 
-import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static org.jarbframework.utils.Asserts.notNull;
 
 import java.beans.PropertyDescriptor;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
 import org.hibernate.validator.constraints.CreditCardNumber;
 import org.hibernate.validator.constraints.Email;
@@ -21,7 +19,6 @@ import org.jarbframework.constraint.metadata.enhance.LengthPropertyConstraintEnh
 import org.jarbframework.constraint.metadata.enhance.NotEmptyPropertyConstraintEnhancer;
 import org.jarbframework.constraint.metadata.enhance.NotNullPropertyConstraintEnhancer;
 import org.jarbframework.constraint.metadata.enhance.PropertyConstraintEnhancer;
-import org.jarbframework.utils.Classes;
 import org.jarbframework.utils.bean.PropertyReference;
 import org.springframework.beans.BeanUtils;
 
@@ -118,23 +115,6 @@ public class BeanConstraintDescriptor {
         registerEnhancer(new DatabaseSchemaPropertyConstraintEnhancer(beanMetadataRepository));
         registerEnhancer(new DatabaseGeneratedPropertyConstraintEnhancer());
         
-        return this;
-    }
-
-    /**
-     * Register all custom constraint enhancers.
-     * 
-     * @param basePackage the base package to scan for enhancers
-     * @return this bean descriptor, used for chaining
-     */
-    public BeanConstraintDescriptor registerCustomEnhancers(String basePackage) {
-        if (isNotBlank(basePackage)) {
-            Set<Class<?>> enhancerClasses = Classes.getAllOfType(basePackage, PropertyConstraintEnhancer.class);
-            for (Class<?> enhancerClass : enhancerClasses) {
-                registerEnhancer((PropertyConstraintEnhancer) BeanUtils.instantiateClass(enhancerClass));
-            }
-        }
-
         return this;
     }
 

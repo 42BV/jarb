@@ -24,8 +24,8 @@
         <property name="entityManagerFactory" ref="entityManagerFactory"/>
     </bean>
     
-    <constraints:enable-metadata entity-manager-factory="entityManagerFactory"/>
-
+    <constraints:enable-constraints entity-manager-factory="entityManagerFactory" base-package="org.jarbframework.constraint.violation.domain"/>
+    
     <bean id="validator" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean">
         <property name="validationMessageSource">
             <bean class="org.springframework.context.support.ResourceBundleMessageSource">

@@ -13,11 +13,8 @@ public class BeanConstraintDescriptorFactoryBean extends SingletonFactoryBean<Be
     
     private final BeanMetadataRepository beanMetadataRepository;
 
-    private final String basePackage;
-
-    public BeanConstraintDescriptorFactoryBean(BeanMetadataRepository beanMetadataRepository, String basePackage) {
+    public BeanConstraintDescriptorFactoryBean(BeanMetadataRepository beanMetadataRepository) {
         this.beanMetadataRepository = beanMetadataRepository;
-        this.basePackage = basePackage;
     }
 
     @Override
@@ -27,7 +24,6 @@ public class BeanConstraintDescriptorFactoryBean extends SingletonFactoryBean<Be
         if (beanMetadataRepository != null) {
             beanDescriptor.registerDatabaseEnhancers(beanMetadataRepository);
         }
-        beanDescriptor.registerCustomEnhancers(basePackage);
         return beanDescriptor;
     }
 

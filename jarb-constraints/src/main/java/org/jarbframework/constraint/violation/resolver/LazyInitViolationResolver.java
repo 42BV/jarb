@@ -27,6 +27,7 @@ public abstract class LazyInitViolationResolver implements DatabaseConstraintVio
 	
 	/**
 	 * Build the delegate violation resolver that should be used.
+	 * 
 	 * @return the delegate violation resolver
 	 */
 	protected abstract DatabaseConstraintViolationResolver init();
