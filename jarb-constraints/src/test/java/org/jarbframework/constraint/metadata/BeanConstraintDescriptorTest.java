@@ -8,7 +8,7 @@ import org.jarbframework.constraint.metadata.enhance.LengthPropertyConstraintEnh
 import org.junit.Before;
 import org.junit.Test;
 
-public class BeanConstraintDescriptorImplTest {
+public class BeanConstraintDescriptorTest {
     
     private BeanConstraintDescriptor constraintDescriptor;
 

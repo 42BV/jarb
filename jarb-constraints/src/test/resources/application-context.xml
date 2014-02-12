@@ -14,7 +14,7 @@
         <property name="jpaPropertyMap">
             <map>
                 <entry key="hibernate.dialect" value-ref="hibernateDialect"/>
-                <entry key="hibernate.ejb.naming_strategy" value="org.hibernate.cfg.ImprovedNamingStrategy"/>
+                <entry key="hibernate.ejb.naming_strategy" value="org.jarbframework.utils.orm.hibernate.ConventionNamingStrategy"/>
                 <entry key="javax.persistence.validation.factory" value-ref="validator"/>
             </map>
         </property>

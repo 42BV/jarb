@@ -57,4 +57,5 @@ public class PropertyConstraintDescriptionTest {
     public void testnegativeFractionLength() {
         propertyConstraintDescription.setFractionLength(-1);
     }
+
 }
