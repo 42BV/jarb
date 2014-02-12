@@ -13,8 +13,7 @@ import javax.validation.ValidatorFactory;
 import org.hibernate.dialect.HSQLDialect;
 import org.hibernate.ejb.HibernatePersistence;
 import org.jarbframework.constraint.EnableDatabaseConstraints;
-import org.jarbframework.migrations.MigratingDataSource;
-import org.jarbframework.migrations.liquibase.LiquibaseMigrator;
+import org.jarbframework.migrations.MigratingEmbeddedDatabaseBuilder;
 import org.jarbframework.populator.DatabasePopulatingApplicationListener;
 import org.jarbframework.populator.DatabasePopulatorChain;
 import org.jarbframework.populator.ProductSpecificSqlClassPathResourceDatabasePopulator;
@@ -32,8 +31,6 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
-import org.springframework.jdbc.datasource.embedded.EmbeddedDatabase;
-import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
@@ -50,17 +47,9 @@ public class ApplicationConfig {
     
     @Bean
     public DataSource dataSource() {
-        EmbeddedDatabase embeddedDataSource = new EmbeddedDatabaseBuilder().setType(EmbeddedDatabaseType.HSQL).build();
-        return createMigratingDataSource(embeddedDataSource);
+        return new MigratingEmbeddedDatabaseBuilder().setType(EmbeddedDatabaseType.HSQL).build();
     }
-    
-    private static DataSource createMigratingDataSource(DataSource dataSource) {
-        MigratingDataSource migratingDataSource = new MigratingDataSource();
-        migratingDataSource.setDelegate(dataSource);
-        migratingDataSource.setMigrator(new LiquibaseMigrator("src/main/db"));
-        return migratingDataSource;
-    }
-    
+
     @Bean
     public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
         LocalContainerEntityManagerFactoryBean entityManagerFactoryBean = new LocalContainerEntityManagerFactoryBean();

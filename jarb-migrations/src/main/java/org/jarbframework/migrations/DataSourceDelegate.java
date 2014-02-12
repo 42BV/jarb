@@ -16,9 +16,9 @@ import javax.sql.DataSource;
  */
 public class DataSourceDelegate implements DataSource {
     
-    private DataSource delegate;
+    private final DataSource delegate;
 
-    public void setDelegate(DataSource delegate) {
+    public DataSourceDelegate(DataSource delegate) {
         this.delegate = delegate;
     }
 

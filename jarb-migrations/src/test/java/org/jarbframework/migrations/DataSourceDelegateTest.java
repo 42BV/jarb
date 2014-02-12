@@ -29,8 +29,7 @@ public class DataSourceDelegateTest {
     @Before
     public void setUp() {
         dataSourceMock = Mockito.mock(DataSource.class);
-        delegatingDataSource = new DataSourceDelegate();
-        delegatingDataSource.setDelegate(dataSourceMock);
+        delegatingDataSource = new DataSourceDelegate(dataSourceMock);
     }
 
     @Test

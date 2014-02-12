@@ -50,13 +50,13 @@
     	</bean>
     
         <bean id="dataSource" class="org.jarbframework.migrations.MigratingDataSource">
-	        <property name="delegate">
+	        <constructor-arg>
 	            <bean class="org.springframework.jdbc.datasource.DriverManagerDataSource">
 	                <property name="driverClassName" value="org.hsqldb.jdbcDriver"/>
 	                <property name="url" value="jdbc:hsqldb:mem:jarb"/>
 	                <property name="username" value="sa"/>
 	            </bean>
-	        </property>
+	        </constructor-arg>
 	        <property name="migrator" ref="migrator"/>
 	    </bean>
 	    
@@ -71,13 +71,13 @@
     	</bean>
     
         <bean id="dataSource" class="org.jarbframework.migrations.MigratingDataSource">
-            <property name="delegate">
+            <constructor-arg>
                 <bean class="org.springframework.jdbc.datasource.DriverManagerDataSource">
                     <property name="driverClassName" value="org.h2.Driver"/>
                     <property name="url" value="jdbc:h2:file:target/jarb-h2.db"/>
                     <property name="username" value="sa"/>
                 </bean>
-            </property>
+            </constructor-arg>
             <property name="migrator" ref="migrator"/>
         </bean>
         

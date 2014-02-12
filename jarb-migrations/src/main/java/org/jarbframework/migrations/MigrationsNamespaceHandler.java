@@ -31,7 +31,7 @@ public class MigrationsNamespaceHandler extends NamespaceHandlerSupport {
 
         private BeanDefinition createMigratingDataSource(Element element, String dataSourceId, BeanDefinitionRegistry beanRegistry) {
             BeanDefinitionBuilder migratingDataSourceBuilder = BeanDefinitionBuilder.genericBeanDefinition(MigratingDataSource.class);
-            migratingDataSourceBuilder.addPropertyValue("delegate", beanRegistry.getBeanDefinition(dataSourceId));
+            migratingDataSourceBuilder.addConstructorArgValue(beanRegistry.getBeanDefinition(dataSourceId));
             migratingDataSourceBuilder.addPropertyValue("username", element.getAttribute("username"));
             migratingDataSourceBuilder.addPropertyValue("password", element.getAttribute("password"));
             addMigratorProperty(element, migratingDataSourceBuilder);

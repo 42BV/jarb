@@ -7,6 +7,8 @@ import static org.jarbframework.utils.JdbcUtils.commitSafely;
 import java.sql.Connection;
 import java.sql.SQLException;
 
+import javax.sql.DataSource;
+
 /**
  * Data source that triggers database migrations during construction.
  * @author Jeroen van Schagen
@@ -24,6 +26,10 @@ public class MigratingDataSource extends DataSourceDelegate {
     
     /** Migration password, only used whenever the username property is not blank. **/
     private String password;
+
+    public MigratingDataSource(DataSource delegate) {
+        super(delegate);
+    }
 
     @Override
     public Connection getConnection() throws SQLException {

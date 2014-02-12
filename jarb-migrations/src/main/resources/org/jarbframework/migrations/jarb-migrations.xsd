@@ -31,7 +31,6 @@
                     </xsd:documentation>
                 </xsd:annotation>
             </xsd:attribute>
-
             <xsd:attribute name="migrator" type="xsd:string">
                 <xsd:annotation>
                     <xsd:documentation>
@@ -39,7 +38,6 @@
                     </xsd:documentation>
                 </xsd:annotation>
             </xsd:attribute>
-            
             <xsd:attribute name="base" type="xsd:string">
                 <xsd:annotation>
                     <xsd:documentation>
@@ -54,7 +52,6 @@
                     </xsd:documentation>
                 </xsd:annotation>
             </xsd:attribute>
-            
             <xsd:attribute name="username" type="xsd:string">
                 <xsd:annotation>
                     <xsd:documentation>
