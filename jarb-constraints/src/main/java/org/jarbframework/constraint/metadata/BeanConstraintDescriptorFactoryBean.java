@@ -1,6 +1,7 @@
 package org.jarbframework.constraint.metadata;
 
 import org.jarbframework.constraint.metadata.database.BeanMetadataRepository;
+import org.jarbframework.utils.Classes;
 import org.jarbframework.utils.spring.SingletonFactoryBean;
 
 /**
@@ -11,6 +12,8 @@ import org.jarbframework.utils.spring.SingletonFactoryBean;
  */
 public class BeanConstraintDescriptorFactoryBean extends SingletonFactoryBean<BeanConstraintDescriptor> {
     
+    private static final String HIBERNATE_VALIDATOR_PACKAGE_NAME = "org.hibernate.validator";
+
     private final BeanMetadataRepository beanMetadataRepository;
 
     public BeanConstraintDescriptorFactoryBean(BeanMetadataRepository beanMetadataRepository) {
@@ -21,6 +24,9 @@ public class BeanConstraintDescriptorFactoryBean extends SingletonFactoryBean<Be
     protected BeanConstraintDescriptor createObject() throws Exception {
         BeanConstraintDescriptor beanDescriptor = new BeanConstraintDescriptor();
         beanDescriptor.registerDefaultEnhancers();
+        if (Classes.hasPackage(HIBERNATE_VALIDATOR_PACKAGE_NAME)) {
+            beanDescriptor.registerHibernateEnhancers();
+        }
         if (beanMetadataRepository != null) {
             beanDescriptor.registerDatabaseEnhancers(beanMetadataRepository);
         }

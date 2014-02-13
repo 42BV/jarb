@@ -92,14 +92,19 @@ public class BeanConstraintDescriptor {
      * @return this bean descriptor, used for chaining
      */
     public BeanConstraintDescriptor registerDefaultEnhancers() {
+        registerEnhancer(new ClassPropertyTypeEnhancer(String.class, "text"));
+        registerEnhancer(new ClassPropertyTypeEnhancer(Date.class, "date"));
+        registerEnhancer(new ClassPropertyTypeEnhancer(Number.class, "number"));
+        
+        return this;
+    }
+    
+    public BeanConstraintDescriptor registerHibernateEnhancers() {
         registerEnhancer(new LengthPropertyConstraintEnhancer());
         registerEnhancer(new DigitsPropertyConstraintEnhancer());
         registerEnhancer(new NotNullPropertyConstraintEnhancer());
         registerEnhancer(new NotEmptyPropertyConstraintEnhancer());
-        
-        registerEnhancer(new ClassPropertyTypeEnhancer(String.class, "text"));
-        registerEnhancer(new ClassPropertyTypeEnhancer(Date.class, "date"));
-        registerEnhancer(new ClassPropertyTypeEnhancer(Number.class, "number"));
+
         registerEnhancer(new AnnotationPropertyTypeEnhancer(Email.class, "email"));
         registerEnhancer(new AnnotationPropertyTypeEnhancer(CreditCardNumber.class, "credid_card"));
         

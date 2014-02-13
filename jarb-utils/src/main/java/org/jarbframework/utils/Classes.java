@@ -21,6 +21,10 @@ public class Classes {
         }
     }
     
+    public static boolean hasPackage(String packageName) {
+        return Package.getPackage(packageName) != null;
+    }
+
     public static boolean isOnClasspath(String className) {
         try {
             Class.forName(className);
