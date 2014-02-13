@@ -43,7 +43,7 @@ public class EnableDatabaseConstraintsConfiguration implements ImportAware, Init
 
     private static final String BASE_PACKAGE_REF = "basePackage";
     private static final String ENTITY_MANAGER_FACTORY_REF = "entityManagerFactory";
-    private static final String TRANSLATING_ANNOTATION_REF = "translatingAnnotation";
+    private static final String TRANSLATING_ANNOTATION_REF = "exceptionTranslatingAnnotation";
 
     private Map<String, Object> metadata;
     

@@ -47,6 +47,6 @@ public @interface EnableDatabaseConstraints {
      * 
      * @return the annotation that performs exception translations
      */
-    Class<? extends Annotation> translatingAnnotation() default Repository.class;
+    Class<? extends Annotation> exceptionTranslatingAnnotation() default Repository.class;
 
 }
