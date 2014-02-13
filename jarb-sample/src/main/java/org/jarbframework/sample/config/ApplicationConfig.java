@@ -20,7 +20,7 @@ import org.jarbframework.constraint.metadata.enhance.AnnotationPropertyTypeEnhan
 import org.jarbframework.migrations.MigratingEmbeddedDatabaseBuilder;
 import org.jarbframework.populator.DatabasePopulatingListener;
 import org.jarbframework.populator.DatabasePopulatingListenerBuilder;
-import org.jarbframework.populator.SqlResourceDatabasePopulator;
+import org.jarbframework.populator.SqlDatabasePopulator;
 import org.jarbframework.populator.excel.ExcelDatabasePopulator;
 import org.jarbframework.sample.PostPopulator;
 import org.jarbframework.utils.orm.hibernate.ConventionNamingStrategy;
@@ -111,12 +111,12 @@ public class ApplicationConfig extends EnableDatabaseConstraintsConfigurer {
         public DatabasePopulatingListener databasePopulatingApplicationListener() {
             return new DatabasePopulatingListenerBuilder()
                             .initializer()
-                                .add(new SqlResourceDatabasePopulator(dataSource, new ClassPathResource("import.sql")))
+                                .add(new SqlDatabasePopulator(dataSource, new ClassPathResource("import.sql")))
                                 .add(new ExcelDatabasePopulator(entityManagerFactory, new ClassPathResource("import.xls")))
                                 .add(postPopulator())
                                 .done()
                             .destroyer()
-                                .add(new SqlResourceDatabasePopulator(dataSource, new ClassPathResource("clean.sql")))
+                                .add(new SqlDatabasePopulator(dataSource, new ClassPathResource("clean.sql")))
                                 .build();
         }
         

@@ -11,7 +11,7 @@
 
     <populator:populate initializer="populator"/>
     
-    <bean id="populator" class="org.jarbframework.populator.SqlResourceDatabasePopulator">
+    <bean id="populator" class="org.jarbframework.populator.SqlDatabasePopulator">
         <constructor-arg ref="dataSource"/>
         <constructor-arg value="classpath:import.sql"/>
     </bean>

@@ -26,11 +26,13 @@ public class SqlResourceDatabasePopulatorTest {
      */
     @Test
     public void testPopulate() {
-        new SqlResourceDatabasePopulator(dataSource, new ClassPathResource("import.sql")).populate();
+        new SqlDatabasePopulator(dataSource, new ClassPathResource("import.sql")).populate();
+        SqlDatabasePopulator.fromSql(dataSource, "INSERT INTO persons (id,name) VALUES (2,'fred') ;").populate();
 
         // Ensure the 'persons' table is created, and a record is inserted
         JdbcTemplate template = new JdbcTemplate(dataSource);
         assertEquals("eddie", template.queryForObject("SELECT name FROM persons WHERE id = 1", String.class));
+        assertEquals("fred", template.queryForObject("SELECT name FROM persons WHERE id = 2", String.class));
     }
 
     /**
@@ -39,7 +41,7 @@ public class SqlResourceDatabasePopulatorTest {
     @Test
     public void testFailIfScriptNotFound() {
         try {
-            new SqlResourceDatabasePopulator(dataSource, new ClassPathResource("unknown.sql")).populate();
+            new SqlDatabasePopulator(dataSource, new ClassPathResource("unknown.sql")).populate();
             fail("Expected an exception because unknown.sql does not exist.");
         } catch (CannotReadScriptException e) {
             assertEquals("Cannot read SQL script from class path resource [unknown.sql]", e.getMessage());
