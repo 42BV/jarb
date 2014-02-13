@@ -144,3 +144,8 @@ Components
  * populator (populate the database with data on startup, SQL script implementation and building blocks)
  * populator-excel (excel driven database populator)
  * utils (common utility library, used by other components)
+
+ Deployment
+ ----------
+ mvn deploy -DaltDeploymentRepository=repository.42.nl::default::https://repository.42.nl/content/repositories/thirdparty
+ 
