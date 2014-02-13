@@ -2,20 +2,19 @@ package org.jarbframework.migrations.liquibase;
 
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.Properties;
 
 import liquibase.resource.FileSystemResourceAccessor;
 import liquibase.resource.ResourceAccessor;
 
 import org.jarbframework.migrations.DatabaseMigrator;
+import org.jarbframework.utils.JdbcConnectionCallback;
 import org.jarbframework.utils.JdbcUtils;
-
-import com.beust.jcommander.JCommander;
-import com.beust.jcommander.Parameter;
-import com.beust.jcommander.ParameterException;
-import com.beust.jcommander.Parameters;
 
 /**
  * This class provides command-line support for Liquibase migrations.
@@ -26,103 +25,103 @@ import com.beust.jcommander.Parameters;
  * @since 5 September 2011
  */
 public final class LiquibaseMigratorMain {
+    
+    private static final String DEFAULT_FILE_NAME = "liquibase.properties";
+
+    private static final String DRIVER_CLASS = "driverClass";
+    private static final String URL = "url";
+    private static final String USER = "user";
+    private static final String PASSWORD = "password";
+    
+    private static final String CHANGELOG_BASE_DIR = "changeLogBaseDir";
+    private static final String CHANGELOG_PATH = "changeLogPath";
+    private static final String SQL_OUTPUT_PATH = "sqlOutputPath";
+    private static final String DROP_FIRST = "dropFirst";
+    
+    private static final String TRUE = "true";
 
     /**
      * Invokes the Liquibase migrations provided.
-     * @param args all migration arguments
+     * 
+     * @param arguments all migration arguments
      */
-    public static void main(String[] args) {
-        LiquibaseMigrationCommand migrationCommand = new LiquibaseMigrationCommand();
-        JCommander argumentParser = new JCommander(migrationCommand);
-        try {
-            argumentParser.parse(args);
-            migrationCommand.execute();
-        } catch (ParameterException pe) {
-            pe.printStackTrace();
-            argumentParser.usage();
-        }
+    public static void main(String... arguments) throws IOException {
+        final PropertyAccessor properties = parseProperties(arguments);
+        
+        String driverClassName = properties.getRequiredProperty(DRIVER_CLASS);
+        String url = properties.getRequiredProperty(URL);
+        String userName = properties.getRequiredProperty(USER);
+        String password = properties.getOptionalProperty(PASSWORD);
+        
+        final DatabaseMigrator migrator = createDatabaseMigrator(properties);
+
+        JdbcUtils.doWithConnection(driverClassName, url, userName, password, new JdbcConnectionCallback<Void>() {
+            
+            @Override
+            public Void doWork(Connection connection) throws SQLException {
+                migrator.migrate(connection);
+                connection.commit();
+                return null;
+            }
+            
+        });
     }
 
-    @Parameters(separators = "= ")
-    public static final class LiquibaseMigrationCommand {
+    private static PropertyAccessor parseProperties(String[] arguments) throws IOException {
+        final String propertiesPath = arguments.length > 0 ? arguments[0] : DEFAULT_FILE_NAME;
 
-        @Parameter(names = "-driverClass", required = true, description = "Fully qualified name of the JDBC driver class")
-        private String driverClassName;
+        Properties properties = new Properties();
+        properties.load(new FileInputStream(new File(propertiesPath)));
+        return new PropertyAccessor(properties);
+    }
 
-        @Parameter(names = "-dbUrl", required = true, description = "Database URL")
-        private String dbUrl;
+    private static DatabaseMigrator createDatabaseMigrator(PropertyAccessor properties) {
+        String changeLogBaseDir = properties.getOptionalProperty(CHANGELOG_BASE_DIR);
+        String changeLogPath = properties.getOptionalProperty(CHANGELOG_PATH);
+        String sqlOutputPath = properties.getOptionalProperty(SQL_OUTPUT_PATH);
+        String dropFirst = properties.getOptionalProperty(DROP_FIRST);
 
-        @Parameter(names = "-dbUser", required = true, description = "Database username")
-        private String dbUserName;
+        LiquibaseMigrator migrator = new LiquibaseMigrator(createResourceAccessor(changeLogBaseDir));
+        migrator.setChangeLogPath(changeLogPath);
+        migrator.setOutputFilePath(sqlOutputPath);
+        migrator.setDropFirst(TRUE.equals(dropFirst));
+        return migrator;
+    }
 
-        @Parameter(names = "-dbPassword", required = true, description = "Database password")
-        private String dbPassword;
-
-        @Parameter(names = "-changeLogBaseDir", description = "Liquibase changelog base dir (optional)")
-        private String changeLogBaseDir;
-
-        @Parameter(names = "-changeLogPath", required = true, description = "Liquibase changelog path")
-        private String changeLogPath;
-
-        @Parameter(names = "-sqlOutputPath", description = "SQL output file path (optional)")
-        private String sqlOutputPath;
-
-        @Parameter(names = "-dropFirst", description = "Drop first (optional)")
-        private boolean dropFirst = false;
-
-        /**
-         * Perform Liquibase migration on the database.
-         */
-        public void execute() {
-            Connection connection = null;
-            try {
-                connection = createConnection();
-                createMigrator().migrate(connection);
-                connection.commit();
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            } finally {
-                JdbcUtils.closeQuietly(connection);
+    private static ResourceAccessor createResourceAccessor(String changeLogBaseDir) {
+        if (isBlank(changeLogBaseDir)) {
+            return new FileSystemResourceAccessor();
+        } else {
+            return new FileSystemResourceAccessor(changeLogBaseDir);
+        }
+    }
+    
+    /**
+     * Used to access values from a property file.
+     *
+     * @author Jeroen van Schagen
+     * @since Feb 13, 2014
+     */
+    private static class PropertyAccessor {
+        
+        private final Properties properties;
+        
+        public PropertyAccessor(Properties properties) {
+            this.properties = properties;
+        }
+        
+        public String getRequiredProperty(String name) {
+            String value = properties.getProperty(name);
+            if (value == null) {
+                throw new IllegalArgumentException("Property '" + name + "' is missing.");
             }
+            return value;
         }
-
-        /**
-         * Factory method that creates a {@link DatabaseMigrator} based upon given arguments.
-         * @return new DatabaseMigrator, capable of performing database migrations
-         */
-        private DatabaseMigrator createMigrator() {
-            LiquibaseMigrator migrator = new LiquibaseMigrator(createResourceAccessor());
-            migrator.setChangeLogPath(changeLogPath);
-            migrator.setOutputFilePath(sqlOutputPath);
-            migrator.setDropFirst(dropFirst);
-            return migrator;
+        
+        public String getOptionalProperty(String name) {
+            return properties.getProperty(name, "");
         }
-
-        private ResourceAccessor createResourceAccessor() {
-            FileSystemResourceAccessor accessor;
-            if (isBlank(changeLogBaseDir)) {
-                accessor = new FileSystemResourceAccessor();
-            } else {
-                accessor = new FileSystemResourceAccessor(changeLogBaseDir);
-            }
-            return accessor;
-        }
-
-        /**
-         * Factory method that creates a JDBC connection based upon given arguments.
-         * @return connection to the database
-         */
-        private Connection createConnection() {
-            try {
-                Class.forName(driverClassName); // Register appropriate JDBC driver
-                return DriverManager.getConnection(dbUrl, dbUserName, dbPassword);
-            } catch (SQLException sqle) {
-                throw new RuntimeException(sqle);
-            } catch (ClassNotFoundException cnfe) {
-                throw new RuntimeException(cnfe);
-            }
-        }
-
+        
     }
 
 }
