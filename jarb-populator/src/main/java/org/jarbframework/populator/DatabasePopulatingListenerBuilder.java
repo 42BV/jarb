@@ -85,6 +85,7 @@ public class DatabasePopulatingListenerBuilder {
          * @return the listener
          */
         public DatabasePopulatingListener build() {
+            done();
             return DatabasePopulatingListenerBuilder.this.build();
         }
 
