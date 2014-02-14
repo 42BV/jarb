@@ -41,7 +41,7 @@ public class BeanConstraintDescriptor {
     public BeanConstraintDescription describe(Class<?> beanClass) {
         BeanConstraintDescription beanDescription = new BeanConstraintDescription(beanClass);
         for (PropertyDescriptor propertyDescriptor : BeanUtils.getPropertyDescriptors(beanClass)) {
-            beanDescription.addPropertyDescription(describeProperty(beanClass, propertyDescriptor));
+            beanDescription.addProperty(describeProperty(beanClass, propertyDescriptor));
         }
         return beanDescription;
     }

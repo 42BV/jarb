@@ -5,27 +5,29 @@ import static org.junit.Assert.assertTrue;
 
 import org.jarbframework.constraint.domain.Wine;
 import org.jarbframework.constraint.metadata.PropertyConstraintDescription;
-import org.jarbframework.constraint.metadata.enhance.NotNullPropertyConstraintEnhancer;
 import org.jarbframework.utils.bean.PropertyReference;
 import org.junit.Before;
 import org.junit.Test;
 
 public class NotNullPropertyConstraintMetadataEnhancerTest {
     
-    private NotNullPropertyConstraintEnhancer constraintEnhancer;
+    private NotNullPropertyConstraintEnhancer notNullEnhancer;
+
     private PropertyConstraintDescription nameDescription;
 
     @Before
     public void setUp() {
-        constraintEnhancer = new NotNullPropertyConstraintEnhancer();
-        PropertyReference reference = new PropertyReference(Wine.class, "name");
-        nameDescription = new PropertyConstraintDescription(reference, String.class);
+        notNullEnhancer = new NotNullPropertyConstraintEnhancer();
+        PropertyReference nameReference = new PropertyReference(Wine.class, "name");
+        nameDescription = new PropertyConstraintDescription(nameReference, String.class);
     }
 
     @Test
     public void testEnhance() {
         assertFalse(nameDescription.isRequired());
-        constraintEnhancer.enhance(nameDescription);
+
+        notNullEnhancer.enhance(nameDescription);
+
         assertTrue(nameDescription.isRequired());
     }
 
@@ -33,7 +35,9 @@ public class NotNullPropertyConstraintMetadataEnhancerTest {
     public void testSkipUnmarkedProperty() {
         PropertyReference priceReference = new PropertyReference(Wine.class, "price");
         PropertyConstraintDescription priceDescription = new PropertyConstraintDescription(priceReference, Double.class);
-        constraintEnhancer.enhance(priceDescription);
+
+        notNullEnhancer.enhance(priceDescription);
+
         assertFalse(priceDescription.isRequired());
     }
 

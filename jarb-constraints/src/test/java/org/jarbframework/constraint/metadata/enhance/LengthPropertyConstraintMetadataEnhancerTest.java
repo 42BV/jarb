@@ -5,21 +5,22 @@ import static org.junit.Assert.assertNull;
 
 import org.jarbframework.constraint.domain.Wine;
 import org.jarbframework.constraint.metadata.PropertyConstraintDescription;
-import org.jarbframework.constraint.metadata.enhance.LengthPropertyConstraintEnhancer;
 import org.jarbframework.utils.bean.PropertyReference;
 import org.junit.Before;
 import org.junit.Test;
 
 public class LengthPropertyConstraintMetadataEnhancerTest {
     
-    private LengthPropertyConstraintEnhancer constraintEnhancer;
+    private LengthPropertyConstraintEnhancer lengthEnhancer;
+
     private PropertyConstraintDescription nameDescription;
 
     @Before
     public void setUp() {
-        constraintEnhancer = new LengthPropertyConstraintEnhancer();
-        PropertyReference reference = new PropertyReference(Wine.class, "name");
-        nameDescription = new PropertyConstraintDescription(reference, String.class);
+        lengthEnhancer = new LengthPropertyConstraintEnhancer();
+        
+        PropertyReference nameReference = new PropertyReference(Wine.class, "name");
+        nameDescription = new PropertyConstraintDescription(nameReference, String.class);
     }
 
     /**
@@ -30,9 +31,12 @@ public class LengthPropertyConstraintMetadataEnhancerTest {
     @Test
     public void testEnhance() {
         nameDescription.setMaximumLength(6); // Database column length is '6'
-        nameDescription = constraintEnhancer.enhance(nameDescription);
+
+        nameDescription = lengthEnhancer.enhance(nameDescription);
+
         // Minimum length is retrieved from the @Length.min attribute
         assertEquals(Integer.valueOf(6), nameDescription.getMinimumLength());
+
         // Database maximum length is lower than all @Length.max attributes (Integer.MAX_VALUE)
         assertEquals(Integer.valueOf(6), nameDescription.getMaximumLength());
     }
@@ -45,7 +49,8 @@ public class LengthPropertyConstraintMetadataEnhancerTest {
     @Test(expected = IllegalStateException.class)
     public void testMergeConflict() {
         nameDescription.setMaximumLength(2);
-        constraintEnhancer.enhance(nameDescription);
+
+        lengthEnhancer.enhance(nameDescription);
     }
 
     /**
@@ -57,9 +62,12 @@ public class LengthPropertyConstraintMetadataEnhancerTest {
         PropertyReference reference = new PropertyReference(Wine.class, "price");
         PropertyConstraintDescription priceDescription = new PropertyConstraintDescription(reference, Double.class);
         priceDescription.setMaximumLength(9);
-        constraintEnhancer.enhance(priceDescription);
+
+        lengthEnhancer.enhance(priceDescription);
+
         // No minimum length is specified, so it should remain null
         assertNull(priceDescription.getMinimumLength());
+
         // Initially specified maximum length should remain
         assertEquals(Integer.valueOf(9), priceDescription.getMaximumLength());
     }

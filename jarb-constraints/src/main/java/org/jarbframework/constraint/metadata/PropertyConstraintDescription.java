@@ -3,7 +3,6 @@ package org.jarbframework.constraint.metadata;
 import static java.util.Collections.unmodifiableSet;
 import static org.jarbframework.utils.Asserts.notNull;
 
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -21,9 +20,9 @@ import org.jarbframework.utils.bean.PropertyReference;
  */
 public class PropertyConstraintDescription {
 
-    private final PropertyReference propertyReference;
+    private final PropertyReference reference;
     
-    private final Class<?> propertyClass;
+    private final Class<?> javaType;
 
     private final Set<String> types = new HashSet<String>();
 
@@ -39,23 +38,24 @@ public class PropertyConstraintDescription {
 
     /**
      * Construct a new {@link PropertyConstraintDescription}.
-     * @param propertyReference reference to the property
-     * @param propertyClass class of the property
+     * 
+     * @param reference reference to the property
+     * @param javaType class of the property
      */
-    public PropertyConstraintDescription(PropertyReference propertyReference, Class<?> propertyClass) {
-        this.propertyReference = notNull(propertyReference, "Property reference cannot be null.");
-        this.propertyClass = notNull(propertyClass, "Property class cannot be null.");
+    public PropertyConstraintDescription(PropertyReference reference, Class<?> javaType) {
+        this.reference = notNull(reference, "Reference cannot be null.");
+        this.javaType = notNull(javaType, "Java type cannot be null.");
     }
 
     public String getName() {
-        return propertyReference.getName();
+        return reference.getName();
     }
 
     public Class<?> getJavaType() {
-        return propertyClass;
+        return javaType;
     }
 
-    public Collection<String> getTypes() {
+    public Set<String> getTypes() {
         return unmodifiableSet(types);
     }
 
@@ -130,13 +130,16 @@ public class PropertyConstraintDescription {
         return this;
     }
 
+    public PropertyReference toReference() {
+        return reference;
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String toString() {
         return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
-    }
-
-    public PropertyReference toReference() {
-        return propertyReference;
     }
 
 }

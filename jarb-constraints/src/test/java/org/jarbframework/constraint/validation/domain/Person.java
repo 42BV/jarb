@@ -4,13 +4,13 @@ import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
-import org.jarbframework.constraint.AbstractEntity;
+import org.jarbframework.constraint.domain.DefaultEntity;
 import org.jarbframework.constraint.validation.DatabaseConstrained;
 
 @Entity
 @Table(name = "persons")
 @DatabaseConstrained
-public class Person extends AbstractEntity {
+public class Person extends DefaultEntity {
 
     private String name;
     

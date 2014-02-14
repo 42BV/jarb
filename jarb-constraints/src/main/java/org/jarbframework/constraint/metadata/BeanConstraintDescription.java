@@ -17,13 +17,14 @@ import org.apache.commons.lang3.builder.ToStringStyle;
  */
 public class BeanConstraintDescription {
 
-    /** Provides a description of all property constraints. **/
-    private final Map<String, PropertyConstraintDescription> propertyDescriptions = new HashMap<String, PropertyConstraintDescription>();
-
     private final Class<?> beanClass;
+
+    /** Provides a description of all property constraints. **/
+    private final Map<String, PropertyConstraintDescription> properties = new HashMap<>();
 
     /**
      * Construct a new {@link BeanConstraintDescription}.
+     * 
      * @param beanClass class of the bean being described
      */
     public BeanConstraintDescription(Class<?> beanClass) {
@@ -34,20 +35,21 @@ public class BeanConstraintDescription {
         return beanClass;
     }
 
-    public PropertyConstraintDescription getPropertyDescription(String propertyName) {
-        return propertyDescriptions.get(propertyName);
+    public PropertyConstraintDescription getProperty(String propertyName) {
+        return properties.get(propertyName);
     }
 
-    public Collection<PropertyConstraintDescription> getPropertyDescriptions() {
-        return propertyDescriptions.values();
+    public Collection<PropertyConstraintDescription> getProperty() {
+        return properties.values();
     }
 
     /**
      * Attach the description of a property to this bean description.
-     * @param propertyDescription description of the property constraints
+     * 
+     * @param property description of the property constraints
      */
-    void addPropertyDescription(PropertyConstraintDescription propertyDescription) {
-        propertyDescriptions.put(propertyDescription.getName(), propertyDescription);
+    public void addProperty(PropertyConstraintDescription property) {
+        properties.put(property.getName(), property);
     }
 
     @Override

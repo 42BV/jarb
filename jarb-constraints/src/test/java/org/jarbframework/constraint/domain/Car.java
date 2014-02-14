@@ -4,11 +4,9 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
-import org.jarbframework.constraint.AbstractEntity;
-
 @Entity
 @Table(name = "cars")
-public class Car extends AbstractEntity {
+public class Car extends DefaultEntity {
 
     private String licenseNumber;
 

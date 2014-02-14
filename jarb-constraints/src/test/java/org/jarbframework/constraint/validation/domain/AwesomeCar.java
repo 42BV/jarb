@@ -5,13 +5,13 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import org.jarbframework.constraint.AbstractEntity;
+import org.jarbframework.constraint.domain.DefaultEntity;
 import org.jarbframework.constraint.validation.DatabaseConstrained;
 
 @Entity
 @Table(name = "cars")
 @DatabaseConstrained
-public class AwesomeCar extends AbstractEntity {
+public class AwesomeCar extends DefaultEntity {
 
     private String licenseNumber;
 

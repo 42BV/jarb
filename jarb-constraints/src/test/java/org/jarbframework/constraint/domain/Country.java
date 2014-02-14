@@ -3,11 +3,9 @@ package org.jarbframework.constraint.domain;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
-import org.jarbframework.constraint.AbstractEntity;
-
 @Entity
 @Table(name = "countries")
-public class Country extends AbstractEntity {
+public class Country extends DefaultEntity {
     
     private String name;
 

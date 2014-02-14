@@ -8,11 +8,10 @@ import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotEmpty;
-import org.jarbframework.constraint.AbstractEntity;
 
 @Entity
 @Table(name = "wines")
-public class Wine extends AbstractEntity {
+public class Wine extends DefaultEntity {
 
     @NotNull
     @NotEmpty

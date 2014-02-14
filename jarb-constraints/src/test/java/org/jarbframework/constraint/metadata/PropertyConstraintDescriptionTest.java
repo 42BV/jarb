@@ -15,47 +15,49 @@ import org.junit.Test;
  */
 public class PropertyConstraintDescriptionTest {
     
-    private PropertyConstraintDescription propertyConstraintDescription;
+    private PropertyConstraintDescription description;
 
     @Before
     public void setUp() {
         PropertyReference reference = new PropertyReference(Wine.class, "name");
-        propertyConstraintDescription = new PropertyConstraintDescription(reference, String.class);
+        description = new PropertyConstraintDescription(reference, String.class);
     }
 
     @Test
     public void testModifyLength() {
-        propertyConstraintDescription.setMinimumLength(4);
-        propertyConstraintDescription.setMaximumLength(42);
-        assertEquals(Integer.valueOf(4), propertyConstraintDescription.getMinimumLength());
-        assertEquals(Integer.valueOf(42), propertyConstraintDescription.getMaximumLength());
+        description.setMinimumLength(4);
+        description.setMaximumLength(42);
+        
+        assertEquals(Integer.valueOf(4), description.getMinimumLength());
+        assertEquals(Integer.valueOf(42), description.getMaximumLength());
     }
 
     @Test(expected = IllegalStateException.class)
     public void testNegativeMinimumLength() {
-        propertyConstraintDescription.setMinimumLength(-1);
+        description.setMinimumLength(-1);
     }
 
     @Test(expected = IllegalStateException.class)
     public void testNegativeMaximumLength() {
-        propertyConstraintDescription.setMaximumLength(-1);
+        description.setMaximumLength(-1);
     }
 
     @Test(expected = IllegalStateException.class)
     public void testMinimLengthGreaterThanMaximum() {
-        propertyConstraintDescription.setMaximumLength(24);
-        propertyConstraintDescription.setMinimumLength(42);
+        description.setMaximumLength(24);
+        description.setMinimumLength(42);
     }
 
     @Test
     public void testModifyFractionLength() {
-        propertyConstraintDescription.setFractionLength(4);
-        assertEquals(Integer.valueOf(4), propertyConstraintDescription.getFractionLength());
+        description.setFractionLength(4);
+
+        assertEquals(Integer.valueOf(4), description.getFractionLength());
     }
 
     @Test(expected = IllegalStateException.class)
     public void testnegativeFractionLength() {
-        propertyConstraintDescription.setFractionLength(-1);
+        description.setFractionLength(-1);
     }
 
 }

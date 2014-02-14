@@ -6,20 +6,19 @@ import static org.junit.Assert.assertTrue;
 
 import org.hibernate.validator.constraints.Email;
 import org.jarbframework.constraint.metadata.PropertyConstraintDescription;
-import org.jarbframework.constraint.metadata.enhance.AnnotationPropertyTypeEnhancer;
-import org.jarbframework.constraint.metadata.enhance.PropertyConstraintEnhancer;
 import org.jarbframework.utils.bean.PropertyReference;
 import org.junit.Before;
 import org.junit.Test;
 
 public class AnnotationPropertyTypeEnhancerTest {
     
-    private PropertyConstraintEnhancer constraintEnhancer;
+    private PropertyConstraintEnhancer emailTypeEnhancer;
+
     private PropertyConstraintDescription emailDescription;
 
     @Before
     public void setUp() {
-        constraintEnhancer = new AnnotationPropertyTypeEnhancer(Email.class, "email");
+        emailTypeEnhancer = new AnnotationPropertyTypeEnhancer(Email.class, "email");
         emailDescription = new PropertyConstraintDescription(new PropertyReference(User.class, "email"), String.class);
     }
 
@@ -29,7 +28,9 @@ public class AnnotationPropertyTypeEnhancerTest {
     @Test
     public void testEnhance() {
         assertTrue(emailDescription.getTypes().isEmpty());
-        constraintEnhancer.enhance(emailDescription);
+
+        emailTypeEnhancer.enhance(emailDescription);
+
         assertThat(emailDescription.getTypes(), contains("email"));
     }
 
@@ -41,7 +42,9 @@ public class AnnotationPropertyTypeEnhancerTest {
         emailDescription = new PropertyConstraintDescription(new PropertyReference(User.class, "name"), String.class);
 
         assertTrue(emailDescription.getTypes().isEmpty());
-        constraintEnhancer.enhance(emailDescription);
+
+        emailTypeEnhancer.enhance(emailDescription);
+
         assertTrue(emailDescription.getTypes().isEmpty());
     }
 

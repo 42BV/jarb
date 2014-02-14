@@ -5,6 +5,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import org.jarbframework.constraint.TestConstraintsConfig;
 import org.jarbframework.constraint.domain.Wine;
 import org.jarbframework.constraint.metadata.PropertyConstraintDescription;
 import org.jarbframework.constraint.metadata.database.BeanMetadataRepository;
@@ -19,7 +20,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ActiveProfiles("hsqldb")
-@ContextConfiguration(locations = { "classpath:application-context.xml" })
+@ContextConfiguration(classes = TestConstraintsConfig.class)
 public class DatabaseSchemaPropertyConstraintEnhancerTest {
     
     private DatabaseSchemaPropertyConstraintEnhancer constraintEnhancer;
@@ -94,8 +95,8 @@ public class DatabaseSchemaPropertyConstraintEnhancerTest {
         assertNull(nameDescription.getMaximumLength());
     }
 
-    // Testing class, represents a simple bean without JPA mapping
     public static class NotAnEntity {
+
         private String name;
 
         public String getName() {
@@ -105,6 +106,7 @@ public class DatabaseSchemaPropertyConstraintEnhancerTest {
         public void setName(String name) {
             this.name = name;
         }
+
     }
 
 }

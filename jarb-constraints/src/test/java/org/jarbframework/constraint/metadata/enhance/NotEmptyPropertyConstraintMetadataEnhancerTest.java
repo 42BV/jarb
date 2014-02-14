@@ -5,21 +5,22 @@ import static org.junit.Assert.assertNull;
 
 import org.jarbframework.constraint.domain.Wine;
 import org.jarbframework.constraint.metadata.PropertyConstraintDescription;
-import org.jarbframework.constraint.metadata.enhance.NotEmptyPropertyConstraintEnhancer;
 import org.jarbframework.utils.bean.PropertyReference;
 import org.junit.Before;
 import org.junit.Test;
 
 public class NotEmptyPropertyConstraintMetadataEnhancerTest {
     
-    private NotEmptyPropertyConstraintEnhancer constraintEnhancer;
+    private NotEmptyPropertyConstraintEnhancer notEmptyEnhancer;
+
     private PropertyConstraintDescription nameDescription;
 
     @Before
     public void setUp() {
-        constraintEnhancer = new NotEmptyPropertyConstraintEnhancer();
-        PropertyReference reference = new PropertyReference(Wine.class, "name");
-        nameDescription = new PropertyConstraintDescription(reference, String.class);
+        notEmptyEnhancer = new NotEmptyPropertyConstraintEnhancer();
+        
+        PropertyReference nameReference = new PropertyReference(Wine.class, "name");
+        nameDescription = new PropertyConstraintDescription(nameReference, String.class);
     }
 
     /**
@@ -30,7 +31,9 @@ public class NotEmptyPropertyConstraintMetadataEnhancerTest {
     @Test
     public void testEnhanceIfNull() {
         assertNull(nameDescription.getMinimumLength());
-        constraintEnhancer.enhance(nameDescription);
+        
+        notEmptyEnhancer.enhance(nameDescription);
+
         assertEquals(Integer.valueOf(1), nameDescription.getMinimumLength());
     }
 
@@ -41,7 +44,9 @@ public class NotEmptyPropertyConstraintMetadataEnhancerTest {
     @Test
     public void testEnhanceIfZero() {
         nameDescription.setMinimumLength(0);
-        constraintEnhancer.enhance(nameDescription);
+        
+        notEmptyEnhancer.enhance(nameDescription);
+
         assertEquals(Integer.valueOf(1), nameDescription.getMinimumLength());
     }
 
@@ -53,7 +58,9 @@ public class NotEmptyPropertyConstraintMetadataEnhancerTest {
     @Test
     public void testSkipIfAlreadyHasPositiveMin() {
         nameDescription.setMinimumLength(42);
-        constraintEnhancer.enhance(nameDescription);
+        
+        notEmptyEnhancer.enhance(nameDescription);
+
         assertEquals(Integer.valueOf(42), nameDescription.getMinimumLength());
     }
 
@@ -64,7 +71,9 @@ public class NotEmptyPropertyConstraintMetadataEnhancerTest {
     public void testSkipUnmarkedProperty() {
         PropertyReference reference = new PropertyReference(Wine.class, "price");
         PropertyConstraintDescription priceDescription = new PropertyConstraintDescription(reference, String.class);
-        constraintEnhancer.enhance(priceDescription);
+        
+        notEmptyEnhancer.enhance(priceDescription);
+
         assertNull(priceDescription.getMinimumLength());
     }
 
