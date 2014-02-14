@@ -1,6 +1,9 @@
 package org.jarbframework.constraint.violation.integration;
 
-import static org.jarbframework.constraint.violation.DatabaseConstraintType.*;
+import static org.jarbframework.constraint.violation.DatabaseConstraintType.FOREIGN_KEY;
+import static org.jarbframework.constraint.violation.DatabaseConstraintType.INVALID_TYPE;
+import static org.jarbframework.constraint.violation.DatabaseConstraintType.LENGTH_EXCEEDED;
+import static org.jarbframework.constraint.violation.DatabaseConstraintType.NOT_NULL;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
@@ -29,7 +32,7 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Transactional
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { "classpath:translation-context.xml" })
+@ContextConfiguration(locations = { "classpath:application-context.xml" })
 public abstract class AbstractExceptionTranslationTest {
 
     @Autowired
