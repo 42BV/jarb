@@ -24,7 +24,7 @@
         <property name="entityManagerFactory" ref="entityManagerFactory"/>
     </bean>
     
-    <constraints:enable-constraints entity-manager-factory="entityManagerFactory" base-package="org.jarbframework.constraint.violation.domain"/>
+    <constraints:enable-constraints entity-manager-factory="entityManagerFactory" base-package="org.jarbframework.constraint.domain"/>
     
     <bean id="validator" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean">
         <property name="validationMessageSource">
@@ -39,7 +39,7 @@
     </bean>
     
     <!-- Repository used for testing -->
-    <bean class="org.jarbframework.constraint.violation.domain.JpaCarRepository"/>
+    <bean class="org.jarbframework.constraint.domain.JpaCarRepository"/>
     
     <!-- Vendor specific database sources -->
     <!-- Should only enable one profile at a time -->

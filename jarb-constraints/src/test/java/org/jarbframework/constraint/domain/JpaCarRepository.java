@@ -1,9 +1,8 @@
-package org.jarbframework.constraint.violation.domain;
+package org.jarbframework.constraint.domain;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
-import org.jarbframework.constraint.domain.Car;
 import org.springframework.stereotype.Repository;
 
 /**

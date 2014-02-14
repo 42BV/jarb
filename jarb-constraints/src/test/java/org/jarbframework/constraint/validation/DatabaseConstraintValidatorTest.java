@@ -12,11 +12,11 @@ import java.util.Set;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
 
-import org.jarbframework.constraint.validation.domain.Address;
-import org.jarbframework.constraint.validation.domain.ChangeAddressCommand;
-import org.jarbframework.constraint.validation.domain.Contact;
-import org.jarbframework.constraint.validation.domain.Person;
-import org.jarbframework.constraint.validation.domain.AwesomeCar;
+import org.jarbframework.constraint.domain.Address;
+import org.jarbframework.constraint.domain.AwesomeCar;
+import org.jarbframework.constraint.domain.ChangeAddressCommand;
+import org.jarbframework.constraint.domain.Contact;
+import org.jarbframework.constraint.domain.Person;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;

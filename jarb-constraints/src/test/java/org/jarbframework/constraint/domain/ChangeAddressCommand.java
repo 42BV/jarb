@@ -1,4 +1,4 @@
-package org.jarbframework.constraint.validation.domain;
+package org.jarbframework.constraint.domain;
 
 import org.jarbframework.constraint.validation.DatabaseConstrained;
 

@@ -8,15 +8,15 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 import org.jarbframework.constraint.domain.Car;
+import org.jarbframework.constraint.domain.CarAlreadyExistsException;
+import org.jarbframework.constraint.domain.CarInactiveException;
+import org.jarbframework.constraint.domain.CarRepository;
 import org.jarbframework.constraint.violation.DatabaseConstraintType;
 import org.jarbframework.constraint.violation.DatabaseConstraintViolation;
 import org.jarbframework.constraint.violation.ForeignKeyViolationException;
 import org.jarbframework.constraint.violation.InvalidTypeException;
 import org.jarbframework.constraint.violation.LengthExceededException;
 import org.jarbframework.constraint.violation.NotNullViolationException;
-import org.jarbframework.constraint.violation.domain.CarAlreadyExistsException;
-import org.jarbframework.constraint.violation.domain.CarInactiveException;
-import org.jarbframework.constraint.violation.domain.CarRepository;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;

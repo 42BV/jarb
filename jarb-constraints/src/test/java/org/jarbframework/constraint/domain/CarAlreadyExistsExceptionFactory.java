@@ -1,4 +1,4 @@
-package org.jarbframework.constraint.violation.domain;
+package org.jarbframework.constraint.domain;
 
 import org.jarbframework.constraint.violation.DatabaseConstraintViolation;
 import org.jarbframework.constraint.violation.DatabaseConstraintViolationException;

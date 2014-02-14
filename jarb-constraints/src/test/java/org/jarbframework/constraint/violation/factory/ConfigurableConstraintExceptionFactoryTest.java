@@ -4,9 +4,9 @@ import static org.jarbframework.constraint.violation.DatabaseConstraintType.UNIQ
 import static org.jarbframework.constraint.violation.factory.NameMatchingStrategy.EXACT;
 import static org.junit.Assert.assertTrue;
 
+import org.jarbframework.constraint.domain.CarAlreadyExistsException;
 import org.jarbframework.constraint.violation.DatabaseConstraintViolation;
 import org.jarbframework.constraint.violation.UniqueKeyViolationException;
-import org.jarbframework.constraint.violation.domain.CarAlreadyExistsException;
 import org.junit.Before;
 import org.junit.Test;
 

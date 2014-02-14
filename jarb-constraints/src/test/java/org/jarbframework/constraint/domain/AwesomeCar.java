@@ -1,11 +1,10 @@
-package org.jarbframework.constraint.validation.domain;
+package org.jarbframework.constraint.domain;
 
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import org.jarbframework.constraint.domain.DefaultEntity;
 import org.jarbframework.constraint.validation.DatabaseConstrained;
 
 @Entity

@@ -1,6 +1,5 @@
-package org.jarbframework.constraint.violation.domain;
+package org.jarbframework.constraint.domain;
 
-import org.jarbframework.constraint.domain.Car;
 
 
 /**

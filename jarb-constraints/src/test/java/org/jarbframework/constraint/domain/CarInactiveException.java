@@ -1,4 +1,4 @@
-package org.jarbframework.constraint.violation.domain;
+package org.jarbframework.constraint.domain;
 
 public class CarInactiveException extends Exception {
 
