@@ -9,7 +9,7 @@ import java.util.Set;
 
 import org.jarbframework.constraint.violation.DatabaseConstraintViolation;
 import org.jarbframework.constraint.violation.factory.reflection.ReflectionConstraintExceptionFactory;
-import org.jarbframework.utils.Classes;
+import org.jarbframework.utils.ClassScanner;
 import org.springframework.core.annotation.AnnotationUtils;
 
 import com.google.common.base.Predicate;
@@ -103,12 +103,13 @@ public class ConfigurableConstraintExceptionFactory implements DatabaseConstrain
      */
     public ConfigurableConstraintExceptionFactory registerAll(String basePackage) {
         if (isNotBlank(basePackage)) {
-	        Set<Class<?>> annotatedClasses = Classes.getAllWithAnnotation(basePackage, NamedConstraint.class);
+            Set<Class<?>> annotatedClasses = ClassScanner.getAllWithAnnotation(basePackage, NamedConstraint.class);
 	        for(Class<?> annotatedClass : annotatedClasses) {
 	            NamedConstraint namedConstraint = AnnotationUtils.findAnnotation(annotatedClass, NamedConstraint.class);
 	            register(namedConstraint.value(), namedConstraint.strategy(), annotatedClass);
 	        }
         }
+
         return this;
     }
     

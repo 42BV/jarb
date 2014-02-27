@@ -13,17 +13,17 @@ public class ClassesTest {
 		Assert.assertTrue(Classes.isOnClasspath(Classes.class.getName()));
 		Assert.assertFalse(Classes.isOnClasspath("some.unknown.ClassName"));
 	}
-	
-	@Test
-	public void testFindByType() {
-		String basePackage = this.getClass().getPackage().getName();
-		Assert.assertTrue(Classes.getAllOfType(basePackage, SomeInterface.class).contains(SomeClass.class));
-	}
-	
-	@Test
-	public void testFindByAnnotation() {
-		String basePackage = this.getClass().getPackage().getName();
-		Assert.assertTrue(Classes.getAllWithAnnotation(basePackage, SomeAnnotation.class).contains(SomeClass.class));
-	}
+    
+    @Test
+    public void testFindByType() {
+        String basePackage = this.getClass().getPackage().getName();
+        Assert.assertTrue(ClassScanner.getAllOfType(basePackage, SomeInterface.class).contains(SomeClass.class));
+    }
+    
+    @Test
+    public void testFindByAnnotation() {
+        String basePackage = this.getClass().getPackage().getName();
+        Assert.assertTrue(ClassScanner.getAllWithAnnotation(basePackage, SomeAnnotation.class).contains(SomeClass.class));
+    }
 
 }
