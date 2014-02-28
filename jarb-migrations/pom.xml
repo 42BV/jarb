@@ -56,7 +56,7 @@
 							<goal>single</goal>
 						</goals>
 						<configuration>
-							<finalName>migrator-liquibase</finalName>
+							<finalName>${project.artifactId}-${project.version}-liquibase</finalName>
 							<appendAssemblyId>false</appendAssemblyId>
 							<attach>false</attach>
 							<descriptors>
@@ -85,7 +85,7 @@
 						<configuration>
 							<artifacts>
 								<artifact>
-									<file>${project.build.directory}/migrator-liquibase.jar</file>
+									<file>${project.build.directory}/${project.artifactId}-${project.version}-liquibase.jar</file>
 									<classifier>liquibase</classifier>
 									<type>jar</type>
 								</artifact>
