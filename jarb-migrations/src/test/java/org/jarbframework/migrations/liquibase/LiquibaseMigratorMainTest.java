@@ -11,7 +11,7 @@ public class LiquibaseMigratorMainTest {
      */
     @Test
     public void testDbMigration() throws IOException {
-        LiquibaseMigratorMain.main("src/test/resources/liquibase-correct.properties");
+        LiquibaseMigratorMain.main("src/test/resources/liquibase/correct.properties");
     }
 
     /**
@@ -19,7 +19,7 @@ public class LiquibaseMigratorMainTest {
      */
     @Test
     public void testDbMigrationRelativePath() throws IOException {
-        LiquibaseMigratorMain.main("src/test/resources/liquibase-relative.properties");
+        LiquibaseMigratorMain.main("src/test/resources/liquibase/relative.properties");
     }
 
     /**
@@ -27,7 +27,7 @@ public class LiquibaseMigratorMainTest {
      */
     @Test(expected = RuntimeException.class)
     public void testInvalidDriverClass() throws IOException {
-        LiquibaseMigratorMain.main("src/test/resources/liquibase-invalid-driver.properties");
+        LiquibaseMigratorMain.main("src/test/resources/liquibase/invalid-driver.properties");
     }
 
     /**
@@ -35,7 +35,7 @@ public class LiquibaseMigratorMainTest {
      */
     @Test(expected = RuntimeException.class)
     public void testConnectionCouldNotBeOpened() throws IOException {
-        LiquibaseMigratorMain.main("src/test/resources/liquibase-invalid-user.properties");
+        LiquibaseMigratorMain.main("src/test/resources/liquibase/invalid-user.properties");
     }
 
     /**
@@ -43,7 +43,7 @@ public class LiquibaseMigratorMainTest {
      */
     @Test(expected = RuntimeException.class)
     public void testChangeLogDoesNotExist() throws IOException {
-        LiquibaseMigratorMain.main("src/test/resources/liquibase-unknown-changelog.properties");
+        LiquibaseMigratorMain.main("src/test/resources/liquibase/unknown-changelog.properties");
     }
 
 }
