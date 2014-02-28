@@ -1,6 +1,5 @@
 package org.jarbframework.utils.orm.hibernate;
 
-import static com.google.common.base.Preconditions.checkState;
 import static org.springframework.orm.jpa.EntityManagerFactoryUtils.ENTITY_MANAGER_SYNCHRONIZATION_ORDER;
 import static org.springframework.util.ReflectionUtils.invokeMethod;
 
@@ -16,6 +15,7 @@ import org.hibernate.StatelessSession;
 import org.hibernate.ejb.HibernateEntityManagerFactory;
 import org.hibernate.engine.spi.SessionImplementor;
 import org.hibernate.engine.transaction.spi.TransactionContext;
+import org.jarbframework.utils.Asserts;
 import org.springframework.aop.framework.ProxyFactory;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -111,7 +111,7 @@ public class StatelessSessionFactoryBean implements FactoryBean<FlushableStatele
         }
 
         private StatelessSession getCurrentSession() {
-            checkState(TransactionSynchronizationManager.isActualTransactionActive(), "There should be an active transaction for the current thread.");
+            Asserts.state(TransactionSynchronizationManager.isActualTransactionActive(), "There should be an active transaction for the current thread.");
             StatelessSession session = (StatelessSession) TransactionSynchronizationManager.getResource(sessionFactory);
             if (session == null) {
                 session = openNewStatelessSession();

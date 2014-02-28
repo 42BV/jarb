@@ -1,7 +1,5 @@
 package org.jarbframework.migrations.liquibase;
 
-import static org.apache.commons.lang3.StringUtils.isNotBlank;
-
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
@@ -18,8 +16,6 @@ import liquibase.resource.FileSystemResourceAccessor;
 import liquibase.resource.ResourceAccessor;
 
 import org.jarbframework.migrations.DatabaseMigrator;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Liquibase specific implementation of {@link DatabaseMigrator}.
@@ -28,8 +24,6 @@ import org.slf4j.LoggerFactory;
  */
 public class LiquibaseMigrator implements DatabaseMigrator {
     
-    private final Logger logger = LoggerFactory.getLogger(getClass());
-
     private final ResourceAccessor resourceAccessor;
     
     private String changeLogPath = "changelog.groovy";
@@ -142,7 +136,7 @@ public class LiquibaseMigrator implements DatabaseMigrator {
      * @return {@code true} if it should, else {@code false}
      */
     private boolean shouldWriteSqlOutput() {
-        return isNotBlank(outputFilePath);
+        return outputFilePath != null && ! outputFilePath.isEmpty();
     }
 
     /**
@@ -152,7 +146,6 @@ public class LiquibaseMigrator implements DatabaseMigrator {
      * @throws IOException 
      */
     private void writeSqlOutput(Liquibase liquibase) throws LiquibaseException, IOException {
-        logger.info("Writing the generated change-set SQL to '{}'...", outputFilePath);
         Writer writer = new FileWriter(outputFilePath, true);
         try {
             if (changesToApply > 0) {

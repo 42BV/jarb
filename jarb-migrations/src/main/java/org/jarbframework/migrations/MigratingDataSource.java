@@ -1,6 +1,5 @@
 package org.jarbframework.migrations;
 
-import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.jarbframework.utils.JdbcUtils.closeQuietly;
 import static org.jarbframework.utils.JdbcUtils.commitSafely;
 
@@ -67,7 +66,7 @@ public class MigratingDataSource extends DataSourceDelegate {
     }
 
     private Connection openMigrationConnection() throws SQLException {
-        return isBlank(username) ? super.getConnection() : super.getConnection(username, password);
+        return (username == null || username.isEmpty()) ? super.getConnection() : super.getConnection(username, password);
     }
 
     public void setMigrator(DatabaseMigrator migrator) {

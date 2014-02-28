@@ -1,7 +1,5 @@
 package org.jarbframework.migrations.liquibase;
 
-import static org.apache.commons.lang3.StringUtils.isBlank;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -92,7 +90,7 @@ public final class LiquibaseMigratorMain {
     }
 
     private static ResourceAccessor createResourceAccessor(String changeLogBaseDir) {
-        if (isBlank(changeLogBaseDir)) {
+        if (changeLogBaseDir == null || changeLogBaseDir.isEmpty()) {
             return new FileSystemResourceAccessor();
         } else {
             return new FileSystemResourceAccessor(changeLogBaseDir);
