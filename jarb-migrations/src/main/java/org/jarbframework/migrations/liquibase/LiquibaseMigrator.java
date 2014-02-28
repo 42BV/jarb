@@ -68,6 +68,16 @@ public class LiquibaseMigrator implements DatabaseMigrator {
     public LiquibaseMigrator(ResourceAccessor resourceAccessor) {
         this.resourceAccessor = resourceAccessor;
     }
+    
+    /**
+     * Construct a new {@link LiquibaseMigrator} linked to the src/main/db/changelog.groovy.
+     * @return the created liquibase migrator
+     */
+    public static LiquibaseMigrator local() {
+        LiquibaseMigrator migrator = new LiquibaseMigrator();
+        migrator.setChangeLogPath("src/main/db/changelog.groovy");
+        return migrator;
+    }
 
     /**
      * {@inheritDoc}

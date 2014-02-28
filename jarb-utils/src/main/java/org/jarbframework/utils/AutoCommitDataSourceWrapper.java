@@ -5,14 +5,12 @@ import java.sql.SQLException;
 
 import javax.sql.DataSource;
 
-import org.springframework.jdbc.datasource.DelegatingDataSource;
-
 /**
  * Utility class that wraps any Datasource but on getting the connection sets the AutoCommit property to true.
  *
  * @author thijs
  */
-public class AutoCommitDataSourceWrapper extends DelegatingDataSource {
+public class AutoCommitDataSourceWrapper extends DataSourceDelegate {
 
     private final boolean autoCommit;
 

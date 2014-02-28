@@ -9,6 +9,8 @@ import java.sql.SQLException;
 
 import javax.sql.DataSource;
 
+import org.jarbframework.utils.DataSourceDelegate;
+
 /**
  * Data source that triggers database migrations during construction.
  * @author Jeroen van Schagen

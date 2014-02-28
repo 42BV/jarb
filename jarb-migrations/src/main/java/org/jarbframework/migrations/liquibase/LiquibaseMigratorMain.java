@@ -28,16 +28,19 @@ public final class LiquibaseMigratorMain {
     
     private static final String DEFAULT_FILE_NAME = "liquibase.properties";
 
-    private static final String DRIVER_CLASS = "driverClass";
-    private static final String URL = "url";
-    private static final String USER = "user";
-    private static final String PASSWORD = "password";
+    // Property names
     
-    private static final String CHANGELOG_BASE_DIR = "changeLogBaseDir";
-    private static final String CHANGELOG_PATH = "changeLogPath";
-    private static final String SQL_OUTPUT_PATH = "sqlOutputPath";
-    private static final String DROP_FIRST = "dropFirst";
+    private static final String DRIVER_CLASS = "liquibase.driverClass";
+    private static final String URL = "liquibase.url";
+    private static final String USER = "liquibase.user";
+    private static final String PASSWORD = "liquibase.password";
+    private static final String CHANGELOG_BASE_DIR = "liquibase.changeLogBaseDir";
+    private static final String CHANGELOG_PATH = "liquibase.changeLogPath";
+    private static final String SQL_OUTPUT_PATH = "liquibase.sqlOutputPath";
+    private static final String DROP_FIRST = "liquibase.dropFirst";
     
+    // Constants
+
     private static final String TRUE = "true";
 
     /**

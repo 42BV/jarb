@@ -17,7 +17,7 @@ import org.jarbframework.constraint.EnableDatabaseConstraints;
 import org.jarbframework.constraint.EnableDatabaseConstraintsConfigurer;
 import org.jarbframework.constraint.metadata.BeanConstraintDescriptor;
 import org.jarbframework.constraint.metadata.enhance.AnnotationPropertyTypeEnhancer;
-import org.jarbframework.migrations.MigratingEmbeddedDatabaseBuilder;
+import org.jarbframework.migrations.EmbeddedMigratingDatabaseBuilder;
 import org.jarbframework.populator.DatabasePopulatingListener;
 import org.jarbframework.populator.DatabasePopulatingListenerBuilder;
 import org.jarbframework.populator.SqlDatabasePopulator;
@@ -50,7 +50,7 @@ public class ApplicationConfig extends EnableDatabaseConstraintsConfigurer {
     
     @Bean
     public DataSource dataSource() {
-        return new MigratingEmbeddedDatabaseBuilder().setType(EmbeddedDatabaseType.HSQL).build();
+        return new EmbeddedMigratingDatabaseBuilder().setType(EmbeddedDatabaseType.HSQL).build();
     }
 
     @Bean

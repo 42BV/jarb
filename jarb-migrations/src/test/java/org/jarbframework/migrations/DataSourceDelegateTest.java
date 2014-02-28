@@ -10,6 +10,7 @@ import java.sql.SQLException;
 
 import javax.sql.DataSource;
 
+import org.jarbframework.utils.DataSourceDelegate;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;

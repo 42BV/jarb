@@ -32,7 +32,7 @@
             <!-- Groovy based change set parser -->
             <groupId>com.augusttechgroup</groupId>
             <artifactId>groovy-liquibase-dsl</artifactId>
-            <version>0.7.6</version>
+            <version>0.7.0</version>
             <scope>runtime</scope>
         </dependency>
         

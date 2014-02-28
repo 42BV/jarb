@@ -4,6 +4,7 @@
 package org.jarbframework.migrations;
 
 import org.jarbframework.migrations.liquibase.LiquibaseMigrator;
+import org.jarbframework.utils.DataSourceDelegate;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabase;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 
@@ -13,29 +14,38 @@ import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
  * @author Jeroen van Schagen
  * @since Feb 12, 2014
  */
-public class MigratingEmbeddedDatabaseBuilder extends EmbeddedDatabaseBuilder {
+public class EmbeddedMigratingDatabaseBuilder extends EmbeddedDatabaseBuilder {
     
-    private DatabaseMigrator databaseMigrator;
+    private DatabaseMigrator migrator;
     
-    public MigratingEmbeddedDatabaseBuilder withMigrator(DatabaseMigrator databaseMigrator) {
-        this.databaseMigrator = databaseMigrator;
+    /**
+     * Configure a migrator.
+     * @param migrator the migrator to set
+     * @return this builder, for chaining
+     */
+    public EmbeddedMigratingDatabaseBuilder withMigrator(DatabaseMigrator migrator) {
+        this.migrator = migrator;
         return this;
     }
 
-    public MigratingEmbeddedDatabaseBuilder withLiquibase() {
-        return this.withMigrator(new LiquibaseMigrator("src/main/db"));
+    /**
+     * Configure a local Liquibase migrator.
+     * @return this builder, for chaining
+     */
+    public EmbeddedMigratingDatabaseBuilder withLiquibase() {
+        return this.withMigrator(LiquibaseMigrator.local());
     }
     
     @Override
     public EmbeddedDatabase build() {
-        if (databaseMigrator == null) {
+        if (migrator == null) {
             withLiquibase();
         }
 
         EmbeddedDatabase embeddedDatabase = super.build();
         
         MigratingDataSource migratingDataSource = new MigratingDataSource(embeddedDatabase);
-        migratingDataSource.setMigrator(databaseMigrator);
+        migratingDataSource.setMigrator(migrator);
         return new MigratingEmbeddedDatabase(migratingDataSource, embeddedDatabase);
 
     }

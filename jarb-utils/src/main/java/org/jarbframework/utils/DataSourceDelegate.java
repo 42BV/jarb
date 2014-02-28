@@ -1,4 +1,4 @@
-package org.jarbframework.migrations;
+package org.jarbframework.utils;
 
 import java.io.PrintWriter;
 import java.sql.Connection;

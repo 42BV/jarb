@@ -12,7 +12,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.jarbframework.constraint.violation.DatabaseConstraintViolation;
 import org.jarbframework.constraint.violation.resolver.PatternViolationResolver;
 import org.jarbframework.utils.DatabaseProduct;
-import org.jarbframework.utils.DatabaseProductSpecific;
 
 /**
  * Oracle based constraint violation resolver.
