@@ -34,7 +34,6 @@ import org.hibernate.cfg.NamingStrategy;
 import org.jarbframework.utils.bean.AnnotationScanner;
 import org.jarbframework.utils.bean.PropertyReference;
 import org.jarbframework.utils.orm.ColumnReference;
-import org.jarbframework.utils.orm.NotAnEntityException;
 import org.jarbframework.utils.orm.SchemaMapper;
 import org.jarbframework.utils.orm.hibernate.HibernateJpaSchemaMapper;
 
@@ -144,7 +143,7 @@ public class AnnotationJpaHibernateSchemaMapper implements SchemaMapper {
         } else if (isEmbeddable(propertyReference.getBeanClass())) {
             return createColumnReferenceFromEmbeddable(propertyReference);
         } else {
-            throw new NotAnEntityException("Class '" + propertyReference.getBeanClass() + "' could not be recognized as entity.");
+            throw new IllegalArgumentException("Class '" + propertyReference.getBeanClass() + "' could not be recognized as entity.");
         }
     }
 

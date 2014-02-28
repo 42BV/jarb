@@ -38,13 +38,6 @@
                     </xsd:documentation>
                 </xsd:annotation>
             </xsd:attribute>
-            <xsd:attribute name="base" type="xsd:string">
-                <xsd:annotation>
-                    <xsd:documentation>
-                        Base path to our change log file(s).
-                    </xsd:documentation>
-                </xsd:annotation>
-            </xsd:attribute>
             <xsd:attribute name="path" type="xsd:string">
                 <xsd:annotation>
                     <xsd:documentation>

@@ -15,13 +15,12 @@ import javax.persistence.Embeddable;
 import javax.persistence.Entity;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Id;
+import javax.persistence.metamodel.Attribute.PersistentAttributeType;
 import javax.persistence.metamodel.EmbeddableType;
 import javax.persistence.metamodel.EntityType;
 import javax.persistence.metamodel.Metamodel;
 import javax.persistence.metamodel.PluralAttribute;
-import javax.persistence.metamodel.Attribute.PersistentAttributeType;
 
-import org.jarbframework.utils.orm.NotAnEntityException;
 import org.jarbframework.utils.orm.SchemaMapper;
 
 /**
@@ -120,7 +119,7 @@ public final class JpaMetaModelUtils {
     public static Field getIdentifierField(Class<?> definedClass) {
         if (!isEntity(definedClass)) {
             String message = String.format("Class '%s' is not an entity and thus has no identifier field.", definedClass.getName());
-            throw new NotAnEntityException(message);
+            throw new IllegalArgumentException(message);
         }
 
         for (Field field : definedClass.getDeclaredFields()) {
