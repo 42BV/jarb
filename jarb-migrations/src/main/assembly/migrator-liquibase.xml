@@ -1,0 +1,25 @@
+<assembly xmlns="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.0" 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.0 http://maven.apache.org/xsd/assembly-1.1.0.xsd">
+  <id>migrator-liquibase</id>
+  <formats>
+    <format>jar</format>
+  </formats>
+  <includeBaseDirectory>false</includeBaseDirectory>
+  <dependencySets>
+    <dependencySet>
+        <includes>
+            <include>org.jarbframework:jarb-migrations</include>
+            <include>org.jarbframework:jarb-utils</include>
+            <include>org.liquibase:liquibase-core</include>
+            <include>com.augusttechgroup:groovy-liquibase-dsl</include>
+            <include>org.codehaus.groovy:groovy</include>
+            <include>asm:asm</include>
+            <include>antlr:antlr</include>
+        </includes>
+        <outputDirectory>/</outputDirectory>
+        <useProjectArtifact>false</useProjectArtifact>
+        <unpack>true</unpack>
+    </dependencySet>
+  </dependencySets>
+</assembly>
