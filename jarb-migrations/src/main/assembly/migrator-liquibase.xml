@@ -6,10 +6,15 @@
     <format>jar</format>
   </formats>
   <includeBaseDirectory>false</includeBaseDirectory>
+  <fileSets>
+  	<fileSet>
+  		<directory>${project.build.directory}/classes</directory>
+  		<outputDirectory>/</outputDirectory>
+  	</fileSet>
+  </fileSets>
   <dependencySets>
     <dependencySet>
         <includes>
-            <include>org.jarbframework:jarb-migrations</include>
             <include>org.jarbframework:jarb-utils</include>
             <include>org.liquibase:liquibase-core</include>
             <include>com.augusttechgroup:groovy-liquibase-dsl</include>
