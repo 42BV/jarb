@@ -44,9 +44,7 @@ public class SqlProductSpecificResourceDatabasePopulator implements DatabasePopu
     
     private void populateFromClassPathIfExists(String resourcePath) {
         ClassPathResource resource = new ClassPathResource(resourcePath);
-        if (resource.exists()) {
-            new SqlDatabasePopulator(dataSource, resource).populate();
-        }
+        new SqlDatabasePopulator(dataSource, resource).ifExists().populate();
     }
 
 }

@@ -10,7 +10,6 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.datasource.init.CannotReadScriptException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -43,8 +42,8 @@ public class SqlResourceDatabasePopulatorTest {
         try {
             new SqlDatabasePopulator(dataSource, new ClassPathResource("unknown.sql")).populate();
             fail("Expected an exception because unknown.sql does not exist.");
-        } catch (CannotReadScriptException e) {
-            assertEquals("Cannot read SQL script from class path resource [unknown.sql]", e.getMessage());
+        } catch (IllegalStateException e) {
+            assertEquals("Resource 'unknown.sql' does not exist.", e.getMessage());
         }
     }
 

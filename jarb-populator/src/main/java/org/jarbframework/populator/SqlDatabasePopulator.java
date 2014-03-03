@@ -28,9 +28,11 @@ public class SqlDatabasePopulator implements DatabasePopulator {
     /** Data source being populated. **/
     private final DataSource dataSource;
     
-    /** Resource populator that should be executed. **/
-    private final ResourceDatabasePopulator resourcePopulator;
+    /** Resource to use. **/
+    private final Resource resource;
     
+    private boolean failIfNotExists = true;
+
     public SqlDatabasePopulator(DataSource dataSource, InputStream inputStream) {
         this(dataSource, new InputStreamResource(inputStream));
     }
@@ -41,26 +43,36 @@ public class SqlDatabasePopulator implements DatabasePopulator {
 
     public SqlDatabasePopulator(DataSource dataSource, Resource resource) {
         this.dataSource = notNull(dataSource, "Data source cannot be null.");
-        
-        resourcePopulator = new ResourceDatabasePopulator();
-        resourcePopulator.addScript(notNull(resource, "Resource cannot be null."));
+        this.resource = notNull(resource, "Resource cannot be null.");
     }
 
     public static SqlDatabasePopulator fromSql(DataSource dataSource, String sql) {
         return new SqlDatabasePopulator(dataSource, new ByteArrayResource(sql.getBytes()));
     }
+    
+    public SqlDatabasePopulator ifExists() {
+        failIfNotExists = false;
+        return this;
+    }
 
     @Override
     public void populate() {
-        JdbcUtils.doWithConnection(dataSource, new JdbcConnectionCallback<Void>() {
-
-            @Override
-            public Void doWork(Connection connection) throws SQLException {
-                resourcePopulator.populate(connection);
-                return null;
-            }
-
-        });
+        if (resource.exists()) {
+            final ResourceDatabasePopulator populator = new ResourceDatabasePopulator();
+            populator.addScript(resource);
+            
+            JdbcUtils.doWithConnection(dataSource, new JdbcConnectionCallback<Void>() {
+                
+                @Override
+                public Void doWork(Connection connection) throws SQLException {
+                    populator.populate(connection);
+                    return null;
+                }
+                
+            });
+        } else if (failIfNotExists) {
+            throw new IllegalStateException("Resource '" + resource.getFilename() + "' does not exist.");
+        }
     }
 
 }
