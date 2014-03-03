@@ -35,6 +35,8 @@ public class PropertyConstraintDescription {
     private Integer fractionLength;
     
     private Integer radix;
+    
+    private String pattern;
 
     /**
      * Construct a new {@link PropertyConstraintDescription}.
@@ -128,6 +130,14 @@ public class PropertyConstraintDescription {
     public PropertyConstraintDescription setRadix(Integer radix) {
         this.radix = radix;
         return this;
+    }
+    
+    public String getPattern() {
+        return pattern;
+    }
+    
+    public void setPattern(String pattern) {
+        this.pattern = pattern;
     }
 
     public PropertyReference toReference() {

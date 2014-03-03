@@ -12,14 +12,14 @@ import org.junit.Test;
 
 public class AnnotationPropertyTypeEnhancerTest {
     
-    private PropertyConstraintEnhancer emailTypeEnhancer;
+    private PropertyConstraintEnhancer enhancer;
 
-    private PropertyConstraintDescription emailDescription;
+    private PropertyConstraintDescription description;
 
     @Before
     public void setUp() {
-        emailTypeEnhancer = new AnnotationPropertyTypeEnhancer(Email.class, "email");
-        emailDescription = new PropertyConstraintDescription(new PropertyReference(User.class, "email"), String.class);
+        enhancer = new AnnotationPropertyTypeEnhancer(Email.class, "email");
+        description = new PropertyConstraintDescription(new PropertyReference(User.class, "email"), String.class);
     }
 
     /**
@@ -27,11 +27,11 @@ public class AnnotationPropertyTypeEnhancerTest {
      */
     @Test
     public void testEnhance() {
-        assertTrue(emailDescription.getTypes().isEmpty());
+        assertTrue(description.getTypes().isEmpty());
 
-        emailTypeEnhancer.enhance(emailDescription);
+        enhancer.enhance(description);
 
-        assertThat(emailDescription.getTypes(), contains("email"));
+        assertThat(description.getTypes(), contains("email"));
     }
 
     /**
@@ -39,13 +39,13 @@ public class AnnotationPropertyTypeEnhancerTest {
      */
     @Test
     public void testNoAnnotation() {
-        emailDescription = new PropertyConstraintDescription(new PropertyReference(User.class, "name"), String.class);
+        description = new PropertyConstraintDescription(new PropertyReference(User.class, "name"), String.class);
 
-        assertTrue(emailDescription.getTypes().isEmpty());
+        assertTrue(description.getTypes().isEmpty());
 
-        emailTypeEnhancer.enhance(emailDescription);
+        enhancer.enhance(description);
 
-        assertTrue(emailDescription.getTypes().isEmpty());
+        assertTrue(description.getTypes().isEmpty());
     }
 
     public class User {

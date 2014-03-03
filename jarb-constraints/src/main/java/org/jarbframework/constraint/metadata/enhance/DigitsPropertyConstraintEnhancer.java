@@ -17,27 +17,21 @@ import org.jarbframework.constraint.metadata.PropertyConstraintDescription;
 public class DigitsPropertyConstraintEnhancer implements PropertyConstraintEnhancer {
 
     @Override
-    public PropertyConstraintDescription enhance(PropertyConstraintDescription propertyDescription) {
-        Collection<Digits> digitsAnnotations = fieldOrGetter().getAnnotations(propertyDescription.toReference(), Digits.class);
-        Integer maximumLength = propertyDescription.getMaximumLength();
-        Integer fractionLength = propertyDescription.getFractionLength();
-        for (Digits digitsAnnotation : digitsAnnotations) {
-            if (maximumLength != null) {
-                // Store the lowest maximum length, as this will cause both length restrictions to pass
-                maximumLength = Math.min(maximumLength, digitsAnnotation.integer());
-            } else {
-                maximumLength = digitsAnnotation.integer();
-            }
-            if (fractionLength != null) {
-                // Store the lowest fraction length, as this will cause both length restrictions to pass
-                fractionLength = Math.min(fractionLength, digitsAnnotation.fraction());
-            } else {
-                fractionLength = digitsAnnotation.fraction();
-            }
+    public PropertyConstraintDescription enhance(PropertyConstraintDescription description) {
+        Collection<Digits> annotations = fieldOrGetter().getAnnotations(description.toReference(), Digits.class);
+        Integer maximumLength = description.getMaximumLength();
+        Integer fractionLength = description.getFractionLength();
+        for (Digits annotation : annotations) {
+            maximumLength = lowest(maximumLength, annotation.integer());
+            fractionLength = lowest(maximumLength, annotation.fraction());
         }
-        propertyDescription.setMaximumLength(maximumLength);
-        propertyDescription.setFractionLength(fractionLength);
-        return propertyDescription;
+        description.setMaximumLength(maximumLength);
+        description.setFractionLength(fractionLength);
+        return description;
+    }
+
+    private Integer lowest(Integer current, Integer next) {
+        return current != null ? Math.min(current, next) : next;
     }
 
 }

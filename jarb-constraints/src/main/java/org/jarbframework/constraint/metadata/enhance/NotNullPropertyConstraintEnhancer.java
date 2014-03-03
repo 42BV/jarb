@@ -15,11 +15,11 @@ import org.jarbframework.constraint.metadata.PropertyConstraintDescription;
 public class NotNullPropertyConstraintEnhancer implements PropertyConstraintEnhancer {
 
     @Override
-    public PropertyConstraintDescription enhance(PropertyConstraintDescription propertyDescription) {
-        if (fieldOrGetter().hasAnnotation(propertyDescription.toReference(), NotNull.class)) {
-            propertyDescription.setRequired(true);
+    public PropertyConstraintDescription enhance(PropertyConstraintDescription description) {
+        if (fieldOrGetter().hasAnnotation(description.toReference(), NotNull.class)) {
+            description.setRequired(true);
         }
-        return propertyDescription;
+        return description;
     }
 
 }

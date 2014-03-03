@@ -21,16 +21,16 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ActiveProfiles("hsqldb")
 @ContextConfiguration(classes = TestConstraintsConfig.class)
-public class DatabaseSchemaPropertyConstraintEnhancerTest {
+public class DatabasePropertyConstraintEnhancerTest {
     
-    private DatabaseSchemaPropertyConstraintEnhancer constraintEnhancer;
+    private DatabasePropertyConstraintEnhancer enhancer;
 
     @Autowired
     private BeanMetadataRepository beanMetadataRepository;
 
     @Before
     public void setUp() {
-        constraintEnhancer = new DatabaseSchemaPropertyConstraintEnhancer(beanMetadataRepository);
+        enhancer = new DatabasePropertyConstraintEnhancer(beanMetadataRepository);
     }
 
     /**
@@ -40,7 +40,7 @@ public class DatabaseSchemaPropertyConstraintEnhancerTest {
     public void testEnhance() {
         PropertyReference propertyReference = new PropertyReference(Wine.class, "name");
         PropertyConstraintDescription nameDescription = new PropertyConstraintDescription(propertyReference, String.class);
-        nameDescription = constraintEnhancer.enhance(nameDescription);
+        nameDescription = enhancer.enhance(nameDescription);
         assertTrue(nameDescription.isRequired());
         assertEquals(Integer.valueOf(6), nameDescription.getMaximumLength());
         assertNull(nameDescription.getFractionLength());
@@ -54,7 +54,7 @@ public class DatabaseSchemaPropertyConstraintEnhancerTest {
     public void testNotRequiredIfGeneratable() {
         PropertyReference propertyReference = new PropertyReference(Wine.class, "id");
         PropertyConstraintDescription idDescription = new PropertyConstraintDescription(propertyReference, Long.class);
-        idDescription = constraintEnhancer.enhance(idDescription);
+        idDescription = enhancer.enhance(idDescription);
         assertFalse(idDescription.isRequired());
     }
 
@@ -67,7 +67,7 @@ public class DatabaseSchemaPropertyConstraintEnhancerTest {
     public void testSkipPropertyWithoutMetadata() {
         PropertyReference propertyReference = new PropertyReference(Wine.class, "unmappedProperty");
         PropertyConstraintDescription unmappedPropertyDescription = new PropertyConstraintDescription(propertyReference, String.class);
-        unmappedPropertyDescription = constraintEnhancer.enhance(unmappedPropertyDescription);
+        unmappedPropertyDescription = enhancer.enhance(unmappedPropertyDescription);
         assertNull(unmappedPropertyDescription.getMaximumLength());
     }
 
@@ -79,7 +79,7 @@ public class DatabaseSchemaPropertyConstraintEnhancerTest {
     public void testSkipUnmappedProperty() {
         PropertyReference propertyReference = new PropertyReference(Wine.class, "unknownProperty");
         PropertyConstraintDescription unknownPropertyDescription = new PropertyConstraintDescription(propertyReference, String.class);
-        unknownPropertyDescription = constraintEnhancer.enhance(unknownPropertyDescription);
+        unknownPropertyDescription = enhancer.enhance(unknownPropertyDescription);
         assertNull(unknownPropertyDescription.getMaximumLength());
     }
 
@@ -91,7 +91,7 @@ public class DatabaseSchemaPropertyConstraintEnhancerTest {
     public void testSkipUnmappedBeans() {
         PropertyReference propertyReference = new PropertyReference(NotAnEntity.class, "name");
         PropertyConstraintDescription nameDescription = new PropertyConstraintDescription(propertyReference, String.class);
-        nameDescription = constraintEnhancer.enhance(nameDescription);
+        nameDescription = enhancer.enhance(nameDescription);
         assertNull(nameDescription.getMaximumLength());
     }
 

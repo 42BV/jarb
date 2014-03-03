@@ -16,27 +16,26 @@ import org.jarbframework.constraint.metadata.PropertyConstraintDescription;
 public class LengthPropertyConstraintEnhancer implements PropertyConstraintEnhancer {
 
     @Override
-    public PropertyConstraintDescription enhance(PropertyConstraintDescription propertyDescription) {
-        Collection<Length> lengthAnnotations = fieldOrGetter().getAnnotations(propertyDescription.toReference(), Length.class);
-        Integer minimumLength = propertyDescription.getMinimumLength();
-        Integer maximumLength = propertyDescription.getMaximumLength();
-        for (Length lengthAnnotation : lengthAnnotations) {
-            if (minimumLength != null) {
-                // Store the highest minimum length, as this will cause both length restrictions to pass
-                minimumLength = Math.max(minimumLength, lengthAnnotation.min());
-            } else {
-                minimumLength = lengthAnnotation.min();
-            }
-            if (maximumLength != null) {
-                // Store the lowest maximum length, as this will cause both length restrictions to pass
-                maximumLength = Math.min(maximumLength, lengthAnnotation.max());
-            } else {
-                maximumLength = lengthAnnotation.max();
-            }
+    public PropertyConstraintDescription enhance(PropertyConstraintDescription description) {
+        Collection<Length> annotations = fieldOrGetter().getAnnotations(description.toReference(), Length.class);
+        Integer minimumLength = description.getMinimumLength();
+        Integer maximumLength = description.getMaximumLength();
+        for (Length annotation : annotations) {
+            // Store the highest minimum and lowest maximum length, as this will cause both restrictions to pass
+            minimumLength = highest(minimumLength, annotation.min());
+            maximumLength = lowest(maximumLength, annotation.max());
         }
-        propertyDescription.setMinimumLength(minimumLength);
-        propertyDescription.setMaximumLength(maximumLength);
-        return propertyDescription;
+        description.setMinimumLength(minimumLength);
+        description.setMaximumLength(maximumLength);
+        return description;
+    }
+    
+    private Integer lowest(Integer current, Integer next) {
+        return current != null ? Math.min(current, next) : next;
+    }
+    
+    private Integer highest(Integer current, Integer next) {
+        return current != null ? Math.max(current, next) : next;
     }
 
 }

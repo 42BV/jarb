@@ -9,28 +9,28 @@ import org.jarbframework.utils.bean.PropertyReference;
 import org.junit.Before;
 import org.junit.Test;
 
-public class DigitsPropertyConstraintMetadataEnhancerTest {
+public class DigitsPropertyConstraintEnhancerTest {
     
-    private DigitsPropertyConstraintEnhancer digitsContraintsEnhancer;
+    private DigitsPropertyConstraintEnhancer enhancer;
 
-    private PropertyConstraintDescription priceDescripton;
+    private PropertyConstraintDescription description;
 
     @Before
     public void setUp() {
-        digitsContraintsEnhancer = new DigitsPropertyConstraintEnhancer();
+        enhancer = new DigitsPropertyConstraintEnhancer();
         PropertyReference reference = new PropertyReference(Wine.class, "price");
-        priceDescripton = new PropertyConstraintDescription(reference, Double.class);
+        description = new PropertyConstraintDescription(reference, Double.class);
     }
 
     @Test
     public void testEnhance() {
-        assertNull(priceDescripton.getMaximumLength());
-        assertNull(priceDescripton.getFractionLength());
+        assertNull(description.getMaximumLength());
+        assertNull(description.getFractionLength());
         
-        digitsContraintsEnhancer.enhance(priceDescripton);
+        enhancer.enhance(description);
 
-        assertEquals(Integer.valueOf(5), priceDescripton.getMaximumLength());
-        assertEquals(Integer.valueOf(1), priceDescripton.getFractionLength());
+        assertEquals(Integer.valueOf(5), description.getMaximumLength());
+        assertEquals(Integer.valueOf(1), description.getFractionLength());
     }
 
     @Test
@@ -38,7 +38,7 @@ public class DigitsPropertyConstraintMetadataEnhancerTest {
         PropertyReference nameReference = new PropertyReference(Wine.class, "name");
         PropertyConstraintDescription nameDescription = new PropertyConstraintDescription(nameReference, String.class);
         
-        digitsContraintsEnhancer.enhance(nameDescription);
+        enhancer.enhance(nameDescription);
 
         assertNull(nameDescription.getMaximumLength());
         assertNull(nameDescription.getFractionLength());

@@ -9,15 +9,17 @@ import java.util.List;
 
 import org.hibernate.validator.constraints.CreditCardNumber;
 import org.hibernate.validator.constraints.Email;
+import org.hibernate.validator.constraints.URL;
 import org.jarbframework.constraint.metadata.database.BeanMetadataRepository;
 import org.jarbframework.constraint.metadata.enhance.AnnotationPropertyTypeEnhancer;
 import org.jarbframework.constraint.metadata.enhance.ClassPropertyTypeEnhancer;
 import org.jarbframework.constraint.metadata.enhance.DatabaseGeneratedPropertyConstraintEnhancer;
-import org.jarbframework.constraint.metadata.enhance.DatabaseSchemaPropertyConstraintEnhancer;
+import org.jarbframework.constraint.metadata.enhance.DatabasePropertyConstraintEnhancer;
 import org.jarbframework.constraint.metadata.enhance.DigitsPropertyConstraintEnhancer;
 import org.jarbframework.constraint.metadata.enhance.LengthPropertyConstraintEnhancer;
 import org.jarbframework.constraint.metadata.enhance.NotEmptyPropertyConstraintEnhancer;
 import org.jarbframework.constraint.metadata.enhance.NotNullPropertyConstraintEnhancer;
+import org.jarbframework.constraint.metadata.enhance.PatternPropertyConstraintEnhancer;
 import org.jarbframework.constraint.metadata.enhance.PropertyConstraintEnhancer;
 import org.jarbframework.utils.bean.PropertyReference;
 import org.springframework.beans.BeanUtils;
@@ -104,9 +106,11 @@ public class BeanConstraintDescriptor {
         registerEnhancer(new DigitsPropertyConstraintEnhancer());
         registerEnhancer(new NotNullPropertyConstraintEnhancer());
         registerEnhancer(new NotEmptyPropertyConstraintEnhancer());
+        registerEnhancer(new PatternPropertyConstraintEnhancer());
 
         registerEnhancer(new AnnotationPropertyTypeEnhancer(Email.class, "email"));
         registerEnhancer(new AnnotationPropertyTypeEnhancer(CreditCardNumber.class, "credid_card"));
+        registerEnhancer(new AnnotationPropertyTypeEnhancer(URL.class, "url"));
         
         return this;
     }
@@ -118,7 +122,7 @@ public class BeanConstraintDescriptor {
      * @return this bean descriptor, used for chaining
      */
     public BeanConstraintDescriptor registerDatabaseEnhancers(BeanMetadataRepository beanMetadataRepository) {
-        registerEnhancer(new DatabaseSchemaPropertyConstraintEnhancer(beanMetadataRepository));
+        registerEnhancer(new DatabasePropertyConstraintEnhancer(beanMetadataRepository));
         registerEnhancer(new DatabaseGeneratedPropertyConstraintEnhancer());
         
         return this;

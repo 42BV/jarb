@@ -22,15 +22,15 @@ public class BeanConstraintDescriptorFactoryBean extends SingletonFactoryBean<Be
 
     @Override
     protected BeanConstraintDescriptor createObject() throws Exception {
-        BeanConstraintDescriptor beanDescriptor = new BeanConstraintDescriptor();
-        beanDescriptor.registerDefaultEnhancers();
+        BeanConstraintDescriptor descriptor = new BeanConstraintDescriptor();
+        descriptor.registerDefaultEnhancers();
         if (Classes.hasPackage(HIBERNATE_VALIDATOR_PACKAGE_NAME)) {
-            beanDescriptor.registerHibernateEnhancers();
+            descriptor.registerHibernateEnhancers();
         }
         if (beanMetadataRepository != null) {
-            beanDescriptor.registerDatabaseEnhancers(beanMetadataRepository);
+            descriptor.registerDatabaseEnhancers(beanMetadataRepository);
         }
-        return beanDescriptor;
+        return descriptor;
     }
 
 }
