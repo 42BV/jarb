@@ -22,103 +22,113 @@ public class H2ViolationResolver extends PatternViolationResolver implements Dat
     private static final String REGEX_SUFFIX = " SQL statement:\n(.*) \\[(.*)\\]";
     
     public H2ViolationResolver() {
-        registerNotNull();
-        registerUniqueKey();
-        registerForeignKey();
-        registerLengthExceeded();
-        registerInvalidType();
+        register(new NotNullPattern());
+        register(new UniqueKeyPattern());
+        register(new ForeignKeyPattern());
+        register(new LengthPattern());
+        register(new InvalidTypePattern());
     }
 
-    private void registerNotNull() {
-        register("NULL not allowed for column \"(.+)\";" + REGEX_SUFFIX, new ViolationBuilder() {
-            
-            @Override
-            public DatabaseConstraintViolation build(VariableAccessor variables) {
-                return builder(NOT_NULL)
-                        .column(variables.get(1).toLowerCase())
-                        .statement(variables.get(2).trim())
-                        .number(variables.get(3).trim())
-                            .build();
-            }
-            
-        });
-    }
-
-    private void registerUniqueKey() {
-        register("Unique index or primary key violation: \"(\\w+)_INDEX_\\d+ ON (.+)\\.(.+)\\((.+)\\)\";" + REGEX_SUFFIX, new ViolationBuilder() {
-            
-            @Override
-            public DatabaseConstraintViolation build(VariableAccessor variables) {
-                return builder(UNIQUE_KEY)
-                        .constraint(variables.get(1).toLowerCase())
-                        .table(variables.get(3).toLowerCase())
-                        .column(variables.get(4).toLowerCase())
-                        .statement(variables.get(5).trim())
-                        .number(variables.get(6).trim())
-                            .build();
-            }
-            
-        });
-    }
-
-    private void registerForeignKey() {
-        register("Referential integrity constraint violation: \"(.+): (.+)\\.(.+) FOREIGN KEY\\((.+)\\) REFERENCES (.+)\\.(.+)\\((.+)\\) \\((.+)\\)\";" + REGEX_SUFFIX, new ViolationBuilder() {
-            
-            @Override
-            public DatabaseConstraintViolation build(VariableAccessor variables) {
-                return builder(FOREIGN_KEY)
-                        .constraint(variables.get(1).toLowerCase())
-                        .table(variables.get(3).toLowerCase())
-                        .column(variables.get(4).toLowerCase())
-                        .referencingTable(variables.get(6).toLowerCase())
-                        .referencingColumn(variables.get(7).toLowerCase())
-                        .value(variables.get(8))
-                        .statement(variables.get(9).trim())
-                        .number(variables.get(10).trim())
-                            .build();
-            }
-            
-        });
-    }
-
-    private void registerLengthExceeded() {
-        register("Value too long for column \"(.+) (.+)\\((.+)\\).*\": \"'(.+)' \\((.+)\\)\";" + REGEX_SUFFIX, new ViolationBuilder() {
-            
-            @Override
-            public DatabaseConstraintViolation build(VariableAccessor variables) {
-                return builder(LENGTH_EXCEEDED)
-                        .column(variables.get(1).toLowerCase())
-                        .valueType(variables.get(2).toLowerCase())
-                        .maximumLength(variables.get(3))
-                        .value(variables.get(4))
-                        .statement(variables.get(6).trim())
-                        .number(variables.get(7).trim())
-                            .build();
-            }
-            
-        });
-    }
-
-    private void registerInvalidType() {    			
-        register("Data conversion error converting \"'(.+)' \\((.+): (.+) (.+)\\)\";" + REGEX_SUFFIX, new ViolationBuilder() {
-            
-            @Override
-            public DatabaseConstraintViolation build(VariableAccessor variables) {
-                return builder(INVALID_TYPE)
-                        .table(variables.get(2).toLowerCase())
-                        .column(variables.get(3).toLowerCase())
-                        .expectedValueType(variables.get(4).toLowerCase())
-                        .statement(variables.get(5).trim())
-                        .number(variables.get(6).trim())
-                            .build();
-            }
-            
-        });
-    }
-    
     @Override
     public boolean supports(DatabaseProduct product) {
         return "H2".equals(product.getName());
     }
 
+    private static class NotNullPattern extends ViolationPattern {
+        
+        public NotNullPattern() {
+            super("NULL not allowed for column \"(.+)\";" + REGEX_SUFFIX);
+        }
+        
+        @Override
+        public DatabaseConstraintViolation build(VariableAccessor variables) {
+            return builder(NOT_NULL)
+                    .column(variables.get(1).toLowerCase())
+                    .statement(variables.get(2).trim())
+                    .number(variables.get(3).trim())
+                        .build();
+        }
+        
+    }
+
+    private static class UniqueKeyPattern extends ViolationPattern {
+        
+        public UniqueKeyPattern() {
+            super("Unique index or primary key violation: \"(\\w+)_INDEX_\\d+ ON (.+)\\.(.+)\\((.+)\\)\";" + REGEX_SUFFIX);
+        }
+        
+        @Override
+        public DatabaseConstraintViolation build(VariableAccessor variables) {
+            return builder(UNIQUE_KEY)
+                    .constraint(variables.get(1).toLowerCase())
+                    .table(variables.get(3).toLowerCase())
+                    .column(variables.get(4).toLowerCase())
+                    .statement(variables.get(5).trim())
+                    .number(variables.get(6).trim())
+                        .build();
+        }
+        
+    }
+    
+    private static class ForeignKeyPattern extends ViolationPattern {
+
+        public ForeignKeyPattern() {
+            super("Referential integrity constraint violation: \"(.+): (.+)\\.(.+) FOREIGN KEY\\((.+)\\) REFERENCES (.+)\\.(.+)\\((.+)\\) \\((.+)\\)\";" + REGEX_SUFFIX);
+        }
+        
+        @Override
+        public DatabaseConstraintViolation build(VariableAccessor variables) {
+            return builder(FOREIGN_KEY)
+                    .constraint(variables.get(1).toLowerCase())
+                    .table(variables.get(3).toLowerCase())
+                    .column(variables.get(4).toLowerCase())
+                    .referencingTable(variables.get(6).toLowerCase())
+                    .referencingColumn(variables.get(7).toLowerCase())
+                    .value(variables.get(8))
+                    .statement(variables.get(9).trim())
+                    .number(variables.get(10).trim())
+                        .build();
+        }
+        
+    }
+    
+    private static class LengthPattern extends ViolationPattern {
+        
+        public LengthPattern() {
+            super("Value too long for column \"(.+) (.+)\\((.+)\\).*\": \"'(.+)' \\((.+)\\)\";" + REGEX_SUFFIX);
+        }
+        
+        @Override
+        public DatabaseConstraintViolation build(VariableAccessor variables) {
+            return builder(LENGTH_EXCEEDED)
+                    .column(variables.get(1).toLowerCase())
+                    .valueType(variables.get(2).toLowerCase())
+                    .maximumLength(variables.get(3))
+                    .value(variables.get(4))
+                    .statement(variables.get(6).trim())
+                    .number(variables.get(7).trim())
+                        .build();
+        }
+        
+    }
+    
+    private static class InvalidTypePattern extends ViolationPattern {
+        
+        public InvalidTypePattern() {
+            super("Data conversion error converting \"'(.+)' \\((.+): (.+) (.+)\\)\";" + REGEX_SUFFIX);
+        }
+        
+        @Override
+        public DatabaseConstraintViolation build(VariableAccessor variables) {
+            return builder(INVALID_TYPE)
+                    .table(variables.get(2).toLowerCase())
+                    .column(variables.get(3).toLowerCase())
+                    .expectedValueType(variables.get(4).toLowerCase())
+                    .statement(variables.get(5).trim())
+                    .number(variables.get(6).trim())
+                        .build();
+        }
+        
+    }
+    
 }

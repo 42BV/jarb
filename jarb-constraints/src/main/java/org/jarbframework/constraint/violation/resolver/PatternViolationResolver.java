@@ -31,24 +31,46 @@ public class PatternViolationResolver extends RootCauseMessageViolationResolver 
     
     /**
      * Register a new vendor specific message pattern.
-     * @param regex the regular expression that matches our message
-     * @param builder the builder of our violation
+     * @param pattern the pattern to register
      */
-    protected void register(String regex, ViolationBuilder builder) {
-        patterns.add(new ViolationPattern(regex, builder));
+    protected void register(ViolationPattern pattern) {
+        patterns.add(pattern);
     }
     
     /**
      * Creates a new database constraint violation.
      */
-    protected interface ViolationBuilder {
+    public static abstract class ViolationPattern {
+        
+        /**
+         * Pattern that our message should match.
+         */
+        private final Pattern pattern;
+        
+        public ViolationPattern(String regex) {
+            this.pattern = Pattern.compile(regex);
+        }
+        
+        /**
+         * Attempt to create a constraint violation based on a message.
+         * @param message the violation message
+         * @return the violation, or {@code null} when it could not be matched
+         */
+        public DatabaseConstraintViolation match(String message) {
+            DatabaseConstraintViolation violation = null;
+            Matcher matcher = pattern.matcher(message);
+            if (matcher.matches()) {
+                violation = build(new VariableAccessor(matcher));
+            }
+            return violation;
+        }
         
         /**
          * Build a database constraint violation.
          * @param variables the variables in our regular expression
          * @return the created violation
          */
-        DatabaseConstraintViolation build(VariableAccessor variables);
+        public abstract DatabaseConstraintViolation build(VariableAccessor variables);
 
     }
     
@@ -70,44 +92,6 @@ public class PatternViolationResolver extends RootCauseMessageViolationResolver 
          */
         public String get(int number) {
             return matcher.group(number);
-        }
-        
-    }
-    
-    /**
-     * Violation pattern that can be registered.
-     */
-    private class ViolationPattern {
-    	        
-        /**
-         * Pattern that our message should match.
-         */
-        private final Pattern pattern;
-        
-        /**
-         * Builder used to create a new violation based on our message.
-         */
-        private final ViolationBuilder builder;
-        
-        private ViolationPattern(String regex, ViolationBuilder builder) {
-            this.pattern = Pattern.compile(regex);
-            this.builder = builder;
-        }
-        
-        /**
-         * Attempt to create a constraint violation based on a message.
-         * @param message the violation message
-         * @return the violation, or {@code null} when it could not be matched
-         */
-        public DatabaseConstraintViolation match(String message) {
-            DatabaseConstraintViolation violation = null;
-            logger.trace("Matching pattern '{}' to message: {}", pattern, message);
-            
-            Matcher matcher = pattern.matcher(message);
-            if (matcher.matches()) {
-                violation = builder.build(new VariableAccessor(matcher));
-            }
-            return violation;
         }
         
     }

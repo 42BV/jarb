@@ -20,63 +20,71 @@ import org.jarbframework.utils.DatabaseProduct;
 public class MysqlViolationResolver extends PatternViolationResolver implements DatabaseProductSpecific {
 
     public MysqlViolationResolver() {
-        registerNotNull();
-        registerUniqueKey();        
-        registerLengthExceeded();
-        registerInvalidType();
-    }
-    
-    private void registerNotNull() {
-        register("Column '(.+)' cannot be null", new ViolationBuilder() {
-            
-            @Override
-            public DatabaseConstraintViolation build(VariableAccessor variables) {
-                return builder(NOT_NULL).column(variables.get(1)).build();
-            }
-            
-        });
-    }
-    
-    private void registerUniqueKey() {
-        register("Duplicate entry '(.+)' for key '(.+)'", new ViolationBuilder() {
-            
-            @Override
-            public DatabaseConstraintViolation build(VariableAccessor variables) {
-                return builder(UNIQUE_KEY).value(variables.get(1)).constraint(variables.get(2)).build();
-            }
-            
-        });
+        register(new NotNullPattern());
+        register(new UniqueKeyPattern());
+        register(new LengthPattern());
+        register(new InvalidTypePattern());
     }
 
-    private void registerLengthExceeded() {
-        register("Data truncation: Data too long for column '(.+)' at row (\\d+)", new ViolationBuilder() {
-            
-            @Override
-            public DatabaseConstraintViolation build(VariableAccessor variables) {
-                return builder(LENGTH_EXCEEDED).column(variables.get(1)).build();
-            }
-            
-        });
-    }
-
-    private void registerInvalidType() {
-        register("Incorrect (\\w+) value: '(.+)' for column '(.+)' at row (\\d+)", new ViolationBuilder() {
-            
-            @Override
-            public DatabaseConstraintViolation build(VariableAccessor variables) {
-                return builder(INVALID_TYPE)
-                        .expectedValueType(variables.get(1))
-                        .value(variables.get(2))
-                        .column(variables.get(3))
-                            .build();
-            }
-            
-        });
-    }
-    
     @Override
     public boolean supports(DatabaseProduct product) {
         return StringUtils.startsWithIgnoreCase(product.getName(), "mysql");
+    }
+
+    private static class NotNullPattern extends ViolationPattern {
+        
+        public NotNullPattern() {
+            super("Column '(.+)' cannot be null");
+        }
+        
+        @Override
+        public DatabaseConstraintViolation build(VariableAccessor variables) {
+            return builder(NOT_NULL).column(variables.get(1)).build();
+        }
+        
+    }
+
+    private static class UniqueKeyPattern extends ViolationPattern {
+        
+        public UniqueKeyPattern() {
+            super("Duplicate entry '(.+)' for key '(.+)'");
+        }
+        
+        @Override
+        public DatabaseConstraintViolation build(VariableAccessor variables) {
+            return builder(UNIQUE_KEY).value(variables.get(1)).constraint(variables.get(2)).build();
+        }
+        
+    }
+    
+    private static class LengthPattern extends ViolationPattern {
+        
+        public LengthPattern() {
+            super("Data truncation: Data too long for column '(.+)' at row (\\d+)");
+        }
+        
+        @Override
+        public DatabaseConstraintViolation build(VariableAccessor variables) {
+            return builder(LENGTH_EXCEEDED).column(variables.get(1)).build();
+        }
+        
+    }
+
+    private static class InvalidTypePattern extends ViolationPattern {
+        
+        public InvalidTypePattern() {
+            super("Incorrect (\\w+) value: '(.+)' for column '(.+)' at row (\\d+)");
+        }
+        
+        @Override
+        public DatabaseConstraintViolation build(VariableAccessor variables) {
+            return builder(INVALID_TYPE)
+                    .expectedValueType(variables.get(1))
+                    .value(variables.get(2))
+                    .column(variables.get(3))
+                        .build();
+        }
+        
     }
 
 }
