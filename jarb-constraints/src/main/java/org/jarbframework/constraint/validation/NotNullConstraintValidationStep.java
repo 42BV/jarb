@@ -11,18 +11,18 @@ public class NotNullConstraintValidationStep implements DatabaseConstraintValida
     private static final String NOT_NULL_VIOLATION_TEMPLATE = "{javax.validation.constraints.NotNull.message}";
 
     @Override
-    public void validate(Object propertyValue, PropertyReference propertyRef, ColumnMetadata columnMetadata, DatabaseConstraintValidationContext context) {
-        if (propertyValue == null && isValueExpected(propertyRef, columnMetadata)) {
-            context.buildViolationWithTemplate(propertyRef, NOT_NULL_VIOLATION_TEMPLATE).addToContext();
+    public void validate(Object value, PropertyReference reference, ColumnMetadata metadata, DatabaseConstraintValidationContext context) {
+        if (value == null && isValueExpected(reference, metadata)) {
+            context.buildViolationWithTemplate(reference, NOT_NULL_VIOLATION_TEMPLATE).addToContext();
         }
     }
 
-    private boolean isValueExpected(PropertyReference propertyRef, ColumnMetadata columnMetadata) {
-        return columnMetadata.isRequired() && ! isGeneratable(propertyRef, columnMetadata);
+    private boolean isValueExpected(PropertyReference reference, ColumnMetadata metadata) {
+        return metadata.isRequired() && ! isGeneratable(reference, metadata);
     }
 
-    private boolean isGeneratable(PropertyReference propertyRef, ColumnMetadata columnMetadata) {
-        return columnMetadata.isGeneratable() || fieldOrGetter().hasAnnotation(propertyRef, DatabaseGenerated.class);
+    private boolean isGeneratable(PropertyReference reference, ColumnMetadata metadata) {
+        return metadata.isGeneratable() || fieldOrGetter().hasAnnotation(reference, DatabaseGenerated.class);
     }
 
 }

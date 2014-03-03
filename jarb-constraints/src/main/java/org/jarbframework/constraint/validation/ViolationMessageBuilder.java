@@ -51,8 +51,11 @@ class ViolationMessageBuilder {
      * defined, the actual string message is retrieved by calling {@link #message()}.
      */
     public class ViolationMessageTemplate {
+
         private final Map<String, Object> attributes;
+
         private final String templateName;
+
         private Object value;
 
         /**
@@ -123,6 +126,7 @@ class ViolationMessageBuilder {
      * This adapter class is needed to enable usage of the message interpolator.
      */
     private static class AttributeConstraintDescriptor implements ConstraintDescriptor<Annotation> {
+
         private final Map<String, Object> attributes;
 
         public AttributeConstraintDescriptor(Map<String, Object> attributes) {
@@ -163,6 +167,7 @@ class ViolationMessageBuilder {
         public boolean isReportAsSingleViolation() {
             return false;
         }
+
     }
 
 }

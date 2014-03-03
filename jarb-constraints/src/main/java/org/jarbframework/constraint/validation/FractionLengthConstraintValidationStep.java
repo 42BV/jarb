@@ -10,22 +10,22 @@ public class FractionLengthConstraintValidationStep implements DatabaseConstrain
     private static final String FRACTION_LENGTH_TEMPLATE = "{org.jarb.validation.DatabaseConstraint.FractionLength.message}";
 
     @Override
-    public void validate(Object propertyValue, PropertyReference propertyRef, ColumnMetadata columnMetadata, DatabaseConstraintValidationContext context) {
-        if (isFractionLengthExceeded(propertyValue, columnMetadata)) {
-            context.buildViolationWithTemplate(propertyRef, FRACTION_LENGTH_TEMPLATE)
-                    .attribute("max", columnMetadata.getFractionLength())
-                    .value(propertyValue)
+    public void validate(Object value, PropertyReference reference, ColumnMetadata metadata, DatabaseConstraintValidationContext context) {
+        if (isFractionLengthExceeded(value, metadata)) {
+            context.buildViolationWithTemplate(reference, FRACTION_LENGTH_TEMPLATE)
+                    .attribute("max", metadata.getFractionLength())
+                    .value(value)
                     	.addToContext();
         }
     }
 
-    private boolean isFractionLengthExceeded(Object propertyValue, ColumnMetadata columnMetadata) {
-        boolean lengthExceeded = false;
-        if (columnMetadata.hasFractionLength() && propertyValue instanceof Number) {
-        	int fractionLength = getFractionLength((Number) propertyValue);
-            lengthExceeded = fractionLength > columnMetadata.getFractionLength();
+    private boolean isFractionLengthExceeded(Object value, ColumnMetadata metadata) {
+        boolean exceeded = false;
+        if (metadata.hasFractionLength() && value instanceof Number) {
+        	int fractionLength = getFractionLength((Number) value);
+            exceeded = fractionLength > metadata.getFractionLength();
         }
-        return lengthExceeded;
+        return exceeded;
     }
 
     private int getFractionLength(Number number) {
