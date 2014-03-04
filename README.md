@@ -48,13 +48,13 @@ To validate database constraints with JSR303 validation, we often need to
 duplicate constraint information in both the database and entity class.
 Duplication is never good, so we made a @DatabaseConstrained annotation that
 dynamically validates all simple database constraints based on JDBC metadata.
- 
+
   @DatabaseConstrained @Entity
   public class Person {
-  	@Id @GeneratedValue
-  	private Long id;
-  	private String name;
-  	...
+    @Id @GeneratedValue
+    private Long id;
+    private String name;
+    ...
   }
 
 Database constraint exceptions
@@ -78,9 +78,7 @@ Configuration
 
 The XML configuration is as follows:	
 
-  <!-- Plain JDBC -->
 	<constraints:enable-constraints data-source="dataSource" base-package="org.jarbframework.sample"/>
-  <!-- Hibernate JPA -->
 	<constraints:enable-constraints entity-manager-factory="entityManagerFactory" base-package="org.jarbframework.sample"/>
 
 We also support Java configuration:
