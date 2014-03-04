@@ -83,22 +83,22 @@ public class PopulateApplicationListenerBuilder {
         }
         
         /**
-         * Mark all next populators as asynchronous. To add synchronous
-         * populators again, invoke {@link PopulatorAppendCommand#sync()}.
+         * Create an asynchronous task for populating the database. To add synchronous
+         * populators again, invoke {@link PopulatorAppendCommand#current()}.
          * 
          * @return this builder, for chaining
          */
-        public PopulatorAppendCommand async() {
+        public PopulatorAppendCommand task() {
             return this.async(true);
         }
         
         /**
-         * Mark all next populators as synchronous. To add asynchronous
-         * populators again, invoke {@link PopulatorAppendCommand#async()}.
+         * Mark all next populators as synchronous. To add an asynchronous
+         * populator task, invoke {@link PopulatorAppendCommand#task()}.
          * 
          * @return this builder, for chaining
          */
-        public PopulatorAppendCommand sync() {
+        public PopulatorAppendCommand current() {
             return this.async(false);
         }
         

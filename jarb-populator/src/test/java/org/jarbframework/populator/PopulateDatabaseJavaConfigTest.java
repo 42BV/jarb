@@ -58,10 +58,10 @@ public class PopulateDatabaseJavaConfigTest {
         public PopulateApplicationListener populateApplicationListener() {
             return new PopulateApplicationListenerBuilder()
                         .initializer()
-                            .async()
+                            .task()
                                 .add(new SqlDatabasePopulator(dataSource, new ClassPathResource("import.sql")))
                                 .add(SqlDatabasePopulator.fromSql(dataSource, "INSERT INTO persons (id, name) VALUES (2, 'fred') ;"))
-                            .sync()
+                            .current()
                                 .add(new SqlDatabasePopulator(dataSource, new ClassPathResource("unknown.sql")).ifExists())
                             .done()
                         .destroyer()
