@@ -1,0 +1,2 @@
+How to deploy to local repository:
+mvn deploy -DaltDeploymentRepository=repository.42.nl::default::https://repository.42.nl/content/repositories/thirdparty

@@ -131,8 +131,3 @@ Components
  * populator-excel (excel driven database populator)
  * utils (common utility library, used by other components)
  * sample (demonstrates all above described functionality in a simple project)
-
-Deployment
-----------
-mvn deploy -DaltDeploymentRepository=repository.42.nl::default::https://repository.42.nl/content/repositories/thirdparty
- 
