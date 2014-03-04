@@ -7,18 +7,17 @@ http://www.jarbframework.org
 
 Features
 --------
- * (Database) constraints 
-  * Automate database constraint validation with JSR303
-  * Translate JDBC exceptions into constraint violation exceptions
-   + Full access to constraint violation metadata
+ * Database constraints
+  * Automate database schema validation with JSR303
+  * Translate JDBC driver exceptions into constraint exceptions
+   + Full access to constraint violation information
    + Map custom exceptions to named constraints
-  * Describe bean constraint metadata, with content from JDBC and JSR303
+  * Describe bean constraint metadata, with front-end example
  * Database initialization
   * Automate database migrations on application startup
   * Populate database on application startup
-   + SQL script based (using Spring JDBC)
-   + Excel based
-   + Building blocks: compound, conditional, fail-safe
+   + SQL
+   + Excel
 
 Developers
 ----------
@@ -26,7 +25,7 @@ Developers
  
 License
 -------
- Copyright 2011 42bv (http://www.42.nl)
+ Copyright 2011-2014 42BV (http://www.42.nl)
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -79,6 +78,10 @@ And the configuration:
 
 	<constraints:translate-exceptions data-source="dataSource" base-package="org.jarbframework.sample"/>
 
+	or 
+
+	@EnableDatabaseConstraints(basePackage = "org.jarbframework.sample")
+
 Database migrations (schema)
 ----------------------------
 By wrapping the data source in a migrating data source, the data base will
@@ -88,20 +91,14 @@ In the below example we use Liquibase to perform database migrations, by
 default it will look for a 'src/main/db/changelog.groovy' file.
 
 
-	<bean id="dataSource" class="org.jarbframework.migrations.MigratingDataSource">
-	    <property name="delegate">
-			<bean class="org.springframework.jdbc.datasource.DriverManagerDataSource">
-			    <property name="driverClassName" value="org.hsqldb.jdbcDriver"/>
-			    <property name="url" value="jdbc:hsqldb:mem:jarb"/>
-			    <property name="username" value="sa"/>
-			    <property name="password" value=""/>
-			</bean>
-		</property>
-	    <property name="migrator">
-	    	<bean class="org.jarbframework.migrations.liquibase.LiquibaseMigrator"/>
-	    </property>
-	</bean>
+	<migrations:migrate data-source="dataSource" path="src/main/db/changelog.groovy"/>
 
+Or an embedded database:
+
+    @Bean
+    public DataSource dataSource() {
+        return new EmbeddedMigratingDatabaseBuilder().setType(EmbeddedDatabaseType.HSQL).build();
+    }
 
 Database populating
 -------------------
@@ -109,33 +106,18 @@ Whenever we require data to be inserted during application startup, the
 database updater interface can be used. Below we demonstrate how to
 insert data using an SQL script and Excel file.
 
-	<bean class="org.jarbframework.populator.DatabaseUpdatingListener">
-    	<constructor-arg name="initializer">
-    	   <bean class="org.jarbframework.populator.CompositeDatabaseUpdater">
-    	       <constructor-arg>
-					<list>
-						<bean class="org.jarbframework.populator.SqlResourceDatabaseUpdater">
-							<property name="sqlResource" value="classpath:import.sql"/>
-							<property name="dataSource" ref="dataSource"/>
-						</bean>
-						<bean class="org.jarbframework.populator.excel.ExcelDatabaseUpdater">
-							<property name="excelResource" value="classpath:import.xls"/>
-							<property name="entityManagerFactory" ref="entityManagerFactory"/>
-						</bean>
-						<bean class="org.jarbframework.populator.ClassNameDatabaseUpdater">
-							<constructor-arg value="org.jarbframework.sample.PostUpdater"/>
-						</bean>
-					</list>
-                </constructor-arg>
-			</bean>
-    	</constructor-arg>
-    	<constructor-arg name="destroyer">
-			<bean class="org.jarbframework.populator.SqlResourceDatabaseUpdater">
-			    <property name="sqlResource" value="classpath:clean.sql"/>
-			    <property name="dataSource" ref="dataSource"/>
-			</bean>
-    	</constructor-arg>
-    </bean>
+    @Bean
+    public PopulateApplicationListener populateAppliationListener() {
+        return new PopulateApplicationListenerBuilder()
+                        .initializer()
+                            .add(new SqlDatabasePopulator(dataSource, new ClassPathResource("import.sql")))
+                            .add(new ExcelDatabasePopulator(entityManagerFactory, new ClassPathResource("import.xls")))
+                            .add(postPopulator())
+                            .done()
+                        .destroyer()
+                            .add(new SqlDatabasePopulator(dataSource, new ClassPathResource("clean.sql")))
+                   .build();
+    }
 
 Components
 ----------
@@ -144,6 +126,7 @@ Components
  * populator (populate the database with data on startup, SQL script implementation and building blocks)
  * populator-excel (excel driven database populator)
  * utils (common utility library, used by other components)
+ * sample (demonstrates all above described functionality in a simple project)
 
  Deployment
  ----------
