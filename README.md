@@ -74,11 +74,11 @@ It is even possible to map custom exceptions on named constraints.
 		...
 	}
 	
-And the configuration:	
+And the XML configuration:	
 
 	<constraints:translate-exceptions data-source="dataSource" base-package="org.jarbframework.sample"/>
 
-	or 
+We also support Java configuration. This will enable both validation and exception translation:
 
 	@EnableDatabaseConstraints(basePackage = "org.jarbframework.sample")
 
