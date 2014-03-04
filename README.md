@@ -41,16 +41,16 @@ License
 
 Database constraints
 ---------------------------
----------------------------
 
-JSR303 database constraints
----------------------------
-To validate database constraints with JSR303 validation, we often need to
-duplicate constraint information in both the database and entity class.
-Duplication is never good, so we made a @DatabaseConstrained annotation that
-dynamically validates all simple database constraints based on JDBC metadata.
-
-	@DatabaseConstrained @Entity
+ JSR303 database constraints
+ ---------------------------
+ To validate database constraints with JSR303 validation, we often need to
+ duplicate constraint information in both the database and entity class.
+ Duplication is never good, so we made a @DatabaseConstrained annotation that
+ dynamically validates all simple database constraints based on JDBC metadata.
+ 
+ 	@DatabaseConstrained
+  @Entity
 	public class Person {
 		@Id @GeneratedValue
 		private Long id;
@@ -58,31 +58,33 @@ dynamically validates all simple database constraints based on JDBC metadata.
 		...
 	}
 
-Database constraint exceptions
-------------------------------
-Whenever a database constraint is violated, the JDBC driver will convert it
-into a runtime exception. This SQLException is hard to use in the application
-because all metadata is held inside its message. By using exception translation
-we can convert the driver exception into a more intuitive exception, e.g. the
-UniqueKeyAlreadyExistsException. Inside our translated exception we have full
-access to the constraint violation and any desired metadata.
+ Database constraint exceptions
+ ------------------------------
+ Whenever a database constraint is violated, the JDBC driver will convert it
+ into a runtime exception. This SQLException is hard to use in the application
+ because all metadata is held inside its message. By using exception translation
+ we can convert the driver exception into a more intuitive exception, e.g. the
+ UniqueKeyAlreadyExistsException. Inside our translated exception we have full
+ access to the constraint violation and any desired metadata.
 
-It is even possible to map custom exceptions on named constraints.
+ It is even possible to map custom exceptions on named constraints.
 
 	@NamedConstraint("uk_posts_title")
 	public class PostTitleAlreadyExistsException extends UniqueKeyViolationException {
 		...
 	}
 	
-Configuration
--------------
+ Configuration
+ -------------
 
-The XML configuration is as follows:	
+ The XML configuration is as follows:	
 
+  <!-- Plain JDBC -->
 	<constraints:enable-constraints data-source="dataSource" base-package="org.jarbframework.sample"/>
+  <!-- Hibernate JPA -->
 	<constraints:enable-constraints entity-manager-factory="entityManagerFactory" base-package="org.jarbframework.sample"/>
 
-We also support Java configuration:
+ We also support Java configuration:
 
 	@EnableDatabaseConstraints(basePackage = "org.jarbframework.sample")
 
