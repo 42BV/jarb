@@ -6,7 +6,7 @@ import java.sql.Date;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.jarbframework.utils.bean.DynamicBeanWrapper;
+import org.jarbframework.utils.bean.FlexibleBeanWrapper;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -28,7 +28,7 @@ public final class EmployeeTest {
     @Test
     public void testGetId() {
         final Integer id = 1;
-        DynamicBeanWrapper.wrap(employee).setPropertyValue("id", id);
+        FlexibleBeanWrapper.wrap(employee).setPropertyValue("id", id);
         assertEquals(id, employee.getId());
     }
 
@@ -49,8 +49,8 @@ public final class EmployeeTest {
     @Test
     public void testSetGetProjects() {
         Set<Project> projects = new HashSet<Project>();
-        projects.add(DynamicBeanWrapper.instantiate(Project.class).setPropertyValue("id", 1L).getWrappedBean());
-        projects.add(DynamicBeanWrapper.instantiate(Project.class).setPropertyValue("id", 2L).getWrappedBean());
+        projects.add(FlexibleBeanWrapper.instantiate(Project.class).setPropertyValue("id", 1L).getWrappedBean());
+        projects.add(FlexibleBeanWrapper.instantiate(Project.class).setPropertyValue("id", 2L).getWrappedBean());
         employee.setProjects(projects);
         assertEquals(projects, employee.getProjects());
     }

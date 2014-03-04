@@ -10,7 +10,7 @@ import org.jarbframework.populator.excel.metamodel.PropertyPath;
 import org.jarbframework.populator.excel.workbook.Row;
 import org.jarbframework.populator.excel.workbook.Sheet;
 import org.jarbframework.populator.excel.workbook.Workbook;
-import org.jarbframework.utils.bean.DynamicBeanWrapper;
+import org.jarbframework.utils.bean.FlexibleBeanWrapper;
 
 /**
  * Default implementation of {@link EntityExporter}.
@@ -139,13 +139,13 @@ public class DefaultEntityExporter implements EntityExporter {
      */
     private Object getPropertyValue(Object entity, PropertyDefinition propertyDefinition) {
         Object value = null;
-        DynamicBeanWrapper<Object> propertyAccessor = DynamicBeanWrapper.wrap(entity);
+        FlexibleBeanWrapper<Object> propertyAccessor = FlexibleBeanWrapper.wrap(entity);
         if (propertyDefinition.isEmbeddedAttribute()) {
             // Whenever our property is embedded, retrieve the container
             final PropertyPath embeddablePath = propertyDefinition.getEmbeddablePath();
             if (propertyAccessor.isReadableProperty(embeddablePath.getStart().getName())) {
                 Object leafEmbeddable = embeddablePath.traverse(entity);
-                DynamicBeanWrapper<Object> leafAccessor = DynamicBeanWrapper.wrap(leafEmbeddable);
+                FlexibleBeanWrapper<Object> leafAccessor = FlexibleBeanWrapper.wrap(leafEmbeddable);
                 value = leafAccessor.getPropertyValue(propertyDefinition.getName());
             }
         } else if (propertyAccessor.isReadableProperty(propertyDefinition.getName())) {

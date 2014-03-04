@@ -5,7 +5,7 @@ import static org.junit.Assert.assertEquals;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.jarbframework.utils.bean.DynamicBeanWrapper;
+import org.jarbframework.utils.bean.FlexibleBeanWrapper;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -26,7 +26,7 @@ public class CustomerTest {
     @Test
     public void testGetId() {
         final Long id = 1L;
-        DynamicBeanWrapper.wrap(customer).setPropertyValue("id", id);
+        FlexibleBeanWrapper.wrap(customer).setPropertyValue("id", id);
         assertEquals(id, customer.getId());
     }
 

@@ -8,7 +8,7 @@ import java.util.Set;
 
 import org.jarbframework.populator.excel.metamodel.Definition;
 import org.jarbframework.populator.excel.metamodel.PropertyDefinition;
-import org.jarbframework.utils.bean.DynamicBeanWrapper;
+import org.jarbframework.utils.bean.FlexibleBeanWrapper;
 
 /**
  * Used to map foreign relationships between ExcelRows.
@@ -40,7 +40,7 @@ public final class ForeignRelationsMapper {
 
             // Check if the field is really in THIS excelRow. Thus the parents set is empty.
             Object foreignEntity = ForeignExcelRowGrabber.getInstanceValue(key, objectModel.get(classDefinition));
-            DynamicBeanWrapper<Object> propertyAccessor = DynamicBeanWrapper.wrap(excelRow.getCreatedInstance());
+            FlexibleBeanWrapper<Object> propertyAccessor = FlexibleBeanWrapper.wrap(excelRow.getCreatedInstance());
             if (propertyAccessor.isWritableProperty(entry.getKey().getName())) {
                 propertyAccessor.setPropertyValue(entry.getKey().getName(), foreignEntity);
             }

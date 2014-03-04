@@ -7,7 +7,7 @@ import javax.persistence.metamodel.EntityType;
 import javax.persistence.metamodel.Metamodel;
 
 import org.jarbframework.populator.excel.metamodel.generator.SuperclassRetriever;
-import org.jarbframework.utils.bean.DynamicBeanWrapper;
+import org.jarbframework.utils.bean.FlexibleBeanWrapper;
 
 /**
  * Contains utilities for dealing with circular references in the domain mapping.
@@ -52,7 +52,7 @@ public final class CircularReferenceUtilities {
     public static Object createTemporaryObjectForCircularReference(Object entity, Metamodel metamodel, String refName) {
         Object temporaryObject = null;
         if (metamodel.entity(entity.getClass()).getSingularAttribute(refName).isOptional()) {
-            DynamicBeanWrapper<Object> modifiableEntity = DynamicBeanWrapper.wrap(entity);
+            FlexibleBeanWrapper<Object> modifiableEntity = FlexibleBeanWrapper.wrap(entity);
             temporaryObject = modifiableEntity.getPropertyValue(refName);
             modifiableEntity.setPropertyValue(refName, null);
         }

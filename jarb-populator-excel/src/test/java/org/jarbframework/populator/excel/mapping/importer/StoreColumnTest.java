@@ -17,7 +17,7 @@ import org.jarbframework.populator.excel.metamodel.generator.EntityDefinitionsGe
 import org.jarbframework.populator.excel.metamodel.generator.FieldAnalyzer;
 import org.jarbframework.populator.excel.workbook.Workbook;
 import org.jarbframework.populator.excel.workbook.reader.PoiWorkbookParser;
-import org.jarbframework.utils.bean.DynamicBeanWrapper;
+import org.jarbframework.utils.bean.FlexibleBeanWrapper;
 import org.jarbframework.utils.bean.PropertyReference;
 import org.junit.Before;
 import org.junit.Test;
@@ -56,6 +56,6 @@ public class StoreColumnTest extends DefaultExcelTestDataCase {
 
         rowPosition = 1;
         new StoreExcelRecordValue(ValueConversionService.defaultConversions()).storeValue(excel, classDefinition, column, rowPosition, excelRow);
-        assertEquals("Customer1", DynamicBeanWrapper.wrap(excelRow.getCreatedInstance()).getPropertyValue("name"));
+        assertEquals("Customer1", FlexibleBeanWrapper.wrap(excelRow.getCreatedInstance()).getPropertyValue("name"));
     }
 }

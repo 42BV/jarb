@@ -11,7 +11,7 @@ import javax.validation.MessageInterpolator;
 import org.jarbframework.constraint.metadata.database.BeanMetadataRepository;
 import org.jarbframework.constraint.metadata.database.ColumnMetadata;
 import org.jarbframework.utils.bean.BeanProperties;
-import org.jarbframework.utils.bean.DynamicBeanWrapper;
+import org.jarbframework.utils.bean.FlexibleBeanWrapper;
 import org.jarbframework.utils.bean.PropertyReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -73,13 +73,13 @@ public class DatabaseConstraintValidator {
 	}
 
     private void validateBean(Object bean, PropertyReference beanReference, DatabaseConstraintValidationContext validation) {
-    	DynamicBeanWrapper<?> beanWrapper = DynamicBeanWrapper.wrap(bean);
+    	FlexibleBeanWrapper<?> beanWrapper = FlexibleBeanWrapper.wrap(bean);
         for (String propertyName : BeanProperties.getFieldNames(bean.getClass())) {
 			validateProperty(beanWrapper, new PropertyReference(bean.getClass(), propertyName), beanReference, validation);
         }
     }
 
-    private void validateProperty(DynamicBeanWrapper<?> beanWrapper, PropertyReference propertyReference, PropertyReference beanReference, DatabaseConstraintValidationContext validation) {
+    private void validateProperty(FlexibleBeanWrapper<?> beanWrapper, PropertyReference propertyReference, PropertyReference beanReference, DatabaseConstraintValidationContext validation) {
         Field propertyField = BeanProperties.findPropertyField(propertyReference);
         if (! Modifier.isStatic(propertyField.getModifiers())) {
             Class<?> propertyClass = propertyField.getType();
@@ -93,7 +93,7 @@ public class DatabaseConstraintValidator {
         }
     }
 
-    private void validateSimpleProperty(DynamicBeanWrapper<?> beanWrapper, PropertyReference propertyReference, PropertyReference beanReference, DatabaseConstraintValidationContext validation) {
+    private void validateSimpleProperty(FlexibleBeanWrapper<?> beanWrapper, PropertyReference propertyReference, PropertyReference beanReference, DatabaseConstraintValidationContext validation) {
         PropertyReference finalPropertyReference = propertyReference.wrap(beanReference);
         ColumnMetadata columnMetadata = beanMetadataRepository.getColumnMetadata(finalPropertyReference);
         if (columnMetadata != null) {

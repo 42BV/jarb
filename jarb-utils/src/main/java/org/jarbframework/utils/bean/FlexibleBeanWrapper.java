@@ -8,8 +8,6 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.beans.DirectFieldAccessor;
-import org.springframework.beans.NotReadablePropertyException;
-import org.springframework.beans.NotWritablePropertyException;
 import org.springframework.beans.NullValueInNestedPathException;
 import org.springframework.beans.PropertyAccessor;
 
@@ -21,9 +19,9 @@ import org.springframework.beans.PropertyAccessor;
  * @author Jeroen van Schagen
  * @date Aug 16, 2011
  */
-public final class DynamicBeanWrapper<T> {
+public final class FlexibleBeanWrapper<T> {
 	
-	private static final Logger LOGGER = LoggerFactory.getLogger(DynamicBeanWrapper.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(FlexibleBeanWrapper.class);
 	
     private final T bean;
 
@@ -31,7 +29,7 @@ public final class DynamicBeanWrapper<T> {
     
     private final PropertyAccessor fieldAccessor;
 
-    private DynamicBeanWrapper(T bean) {
+    private FlexibleBeanWrapper(T bean) {
         this.bean = notNull(bean, "Wrapped bean cannot be null.");
         this.beanWrapper = new BeanWrapperImpl(bean);
         this.fieldAccessor = new DirectFieldAccessor(bean);
@@ -39,21 +37,23 @@ public final class DynamicBeanWrapper<T> {
 
     /**
      * Wrap an existing bean with property modification behavior.
+     * 
      * @param <T> type of bean
      * @param bean the bean being wrapped
      * @return modifiable bean, wrapping the specified bean
      */
-    public static <T> DynamicBeanWrapper<T> wrap(T bean) {
-        return new DynamicBeanWrapper<T>(bean);
+    public static <T> FlexibleBeanWrapper<T> wrap(T bean) {
+        return new FlexibleBeanWrapper<T>(bean);
     }
 
     /**
      * Build a new bean with property modification behavior.
+     * 
      * @param <T> type of bean
      * @param beanClass class of the bean being created and wrapped
      * @return modifiable bean, wrapping a new bean instance
      */
-    public static <T> DynamicBeanWrapper<T> instantiate(Class<T> beanClass) {
+    public static <T> FlexibleBeanWrapper<T> instantiate(Class<T> beanClass) {
         return wrap(BeanUtils.instantiateClass(beanClass));
     }
 
@@ -62,31 +62,31 @@ public final class DynamicBeanWrapper<T> {
     }
 
     public Object getPropertyValue(String propertyName) {
-        try {
+        if (beanWrapper.isReadableProperty(propertyName)) {
             return beanWrapper.getPropertyValue(propertyName);
-        } catch (NotReadablePropertyException e) {
+        } else {
             return fieldAccessor.getPropertyValue(propertyName);
         }
     }
     
     public Object getPropertyValueSafely(String propertyName) {
-        Object propertyValue = null;
+        Object value = null;
         try {
-            propertyValue = getPropertyValue(propertyName);
+            value = getPropertyValue(propertyName);
         } catch (NullValueInNestedPathException e) {
             LOGGER.debug("Could not retrieve actual property value.", e);
         }
-        return propertyValue;
+        return value;
     }
 
     public boolean isWritableProperty(String propertyName) {
         return beanWrapper.isWritableProperty(propertyName) || fieldAccessor.isWritableProperty(propertyName);
     }
 
-    public DynamicBeanWrapper<T> setPropertyValue(String propertyName, Object value) {
-        try {
+    public FlexibleBeanWrapper<T> setPropertyValue(String propertyName, Object value) {
+        if (beanWrapper.isWritableProperty(propertyName)) {
             beanWrapper.setPropertyValue(propertyName, value);
-        } catch (NotWritablePropertyException e) {
+        } else {
             fieldAccessor.setPropertyValue(propertyName, value);
         }
         return this;
