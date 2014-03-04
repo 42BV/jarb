@@ -15,18 +15,14 @@ public class JdbcSchemaMapper implements SchemaMapper {
     
     @Override
     public String getTableName(Class<?> beanClass) {
-        return unqualify(beanClass.getSimpleName());
+        return MappingUtils.lowerCaseWithUnderscores(beanClass.getSimpleName());
     }
 
     @Override
     public ColumnReference getColumnReference(PropertyReference propertyReference) {
         String tableName = getTableName(propertyReference.getBeanClass());
-        String columnName = unqualify(propertyReference.getName());
+        String columnName = MappingUtils.lowerCaseWithUnderscores(propertyReference.getName());
         return new ColumnReference(tableName, columnName);
-    }
-    
-    private String unqualify(String value) {
-        return value.toLowerCase();
     }
 
     @Override
