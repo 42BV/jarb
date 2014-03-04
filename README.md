@@ -42,8 +42,8 @@ License
 Database constraints
 ---------------------------
 
- JSR303 database constraints
- ---------------------------
+ Validation
+ ----------
  To validate database constraints with JSR303 validation, we often need to
  duplicate constraint information in both the database and entity class.
  Duplication is never good, so we made a @DatabaseConstrained annotation that
@@ -134,7 +134,7 @@ Components
  * utils (common utility library, used by other components)
  * sample (demonstrates all above described functionality in a simple project)
 
- Deployment
- ----------
- mvn deploy -DaltDeploymentRepository=repository.42.nl::default::https://repository.42.nl/content/repositories/thirdparty
+Deployment
+----------
+mvn deploy -DaltDeploymentRepository=repository.42.nl::default::https://repository.42.nl/content/repositories/thirdparty
  
