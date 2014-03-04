@@ -107,8 +107,18 @@ Or an embedded database:
 Database populating
 -------------------
 Whenever we require data to be inserted during application startup, the
-database updater interface can be used. Below we demonstrate how to
-insert data using an SQL script and Excel file.
+database updater interface can be used. 
+
+Below we demonstrate how to run an insert script at startup:
+
+    <populator:populate initializer="populator"/>
+    
+    <bean id="populator" class="org.jarbframework.populator.SqlDatabasePopulator">
+        <constructor-arg ref="dataSource"/>
+        <constructor-arg value="classpath:import.sql"/>
+    </bean>
+
+For Java configurations we provide a builder:
 
     @Bean
     public PopulateApplicationListener populateAppliationListener() {
