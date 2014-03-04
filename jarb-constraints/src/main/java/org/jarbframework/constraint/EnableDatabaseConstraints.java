@@ -42,6 +42,13 @@ public @interface EnableDatabaseConstraints {
     String entityManagerFactory() default "entityManagerFactory";
     
     /**
+     * The reference to our data source.
+     * 
+     * @return the data source
+     */
+    String dataSource() default "dataSource";
+    
+    /**
      * The annotation that should perform the exception translations.
      * By default we take the {@link Repository} class.
      * 

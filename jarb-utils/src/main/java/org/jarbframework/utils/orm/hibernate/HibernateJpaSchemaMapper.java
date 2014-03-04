@@ -17,6 +17,12 @@ import org.jarbframework.utils.orm.SchemaMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Hibernate JPA implementation of {@link SchemaMapper}.
+ *
+ * @author Jeroen van Schagen
+ * @since Mar 4, 2014
+ */
 public class HibernateJpaSchemaMapper implements SchemaMapper {
     
     private final Logger logger = LoggerFactory.getLogger(getClass());

@@ -39,6 +39,10 @@ License
    See the License for the specific language governing permissions and
    limitations under the License.
 
+Database constraints
+---------------------------
+---------------------------
+
 JSR303 database constraints
 ---------------------------
 To validate database constraints with JSR303 validation, we often need to
@@ -53,10 +57,6 @@ dynamically validates all simple database constraints based on JDBC metadata.
 		private String name;
 		...
 	}
-
-With the following configuration all required beans are registered:
-
-	<constraints:enable-metadata entity-manager-factory="entityManagerFactory"/>
 
 Database constraint exceptions
 ------------------------------
@@ -74,11 +74,15 @@ It is even possible to map custom exceptions on named constraints.
 		...
 	}
 	
-And the XML configuration:	
+Configuration
+-------------
 
-	<constraints:translate-exceptions data-source="dataSource" base-package="org.jarbframework.sample"/>
+The XML configuration is as follows:	
 
-We also support Java configuration. This will enable both validation and exception translation:
+	<constraints:enable-constraints data-source="dataSource" base-package="org.jarbframework.sample"/>
+	<constraints:enable-constraints entity-manager-factory="entityManagerFactory" base-package="org.jarbframework.sample"/>
+
+We also support Java configuration:
 
 	@EnableDatabaseConstraints(basePackage = "org.jarbframework.sample")
 

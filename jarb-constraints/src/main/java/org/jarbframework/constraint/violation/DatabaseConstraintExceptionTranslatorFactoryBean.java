@@ -21,11 +21,20 @@ import org.jarbframework.utils.spring.SingletonFactoryBean;
  */
 public final class DatabaseConstraintExceptionTranslatorFactoryBean extends SingletonFactoryBean<DatabaseConstraintExceptionTranslator> {
 	
+    private final DataSource dataSource;
+
     private String basePackage;
 	
-    private DataSource dataSource;
+    private DatabaseConstraintExceptionFactory defaultExceptionFactory;
 
-    private DatabaseConstraintExceptionFactory defaultExceptionFactory = new DefaultConstraintExceptionFactory();
+    public DatabaseConstraintExceptionTranslatorFactoryBean(DataSource dataSource) {
+        this.dataSource = dataSource;
+        defaultExceptionFactory = new DefaultConstraintExceptionFactory();
+    }
+    
+    public DatabaseConstraintExceptionTranslatorFactoryBean(EntityManagerFactory entityManagerFactory) {
+        this(HibernateUtils.getDataSource(entityManagerFactory));
+    }
     
     @Override
     protected DatabaseConstraintExceptionTranslator createObject() throws Exception {
@@ -36,14 +45,6 @@ public final class DatabaseConstraintExceptionTranslatorFactoryBean extends Sing
     
     public void setBasePackage(String basePackage) {
         this.basePackage = basePackage;
-    }
-    
-    public void setDataSource(DataSource dataSource) {
-        this.dataSource = dataSource;
-    }
-    
-    public void setEntityManagerFactory(EntityManagerFactory entityManagerFactory) {
-        setDataSource(HibernateUtils.getDataSource(entityManagerFactory));
     }
 
     public void setDefaultExceptionFactory(DatabaseConstraintExceptionFactory defaultExceptionFactory) {

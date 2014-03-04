@@ -12,9 +12,9 @@ import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 
 import org.jarbframework.constraint.metadata.BeanConstraintDescriptor;
-import org.jarbframework.constraint.metadata.BeanConstraintDescriptorFactoryBean;
+import org.jarbframework.constraint.metadata.DefaultBeanConstraintDescriptor;
 import org.jarbframework.constraint.metadata.database.BeanMetadataRepository;
-import org.jarbframework.constraint.metadata.database.HibernateJpaBeanMetadataRepositoryFactoryBean;
+import org.jarbframework.constraint.metadata.database.BeanMetadataRepositoryFactoryBean;
 import org.jarbframework.constraint.violation.DatabaseConstraintExceptionTranslator;
 import org.jarbframework.constraint.violation.ExceptionTranslatingBeanPostProcessor;
 import org.jarbframework.constraint.violation.factory.ConfigurableConstraintExceptionFactory;
@@ -42,10 +42,11 @@ public class EnableDatabaseConstraintsConfiguration implements ImportAware, Init
     // Meta-data constants
 
     private static final String BASE_PACKAGE_REF = "basePackage";
+    private static final String DATA_SOURCE_REF = "dataSource";
     private static final String ENTITY_MANAGER_FACTORY_REF = "entityManagerFactory";
     private static final String TRANSLATING_ANNOTATION_REF = "exceptionTranslatingAnnotation";
 
-    private Map<String, Object> metadata;
+    private Map<String, Object> attributes;
     
     @Autowired(required = false)
     private Set<EnableDatabaseConstraintsConfigurer> configurers = new HashSet<>();
@@ -58,12 +59,17 @@ public class EnableDatabaseConstraintsConfiguration implements ImportAware, Init
     private DataSource dataSource;
     
     //
-    // Register the required beans
+    // Exception translation
     //
     
     @Bean
+    public DatabaseConstraintExceptionTranslator exceptionTranslator() throws Exception {
+        return new DatabaseConstraintExceptionTranslator(violationResolver(), exceptionFactory());
+    }
+    
+    @Bean
     public DatabaseConstraintViolationResolver violationResolver() {
-        String basePackage = metadata.get(BASE_PACKAGE_REF).toString();
+        String basePackage = attributes.get(BASE_PACKAGE_REF).toString();
         ConfigurableViolationResolver violationResolver = new ConfigurableViolationResolver(dataSource, basePackage);
         for (EnableDatabaseConstraintsConfigurer configurer : configurers) {
             configurer.addViolationResolvers(violationResolver);
@@ -73,7 +79,7 @@ public class EnableDatabaseConstraintsConfiguration implements ImportAware, Init
     
     @Bean
     public DatabaseConstraintExceptionFactory exceptionFactory() {
-        String basePackage = metadata.get(BASE_PACKAGE_REF).toString();
+        String basePackage = attributes.get(BASE_PACKAGE_REF).toString();
         ConfigurableConstraintExceptionFactory exceptionFactory = new ConfigurableConstraintExceptionFactory();
         for (EnableDatabaseConstraintsConfigurer configurer : configurers) {
             configurer.addConstraintExceptions(exceptionFactory);
@@ -82,25 +88,28 @@ public class EnableDatabaseConstraintsConfiguration implements ImportAware, Init
     }
     
     @Bean
-    public DatabaseConstraintExceptionTranslator exceptionTranslator() throws Exception {
-        return new DatabaseConstraintExceptionTranslator(violationResolver(), exceptionFactory());
-    }
-    
-    @Bean
     @SuppressWarnings("unchecked")
     public ExceptionTranslatingBeanPostProcessor exceptionTranslatingBeanPostProcessor() throws Exception {
-        Class<? extends Annotation> annotation = (Class<? extends Annotation>) metadata.get(TRANSLATING_ANNOTATION_REF);
+        Class<? extends Annotation> annotation = (Class<? extends Annotation>) attributes.get(TRANSLATING_ANNOTATION_REF);
         return new ExceptionTranslatingBeanPostProcessor(exceptionTranslator(), annotation);
     }
     
+    //
+    // Bean metadata descriptions
+    //
+
     @Bean
     public BeanMetadataRepository beanMetadataRepository() throws Exception {
-        return new HibernateJpaBeanMetadataRepositoryFactoryBean(entityManagerFactory).getObject();
+        if (entityManagerFactory != null) {
+            return new BeanMetadataRepositoryFactoryBean(entityManagerFactory).getObject();
+        } else {
+            return new BeanMetadataRepositoryFactoryBean(dataSource).getObject();
+        }
     }
     
     @Bean
     public BeanConstraintDescriptor beanConstraintDescriptor() throws Exception {
-        BeanConstraintDescriptor beanConstraintDescriptor = new BeanConstraintDescriptorFactoryBean(beanMetadataRepository()).getObject();
+        BeanConstraintDescriptor beanConstraintDescriptor = new DefaultBeanConstraintDescriptor(beanMetadataRepository());
         for (EnableDatabaseConstraintsConfigurer configurer : configurers) {
             configurer.addPropertyEnhancers(beanConstraintDescriptor);
         }
@@ -108,19 +117,25 @@ public class EnableDatabaseConstraintsConfiguration implements ImportAware, Init
     }
     
     //
-    // Extract meta-data from @EnableDatabaseConstraints
+    // Attributes from @EnableDatabaseConstraints
     //
 
     @Override
     public void setImportMetadata(AnnotationMetadata importMetadata) {
-        metadata = importMetadata.getAnnotationAttributes(EnableDatabaseConstraints.class.getName());
+        attributes = importMetadata.getAnnotationAttributes(EnableDatabaseConstraints.class.getName());
     }
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        String entityManagerFactoryRef = metadata.get(ENTITY_MANAGER_FACTORY_REF).toString();
-        entityManagerFactory = applicationContext.getBean(entityManagerFactoryRef, EntityManagerFactory.class);
-        dataSource = HibernateUtils.getDataSource(entityManagerFactory);
+        String entityManagerFactoryName = (String) attributes.get(ENTITY_MANAGER_FACTORY_REF);
+        String dataSourceName = (String) attributes.get(DATA_SOURCE_REF);
+        
+        if (applicationContext.containsBean(entityManagerFactoryName)) {
+            entityManagerFactory = applicationContext.getBean(entityManagerFactoryName, EntityManagerFactory.class);
+            dataSource = HibernateUtils.getDataSource(entityManagerFactory);
+        } else {
+            dataSource = applicationContext.getBean(dataSourceName, DataSource.class);
+        }
     }
 
 }
