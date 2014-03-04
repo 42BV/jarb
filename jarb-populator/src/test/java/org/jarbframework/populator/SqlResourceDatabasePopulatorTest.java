@@ -9,7 +9,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -19,20 +18,6 @@ public class SqlResourceDatabasePopulatorTest {
 
     @Autowired
     private DataSource dataSource;
-
-    /**
-     * Correct script resources can be executed.
-     */
-    @Test
-    public void testPopulate() {
-        new SqlDatabasePopulator(dataSource, new ClassPathResource("import.sql")).populate();
-        SqlDatabasePopulator.fromSql(dataSource, "INSERT INTO persons (id,name) VALUES (2,'fred') ;").populate();
-
-        // Ensure the 'persons' table is created, and a record is inserted
-        JdbcTemplate template = new JdbcTemplate(dataSource);
-        assertEquals("eddie", template.queryForObject("SELECT name FROM persons WHERE id = 1", String.class));
-        assertEquals("fred", template.queryForObject("SELECT name FROM persons WHERE id = 2", String.class));
-    }
 
     /**
      * Executing with a non-existing script resource causes a runtime exception to be thrown.

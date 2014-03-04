@@ -11,9 +11,9 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.event.ContextClosedEvent;
 import org.springframework.context.event.ContextRefreshedEvent;
 
-public class DatabasePopulateApplicationListenerTest {
+public class PopulateApplicationListenerTest {
 
-    private DatabasePopulatingListener applicationListener;
+    private PopulateApplicationListener applicationListener;
 
     private DatabasePopulator initializer;
     
@@ -26,7 +26,7 @@ public class DatabasePopulateApplicationListenerTest {
     	initializer = mock(DatabasePopulator.class);
     	destroyer = mock(DatabasePopulator.class);
     	
-        applicationListener = new DatabasePopulatingListener();
+        applicationListener = new PopulateApplicationListener();
         applicationListener.setInitializer(initializer);
         applicationListener.setDestroyer(destroyer);
         

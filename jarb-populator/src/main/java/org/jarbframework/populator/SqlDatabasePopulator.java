@@ -31,6 +31,7 @@ public class SqlDatabasePopulator implements DatabasePopulator {
     /** Resource to use. **/
     private final Resource resource;
     
+    /** If we should fail if the resource does not exist. **/
     private boolean failIfNotExists = true;
 
     public SqlDatabasePopulator(DataSource dataSource, InputStream inputStream) {

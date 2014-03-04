@@ -18,8 +18,8 @@ import org.jarbframework.constraint.EnableDatabaseConstraintsConfigurer;
 import org.jarbframework.constraint.metadata.BeanConstraintDescriptor;
 import org.jarbframework.constraint.metadata.enhance.AnnotationPropertyTypeEnhancer;
 import org.jarbframework.migrations.EmbeddedMigratingDatabaseBuilder;
-import org.jarbframework.populator.DatabasePopulatingListener;
-import org.jarbframework.populator.DatabasePopulatingListenerBuilder;
+import org.jarbframework.populator.PopulateApplicationListener;
+import org.jarbframework.populator.PopulateApplicationListenerBuilder;
 import org.jarbframework.populator.SqlDatabasePopulator;
 import org.jarbframework.populator.excel.ExcelDatabasePopulator;
 import org.jarbframework.sample.PostPopulator;
@@ -108,8 +108,8 @@ public class ApplicationConfig extends EnableDatabaseConstraintsConfigurer {
         private EntityManagerFactory entityManagerFactory;
         
         @Bean
-        public DatabasePopulatingListener databasePopulatingApplicationListener() {
-            return new DatabasePopulatingListenerBuilder()
+        public PopulateApplicationListener populateAppliationListener() {
+            return new PopulateApplicationListenerBuilder()
                             .initializer()
                                 .add(new SqlDatabasePopulator(dataSource, new ClassPathResource("import.sql")))
                                 .add(new ExcelDatabasePopulator(entityManagerFactory, new ClassPathResource("import.xls")))

@@ -25,7 +25,7 @@ public class PopulateNamespaceHandler extends NamespaceHandlerSupport {
         }
 
         private AbstractBeanDefinition buildListener(Element element) {
-            BeanDefinitionBuilder builder = BeanDefinitionBuilder.genericBeanDefinition(DatabasePopulatingListener.class);
+            BeanDefinitionBuilder builder = BeanDefinitionBuilder.genericBeanDefinition(PopulateApplicationListener.class);
             if (element.hasAttribute("initializer")) {
                 builder.addPropertyReference("initializer", element.getAttribute("initializer"));
             }

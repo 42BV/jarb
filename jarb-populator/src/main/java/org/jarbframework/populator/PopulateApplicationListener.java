@@ -2,6 +2,8 @@ package org.jarbframework.populator;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ApplicationContextEvent;
 import org.springframework.context.event.ContextClosedEvent;
@@ -14,7 +16,9 @@ import org.springframework.context.event.ContextRefreshedEvent;
  * @author Jeroen van Schagen
  * @since 02-11-2011
  */
-public class DatabasePopulatingListener implements ApplicationListener<ApplicationContextEvent> {
+public class PopulateApplicationListener implements ApplicationListener<ApplicationContextEvent> {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(PopulateApplicationListener.class);
 
     /** Describes whether the initializer has already been started. **/
     private final AtomicBoolean initialized = new AtomicBoolean();
@@ -28,8 +32,10 @@ public class DatabasePopulatingListener implements ApplicationListener<Applicati
     @Override
     public void onApplicationEvent(ApplicationContextEvent event) {
         if (event instanceof ContextRefreshedEvent && hasNotBeenInitializedYet()) {
+            LOGGER.info("Populating database...");
             execute(initializer);
         } else if (event instanceof ContextClosedEvent) {
+            LOGGER.info("Cleaning up database...");
             execute(destroyer);
         }
     }

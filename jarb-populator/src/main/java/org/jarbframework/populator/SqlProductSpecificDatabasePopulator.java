@@ -15,13 +15,13 @@ import org.springframework.core.io.ClassPathResource;
  * @author Jeroen van Schagen
  * @since Jan 17, 2014
  */
-public class SqlProductSpecificResourceDatabasePopulator implements DatabasePopulator {
+public class SqlProductSpecificDatabasePopulator implements DatabasePopulator {
 
     private final DataSource dataSource;
 
     private final String resourcePath;
 
-    public SqlProductSpecificResourceDatabasePopulator(DataSource dataSource, String resourcePath) {
+    public SqlProductSpecificDatabasePopulator(DataSource dataSource, String resourcePath) {
         this.dataSource = dataSource;
         this.resourcePath = resourcePath;
     }
@@ -29,13 +29,13 @@ public class SqlProductSpecificResourceDatabasePopulator implements DatabasePopu
     @Override
     public void populate() {
         DatabaseProduct product = DatabaseProduct.fromDataSource(dataSource);
-        String productResourcePath = appendProductNameBeforeExtension(product);
+        String productResourcePath = addProductNameBeforeExtension(product);
         
         populateFromClassPathIfExists(resourcePath);
         populateFromClassPathIfExists(productResourcePath);
     }
     
-    private String appendProductNameBeforeExtension(DatabaseProduct product) {
+    private String addProductNameBeforeExtension(DatabaseProduct product) {
         String baseResourcePath = StringUtils.substringBeforeLast(resourcePath, ".");
         String productName = StringUtils.substringBefore(product.getName(), " ").toLowerCase();
         String extension = StringUtils.substringAfterLast(resourcePath, ".");

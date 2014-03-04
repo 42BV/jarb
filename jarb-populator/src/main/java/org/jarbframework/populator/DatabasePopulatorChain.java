@@ -13,6 +13,10 @@ public class DatabasePopulatorChain implements DatabasePopulator {
     public DatabasePopulatorChain() {
     }
     
+    public DatabasePopulatorChain(DatabasePopulator populator) {
+        this.populators.add(populator);
+    }
+
     public DatabasePopulatorChain(Collection<DatabasePopulator> populators) {
         this.populators.addAll(populators);
     }
@@ -32,6 +36,10 @@ public class DatabasePopulatorChain implements DatabasePopulator {
     public DatabasePopulatorChain add(DatabasePopulator populator) {
         populators.add(populator);
         return this;
+    }
+
+    public boolean isEmpty() {
+        return populators.isEmpty();
     }
 
 }
