@@ -60,7 +60,7 @@
 	                <property name="username" value="sa"/>
 	            </bean>
 	        </constructor-arg>
-	        <property name="migrator" ref="migrator"/>
+	        <constructor-arg ref="migrator"/>
 	    </bean>
 	    
     </beans>
@@ -81,7 +81,7 @@
                     <property name="username" value="sa"/>
                 </bean>
             </constructor-arg>
-            <property name="migrator" ref="migrator"/>
+            <constructor-arg ref="migrator"/>
         </bean>
         
     </beans>

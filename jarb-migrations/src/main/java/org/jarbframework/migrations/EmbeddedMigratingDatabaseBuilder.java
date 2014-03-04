@@ -44,12 +44,17 @@ public class EmbeddedMigratingDatabaseBuilder extends EmbeddedDatabaseBuilder {
 
         EmbeddedDatabase embeddedDatabase = super.build();
         
-        MigratingDataSource migratingDataSource = new MigratingDataSource(embeddedDatabase);
-        migratingDataSource.setMigrator(migrator);
+        MigratingDataSource migratingDataSource = new MigratingDataSource(embeddedDatabase, migrator);
         return new MigratingEmbeddedDatabase(migratingDataSource, embeddedDatabase);
 
     }
 
+    /**
+     * Adapts the migrating data source to our embedded database interface.
+     *
+     * @author Jeroen van Schagen
+     * @since Mar 4, 2014
+     */
     public class MigratingEmbeddedDatabase extends DataSourceDelegate implements EmbeddedDatabase {
         
         private final EmbeddedDatabase embeddedDatabase;

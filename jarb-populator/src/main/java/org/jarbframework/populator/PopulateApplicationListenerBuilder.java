@@ -110,10 +110,8 @@ public class PopulateApplicationListenerBuilder {
          * @return this builder, for chaining
          */
         private PopulatorAppendCommand async(boolean async) {
-            if (this.async != async) {
-                addToChain();
-                this.async = async;
-            }
+            addToChain();
+            this.async = async;
 
             return this;
         }

@@ -8,6 +8,7 @@ import java.sql.SQLException;
 
 import javax.sql.DataSource;
 
+import org.jarbframework.utils.Asserts;
 import org.jarbframework.utils.DataSourceDelegate;
 
 /**
@@ -17,10 +18,8 @@ import org.jarbframework.utils.DataSourceDelegate;
  */
 public class MigratingDataSource extends DataSourceDelegate {
     
-    private boolean migrated = false;
-
     /** Performs the actual database migration on a JDBC connection. **/
-    private DatabaseMigrator migrator;
+    private final DatabaseMigrator migrator;
 
     /** Migration username, whenever left empty we use the data source username. **/
     private String username;
@@ -28,8 +27,11 @@ public class MigratingDataSource extends DataSourceDelegate {
     /** Migration password, only used whenever the username property is not blank. **/
     private String password;
 
-    public MigratingDataSource(DataSource delegate) {
+    private boolean migrated = false;
+    
+    public MigratingDataSource(DataSource delegate, DatabaseMigrator migrator) {
         super(delegate);
+        this.migrator = Asserts.notNull(migrator, "Migrator cannot be null");
     }
 
     @Override
@@ -67,10 +69,6 @@ public class MigratingDataSource extends DataSourceDelegate {
 
     private Connection openMigrationConnection() throws SQLException {
         return (username == null || username.isEmpty()) ? super.getConnection() : super.getConnection(username, password);
-    }
-
-    public void setMigrator(DatabaseMigrator migrator) {
-        this.migrator = migrator;
     }
 
     public void setUsername(String username) {

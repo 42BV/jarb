@@ -97,9 +97,7 @@ public class TestConstraintsConfig {
         LiquibaseMigrator migrator = new LiquibaseMigrator("src/test/resources");
         migrator.setChangeLogPath("create-schema.groovy");
 
-        MigratingDataSource migratingDataSource = new MigratingDataSource(dataSource);
-        migratingDataSource.setMigrator(migrator);
-        return migratingDataSource;
+        return new MigratingDataSource(dataSource, migrator);
     }
     
 }

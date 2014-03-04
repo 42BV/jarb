@@ -19,7 +19,7 @@ public class DataSourceDelegate implements DataSource {
     private final DataSource delegate;
 
     public DataSourceDelegate(DataSource delegate) {
-        this.delegate = delegate;
+        this.delegate = Asserts.notNull(delegate, "Delegate cannot be null");
     }
 
     /**
