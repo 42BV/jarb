@@ -24,7 +24,7 @@ import org.springframework.stereotype.Repository;
 @Target(ElementType.TYPE)
 @Documented
 @Inherited
-@Import(EnableDatabaseConstraintsConfiguration.class)
+@Import(DatabaseConstraintsConfiguration.class)
 public @interface EnableDatabaseConstraints {
 
     /**
@@ -49,11 +49,11 @@ public @interface EnableDatabaseConstraints {
     String dataSource() default "dataSource";
     
     /**
-     * The annotation that should perform the exception translations.
-     * By default we take the {@link Repository} class.
+     * The bean annotations that we should proxy to translate exceptions.
+     * By default we proxy the {@link Repository} beans.
      * 
      * @return the annotation that performs exception translations
      */
-    Class<? extends Annotation> exceptionTranslatingAnnotation() default Repository.class;
+    Class<? extends Annotation> translate() default Repository.class;
 
 }

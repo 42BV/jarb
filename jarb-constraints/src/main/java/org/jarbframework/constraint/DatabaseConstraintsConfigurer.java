@@ -13,7 +13,7 @@ import org.jarbframework.constraint.violation.resolver.ConfigurableViolationReso
  * @author Jeroen van Schagen
  * @since Feb 12, 2014
  */
-public abstract class EnableDatabaseConstraintsConfigurer {
+public abstract class DatabaseConstraintsConfigurer {
     
     public void addViolationResolvers(ConfigurableViolationResolver resolver) {
         // No operation

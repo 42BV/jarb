@@ -5,7 +5,7 @@ import static org.junit.Assert.assertTrue;
 
 import javax.persistence.ManyToOne;
 
-import org.jarbframework.constraint.EnableDatabaseConstraintsConfigurer;
+import org.jarbframework.constraint.DatabaseConstraintsConfigurer;
 import org.jarbframework.constraint.TestConstraintsConfig;
 import org.jarbframework.constraint.domain.Country;
 import org.jarbframework.constraint.domain.Wine;
@@ -56,7 +56,7 @@ public class BeanConstraintDescriptorTest {
     }
     
     @Configuration
-    public static class CustomConstraintsConfig extends EnableDatabaseConstraintsConfigurer {
+    public static class CustomConstraintsConfig extends DatabaseConstraintsConfigurer {
         
         @Override
         public void addPropertyEnhancers(BeanConstraintDescriptor descriptor) {

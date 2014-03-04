@@ -45,7 +45,7 @@ import org.springframework.stereotype.Repository;
  * @author Jeroen van Schagen
  * @since 17-05-2011
  */
-public class ExceptionTranslatingBeanPostProcessor extends AdvisorAddingBeanPostProcessor {
+public class TranslateExceptionsBeanPostProcessor extends AdvisorAddingBeanPostProcessor {
 
     /** Converted into a persistence exception translator. */
     private final DatabaseConstraintExceptionTranslator translator;
@@ -58,7 +58,7 @@ public class ExceptionTranslatingBeanPostProcessor extends AdvisorAddingBeanPost
      * 
      * @param translator the exception translator
      */
-    public ExceptionTranslatingBeanPostProcessor(DatabaseConstraintExceptionTranslator translator) {
+    public TranslateExceptionsBeanPostProcessor(DatabaseConstraintExceptionTranslator translator) {
         this(translator, Repository.class);
     }
     
@@ -68,7 +68,7 @@ public class ExceptionTranslatingBeanPostProcessor extends AdvisorAddingBeanPost
      * @param translator the exception translator
      * @param annotationClass the annotation that should bind our translations
      */
-    public ExceptionTranslatingBeanPostProcessor(DatabaseConstraintExceptionTranslator translator, Class<? extends Annotation> annotationClass) {
+    public TranslateExceptionsBeanPostProcessor(DatabaseConstraintExceptionTranslator translator, Class<? extends Annotation> annotationClass) {
         this(translator, new AnnotationMatchingPointcut(annotationClass, true));
     }
 
@@ -78,7 +78,7 @@ public class ExceptionTranslatingBeanPostProcessor extends AdvisorAddingBeanPost
      * @param translator the exception translator
      * @param pointcut the pointcut
      */
-    public ExceptionTranslatingBeanPostProcessor(DatabaseConstraintExceptionTranslator translator, Pointcut pointcut) {
+    public TranslateExceptionsBeanPostProcessor(DatabaseConstraintExceptionTranslator translator, Pointcut pointcut) {
         this.translator = translator;
         this.pointcut = pointcut;
 

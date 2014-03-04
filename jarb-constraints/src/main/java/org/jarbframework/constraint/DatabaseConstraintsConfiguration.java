@@ -16,7 +16,7 @@ import org.jarbframework.constraint.metadata.DefaultBeanConstraintDescriptor;
 import org.jarbframework.constraint.metadata.database.BeanMetadataRepository;
 import org.jarbframework.constraint.metadata.database.BeanMetadataRepositoryFactoryBean;
 import org.jarbframework.constraint.violation.DatabaseConstraintExceptionTranslator;
-import org.jarbframework.constraint.violation.ExceptionTranslatingBeanPostProcessor;
+import org.jarbframework.constraint.violation.TranslateExceptionsBeanPostProcessor;
 import org.jarbframework.constraint.violation.factory.ConfigurableConstraintExceptionFactory;
 import org.jarbframework.constraint.violation.factory.DatabaseConstraintExceptionFactory;
 import org.jarbframework.constraint.violation.resolver.ConfigurableViolationResolver;
@@ -37,19 +37,19 @@ import org.springframework.core.type.AnnotationMetadata;
  * @since Feb 11, 2014
  */
 @Configuration
-public class EnableDatabaseConstraintsConfiguration implements ImportAware, InitializingBean {
+public class DatabaseConstraintsConfiguration implements ImportAware, InitializingBean {
     
     // Meta-data constants
 
     private static final String BASE_PACKAGE_REF = "basePackage";
     private static final String DATA_SOURCE_REF = "dataSource";
     private static final String ENTITY_MANAGER_FACTORY_REF = "entityManagerFactory";
-    private static final String TRANSLATING_ANNOTATION_REF = "exceptionTranslatingAnnotation";
+    private static final String TRANSLATE_ANNOTATION_REF = "translate";
 
     private Map<String, Object> attributes;
     
     @Autowired(required = false)
-    private Set<EnableDatabaseConstraintsConfigurer> configurers = new HashSet<>();
+    private Set<DatabaseConstraintsConfigurer> configurers = new HashSet<>();
 
     @Autowired
     private ApplicationContext applicationContext;
@@ -71,7 +71,7 @@ public class EnableDatabaseConstraintsConfiguration implements ImportAware, Init
     public DatabaseConstraintViolationResolver violationResolver() {
         String basePackage = attributes.get(BASE_PACKAGE_REF).toString();
         ConfigurableViolationResolver violationResolver = new ConfigurableViolationResolver(dataSource, basePackage);
-        for (EnableDatabaseConstraintsConfigurer configurer : configurers) {
+        for (DatabaseConstraintsConfigurer configurer : configurers) {
             configurer.addViolationResolvers(violationResolver);
         }
         return violationResolver;
@@ -81,7 +81,7 @@ public class EnableDatabaseConstraintsConfiguration implements ImportAware, Init
     public DatabaseConstraintExceptionFactory exceptionFactory() {
         String basePackage = attributes.get(BASE_PACKAGE_REF).toString();
         ConfigurableConstraintExceptionFactory exceptionFactory = new ConfigurableConstraintExceptionFactory();
-        for (EnableDatabaseConstraintsConfigurer configurer : configurers) {
+        for (DatabaseConstraintsConfigurer configurer : configurers) {
             configurer.addConstraintExceptions(exceptionFactory);
         }
         return exceptionFactory.registerAll(basePackage);
@@ -89,9 +89,9 @@ public class EnableDatabaseConstraintsConfiguration implements ImportAware, Init
     
     @Bean
     @SuppressWarnings("unchecked")
-    public ExceptionTranslatingBeanPostProcessor exceptionTranslatingBeanPostProcessor() throws Exception {
-        Class<? extends Annotation> annotation = (Class<? extends Annotation>) attributes.get(TRANSLATING_ANNOTATION_REF);
-        return new ExceptionTranslatingBeanPostProcessor(exceptionTranslator(), annotation);
+    public TranslateExceptionsBeanPostProcessor exceptionTranslatingBeanPostProcessor() throws Exception {
+        Class<? extends Annotation> annotation = (Class<? extends Annotation>) attributes.get(TRANSLATE_ANNOTATION_REF);
+        return new TranslateExceptionsBeanPostProcessor(exceptionTranslator(), annotation);
     }
     
     //
@@ -110,7 +110,7 @@ public class EnableDatabaseConstraintsConfiguration implements ImportAware, Init
     @Bean
     public BeanConstraintDescriptor beanConstraintDescriptor() throws Exception {
         BeanConstraintDescriptor beanConstraintDescriptor = new DefaultBeanConstraintDescriptor(beanMetadataRepository());
-        for (EnableDatabaseConstraintsConfigurer configurer : configurers) {
+        for (DatabaseConstraintsConfigurer configurer : configurers) {
             configurer.addPropertyEnhancers(beanConstraintDescriptor);
         }
         return beanConstraintDescriptor;

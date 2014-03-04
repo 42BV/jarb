@@ -1,7 +1,5 @@
-package org.jarbframework.sample;
+package org.jarbframework.sample.config;
 
-import org.jarbframework.sample.config.ApplicationConfig;
-import org.jarbframework.sample.config.WebMvcConfig;
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 
 /**
@@ -12,7 +10,7 @@ import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatche
  *
  * @author Jeroen van Schagen
  */
-public class PostDispatcherServletInitializer extends AbstractAnnotationConfigDispatcherServletInitializer {
+public class ServletInitializer extends AbstractAnnotationConfigDispatcherServletInitializer {
 
     @Override
     protected Class<?>[] getRootConfigClasses() {
