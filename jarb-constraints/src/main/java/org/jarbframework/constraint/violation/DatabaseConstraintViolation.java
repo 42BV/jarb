@@ -46,7 +46,7 @@ public final class DatabaseConstraintViolation {
     }
     
     public DatabaseConstraintViolation(DatabaseConstraintType constraintType, String constraintName) {
-        if(constraintType == null && isBlank(constraintName)) {
+        if (constraintType == null && isBlank(constraintName)) {
             throw new IllegalArgumentException("Should provide a constraint type or name.");
         }
         

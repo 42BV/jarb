@@ -39,6 +39,7 @@ public class PatternPropertyConstraintEnhancerTest {
         @Pattern(regexp = "test")
         private String patterned;
         
+        @SuppressWarnings("unused")
         private String empty;
         
     }

@@ -18,6 +18,12 @@ import org.jarbframework.constraint.metadata.enhance.LengthPropertyConstraintEnh
 import org.jarbframework.constraint.metadata.enhance.NotEmptyPropertyConstraintEnhancer;
 import org.jarbframework.constraint.metadata.enhance.NotNullPropertyConstraintEnhancer;
 import org.jarbframework.constraint.metadata.enhance.PatternPropertyConstraintEnhancer;
+import org.jarbframework.constraint.metadata.enhance.PropertyTypeEnhancer;
+import org.jarbframework.constraint.metadata.types.Currency;
+import org.jarbframework.constraint.metadata.types.Factor;
+import org.jarbframework.constraint.metadata.types.Percentage;
+import org.jarbframework.constraint.metadata.types.Phone;
+import org.jarbframework.constraint.metadata.types.PropertyType;
 import org.jarbframework.utils.Classes;
 
 /**
@@ -44,6 +50,12 @@ public class DefaultBeanConstraintDescriptor extends BeanConstraintDescriptor {
         registerEnhancer(new ClassPropertyTypeEnhancer(String.class, "text"));
         registerEnhancer(new ClassPropertyTypeEnhancer(Date.class, "date"));
         registerEnhancer(new ClassPropertyTypeEnhancer(Number.class, "number"));
+        
+        registerEnhancer(new PropertyTypeEnhancer(PropertyType.class));
+        registerEnhancer(new PropertyTypeEnhancer(Currency.class));
+        registerEnhancer(new PropertyTypeEnhancer(Factor.class));
+        registerEnhancer(new PropertyTypeEnhancer(Percentage.class));
+        registerEnhancer(new PropertyTypeEnhancer(Phone.class));
     }
     
     private void registerHibernateEnhancers() {
