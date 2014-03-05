@@ -69,7 +69,7 @@ public final class FlexibleBeanWrapper<T> {
         }
     }
     
-    public Object getPropertyValueSafely(String propertyName) {
+    public Object getPropertyValueNullSafe(String propertyName) {
         Object value = null;
         try {
             value = getPropertyValue(propertyName);

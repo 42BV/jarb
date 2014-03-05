@@ -62,47 +62,47 @@ public class DatabaseConstraintValidator {
     /**
      * Determine if a bean follows all column constraints defined in the database.
      * @param bean the bean that should be validated
-     * @param beanReference the reference to our bean, or {@code null} if the bean is our root
+     * @param root the reference to our bean, or {@code null} if the bean is our root
      * @param validatorContext used to create constraint violations
      * @return whether the bean is valid, or not
      */
-	public boolean isValid(Object bean, PropertyReference beanReference, ConstraintValidatorContext validatorContext) {
+	public boolean isValid(Object bean, PropertyReference root, ConstraintValidatorContext validatorContext) {
         DatabaseConstraintValidationContext validation = new DatabaseConstraintValidationContext(validatorContext, messageBuilder);
-        validateBean(bean, beanReference, validation);
+        validateBean(bean, root, validation);
         return validation.isValid();
 	}
 
-    private void validateBean(Object bean, PropertyReference beanReference, DatabaseConstraintValidationContext validation) {
+    private void validateBean(Object bean, PropertyReference root, DatabaseConstraintValidationContext validation) {
     	FlexibleBeanWrapper<?> beanWrapper = FlexibleBeanWrapper.wrap(bean);
         for (String propertyName : BeanProperties.getFieldNames(bean.getClass())) {
-			validateProperty(beanWrapper, new PropertyReference(bean.getClass(), propertyName), beanReference, validation);
+			validateProperty(beanWrapper, new PropertyReference(bean.getClass(), propertyName), root, validation);
         }
     }
 
-    private void validateProperty(FlexibleBeanWrapper<?> beanWrapper, PropertyReference propertyReference, PropertyReference beanReference, DatabaseConstraintValidationContext validation) {
-        Field propertyField = BeanProperties.findPropertyField(propertyReference);
+    private void validateProperty(FlexibleBeanWrapper<?> beanWrapper, PropertyReference property, PropertyReference root, DatabaseConstraintValidationContext validation) {
+        Field propertyField = BeanProperties.findPropertyField(property);
         if (! Modifier.isStatic(propertyField.getModifiers())) {
             Class<?> propertyClass = propertyField.getType();
             if (beanMetadataRepository.isEmbeddable(propertyClass)) {
             	for (String propertyName : BeanProperties.getFieldNames(propertyClass)) {
-                    validateProperty(beanWrapper, new PropertyReference(propertyReference, propertyName), beanReference, validation);
+                    validateProperty(beanWrapper, new PropertyReference(property, propertyName), root, validation);
                 }
             } else {
-                validateSimpleProperty(beanWrapper, propertyReference, beanReference, validation);
+                validateSimpleProperty(beanWrapper, property, root, validation);
             }
         }
     }
 
-    private void validateSimpleProperty(FlexibleBeanWrapper<?> beanWrapper, PropertyReference propertyReference, PropertyReference beanReference, DatabaseConstraintValidationContext validation) {
-        PropertyReference finalPropertyReference = propertyReference.wrap(beanReference);
-        ColumnMetadata columnMetadata = beanMetadataRepository.getColumnMetadata(finalPropertyReference);
+    private void validateSimpleProperty(FlexibleBeanWrapper<?> beanWrapper, PropertyReference property, PropertyReference root, DatabaseConstraintValidationContext validation) {
+        PropertyReference actualProperty = property.wrap(root);
+        ColumnMetadata columnMetadata = beanMetadataRepository.getColumnMetadata(actualProperty);
         if (columnMetadata != null) {
-            Object propertyValue = beanWrapper.getPropertyValueSafely(propertyReference.getName());
+            Object propertyValue = beanWrapper.getPropertyValueNullSafe(property.getName());
             for (DatabaseConstraintValidationStep validationStep : validationSteps) {
-                validationStep.validate(propertyValue, propertyReference, columnMetadata, validation);
+                validationStep.validate(propertyValue, property, columnMetadata, validation);
             }
         } else {
-            logger.warn("Skipped validation because no metadata could be found for property '{}'.", finalPropertyReference);
+            logger.debug("Skipped validation because no metadata could be found for property '{}'.", actualProperty);
         }
     }
 

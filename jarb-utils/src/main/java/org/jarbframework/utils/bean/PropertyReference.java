@@ -78,11 +78,11 @@ public class PropertyReference {
         return beanClass.getSimpleName() + "." + name;
     }
 
-	public PropertyReference wrap(PropertyReference parent) {
-		if (parent == null) {
+	public PropertyReference wrap(PropertyReference reference) {
+		if (reference == null) {
 			return this;
 		}
-		return new PropertyReference(parent, name);
+		return new PropertyReference(reference, name);
 	}
 	
 }
