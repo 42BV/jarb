@@ -14,7 +14,6 @@
 	<description>Provides common utilities</description>
 	
 	<dependencies>
-
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-orm</artifactId>

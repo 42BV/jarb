@@ -14,68 +14,63 @@
 	<description>Module for handling database constraints</description>
 
 	<dependencies>
-	    <!-- Commons -->
-        <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-            <version>14.0.1</version>
-        </dependency>
         <dependency>
 			<groupId>org.jarbframework</groupId>
 			<artifactId>jarb-utils</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-		
+	
+		<!-- Predicates -->
+		<!-- TODO: Remove this -->
         <dependency>
-            <!-- Java persistence API -->
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>16.0.1</version>
+        </dependency>
+		
+		<!-- Hibernate JPA -->
+        <dependency>
             <groupId>org.hibernate.javax.persistence</groupId>
             <artifactId>hibernate-jpa-2.0-api</artifactId>
             <version>1.0.0.Final</version>
-            <optional>true</optional>
+            <scope>provided</scope>
         </dependency>
         <dependency>
-            <!-- Hibernate validator API -->
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-validator</artifactId>
             <version>4.3.1.Final</version>
-            <optional>true</optional>
+            <scope>provided</scope>
         </dependency>
-		
 		<dependency>
-	    	<!-- Hibernate constants -->
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-core</artifactId>
             <version>${hibernate.version}</version>
-            <optional>true</optional>
+            <scope>provided</scope>
         </dependency>
 
 		<!-- Testing -->
 		<dependency>
-	    	<!-- Used to create our schema during testing -->
             <groupId>org.jarbframework</groupId>
             <artifactId>jarb-migrations</artifactId>
             <version>${project.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
-        	<!-- Integrates hibernate in spring -->
             <groupId>org.springframework</groupId>
             <artifactId>spring-orm</artifactId>
             <version>${spring.version}</version>
         </dependency>
         <dependency>
-        	<!-- Hibernate implementation of JPA -->
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-entitymanager</artifactId>
             <version>${hibernate.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
-            <!-- Hibernate dependency -->
             <groupId>javassist</groupId>
             <artifactId>javassist</artifactId>
             <version>3.12.0.GA</version>
-            <scope>runtime</scope>
+            <scope>test</scope>
         </dependency>
 	</dependencies>
 

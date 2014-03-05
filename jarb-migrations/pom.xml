@@ -19,8 +19,14 @@
 			<artifactId>jarb-utils</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-
-        <!-- Database migration vendor(s) -->
+                
+        <!-- Embedded database support -->
+		<dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-jdbc</artifactId>
+            <version>${spring.version}</version>
+            <scope>provided</scope>
+        </dependency>
         
         <!-- Liquibase -->
         <dependency>
@@ -34,13 +40,6 @@
             <artifactId>groovy-liquibase-dsl</artifactId>
             <version>0.7.0</version>
             <scope>runtime</scope>
-        </dependency>
-        
-        <!-- Template for SQL statements -->
-		<dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-jdbc</artifactId>
-            <version>${spring.version}</version>
         </dependency>
 	</dependencies>
 

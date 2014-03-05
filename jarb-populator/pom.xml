@@ -20,11 +20,12 @@
             <version>${project.version}</version>
         </dependency>
         
+        <!-- SQL database populator -->
 		<dependency>
-            <!-- SQL database population -->
             <groupId>org.springframework</groupId>
             <artifactId>spring-jdbc</artifactId>
             <version>${spring.version}</version>
+            <scope>provided</scope>
         </dependency>
 	</dependencies>
 
