@@ -1,7 +1,7 @@
 package org.jarbframework.constraint.violation.factory;
 
-import org.apache.commons.lang3.StringUtils;
 import org.jarbframework.constraint.violation.DatabaseConstraintViolation;
+import org.jarbframework.utils.StringUtils;
 
 import com.google.common.base.Predicate;
 

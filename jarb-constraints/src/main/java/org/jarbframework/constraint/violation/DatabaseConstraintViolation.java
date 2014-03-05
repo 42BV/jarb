@@ -1,9 +1,6 @@
 package org.jarbframework.constraint.violation;
 
-import static org.apache.commons.lang3.StringUtils.isBlank;
-
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
+import org.jarbframework.utils.StringUtils;
 
 /**
  * Representation of the constraint violation that occurred.
@@ -46,7 +43,7 @@ public final class DatabaseConstraintViolation {
     }
     
     public DatabaseConstraintViolation(DatabaseConstraintType constraintType, String constraintName) {
-        if (constraintType == null && isBlank(constraintName)) {
+        if (constraintType == null && StringUtils.isBlank(constraintName)) {
             throw new IllegalArgumentException("Should provide a constraint type or name.");
         }
         
@@ -232,7 +229,7 @@ public final class DatabaseConstraintViolation {
      */
     @Override
     public String toString() {
-        return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
+        return constraintType + ": " + constraintName;
     }
     
 }

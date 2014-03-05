@@ -1,7 +1,6 @@
 package org.jarbframework.constraint.violation.factory;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,6 +9,7 @@ import java.util.Set;
 import org.jarbframework.constraint.violation.DatabaseConstraintViolation;
 import org.jarbframework.constraint.violation.factory.reflection.ReflectionConstraintExceptionFactory;
 import org.jarbframework.utils.ClassScanner;
+import org.jarbframework.utils.StringUtils;
 import org.springframework.core.annotation.AnnotationUtils;
 
 import com.google.common.base.Predicate;
@@ -102,7 +102,7 @@ public class ConfigurableConstraintExceptionFactory implements DatabaseConstrain
      * @return this factory instance, for chaining
      */
     public ConfigurableConstraintExceptionFactory registerAll(String basePackage) {
-        if (isNotBlank(basePackage)) {
+        if (StringUtils.isNotBlank(basePackage)) {
             Set<Class<?>> annotatedClasses = ClassScanner.getAllWithAnnotation(basePackage, NamedConstraint.class);
 	        for(Class<?> annotatedClass : annotatedClasses) {
 	            NamedConstraint namedConstraint = AnnotationUtils.findAnnotation(annotatedClass, NamedConstraint.class);

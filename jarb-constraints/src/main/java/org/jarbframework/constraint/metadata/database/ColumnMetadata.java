@@ -1,7 +1,5 @@
 package org.jarbframework.constraint.metadata.database;
 
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
 import org.jarbframework.utils.Asserts;
 import org.jarbframework.utils.orm.ColumnReference;
 
@@ -185,7 +183,7 @@ public class ColumnMetadata {
 
     @Override
     public String toString() {
-        return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
+        return columnReference.toString();
     }
     
 }

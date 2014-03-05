@@ -8,10 +8,10 @@ import static org.jarbframework.constraint.violation.DatabaseConstraintType.NOT_
 import static org.jarbframework.constraint.violation.DatabaseConstraintType.UNIQUE_KEY;
 import static org.jarbframework.constraint.violation.DatabaseConstraintViolation.builder;
 
-import org.apache.commons.lang3.StringUtils;
 import org.jarbframework.constraint.violation.DatabaseConstraintViolation;
 import org.jarbframework.constraint.violation.resolver.PatternViolationResolver;
 import org.jarbframework.utils.DatabaseProduct;
+import org.jarbframework.utils.StringUtils;
 
 /**
  * Oracle based constraint violation resolver.

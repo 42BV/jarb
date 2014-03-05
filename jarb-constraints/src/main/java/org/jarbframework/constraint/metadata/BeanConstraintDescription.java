@@ -4,9 +4,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
-
 /**
  * Describes the constraints of a baen.
  * 
@@ -50,11 +47,6 @@ public class BeanConstraintDescription {
      */
     public void addProperty(PropertyConstraintDescription property) {
         properties.put(property.getName(), property);
-    }
-
-    @Override
-    public String toString() {
-        return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
     }
 
 }

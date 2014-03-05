@@ -151,7 +151,7 @@ public class AnnotationJpaHibernateSchemaMapper implements SchemaMapper {
         ColumnReference columnReference = null;
         if (isMappedToColumn(propertyReference)) {
             String columnName = columnName(propertyReference);
-            columnReference = new ColumnReference(columnName);
+            columnReference = new ColumnReference("unknown", columnName);
         }
         return columnReference;
     }

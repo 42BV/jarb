@@ -1,12 +1,5 @@
 package org.jarbframework.constraint.metadata.database;
 
-import static org.apache.commons.lang3.StringUtils.endsWith;
-import static org.apache.commons.lang3.StringUtils.isNotBlank;
-import static org.apache.commons.lang3.StringUtils.lowerCase;
-import static org.apache.commons.lang3.StringUtils.startsWith;
-import static org.apache.commons.lang3.StringUtils.substringBetween;
-import static org.apache.commons.lang3.StringUtils.upperCase;
-
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
@@ -16,6 +9,7 @@ import javax.sql.DataSource;
 
 import org.jarbframework.utils.JdbcConnectionCallback;
 import org.jarbframework.utils.JdbcUtils;
+import org.jarbframework.utils.StringUtils;
 import org.jarbframework.utils.orm.ColumnReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -97,7 +91,7 @@ public class JdbcColumnMetadataRepository implements ColumnMetadataRepository {
     private Integer getValueAsInteger(ResultSet resultSet, String columnLabel) throws SQLException {
         Integer value = null;
         String numberAsString = resultSet.getString(columnLabel);
-        if (isNotBlank(numberAsString)) {
+        if (StringUtils.isNotBlank(numberAsString)) {
             value = Integer.parseInt(numberAsString);
         }
         return value;
@@ -144,9 +138,9 @@ public class JdbcColumnMetadataRepository implements ColumnMetadataRepository {
                 identifier = applyQuoted(identifier);
             } else {
                 if (storeLowerCase) {
-                    identifier = lowerCase(identifier);
+                    identifier = identifier.toLowerCase();
                 } else if (storeUpperCase) {
-                    identifier = upperCase(identifier);
+                    identifier = identifier.toUpperCase();
                 }
             }
             return identifier;
@@ -154,18 +148,20 @@ public class JdbcColumnMetadataRepository implements ColumnMetadataRepository {
 
         private boolean isQuoted(String identifier) {
             boolean quoted = false;
-            if (isNotBlank(quoteString)) {
-                quoted = startsWith(identifier, quoteString) && endsWith(identifier, quoteString);
+            if (StringUtils.isNotBlank(quoteString)) {
+                quoted = identifier.startsWith(quoteString) && identifier.endsWith(quoteString);
             }
             return quoted;
         }
 
         private String applyQuoted(String identifier) {
-            String unquotedIdentifier = substringBetween(identifier, quoteString);
+            int startIndex = quoteString.length();
+            int endIndex = identifier.length() - startIndex;
+            String unquotedIdentifier = identifier.substring(startIndex, endIndex);
             if (storeLowerCaseQuoted) {
-                unquotedIdentifier = lowerCase(unquotedIdentifier);
+                unquotedIdentifier = unquotedIdentifier.toLowerCase();
             } else if (storeUpperCaseQuoted) {
-                unquotedIdentifier = upperCase(unquotedIdentifier);
+                unquotedIdentifier = unquotedIdentifier.toUpperCase();
             }
             return unquotedIdentifier;
         }

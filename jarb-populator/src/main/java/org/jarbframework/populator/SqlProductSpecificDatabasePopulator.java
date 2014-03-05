@@ -5,8 +5,8 @@ package org.jarbframework.populator;
 
 import javax.sql.DataSource;
 
-import org.apache.commons.lang3.StringUtils;
 import org.jarbframework.utils.DatabaseProduct;
+import org.jarbframework.utils.StringUtils;
 import org.springframework.core.io.ClassPathResource;
 
 /**

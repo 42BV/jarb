@@ -6,8 +6,6 @@ import static org.jarbframework.utils.Asserts.notNull;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
 import org.jarbframework.utils.bean.PropertyReference;
 
 /**
@@ -149,7 +147,7 @@ public class PropertyConstraintDescription {
      */
     @Override
     public String toString() {
-        return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
+        return reference.toString();
     }
 
 }

@@ -1,6 +1,5 @@
 package org.jarbframework.utils;
 
-import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 /**
  * Performs precondition checks on the code.
@@ -38,7 +37,7 @@ public final class Asserts {
      * @return provided text, used for chaining
      */
     public static String hasText(String text, String message) {
-        state(isNotBlank(text), message);
+        state(StringUtils.isNotBlank(text), message);
         return text;
     }
 

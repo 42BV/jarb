@@ -2,7 +2,7 @@ package org.jarbframework.utils.orm.hibernate;
 
 import org.hibernate.cfg.ImprovedNamingStrategy;
 import org.hibernate.internal.util.StringHelper;
-import org.jarbframework.utils.orm.MappingUtils;
+import org.jarbframework.utils.StringUtils;
 
 /**
  * Naming strategy that describes our mapping between classes and tables.
@@ -16,17 +16,17 @@ public class ConventionNamingStrategy extends ImprovedNamingStrategy {
     @Override
     public String propertyToColumnName(String propertyName) {
         String simplePropertyName = StringHelper.unqualify(propertyName);
-        return MappingUtils.lowerCaseWithUnderscores(simplePropertyName);
+        return StringUtils.lowerCaseWithUnderscores(simplePropertyName);
     }
 
     @Override
     public String tableName(String tableName) {
-        return MappingUtils.lowerCaseWithUnderscores(tableName);
+        return StringUtils.lowerCaseWithUnderscores(tableName);
     }
 
     @Override
     public String columnName(String columnName) {
-        return MappingUtils.lowerCaseWithUnderscores(columnName);
+        return StringUtils.lowerCaseWithUnderscores(columnName);
     }
 
     @Override

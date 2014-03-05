@@ -2,11 +2,6 @@ package org.jarbframework.utils.orm;
 
 import static org.jarbframework.utils.Asserts.hasText;
 
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
-
 /**
  * References a column in the database.
  *
@@ -18,14 +13,6 @@ public class ColumnReference {
     private String tableName;
     
     private String columnName;
-
-    /**
-     * Create a new database column reference.
-     * @param columnName name of the column
-     */
-    public ColumnReference(String columnName) {
-        this.columnName = hasText(columnName, "Column name is required");
-    }
 
     /**
      * Create a new database column reference.
@@ -47,16 +34,20 @@ public class ColumnReference {
 
     @Override
     public boolean equals(Object obj) {
-        return EqualsBuilder.reflectionEquals(this, obj);
+        if (!(obj instanceof ColumnReference)) {
+            return false;
+        }
+        ColumnReference other = (ColumnReference) obj;
+        return other.getTableName().equals(tableName) && other.getColumnName().equals(columnName);
     }
 
     @Override
     public int hashCode() {
-        return HashCodeBuilder.reflectionHashCode(this);
+        return tableName.hashCode() * columnName.hashCode();
     }
 
     @Override
     public String toString() {
-        return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
+        return tableName + "." + columnName;
     }
 }

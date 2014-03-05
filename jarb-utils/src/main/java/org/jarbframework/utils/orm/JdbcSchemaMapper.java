@@ -3,6 +3,7 @@
  */
 package org.jarbframework.utils.orm;
 
+import org.jarbframework.utils.StringUtils;
 import org.jarbframework.utils.bean.PropertyReference;
 
 /**
@@ -15,13 +16,13 @@ public class JdbcSchemaMapper implements SchemaMapper {
     
     @Override
     public String getTableName(Class<?> beanClass) {
-        return MappingUtils.lowerCaseWithUnderscores(beanClass.getSimpleName());
+        return StringUtils.lowerCaseWithUnderscores(beanClass.getSimpleName());
     }
 
     @Override
     public ColumnReference getColumnReference(PropertyReference propertyReference) {
         String tableName = getTableName(propertyReference.getBeanClass());
-        String columnName = MappingUtils.lowerCaseWithUnderscores(propertyReference.getName());
+        String columnName = StringUtils.lowerCaseWithUnderscores(propertyReference.getName());
         return new ColumnReference(tableName, columnName);
     }
 

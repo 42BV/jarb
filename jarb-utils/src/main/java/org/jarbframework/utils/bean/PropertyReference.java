@@ -1,14 +1,10 @@
 package org.jarbframework.utils.bean;
 
-import static org.apache.commons.lang3.StringUtils.substringAfter;
-import static org.apache.commons.lang3.StringUtils.substringAfterLast;
 import static org.jarbframework.utils.Asserts.hasText;
 import static org.jarbframework.utils.Asserts.notNull;
 
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.jarbframework.utils.Asserts;
+import org.jarbframework.utils.StringUtils;
 
 /**
  * References a bean property.
@@ -25,8 +21,8 @@ public class PropertyReference {
     private final String name;
     
     public PropertyReference(Class<?> beanClass, String name) {
-        this.name = hasText(name, "Property name is required");
         this.beanClass = notNull(beanClass, "Bean class is required");
+        this.name = hasText(name, "Property name is required");
     }
 
     public PropertyReference(PropertyReference parent, String name) {
@@ -38,7 +34,7 @@ public class PropertyReference {
     }
 
     public String getSimpleName() {
-        return isNestedProperty() ? substringAfterLast(name, PROPERTY_SEPARATOR) : name;
+        return isNestedProperty() ? StringUtils.substringAfterLast(name, PROPERTY_SEPARATOR) : name;
     }
 
     public Class<?> getBeanClass() {
@@ -50,7 +46,7 @@ public class PropertyReference {
     }
 
     public String getNestedName() {
-        return isNestedProperty() ? substringAfter(name, PROPERTY_SEPARATOR) : name;
+        return isNestedProperty() ? StringUtils.substringAfter(name, PROPERTY_SEPARATOR) : name;
     }
 
     public PropertyReference getParent() {
@@ -60,17 +56,21 @@ public class PropertyReference {
     }
 
     public String[] getPath() {
-        return StringUtils.split(name, PROPERTY_SEPARATOR);
+        return name.split("\\" + PROPERTY_SEPARATOR);
     }
 
     @Override
     public boolean equals(Object obj) {
-        return EqualsBuilder.reflectionEquals(this, obj);
+        if (!(obj instanceof PropertyReference)) {
+            return false;
+        }
+        PropertyReference other = (PropertyReference) obj;
+        return other.getBeanClass().equals(beanClass) && other.getName().equals(name);
     }
 
     @Override
     public int hashCode() {
-        return HashCodeBuilder.reflectionHashCode(this);
+        return beanClass.hashCode() * name.hashCode();
     }
 
     @Override

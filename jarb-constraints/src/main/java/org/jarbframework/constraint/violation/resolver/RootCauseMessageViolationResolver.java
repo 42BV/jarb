@@ -1,8 +1,7 @@
 package org.jarbframework.constraint.violation.resolver;
 
-import static org.apache.commons.lang3.StringUtils.isNotBlank;
-
 import org.jarbframework.constraint.violation.DatabaseConstraintViolation;
+import org.jarbframework.utils.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,7 +20,7 @@ public abstract class RootCauseMessageViolationResolver implements DatabaseConst
         DatabaseConstraintViolation violation = null;
         
         String message = getRootCause(throwable).getMessage();
-        if (isNotBlank(message)) {
+        if (StringUtils.isNotBlank(message)) {
             logger.debug("Resolving violation based on message: {}", message);
             violation = resolve(message);
         }

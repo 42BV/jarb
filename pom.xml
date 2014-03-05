@@ -87,20 +87,14 @@
 	</build>
 
 	<dependencies>
-		<!-- Spring framework -->
+		<!-- Spring integration -->
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-context</artifactId>
 			<version>${spring.version}</version>
 			<scope>provided</scope>
 		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-test</artifactId>
-			<version>${spring.version}</version>
-			<scope>test</scope>
-		</dependency>
-
+	
 		<!-- Logging -->
 		<dependency>
 			<groupId>org.slf4j</groupId>
@@ -122,6 +116,12 @@
             <version>4.11</version>
             <scope>test</scope>
         </dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-test</artifactId>
+			<version>${spring.version}</version>
+			<scope>test</scope>
+		</dependency>
         <dependency>
             <groupId>org.hamcrest</groupId>
             <artifactId>hamcrest-core</artifactId>
@@ -134,7 +134,8 @@
             <version>${hamcrest.version}</version>
             <scope>test</scope>
         </dependency>
-        
+
+		<!-- Mocking libraries (replace with jMockit) -->        
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>

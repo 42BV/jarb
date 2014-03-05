@@ -1,9 +1,9 @@
 package org.jarbframework.utils.spring;
 
-import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static org.jarbframework.utils.Asserts.notNull;
 
 import org.jarbframework.utils.Asserts;
+import org.jarbframework.utils.StringUtils;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
 
@@ -36,7 +36,7 @@ public class SpringBeanFinder {
     public <T> T findBean(Class<T> beanClass, String identifier) {
         notNull(beanClass, "Bean class cannot be null.");
         
-        if (isNotBlank(identifier)) {
+        if (StringUtils.isNotBlank(identifier)) {
             // Find the bean based on its specified non-blank identifier
             return beanFactory.getBean(identifier, beanClass);
         } else {
