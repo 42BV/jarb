@@ -6,12 +6,10 @@ import static org.junit.Assert.assertTrue;
 
 import java.math.BigDecimal;
 import java.sql.SQLException;
-import java.util.NoSuchElementException;
 
 import org.jarbframework.constraint.domain.CarAlreadyExistsException;
 import org.jarbframework.constraint.domain.CarAlreadyExistsExceptionFactory;
 import org.jarbframework.constraint.violation.DatabaseConstraintViolation;
-import org.jarbframework.constraint.violation.factory.reflection.ReflectionConstraintExceptionFactory;
 import org.junit.Test;
 
 public class ReflectionConstraintExceptionFactoryTest {
@@ -72,7 +70,7 @@ public class ReflectionConstraintExceptionFactoryTest {
     /**
      * Whenever an exception has no supported constructors at all, we throw a runtime exception.
      */
-    @Test(expected = NoSuchElementException.class)
+    @Test(expected = IllegalStateException.class)
     public void testNoMatchingConstructor() {
         new ReflectionConstraintExceptionFactory(UnsupportedArgException.class);
     }

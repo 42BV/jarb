@@ -1,10 +1,10 @@
-package org.jarbframework.constraint.violation.factory.reflection;
+package org.jarbframework.utils.bean;
 
 import static org.springframework.beans.BeanUtils.instantiateClass;
 
 import java.lang.reflect.Constructor;
 
-import com.google.common.base.Preconditions;
+import org.jarbframework.utils.Asserts;
 
 /**
  * Initializes beans dynamically based on the provided arguments. This initializer
@@ -15,13 +15,12 @@ import com.google.common.base.Preconditions;
  *
  * @param <T> type of the bean
  */
-class BeanBuilder<T> {
+public class BeanBuilder<T> {
         
     private final Constructor<T> constructor;
 
     public BeanBuilder(Constructor<T> constructor) {
-        Preconditions.checkNotNull(constructor, "Constructor cannot be null");
-        this.constructor = constructor;
+        this.constructor = Asserts.notNull(constructor, "Constructor cannot be null");
     }
 
     public T instantiate(Object... arguments) {

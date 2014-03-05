@@ -1,4 +1,4 @@
-package org.jarbframework.constraint.violation.factory.reflection;
+package org.jarbframework.utils.bean;
 
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
@@ -7,13 +7,11 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import com.google.common.base.Predicate;
-import com.google.common.collect.Iterables;
-
-final class ConstructorFinder {
+public final class ConstructorFinder {
 	
     /**
      * Find the constructor in a bean that has the most supported argument types.
+     * 
      * @param <T> the type of constructor to return
      * @param beanClass class that contains our constructors
      * @param supportedTypes all supported parameter types
@@ -22,14 +20,12 @@ final class ConstructorFinder {
 	@SuppressWarnings("unchecked")
 	public static <T> Constructor<T> findMostSupportedConstructor(final Class<T> beanClass, final Class<?>... supportedTypes) {
         List<Constructor<?>> constructors = getAllConstructorsSortedOnArgumentTypes(beanClass);
-        return (Constructor<T>) Iterables.find(constructors, new Predicate<Constructor<?>>() {
-            
-            @Override
-            public boolean apply(Constructor<?> constructor) {
-                return isSupportedConstructor(constructor, supportedTypes);
+        for (Constructor<?> constructor : constructors) {
+            if (isSupportedConstructor(constructor, supportedTypes)) {
+                return (Constructor<T>) constructor;
             }
-            
-        });
+        }
+        throw new IllegalStateException("Could not find a supported constructor.");
 	}
 
     private static <T> List<Constructor<?>> getAllConstructorsSortedOnArgumentTypes(Class<T> beanClass) {

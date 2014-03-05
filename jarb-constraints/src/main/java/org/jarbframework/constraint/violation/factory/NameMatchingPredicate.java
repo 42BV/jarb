@@ -3,14 +3,12 @@ package org.jarbframework.constraint.violation.factory;
 import org.jarbframework.constraint.violation.DatabaseConstraintViolation;
 import org.jarbframework.utils.StringUtils;
 
-import com.google.common.base.Predicate;
-
 /**
  * Matches constraint violations based on their constraint name.
  * @author Jeroen van Schagen
  * @since Sep 2, 2011
  */
-public class NameMatchingPredicate implements Predicate<DatabaseConstraintViolation> {
+public class NameMatchingPredicate implements ViolationPredicate {
     
 	/** The expected constraint name. */
     private final String expectedName;
@@ -29,7 +27,7 @@ public class NameMatchingPredicate implements Predicate<DatabaseConstraintViolat
     }
 
     @Override
-    public boolean apply(DatabaseConstraintViolation violation) {
+    public boolean isSupported(DatabaseConstraintViolation violation) {
     	boolean matches = false;
     	
         String actualName = violation.getConstraintName();

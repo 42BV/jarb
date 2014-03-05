@@ -9,9 +9,6 @@ import org.jarbframework.constraint.DatabaseConstraintsConfigurer;
 import org.jarbframework.constraint.TestConstraintsConfig;
 import org.jarbframework.constraint.domain.Country;
 import org.jarbframework.constraint.domain.Wine;
-import org.jarbframework.constraint.metadata.BeanConstraintDescription;
-import org.jarbframework.constraint.metadata.BeanConstraintDescriptor;
-import org.jarbframework.constraint.metadata.PropertyConstraintDescription;
 import org.jarbframework.constraint.metadata.BeanConstraintDescriptorTest.CustomConstraintsConfig;
 import org.jarbframework.constraint.metadata.enhance.AnnotationPropertyTypeEnhancer;
 import org.junit.Test;
@@ -21,8 +18,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-
-import com.google.common.collect.Sets;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ActiveProfiles("hsqldb")
@@ -52,7 +47,7 @@ public class BeanConstraintDescriptorTest {
     @Test
     public void testCustomEnhancer() {
         BeanConstraintDescription wineDescription = descriptor.describe(Wine.class);
-        assertEquals(Sets.newHashSet("reference"), wineDescription.getProperty("country").getTypes());
+        assertTrue(wineDescription.getProperty("country").getTypes().contains("reference"));
     }
     
     @Configuration

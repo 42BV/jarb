@@ -1,9 +1,10 @@
-package org.jarbframework.constraint.violation.factory.reflection;
+package org.jarbframework.constraint.violation.factory;
 
 import java.lang.reflect.Constructor;
 
 import org.jarbframework.constraint.violation.DatabaseConstraintViolation;
-import org.jarbframework.constraint.violation.factory.DatabaseConstraintExceptionFactory;
+import org.jarbframework.utils.bean.BeanBuilder;
+import org.jarbframework.utils.bean.ConstructorFinder;
 
 /**
  * Creates constraint violation exceptions using reflection. Whenever no

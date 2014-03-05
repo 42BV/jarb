@@ -1,18 +1,14 @@
 package org.jarbframework.constraint.violation.factory;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
 import org.jarbframework.constraint.violation.DatabaseConstraintViolation;
-import org.jarbframework.constraint.violation.factory.reflection.ReflectionConstraintExceptionFactory;
+import org.jarbframework.utils.Asserts;
 import org.jarbframework.utils.ClassScanner;
 import org.jarbframework.utils.StringUtils;
 import org.springframework.core.annotation.AnnotationUtils;
-
-import com.google.common.base.Predicate;
 
 /**
  * Configurable constraint violation exception factory. Enables users
@@ -41,7 +37,7 @@ public class ConfigurableConstraintExceptionFactory implements DatabaseConstrain
 
     @Override
     public Throwable buildException(DatabaseConstraintViolation violation, Throwable cause) {
-        checkNotNull(violation, "Cannot create exception for a null database constraint violation.");
+        Asserts.notNull(violation, "Cannot create exception for a null database constraint violation.");
         return getFirstSupportedFactory(violation).buildException(violation, cause);
     }
 
@@ -86,12 +82,12 @@ public class ConfigurableConstraintExceptionFactory implements DatabaseConstrain
 
     /**
      * Register an exception factory for database constraints that match a certain criteria.
-     * @param violationPredicate describes the criteria that our constraints must match
+     * @param predicate describes the criteria that our constraints must match
      * @param exceptionFactory the exception factory that should be used
      * @return this factory instance, for chaining
      */
-    public ConfigurableConstraintExceptionFactory register(Predicate<DatabaseConstraintViolation> violationPredicate, DatabaseConstraintExceptionFactory exceptionFactory) {
-        exceptionFactoryMappings.add(new ExceptionFactoryMapping(violationPredicate, exceptionFactory));
+    public ConfigurableConstraintExceptionFactory register(ViolationPredicate predicate, DatabaseConstraintExceptionFactory exceptionFactory) {
+        exceptionFactoryMappings.add(new ExceptionFactoryMapping(predicate, exceptionFactory));
         return this;
     }
 
@@ -115,17 +111,17 @@ public class ConfigurableConstraintExceptionFactory implements DatabaseConstrain
     
     private static class ExceptionFactoryMapping {
         
-        private final Predicate<DatabaseConstraintViolation> violationPredicate;
+        private final ViolationPredicate predicate;
         
         private final DatabaseConstraintExceptionFactory exceptionFactory;
 
-        public ExceptionFactoryMapping(Predicate<DatabaseConstraintViolation> violationPredicate, DatabaseConstraintExceptionFactory exceptionFactory) {
-            this.violationPredicate = checkNotNull(violationPredicate, "Violation predicate cannot be null.");
-            this.exceptionFactory = checkNotNull(exceptionFactory, "Exception factory cannot be null.");
+        public ExceptionFactoryMapping(ViolationPredicate predicate, DatabaseConstraintExceptionFactory exceptionFactory) {
+            this.predicate = Asserts.notNull(predicate, "Violation predicate cannot be null.");
+            this.exceptionFactory = Asserts.notNull(exceptionFactory, "Exception factory cannot be null.");
         }
 
         public boolean isSupported(DatabaseConstraintViolation violation) {
-            return violationPredicate.apply(violation);
+            return predicate.isSupported(violation);
         }
 
         public DatabaseConstraintExceptionFactory getExceptionFactory() {
