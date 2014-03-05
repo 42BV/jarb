@@ -94,15 +94,19 @@ public class DatabaseConstraintValidator {
     }
 
     private void validateSimpleProperty(FlexibleBeanWrapper<?> beanWrapper, PropertyReference property, PropertyReference root, DatabaseConstraintValidationContext validation) {
-        PropertyReference actualProperty = property.wrap(root);
-        ColumnMetadata columnMetadata = beanMetadataRepository.getColumnMetadata(actualProperty);
+        PropertyReference entityPropertyReference = property;
+        if (root != null) {
+            entityPropertyReference = new PropertyReference(root, property.getName());
+        }
+        
+        ColumnMetadata columnMetadata = beanMetadataRepository.getColumnMetadata(entityPropertyReference);
         if (columnMetadata != null) {
             Object propertyValue = beanWrapper.getPropertyValueNullSafe(property.getName());
             for (DatabaseConstraintValidationStep validationStep : validationSteps) {
                 validationStep.validate(propertyValue, property, columnMetadata, validation);
             }
         } else {
-            logger.debug("Skipped validation because no metadata could be found for property '{}'.", actualProperty);
+            logger.debug("Skipped validation because no meta-data could be found for property '{}'.", entityPropertyReference);
         }
     }
 

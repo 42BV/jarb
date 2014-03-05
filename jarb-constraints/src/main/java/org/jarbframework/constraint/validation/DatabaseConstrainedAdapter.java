@@ -18,40 +18,39 @@ import org.springframework.context.ApplicationContextAware;
 public class DatabaseConstrainedAdapter implements ConstraintValidator<DatabaseConstrained, Object>, ApplicationContextAware {
 
     /** Reference to the bean property, when not the root. **/
-	private PropertyReference beanReference;
+    private PropertyReference root;
 	
     /** Delegate component that performs the actual constraint checking **/
     private DatabaseConstraintValidator validator;
     
     /** Used to lookup beans in our application context **/
-    private SpringBeanFinder beanFinder;
+    private SpringBeanFinder beans;
 
     @Override
     public boolean isValid(Object bean, ConstraintValidatorContext validatorContext) {
-        return validator.isValid(bean, beanReference, validatorContext);
+        return validator.isValid(bean, root, validatorContext);
     }
 
     @Override
     public void initialize(DatabaseConstrained annotation) {
     	validator = buildValidator(annotation);
-    	
     	if (! Object.class.equals(annotation.entityClass())) {
-    		this.beanReference = new PropertyReference(annotation.entityClass(), annotation.propertyName());
+            this.root = new PropertyReference(annotation.entityClass(), annotation.propertyName());
     	}
     }
 
 	private DatabaseConstraintValidator buildValidator(DatabaseConstrained annotation) {
 		try {
-            return beanFinder.findBean(DatabaseConstraintValidator.class, annotation.id());
+            return beans.findBean(DatabaseConstraintValidator.class, annotation.id());
         } catch (NoSuchBeanDefinitionException nsbde) {
         	// Create a new validation bean when none are registered
-            return new DatabaseConstraintValidatorFactory(beanFinder).build();
+            return new DatabaseConstraintValidatorFactory(beans).build();
         }
 	}
 
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) {
-        this.beanFinder = new SpringBeanFinder(applicationContext);
+        this.beans = new SpringBeanFinder(applicationContext);
     }
     
 }
