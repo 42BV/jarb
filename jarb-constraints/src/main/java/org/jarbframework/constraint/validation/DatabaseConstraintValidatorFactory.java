@@ -29,8 +29,8 @@ public class DatabaseConstraintValidatorFactory {
      * @return the database constraint validation bean
      */
     public DatabaseConstraintValidator build() {
-        BeanMetadataRepository beanMetadataRepository = beanFinder.findBean(BeanMetadataRepository.class, null, DEFAULT_METADATA_REPOSITORY_ID);
-        ValidatorFactory validatorFactory = beanFinder.findBean(ValidatorFactory.class, null, DEFAULT_VALIDATOR_FACTORY_ID);
+        BeanMetadataRepository beanMetadataRepository = beanFinder.findUniqueBean(BeanMetadataRepository.class, DEFAULT_METADATA_REPOSITORY_ID);
+        ValidatorFactory validatorFactory = beanFinder.findUniqueBean(ValidatorFactory.class, DEFAULT_VALIDATOR_FACTORY_ID);
         return new DatabaseConstraintValidator(beanMetadataRepository, validatorFactory.getMessageInterpolator());
     }
 

@@ -6,6 +6,7 @@ import org.jarbframework.utils.Asserts;
 import org.jarbframework.utils.StringUtils;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
+import org.springframework.beans.factory.NoUniqueBeanDefinitionException;
 
 /**
  * Retrieves beans from the {@link BeanFactory}.
@@ -37,10 +38,8 @@ public class SpringBeanFinder {
         notNull(beanClass, "Bean class cannot be null.");
         
         if (StringUtils.isNotBlank(identifier)) {
-            // Find the bean based on its specified non-blank identifier
             return beanFactory.getBean(identifier, beanClass);
         } else {
-            // Whenever no identifier is specified, look if the bean is unique
             return beanFactory.getBean(beanClass);
         }
     }
@@ -54,13 +53,13 @@ public class SpringBeanFinder {
      * @param fallbackIdentifier fall-back bean identifier (<b>required</b>)
      * @return matching bean
      */
-    public <T> T findBean(Class<T> beanClass, String identifier, String fallbackIdentifier) {
+    public <T> T findUniqueBean(Class<T> beanClass, String fallbackIdentifier) {
+        Asserts.hasText(fallbackIdentifier, "Fallback bean identifier cannot be empty.");
+
         try {
-            return findBean(beanClass, identifier);
-        } catch (BeansException be) {
-            // Whenever no regular bean could be found, look for the default bean
+            return beanFactory.getBean(beanClass);
+        } catch (NoUniqueBeanDefinitionException be) {
             try {
-                Asserts.hasText(fallbackIdentifier, "Fallback bean identifier cannot be empty");
                 return beanFactory.getBean(fallbackIdentifier, beanClass);
             } catch (BeansException dbe) {
                 throw be; // Throw the original exception
