@@ -17,7 +17,7 @@ public class BeanConstraintDescription {
     private final Class<?> beanClass;
 
     /** Provides a description of all property constraints. **/
-    private final Map<String, PropertyConstraintDescription> properties = new HashMap<>();
+    private final Map<String, PropertyConstraintDescription> properties = new HashMap<String, PropertyConstraintDescription>();
 
     /**
      * Construct a new {@link BeanConstraintDescription}.

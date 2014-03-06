@@ -16,7 +16,7 @@ import org.jarbframework.utils.bean.PropertyReference;
  */
 public class CachingBeanMetadataRepository implements BeanMetadataRepository {
     
-    private final Map<PropertyReference, ColumnMetadata> caches = new HashMap<>();
+    private final Map<PropertyReference, ColumnMetadata> caches = new HashMap<PropertyReference, ColumnMetadata>();
 
     private final BeanMetadataRepository delegate;
 

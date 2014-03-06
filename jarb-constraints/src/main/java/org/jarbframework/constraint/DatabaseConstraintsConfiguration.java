@@ -49,7 +49,7 @@ public class DatabaseConstraintsConfiguration implements ImportAware, Initializi
     private Map<String, Object> attributes;
     
     @Autowired(required = false)
-    private Set<DatabaseConstraintsConfigurer> configurers = new HashSet<>();
+    private Set<DatabaseConstraintsConfigurer> configurers = new HashSet<DatabaseConstraintsConfigurer>();
 
     @Autowired
     private ApplicationContext applicationContext;
