@@ -15,9 +15,14 @@ import org.springframework.context.annotation.Import;
 import org.springframework.stereotype.Repository;
 
 /**
- * Makes the application aware of database constaints.  
+ * Makes the application aware of database constaints:
+ * <p>
+ * <ul>
+ *  <li>Enabling bean validation based on the database schema.</li>
+ *  <li>Translating JDBC exceptions into clear database violations.</li>
+ * </ul>
  *
- * @author jeroen
+ * @author Jeroen van Schagen
  * @since Feb 11, 2014
  */
 @Retention(RetentionPolicy.RUNTIME)
@@ -54,6 +59,6 @@ public @interface EnableDatabaseConstraints {
      * 
      * @return the annotation that performs exception translations
      */
-    Class<? extends Annotation> translate() default Repository.class;
+    Class<? extends Annotation> translateAnnotation() default Repository.class;
 
 }
