@@ -1,9 +1,5 @@
 $(document).ready(function() {
 
-	$('#notes li').click(function() {
-		$(this).remove();
-	});
-
 	$.ajax('/posts', {
 	    type : 'GET',
 	    success : function(data) {
@@ -41,11 +37,13 @@ $(document).ready(function() {
 
 				    if (data.success) {
 					    appendPost(data.post);
-					    $('.posts tbody tr:last').hide();
-					    $('.posts tbody tr:last').fadeIn();
 
 					    // Clear creation form
-					    $(':input', '#create-post').not(':button, :submit, :reset, :hidden').removeAttr('checked').removeAttr('selected').val('');
+					    $(':input', '#create-post')
+						    .not(':button, :submit, :reset, :hidden')
+						    .removeAttr('checked')
+						    .removeAttr('selected')
+						    .val('');
 
 					    validator.resetForm();
 				    }
