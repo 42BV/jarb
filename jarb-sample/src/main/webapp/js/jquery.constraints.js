@@ -6,7 +6,6 @@
  * 
  * @author Jeroen van Schagen
  */
-
 (function($) {
 	$.fn.constraints = function(url, options) {
 

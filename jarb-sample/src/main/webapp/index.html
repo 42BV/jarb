@@ -1,15 +1,72 @@
 <!DOCTYPE html>
-<html>
+<html ng-app="PostApp">
     <head>
         <meta charset="utf-8" />
-        <title>Examples</title>
+        <title>Posts</title>
         <link rel="stylesheet" href="css/main.css" media="screen"/>
+        <script type="text/javascript" src="js/lib/jquery-1.9.1.js"></script>
+        <script type="text/javascript" src="js/lib/angular-1.2.14.js"></script>
+        <script type="text/javascript" src="js/jquery.constraints.js"></script>
+        <script type="text/javascript" src="js/angular.jarb.js"></script>
+        <script type="text/javascript" src="js/posts.js"></script>
     </head>
-    <body>
-        <h1>Examples</h1>
-        <ul>
-            <li><a href="jquery.html">jQuery</a></li>
-            <li><a href="angular.html">Angular JS</a></li>
+    <body ng-controller="PostCtrl">
+        <header>
+           <h1 id="title">Messages board <h2 class="description">JaRB sample</h2></h1>
+        </header>
+        
+        <section id="status">
+            <p>{{ message }}</p>
+        </section>
+
+        <section id="content">
+            <section class="posts">
+              <h2>Posts</h2>
+              <table>
+                  <thead>
+                      <tr>
+                          <th>Title</th>
+                          <th>Author</th>
+                          <th>Date</th>
+                          <th>Message</th>
+                      </tr>
+                  </thead>
+                  <tbody>
+                    <tr ng-repeat="post in posts">
+                        <td>{{ post.title }}</td>
+                        <td>{{ post.author }}</td>
+                        <td>{{ post.date }}</td>
+                        <td>{{ post.message }}</td>                        
+                    </tr>
+                  </tbody>
+              </table>
+            </section>
+    
+            <section id="create-post">
+                <form ng-submit="create()" constraints="/posts/constraints">
+                    <h2>Create a new post</h2>
+                    <fieldset>
+                        <label for="author">Author</label>
+                        <input ng-model="newPost.author" name="author"/>
+                    </fieldset>
+                    <fieldset>
+                        <label for="title">Title</label>
+                        <input ng-model="newPost.title" name="title"/>
+                    </fieldset>
+                    <fieldset>
+                        <label for="message">Message</label>
+                        <input ng-model="newPost.message" name="message"/>
+                    </fieldset>
+                    <button type="submit">Submit</button>
+                </form>
+            </section>
+        </section>
+        
+        <ul id="notes">
+            <li>Form input fields are enriched with backend constraints.</li>
+            <li>The author label received an (*) suffix, because it is not null in our database.</li>
+            <li>The author input has to be an email address, because it is annotated as @Email.</li>
+            <li>Try adding a post with a title that already exists.</li>
         </ul>
     </body>
 </html>

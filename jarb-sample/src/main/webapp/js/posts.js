@@ -1,4 +1,4 @@
-var postsApp = angular.module('postsApp', []);
+var postsApp = angular.module('PostApp', [ 'jarb' ]);
 postsApp.controller('PostCtrl', function($scope, $http) {
 
 	$scope.message = "";
