@@ -7,29 +7,21 @@ import static org.junit.Assert.assertTrue;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 
-import org.junit.Before;
 import org.junit.Test;
 
-public class BeanAnnotationScannerTest {
-	
-    private AnnotationScanner scanner;
-
-    @Before
-    public void setUp() {
-        scanner = new AnnotationScanner();
-    }
+public class AnnotationScannerTest {
 
     @Test
     public void testFindForClass() {
-        assertTrue(scanner.hasAnnotation(ClassWithAnnotatedProperties.class, Entity.class));
-        assertNotNull(scanner.findAnnotation(ClassWithAnnotatedProperties.class, Entity.class));
+        assertTrue(AnnotationScanner.hasAnnotation(ClassWithAnnotatedProperties.class, Entity.class));
+        assertNotNull(AnnotationScanner.findAnnotation(ClassWithAnnotatedProperties.class, Entity.class));
     }
 
     @Test
     public void testFindForField() {
         PropertyReference propertyReference = new PropertyReference(ClassWithAnnotatedProperties.class, "hiddenProperty");
-        assertTrue(scanner.hasAnnotation(propertyReference, Column.class));
-        Column columnAnnotation = scanner.findAnnotation(propertyReference, Column.class);
+        assertTrue(AnnotationScanner.hasAnnotation(propertyReference, Column.class));
+        Column columnAnnotation = AnnotationScanner.findAnnotation(propertyReference, Column.class);
         assertNotNull(columnAnnotation);
         assertEquals("hidden", columnAnnotation.name());
     }
@@ -37,8 +29,8 @@ public class BeanAnnotationScannerTest {
     @Test
     public void testFindForGetter() {
         PropertyReference propertyReference = new PropertyReference(ClassWithAnnotatedProperties.class, "readableProperty");
-        assertTrue(scanner.hasAnnotation(propertyReference, Column.class));
-        Column columnAnnotation = scanner.findAnnotation(propertyReference, Column.class);
+        assertTrue(AnnotationScanner.hasAnnotation(propertyReference, Column.class));
+        Column columnAnnotation = AnnotationScanner.findAnnotation(propertyReference, Column.class);
         assertNotNull(columnAnnotation);
         assertEquals("readable", columnAnnotation.name());
     }

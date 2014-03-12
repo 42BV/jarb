@@ -1,9 +1,8 @@
 package org.jarbframework.constraint.metadata.enhance;
 
-import static org.jarbframework.utils.bean.AnnotationScanner.fieldOrGetter;
-
 import org.jarbframework.constraint.metadata.DatabaseGenerated;
 import org.jarbframework.constraint.metadata.PropertyConstraintDescription;
+import org.jarbframework.utils.bean.AnnotationScanner;
 
 /**
  * Properties annotated with @DatabaseGenerated are never set to required
@@ -16,7 +15,7 @@ public class DatabaseGeneratedPropertyConstraintEnhancer implements PropertyCons
 
     @Override
     public PropertyConstraintDescription enhance(PropertyConstraintDescription description) {
-        if (fieldOrGetter().hasAnnotation(description.toReference(), DatabaseGenerated.class)) {
+        if (AnnotationScanner.hasAnnotation(description.toReference(), DatabaseGenerated.class)) {
             description.setRequired(false);
         }
         return description;

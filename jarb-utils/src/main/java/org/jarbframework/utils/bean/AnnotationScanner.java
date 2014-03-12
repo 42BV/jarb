@@ -19,9 +19,8 @@ import org.springframework.util.ReflectionUtils;
  * @date Aug 29, 2011
  */
 public class AnnotationScanner {
-    
-    public static AnnotationScanner fieldOrGetter() {
-        return new AnnotationScanner();
+
+    private AnnotationScanner() {
     }
 
     /**
@@ -30,7 +29,7 @@ public class AnnotationScanner {
      * @param annotationType type of annotation that should be looked for
      * @return desired annotation, as declared on the class, if any
      */
-    public <T extends Annotation> T findAnnotation(Class<?> beanClass, Class<T> annotationType) {
+    public static <T extends Annotation> T findAnnotation(Class<?> beanClass, Class<T> annotationType) {
         return AnnotationUtils.findAnnotation(beanClass, annotationType);
     }
 
@@ -40,7 +39,7 @@ public class AnnotationScanner {
      * @param annotationType type of annotations that should be looked for
      * @return {@code true} if an annotation could be found, else {@code false}
      */
-    public boolean hasAnnotation(Class<?> beanClass, Class<? extends Annotation> annotationType) {
+    public static boolean hasAnnotation(Class<?> beanClass, Class<? extends Annotation> annotationType) {
         return findAnnotation(beanClass, annotationType) != null;
     }
 
@@ -51,7 +50,7 @@ public class AnnotationScanner {
      * @param annotationType type of annotation that should be looked for
      * @return desired annotation, as declared on the property, if any
      */
-    public <T extends Annotation> T findAnnotation(PropertyReference propertyReference, Class<T> annotationType) {
+    public static <T extends Annotation> T findAnnotation(PropertyReference propertyReference, Class<T> annotationType) {
         Collection<T> annotations = getAnnotations(propertyReference, annotationType);
         if (annotations.isEmpty()) {
             return null;
@@ -67,7 +66,7 @@ public class AnnotationScanner {
      * @param annotationType type of annotation that should be looked for
      * @return desired annotation, as declared on the property, if any
      */
-    public <T extends Annotation> Collection<T> getAnnotations(PropertyReference propertyReference, Class<T> annotationType) {
+    public static <T extends Annotation> Collection<T> getAnnotations(PropertyReference propertyReference, Class<T> annotationType) {
         propertyReference = BeanProperties.getFinalProperty(propertyReference);
         
         Collection<T> annotations = new ArrayList<T>();
@@ -85,7 +84,7 @@ public class AnnotationScanner {
         return annotations;
     }
 
-	private <T extends Annotation> T getGetterAnnotation(PropertyReference propertyReference, Class<T> annotationType) {
+    private static <T extends Annotation> T getGetterAnnotation(PropertyReference propertyReference, Class<T> annotationType) {
 		T annotation = null;
 		
 		PropertyDescriptor propertyDescriptor = BeanUtils.getPropertyDescriptor(propertyReference.getBeanClass(), propertyReference.getName());
@@ -98,7 +97,7 @@ public class AnnotationScanner {
         return annotation;
 	}
 
-	private <T extends Annotation> T getFieldAnnotation(PropertyReference propertyReference, Class<T> annotationType) {
+    private static <T extends Annotation> T getFieldAnnotation(PropertyReference propertyReference, Class<T> annotationType) {
 		T annotation = null;
 		
 		Field field = ReflectionUtils.findField(propertyReference.getBeanClass(), propertyReference.getName());
@@ -115,7 +114,7 @@ public class AnnotationScanner {
      * @param annotationType type of annotations that should be looked for
      * @return {@code true} if an annotation could be found, else {@code false}
      */
-    public boolean hasAnnotation(PropertyReference propertyReference, Class<? extends Annotation> annotationType) {
+    public static boolean hasAnnotation(PropertyReference propertyReference, Class<? extends Annotation> annotationType) {
         return findAnnotation(propertyReference, annotationType) != null;
     }
 

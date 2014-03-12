@@ -1,12 +1,11 @@
 package org.jarbframework.constraint.metadata.enhance;
 
-import static org.jarbframework.utils.bean.AnnotationScanner.fieldOrGetter;
-
 import java.util.Collection;
 
 import javax.validation.constraints.Digits;
 
 import org.jarbframework.constraint.metadata.PropertyConstraintDescription;
+import org.jarbframework.utils.bean.AnnotationScanner;
 
 /**
  * Enhance the property constraint descriptor with @Digits information.
@@ -19,7 +18,7 @@ public class DigitsPropertyConstraintEnhancer implements PropertyConstraintEnhan
     @Override
     public PropertyConstraintDescription enhance(PropertyConstraintDescription description) {
         Collection<javax.validation.constraints.Digits> annotations = 
-                fieldOrGetter().getAnnotations(description.toReference(), javax.validation.constraints.Digits.class);
+                AnnotationScanner.getAnnotations(description.toReference(), javax.validation.constraints.Digits.class);
         Integer maximumLength = description.getMaximumLength();
         Integer fractionLength = description.getFractionLength();
         for (Digits annotation : annotations) {

@@ -6,7 +6,6 @@ import static org.jarbframework.populator.excel.util.JpaMetaModelUtils.findRootE
 import static org.jarbframework.utils.Asserts.hasText;
 import static org.jarbframework.utils.Asserts.instanceOf;
 import static org.jarbframework.utils.Asserts.notNull;
-import static org.jarbframework.utils.bean.AnnotationScanner.fieldOrGetter;
 import static org.jarbframework.utils.bean.BeanProperties.getDeclaringClass;
 import static org.jarbframework.utils.bean.BeanProperties.getPropertyNames;
 import static org.jarbframework.utils.bean.BeanProperties.getPropertyType;
@@ -48,7 +47,6 @@ public class AnnotationJpaHibernateSchemaMapper implements SchemaMapper {
     
     private static final String NAMING_STRATEGY_KEY = "hibernate.ejb.naming_strategy";
 
-    private final AnnotationScanner annotationScanner = fieldOrGetter();
     private final NamingStrategy namingStrategy;
 
     public AnnotationJpaHibernateSchemaMapper() {
@@ -169,22 +167,23 @@ public class AnnotationJpaHibernateSchemaMapper implements SchemaMapper {
     private boolean isMappedToColumn(PropertyReference propertyReference) {
         boolean mappedToColumn = false;
         if (!isCollection(propertyReference) && !isInverseReferenceColumn(propertyReference)) {
-            mappedToColumn = !annotationScanner.hasAnnotation(propertyReference, Transient.class);
+            mappedToColumn = !AnnotationScanner.hasAnnotation(propertyReference, Transient.class);
         }
         return mappedToColumn;
     }
 
     private boolean isInverseReferenceColumn(PropertyReference propertyReference) {
         boolean inverseReferenceColumn = false;
-        if (annotationScanner.hasAnnotation(propertyReference, OneToOne.class)) {
-            inverseReferenceColumn = isNotBlank(annotationScanner.findAnnotation(propertyReference, OneToOne.class).mappedBy());
+        if (AnnotationScanner.hasAnnotation(propertyReference, OneToOne.class)) {
+            inverseReferenceColumn = isNotBlank(AnnotationScanner.findAnnotation(propertyReference, OneToOne.class).mappedBy());
         }
         return inverseReferenceColumn;
     }
 
     private boolean isCollection(PropertyReference propertyReference) {
-        return annotationScanner.hasAnnotation(propertyReference, OneToMany.class) || annotationScanner.hasAnnotation(propertyReference, ManyToMany.class)
-                || annotationScanner.hasAnnotation(propertyReference, ElementCollection.class);
+        return AnnotationScanner.hasAnnotation(propertyReference, OneToMany.class) 
+                || AnnotationScanner.hasAnnotation(propertyReference, ManyToMany.class)
+                || AnnotationScanner.hasAnnotation(propertyReference, ElementCollection.class);
     }
 
     private String tableForProperty(PropertyReference propertyReference) {
@@ -208,9 +207,9 @@ public class AnnotationJpaHibernateSchemaMapper implements SchemaMapper {
 
     private String columnName(PropertyReference propertyReference) {
         String columnName;
-        if (annotationScanner.hasAnnotation(propertyReference, OneToOne.class)) {
+        if (AnnotationScanner.hasAnnotation(propertyReference, OneToOne.class)) {
             columnName = readOneToOne(propertyReference);
-        } else if (annotationScanner.hasAnnotation(propertyReference, ManyToOne.class)) {
+        } else if (AnnotationScanner.hasAnnotation(propertyReference, ManyToOne.class)) {
             columnName = readManyToOne(propertyReference);
         } else {
             columnName = readColumnName(propertyReference);
@@ -246,29 +245,29 @@ public class AnnotationJpaHibernateSchemaMapper implements SchemaMapper {
     }
 
     private AttributeOverride[] collectAttributeOverrides(PropertyReference propertyReference) {
-        if (annotationScanner.hasAnnotation(propertyReference, AttributeOverrides.class)) {
-            return annotationScanner.findAnnotation(propertyReference, AttributeOverrides.class).value();
-        } else if (annotationScanner.hasAnnotation(propertyReference, AttributeOverride.class)) {
-            return new AttributeOverride[] { annotationScanner.findAnnotation(propertyReference, AttributeOverride.class) };
+        if (AnnotationScanner.hasAnnotation(propertyReference, AttributeOverrides.class)) {
+            return AnnotationScanner.findAnnotation(propertyReference, AttributeOverrides.class).value();
+        } else if (AnnotationScanner.hasAnnotation(propertyReference, AttributeOverride.class)) {
+            return new AttributeOverride[] { AnnotationScanner.findAnnotation(propertyReference, AttributeOverride.class) };
         } else {
             return new AttributeOverride[0];
         }
     }
 
     private String readOneToOne(PropertyReference propertyReference) {
-        OneToOne oneToOne = annotationScanner.findAnnotation(propertyReference, OneToOne.class);
+        OneToOne oneToOne = AnnotationScanner.findAnnotation(propertyReference, OneToOne.class);
         Class<?> referencedClass = oneToOne.targetEntity() != void.class ? oneToOne.targetEntity() : getPropertyType(propertyReference);
         return readReferenceColumnName(propertyReference, referencedClass);
     }
 
     private String readManyToOne(PropertyReference propertyReference) {
-        ManyToOne manyToOne = annotationScanner.findAnnotation(propertyReference, ManyToOne.class);
+        ManyToOne manyToOne = AnnotationScanner.findAnnotation(propertyReference, ManyToOne.class);
         Class<?> referencedClass = manyToOne.targetEntity() != void.class ? manyToOne.targetEntity() : getPropertyType(propertyReference);
         return readReferenceColumnName(propertyReference, referencedClass);
     }
 
     private String readReferenceColumnName(PropertyReference propertyReference, Class<?> referencingClass) {
-        JoinColumn joinColumn = annotationScanner.findAnnotation(propertyReference, JoinColumn.class);
+        JoinColumn joinColumn = AnnotationScanner.findAnnotation(propertyReference, JoinColumn.class);
         if (joinColumn != null && isNotBlank(joinColumn.name())) {
             return namingStrategy.columnName(joinColumn.name());
         } else {
@@ -282,7 +281,7 @@ public class AnnotationJpaHibernateSchemaMapper implements SchemaMapper {
     private String getIdentifierPropertyName(Class<?> entityClass) {
         String identifierProperty = null;
         for (String propertyName : getPropertyNames(entityClass)) {
-            if (annotationScanner.hasAnnotation(new PropertyReference(entityClass, propertyName), Id.class)) {
+            if (AnnotationScanner.hasAnnotation(new PropertyReference(entityClass, propertyName), Id.class)) {
                 identifierProperty = propertyName;
                 break;
             }
@@ -291,7 +290,7 @@ public class AnnotationJpaHibernateSchemaMapper implements SchemaMapper {
     }
 
     private String readColumnName(PropertyReference propertyReference) {
-        Column columnAnnotation = annotationScanner.findAnnotation(propertyReference, Column.class);
+        Column columnAnnotation = AnnotationScanner.findAnnotation(propertyReference, Column.class);
         if (hasColumnName(columnAnnotation)) {
             return namingStrategy.columnName(columnAnnotation.name());
         } else {

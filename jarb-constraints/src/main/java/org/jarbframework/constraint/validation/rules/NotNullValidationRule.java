@@ -1,10 +1,9 @@
 package org.jarbframework.constraint.validation.rules;
 
-import static org.jarbframework.utils.bean.AnnotationScanner.fieldOrGetter;
-
 import org.jarbframework.constraint.metadata.DatabaseGenerated;
 import org.jarbframework.constraint.metadata.database.ColumnMetadata;
 import org.jarbframework.constraint.validation.DatabaseConstraintValidationContext;
+import org.jarbframework.utils.bean.AnnotationScanner;
 import org.jarbframework.utils.bean.PropertyReference;
 
 class NotNullValidationRule implements PropertyValueValidationRule {
@@ -23,7 +22,7 @@ class NotNullValidationRule implements PropertyValueValidationRule {
     }
 
     private boolean isGeneratable(PropertyReference propertyReference, ColumnMetadata columnMetadata) {
-        return columnMetadata.isGeneratable() || fieldOrGetter().hasAnnotation(propertyReference, DatabaseGenerated.class);
+        return columnMetadata.isGeneratable() || AnnotationScanner.hasAnnotation(propertyReference, DatabaseGenerated.class);
     }
 
 }

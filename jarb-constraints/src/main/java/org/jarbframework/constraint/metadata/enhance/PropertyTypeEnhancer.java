@@ -4,12 +4,12 @@
 package org.jarbframework.constraint.metadata.enhance;
 
 import static org.jarbframework.utils.Asserts.notNull;
-import static org.jarbframework.utils.bean.AnnotationScanner.fieldOrGetter;
 
 import java.lang.annotation.Annotation;
 
 import org.jarbframework.constraint.metadata.PropertyConstraintDescription;
 import org.jarbframework.constraint.metadata.types.PropertyType;
+import org.jarbframework.utils.bean.AnnotationScanner;
 
 /**
  * Enhances our property type description from a {@link PropertyType} annotation.
@@ -31,8 +31,8 @@ public class PropertyTypeEnhancer implements PropertyConstraintEnhancer {
     
     @Override
     public PropertyConstraintDescription enhance(PropertyConstraintDescription description) {
-        if (fieldOrGetter().hasAnnotation(description.toReference(), annotationClass)) {
-            Annotation annotation = fieldOrGetter().getAnnotations(description.toReference(), annotationClass).iterator().next();
+        if (AnnotationScanner.hasAnnotation(description.toReference(), annotationClass)) {
+            Annotation annotation = AnnotationScanner.getAnnotations(description.toReference(), annotationClass).iterator().next();
             if (annotation instanceof PropertyType) {
                 description.addType(((PropertyType) annotation).value());
             } else {

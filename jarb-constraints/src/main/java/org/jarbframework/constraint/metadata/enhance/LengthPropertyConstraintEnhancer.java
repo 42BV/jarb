@@ -1,10 +1,9 @@
 package org.jarbframework.constraint.metadata.enhance;
 
-import static org.jarbframework.utils.bean.AnnotationScanner.fieldOrGetter;
-
 import java.util.Collection;
 
 import org.jarbframework.constraint.metadata.PropertyConstraintDescription;
+import org.jarbframework.utils.bean.AnnotationScanner;
 
 /**
  * Enhance the property constraint descriptor with @Length information.
@@ -17,7 +16,7 @@ public class LengthPropertyConstraintEnhancer implements PropertyConstraintEnhan
     @Override
     public PropertyConstraintDescription enhance(PropertyConstraintDescription description) {
         Collection<org.hibernate.validator.constraints.Length> annotations = 
-                fieldOrGetter().getAnnotations(description.toReference(), org.hibernate.validator.constraints.Length.class);
+                AnnotationScanner.getAnnotations(description.toReference(), org.hibernate.validator.constraints.Length.class);
         Integer minimumLength = description.getMinimumLength();
         Integer maximumLength = description.getMaximumLength();
         for (org.hibernate.validator.constraints.Length annotation : annotations) {

@@ -1,9 +1,8 @@
 package org.jarbframework.constraint.validation;
 
-import static org.jarbframework.utils.bean.AnnotationScanner.fieldOrGetter;
-
 import org.jarbframework.constraint.metadata.DatabaseGenerated;
 import org.jarbframework.constraint.metadata.database.ColumnMetadata;
+import org.jarbframework.utils.bean.AnnotationScanner;
 import org.jarbframework.utils.bean.PropertyReference;
 
 public class NotNullConstraintValidationStep implements DatabaseConstraintValidationStep {
@@ -22,7 +21,7 @@ public class NotNullConstraintValidationStep implements DatabaseConstraintValida
     }
 
     private boolean isGeneratable(PropertyReference reference, ColumnMetadata metadata) {
-        return metadata.isGeneratable() || fieldOrGetter().hasAnnotation(reference, DatabaseGenerated.class);
+        return metadata.isGeneratable() || AnnotationScanner.hasAnnotation(reference, DatabaseGenerated.class);
     }
 
 }
