@@ -1,13 +1,21 @@
 var postsApp = angular.module('postsApp', []);
-phonecatApp.controller('PostCtrl', function($scope, $http) {
+postsApp.controller('PostCtrl', function($scope, $http) {
 
 	$scope.message = "";
-	$scope.posts = [];
 	$scope.newPost = {};
 
+	$scope.posts = [];
+	$http.get('/posts').success(function(posts) {
+		$scope.posts = posts;
+	});
+
 	$scope.create = function() {
-		$http.post('/posts').success(function(response) {
-			$scope.newPost = {};
+		$http.post('/posts', $scope.newPost).success(function(response) {
+			$scope.message = response.message;
+			if (response.success) {
+				$scope.posts.push(response.post);
+				$scope.newPost = {};
+			}
 		});
 	};
 

@@ -1,11 +1,10 @@
 package org.jarbframework.sample;
 
-import javax.validation.Valid;
-
 import org.jarbframework.constraint.metadata.BeanConstraintDescription;
 import org.jarbframework.constraint.metadata.BeanConstraintDescriptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -34,7 +33,7 @@ public class PostController {
 
     @ResponseBody
     @RequestMapping(method = RequestMethod.POST)
-    public PostCreateResult post(@Valid Post post) {
+    public PostCreateResult post(@RequestBody Post post) {
         boolean success = false;
         String message = null;
         try {
