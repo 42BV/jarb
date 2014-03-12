@@ -2,7 +2,6 @@ package org.jarbframework.constraint.metadata.enhance;
 
 import static org.jarbframework.utils.bean.AnnotationScanner.fieldOrGetter;
 
-import org.hibernate.validator.constraints.NotEmpty;
 import org.jarbframework.constraint.metadata.PropertyConstraintDescription;
 
 /**
@@ -15,7 +14,7 @@ public class NotEmptyPropertyConstraintEnhancer implements PropertyConstraintEnh
 
     @Override
     public PropertyConstraintDescription enhance(PropertyConstraintDescription description) {
-        if (fieldOrGetter().hasAnnotation(description.toReference(), NotEmpty.class)) {
+        if (fieldOrGetter().hasAnnotation(description.toReference(), org.hibernate.validator.constraints.NotEmpty.class)) {
             // When a property cannot be empty, it has a minimum length of at least 1
             // If our description already has a greater minimum length, do nothing
             if (description.getMinimumLength() == null || description.getMinimumLength() == 0) {

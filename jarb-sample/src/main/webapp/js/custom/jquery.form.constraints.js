@@ -28,7 +28,7 @@
 
 				if (property.required) {
 					inputLabel.addClass('required').append(options.requiredSuffix);
-					inputField.addClass('required');
+					inputField.attr('required', 'required').addClass('required');
 				}
 
 				$.each(property.types, function(index, type) {

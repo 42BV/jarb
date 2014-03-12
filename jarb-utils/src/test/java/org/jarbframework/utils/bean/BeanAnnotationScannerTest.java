@@ -7,8 +7,6 @@ import static org.junit.Assert.assertTrue;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 
-import org.jarbframework.utils.bean.AnnotationScanner;
-import org.jarbframework.utils.bean.PropertyReference;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -18,7 +16,7 @@ public class BeanAnnotationScannerTest {
 
     @Before
     public void setUp() {
-        scanner = new AnnotationScanner(true);
+        scanner = new AnnotationScanner();
     }
 
     @Test

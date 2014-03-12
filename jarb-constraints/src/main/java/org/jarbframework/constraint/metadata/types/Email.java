@@ -14,7 +14,7 @@ import java.lang.annotation.Target;
 @Documented
 @Target({ FIELD, METHOD })
 @Retention(RUNTIME)
-@PropertyType("factor")
-public @interface Factor {
+@PropertyType("email")
+public @interface Email {
     
 }

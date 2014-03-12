@@ -14,7 +14,7 @@ import java.lang.annotation.Target;
 @Documented
 @Target({ FIELD, METHOD })
 @Retention(RUNTIME)
-@PropertyType("tel")
-public @interface Phone {
+@PropertyType("password")
+public @interface Password {
     
 }

@@ -20,22 +20,8 @@ import org.springframework.util.ReflectionUtils;
  */
 public class AnnotationScanner {
     
-    private final boolean includeGetter;
-
-    /**
-     * Construct a new {@link AnnotationScanner}.
-     * @param includeGetter determines if getter methods should be scanned
-     */
-    public AnnotationScanner(boolean includeGetter) {
-        this.includeGetter = includeGetter;
-    }
-
-    public static AnnotationScanner field() {
-        return new AnnotationScanner(false);
-    }
-
     public static AnnotationScanner fieldOrGetter() {
-        return new AnnotationScanner(true);
+        return new AnnotationScanner();
     }
 
     /**
@@ -104,7 +90,7 @@ public class AnnotationScanner {
 		
 		PropertyDescriptor propertyDescriptor = BeanUtils.getPropertyDescriptor(propertyReference.getBeanClass(), propertyReference.getName());
         if (propertyDescriptor != null) {
-            if (includeGetter && propertyDescriptor.getReadMethod() != null) {
+            if (propertyDescriptor.getReadMethod() != null) {
             	annotation = AnnotationUtils.findAnnotation(propertyDescriptor.getReadMethod(), annotationType);
             }
         }

@@ -5,9 +5,6 @@ package org.jarbframework.constraint.metadata;
 
 import java.util.Date;
 
-import org.hibernate.validator.constraints.CreditCardNumber;
-import org.hibernate.validator.constraints.Email;
-import org.hibernate.validator.constraints.URL;
 import org.jarbframework.constraint.metadata.database.BeanMetadataRepository;
 import org.jarbframework.constraint.metadata.enhance.AnnotationPropertyTypeEnhancer;
 import org.jarbframework.constraint.metadata.enhance.ClassPropertyTypeEnhancer;
@@ -19,11 +16,14 @@ import org.jarbframework.constraint.metadata.enhance.NotEmptyPropertyConstraintE
 import org.jarbframework.constraint.metadata.enhance.NotNullPropertyConstraintEnhancer;
 import org.jarbframework.constraint.metadata.enhance.PatternPropertyConstraintEnhancer;
 import org.jarbframework.constraint.metadata.enhance.PropertyTypeEnhancer;
+import org.jarbframework.constraint.metadata.types.Color;
 import org.jarbframework.constraint.metadata.types.Currency;
-import org.jarbframework.constraint.metadata.types.Factor;
+import org.jarbframework.constraint.metadata.types.Email;
+import org.jarbframework.constraint.metadata.types.Password;
 import org.jarbframework.constraint.metadata.types.Percentage;
 import org.jarbframework.constraint.metadata.types.Phone;
 import org.jarbframework.constraint.metadata.types.PropertyType;
+import org.jarbframework.constraint.metadata.types.URL;
 import org.jarbframework.utils.Classes;
 
 /**
@@ -34,13 +34,19 @@ import org.jarbframework.utils.Classes;
  */
 public class DefaultBeanConstraintDescriptor extends BeanConstraintDescriptor {
     
-    private static final String HIBERNATE_VALIDATOR_PACKAGE_NAME = "org.hibernate.validator";
+    private static final String HIBERNATE_VALIDATOR_PACKAGE = "org.hibernate.validator";
+    private static final String JAVAX_VALIDATOR_PACKAGE = "javax.validation";
 
     public DefaultBeanConstraintDescriptor(BeanMetadataRepository beanMetadataRepository) {
         registerDefaultEnhancers();
-        if (Classes.hasPackage(HIBERNATE_VALIDATOR_PACKAGE_NAME)) {
+        
+        if (Classes.hasPackage(JAVAX_VALIDATOR_PACKAGE)) {
+            registerValidationEnhancers();
+        }
+        if (Classes.hasPackage(HIBERNATE_VALIDATOR_PACKAGE)) {
             registerHibernateEnhancers();
         }
+        
         if (beanMetadataRepository != null) {
             registerDatabaseEnhancers(beanMetadataRepository);
         }
@@ -52,24 +58,31 @@ public class DefaultBeanConstraintDescriptor extends BeanConstraintDescriptor {
         registerEnhancer(new ClassPropertyTypeEnhancer(Number.class, "number"));
         
         registerEnhancer(new PropertyTypeEnhancer(PropertyType.class));
+        
+        registerEnhancer(new PropertyTypeEnhancer(Color.class));
         registerEnhancer(new PropertyTypeEnhancer(Currency.class));
-        registerEnhancer(new PropertyTypeEnhancer(Factor.class));
+        registerEnhancer(new PropertyTypeEnhancer(Email.class));
+        registerEnhancer(new PropertyTypeEnhancer(Password.class));
         registerEnhancer(new PropertyTypeEnhancer(Percentage.class));
         registerEnhancer(new PropertyTypeEnhancer(Phone.class));
+        registerEnhancer(new PropertyTypeEnhancer(URL.class));
     }
     
+    private void registerValidationEnhancers() {
+        registerEnhancer(new NotNullPropertyConstraintEnhancer());
+        registerEnhancer(new PatternPropertyConstraintEnhancer());
+        registerEnhancer(new DigitsPropertyConstraintEnhancer());
+    }
+
     private void registerHibernateEnhancers() {
         registerEnhancer(new LengthPropertyConstraintEnhancer());
-        registerEnhancer(new DigitsPropertyConstraintEnhancer());
-        registerEnhancer(new NotNullPropertyConstraintEnhancer());
         registerEnhancer(new NotEmptyPropertyConstraintEnhancer());
-        registerEnhancer(new PatternPropertyConstraintEnhancer());
-        
-        registerEnhancer(new AnnotationPropertyTypeEnhancer(Email.class, "email"));
-        registerEnhancer(new AnnotationPropertyTypeEnhancer(CreditCardNumber.class, "credid_card"));
-        registerEnhancer(new AnnotationPropertyTypeEnhancer(URL.class, "url"));
+
+        registerEnhancer(new AnnotationPropertyTypeEnhancer(org.hibernate.validator.constraints.Email.class, "email"));
+        registerEnhancer(new AnnotationPropertyTypeEnhancer(org.hibernate.validator.constraints.CreditCardNumber.class, "credid_card"));
+        registerEnhancer(new AnnotationPropertyTypeEnhancer(org.hibernate.validator.constraints.URL.class, "url"));
     }
-    
+
     private void registerDatabaseEnhancers(BeanMetadataRepository beanMetadataRepository) {
         registerEnhancer(new DatabasePropertyConstraintEnhancer(beanMetadataRepository));
         registerEnhancer(new DatabaseGeneratedPropertyConstraintEnhancer());

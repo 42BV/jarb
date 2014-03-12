@@ -7,8 +7,6 @@ import static org.jarbframework.utils.bean.AnnotationScanner.fieldOrGetter;
 
 import java.util.Collection;
 
-import javax.validation.constraints.Pattern;
-
 import org.jarbframework.constraint.metadata.PropertyConstraintDescription;
 
 /**
@@ -21,7 +19,8 @@ public class PatternPropertyConstraintEnhancer implements PropertyConstraintEnha
     
     @Override
     public PropertyConstraintDescription enhance(PropertyConstraintDescription description) {
-        Collection<Pattern> annotations = fieldOrGetter().getAnnotations(description.toReference(), Pattern.class);
+        Collection<javax.validation.constraints.Pattern> annotations = 
+                fieldOrGetter().getAnnotations(description.toReference(), javax.validation.constraints.Pattern.class);
         if (!annotations.isEmpty()) {
             description.setPattern(annotations.iterator().next().regexp());
         }

@@ -18,7 +18,8 @@ public class DigitsPropertyConstraintEnhancer implements PropertyConstraintEnhan
 
     @Override
     public PropertyConstraintDescription enhance(PropertyConstraintDescription description) {
-        Collection<Digits> annotations = fieldOrGetter().getAnnotations(description.toReference(), Digits.class);
+        Collection<javax.validation.constraints.Digits> annotations = 
+                fieldOrGetter().getAnnotations(description.toReference(), javax.validation.constraints.Digits.class);
         Integer maximumLength = description.getMaximumLength();
         Integer fractionLength = description.getFractionLength();
         for (Digits annotation : annotations) {

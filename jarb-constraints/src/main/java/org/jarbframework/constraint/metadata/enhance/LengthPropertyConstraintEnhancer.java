@@ -4,7 +4,6 @@ import static org.jarbframework.utils.bean.AnnotationScanner.fieldOrGetter;
 
 import java.util.Collection;
 
-import org.hibernate.validator.constraints.Length;
 import org.jarbframework.constraint.metadata.PropertyConstraintDescription;
 
 /**
@@ -17,10 +16,11 @@ public class LengthPropertyConstraintEnhancer implements PropertyConstraintEnhan
 
     @Override
     public PropertyConstraintDescription enhance(PropertyConstraintDescription description) {
-        Collection<Length> annotations = fieldOrGetter().getAnnotations(description.toReference(), Length.class);
+        Collection<org.hibernate.validator.constraints.Length> annotations = 
+                fieldOrGetter().getAnnotations(description.toReference(), org.hibernate.validator.constraints.Length.class);
         Integer minimumLength = description.getMinimumLength();
         Integer maximumLength = description.getMaximumLength();
-        for (Length annotation : annotations) {
+        for (org.hibernate.validator.constraints.Length annotation : annotations) {
             // Store the highest minimum and lowest maximum length, as this will cause both restrictions to pass
             minimumLength = highest(minimumLength, annotation.min());
             maximumLength = lowest(maximumLength, annotation.max());
