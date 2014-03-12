@@ -7,34 +7,64 @@
  * @author Jeroen van Schagen
  */
 (function($) {
-	$.fn.constraints = function(url, options) {
+	$.fn.constraints = function(url, args) {
 
 		var defaults = {
 			requiredSuffix : " (*)"
 		};
 
-		var options = $.extend(defaults, options);
+		var options = $.extend(defaults, args);
 
 		var container = this;
 
 		$.getJSON(url, function(data) {
 			$.each(data.properties, function(index, property) {
-				var inputField = container.find('input[name=' + property.name + ']');
-				var inputLabel = container.find('label[for=' + property.name + "]");
-
-				inputField.attr('minlength', property.minimumLength);
-				inputField.attr('length', property.maximumLength);
+				var input = container.find('input[name=' + property.name + ']');
+				var label = container.find('label[for=' + property.name + "]");
 
 				if (property.required) {
-					inputLabel.addClass('required').append(options.requiredSuffix);
-					inputField.attr('required', 'required').addClass('required');
+					label.addClass('required').append(options.requiredSuffix);
+					input.attr('required', 'required').addClass('required');
 				}
 
+				input.attr('minlength', property.minimumLength);
+				input.attr('length', property.maximumLength);
+
+				// TODO: min, max
+
 				$.each(property.types, function(index, type) {
-					inputField.addClass(type);
+					input.addClass(type);
 				});
+
+				if (!input.attr('type')) {
+					if ($.inArray(property.types, 'email')) {
+						input.attr('type', 'email');
+					}
+				}
 			});
 		});
+
+		/*  
+		    TODO: Include all input types
+		 
+			color
+			date
+			datetime
+			datetime-local
+			email
+			month
+			number
+			range?
+			search?
+			tel
+			time
+			url
+			week
+			
+			@Temporal
+			Date
+			LocalDate
+		*/
 
 	};
 })(jQuery);
