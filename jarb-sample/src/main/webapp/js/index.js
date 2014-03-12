@@ -17,12 +17,12 @@ $(document).ready(function() {
 	var appendPost = function(post) {
 		var newPost = '<tr>';
 		newPost += '<td>' + post.title + '</td>';
-		newPost += '<td class="author">' + post.author + '</td>'
-		newPost += '<td class="date">' + post.postedOn + '</td>'
-		newPost += '<td class="message">' + post.message + '</td>'
-		newPost += '</tr>'
+		newPost += '<td class="author">' + post.author + '</td>';
+		newPost += '<td class="date">' + post.postedOn + '</td>';
+		newPost += '<td class="message">' + post.message + '</td>';
+		newPost += '</tr>';
 		$('.posts tbody').append(newPost);
-	}
+	};
 
 	var createForm = $('#create-post form');
 	createForm.constraints('/posts/constraints');
