@@ -68,9 +68,9 @@ public class DatabaseAssignedIdentifierGenerator extends AbstractPostInsertGener
         protected PreparedStatement prepare(String insertSQL, SessionImplementor session) throws SQLException {
             return session.getTransactionCoordinator().getJdbcCoordinator().getStatementPreparer().prepareStatement(insertSQL, new String[] { keyColumnName });
         }
-        
+
         @Override
-        protected Serializable executeAndExtract(PreparedStatement insert) throws SQLException {
+        protected Serializable executeAndExtract(PreparedStatement insert, SessionImplementor session) throws SQLException {
             insert.execute();
             return IdentifierGeneratorHelper.getGeneratedIdentity(insert.getGeneratedKeys(), keyColumnName, keyType);
         }

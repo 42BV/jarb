@@ -74,16 +74,16 @@ public class DataSourceDelegate implements DataSource {
      * {@inheritDoc}
      */
     @Override
-    public boolean isWrapperFor(Class<?> iface) throws SQLException {
-        return delegate.isWrapperFor(iface);
+    public boolean isWrapperFor(Class<?> type) throws SQLException {
+        return delegate.isWrapperFor(type);
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public <T> T unwrap(Class<T> iface) throws SQLException {
-        return delegate.unwrap(iface);
+    public <T> T unwrap(Class<T> type) throws SQLException {
+        return delegate.unwrap(type);
     }
 
     /**

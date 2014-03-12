@@ -36,7 +36,7 @@ public class BeanConstraintDescription {
         return properties.get(propertyName);
     }
 
-    public Collection<PropertyConstraintDescription> getProperty() {
+    public Collection<PropertyConstraintDescription> getProperties() {
         return properties.values();
     }
 

@@ -11,7 +11,7 @@ import javax.sql.DataSource;
 import javax.validation.ValidatorFactory;
 
 import org.hibernate.dialect.HSQLDialect;
-import org.hibernate.ejb.HibernatePersistence;
+import org.hibernate.jpa.HibernatePersistenceProvider;
 import org.hibernate.validator.constraints.Email;
 import org.jarbframework.constraint.DatabaseConstraintsConfigurer;
 import org.jarbframework.constraint.EnableDatabaseConstraints;
@@ -57,7 +57,7 @@ public class ApplicationConfig extends DatabaseConstraintsConfigurer {
     public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
         LocalContainerEntityManagerFactoryBean entityManagerFactoryBean = new LocalContainerEntityManagerFactoryBean();
         entityManagerFactoryBean.setDataSource(dataSource());
-        entityManagerFactoryBean.setPersistenceProviderClass(HibernatePersistence.class);
+        entityManagerFactoryBean.setPersistenceProviderClass(HibernatePersistenceProvider.class);
         entityManagerFactoryBean.setPackagesToScan("org.jarbframework.sample");
         
         Map<String, Object> jpaProperties = new HashMap<String, Object>();
