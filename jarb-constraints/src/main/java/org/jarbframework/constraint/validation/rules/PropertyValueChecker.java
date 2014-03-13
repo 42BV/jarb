@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.jarbframework.constraint.metadata.database.ColumnMetadata;
-import org.jarbframework.constraint.validation.DatabaseConstraintValidationContext;
+import org.jarbframework.constraint.validation.DatabaseValidationContext;
 import org.jarbframework.utils.bean.PropertyReference;
 
 /**
@@ -24,7 +24,7 @@ public class PropertyValueChecker {
         validationRules.add(new FractionLengthValidationRule());
     }
 
-    public void validate(Object propertyValue, PropertyReference propertyReference, ColumnMetadata columnMetadata, DatabaseConstraintValidationContext validation) {
+    public void validate(Object propertyValue, PropertyReference propertyReference, ColumnMetadata columnMetadata, DatabaseValidationContext validation) {
         for(PropertyValueValidationRule validationRule : validationRules) {
             validationRule.validate(propertyValue, propertyReference, columnMetadata, validation);
         }

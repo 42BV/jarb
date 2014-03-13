@@ -17,6 +17,6 @@ public interface DatabaseConstraintValidationStep {
      * @param columnMetadata metadata of the column referenced by our property
      * @param validation the validation result in which violations are stored
      */
-    void validate(Object propertyValue, PropertyReference propertyRef, ColumnMetadata columnMetadata, DatabaseConstraintValidationContext validation);
+    void validate(Object propertyValue, PropertyReference propertyRef, ColumnMetadata columnMetadata, DatabaseValidationContext validation);
 
 }

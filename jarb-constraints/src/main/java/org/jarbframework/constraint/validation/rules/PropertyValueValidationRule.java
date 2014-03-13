@@ -1,7 +1,7 @@
 package org.jarbframework.constraint.validation.rules;
 
 import org.jarbframework.constraint.metadata.database.ColumnMetadata;
-import org.jarbframework.constraint.validation.DatabaseConstraintValidationContext;
+import org.jarbframework.constraint.validation.DatabaseValidationContext;
 import org.jarbframework.utils.bean.PropertyReference;
 
 /**
@@ -18,6 +18,6 @@ public interface PropertyValueValidationRule {
      * @param columnMetadata metadata of the column referenced by our property
      * @param validation the validation result in which violations are stored
      */
-    void validate(Object propertyValue, PropertyReference propertyReference, ColumnMetadata columnMetadata, DatabaseConstraintValidationContext validation);
+    void validate(Object propertyValue, PropertyReference propertyReference, ColumnMetadata columnMetadata, DatabaseValidationContext validation);
 
 }

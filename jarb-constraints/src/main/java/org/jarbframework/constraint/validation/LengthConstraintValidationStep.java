@@ -10,7 +10,7 @@ public class LengthConstraintValidationStep implements DatabaseConstraintValidat
     private static final String LENGTH_VIOLATION_TEMPLATE = "{org.jarb.validation.DatabaseConstraint.Length.message}";
 
     @Override
-    public void validate(Object value, PropertyReference reference, ColumnMetadata metadata, DatabaseConstraintValidationContext context) {
+    public void validate(Object value, PropertyReference reference, ColumnMetadata metadata, DatabaseValidationContext context) {
         if (isLengthExceeded(value, metadata)) {
             context.buildViolationWithTemplate(reference, LENGTH_VIOLATION_TEMPLATE)
                     .attribute("max", metadata.getMaximumLength())

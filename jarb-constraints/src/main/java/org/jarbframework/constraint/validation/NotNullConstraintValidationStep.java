@@ -10,7 +10,7 @@ public class NotNullConstraintValidationStep implements DatabaseConstraintValida
     private static final String NOT_NULL_VIOLATION_TEMPLATE = "{javax.validation.constraints.NotNull.message}";
 
     @Override
-    public void validate(Object value, PropertyReference reference, ColumnMetadata metadata, DatabaseConstraintValidationContext context) {
+    public void validate(Object value, PropertyReference reference, ColumnMetadata metadata, DatabaseValidationContext context) {
         if (value == null && isValueExpected(reference, metadata)) {
             context.buildViolationWithTemplate(reference, NOT_NULL_VIOLATION_TEMPLATE).addToContext();
         }

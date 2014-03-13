@@ -1,5 +1,7 @@
 package org.jarbframework.constraint.validation;
 
+import static org.jarbframework.utils.StringUtils.isNotBlank;
+
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
@@ -62,52 +64,75 @@ public class DatabaseConstraintValidator {
     /**
      * Determine if a bean follows all column constraints defined in the database.
      * @param bean the bean that should be validated
-     * @param root the reference to our bean, or {@code null} if the bean is our root
+     * @param base the reference to our bean, or {@code null} if the bean is our root
      * @param validatorContext used to create constraint violations
      * @return whether the bean is valid, or not
      */
-	public boolean isValid(Object bean, PropertyReference root, ConstraintValidatorContext validatorContext) {
-        DatabaseConstraintValidationContext validation = new DatabaseConstraintValidationContext(validatorContext, messageBuilder);
-        validateBean(bean, root, validation);
+    public boolean isValid(Object bean, Class<?> entityClass, String propertyName, ConstraintValidatorContext validatorContext) {
+        DatabaseValidationContext validation = new DatabaseValidationContext(validatorContext, messageBuilder);
+        validateBean(bean, new RootPath(entityClass, propertyName), validation);
         return validation.isValid();
-	}
+    }
 
-    private void validateBean(Object bean, PropertyReference root, DatabaseConstraintValidationContext validation) {
-    	FlexibleBeanWrapper<?> beanWrapper = FlexibleBeanWrapper.wrap(bean);
+    private void validateBean(Object bean, RootPath rootPath, DatabaseValidationContext validation) {
+        FlexibleBeanWrapper<?> beanWrapper = FlexibleBeanWrapper.wrap(bean);
         for (String propertyName : BeanProperties.getFieldNames(bean.getClass())) {
-			validateProperty(beanWrapper, new PropertyReference(bean.getClass(), propertyName), root, validation);
+            validateProperty(beanWrapper, new PropertyReference(bean.getClass(), propertyName), rootPath, validation);
         }
     }
 
-    private void validateProperty(FlexibleBeanWrapper<?> beanWrapper, PropertyReference property, PropertyReference root, DatabaseConstraintValidationContext validation) {
-        Field propertyField = BeanProperties.findPropertyField(property);
+    private void validateProperty(FlexibleBeanWrapper<?> beanWrapper, PropertyReference propertyPath, RootPath rootPath, DatabaseValidationContext validation) {
+        Field propertyField = BeanProperties.findPropertyField(propertyPath);
         if (! Modifier.isStatic(propertyField.getModifiers())) {
             Class<?> propertyClass = propertyField.getType();
             if (beanMetadataRepository.isEmbeddable(propertyClass)) {
-            	for (String propertyName : BeanProperties.getFieldNames(propertyClass)) {
-                    validateProperty(beanWrapper, new PropertyReference(property, propertyName), root, validation);
+                for (String propertyName : BeanProperties.getFieldNames(propertyClass)) {
+                    validateProperty(beanWrapper, new PropertyReference(propertyPath, propertyName), rootPath, validation);
                 }
             } else {
-                validateSimpleProperty(beanWrapper, property, root, validation);
+                validateSimpleProperty(beanWrapper, propertyPath, rootPath, validation);
             }
         }
     }
 
-    private void validateSimpleProperty(FlexibleBeanWrapper<?> beanWrapper, PropertyReference property, PropertyReference root, DatabaseConstraintValidationContext validation) {
-        PropertyReference entityPropertyReference = property;
-        if (root != null) {
-            entityPropertyReference = new PropertyReference(root, property.getName());
-        }
-        
-        ColumnMetadata columnMetadata = beanMetadataRepository.getColumnMetadata(entityPropertyReference);
+    private void validateSimpleProperty(FlexibleBeanWrapper<?> beanWrapper, PropertyReference propertyPath, RootPath rootPath, DatabaseValidationContext validation) {
+        PropertyReference wrappedPath = rootPath.wrap(propertyPath);
+        ColumnMetadata columnMetadata = beanMetadataRepository.getColumnMetadata(wrappedPath);
         if (columnMetadata != null) {
-            Object propertyValue = beanWrapper.getPropertyValueNullSafe(property.getName());
+            Object propertyValue = beanWrapper.getPropertyValueNullSafe(propertyPath.getName());
             for (DatabaseConstraintValidationStep validationStep : validationSteps) {
-                validationStep.validate(propertyValue, property, columnMetadata, validation);
+                validationStep.validate(propertyValue, propertyPath, columnMetadata, validation);
             }
         } else {
-            logger.debug("Skipped validation because no meta-data could be found for property '{}'.", entityPropertyReference);
+            logger.debug("Skipped validation because no meta-data could be found for property '{}'.", wrappedPath);
         }
+    }
+    
+    public static class RootPath {
+        
+        private final Class<?> entityClass;
+        
+        private final String propertyName;
+        
+        public RootPath(Class<?> entityClass, String propertyName) {
+            this.entityClass = entityClass;
+            this.propertyName = propertyName;
+        }
+        
+        public PropertyReference wrap(PropertyReference propertyPath) {
+            if (!Object.class.equals(entityClass)) {
+                if (isNotBlank(propertyName)) {
+                    // Include parent path to reference
+                    PropertyReference parent = new PropertyReference(entityClass, propertyName);
+                    return new PropertyReference(parent, propertyPath.getName());
+                } else {
+                    // Alter base bean type to our specified entity class
+                    return new PropertyReference(entityClass, propertyPath.getName());
+                }
+            }
+            return propertyPath;
+        }
+        
     }
 
 }

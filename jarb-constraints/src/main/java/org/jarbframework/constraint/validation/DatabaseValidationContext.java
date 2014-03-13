@@ -13,7 +13,7 @@ import org.jarbframework.utils.bean.PropertyReference;
  * @author Jeroen van Schagen
  * @since 20-10-2011
  */
-public final class DatabaseConstraintValidationContext {
+public final class DatabaseValidationContext {
 
     /** Context of the global bean validation. **/
     private final ConstraintValidatorContext validatorContext;
@@ -24,7 +24,7 @@ public final class DatabaseConstraintValidationContext {
     /** Describes if this context is still valid, meaning it has no violations. **/
     private boolean valid = true;
 
-    DatabaseConstraintValidationContext(ConstraintValidatorContext validatorContext, ViolationMessageBuilder messageBuilder) {
+    DatabaseValidationContext(ConstraintValidatorContext validatorContext, ViolationMessageBuilder messageBuilder) {
         this.validatorContext = validatorContext;
         validatorContext.disableDefaultConstraintViolation();
         this.messageBuilder = messageBuilder;
@@ -90,14 +90,14 @@ public final class DatabaseConstraintValidationContext {
          * Finish building and include the violation to our context.
          * @return the relevant context, capable of building new violation
          */
-        public DatabaseConstraintValidationContext addToContext() {
+        public DatabaseValidationContext addToContext() {
             markAsInvalid();
             if (propertyReference.isNestedProperty()) {
                 buildAndIncludeNestedPropertyViolation();
             } else {
                 buildConstraintViolation().addPropertyNode(propertyReference.getName()).addConstraintViolation();
             }
-            return DatabaseConstraintValidationContext.this;
+            return DatabaseValidationContext.this;
         }
 
         private void markAsInvalid() {
