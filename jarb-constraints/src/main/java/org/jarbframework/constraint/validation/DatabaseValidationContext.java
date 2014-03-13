@@ -13,10 +13,10 @@ import org.jarbframework.utils.bean.PropertyReference;
  * @author Jeroen van Schagen
  * @since 20-10-2011
  */
-public final class DatabaseValidationContext {
+final class DatabaseValidationContext {
 
     /** Context of the global bean validation. **/
-    private final ConstraintValidatorContext validatorContext;
+    private final ConstraintValidatorContext context;
 
     /** Used to build database constraint violation messages. **/
     private final ViolationMessageBuilder messageBuilder;
@@ -24,10 +24,12 @@ public final class DatabaseValidationContext {
     /** Describes if this context is still valid, meaning it has no violations. **/
     private boolean valid = true;
 
-    DatabaseValidationContext(ConstraintValidatorContext validatorContext, ViolationMessageBuilder messageBuilder) {
-        this.validatorContext = validatorContext;
-        validatorContext.disableDefaultConstraintViolation();
+    DatabaseValidationContext(ConstraintValidatorContext context, ViolationMessageBuilder messageBuilder) {
+        this.context = context;
         this.messageBuilder = messageBuilder;
+        
+        // Only include custom violation messages
+        context.disableDefaultConstraintViolation();
     }
 
     /**
@@ -115,7 +117,7 @@ public final class DatabaseValidationContext {
         }
 
         private ConstraintViolationBuilder buildConstraintViolation() {
-            return validatorContext.buildConstraintViolationWithTemplate(template.message());
+            return context.buildConstraintViolationWithTemplate(template.message());
         }
 
     }

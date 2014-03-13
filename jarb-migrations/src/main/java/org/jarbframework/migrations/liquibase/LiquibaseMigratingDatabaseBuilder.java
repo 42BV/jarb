@@ -1,9 +1,9 @@
 /*
  * (C) 2013 42 bv (www.42.nl). All rights reserved.
  */
-package org.jarbframework.migrations;
+package org.jarbframework.migrations.liquibase;
 
-import org.jarbframework.migrations.liquibase.LiquibaseMigrator;
+import org.jarbframework.migrations.MigratingDataSource;
 import org.jarbframework.utils.DataSourceDelegate;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabase;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
@@ -14,39 +14,29 @@ import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
  * @author Jeroen van Schagen
  * @since Feb 12, 2014
  */
-public class EmbeddedMigratingDatabaseBuilder extends EmbeddedDatabaseBuilder {
+public class LiquibaseMigratingDatabaseBuilder extends EmbeddedDatabaseBuilder {
     
-    private DatabaseMigrator migrator;
-    
+    private LiquibaseMigrator migrator = LiquibaseMigrator.local();
+
     /**
-     * Configure a migrator.
-     * @param migrator the migrator to set
-     * @return this builder, for chaining
+     * Change the change log path, this is by default 'src/main/db/changelog.groovy'
+     * 
+     * @param changeLogPath the change log path
+     * @return this builder instance, for chaining
      */
-    public EmbeddedMigratingDatabaseBuilder withMigrator(DatabaseMigrator migrator) {
-        this.migrator = migrator;
+    public LiquibaseMigratingDatabaseBuilder setChangeLogPath(String changeLogPath) {
+        migrator.setChangeLogPath(changeLogPath);
         return this;
     }
 
     /**
-     * Configure a local Liquibase migrator.
-     * @return this builder, for chaining
+     * {@inheritDoc}
      */
-    public EmbeddedMigratingDatabaseBuilder withLiquibase() {
-        return this.withMigrator(LiquibaseMigrator.local());
-    }
-    
     @Override
     public EmbeddedDatabase build() {
-        if (migrator == null) {
-            withLiquibase();
-        }
-
         EmbeddedDatabase embeddedDatabase = super.build();
-        
         MigratingDataSource migratingDataSource = new MigratingDataSource(embeddedDatabase, migrator);
         return new MigratingEmbeddedDatabase(migratingDataSource, embeddedDatabase);
-
     }
 
     /**
@@ -55,7 +45,7 @@ public class EmbeddedMigratingDatabaseBuilder extends EmbeddedDatabaseBuilder {
      * @author Jeroen van Schagen
      * @since Mar 4, 2014
      */
-    public class MigratingEmbeddedDatabase extends DataSourceDelegate implements EmbeddedDatabase {
+    public static class MigratingEmbeddedDatabase extends DataSourceDelegate implements EmbeddedDatabase {
         
         private final EmbeddedDatabase embeddedDatabase;
         
