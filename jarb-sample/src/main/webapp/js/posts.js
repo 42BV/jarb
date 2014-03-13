@@ -1,5 +1,5 @@
 var postsApp = angular.module('PostApp', [ 'jarb' ]);
-postsApp.controller('PostCtrl', function($scope, $http) {
+postsApp.controller('PostCtrl', function($scope, $http, $timeout) {
 
 	$scope.message = "";
 	$scope.newPost = {};
@@ -16,6 +16,9 @@ postsApp.controller('PostCtrl', function($scope, $http) {
 				$scope.posts.push(response.post);
 				$scope.newPost = {};
 			}
+			$timeout(function() {
+				$scope.message = "";
+			}, 3000);
 		});
 	};
 
