@@ -32,7 +32,7 @@ public class LengthPropertyConstraintEnhancerTest {
     public void testEnhance() {
         description.setMaximumLength(6); // Database column length is '6'
 
-        description = enhancer.enhance(description);
+        enhancer.enhance(description);
 
         // Minimum length is retrieved from the @Length.min attribute
         assertEquals(Integer.valueOf(6), description.getMinimumLength());

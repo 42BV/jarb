@@ -12,11 +12,10 @@ import org.jarbframework.utils.bean.AnnotationScanner;
 public class NotNullPropertyConstraintEnhancer implements PropertyConstraintEnhancer {
 
     @Override
-    public PropertyConstraintDescription enhance(PropertyConstraintDescription description) {
+    public void enhance(PropertyConstraintDescription description) {
         if (AnnotationScanner.hasAnnotation(description.toReference(), javax.validation.constraints.NotNull.class)) {
             description.setRequired(true);
         }
-        return description;
     }
 
 }

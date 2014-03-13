@@ -26,7 +26,7 @@ public class DatabasePropertyConstraintEnhancer implements PropertyConstraintEnh
     }
 
     @Override
-    public PropertyConstraintDescription enhance(PropertyConstraintDescription description) {
+    public void enhance(PropertyConstraintDescription description) {
         if (! beanMetadataRepository.isEmbeddable(description.getJavaType())) {
             PropertyReference reference = description.toReference();
             ColumnMetadata metadata = beanMetadataRepository.getColumnMetadata(reference);
@@ -36,8 +36,6 @@ public class DatabasePropertyConstraintEnhancer implements PropertyConstraintEnh
                 logger.debug("Could not resolve column metadata for '{}'.", reference);
             }
         }
-
-        return description;
     }
 
     private void doEnhance(PropertyConstraintDescription description, ColumnMetadata metadata) {

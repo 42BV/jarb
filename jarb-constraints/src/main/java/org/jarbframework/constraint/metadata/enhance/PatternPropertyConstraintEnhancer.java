@@ -17,13 +17,12 @@ import org.jarbframework.utils.bean.AnnotationScanner;
 public class PatternPropertyConstraintEnhancer implements PropertyConstraintEnhancer {
     
     @Override
-    public PropertyConstraintDescription enhance(PropertyConstraintDescription description) {
+    public void enhance(PropertyConstraintDescription description) {
         Collection<javax.validation.constraints.Pattern> annotations = 
                 AnnotationScanner.getAnnotations(description.toReference(), javax.validation.constraints.Pattern.class);
         if (!annotations.isEmpty()) {
             description.setPattern(annotations.iterator().next().regexp());
         }
-        return description;
     }
     
 }

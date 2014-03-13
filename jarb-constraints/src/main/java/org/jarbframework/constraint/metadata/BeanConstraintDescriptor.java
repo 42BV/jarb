@@ -38,27 +38,27 @@ public class BeanConstraintDescriptor {
      * Describe the constraints of a specific property.
      * 
      * @param beanClass type of bean that contains the property
-     * @param propertyDescriptor plain property description from java
+     * @param descriptor plain property description from java
      * @return property constraint description
      */
-    private PropertyConstraintDescription describeProperty(Class<?> beanClass, PropertyDescriptor propertyDescriptor) {
-        PropertyConstraintDescription propertyDescription = newPropertyDescription(beanClass, propertyDescriptor);
+    private PropertyConstraintDescription describeProperty(Class<?> beanClass, PropertyDescriptor descriptor) {
+        PropertyConstraintDescription description = newPropertyDescription(beanClass, descriptor);
         for (PropertyConstraintEnhancer enhancer : enhancers) {
-            propertyDescription = enhancer.enhance(propertyDescription);
+            enhancer.enhance(description);
         }
-        return propertyDescription;
+        return description;
     }
 
     /**
      * Construct a new {@link PropertyConstraintDescription} for some property.
      * 
      * @param beanClass type of bean that contains the property
-     * @param propertyDescriptor plain property description from java
+     * @param descriptor plain property description from java
      * @return new property constraint description
      */
-    private PropertyConstraintDescription newPropertyDescription(Class<?> beanClass, PropertyDescriptor propertyDescriptor) {
-        PropertyReference propertyReference = new PropertyReference(beanClass, propertyDescriptor.getName());
-        return new PropertyConstraintDescription(propertyReference, propertyDescriptor.getPropertyType());
+    private PropertyConstraintDescription newPropertyDescription(Class<?> beanClass, PropertyDescriptor descriptor) {
+        PropertyReference reference = new PropertyReference(beanClass, descriptor.getName());
+        return new PropertyConstraintDescription(reference, descriptor.getPropertyType());
     }
 
     /**

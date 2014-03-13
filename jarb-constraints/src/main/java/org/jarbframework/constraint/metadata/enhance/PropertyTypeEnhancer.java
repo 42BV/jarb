@@ -30,7 +30,7 @@ public class PropertyTypeEnhancer implements PropertyConstraintEnhancer {
     }
     
     @Override
-    public PropertyConstraintDescription enhance(PropertyConstraintDescription description) {
+    public void enhance(PropertyConstraintDescription description) {
         if (AnnotationScanner.hasAnnotation(description.toReference(), annotationClass)) {
             Annotation annotation = AnnotationScanner.getAnnotations(description.toReference(), annotationClass).iterator().next();
             if (annotation instanceof PropertyType) {
@@ -42,7 +42,6 @@ public class PropertyTypeEnhancer implements PropertyConstraintEnhancer {
                 }
             }
         }
-        return description;
     }
 
 }

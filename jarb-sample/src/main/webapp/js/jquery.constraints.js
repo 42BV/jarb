@@ -10,7 +10,8 @@
 	$.fn.constraints = function(url, args) {
 
 		var defaults = {
-			requiredSuffix : " (*)"
+		    requiredSuffix : " (*)",
+		    possibleTypes : [ 'color', 'datetime-local', 'datetime', 'month', 'week', 'date', 'time', 'email', 'tel', 'number', 'url', 'password', 'text' ]
 		};
 
 		var options = $.extend(defaults, args);
@@ -37,34 +38,15 @@
 				});
 
 				if (!input.attr('type')) {
-					if ($.inArray(property.types, 'email')) {
-						input.attr('type', 'email');
+					for (var index = 0; index < options.possibleTypes.length; index++) {
+						var type = options.possibleTypes[index];
+						if (property.types.indexOf(type) >= 0) {
+							input.attr('type', type);
+							break;
+						}
 					}
 				}
 			});
 		});
-
-		/*  
-		    TODO: Include all input types
-		 
-			color
-			date
-			datetime
-			datetime-local
-			email
-			month
-			number
-			range?
-			search?
-			tel
-			time
-			url
-			week
-			
-			@Temporal
-			Date
-			LocalDate
-		*/
-
 	};
 })(jQuery);

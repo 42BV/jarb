@@ -12,7 +12,7 @@ import org.jarbframework.utils.bean.AnnotationScanner;
 public class NotEmptyPropertyConstraintEnhancer implements PropertyConstraintEnhancer {
 
     @Override
-    public PropertyConstraintDescription enhance(PropertyConstraintDescription description) {
+    public void enhance(PropertyConstraintDescription description) {
         if (AnnotationScanner.hasAnnotation(description.toReference(), org.hibernate.validator.constraints.NotEmpty.class)) {
             // When a property cannot be empty, it has a minimum length of at least 1
             // If our description already has a greater minimum length, do nothing
@@ -20,7 +20,6 @@ public class NotEmptyPropertyConstraintEnhancer implements PropertyConstraintEnh
                 description.setMinimumLength(1);
             }
         }
-        return description;
     }
 
 }

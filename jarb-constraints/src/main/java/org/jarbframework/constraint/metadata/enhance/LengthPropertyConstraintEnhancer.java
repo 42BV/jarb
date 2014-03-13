@@ -14,7 +14,7 @@ import org.jarbframework.utils.bean.AnnotationScanner;
 public class LengthPropertyConstraintEnhancer implements PropertyConstraintEnhancer {
 
     @Override
-    public PropertyConstraintDescription enhance(PropertyConstraintDescription description) {
+    public void enhance(PropertyConstraintDescription description) {
         Collection<org.hibernate.validator.constraints.Length> annotations = 
                 AnnotationScanner.getAnnotations(description.toReference(), org.hibernate.validator.constraints.Length.class);
         Integer minimumLength = description.getMinimumLength();
@@ -26,7 +26,6 @@ public class LengthPropertyConstraintEnhancer implements PropertyConstraintEnhan
         }
         description.setMinimumLength(minimumLength);
         description.setMaximumLength(maximumLength);
-        return description;
     }
     
     private Integer lowest(Integer current, Integer next) {

@@ -16,7 +16,7 @@ import org.jarbframework.utils.bean.AnnotationScanner;
 public class DigitsPropertyConstraintEnhancer implements PropertyConstraintEnhancer {
 
     @Override
-    public PropertyConstraintDescription enhance(PropertyConstraintDescription description) {
+    public void enhance(PropertyConstraintDescription description) {
         Collection<javax.validation.constraints.Digits> annotations = 
                 AnnotationScanner.getAnnotations(description.toReference(), javax.validation.constraints.Digits.class);
         Integer maximumLength = description.getMaximumLength();
@@ -27,7 +27,6 @@ public class DigitsPropertyConstraintEnhancer implements PropertyConstraintEnhan
         }
         description.setMaximumLength(maximumLength);
         description.setFractionLength(fractionLength);
-        return description;
     }
 
     private Integer lowest(Integer current, Integer next) {

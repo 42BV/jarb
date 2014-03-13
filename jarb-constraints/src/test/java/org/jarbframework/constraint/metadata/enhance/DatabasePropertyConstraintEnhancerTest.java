@@ -40,7 +40,7 @@ public class DatabasePropertyConstraintEnhancerTest {
     public void testEnhance() {
         PropertyReference propertyReference = new PropertyReference(Wine.class, "name");
         PropertyConstraintDescription nameDescription = new PropertyConstraintDescription(propertyReference, String.class);
-        nameDescription = enhancer.enhance(nameDescription);
+        enhancer.enhance(nameDescription);
         assertTrue(nameDescription.isRequired());
         assertEquals(Integer.valueOf(6), nameDescription.getMaximumLength());
         assertNull(nameDescription.getFractionLength());
@@ -54,7 +54,7 @@ public class DatabasePropertyConstraintEnhancerTest {
     public void testNotRequiredIfGeneratable() {
         PropertyReference propertyReference = new PropertyReference(Wine.class, "id");
         PropertyConstraintDescription idDescription = new PropertyConstraintDescription(propertyReference, Long.class);
-        idDescription = enhancer.enhance(idDescription);
+        enhancer.enhance(idDescription);
         assertFalse(idDescription.isRequired());
     }
 
@@ -67,7 +67,7 @@ public class DatabasePropertyConstraintEnhancerTest {
     public void testSkipPropertyWithoutMetadata() {
         PropertyReference propertyReference = new PropertyReference(Wine.class, "unmappedProperty");
         PropertyConstraintDescription unmappedPropertyDescription = new PropertyConstraintDescription(propertyReference, String.class);
-        unmappedPropertyDescription = enhancer.enhance(unmappedPropertyDescription);
+        enhancer.enhance(unmappedPropertyDescription);
         assertNull(unmappedPropertyDescription.getMaximumLength());
     }
 
@@ -79,7 +79,7 @@ public class DatabasePropertyConstraintEnhancerTest {
     public void testSkipUnmappedProperty() {
         PropertyReference propertyReference = new PropertyReference(Wine.class, "unknownProperty");
         PropertyConstraintDescription unknownPropertyDescription = new PropertyConstraintDescription(propertyReference, String.class);
-        unknownPropertyDescription = enhancer.enhance(unknownPropertyDescription);
+        enhancer.enhance(unknownPropertyDescription);
         assertNull(unknownPropertyDescription.getMaximumLength());
     }
 
@@ -91,7 +91,7 @@ public class DatabasePropertyConstraintEnhancerTest {
     public void testSkipUnmappedBeans() {
         PropertyReference propertyReference = new PropertyReference(NotAnEntity.class, "name");
         PropertyConstraintDescription nameDescription = new PropertyConstraintDescription(propertyReference, String.class);
-        nameDescription = enhancer.enhance(nameDescription);
+        enhancer.enhance(nameDescription);
         assertNull(nameDescription.getMaximumLength());
     }
 

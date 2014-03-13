@@ -10,7 +10,7 @@ import javax.sql.DataSource;
 import javax.validation.ValidatorFactory;
 
 import org.hibernate.dialect.HSQLDialect;
-import org.hibernate.ejb.HibernatePersistence;
+import org.hibernate.jpa.HibernatePersistenceProvider;
 import org.jarbframework.migrations.MigratingDataSource;
 import org.jarbframework.migrations.liquibase.LiquibaseMigrator;
 import org.jarbframework.utils.orm.hibernate.ConventionNamingStrategy;
@@ -43,7 +43,7 @@ public class TestConstraintsConfig {
     public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
         LocalContainerEntityManagerFactoryBean entityManagerFactoryBean = new LocalContainerEntityManagerFactoryBean();
         entityManagerFactoryBean.setDataSource(dataSource);
-        entityManagerFactoryBean.setPersistenceProviderClass(HibernatePersistence.class);
+        entityManagerFactoryBean.setPersistenceProviderClass(HibernatePersistenceProvider.class);
         entityManagerFactoryBean.setPackagesToScan("org.jarbframework.constraint");
         
         Map<String, Object> jpaProperties = new HashMap<String, Object>();

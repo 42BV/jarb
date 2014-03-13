@@ -3,7 +3,7 @@ package org.jarbframework.constraint.metadata;
 import static java.util.Collections.unmodifiableSet;
 import static org.jarbframework.utils.Asserts.notNull;
 
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 import org.jarbframework.utils.bean.PropertyReference;
@@ -22,7 +22,7 @@ public class PropertyConstraintDescription {
     
     private final Class<?> javaType;
 
-    private final Set<String> types = new HashSet<String>();
+    private final Set<String> types = new LinkedHashSet<String>();
 
     private boolean required;
     
@@ -35,6 +35,10 @@ public class PropertyConstraintDescription {
     private Integer radix;
     
     private String pattern;
+    
+    private Object min;
+    
+    private Object max;
 
     /**
      * Construct a new {@link PropertyConstraintDescription}.
@@ -137,7 +141,23 @@ public class PropertyConstraintDescription {
     public void setPattern(String pattern) {
         this.pattern = pattern;
     }
-
+    
+    public Object getMin() {
+        return min;
+    }
+    
+    public void setMin(Object min) {
+        this.min = min;
+    }
+    
+    public Object getMax() {
+        return max;
+    }
+    
+    public void setMax(Object max) {
+        this.max = max;
+    }
+    
     public PropertyReference toReference() {
         return reference;
     }

@@ -12,6 +12,7 @@ import org.jarbframework.constraint.metadata.enhance.DatabaseGeneratedPropertyCo
 import org.jarbframework.constraint.metadata.enhance.DatabasePropertyConstraintEnhancer;
 import org.jarbframework.constraint.metadata.enhance.DigitsPropertyConstraintEnhancer;
 import org.jarbframework.constraint.metadata.enhance.LengthPropertyConstraintEnhancer;
+import org.jarbframework.constraint.metadata.enhance.MinMaxNumberPropertyEnhancer;
 import org.jarbframework.constraint.metadata.enhance.NotEmptyPropertyConstraintEnhancer;
 import org.jarbframework.constraint.metadata.enhance.NotNullPropertyConstraintEnhancer;
 import org.jarbframework.constraint.metadata.enhance.PatternPropertyConstraintEnhancer;
@@ -68,10 +69,18 @@ public class DefaultBeanConstraintDescriptor extends BeanConstraintDescriptor {
         registerEnhancer(new PropertyTypeEnhancer(URL.class));
     }
     
+    /*  
+        TODO: Include all input types
+        @Temporal
+        Date
+        LocalDate
+    */
+
     private void registerValidationEnhancers() {
         registerEnhancer(new NotNullPropertyConstraintEnhancer());
         registerEnhancer(new PatternPropertyConstraintEnhancer());
         registerEnhancer(new DigitsPropertyConstraintEnhancer());
+        registerEnhancer(new MinMaxNumberPropertyEnhancer());
     }
 
     private void registerHibernateEnhancers() {
