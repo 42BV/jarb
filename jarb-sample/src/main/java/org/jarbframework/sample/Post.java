@@ -2,7 +2,6 @@ package org.jarbframework.sample;
 
 import java.util.Date;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -30,7 +29,6 @@ public class Post {
 
     private String message;
 
-    @Column(name = "posted_on")
     private Date postedOn = new Date();
 
     public Long getId() {

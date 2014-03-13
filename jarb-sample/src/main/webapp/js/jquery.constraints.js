@@ -11,7 +11,7 @@
 
 		var defaults = {
 		    requiredSuffix : " (*)",
-		    possibleTypes : [ 'color', 'datetime-local', 'datetime', 'month', 'week', 'date', 'time', 'email', 'tel', 'number', 'url', 'password', 'text' ]
+		    possibleTypes : [ 'color', 'datetime-local', 'datetime', 'month', 'week', 'date', 'time', 'email', 'tel', 'number', 'url', 'password', 'file', 'image', 'text' ]
 		};
 
 		var options = $.extend(defaults, args);
@@ -31,7 +31,10 @@
 				input.attr('minlength', property.minimumLength);
 				input.attr('length', property.maximumLength);
 
-				// TODO: min, max
+				input.attr('min', property.min);
+				input.attr('max', property.max);
+
+				input.attr('pattern', property.pattern);
 
 				$.each(property.types, function(index, type) {
 					input.addClass(type);
