@@ -1,9 +1,9 @@
 package org.jarbframework.utils.spring;
 
+import static org.jarbframework.utils.Asserts.hasText;
 import static org.jarbframework.utils.Asserts.notNull;
+import static org.jarbframework.utils.StringUtils.isNotBlank;
 
-import org.jarbframework.utils.Asserts;
-import org.jarbframework.utils.StringUtils;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.NoUniqueBeanDefinitionException;
@@ -14,15 +14,15 @@ import org.springframework.beans.factory.NoUniqueBeanDefinitionException;
  * @author Jeroen van Schagen
  * @since Sep 8, 2011
  */
-public class SpringBeanFinder {
+public class BeanLocator {
 	
     private final BeanFactory beanFactory;
 
     /**
-     * Construct a new {@link SpringBeanFinder}.
+     * Construct a new {@link BeanLocator}.
      * @param beanFactory factory that contains the beans
      */
-    public SpringBeanFinder(BeanFactory beanFactory) {
+    public BeanLocator(BeanFactory beanFactory) {
         this.beanFactory = notNull(beanFactory, "Bean factory cannot be null.");
     }
 
@@ -36,8 +36,7 @@ public class SpringBeanFinder {
      */
     public <T> T findBean(Class<T> beanClass, String identifier) {
         notNull(beanClass, "Bean class cannot be null.");
-        
-        if (StringUtils.isNotBlank(identifier)) {
+        if (isNotBlank(identifier)) {
             return beanFactory.getBean(identifier, beanClass);
         } else {
             return beanFactory.getBean(beanClass);
@@ -54,8 +53,7 @@ public class SpringBeanFinder {
      * @return matching bean
      */
     public <T> T findUniqueBean(Class<T> beanClass, String fallbackIdentifier) {
-        Asserts.hasText(fallbackIdentifier, "Fallback bean identifier cannot be empty.");
-
+        hasText(fallbackIdentifier, "Fallback bean identifier cannot be empty.");
         try {
             return beanFactory.getBean(beanClass);
         } catch (NoUniqueBeanDefinitionException be) {

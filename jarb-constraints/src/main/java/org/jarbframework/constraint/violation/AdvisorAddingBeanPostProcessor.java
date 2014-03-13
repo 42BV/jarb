@@ -1,4 +1,4 @@
-package org.jarbframework.utils.spring;
+package org.jarbframework.constraint.violation;
 
 import org.jarbframework.utils.Asserts;
 import org.springframework.aop.Advisor;

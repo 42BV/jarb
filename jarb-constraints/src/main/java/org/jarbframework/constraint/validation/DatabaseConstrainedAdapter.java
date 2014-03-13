@@ -3,7 +3,7 @@ package org.jarbframework.constraint.validation;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
-import org.jarbframework.utils.spring.SpringBeanFinder;
+import org.jarbframework.utils.spring.BeanLocator;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -26,7 +26,7 @@ public class DatabaseConstrainedAdapter implements ConstraintValidator<DatabaseC
     private DatabaseConstraintValidator validator;
     
     /** Used to lookup beans in our application context **/
-    private SpringBeanFinder beans;
+    private BeanLocator beans;
 
     @Override
     public boolean isValid(Object bean, ConstraintValidatorContext validatorContext) {
@@ -51,7 +51,7 @@ public class DatabaseConstrainedAdapter implements ConstraintValidator<DatabaseC
 
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) {
-        this.beans = new SpringBeanFinder(applicationContext);
+        this.beans = new BeanLocator(applicationContext);
     }
     
 }
