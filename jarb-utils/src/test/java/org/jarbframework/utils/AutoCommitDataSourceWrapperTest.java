@@ -5,21 +5,22 @@ import java.sql.SQLException;
 
 import javax.sql.DataSource;
 
+import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.powermock.modules.junit4.PowerMockRunner;
 
-@RunWith(PowerMockRunner.class)
 public class AutoCommitDataSourceWrapperTest {
     
-    @Mock
     private DataSource dataSource;
     
-    @Mock
     private Connection connection;
     
+    @Before
+    public void setUp() {
+        dataSource = Mockito.mock(DataSource.class);
+        connection = Mockito.mock(Connection.class);
+    }
+
     @Test
     public void testGetConnection() throws SQLException {
         Mockito.when(dataSource.getConnection()).thenReturn(connection);
@@ -39,4 +40,5 @@ public class AutoCommitDataSourceWrapperTest {
         
         Mockito.verify(connection).setAutoCommit(false);
     }
+
 }
