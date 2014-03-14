@@ -35,17 +35,16 @@ public class DatabaseConstrainedAdapter implements ConstraintValidator<DatabaseC
 
     @Override
     public void initialize(DatabaseConstrained annotation) {
-        validator = buildValidator(annotation);
+        validator = createValidator(annotation);
         entityClass = annotation.entityClass();
         propertyName = annotation.propertyName();
     }
 
-    private DatabaseConstraintValidator buildValidator(DatabaseConstrained annotation) {
+    private DatabaseConstraintValidator createValidator(DatabaseConstrained annotation) {
         try {
             return beans.findBean(DatabaseConstraintValidator.class, annotation.id());
         } catch (NoSuchBeanDefinitionException nsbde) {
-            // Create a new validation bean when none are registered
-            return new DatabaseConstraintValidatorFactory(beans).build();
+            return DatabaseConstraintValidatorFactory.build(beans);
         }
     }
 

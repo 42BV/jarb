@@ -29,12 +29,10 @@ public class StatelessSessionFactoryBeanTest {
 
     @Before
     public void setUp() {
-        new Expectations() {
-            {
-                entityManagerFactory.getSessionFactory();
-                result = sessionFactory;
-            }
-        };
+        new Expectations() {{
+            entityManagerFactory.getSessionFactory();
+            result = sessionFactory;
+        }};
 
         sessionFactoryBean = new StatelessSessionFactoryBean(entityManagerFactory);
     }
