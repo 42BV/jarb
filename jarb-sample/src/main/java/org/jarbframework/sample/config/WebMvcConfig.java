@@ -39,13 +39,13 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter {
         converters.add(mappingJacksonHttpMessageConverter());
     }
     
-    private MappingJackson2HttpMessageConverter mappingJacksonHttpMessageConverter() {
+    public MappingJackson2HttpMessageConverter mappingJacksonHttpMessageConverter() {
         MappingJackson2HttpMessageConverter converter = new MappingJackson2HttpMessageConverter();
         converter.setObjectMapper(objectMapper());
         return converter;
     }
     
-    public ObjectMapper objectMapper() {
+    private ObjectMapper objectMapper() {
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.setDateFormat(new SimpleDateFormat("MM-dd-yyyy"));
         return objectMapper;

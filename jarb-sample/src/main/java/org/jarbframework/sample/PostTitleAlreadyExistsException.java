@@ -14,6 +14,13 @@ public class PostTitleAlreadyExistsException extends UniqueKeyViolationException
 
     /**
      * Construct a new {@link PostTitleAlreadyExistsException}.
+     */
+    public PostTitleAlreadyExistsException() {
+    }
+    
+    /**
+     * Construct a new {@link PostTitleAlreadyExistsException}.
+     * 
      * @param violation constraint violation reference
      * @param cause the actual cause
      */
