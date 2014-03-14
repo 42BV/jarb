@@ -1,29 +1,33 @@
 package org.jarbframework.utils;
 
-import org.jarbframework.utils.sample.SomeAnnotation;
-import org.jarbframework.utils.sample.SomeClass;
-import org.jarbframework.utils.sample.SomeInterface;
 import org.junit.Assert;
 import org.junit.Test;
 
 public class ClassesTest {
-
-	@Test
-	public void testOnClasspath() {
-		Assert.assertTrue(Classes.isOnClasspath(Classes.class.getName()));
-		Assert.assertFalse(Classes.isOnClasspath("some.unknown.ClassName"));
-	}
     
+    private static final String UNKNOWN_CLASS_NAME = "some.unknown.ClassName";
+    private static final String UNKNOWN_PACKAGE_NAME = "some.unknown.package";
+
     @Test
-    public void testFindByType() {
-        String basePackage = this.getClass().getPackage().getName();
-        Assert.assertTrue(ClassScanner.getAllOfType(basePackage, SomeInterface.class).contains(SomeClass.class));
+    public void testForName() {
+        Assert.assertEquals(Classes.class, Classes.forName(Classes.class.getName()));
+    }
+    
+    @Test(expected = RuntimeException.class)
+    public void testForNameNotOnClasspath() {
+        Classes.forName(UNKNOWN_CLASS_NAME);
     }
     
     @Test
-    public void testFindByAnnotation() {
-        String basePackage = this.getClass().getPackage().getName();
-        Assert.assertTrue(ClassScanner.getAllWithAnnotation(basePackage, SomeAnnotation.class).contains(SomeClass.class));
+    public void testOnClasspath() {
+        Assert.assertTrue(Classes.isOnClasspath(Classes.class.getName()));
+        Assert.assertFalse(Classes.isOnClasspath(UNKNOWN_CLASS_NAME));
+    }
+    
+    @Test
+    public void testHasPackage() {
+        Assert.assertTrue(Classes.hasPackage(Classes.class.getPackage().getName()));
+        Assert.assertFalse(Classes.hasPackage(UNKNOWN_PACKAGE_NAME));
     }
 
 }

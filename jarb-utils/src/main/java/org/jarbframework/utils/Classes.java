@@ -1,6 +1,5 @@
 package org.jarbframework.utils;
 
-
 public class Classes {
 
     @SuppressWarnings("unchecked")
@@ -20,7 +19,7 @@ public class Classes {
         try {
             Class.forName(className);
             return true;
-        } catch(ClassNotFoundException e) {
+        } catch (ClassNotFoundException e) {
             return false;
         }
     }
