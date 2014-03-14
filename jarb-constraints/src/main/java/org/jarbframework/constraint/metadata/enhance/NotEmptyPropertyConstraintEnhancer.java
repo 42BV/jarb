@@ -4,7 +4,7 @@ import org.jarbframework.constraint.metadata.PropertyConstraintDescription;
 import org.jarbframework.utils.bean.AnnotationScanner;
 
 /**
- * Whenever a property is annotated as {@code NotEmpty}, the minimum length has to be at least 1.
+ * Whenever a property is annotated as @NotEmpty, the minimum length has to be at least 1.
  * 
  * @author Jeroen van Schagen
  * @since 31-05-2011

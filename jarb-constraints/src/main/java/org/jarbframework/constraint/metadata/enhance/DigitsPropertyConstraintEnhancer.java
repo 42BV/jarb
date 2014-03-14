@@ -23,13 +23,13 @@ public class DigitsPropertyConstraintEnhancer implements PropertyConstraintEnhan
         Integer fractionLength = description.getFractionLength();
         for (Digits annotation : annotations) {
             maximumLength = lowest(maximumLength, annotation.integer());
-            fractionLength = lowest(maximumLength, annotation.fraction());
+            fractionLength = lowest(fractionLength, annotation.fraction());
         }
         description.setMaximumLength(maximumLength);
         description.setFractionLength(fractionLength);
     }
 
-    private Integer lowest(Integer current, Integer next) {
+    private Integer lowest(Integer current, int next) {
         return current != null ? Math.min(current, next) : next;
     }
 

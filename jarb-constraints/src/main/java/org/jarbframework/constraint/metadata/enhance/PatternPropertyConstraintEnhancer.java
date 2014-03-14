@@ -9,7 +9,7 @@ import org.jarbframework.constraint.metadata.PropertyConstraintDescription;
 import org.jarbframework.utils.bean.AnnotationScanner;
 
 /**
- * Stores the annotated pattern in our description.
+ * Stores the @Pattern in our description.
  *
  * @author Jeroen van Schagen
  * @since Mar 3, 2014

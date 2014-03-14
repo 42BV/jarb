@@ -12,7 +12,7 @@ import org.jarbframework.constraint.metadata.types.PropertyType;
 import org.jarbframework.utils.bean.AnnotationScanner;
 
 /**
- * Enhances our property type description from a {@link PropertyType} annotation.
+ * Enhances our property type description from a @PropertyType annotation.
  *
  * @author Jeroen van Schagen
  * @since Mar 4, 2014
