@@ -73,7 +73,7 @@ public class AnnotationScanner {
     public static <T extends Annotation> Collection<T> getAnnotations(PropertyReference propertyReference, Class<T> annotationType) {
         PropertyReference finalReference = BeanProperties.getFinalProperty(propertyReference);
 
-        Set<T> annotations = new HashSet<>();
+        Set<T> annotations = new HashSet<T>();
         addIfNotNull(annotations, getFieldAnnotation(finalReference, annotationType));
         addIfNotNull(annotations, getGetterAnnotation(finalReference, annotationType));
         return annotations;
