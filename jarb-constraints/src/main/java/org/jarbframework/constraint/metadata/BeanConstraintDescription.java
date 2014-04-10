@@ -1,6 +1,6 @@
 package org.jarbframework.constraint.metadata;
 
-import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -32,12 +32,23 @@ public class BeanConstraintDescription {
         return beanClass;
     }
 
+    /**
+     * Retrieve a specific property.
+     * 
+     * @param propertyName the property name
+     * @return the constraint description
+     */
     public PropertyConstraintDescription getProperty(String propertyName) {
         return properties.get(propertyName);
     }
 
-    public Collection<PropertyConstraintDescription> getProperties() {
-        return properties.values();
+    /**
+     * Retrieve all properties.
+     * 
+     * @return the properties
+     */
+    public Map<String, PropertyConstraintDescription> getProperties() {
+        return Collections.unmodifiableMap(properties);
     }
 
     /**

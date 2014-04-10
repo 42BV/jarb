@@ -19,9 +19,9 @@
 		var container = this;
 
 		$.getJSON(url, function(data) {
-			$.each(data.properties, function(index, property) {
-				var input = container.find('input[name=' + property.name + ']');
-				var label = container.find('label[for=' + property.name + "]");
+			$.each(data.properties, function(name, property) {
+				var input = container.find('input[name=' + name + ']');
+				var label = container.find('label[for=' + name + "]");
 
 				if (property.required) {
 					label.addClass('required').append(options.requiredSuffix);
