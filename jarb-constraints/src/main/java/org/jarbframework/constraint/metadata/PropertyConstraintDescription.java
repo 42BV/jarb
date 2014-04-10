@@ -48,7 +48,7 @@ public class PropertyConstraintDescription {
      */
     public PropertyConstraintDescription(PropertyReference reference, Class<?> javaType) {
         this.reference = notNull(reference, "Reference cannot be null.");
-        this.javaType = notNull(javaType, "Java type cannot be null.");
+        this.javaType = notNull(javaType, "Java type of '" + reference.toString() + "' cannot be null.");
     }
 
     public String getName() {
