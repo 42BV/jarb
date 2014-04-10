@@ -35,19 +35,22 @@ import org.jarbframework.utils.Classes;
  */
 public class DefaultBeanConstraintDescriptor extends BeanConstraintDescriptor {
     
-    private static final String HIBERNATE_VALIDATOR_PACKAGE = "org.hibernate.validator";
-    private static final String JAVAX_VALIDATOR_PACKAGE = "javax.validation";
+    private static final String JAVAX_VALIDATION_PACKAGE = "javax.validation";
+    private static final String HIBERNATE_VALIDATION_PACKAGE = "org.hibernate.validator";
+    private static final String JODA_TIME_PACKAGE = "org.joda.time";
 
     public DefaultBeanConstraintDescriptor(BeanMetadataRepository beanMetadataRepository) {
         registerDefaultEnhancers();
         
-        if (Classes.hasPackage(JAVAX_VALIDATOR_PACKAGE)) {
-            registerValidationEnhancers();
+        if (Classes.hasPackage(JAVAX_VALIDATION_PACKAGE)) {
+            registerJavaxValidationEnhancers();
         }
-        if (Classes.hasPackage(HIBERNATE_VALIDATOR_PACKAGE)) {
-            registerHibernateEnhancers();
+        if (Classes.hasPackage(HIBERNATE_VALIDATION_PACKAGE)) {
+            registerHibernateValidationEnhancers();
         }
-        
+        if (Classes.isOnClasspath(JODA_TIME_PACKAGE)) {
+            registerJodaTimeEnhancers();
+        }
         if (beanMetadataRepository != null) {
             registerDatabaseEnhancers(beanMetadataRepository);
         }
@@ -57,9 +60,8 @@ public class DefaultBeanConstraintDescriptor extends BeanConstraintDescriptor {
         registerEnhancer(new ClassPropertyTypeEnhancer(String.class, "text"));
         registerEnhancer(new ClassPropertyTypeEnhancer(Date.class, "date"));
         registerEnhancer(new ClassPropertyTypeEnhancer(Number.class, "number"));
-        
+
         registerEnhancer(new PropertyTypeEnhancer(PropertyType.class));
-        
         registerEnhancer(new PropertyTypeEnhancer(Color.class));
         registerEnhancer(new PropertyTypeEnhancer(Currency.class));
         registerEnhancer(new PropertyTypeEnhancer(Email.class));
@@ -68,28 +70,27 @@ public class DefaultBeanConstraintDescriptor extends BeanConstraintDescriptor {
         registerEnhancer(new PropertyTypeEnhancer(Phone.class));
         registerEnhancer(new PropertyTypeEnhancer(URL.class));
     }
-    
-    /*  
-        TODO: Include all input types
-        @Temporal
-        Date
-        LocalDate
-    */
 
-    private void registerValidationEnhancers() {
+    private void registerJavaxValidationEnhancers() {
         registerEnhancer(new NotNullPropertyConstraintEnhancer());
         registerEnhancer(new PatternPropertyConstraintEnhancer());
         registerEnhancer(new DigitsPropertyConstraintEnhancer());
         registerEnhancer(new MinMaxNumberPropertyEnhancer());
     }
 
-    private void registerHibernateEnhancers() {
+    private void registerHibernateValidationEnhancers() {
         registerEnhancer(new LengthPropertyConstraintEnhancer());
         registerEnhancer(new NotEmptyPropertyConstraintEnhancer());
 
         registerEnhancer(new AnnotationPropertyTypeEnhancer(org.hibernate.validator.constraints.Email.class, "email"));
         registerEnhancer(new AnnotationPropertyTypeEnhancer(org.hibernate.validator.constraints.CreditCardNumber.class, "credid_card"));
         registerEnhancer(new AnnotationPropertyTypeEnhancer(org.hibernate.validator.constraints.URL.class, "url"));
+    }
+
+    private void registerJodaTimeEnhancers() {
+        registerEnhancer(new ClassPropertyTypeEnhancer(org.joda.time.DateTime.class, "date-time"));
+        registerEnhancer(new ClassPropertyTypeEnhancer(org.joda.time.LocalDate.class, "date"));
+        registerEnhancer(new ClassPropertyTypeEnhancer(org.joda.time.LocalDateTime.class, "date-time-local"));
     }
 
     private void registerDatabaseEnhancers(BeanMetadataRepository beanMetadataRepository) {

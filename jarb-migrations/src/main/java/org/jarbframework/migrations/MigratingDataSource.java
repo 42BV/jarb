@@ -5,6 +5,8 @@ import static org.jarbframework.utils.JdbcUtils.commitSafely;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.sql.DataSource;
 
@@ -20,6 +22,8 @@ public class MigratingDataSource extends DataSourceDelegate {
     
     /** Performs the actual database migration on a JDBC connection. **/
     private final DatabaseMigrator migrator;
+
+    private Set<MigrationListener> listeners = new HashSet<>();
 
     /** Migration username, whenever left empty we use the data source username. **/
     private String username;
@@ -49,15 +53,18 @@ public class MigratingDataSource extends DataSourceDelegate {
     /**
      * Run the database migration, whenever it hasn't been executed yet.
      */
-    private void migrateOnDemand() throws SQLException {
-        if (shouldMigrate()) {
+    private synchronized void migrateOnDemand() throws SQLException {
+        if (!migrated) {
             doMigrate();
             migrated = true;
+            notifyListeners();
         }
     }
 
-    private boolean shouldMigrate() {
-        return !migrated;
+    private void notifyListeners() {
+        for (MigrationListener listener : listeners) {
+            listener.afterMigrate();
+        }
     }
 
     private void doMigrate() throws SQLException {
@@ -77,6 +84,10 @@ public class MigratingDataSource extends DataSourceDelegate {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public void setListeners(Set<MigrationListener> listeners) {
+        this.listeners = listeners;
     }
 
 }

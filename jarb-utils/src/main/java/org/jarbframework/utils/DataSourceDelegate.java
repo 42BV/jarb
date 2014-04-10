@@ -11,6 +11,7 @@ import javax.sql.DataSource;
 /**
  * Delegate implementation of {@link DataSource}. Delegates all method invocation to
  * a delegate data source instance, modifiable by {@link #setDelegate(DataSource)}.
+ * 
  * @author Jeroen van Schagen
  * @since 28-04-2011
  */
@@ -19,7 +20,7 @@ public class DataSourceDelegate implements DataSource {
     private final DataSource delegate;
 
     public DataSourceDelegate(DataSource delegate) {
-        this.delegate = Asserts.notNull(delegate, "Delegate cannot be null");
+        this.delegate = delegate;
     }
 
     /**
