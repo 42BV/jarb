@@ -27,7 +27,7 @@
         </dependency>
         <dependency>
             <groupId>org.jarbframework</groupId>
-            <artifactId>jarb-populator-excel</artifactId>
+            <artifactId>jarb-populator</artifactId>
             <version>${project.version}</version>
         </dependency>
 

@@ -21,7 +21,6 @@ import org.jarbframework.migrations.liquibase.LiquibaseMigratingDatabaseBuilder;
 import org.jarbframework.populator.PopulateApplicationListener;
 import org.jarbframework.populator.PopulateApplicationListenerBuilder;
 import org.jarbframework.populator.SqlDatabasePopulator;
-import org.jarbframework.populator.excel.ExcelDatabasePopulator;
 import org.jarbframework.sample.PostPopulator;
 import org.jarbframework.utils.orm.hibernate.ConventionNamingStrategy;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -112,7 +111,6 @@ public class ApplicationConfig extends DatabaseConstraintsConfigurer {
             return new PopulateApplicationListenerBuilder()
                             .initializer()
                                 .add(new SqlDatabasePopulator(dataSource, new ClassPathResource("import.sql")))
-                                .add(new ExcelDatabasePopulator(entityManagerFactory, new ClassPathResource("import.xls")))
                                 .add(postPopulator())
                                 .done()
                             .destroyer()
