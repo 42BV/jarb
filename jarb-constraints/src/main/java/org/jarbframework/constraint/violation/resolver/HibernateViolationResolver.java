@@ -17,7 +17,7 @@ public class HibernateViolationResolver implements DatabaseConstraintViolationRe
     private static final boolean HIBERNATE_ON_CLASSPATH;
         
     static {
-        HIBERNATE_ON_CLASSPATH = Classes.isOnClasspath("org.hibernate.exception.ConstraintViolationException");
+        HIBERNATE_ON_CLASSPATH = Classes.hasClass("org.hibernate.exception.ConstraintViolationException");
     }
     
     @Override

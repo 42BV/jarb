@@ -21,12 +21,26 @@ import org.springframework.core.type.filter.TypeFilter;
  */
 public class ClassScanner {
     
+    /**
+     * Retrieve all classes with a specific type.
+     * 
+     * @param basePackage the base package
+     * @param targetType the target type
+     * @return all matching classes
+     */
     public static Set<Class<?>> getAllOfType(String basePackage, Class<?> targetType) {
         return getAll(basePackage, new AssignableTypeFilter(targetType));
     }
     
-    public static Set<Class<?>> getAllWithAnnotation(String basePackage, Class<? extends Annotation> annotationClass) {
-        return getAll(basePackage, new AnnotationTypeFilter(annotationClass));
+    /**
+     * Retrieve all classes with a specific annotation.
+     * 
+     * @param basePackage the base package
+     * @param annotationType the annotation type
+     * @return all matching classes
+     */
+    public static Set<Class<?>> getAllWithAnnotation(String basePackage, Class<? extends Annotation> annotationType) {
+        return getAll(basePackage, new AnnotationTypeFilter(annotationType));
     }
     
     private static Set<Class<?>> getAll(String basePackage, TypeFilter filter) {

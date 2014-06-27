@@ -20,8 +20,8 @@ public class ClassesTest {
     
     @Test
     public void testOnClasspath() {
-        Assert.assertTrue(Classes.isOnClasspath(Classes.class.getName()));
-        Assert.assertFalse(Classes.isOnClasspath(UNKNOWN_CLASS_NAME));
+        Assert.assertTrue(Classes.hasClass(Classes.class.getName()));
+        Assert.assertFalse(Classes.hasClass(UNKNOWN_CLASS_NAME));
     }
     
     @Test

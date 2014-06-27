@@ -48,7 +48,7 @@ public class DefaultBeanConstraintDescriptor extends BeanConstraintDescriptor {
         if (Classes.hasPackage(HIBERNATE_VALIDATION_PACKAGE)) {
             registerHibernateValidationEnhancers();
         }
-        if (Classes.isOnClasspath(JODA_TIME_PACKAGE)) {
+        if (Classes.hasClass(JODA_TIME_PACKAGE)) {
             registerJodaTimeEnhancers();
         }
         if (beanMetadataRepository != null) {

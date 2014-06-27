@@ -3,8 +3,6 @@ package org.jarbframework.constraint.validation;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
-import org.jarbframework.utils.spring.BeanLocator;
-import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
@@ -26,7 +24,7 @@ public class DatabaseConstrainedAdapter implements ConstraintValidator<DatabaseC
     private DatabaseConstraintValidator validator;
     
     /** Used to lookup beans in our application context **/
-    private BeanLocator beans;
+    private ApplicationContext applicationContext;
 
     @Override
     public boolean isValid(Object bean, ConstraintValidatorContext validatorContext) {
@@ -35,22 +33,19 @@ public class DatabaseConstrainedAdapter implements ConstraintValidator<DatabaseC
 
     @Override
     public void initialize(DatabaseConstrained annotation) {
-        validator = createValidator(annotation);
         entityClass = annotation.entityClass();
         propertyName = annotation.propertyName();
+        validator = createValidator(annotation);
     }
 
     private DatabaseConstraintValidator createValidator(DatabaseConstrained annotation) {
-        try {
-            return beans.findBean(DatabaseConstraintValidator.class, annotation.id());
-        } catch (NoSuchBeanDefinitionException nsbde) {
-            return DatabaseConstraintValidatorFactory.build(beans);
-        }
+        final String validatorName = annotation.id();
+        return DatabaseConstraintValidatorFactory.get(applicationContext, validatorName);
     }
 
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) {
-        this.beans = new BeanLocator(applicationContext);
+        this.applicationContext = applicationContext;
     }
     
 }
