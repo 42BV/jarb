@@ -33,11 +33,20 @@ import org.springframework.stereotype.Repository;
 public @interface EnableDatabaseConstraints {
 
     /**
-     * The base package that should be scanned.
+     * The base packages that should be scanned. Use {@link #basePackageClasses()}
+     * for a type-safe alternative to String-based package names.
      * 
      * @return the base package
      */
-    String basePackage() default "";
+    String[] basePackages() default {};
+    
+    /**
+     * Type-safe alternative to {@link #basePackages()} for specifying the packages to scan
+     * for annotated components. The package of each class specified will be scanned.
+     * 
+     * @return the base classes
+     */
+    Class<?>[] baseClasses() default {};
     
     /**
      * The reference to our entity manager factory.
@@ -59,6 +68,6 @@ public @interface EnableDatabaseConstraints {
      * 
      * @return the annotation that performs exception translations
      */
-    Class<? extends Annotation> translateAnnotation() default Repository.class;
+    Class<? extends Annotation> translate() default Repository.class;
 
 }

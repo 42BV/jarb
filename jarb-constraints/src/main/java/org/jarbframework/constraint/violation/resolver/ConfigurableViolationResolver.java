@@ -1,5 +1,7 @@
 package org.jarbframework.constraint.violation.resolver;
 
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Set;
 
 import javax.sql.DataSource;
@@ -11,7 +13,6 @@ import org.jarbframework.constraint.violation.resolver.vendor.OracleViolationRes
 import org.jarbframework.constraint.violation.resolver.vendor.PostgresViolationResolver;
 import org.jarbframework.utils.ClassScanner;
 import org.jarbframework.utils.DatabaseProduct;
-import org.jarbframework.utils.StringUtils;
 import org.springframework.beans.BeanUtils;
 
 /**
@@ -27,12 +28,16 @@ public class ConfigurableViolationResolver extends LazyInitViolationResolver {
 
 	private final DataSource dataSource;
 	
-	private final String basePackage;
+    private final Collection<String> basePackages;
 
 	public ConfigurableViolationResolver(DataSource dataSource, String basePackage) {
-		this.dataSource = dataSource;
-		this.basePackage = basePackage;
+        this(dataSource, Arrays.asList(basePackage));
 	}
+    
+    public ConfigurableViolationResolver(DataSource dataSource, Collection<String> basePackages) {
+        this.dataSource = dataSource;
+        this.basePackages = basePackages;
+    }
 
 	@Override
 	protected DatabaseConstraintViolationResolver init() {
@@ -48,7 +53,7 @@ public class ConfigurableViolationResolver extends LazyInitViolationResolver {
     }
 
     private void registerCustomResolvers(DatabaseProduct databaseProduct) {
-        if (StringUtils.isNotBlank(basePackage)) {
+        for (String basePackage : basePackages) {
             Set<Class<?>> resolverClasses = ClassScanner.getAllOfType(basePackage, DatabaseConstraintViolationResolver.class);
             for (Class<?> resolverClass : resolverClasses) {
                 resolvers.addIfSupported(newResolver(resolverClass), databaseProduct);

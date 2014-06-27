@@ -43,7 +43,7 @@ import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 @Configuration
 @EnableTransactionManagement
 @EnableJpaRepositories(basePackages = "org.jarbframework.sample")
-@EnableDatabaseConstraints(basePackage = "org.jarbframework.sample")
+@EnableDatabaseConstraints(basePackages = "org.jarbframework.sample")
 @ComponentScan(basePackages = "org.jarbframework.sample", excludeFilters = { @Filter(Controller.class), @Filter(Configuration.class) })
 public class ApplicationConfig extends DatabaseConstraintsConfigurer {
     

@@ -4,6 +4,7 @@
 package org.jarbframework.constraint;
 
 import java.lang.annotation.Annotation;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -21,6 +22,7 @@ import org.jarbframework.constraint.violation.factory.ConfigurableConstraintExce
 import org.jarbframework.constraint.violation.factory.DatabaseConstraintExceptionFactory;
 import org.jarbframework.constraint.violation.resolver.ConfigurableViolationResolver;
 import org.jarbframework.constraint.violation.resolver.DatabaseConstraintViolationResolver;
+import org.jarbframework.utils.StringUtils;
 import org.jarbframework.utils.orm.hibernate.HibernateUtils;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,15 +43,20 @@ public class DatabaseConstraintsConfiguration implements ImportAware, Initializi
     
     // Meta-data constants
 
-    private static final String BASE_PACKAGE_REF = "basePackage";
+    private static final String BASE_PACKAGES_REF = "basePackages";
+    private static final String BASE_CLASSES_REF = "baseClasses";
+
     private static final String DATA_SOURCE_REF = "dataSource";
     private static final String ENTITY_MANAGER_FACTORY_REF = "entityManagerFactory";
-    private static final String TRANSLATE_ANNOTATION_REF = "translateAnnotation";
+
+    private static final String TRANSLATE_REF = "translate";
 
     private Map<String, Object> attributes;
     
     @Autowired(required = false)
     private Set<DatabaseConstraintsConfigurer> configurers = new HashSet<DatabaseConstraintsConfigurer>();
+
+    private Set<String> basePackages;
 
     @Autowired
     private ApplicationContext applicationContext;
@@ -69,8 +76,7 @@ public class DatabaseConstraintsConfiguration implements ImportAware, Initializi
     
     @Bean
     public DatabaseConstraintViolationResolver violationResolver() {
-        String basePackage = attributes.get(BASE_PACKAGE_REF).toString();
-        ConfigurableViolationResolver violationResolver = new ConfigurableViolationResolver(dataSource, basePackage);
+        ConfigurableViolationResolver violationResolver = new ConfigurableViolationResolver(dataSource, basePackages);
         for (DatabaseConstraintsConfigurer configurer : configurers) {
             configurer.addViolationResolvers(violationResolver);
         }
@@ -79,18 +85,20 @@ public class DatabaseConstraintsConfiguration implements ImportAware, Initializi
     
     @Bean
     public DatabaseConstraintExceptionFactory exceptionFactory() {
-        String basePackage = attributes.get(BASE_PACKAGE_REF).toString();
         ConfigurableConstraintExceptionFactory exceptionFactory = new ConfigurableConstraintExceptionFactory();
         for (DatabaseConstraintsConfigurer configurer : configurers) {
             configurer.addConstraintExceptions(exceptionFactory);
         }
-        return exceptionFactory.registerAll(basePackage);
+        for (String basePackage : basePackages) {
+            exceptionFactory.registerAll(basePackage);
+        }
+        return exceptionFactory;
     }
     
     @Bean
     @SuppressWarnings("unchecked")
     public TranslateExceptionsBeanPostProcessor exceptionTranslatingBeanPostProcessor() throws Exception {
-        Class<? extends Annotation> annotation = (Class<? extends Annotation>) attributes.get(TRANSLATE_ANNOTATION_REF);
+        Class<? extends Annotation> annotation = (Class<? extends Annotation>) attributes.get(TRANSLATE_REF);
         return new TranslateExceptionsBeanPostProcessor(exceptionTranslator(), annotation);
     }
     
@@ -136,6 +144,20 @@ public class DatabaseConstraintsConfiguration implements ImportAware, Initializi
         } else {
             dataSource = applicationContext.getBean(dataSourceName, DataSource.class);
         }
+
+        String[] basePackages = (String[]) attributes.get(BASE_PACKAGES_REF);
+        Class<?>[] baseClasses = (Class<?>[]) attributes.get(BASE_CLASSES_REF);
+
+        this.basePackages = new HashSet<String>();
+        this.basePackages.addAll(Arrays.asList(basePackages));
+        for (Class<?> baseClass : baseClasses) {
+            String basePackage = getPackage(baseClass);
+            this.basePackages.add(basePackage);
+        }
+    }
+    
+    private String getPackage(Class<?> baseClass) {
+        return StringUtils.substringBeforeLast(baseClass.getName(), ".");
     }
 
 }
