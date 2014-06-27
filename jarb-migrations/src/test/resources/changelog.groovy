@@ -1,3 +1,3 @@
 databaseChangeLog() {
-       include(path: "changelogs", relativeToChangelogFile: true)
+       includeAll(path: "changelogs", relativeToChangelogFile: true)
 }

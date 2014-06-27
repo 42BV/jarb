@@ -29,18 +29,11 @@
         </dependency>
         
         <!-- Liquibase -->
-        <dependency>
-            <groupId>org.liquibase</groupId>
-            <artifactId>liquibase-core</artifactId>
-            <version>2.0.5</version>
-        </dependency>
-        <dependency>
-            <!-- Groovy based change set parser -->
-            <groupId>com.augusttechgroup</groupId>
-            <artifactId>groovy-liquibase-dsl</artifactId>
-            <version>0.7.0</version>
-            <scope>runtime</scope>
-        </dependency>
+		<dependency>
+		    <groupId>net.saliman</groupId>
+		    <artifactId>groovy-liquibase-dsl</artifactId>
+		    <version>1.0.0</version>
+		</dependency>
 	</dependencies>
 
 	<build>

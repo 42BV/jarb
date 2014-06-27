@@ -17,7 +17,7 @@
         <includes>
             <include>org.jarbframework:jarb-utils</include>
             <include>org.liquibase:liquibase-core</include>
-            <include>com.augusttechgroup:groovy-liquibase-dsl</include>
+            <include>net.saliman:groovy-liquibase-dsl</include>
             <include>org.codehaus.groovy:groovy</include>
             <include>asm:asm</include>
             <include>antlr:antlr</include>
