@@ -34,6 +34,12 @@
 		    <artifactId>groovy-liquibase-dsl</artifactId>
 		    <version>1.0.0</version>
 		</dependency>
+		<dependency>
+		    <!-- Log with slf4j rather than system err -->
+		    <groupId>com.mattbertolini</groupId>
+		    <artifactId>liquibase-slf4j</artifactId>
+		    <version>1.2.1</version>
+		</dependency>
 	</dependencies>
 
 	<build>
