@@ -163,6 +163,30 @@ public class PropertyConstraintDescription {
     }
     
     /**
+     * Add the min boundary to the current constraints. When a min
+     * boundary already exists, we will take the highest.
+     * 
+     * @param min the min value to add
+     */
+    public void addMin(long min) {
+        if (this.min == null || ((Number) this.min).longValue() < min) {
+            this.min = Long.valueOf(min);
+        }
+    }
+    
+    /**
+     * Add the max boundary to the current constraints. When a max
+     * boundary already exists, we will take the lowest.
+     * 
+     * @param min the min value to add
+     */
+    public void addMax(long max) {
+        if (this.max == null || ((Number) this.max).longValue() > max) {
+            this.max = Long.valueOf(max);
+        }
+    }
+
+    /**
      * {@inheritDoc}
      */
     @Override

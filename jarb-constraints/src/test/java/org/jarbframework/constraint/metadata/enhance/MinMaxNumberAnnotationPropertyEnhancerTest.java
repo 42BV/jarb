@@ -3,12 +3,15 @@ package org.jarbframework.constraint.metadata.enhance;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+
 import org.jarbframework.constraint.metadata.PropertyConstraintDescription;
 import org.jarbframework.utils.bean.PropertyReference;
 import org.junit.Before;
 import org.junit.Test;
 
-public class MinMaxNumberPropertyEnhancerTest {
+public class MinMaxNumberAnnotationPropertyEnhancerTest {
     
     private PropertyConstraintEnhancer enhancer;
 
@@ -16,18 +19,19 @@ public class MinMaxNumberPropertyEnhancerTest {
 
     @Before
     public void setUp() {
-        enhancer = new MinMaxNumberPropertyEnhancer(Long.class, -42, 42);
+        enhancer = new MinMaxNumberAnnotationPropertyEnhancer();
         description = new PropertyConstraintDescription(new PropertyReference(User.class, "age"), Long.class);
-        description.setMin(-100);
-        description.setMax(100);
     }
 
     @Test
     public void testEnhance() {
+        assertNull(description.getMin());
+        assertNull(description.getMax());
+
         enhancer.enhance(description);
 
-        assertEquals(Long.valueOf(-42), description.getMin());
-        assertEquals(Long.valueOf(42), description.getMax());
+        assertEquals(Long.valueOf(1), description.getMin());
+        assertEquals(Long.valueOf(120), description.getMax());
     }
 
     @Test
@@ -45,10 +49,15 @@ public class MinMaxNumberPropertyEnhancerTest {
 
     public static class User {
 
+        @Min(0)
+        @Max(120)
         private long age;
         
+        @Min(42)
         private String name;
 
+        @Min(1)
+        @Max(130)
         public long getAge() {
             return age;
         }

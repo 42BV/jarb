@@ -12,6 +12,7 @@ import org.jarbframework.constraint.metadata.enhance.DatabaseGeneratedPropertyCo
 import org.jarbframework.constraint.metadata.enhance.DatabasePropertyConstraintEnhancer;
 import org.jarbframework.constraint.metadata.enhance.DigitsPropertyConstraintEnhancer;
 import org.jarbframework.constraint.metadata.enhance.LengthPropertyConstraintEnhancer;
+import org.jarbframework.constraint.metadata.enhance.MinMaxNumberAnnotationPropertyEnhancer;
 import org.jarbframework.constraint.metadata.enhance.MinMaxNumberPropertyEnhancer;
 import org.jarbframework.constraint.metadata.enhance.NotEmptyPropertyConstraintEnhancer;
 import org.jarbframework.constraint.metadata.enhance.NotNullPropertyConstraintEnhancer;
@@ -69,13 +70,18 @@ public class DefaultBeanConstraintDescriptor extends BeanConstraintDescriptor {
         registerEnhancer(new PropertyTypeEnhancer(Percentage.class));
         registerEnhancer(new PropertyTypeEnhancer(Phone.class));
         registerEnhancer(new PropertyTypeEnhancer(URL.class));
+        
+        registerEnhancer(new MinMaxNumberPropertyEnhancer(Byte.class, Byte.MIN_VALUE, Byte.MAX_VALUE));
+        registerEnhancer(new MinMaxNumberPropertyEnhancer(Short.class, Short.MIN_VALUE, Short.MAX_VALUE));
+        registerEnhancer(new MinMaxNumberPropertyEnhancer(Integer.class, Integer.MIN_VALUE, Integer.MAX_VALUE));
+        registerEnhancer(new MinMaxNumberPropertyEnhancer(Long.class, Long.MIN_VALUE, Long.MAX_VALUE));
     }
 
     private void registerJavaxValidationEnhancers() {
         registerEnhancer(new NotNullPropertyConstraintEnhancer());
         registerEnhancer(new PatternPropertyConstraintEnhancer());
         registerEnhancer(new DigitsPropertyConstraintEnhancer());
-        registerEnhancer(new MinMaxNumberPropertyEnhancer());
+        registerEnhancer(new MinMaxNumberAnnotationPropertyEnhancer());
     }
 
     private void registerHibernateValidationEnhancers() {
