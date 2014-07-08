@@ -52,7 +52,7 @@ public class PropertyConstraintDescription {
     }
 
     public String getName() {
-        return reference.getName();
+        return reference.getPropertyName();
     }
 
     public Class<?> getJavaType() {

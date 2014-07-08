@@ -97,7 +97,7 @@ final class DatabaseValidationContext {
             if (propertyReference.isNestedProperty()) {
                 buildAndIncludeNestedPropertyViolation();
             } else {
-                buildConstraintViolation().addPropertyNode(propertyReference.getName()).addConstraintViolation();
+                buildConstraintViolation().addPropertyNode(propertyReference.getPropertyName()).addConstraintViolation();
             }
             return DatabaseValidationContext.this;
         }

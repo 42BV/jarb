@@ -80,7 +80,7 @@ public class Annotations {
     }
 
     private static <T extends Annotation> T getGetterAnnotation(PropertyReference propertyReference, Class<T> annotationType) {
-        PropertyDescriptor propertyDescriptor = BeanUtils.getPropertyDescriptor(propertyReference.getBeanClass(), propertyReference.getName());
+        PropertyDescriptor propertyDescriptor = BeanUtils.getPropertyDescriptor(propertyReference.getBeanClass(), propertyReference.getPropertyName());
 
         T annotation = null;
         if (propertyDescriptor != null && propertyDescriptor.getReadMethod() != null) {
@@ -90,7 +90,7 @@ public class Annotations {
 	}
 
     private static <T extends Annotation> T getFieldAnnotation(PropertyReference propertyReference, Class<T> annotationType) {
-        Field field = ReflectionUtils.findField(propertyReference.getBeanClass(), propertyReference.getName());
+        Field field = ReflectionUtils.findField(propertyReference.getBeanClass(), propertyReference.getPropertyName());
         
         T annotation = null;
         if (field != null) {

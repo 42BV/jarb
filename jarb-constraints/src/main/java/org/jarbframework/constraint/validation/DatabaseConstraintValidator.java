@@ -100,7 +100,7 @@ public class DatabaseConstraintValidator {
         PropertyReference wrappedPath = rootPath.wrap(propertyPath);
         ColumnMetadata columnMetadata = beanMetadataRepository.getColumnMetadata(wrappedPath);
         if (columnMetadata != null) {
-            Object propertyValue = beanWrapper.getPropertyValueNullSafe(propertyPath.getName());
+            Object propertyValue = beanWrapper.getPropertyValueNullSafe(propertyPath.getPropertyName());
             for (DatabaseConstraintValidationStep validationStep : validationSteps) {
                 validationStep.validate(propertyValue, propertyPath, columnMetadata, validation);
             }
@@ -125,10 +125,10 @@ public class DatabaseConstraintValidator {
                 if (isNotBlank(propertyName)) {
                     // Include parent path to reference
                     PropertyReference parent = new PropertyReference(entityClass, propertyName);
-                    return new PropertyReference(parent, propertyPath.getName());
+                    return new PropertyReference(parent, propertyPath.getPropertyName());
                 } else {
                     // Alter base bean type to our specified entity class
-                    return new PropertyReference(entityClass, propertyPath.getName());
+                    return new PropertyReference(entityClass, propertyPath.getPropertyName());
                 }
             }
             return propertyPath;

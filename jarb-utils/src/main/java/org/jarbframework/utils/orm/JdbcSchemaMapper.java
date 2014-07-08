@@ -22,7 +22,7 @@ public class JdbcSchemaMapper implements SchemaMapper {
     @Override
     public ColumnReference getColumnReference(PropertyReference propertyReference) {
         String tableName = getTableName(propertyReference.getBeanClass());
-        String columnName = StringUtils.lowerCaseWithUnderscores(propertyReference.getName());
+        String columnName = StringUtils.lowerCaseWithUnderscores(propertyReference.getPropertyName());
         return new ColumnReference(tableName, columnName);
     }
 

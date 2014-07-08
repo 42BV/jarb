@@ -1,9 +1,7 @@
 package org.jarbframework.utils.bean;
 
 import static org.jarbframework.utils.Asserts.notNull;
-import static org.springframework.beans.BeanUtils.getPropertyDescriptors;
 
-import java.beans.PropertyDescriptor;
 import java.lang.reflect.Field;
 import java.util.HashSet;
 import java.util.Set;
@@ -18,14 +16,8 @@ import org.springframework.util.ReflectionUtils.FieldCallback;
  * @date Aug 29, 2011
  */
 public final class Beans {
-	
-    public static Set<String> getPropertyNames(Class<?> beanClass) {
-        Set<String> propertyNames = new HashSet<String>();
-        for (PropertyDescriptor propertyDescriptor : getPropertyDescriptors(beanClass)) {
-            propertyNames.add(propertyDescriptor.getName());
-        }
-        propertyNames.addAll(getFieldNames(beanClass));
-        return propertyNames;
+
+    private Beans() {
     }
 
     public static Set<String> getFieldNames(Class<?> beanClass) {
@@ -43,27 +35,16 @@ public final class Beans {
 
     public static PropertyReference getFinalProperty(PropertyReference propertyReference) {
         if (propertyReference.isNestedProperty()) {
-            Class<?> parentType = getPropertyType(propertyReference.getParent());
+            Class<?> parentType = findPropertyField(propertyReference.getParent()).getType();
             propertyReference = new PropertyReference(parentType, propertyReference.getSimpleName());
         }
         return propertyReference;
     }
-
-    public static Class<?> getPropertyType(PropertyReference propertyReference) {
-        return findPropertyField(propertyReference).getType();
-    }
-
-    public static Class<?> getDeclaringClass(PropertyReference propertyReference) {
-        return findPropertyField(propertyReference).getDeclaringClass();
-    }
-
+    
     public static Field findPropertyField(PropertyReference propertyReference) {
-        propertyReference = getFinalProperty(propertyReference);
-        Field field = ReflectionUtils.findField(propertyReference.getBeanClass(), propertyReference.getName());
-        return notNull(field, "Could not find field '" + propertyReference.getName() + "' in '" + propertyReference.getBeanClass().getName() + "'.");
-    }
-
-    private Beans() {
+        PropertyReference finalReference = getFinalProperty(propertyReference);
+        Field field = ReflectionUtils.findField(finalReference.getBeanClass(), finalReference.getPropertyName());
+        return notNull(field, "Could not find field '" + finalReference.getPropertyName() + "' in '" + finalReference.getBeanClass().getName() + "'.");
     }
 
 }

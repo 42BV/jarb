@@ -41,19 +41,6 @@ public final class Asserts {
         return text;
     }
 
-    /**
-     * Assert that an object is the instance of a specific class.
-     * @param object the object to check the instance of
-     * @param type expected instance type
-     * @param message the error message shown whenever our state is not satisfied
-     * @return provided object, used for chaining
-     */
-    @SuppressWarnings("unchecked")
-    public static <T> T instanceOf(Object object, Class<T> type, String message) {
-        state(notNull(type, "Expected type cannot be null").isInstance(object), message);
-        return (T) object;
-    }
-
     private Asserts() {
     }
 
