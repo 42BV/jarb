@@ -12,7 +12,7 @@ import javax.validation.MessageInterpolator;
 
 import org.jarbframework.constraint.metadata.database.BeanMetadataRepository;
 import org.jarbframework.constraint.metadata.database.ColumnMetadata;
-import org.jarbframework.utils.bean.BeanProperties;
+import org.jarbframework.utils.bean.Beans;
 import org.jarbframework.utils.bean.FlexibleBeanWrapper;
 import org.jarbframework.utils.bean.PropertyReference;
 import org.slf4j.Logger;
@@ -76,18 +76,18 @@ public class DatabaseConstraintValidator {
     }
 
     private void validateBean(Object bean, RootPath rootPath, DatabaseValidationContext validation) {
-        FlexibleBeanWrapper<?> beanWrapper = FlexibleBeanWrapper.wrap(bean);
-        for (String propertyName : BeanProperties.getFieldNames(bean.getClass())) {
+        FlexibleBeanWrapper beanWrapper = new FlexibleBeanWrapper(bean);
+        for (String propertyName : Beans.getFieldNames(bean.getClass())) {
             validateProperty(beanWrapper, new PropertyReference(bean.getClass(), propertyName), rootPath, validation);
         }
     }
 
-    private void validateProperty(FlexibleBeanWrapper<?> beanWrapper, PropertyReference propertyPath, RootPath rootPath, DatabaseValidationContext validation) {
-        Field propertyField = BeanProperties.findPropertyField(propertyPath);
+    private void validateProperty(FlexibleBeanWrapper beanWrapper, PropertyReference propertyPath, RootPath rootPath, DatabaseValidationContext validation) {
+        Field propertyField = Beans.findPropertyField(propertyPath);
         if (! Modifier.isStatic(propertyField.getModifiers())) {
             Class<?> propertyClass = propertyField.getType();
             if (beanMetadataRepository.isEmbeddable(propertyClass)) {
-                for (String propertyName : BeanProperties.getFieldNames(propertyClass)) {
+                for (String propertyName : Beans.getFieldNames(propertyClass)) {
                     validateProperty(beanWrapper, new PropertyReference(propertyPath, propertyName), rootPath, validation);
                 }
             } else {
@@ -96,7 +96,7 @@ public class DatabaseConstraintValidator {
         }
     }
 
-    private void validateSimpleProperty(FlexibleBeanWrapper<?> beanWrapper, PropertyReference propertyPath, RootPath rootPath, DatabaseValidationContext validation) {
+    private void validateSimpleProperty(FlexibleBeanWrapper beanWrapper, PropertyReference propertyPath, RootPath rootPath, DatabaseValidationContext validation) {
         PropertyReference wrappedPath = rootPath.wrap(propertyPath);
         ColumnMetadata columnMetadata = beanMetadataRepository.getColumnMetadata(wrappedPath);
         if (columnMetadata != null) {

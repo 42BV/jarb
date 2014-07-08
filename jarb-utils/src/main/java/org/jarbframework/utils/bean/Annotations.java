@@ -19,9 +19,9 @@ import org.springframework.util.ReflectionUtils;
  * @author Jeroen van Schagen
  * @date Aug 29, 2011
  */
-public class AnnotationScanner {
+public class Annotations {
 
-    private AnnotationScanner() {
+    private Annotations() {
     }
 
     /**
@@ -71,7 +71,7 @@ public class AnnotationScanner {
      * @return desired annotation, as declared on the property, if any
      */
     public static <T extends Annotation> Collection<T> getAnnotations(PropertyReference propertyReference, Class<T> annotationType) {
-        PropertyReference finalReference = BeanProperties.getFinalProperty(propertyReference);
+        PropertyReference finalReference = Beans.getFinalProperty(propertyReference);
 
         Set<T> annotations = new HashSet<T>();
         addIfNotNull(annotations, getFieldAnnotation(finalReference, annotationType));

@@ -6,7 +6,7 @@ import static org.jarbframework.utils.Asserts.notNull;
 import java.lang.annotation.Annotation;
 
 import org.jarbframework.constraint.metadata.PropertyConstraintDescription;
-import org.jarbframework.utils.bean.AnnotationScanner;
+import org.jarbframework.utils.bean.Annotations;
 
 /**
  * Enhances the property with a type whenever a specific
@@ -28,7 +28,7 @@ public class AnnotationPropertyTypeEnhancer implements PropertyConstraintEnhance
 
     @Override
     public void enhance(PropertyConstraintDescription description) {
-        if (AnnotationScanner.hasAnnotation(description.toReference(), annotationClass)) {
+        if (Annotations.hasAnnotation(description.toReference(), annotationClass)) {
             description.addType(typeName);
         }
     }

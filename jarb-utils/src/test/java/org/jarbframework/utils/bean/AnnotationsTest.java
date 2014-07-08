@@ -9,19 +9,19 @@ import javax.persistence.Entity;
 
 import org.junit.Test;
 
-public class AnnotationScannerTest {
+public class AnnotationsTest {
 
     @Test
     public void testFindForClass() {
-        assertTrue(AnnotationScanner.hasAnnotation(ClassWithAnnotatedProperties.class, Entity.class));
-        assertNotNull(AnnotationScanner.findAnnotation(ClassWithAnnotatedProperties.class, Entity.class));
+        assertTrue(Annotations.hasAnnotation(ClassWithAnnotatedProperties.class, Entity.class));
+        assertNotNull(Annotations.findAnnotation(ClassWithAnnotatedProperties.class, Entity.class));
     }
 
     @Test
     public void testFindForField() {
         PropertyReference propertyReference = new PropertyReference(ClassWithAnnotatedProperties.class, "hiddenProperty");
-        assertTrue(AnnotationScanner.hasAnnotation(propertyReference, Column.class));
-        Column columnAnnotation = AnnotationScanner.findAnnotation(propertyReference, Column.class);
+        assertTrue(Annotations.hasAnnotation(propertyReference, Column.class));
+        Column columnAnnotation = Annotations.findAnnotation(propertyReference, Column.class);
         assertNotNull(columnAnnotation);
         assertEquals("hidden", columnAnnotation.name());
     }
@@ -29,8 +29,8 @@ public class AnnotationScannerTest {
     @Test
     public void testFindForGetter() {
         PropertyReference propertyReference = new PropertyReference(ClassWithAnnotatedProperties.class, "readableProperty");
-        assertTrue(AnnotationScanner.hasAnnotation(propertyReference, Column.class));
-        Column columnAnnotation = AnnotationScanner.findAnnotation(propertyReference, Column.class);
+        assertTrue(Annotations.hasAnnotation(propertyReference, Column.class));
+        Column columnAnnotation = Annotations.findAnnotation(propertyReference, Column.class);
         assertNotNull(columnAnnotation);
         assertEquals("readable", columnAnnotation.name());
     }

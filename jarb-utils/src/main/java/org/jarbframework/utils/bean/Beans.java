@@ -17,7 +17,7 @@ import org.springframework.util.ReflectionUtils.FieldCallback;
  * @author Jeroen van Schagen
  * @date Aug 29, 2011
  */
-public final class BeanProperties {
+public final class Beans {
 	
     public static Set<String> getPropertyNames(Class<?> beanClass) {
         Set<String> propertyNames = new HashSet<String>();
@@ -63,7 +63,7 @@ public final class BeanProperties {
         return notNull(field, "Could not find field '" + propertyReference.getName() + "' in '" + propertyReference.getBeanClass().getName() + "'.");
     }
 
-    private BeanProperties() {
+    private Beans() {
     }
 
 }

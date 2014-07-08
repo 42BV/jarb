@@ -1,4 +1,4 @@
-package org.jarbframework.utils.bean;
+package org.jarbframework.constraint.violation.factory;
 
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
@@ -7,7 +7,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-public final class ConstructorFinder {
+final class ConstructorFinder {
 	
     /**
      * Find the constructor in a bean that has the most supported argument types.
@@ -18,8 +18,8 @@ public final class ConstructorFinder {
      * @return the constructor with the most only supported parameter types
      */
 	@SuppressWarnings("unchecked")
-	public static <T> Constructor<T> findMostSupportedConstructor(final Class<T> beanClass, final Class<?>... supportedTypes) {
-        List<Constructor<?>> constructors = getAllConstructorsSortedOnArgumentTypes(beanClass);
+    public static <T> Constructor<T> findMostSupportedConstructor(final Class<T> beanClass, final Class<?>[] supportedTypes) {
+        List<Constructor<?>> constructors = getAllConstructorsSortedOnNumberOfArguments(beanClass);
         for (Constructor<?> constructor : constructors) {
             if (isSupportedConstructor(constructor, supportedTypes)) {
                 return (Constructor<T>) constructor;
@@ -28,7 +28,7 @@ public final class ConstructorFinder {
         throw new IllegalStateException("Could not find a supported constructor.");
 	}
 
-    private static <T> List<Constructor<?>> getAllConstructorsSortedOnArgumentTypes(Class<T> beanClass) {
+    private static <T> List<Constructor<?>> getAllConstructorsSortedOnNumberOfArguments(Class<T> beanClass) {
         List<Constructor<?>> declaredConstructors = new ArrayList<Constructor<?>>();
         declaredConstructors.addAll(Arrays.asList(beanClass.getDeclaredConstructors()));
         Collections.sort(declaredConstructors, new ConstructorParameterTypeLengthComparator());
@@ -38,7 +38,7 @@ public final class ConstructorFinder {
 	private static boolean isSupportedConstructor(Constructor<?> constructor, Class<?>[] supportedTypes) {
 		boolean supported = true;
 		for (Class<?> parameterType : constructor.getParameterTypes()) {
-			if (! isSupportedParameterType(parameterType, supportedTypes)) {
+            if (!isSupportedParameterType(parameterType, supportedTypes)) {
 				supported = false;
 				break;
 			}

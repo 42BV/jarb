@@ -9,7 +9,7 @@ import java.lang.annotation.Annotation;
 
 import org.jarbframework.constraint.metadata.PropertyConstraintDescription;
 import org.jarbframework.constraint.metadata.types.PropertyType;
-import org.jarbframework.utils.bean.AnnotationScanner;
+import org.jarbframework.utils.bean.Annotations;
 
 /**
  * Enhances our property type description from a @PropertyType annotation.
@@ -31,8 +31,8 @@ public class PropertyTypeEnhancer implements PropertyConstraintEnhancer {
     
     @Override
     public void enhance(PropertyConstraintDescription description) {
-        if (AnnotationScanner.hasAnnotation(description.toReference(), annotationClass)) {
-            Annotation annotation = AnnotationScanner.getAnnotations(description.toReference(), annotationClass).iterator().next();
+        if (Annotations.hasAnnotation(description.toReference(), annotationClass)) {
+            Annotation annotation = Annotations.getAnnotations(description.toReference(), annotationClass).iterator().next();
             if (annotation instanceof PropertyType) {
                 description.addType(((PropertyType) annotation).value());
             } else {

@@ -4,7 +4,6 @@ import static org.jarbframework.utils.Asserts.notNull;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.beans.DirectFieldAccessor;
@@ -19,42 +18,20 @@ import org.springframework.beans.PropertyAccessor;
  * @author Jeroen van Schagen
  * @date Aug 16, 2011
  */
-public final class FlexibleBeanWrapper<T> {
+public final class FlexibleBeanWrapper {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(FlexibleBeanWrapper.class);
 	
-    private final T bean;
+    private final Object bean;
 
     private final BeanWrapper beanWrapper;
     
     private final PropertyAccessor fieldAccessor;
 
-    private FlexibleBeanWrapper(T bean) {
+    public FlexibleBeanWrapper(Object bean) {
         this.bean = notNull(bean, "Wrapped bean cannot be null.");
         this.beanWrapper = new BeanWrapperImpl(bean);
         this.fieldAccessor = new DirectFieldAccessor(bean);
-    }
-
-    /**
-     * Wrap an existing bean with property modification behavior.
-     * 
-     * @param <T> type of bean
-     * @param bean the bean being wrapped
-     * @return modifiable bean, wrapping the specified bean
-     */
-    public static <T> FlexibleBeanWrapper<T> wrap(T bean) {
-        return new FlexibleBeanWrapper<T>(bean);
-    }
-
-    /**
-     * Build a new bean with property modification behavior.
-     * 
-     * @param <T> type of bean
-     * @param beanClass class of the bean being created and wrapped
-     * @return modifiable bean, wrapping a new bean instance
-     */
-    public static <T> FlexibleBeanWrapper<T> instantiate(Class<T> beanClass) {
-        return wrap(BeanUtils.instantiateClass(beanClass));
     }
 
     public boolean isReadableProperty(String propertyName) {
@@ -83,7 +60,7 @@ public final class FlexibleBeanWrapper<T> {
         return beanWrapper.isWritableProperty(propertyName) || fieldAccessor.isWritableProperty(propertyName);
     }
 
-    public FlexibleBeanWrapper<T> setPropertyValue(String propertyName, Object value) {
+    public FlexibleBeanWrapper setPropertyValue(String propertyName, Object value) {
         if (beanWrapper.isWritableProperty(propertyName)) {
             beanWrapper.setPropertyValue(propertyName, value);
         } else {
@@ -92,7 +69,7 @@ public final class FlexibleBeanWrapper<T> {
         return this;
     }
 
-    public T getWrappedBean() {
+    public Object getWrappedBean() {
         return bean;
     }
     

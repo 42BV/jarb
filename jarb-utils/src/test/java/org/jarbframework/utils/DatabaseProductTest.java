@@ -13,7 +13,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 /**
- * 
+ * Ensures that the database product can correctly be recognized.
  *
  * @author Jeroen van Schagen
  * @since Mar 13, 2014

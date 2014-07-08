@@ -1,4 +1,4 @@
-package org.jarbframework.utils.bean;
+package org.jarbframework.constraint.violation.factory;
 
 import static org.springframework.beans.BeanUtils.instantiateClass;
 
@@ -15,7 +15,7 @@ import org.jarbframework.utils.Asserts;
  *
  * @param <T> type of the bean
  */
-public class BeanBuilder<T> {
+final class BeanBuilder<T> {
         
     private final Constructor<T> constructor;
 

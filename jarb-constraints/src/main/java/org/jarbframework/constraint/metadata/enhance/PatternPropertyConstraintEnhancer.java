@@ -6,7 +6,7 @@ package org.jarbframework.constraint.metadata.enhance;
 import java.util.Collection;
 
 import org.jarbframework.constraint.metadata.PropertyConstraintDescription;
-import org.jarbframework.utils.bean.AnnotationScanner;
+import org.jarbframework.utils.bean.Annotations;
 
 /**
  * Stores the @Pattern in our description.
@@ -19,7 +19,7 @@ public class PatternPropertyConstraintEnhancer implements PropertyConstraintEnha
     @Override
     public void enhance(PropertyConstraintDescription description) {
         Collection<javax.validation.constraints.Pattern> annotations = 
-                AnnotationScanner.getAnnotations(description.toReference(), javax.validation.constraints.Pattern.class);
+                Annotations.getAnnotations(description.toReference(), javax.validation.constraints.Pattern.class);
         if (!annotations.isEmpty()) {
             description.setPattern(annotations.iterator().next().regexp());
         }

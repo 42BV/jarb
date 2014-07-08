@@ -1,7 +1,7 @@
 package org.jarbframework.constraint.metadata.enhance;
 
 import org.jarbframework.constraint.metadata.PropertyConstraintDescription;
-import org.jarbframework.utils.bean.AnnotationScanner;
+import org.jarbframework.utils.bean.Annotations;
 
 /**
  * Whenever a property is annotated as @NotNull, it is required.
@@ -13,7 +13,7 @@ public class NotNullPropertyConstraintEnhancer implements PropertyConstraintEnha
 
     @Override
     public void enhance(PropertyConstraintDescription description) {
-        if (AnnotationScanner.hasAnnotation(description.toReference(), javax.validation.constraints.NotNull.class)) {
+        if (Annotations.hasAnnotation(description.toReference(), javax.validation.constraints.NotNull.class)) {
             description.setRequired(true);
         }
     }
