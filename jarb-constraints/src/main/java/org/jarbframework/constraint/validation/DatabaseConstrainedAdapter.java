@@ -39,8 +39,7 @@ public class DatabaseConstrainedAdapter implements ConstraintValidator<DatabaseC
     }
 
     private DatabaseConstraintValidator createValidator(DatabaseConstrained annotation) {
-        final String validatorName = annotation.id();
-        return DatabaseConstraintValidatorFactory.get(applicationContext, validatorName);
+        return DatabaseConstraintValidatorRegistry.getValidator(applicationContext, annotation.id());
     }
 
     @Override
