@@ -18,7 +18,7 @@ import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
  */
 public class MigratingDatabaseBuilder extends EmbeddedDatabaseBuilder {
     
-    private final Set<MigrationListener> listeners = new HashSet<>();
+    private final Set<MigrationListener> listeners = new HashSet<MigrationListener>();
 
     private final DatabaseMigrator migrator;
 

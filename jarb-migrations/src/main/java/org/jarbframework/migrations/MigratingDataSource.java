@@ -23,7 +23,7 @@ public class MigratingDataSource extends DataSourceDelegate {
     /** Performs the actual database migration on a JDBC connection. **/
     private final DatabaseMigrator migrator;
 
-    private Set<MigrationListener> listeners = new HashSet<>();
+    private Set<MigrationListener> listeners = new HashSet<MigrationListener>();
 
     /** Migration username, whenever left empty we use the data source username. **/
     private String username;

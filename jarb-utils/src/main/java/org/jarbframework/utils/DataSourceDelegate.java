@@ -1,12 +1,15 @@
 package org.jarbframework.utils;
 
 import java.io.PrintWriter;
+import java.lang.reflect.Method;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.SQLFeatureNotSupportedException;
 import java.util.logging.Logger;
 
 import javax.sql.DataSource;
+
+import org.springframework.util.ReflectionUtils;
 
 /**
  * Delegate implementation of {@link DataSource}. Delegates all method invocation to
@@ -17,6 +20,9 @@ import javax.sql.DataSource;
  */
 public class DataSourceDelegate implements DataSource {
     
+    /**
+     * Underlying data source to which we delegate operations.
+     */
     private final DataSource delegate;
 
     public DataSourceDelegate(DataSource delegate) {
@@ -88,11 +94,15 @@ public class DataSourceDelegate implements DataSource {
     }
 
     /**
-     * {@inheritDoc}
+     * New method added in Java 7, this method is invoked with
+     * reflection to provide backwards compatibility with Java 6.
+     * 
+     * @return the parent logger
+     * @throws SQLFeatureNotSupportedException whenever the feature is not supported
      */
-    @Override
     public Logger getParentLogger() throws SQLFeatureNotSupportedException {
-        return delegate.getParentLogger();
+        Method method = ReflectionUtils.findMethod(delegate.getClass(), "getParentLogger");
+        return (Logger) ReflectionUtils.invokeMethod(method, delegate);
     }
 
 }
