@@ -1,7 +1,7 @@
 package org.jarbframework.constraint.validation;
 
-import static java.lang.annotation.ElementType.TYPE;
 import static java.lang.annotation.ElementType.FIELD;
+import static java.lang.annotation.ElementType.TYPE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 import java.lang.annotation.Documented;
@@ -18,11 +18,21 @@ import javax.validation.Payload;
 public @interface DatabaseConstrained {
 	
     /**
-     * Identifier of the {@link DatabaseConstraintValidator} bean that should be used
+     * Identifier of the DatabaseConstraintValidator bean that should be used
      * for constraint validation. When left blank we attempt to autowire the validator
      * from our context, or build a new default validator instance.
      */
     String id() default "";
+    
+    /**
+     * Identifier of the ValidatorFactory bean that should be used for message interpolation.
+     */
+    String factory() default "";
+    
+    /**
+     * Identifier BeanMetadataRepository bean that should be used for column metadata retrieval.
+     */
+    String beanMetadataRepository() default "";
 
     /**
      * Reference to the entity class that contains this annotated object. This is only

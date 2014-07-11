@@ -27,21 +27,12 @@ public class DatabaseConstraintValidatorRegistry {
      * @param validatorName the preferred validator name, can be null
      * @return the validator to be used
      */
-    public static DatabaseConstraintValidator getValidator(ApplicationContext applicationContext, final String validatorName) {
-        if (isNotBlank(validatorName)) {
-            return applicationContext.getBean(validatorName, DatabaseConstraintValidator.class);
+    public static DatabaseConstraintValidator getValidator(ApplicationContext applicationContext, DatabaseConstrained annotation) {
+        if (isNotBlank(annotation.id())) {
+            return applicationContext.getBean(annotation.id(), DatabaseConstraintValidator.class);
         } else {
-            String[] validatorNames = applicationContext.getBeanNamesForType(DatabaseConstraintValidator.class);
-            if (validatorNames.length == 0) {
-                LOGGER.info("Creating new DatabaseConstraintValidator because no bean was found yet.");
-                return buildValidator(applicationContext);
-            } else {
-                String firstValidatorName = validatorNames[0];
-                if (validatorNames.length > 1) {
-                    LOGGER.warn("Multiple DatabaseConstraintValidator beans were found, define a @DatabaseConstrained.id", firstValidatorName);
-                }
-                return applicationContext.getBean(firstValidatorName, DatabaseConstraintValidator.class);
-            }
+            LOGGER.info("Creating new DatabaseConstraintValidator because no @DatabaseConstrained.id is defined.");
+            return buildValidator(applicationContext, annotation);
         }
     }
 
@@ -51,22 +42,17 @@ public class DatabaseConstraintValidatorRegistry {
      * @param applicationContext the application context
      * @return the newly created validator
      */
-    static DatabaseConstraintValidator buildValidator(ApplicationContext applicationContext) {
-        BeanMetadataRepository beanMetadataRepository = findBean(applicationContext, BeanMetadataRepository.class);
-        ValidatorFactory validatorFactory = findBean(applicationContext, ValidatorFactory.class);
+    static DatabaseConstraintValidator buildValidator(ApplicationContext applicationContext, DatabaseConstrained annotation) {
+        BeanMetadataRepository beanMetadataRepository = getBean(applicationContext, annotation.beanMetadataRepository(), BeanMetadataRepository.class);
+        ValidatorFactory validatorFactory = getBean(applicationContext, annotation.factory(), ValidatorFactory.class);
         return new DatabaseConstraintValidator(beanMetadataRepository, validatorFactory.getMessageInterpolator());
     }
 
-    private static <T> T findBean(ApplicationContext applicationContext, Class<T> beanClass) {
-        String[] beanNames = applicationContext.getBeanNamesForType(beanClass);
-        if (beanNames.length == 0) {
-            throw new IllegalStateException("Could not create DatabaseConstraintValidator because no " + beanClass.getSimpleName() + " beans was found.");
+    private static <T> T getBean(ApplicationContext applicationContext, String beanName, Class<T> beanClass) {
+        if (isNotBlank(beanName)) {
+            return applicationContext.getBean(beanName, beanClass);
         } else {
-            String firstBeanName = beanNames[0];
-            if (beanNames.length > 1) {
-                LOGGER.warn("Multiple " + beanClass.getSimpleName() + " beans were found, we are now using " + firstBeanName);
-            }
-            return applicationContext.getBean(firstBeanName, beanClass);
+            return applicationContext.getBean(beanClass);
         }
     }
 
