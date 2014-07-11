@@ -65,73 +65,80 @@ public class DatabaseConstraintValidator {
      * Determine if a bean follows all column constraints defined in the database.
      * 
      * @param bean the bean that should be validated
-     * @param base the reference to our bean, or {@code null} if the bean is our root
      * @param validatorContext used to create constraint violations
      * @return whether the bean is valid, or not
      */
     public boolean isValid(Object bean, Class<?> entityClass, String propertyName, ConstraintValidatorContext validatorContext) {
         DatabaseValidationContext validation = new DatabaseValidationContext(validatorContext, messageBuilder);
-        validateBean(bean, new RootPath(entityClass, propertyName), validation);
+        validateBean(bean, new BasePath(entityClass, propertyName), validation);
         return validation.isValid();
     }
 
-    private void validateBean(Object bean, RootPath rootPath, DatabaseValidationContext validation) {
+    private void validateBean(Object bean, BasePath basePath, DatabaseValidationContext validation) {
         FlexibleBeanWrapper beanWrapper = new FlexibleBeanWrapper(bean);
         for (String propertyName : Beans.getFieldNames(bean.getClass())) {
-            validateProperty(beanWrapper, new PropertyReference(bean.getClass(), propertyName), rootPath, validation);
+            validateProperty(beanWrapper, new PropertyReference(bean.getClass(), propertyName), basePath, validation);
         }
     }
 
-    private void validateProperty(FlexibleBeanWrapper beanWrapper, PropertyReference propertyPath, RootPath rootPath, DatabaseValidationContext validation) {
-        Field propertyField = Beans.findPropertyField(propertyPath);
-        if (! Modifier.isStatic(propertyField.getModifiers())) {
-            Class<?> propertyClass = propertyField.getType();
+    private void validateProperty(FlexibleBeanWrapper beanWrapper, PropertyReference propertyReference, BasePath basePath, DatabaseValidationContext validation) {
+        Field field = Beans.findPropertyField(propertyReference);
+        if (isValidatable(field)) {
+            Class<?> propertyClass = field.getType();
             if (beanMetadataRepository.isEmbeddable(propertyClass)) {
                 for (String propertyName : Beans.getFieldNames(propertyClass)) {
-                    validateProperty(beanWrapper, new PropertyReference(propertyPath, propertyName), rootPath, validation);
+                    validateProperty(beanWrapper, new PropertyReference(propertyReference, propertyName), basePath, validation);
                 }
             } else {
-                validateSimpleProperty(beanWrapper, propertyPath, rootPath, validation);
+                validateSimpleProperty(beanWrapper, propertyReference, basePath, validation);
             }
         }
     }
 
-    private void validateSimpleProperty(FlexibleBeanWrapper beanWrapper, PropertyReference propertyPath, RootPath rootPath, DatabaseValidationContext validation) {
-        PropertyReference wrappedPath = rootPath.wrap(propertyPath);
-        ColumnMetadata columnMetadata = beanMetadataRepository.getColumnMetadata(wrappedPath);
+    private boolean isValidatable(Field field) {
+        return !Modifier.isStatic(field.getModifiers()) && field.getAnnotation(IgnoreDatabaseConstraints.class) == null;
+    }
+
+    private void validateSimpleProperty(FlexibleBeanWrapper beanWrapper, PropertyReference propertyReference, BasePath basePath, DatabaseValidationContext validation) {
+        PropertyReference wrappedPropertyReference = basePath.apply(propertyReference);
+        ColumnMetadata columnMetadata = beanMetadataRepository.getColumnMetadata(wrappedPropertyReference);
         if (columnMetadata != null) {
-            Object propertyValue = beanWrapper.getPropertyValue(propertyPath.getPropertyName());
+            Object propertyValue = beanWrapper.getPropertyValue(propertyReference.getPropertyName());
             for (DatabaseConstraintValidationStep validationStep : validationSteps) {
-                validationStep.validate(propertyValue, propertyPath, columnMetadata, validation);
+                validationStep.validate(propertyValue, propertyReference, columnMetadata, validation);
             }
         } else {
-            logger.debug("Skipped validation because no meta-data could be found for property '{}'.", wrappedPath);
+            logger.debug("Skipped validation because no meta-data could be found for property '{}'.", wrappedPropertyReference);
         }
     }
     
-    public static class RootPath {
+    private static final class BasePath {
         
-        private final Class<?> entityClass;
+        private final Class<?> baseClass;
         
         private final String propertyName;
         
-        public RootPath(Class<?> entityClass, String propertyName) {
-            this.entityClass = entityClass;
+        BasePath(Class<?> baseClass, String propertyName) {
+            this.baseClass = baseClass;
             this.propertyName = propertyName;
         }
         
-        public PropertyReference wrap(PropertyReference propertyPath) {
-            if (!Object.class.equals(entityClass)) {
+        PropertyReference apply(PropertyReference propertyPath) {
+            if (hasBaseClass()) {
                 if (isNotBlank(propertyName)) {
                     // Include parent path to reference
-                    PropertyReference parent = new PropertyReference(entityClass, propertyName);
+                    PropertyReference parent = new PropertyReference(baseClass, propertyName);
                     return new PropertyReference(parent, propertyPath.getPropertyName());
                 } else {
                     // Alter base bean type to our specified entity class
-                    return new PropertyReference(entityClass, propertyPath.getPropertyName());
+                    return new PropertyReference(baseClass, propertyPath.getPropertyName());
                 }
             }
             return propertyPath;
+        }
+
+        private boolean hasBaseClass() {
+            return !Object.class.equals(baseClass);
         }
         
     }

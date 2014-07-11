@@ -6,6 +6,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import org.jarbframework.constraint.validation.DatabaseConstrained;
+import org.jarbframework.constraint.validation.IgnoreDatabaseConstraints;
 
 @Entity
 @Table(name = "cars")
@@ -23,6 +24,9 @@ public class AwesomeCar extends DefaultEntity {
     private String active;
 
     private transient String unmappedProperty;
+    
+    @IgnoreDatabaseConstraints
+    private transient String ignoredProperty;
 
     AwesomeCar() {
     }
@@ -69,6 +73,14 @@ public class AwesomeCar extends DefaultEntity {
 
     public void setUnmappedProperty(String unmappedProperty) {
         this.unmappedProperty = unmappedProperty;
+    }
+
+    public String getIgnoredProperty() {
+        return ignoredProperty;
+    }
+    
+    public void setIgnoredProperty(String ignoredProperty) {
+        this.ignoredProperty = ignoredProperty;
     }
 
 }
