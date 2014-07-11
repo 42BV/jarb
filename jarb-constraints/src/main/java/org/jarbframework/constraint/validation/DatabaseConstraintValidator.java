@@ -100,7 +100,7 @@ public class DatabaseConstraintValidator {
         PropertyReference wrappedPath = rootPath.wrap(propertyPath);
         ColumnMetadata columnMetadata = beanMetadataRepository.getColumnMetadata(wrappedPath);
         if (columnMetadata != null) {
-            Object propertyValue = beanWrapper.getPropertyValueNullSafe(propertyPath.getPropertyName());
+            Object propertyValue = beanWrapper.getPropertyValue(propertyPath.getPropertyName());
             for (DatabaseConstraintValidationStep validationStep : validationSteps) {
                 validationStep.validate(propertyValue, propertyPath, columnMetadata, validation);
             }

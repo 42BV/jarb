@@ -1,8 +1,6 @@
 package org.jarbframework.utils.bean;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -52,27 +50,12 @@ public class FlexibleBeanWrapperTest {
         beanWrapper.setPropertyValue("unknownProperty", "value");
     }
 
-    @Test
-    public void testHasPropertyByField() {
-        assertTrue(beanWrapper.isReadableProperty("hiddenProperty"));
-        assertTrue(beanWrapper.isWritableProperty("hiddenProperty"));
-    }
-
-    @Test
-    public void testHasPropertyByMethod() {
-        assertTrue(beanWrapper.isReadableProperty("readableProperty"));
-        assertTrue(beanWrapper.isWritableProperty("writableProperty"));
-    }
-
-    @Test
-    public void testDoesNotHaveProperty() {
-        assertFalse(beanWrapper.isReadableProperty("unknownProperty"));
-        assertFalse(beanWrapper.isWritableProperty("unknownProperty"));
-    }
-
     public static class SomeBean {
+
         private String hiddenProperty;
+
         private String readableProperty;
+
         private String writableProperty;
 
         public String getReadableProperty() {
@@ -82,6 +65,7 @@ public class FlexibleBeanWrapperTest {
         public void setWritableProperty(String writableProperty) {
             this.writableProperty = writableProperty + "(from setter)";
         }
+
     }
 
 }

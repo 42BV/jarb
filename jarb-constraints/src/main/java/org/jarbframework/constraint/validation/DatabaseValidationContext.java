@@ -34,6 +34,7 @@ final class DatabaseValidationContext {
 
     /**
      * Determine if no violations were detected in this validation context.
+     * 
      * @return {@code true} if no violations were detected, else {@code false}
      */
     public boolean isValid() {
@@ -43,6 +44,7 @@ final class DatabaseValidationContext {
     /**
      * Start building a new database constraint violation. Note that the violation will only
      * be stored after invoking {@link ViolationBuilder#addToContext()}.
+     * 
      * @param propertyReference reference to the property that was violated
      * @param templateName name of the message template
      * @return new database constraint violation builder
@@ -94,11 +96,10 @@ final class DatabaseValidationContext {
          */
         public DatabaseValidationContext addToContext() {
             markAsInvalid();
-            if (propertyReference.isNestedProperty()) {
-                buildAndIncludeNestedPropertyViolation();
-            } else {
-                buildConstraintViolation().addPropertyNode(propertyReference.getPropertyName()).addConstraintViolation();
-            }
+
+            ConstraintViolationBuilder builder = context.buildConstraintViolationWithTemplate(template.message());
+            addPropertyNode(builder).addConstraintViolation();
+
             return DatabaseValidationContext.this;
         }
 
@@ -106,18 +107,17 @@ final class DatabaseValidationContext {
             valid = false;
         }
 
-        private void buildAndIncludeNestedPropertyViolation() {
-            String[] path = propertyReference.getPath();
-            NodeBuilderCustomizableContext rootContext = buildConstraintViolation().addPropertyNode(path[0]);
-            NodeBuilderCustomizableContext nestedContext = rootContext.addPropertyNode(path[1]);
-            for (int i = 2; i < path.length; i++) {
-                nestedContext = nestedContext.addPropertyNode(path[i]);
+        private NodeBuilderCustomizableContext addPropertyNode(ConstraintViolationBuilder builder) {
+            if (propertyReference.isNestedProperty()) {
+                return builder.addPropertyNode(propertyReference.getPropertyName());
+            } else {
+                String[] path = propertyReference.getPath();
+                NodeBuilderCustomizableContext context = builder.addPropertyNode(path[0]);
+                for (int i = 1; i < path.length; i++) {
+                    context = context.addPropertyNode(path[i]);
+                }
+                return context;
             }
-            nestedContext.addConstraintViolation();
-        }
-
-        private ConstraintViolationBuilder buildConstraintViolation() {
-            return context.buildConstraintViolationWithTemplate(template.message());
         }
 
     }

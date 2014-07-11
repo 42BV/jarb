@@ -34,30 +34,22 @@ public final class FlexibleBeanWrapper {
         this.fieldAccessor = new DirectFieldAccessor(bean);
     }
 
-    public boolean isReadableProperty(String propertyName) {
-        return beanWrapper.isReadableProperty(propertyName) || fieldAccessor.isReadableProperty(propertyName);
-    }
-
     public Object getPropertyValue(String propertyName) {
-        if (beanWrapper.isReadableProperty(propertyName)) {
-            return beanWrapper.getPropertyValue(propertyName);
-        } else {
-            return fieldAccessor.getPropertyValue(propertyName);
-        }
-    }
-    
-    public Object getPropertyValueNullSafe(String propertyName) {
         Object value = null;
         try {
-            value = getPropertyValue(propertyName);
+            value = doGetPropertyValue(propertyName);
         } catch (NullValueInNestedPathException e) {
             LOGGER.debug("Could not retrieve actual property value.", e);
         }
         return value;
     }
 
-    public boolean isWritableProperty(String propertyName) {
-        return beanWrapper.isWritableProperty(propertyName) || fieldAccessor.isWritableProperty(propertyName);
+    private Object doGetPropertyValue(String propertyName) {
+        if (beanWrapper.isReadableProperty(propertyName)) {
+            return beanWrapper.getPropertyValue(propertyName);
+        } else {
+            return fieldAccessor.getPropertyValue(propertyName);
+        }
     }
 
     public FlexibleBeanWrapper setPropertyValue(String propertyName, Object value) {
