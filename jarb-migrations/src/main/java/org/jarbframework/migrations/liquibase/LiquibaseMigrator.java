@@ -80,11 +80,14 @@ public class LiquibaseMigrator implements DatabaseMigrator {
     public final void migrate(Connection connection) {
         try {
             final Liquibase liquibase = buildLiquibase(connection);
+            liquibase.getLog().info("Starting liquibase migration.");
+
             if (dropFirst) {
                 liquibase.dropAll();
             }
-            if (shouldWriteSqlOutput()) {
-                writeSqlOutput(liquibase);
+            if (shouldGenerateSqlScript()) {
+                liquibase.getLog().info("The database migration will occur twice, once to generate an SQL script and afterwards to do the actual migration.");
+                generateSqlScript(liquibase);
             }
             migrateDatabase(liquibase);
         } catch (LiquibaseException e) {
@@ -135,7 +138,7 @@ public class LiquibaseMigrator implements DatabaseMigrator {
      * Determine if a SQL output should be written away.
      * @return {@code true} if it should, else {@code false}
      */
-    private boolean shouldWriteSqlOutput() {
+    private boolean shouldGenerateSqlScript() {
         return outputFilePath != null && ! outputFilePath.isEmpty();
     }
 
@@ -145,7 +148,7 @@ public class LiquibaseMigrator implements DatabaseMigrator {
      * @throws LiquibaseException 
      * @throws IOException 
      */
-    private void writeSqlOutput(Liquibase liquibase) throws LiquibaseException, IOException {
+    private void generateSqlScript(Liquibase liquibase) throws LiquibaseException, IOException {
         Writer writer = new FileWriter(outputFilePath, true);
         try {
             if (changesToApply > 0) {
