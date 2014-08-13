@@ -87,13 +87,15 @@ public class LiquibaseMigrator implements DatabaseMigrator {
             if (dropFirst) {
                 liquibase.dropAll();
             }
-            if (shouldGenerateSqlScript()) {
-                liquibase.getLog().info("The database migration will occur twice, once to generate an SQL script and afterwards to do the actual migration.");
-                generateSqlScript(liquibase);
-            }
             if (resetCheckSum) {
                 liquibase.clearCheckSums();
             }
+            if (shouldGenerateSqlScript()) {
+                liquibase.getLog().info("Database migration will occur twice, once to generate an SQL script and afterwards to do the actual migration.");
+                liquibase.getLog().info("Generating SQL script.");
+                generateSqlScript(liquibase);
+            }
+            liquibase.getLog().info("Performing actual database migration.");
             migrateDatabase(liquibase);
         } catch (LiquibaseException e) {
             throw new RuntimeException(e);
