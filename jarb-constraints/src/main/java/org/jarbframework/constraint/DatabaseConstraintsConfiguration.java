@@ -44,12 +44,12 @@ public class DatabaseConstraintsConfiguration implements ImportAware, Initializi
     // Meta-data constants
 
     private static final String BASE_PACKAGES_REF = "basePackages";
-    private static final String BASE_CLASSES_REF = "baseClasses";
+    private static final String BASE_CLASSES_REF = "basePackageClasses";
 
     private static final String DATA_SOURCE_REF = "dataSource";
     private static final String ENTITY_MANAGER_FACTORY_REF = "entityManagerFactory";
 
-    private static final String TRANSLATE_REF = "translate";
+    private static final String PROXY_ANNOTATION_REF = "proxyAnnotation";
 
     private Map<String, Object> attributes;
     
@@ -98,7 +98,7 @@ public class DatabaseConstraintsConfiguration implements ImportAware, Initializi
     @Bean
     @SuppressWarnings("unchecked")
     public TranslateExceptionsBeanPostProcessor exceptionTranslatingBeanPostProcessor() throws Exception {
-        Class<? extends Annotation> annotation = (Class<? extends Annotation>) attributes.get(TRANSLATE_REF);
+        Class<? extends Annotation> annotation = (Class<? extends Annotation>) attributes.get(PROXY_ANNOTATION_REF);
         return new TranslateExceptionsBeanPostProcessor(exceptionTranslator(), annotation);
     }
     

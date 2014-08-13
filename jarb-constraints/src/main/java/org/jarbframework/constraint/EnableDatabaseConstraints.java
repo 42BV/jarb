@@ -46,7 +46,7 @@ public @interface EnableDatabaseConstraints {
      * 
      * @return the base classes
      */
-    Class<?>[] baseClasses() default {};
+    Class<?>[] basePackageClasses() default {};
     
     /**
      * The reference to our entity manager factory.
@@ -68,6 +68,6 @@ public @interface EnableDatabaseConstraints {
      * 
      * @return the annotation that performs exception translations
      */
-    Class<? extends Annotation> translate() default Repository.class;
+    Class<? extends Annotation> proxyAnnotation() default Repository.class;
 
 }
