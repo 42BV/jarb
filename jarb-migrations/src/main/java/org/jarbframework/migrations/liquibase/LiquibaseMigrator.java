@@ -39,6 +39,8 @@ public class LiquibaseMigrator implements DatabaseMigrator {
     private int changesToApply = 0;
 
     private String outputFilePath;
+    
+    private boolean resetCheckSum = false;
 
     /**
      * Construct a new {@link LiquibaseMigrator} that runs from the current working directory.
@@ -88,6 +90,9 @@ public class LiquibaseMigrator implements DatabaseMigrator {
             if (shouldGenerateSqlScript()) {
                 liquibase.getLog().info("The database migration will occur twice, once to generate an SQL script and afterwards to do the actual migration.");
                 generateSqlScript(liquibase);
+            }
+            if (resetCheckSum) {
+                liquibase.clearCheckSums();
             }
             migrateDatabase(liquibase);
         } catch (LiquibaseException e) {
@@ -187,6 +192,10 @@ public class LiquibaseMigrator implements DatabaseMigrator {
 
     public void setOutputFilePath(String outputFilePath) {
         this.outputFilePath = outputFilePath;
+    }
+
+    public void setResetCheckSum(boolean resetCheckSum) {
+        this.resetCheckSum = resetCheckSum;
     }
 
 }

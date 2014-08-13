@@ -36,6 +36,7 @@ public final class LiquibaseMigratorMain {
     private static final String CHANGELOG_PATH = "liquibase.changeLogPath";
     private static final String SQL_OUTPUT_PATH = "liquibase.sqlOutputPath";
     private static final String DROP_FIRST = "liquibase.dropFirst";
+    private static final String RESET_CHECK_SUM = "liquibase.resetCheckSum";
     
     // Constants
 
@@ -69,10 +70,10 @@ public final class LiquibaseMigratorMain {
     }
 
     private static PropertyAccessor parseProperties(String[] arguments) throws IOException {
-        final String propertiesPath = arguments.length > 0 ? arguments[0] : DEFAULT_FILE_NAME;
+        final String propertyPath = arguments.length > 0 ? arguments[0] : DEFAULT_FILE_NAME;
 
         Properties properties = new Properties();
-        properties.load(new FileInputStream(new File(propertiesPath)));
+        properties.load(new FileInputStream(new File(propertyPath)));
         return new PropertyAccessor(properties);
     }
 
@@ -81,11 +82,13 @@ public final class LiquibaseMigratorMain {
         String changeLogPath = properties.getOptionalProperty(CHANGELOG_PATH);
         String sqlOutputPath = properties.getOptionalProperty(SQL_OUTPUT_PATH);
         String dropFirst = properties.getOptionalProperty(DROP_FIRST);
+        String resetCheckSum = properties.getOptionalProperty(RESET_CHECK_SUM);
 
         LiquibaseMigrator migrator = new LiquibaseMigrator(createResourceAccessor(changeLogBaseDir));
         migrator.setChangeLogPath(changeLogPath);
         migrator.setOutputFilePath(sqlOutputPath);
         migrator.setDropFirst(TRUE.equals(dropFirst));
+        migrator.setResetCheckSum(TRUE.equals(resetCheckSum));
         return migrator;
     }
 

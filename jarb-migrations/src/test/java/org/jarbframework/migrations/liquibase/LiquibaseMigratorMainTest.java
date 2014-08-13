@@ -21,6 +21,14 @@ public class LiquibaseMigratorMainTest {
     public void testDbMigrationRelativePath() throws IOException {
         LiquibaseMigratorMain.main("src/test/resources/liquibase/relative.properties");
     }
+    
+    /**
+     * Reset the checksum.
+     */
+    @Test
+    public void testDbMigrationResetCheckSum() throws IOException {
+        LiquibaseMigratorMain.main("src/test/resources/liquibase/reset-check-sum.properties");
+    }
 
     /**
      * Specified driver class has to be known by the class loader.
