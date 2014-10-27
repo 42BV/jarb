@@ -28,17 +28,12 @@
             <scope>provided</scope>
         </dependency>
         
-        <!-- Liquibase -->
+        <!-- Database migration libraries -->
 		<dependency>
-		    <groupId>net.saliman</groupId>
-		    <artifactId>groovy-liquibase-dsl</artifactId>
-		    <version>1.0.0</version>
-		</dependency>
-		<dependency>
-		    <!-- Log with slf4j rather than system err -->
-		    <groupId>com.mattbertolini</groupId>
-		    <artifactId>liquibase-slf4j</artifactId>
-		    <version>1.2.1</version>
+		    <groupId>org.liquibase</groupId>
+		    <artifactId>liquibase-core</artifactId>
+		    <version>3.1.1</version>
+		    <scope>provided</scope>
 		</dependency>
 	</dependencies>
 

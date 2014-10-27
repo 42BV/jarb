@@ -163,6 +163,18 @@
             <version>${spring.version}</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>net.saliman</groupId>
+            <artifactId>groovy-liquibase-dsl</artifactId>
+            <version>1.0.0</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.mattbertolini</groupId>
+            <artifactId>liquibase-slf4j</artifactId>
+            <version>1.2.1</version>
+            <scope>test</scope>
+        </dependency>
         
 		<!-- Supported database drivers -->
         <dependency>
