@@ -15,7 +15,9 @@ import org.jarbframework.utils.JdbcConnectionCallback;
 import org.jarbframework.utils.JdbcUtils;
 
 /**
- * This class provides command-line support for Liquibase migrations.
+ * Provides command line support for executing liquibase migrations.
+ * This a simple alternative to the liquibase binary. However, this
+ * executable only provides update functionality, no rollbacks.
  * 
  * @author Bas de Vos
  * @author Jeroen van Schagen
