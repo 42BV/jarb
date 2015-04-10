@@ -17,7 +17,7 @@ import org.jarbframework.constraint.metadata.DefaultBeanConstraintDescriptor;
 import org.jarbframework.constraint.metadata.database.BeanMetadataRepository;
 import org.jarbframework.constraint.metadata.database.BeanMetadataRepositoryFactoryBean;
 import org.jarbframework.constraint.violation.DatabaseConstraintExceptionTranslator;
-import org.jarbframework.constraint.violation.TranslateExceptionsBeanPostProcessor;
+import org.jarbframework.constraint.violation.TranslateAdviceAddingBeanPostProcessor;
 import org.jarbframework.constraint.violation.factory.ConfigurableConstraintExceptionFactory;
 import org.jarbframework.constraint.violation.factory.DatabaseConstraintExceptionFactory;
 import org.jarbframework.constraint.violation.resolver.ConfigurableViolationResolver;
@@ -30,6 +30,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.ImportAware;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.core.type.AnnotationMetadata;
 
 /**
@@ -70,11 +71,13 @@ public class DatabaseConstraintsConfiguration implements ImportAware, Initializi
     //
     
     @Bean
+    @Lazy
     public DatabaseConstraintExceptionTranslator exceptionTranslator() throws Exception {
         return new DatabaseConstraintExceptionTranslator(violationResolver(), exceptionFactory());
     }
     
     @Bean
+    @Lazy
     public DatabaseConstraintViolationResolver violationResolver() {
         ConfigurableViolationResolver violationResolver = new ConfigurableViolationResolver(dataSource, basePackages);
         for (DatabaseConstraintsConfigurer configurer : configurers) {
@@ -84,6 +87,7 @@ public class DatabaseConstraintsConfiguration implements ImportAware, Initializi
     }
     
     @Bean
+    @Lazy
     public DatabaseConstraintExceptionFactory exceptionFactory() {
         ConfigurableConstraintExceptionFactory exceptionFactory = new ConfigurableConstraintExceptionFactory();
         for (DatabaseConstraintsConfigurer configurer : configurers) {
@@ -97,9 +101,9 @@ public class DatabaseConstraintsConfiguration implements ImportAware, Initializi
     
     @Bean
     @SuppressWarnings("unchecked")
-    public TranslateExceptionsBeanPostProcessor exceptionTranslatingBeanPostProcessor() throws Exception {
+    public TranslateAdviceAddingBeanPostProcessor translateAdviceAddingBeanPostProcessor() throws Exception {
         Class<? extends Annotation> annotation = (Class<? extends Annotation>) attributes.get(PROXY_ANNOTATION_REF);
-        return new TranslateExceptionsBeanPostProcessor(exceptionTranslator(), annotation);
+        return new TranslateAdviceAddingBeanPostProcessor(exceptionTranslator(), annotation);
     }
     
     //
@@ -107,6 +111,7 @@ public class DatabaseConstraintsConfiguration implements ImportAware, Initializi
     //
 
     @Bean
+    @Lazy
     public BeanMetadataRepository beanMetadataRepository() throws Exception {
         if (entityManagerFactory != null) {
             return new BeanMetadataRepositoryFactoryBean(entityManagerFactory).getObject();
@@ -116,6 +121,7 @@ public class DatabaseConstraintsConfiguration implements ImportAware, Initializi
     }
     
     @Bean
+    @Lazy
     public BeanConstraintDescriptor beanConstraintDescriptor() throws Exception {
         BeanConstraintDescriptor beanConstraintDescriptor = new DefaultBeanConstraintDescriptor(beanMetadataRepository());
         for (DatabaseConstraintsConfigurer configurer : configurers) {
