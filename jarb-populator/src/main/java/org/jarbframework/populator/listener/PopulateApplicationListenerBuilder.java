@@ -1,7 +1,11 @@
 /*
  * (C) 2013 42 bv (www.42.nl). All rights reserved.
  */
-package org.jarbframework.populator;
+package org.jarbframework.populator.listener;
+
+import org.jarbframework.populator.AsyncDatabasePopulator;
+import org.jarbframework.populator.DatabasePopulator;
+import org.jarbframework.populator.DatabasePopulatorChain;
 
 /**
  * Builds a database populating listener. 
@@ -123,10 +127,8 @@ public class PopulateApplicationListenerBuilder {
                 } else {
                     chain.add(current);
                 }
-                
                 current = new DatabasePopulatorChain();
             }
-
             return chain;
         }
 

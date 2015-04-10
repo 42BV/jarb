@@ -13,8 +13,8 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = "classpath:jdbc-context.xml")
-public class SqlResourceDatabasePopulatorTest {
+@ContextConfiguration(classes = DatabaseConfig.class)
+public class SqlDatabasePopulatorTest {
 
     @Autowired
     private DataSource dataSource;

@@ -3,6 +3,12 @@ package org.jarbframework.populator;
 import java.util.Collection;
 import java.util.LinkedList;
 
+/**
+ * Chain of database populators, executes the population in sequence.
+ *
+ * @author Jeroen van Schagen
+ * @since Apr 10, 2015
+ */
 public class DatabasePopulatorChain implements DatabasePopulator {
 
     /**
@@ -11,6 +17,7 @@ public class DatabasePopulatorChain implements DatabasePopulator {
     private Collection<DatabasePopulator> populators = new LinkedList<DatabasePopulator>();
     
     public DatabasePopulatorChain() {
+        // Do nothing
     }
     
     public DatabasePopulatorChain(DatabasePopulator populator) {
@@ -21,6 +28,9 @@ public class DatabasePopulatorChain implements DatabasePopulator {
         this.populators.addAll(populators);
     }
     
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void populate() {
         for (DatabasePopulator populator : populators) {
@@ -30,6 +40,7 @@ public class DatabasePopulatorChain implements DatabasePopulator {
     
     /**
      * Add another populate to this chain.
+     * 
      * @param populator the populate to add
      * @return {@code this} instance for chaining
      */
@@ -38,6 +49,11 @@ public class DatabasePopulatorChain implements DatabasePopulator {
         return this;
     }
 
+    /**
+     * Checks if the chain is empty.
+     * 
+     * @return {@code true} if empty
+     */
     public boolean isEmpty() {
         return populators.isEmpty();
     }

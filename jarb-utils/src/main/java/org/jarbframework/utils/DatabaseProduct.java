@@ -32,6 +32,10 @@ public final class DatabaseProduct {
         return version;
     }
     
+    public String getSimpleName() {
+        return StringUtils.substringBefore(databaseName, " ").toLowerCase();
+    }
+
     /**
      * Determine the database product from a data source.
      * @param dataSource the data source

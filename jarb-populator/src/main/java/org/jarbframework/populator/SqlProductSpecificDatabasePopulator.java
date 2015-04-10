@@ -28,23 +28,24 @@ public class SqlProductSpecificDatabasePopulator implements DatabasePopulator {
 
     @Override
     public void populate() {
-        DatabaseProduct product = DatabaseProduct.fromDataSource(dataSource);
-        String productResourcePath = addProductNameBeforeExtension(product);
-        
         populateFromClassPathIfExists(resourcePath);
+
+        String productResourcePath = withProductName(dataSource, resourcePath);
         populateFromClassPathIfExists(productResourcePath);
-    }
-    
-    private String addProductNameBeforeExtension(DatabaseProduct product) {
-        String baseResourcePath = StringUtils.substringBeforeLast(resourcePath, ".");
-        String productName = StringUtils.substringBefore(product.getName(), " ").toLowerCase();
-        String extension = StringUtils.substringAfterLast(resourcePath, ".");
-        return baseResourcePath + "-" + productName + "." + extension;
     }
     
     private void populateFromClassPathIfExists(String resourcePath) {
         ClassPathResource resource = new ClassPathResource(resourcePath);
         new SqlDatabasePopulator(dataSource, resource).ifExists().populate();
+    }
+
+    private static String withProductName(DataSource dataSource, String resourcePath) {
+        DatabaseProduct product = DatabaseProduct.fromDataSource(dataSource);
+
+        String baseResourcePath = StringUtils.substringBeforeLast(resourcePath, ".");
+        String productName = StringUtils.substringBefore(product.getSimpleName(), " ").toLowerCase();
+        String extension = StringUtils.substringAfterLast(resourcePath, ".");
+        return baseResourcePath + "@" + productName + "." + extension;
     }
 
 }
