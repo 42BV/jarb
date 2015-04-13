@@ -3,7 +3,8 @@ package org.jarbframework.constraint.validation;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
-import org.jarbframework.utils.Asserts;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
@@ -14,6 +15,8 @@ import org.springframework.context.ApplicationContextAware;
  * @since 30-10-2012
  */
 public class DatabaseConstrainedAdapter implements ConstraintValidator<DatabaseConstrained, Object>, ApplicationContextAware {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(DatabaseConstrainedAdapter.class);
 
     /** The base entity class **/
     private Class<?> entityClass;
@@ -29,7 +32,12 @@ public class DatabaseConstrainedAdapter implements ConstraintValidator<DatabaseC
 
     @Override
     public boolean isValid(Object bean, ConstraintValidatorContext validatorContext) {
-        return validator.isValid(bean, entityClass, propertyName, validatorContext);
+        if (validator != null) {
+            return validator.isValid(bean, entityClass, propertyName, validatorContext);
+        } else {
+            LOGGER.info("Could not create DatabaseConstraintValidator because no application context is provided. Have you registered a LocalValidatorFactoryBean?");
+            return true;
+        }
     }
 
     @Override
@@ -38,8 +46,9 @@ public class DatabaseConstrainedAdapter implements ConstraintValidator<DatabaseC
         propertyName = annotation.propertyName();
         
         // Load validator from application context
-        Asserts.notNull(applicationContext, "Could not create DatabaseConstraintValidator because no application context is provided. Have you registered a LocalValidatorFactoryBean?");
-        validator = DatabaseConstraintValidatorRegistry.getInstance(applicationContext, annotation);
+        if (applicationContext != null) {
+            validator = DatabaseConstraintValidatorRegistry.getInstance(applicationContext, annotation);
+        }
     }
 
     @Override
