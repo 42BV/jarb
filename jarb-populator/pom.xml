@@ -19,7 +19,7 @@
             <artifactId>jarb-utils</artifactId>
             <version>${project.version}</version>
         </dependency>
-        
+
         <!-- SQL database populator -->
 		<dependency>
             <groupId>org.springframework</groupId>

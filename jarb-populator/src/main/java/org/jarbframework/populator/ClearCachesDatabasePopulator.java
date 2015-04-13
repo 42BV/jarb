@@ -3,10 +3,15 @@
  */
 package org.jarbframework.populator;
 
-import org.jarbframework.populator.DatabasePopulator;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 
+/**
+ * Database populator that clears the cache.
+ *
+ * @author Jeroen van Schagen
+ * @since Apr 10, 2015
+ */
 public class ClearCachesDatabasePopulator implements DatabasePopulator {
     
     private final CacheManager cacheManager;

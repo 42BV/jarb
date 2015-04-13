@@ -3,6 +3,7 @@ package org.jarbframework.constraint.validation;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
+import org.jarbframework.utils.Asserts;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
@@ -33,9 +34,12 @@ public class DatabaseConstrainedAdapter implements ConstraintValidator<DatabaseC
 
     @Override
     public void initialize(DatabaseConstrained annotation) {
-        validator = DatabaseConstraintValidatorRegistry.getValidator(applicationContext, annotation);
         entityClass = annotation.entityClass();
         propertyName = annotation.propertyName();
+        
+        // Load validator from application context
+        Asserts.notNull(applicationContext, "Could not create DatabaseConstraintValidator because no application context is provided. Have you registered a LocalValidatorFactoryBean?");
+        validator = DatabaseConstraintValidatorRegistry.getInstance(applicationContext, annotation);
     }
 
     @Override

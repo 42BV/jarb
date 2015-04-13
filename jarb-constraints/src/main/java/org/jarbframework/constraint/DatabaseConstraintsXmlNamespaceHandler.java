@@ -3,7 +3,7 @@ package org.jarbframework.constraint;
 import org.jarbframework.constraint.metadata.DefaultBeanConstraintDescriptor;
 import org.jarbframework.constraint.metadata.database.BeanMetadataRepositoryFactoryBean;
 import org.jarbframework.constraint.violation.DatabaseConstraintExceptionTranslatorFactoryBean;
-import org.jarbframework.constraint.violation.TranslateExceptionsBeanPostProcessor;
+import org.jarbframework.constraint.violation.TranslateAdviceAddingBeanPostProcessor;
 import org.springframework.aop.aspectj.AspectJExpressionPointcut;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
@@ -65,7 +65,7 @@ public class DatabaseConstraintsXmlNamespaceHandler extends NamespaceHandlerSupp
         }
         
         private void buildAndRegisterExceptionTranslatingPostProcessor(Element element, ParserContext parserContext) {
-            BeanDefinitionBuilder processorBuilder = BeanDefinitionBuilder.genericBeanDefinition(TranslateExceptionsBeanPostProcessor.class);
+            BeanDefinitionBuilder processorBuilder = BeanDefinitionBuilder.genericBeanDefinition(TranslateAdviceAddingBeanPostProcessor.class);
             processorBuilder.addConstructorArgValue(buildExceptionTranslator(element));
             if (element.hasAttribute("pointcut")) {
                 processorBuilder.addConstructorArgValue(buildPointcut(element.getAttribute(POINTCUT)));
