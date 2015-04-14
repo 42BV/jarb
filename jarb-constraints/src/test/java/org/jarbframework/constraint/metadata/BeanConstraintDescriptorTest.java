@@ -29,7 +29,7 @@ public class BeanConstraintDescriptorTest {
 
     @Test
     public void testDefaultEnhancers() throws Exception {
-        BeanConstraintDescription wineDescription = descriptor.describe(Wine.class);
+        BeanConstraintDescription wineDescription = descriptor.describeBean(Wine.class);
         
         // Retrieved by introspection
         assertEquals(Long.class, wineDescription.getProperty("id").getJavaType());
@@ -46,7 +46,7 @@ public class BeanConstraintDescriptorTest {
 
     @Test
     public void testCustomEnhancer() {
-        BeanConstraintDescription wineDescription = descriptor.describe(Wine.class);
+        BeanConstraintDescription wineDescription = descriptor.describeBean(Wine.class);
         assertTrue(wineDescription.getProperty("country").getTypes().contains("reference"));
     }
     
@@ -54,8 +54,8 @@ public class BeanConstraintDescriptorTest {
     public static class CustomConstraintsConfig extends DatabaseConstraintsConfigurer {
         
         @Override
-        public void addPropertyEnhancers(BeanConstraintDescriptor descriptor) {
-            descriptor.registerEnhancer(new AnnotationPropertyTypeEnhancer(ManyToOne.class, "reference"));
+        public void configureConstraintDescriptor(BeanConstraintDescriptor descriptor) {
+            descriptor.register(new AnnotationPropertyTypeEnhancer(ManyToOne.class, "reference"));
         }
         
     }

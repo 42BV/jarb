@@ -15,15 +15,30 @@ import org.jarbframework.constraint.violation.resolver.ConfigurableViolationReso
  */
 public abstract class DatabaseConstraintsConfigurer {
     
-    public void addViolationResolvers(ConfigurableViolationResolver resolver) {
+    /**
+     * Configures the violation resolver.
+     * 
+     * @param resolver the violation resolver
+     */
+    public void configureViolationResolver(ConfigurableViolationResolver resolver) {
         // No operation
     }
 
-    public void addConstraintExceptions(ConfigurableConstraintExceptionFactory factory) {
+    /**
+     * Configures the constraint exception factory.
+     * 
+     * @param factory the exception factory
+     */
+    public void configureExceptionFactory(ConfigurableConstraintExceptionFactory factory) {
         // No operation
     }
 
-    public void addPropertyEnhancers(BeanConstraintDescriptor descriptor) {
+    /**
+     * Configures the constraint descriptor.
+     * 
+     * @param descriptor the constraint descriptor
+     */
+    public void configureConstraintDescriptor(BeanConstraintDescriptor descriptor) {
         // No operation
     }
 

@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.metamodel.EntityType;
 import javax.sql.DataSource;
 
 import org.jarbframework.constraint.metadata.BeanConstraintDescriptor;
@@ -23,6 +24,8 @@ import org.jarbframework.constraint.violation.factory.DatabaseConstraintExceptio
 import org.jarbframework.constraint.violation.resolver.ConfigurableViolationResolver;
 import org.jarbframework.constraint.violation.resolver.DatabaseConstraintViolationResolver;
 import org.jarbframework.utils.StringUtils;
+import org.jarbframework.utils.bean.BeanRegistry;
+import org.jarbframework.utils.bean.DefaultBeanRegistry;
 import org.jarbframework.utils.orm.hibernate.HibernateUtils;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -81,7 +84,7 @@ public class DatabaseConstraintsConfiguration implements ImportAware, Initializi
     public DatabaseConstraintViolationResolver violationResolver() {
         ConfigurableViolationResolver violationResolver = new ConfigurableViolationResolver(dataSource, basePackages);
         for (DatabaseConstraintsConfigurer configurer : configurers) {
-            configurer.addViolationResolvers(violationResolver);
+            configurer.configureViolationResolver(violationResolver);
         }
         return violationResolver;
     }
@@ -91,7 +94,7 @@ public class DatabaseConstraintsConfiguration implements ImportAware, Initializi
     public DatabaseConstraintExceptionFactory exceptionFactory() {
         ConfigurableConstraintExceptionFactory exceptionFactory = new ConfigurableConstraintExceptionFactory();
         for (DatabaseConstraintsConfigurer configurer : configurers) {
-            configurer.addConstraintExceptions(exceptionFactory);
+            configurer.configureExceptionFactory(exceptionFactory);
         }
         for (String basePackage : basePackages) {
             exceptionFactory.registerAll(basePackage);
@@ -122,10 +125,27 @@ public class DatabaseConstraintsConfiguration implements ImportAware, Initializi
     
     @Bean
     @Lazy
+    public BeanRegistry beanRegistry() {
+        DefaultBeanRegistry registry = new DefaultBeanRegistry();
+        if (entityManagerFactory != null) {
+            registerAllEntityTypes(registry);
+        }
+        return registry;
+    }
+
+    private void registerAllEntityTypes(DefaultBeanRegistry registry) {
+        Set<EntityType<?>> entities = entityManagerFactory.getMetamodel().getEntities();
+        for (EntityType<?> entity : entities) {
+            registry.register(entity.getBindableJavaType());
+        }
+    }
+
+    @Bean
+    @Lazy
     public BeanConstraintDescriptor beanConstraintDescriptor() throws Exception {
-        BeanConstraintDescriptor beanConstraintDescriptor = new DefaultBeanConstraintDescriptor(beanMetadataRepository());
+        BeanConstraintDescriptor beanConstraintDescriptor = new DefaultBeanConstraintDescriptor(beanRegistry(), beanMetadataRepository());
         for (DatabaseConstraintsConfigurer configurer : configurers) {
-            configurer.addPropertyEnhancers(beanConstraintDescriptor);
+            configurer.configureConstraintDescriptor(beanConstraintDescriptor);
         }
         return beanConstraintDescriptor;
     }

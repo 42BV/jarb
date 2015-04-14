@@ -7,8 +7,6 @@ import static org.hamcrest.Matchers.hasSize;
 
 import java.util.Arrays;
 
-import org.jarbframework.constraint.metadata.BeanConstraintDescription;
-import org.jarbframework.constraint.metadata.BeanConstraintDescriptor;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -22,13 +20,10 @@ public class PostControllerTest extends ControllerTest {
     
     @Mock
     private PostRepository postRepository;
-    
-    @Mock
-    private BeanConstraintDescriptor beanConstraintDescriptor;
 
     @Before
     public void setUp() {
-        this.initWebClient(new PostController(postRepository, beanConstraintDescriptor));
+        this.initWebClient(new PostController(postRepository));
     }
 
     @Test
@@ -45,19 +40,7 @@ public class PostControllerTest extends ControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$", hasSize(1)))
                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].title").value("Test title"));
     }
-    
-    @Test
-    public void testDescribe() throws Exception {
-        BeanConstraintDescription description = new BeanConstraintDescription(Post.class);
-        
-        Mockito.when(beanConstraintDescriptor.describe(Post.class)).thenReturn(description);
-        
-        this.webClient.perform(MockMvcRequestBuilders.get("/posts/constraints"))
-                .andDo(MockMvcResultHandlers.print())
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.javaType").value(Post.class.getName()));
-    }
-    
+
     @Test
     public void testPost() throws Exception {
         this.webClient.perform(MockMvcRequestBuilders.post("/posts").contentType(MediaType.APPLICATION_JSON).content("{\"title\":\"Test\"}"))

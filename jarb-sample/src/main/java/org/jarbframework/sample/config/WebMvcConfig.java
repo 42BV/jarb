@@ -6,6 +6,10 @@ package org.jarbframework.sample.config;
 import java.text.SimpleDateFormat;
 import java.util.List;
 
+import org.jarbframework.constraint.metadata.BeanConstraintDescriptor;
+import org.jarbframework.constraint.metadata.BeanConstraintDescriptorController;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.ComponentScan.Filter;
 import org.springframework.context.annotation.Configuration;
@@ -26,6 +30,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
                includeFilters = { @Filter(Controller.class) },
                excludeFilters = { @Filter(Service.class), @Filter(Repository.class), @Filter(Configuration.class) })
 public class WebMvcConfig extends WebMvcConfigurerAdapter {
+
+    @Autowired
+    private BeanConstraintDescriptor beanConstraintDescriptor;
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
@@ -49,6 +56,11 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter {
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.setDateFormat(new SimpleDateFormat("MM-dd-yyyy"));
         return objectMapper;
+    }
+    
+    @Bean
+    public BeanConstraintDescriptorController beanConstraintDescriptorController() {
+        return new BeanConstraintDescriptorController(beanConstraintDescriptor);
     }
 
 }

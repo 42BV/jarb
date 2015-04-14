@@ -92,8 +92,8 @@ public class ApplicationConfig extends DatabaseConstraintsConfigurer {
     }
 
     @Override
-    public void addPropertyEnhancers(BeanConstraintDescriptor beanConstraintDescriptor) {
-        beanConstraintDescriptor.registerEnhancer(new AnnotationPropertyTypeEnhancer(Email.class, "my-email"));
+    public void configureConstraintDescriptor(BeanConstraintDescriptor beanConstraintDescriptor) {
+        beanConstraintDescriptor.register(new AnnotationPropertyTypeEnhancer(Email.class, "my-email"));
     }
 
     @Profile("demo")

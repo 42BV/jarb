@@ -1,7 +1,5 @@
 package org.jarbframework.sample;
 
-import org.jarbframework.constraint.metadata.BeanConstraintDescription;
-import org.jarbframework.constraint.metadata.BeanConstraintDescriptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -15,24 +13,15 @@ public class PostController {
 
     private final PostRepository postRepository;
     
-    private final BeanConstraintDescriptor beanConstraintDescriptor;
-
     @Autowired
-    public PostController(PostRepository postRepository, BeanConstraintDescriptor beanConstraintDescriptor) {
+    public PostController(PostRepository postRepository) {
         this.postRepository = postRepository;
-        this.beanConstraintDescriptor = beanConstraintDescriptor;
     }
 
     @ResponseBody
     @RequestMapping(method = RequestMethod.GET)
     public Iterable<Post> index() {
         return postRepository.findAll();
-    }
-    
-    @ResponseBody
-    @RequestMapping(value = "/constraints", method = RequestMethod.GET)
-    public BeanConstraintDescription structure() {
-        return beanConstraintDescriptor.describe(Post.class);
     }
 
     @ResponseBody

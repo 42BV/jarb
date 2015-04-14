@@ -27,6 +27,8 @@ import org.jarbframework.constraint.metadata.types.Phone;
 import org.jarbframework.constraint.metadata.types.PropertyType;
 import org.jarbframework.constraint.metadata.types.URL;
 import org.jarbframework.utils.Classes;
+import org.jarbframework.utils.bean.BeanRegistry;
+import org.jarbframework.utils.bean.DefaultBeanRegistry;
 
 /**
  * Bean constraint descriptor with all default enhancers. 
@@ -41,8 +43,16 @@ public class DefaultBeanConstraintDescriptor extends BeanConstraintDescriptor {
     private static final String JODA_TIME_PACKAGE = "org.joda.time";
 
     public DefaultBeanConstraintDescriptor(BeanMetadataRepository beanMetadataRepository) {
+        this(new DefaultBeanRegistry(), beanMetadataRepository);
+    }
+
+    public DefaultBeanConstraintDescriptor(BeanRegistry beanRegistry, BeanMetadataRepository beanMetadataRepository) {
+        super(beanRegistry);
+        registerHandlers(beanMetadataRepository);
+    }
+    
+    private void registerHandlers(BeanMetadataRepository beanMetadataRepository) {
         registerDefaultEnhancers();
-        
         if (Classes.hasPackage(JAVAX_VALIDATION_PACKAGE)) {
             registerJavaxValidationEnhancers();
         }
@@ -58,50 +68,50 @@ public class DefaultBeanConstraintDescriptor extends BeanConstraintDescriptor {
     }
 
     private void registerDefaultEnhancers() {
-        registerEnhancer(new ClassPropertyTypeEnhancer(String.class, "text"));
-        registerEnhancer(new ClassPropertyTypeEnhancer(Date.class, "date"));
-        registerEnhancer(new ClassPropertyTypeEnhancer(Number.class, "number"));
+        register(new ClassPropertyTypeEnhancer(String.class, "text"));
+        register(new ClassPropertyTypeEnhancer(Date.class, "date"));
+        register(new ClassPropertyTypeEnhancer(Number.class, "number"));
 
-        registerEnhancer(new PropertyTypeEnhancer(PropertyType.class));
-        registerEnhancer(new PropertyTypeEnhancer(Color.class));
-        registerEnhancer(new PropertyTypeEnhancer(Currency.class));
-        registerEnhancer(new PropertyTypeEnhancer(Email.class));
-        registerEnhancer(new PropertyTypeEnhancer(Password.class));
-        registerEnhancer(new PropertyTypeEnhancer(Percentage.class));
-        registerEnhancer(new PropertyTypeEnhancer(Phone.class));
-        registerEnhancer(new PropertyTypeEnhancer(URL.class));
+        register(new PropertyTypeEnhancer(PropertyType.class));
+        register(new PropertyTypeEnhancer(Color.class));
+        register(new PropertyTypeEnhancer(Currency.class));
+        register(new PropertyTypeEnhancer(Email.class));
+        register(new PropertyTypeEnhancer(Password.class));
+        register(new PropertyTypeEnhancer(Percentage.class));
+        register(new PropertyTypeEnhancer(Phone.class));
+        register(new PropertyTypeEnhancer(URL.class));
         
-        registerEnhancer(new MinMaxNumberPropertyEnhancer(Byte.class, Byte.MIN_VALUE, Byte.MAX_VALUE));
-        registerEnhancer(new MinMaxNumberPropertyEnhancer(Short.class, Short.MIN_VALUE, Short.MAX_VALUE));
-        registerEnhancer(new MinMaxNumberPropertyEnhancer(Integer.class, Integer.MIN_VALUE, Integer.MAX_VALUE));
-        registerEnhancer(new MinMaxNumberPropertyEnhancer(Long.class, Long.MIN_VALUE, Long.MAX_VALUE));
+        register(new MinMaxNumberPropertyEnhancer(Byte.class, Byte.MIN_VALUE, Byte.MAX_VALUE));
+        register(new MinMaxNumberPropertyEnhancer(Short.class, Short.MIN_VALUE, Short.MAX_VALUE));
+        register(new MinMaxNumberPropertyEnhancer(Integer.class, Integer.MIN_VALUE, Integer.MAX_VALUE));
+        register(new MinMaxNumberPropertyEnhancer(Long.class, Long.MIN_VALUE, Long.MAX_VALUE));
     }
 
     private void registerJavaxValidationEnhancers() {
-        registerEnhancer(new NotNullPropertyConstraintEnhancer());
-        registerEnhancer(new PatternPropertyConstraintEnhancer());
-        registerEnhancer(new DigitsPropertyConstraintEnhancer());
-        registerEnhancer(new MinMaxNumberAnnotationPropertyEnhancer());
+        register(new NotNullPropertyConstraintEnhancer());
+        register(new PatternPropertyConstraintEnhancer());
+        register(new DigitsPropertyConstraintEnhancer());
+        register(new MinMaxNumberAnnotationPropertyEnhancer());
     }
 
     private void registerHibernateValidationEnhancers() {
-        registerEnhancer(new LengthPropertyConstraintEnhancer());
-        registerEnhancer(new NotEmptyPropertyConstraintEnhancer());
+        register(new LengthPropertyConstraintEnhancer());
+        register(new NotEmptyPropertyConstraintEnhancer());
 
-        registerEnhancer(new AnnotationPropertyTypeEnhancer(org.hibernate.validator.constraints.Email.class, "email"));
-        registerEnhancer(new AnnotationPropertyTypeEnhancer(org.hibernate.validator.constraints.CreditCardNumber.class, "credid_card"));
-        registerEnhancer(new AnnotationPropertyTypeEnhancer(org.hibernate.validator.constraints.URL.class, "url"));
+        register(new AnnotationPropertyTypeEnhancer(org.hibernate.validator.constraints.Email.class, "email"));
+        register(new AnnotationPropertyTypeEnhancer(org.hibernate.validator.constraints.CreditCardNumber.class, "credid_card"));
+        register(new AnnotationPropertyTypeEnhancer(org.hibernate.validator.constraints.URL.class, "url"));
     }
 
     private void registerJodaTimeEnhancers() {
-        registerEnhancer(new ClassPropertyTypeEnhancer(org.joda.time.DateTime.class, "date-time"));
-        registerEnhancer(new ClassPropertyTypeEnhancer(org.joda.time.LocalDate.class, "date"));
-        registerEnhancer(new ClassPropertyTypeEnhancer(org.joda.time.LocalDateTime.class, "date-time-local"));
+        register(new ClassPropertyTypeEnhancer(org.joda.time.DateTime.class, "date-time"));
+        register(new ClassPropertyTypeEnhancer(org.joda.time.LocalDate.class, "date"));
+        register(new ClassPropertyTypeEnhancer(org.joda.time.LocalDateTime.class, "date-time-local"));
     }
 
     private void registerDatabaseEnhancers(BeanMetadataRepository beanMetadataRepository) {
-        registerEnhancer(new DatabasePropertyConstraintEnhancer(beanMetadataRepository));
-        registerEnhancer(new DatabaseGeneratedPropertyConstraintEnhancer());
+        register(new DatabasePropertyConstraintEnhancer(beanMetadataRepository));
+        register(new DatabaseGeneratedPropertyConstraintEnhancer());
     }
 
 }

@@ -30,7 +30,7 @@ import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
 @Configuration
 @EnableDatabaseConstraints(basePackageClasses = TestConstraintsConfig.class)
-public class TestConstraintsConfig {
+public class TestConstraintsConfig extends DatabaseConstraintsConfigurer {
     
     @Autowired
     private DataSource dataSource;
@@ -96,7 +96,6 @@ public class TestConstraintsConfig {
     private static DataSource createMigratingDataSource(DataSource dataSource) {
         LiquibaseMigrator migrator = new LiquibaseMigrator("src/test/resources");
         migrator.setChangeLogPath("create-schema.groovy");
-
         return new MigratingDataSource(dataSource, migrator);
     }
     
