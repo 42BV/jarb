@@ -20,7 +20,7 @@ public class AsyncDatabasePopulator implements DatabasePopulator {
     }
 
     @Override
-    public void populate() {
+    public void execute() {
         Thread thread = new Thread(task);
         thread.start();
     }
@@ -35,7 +35,7 @@ public class AsyncDatabasePopulator implements DatabasePopulator {
 
         @Override
         public void run() {
-            populator.populate();
+            populator.execute();
         }
 
     }

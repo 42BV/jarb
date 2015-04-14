@@ -9,7 +9,7 @@ public class PostPopulator implements DatabasePopulator {
     private PostRepository postRepository;
 
     @Override
-    public void populate() {
+    public void execute() {
         Post post = new Post();
         post.setAuthor("jeroen@42.nl");
         post.setTitle("inserted via java");

@@ -47,7 +47,7 @@ public class PopulateApplicationListener implements ApplicationListener<Applicat
 
     private void execute(DatabasePopulator populator) {
         if (populator != null) {
-            populator.populate();
+            populator.execute();
         }
     }
     

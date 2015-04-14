@@ -1,7 +1,7 @@
 package org.jarbframework.populator;
 
 /**
- * Populate the database with data.
+ * Changes the data in our database.
  * 
  * @author Jeroen van Schagen
  * @since 20-06-2011
@@ -9,8 +9,8 @@ package org.jarbframework.populator;
 public interface DatabasePopulator {
 
     /**
-     * Populates the database.
+     * Executes the database queries.
      */
-    void populate();
+    void execute();
 
 }

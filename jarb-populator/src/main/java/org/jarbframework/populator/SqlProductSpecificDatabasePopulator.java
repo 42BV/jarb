@@ -27,7 +27,7 @@ public class SqlProductSpecificDatabasePopulator implements DatabasePopulator {
     }
 
     @Override
-    public void populate() {
+    public void execute() {
         populateFromClassPathIfExists(resourcePath);
 
         String productResourcePath = withProductName(dataSource, resourcePath);
@@ -36,7 +36,7 @@ public class SqlProductSpecificDatabasePopulator implements DatabasePopulator {
     
     private void populateFromClassPathIfExists(String resourcePath) {
         ClassPathResource resource = new ClassPathResource(resourcePath);
-        new SqlDatabasePopulator(dataSource, resource).ifExists().populate();
+        new SqlDatabasePopulator(dataSource, resource).ifExists().execute();
     }
 
     private static String withProductName(DataSource dataSource, String resourcePath) {

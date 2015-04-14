@@ -1,10 +1,11 @@
-package org.jarbframework.populator;
+package org.jarbframework.populator.listener;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 
+import org.jarbframework.populator.DatabasePopulator;
 import org.jarbframework.populator.listener.PopulateApplicationListener;
 import org.junit.Before;
 import org.junit.Test;
@@ -38,7 +39,7 @@ public class PopulateApplicationListenerTest {
     public void testInitialize() {
         // Upon the first context refreshed event the update is executed
         applicationListener.onApplicationEvent(new ContextRefreshedEvent(applicationContext));
-        verify(initializer, times(1)).populate();
+        verify(initializer, times(1)).execute();
 
         // Other refresh events are ignored
         applicationListener.onApplicationEvent(new ContextRefreshedEvent(applicationContext));
@@ -48,7 +49,7 @@ public class PopulateApplicationListenerTest {
     @Test
     public void testDestroy() {
         applicationListener.onApplicationEvent(new ContextClosedEvent(applicationContext));
-        verify(destroyer, times(1)).populate();
+        verify(destroyer, times(1)).execute();
     }
 
     @Test

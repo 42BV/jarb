@@ -57,7 +57,7 @@ public class SqlDatabasePopulator implements DatabasePopulator {
     }
 
     @Override
-    public void populate() {
+    public void execute() {
         if (resource.exists()) {
             final ResourceDatabasePopulator populator = new ResourceDatabasePopulator();
             populator.addScript(resource);

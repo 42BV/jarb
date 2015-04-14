@@ -21,7 +21,7 @@ public class ClearCachesDatabasePopulator implements DatabasePopulator {
     }
 
     @Override
-    public void populate() {
+    public void execute() {
         for (String cacheName : cacheManager.getCacheNames()) {
             Cache cache = cacheManager.getCache(cacheName);
             cache.clear();

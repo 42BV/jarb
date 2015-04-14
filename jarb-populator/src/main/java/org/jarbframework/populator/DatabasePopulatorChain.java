@@ -32,9 +32,9 @@ public class DatabasePopulatorChain implements DatabasePopulator {
      * {@inheritDoc}
      */
     @Override
-    public void populate() {
+    public void execute() {
         for (DatabasePopulator populator : populators) {
-            populator.populate();
+            populator.execute();
         }
     }
     

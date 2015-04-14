@@ -25,7 +25,7 @@ public class SqlDatabasePopulatorTest {
     @Test
     public void testFailIfScriptNotFound() {
         try {
-            new SqlDatabasePopulator(dataSource, new ClassPathResource("unknown.sql")).populate();
+            new SqlDatabasePopulator(dataSource, new ClassPathResource("unknown.sql")).execute();
             fail("Expected an exception because unknown.sql does not exist.");
         } catch (IllegalStateException e) {
             assertEquals("Resource 'unknown.sql' does not exist.", e.getMessage());

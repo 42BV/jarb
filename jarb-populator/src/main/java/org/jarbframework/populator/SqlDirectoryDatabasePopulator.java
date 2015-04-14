@@ -47,10 +47,10 @@ public class SqlDirectoryDatabasePopulator implements DatabasePopulator {
      * {@inheritDoc}
      */
     @Override
-    public void populate() {
+    public void execute() {
         List<File> files = getFilesInDirectory(baseDir);
         for (File file : files) {
-            new SqlDatabasePopulator(dataSource, file).populate();
+            new SqlDatabasePopulator(dataSource, file).execute();
         }
     }
     
