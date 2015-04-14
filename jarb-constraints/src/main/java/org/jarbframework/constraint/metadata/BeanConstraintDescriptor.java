@@ -8,6 +8,7 @@ import java.util.List;
 
 import org.jarbframework.constraint.metadata.enhance.PropertyConstraintEnhancer;
 import org.jarbframework.utils.bean.BeanRegistry;
+import org.jarbframework.utils.bean.MapBeanRegistry;
 import org.jarbframework.utils.bean.PropertyReference;
 import org.springframework.beans.BeanUtils;
 
@@ -21,11 +22,7 @@ public class BeanConstraintDescriptor {
 
     private final List<PropertyConstraintEnhancer> enhancers = new ArrayList<PropertyConstraintEnhancer>();
 
-    private final BeanRegistry beanRegistry;
-
-    public BeanConstraintDescriptor(BeanRegistry beanRegistry) {
-        this.beanRegistry = notNull(beanRegistry, "Bean registry is required");
-    }
+    private BeanRegistry beanRegistry = new MapBeanRegistry();
 
     /**
      * Generate bean constraint meta data.
@@ -93,13 +90,8 @@ public class BeanConstraintDescriptor {
         return this;
     }
     
-    /**
-     * Retrieves the bean registry.
-     * 
-     * @return the bean registry
-     */
-    public BeanRegistry getBeanRegistry() {
-        return beanRegistry;
+    public void setBeanRegistry(BeanRegistry beanRegistry) {
+        this.beanRegistry = beanRegistry;
     }
 
 }

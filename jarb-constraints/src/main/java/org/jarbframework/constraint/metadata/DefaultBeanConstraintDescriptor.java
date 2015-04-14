@@ -27,8 +27,6 @@ import org.jarbframework.constraint.metadata.types.Phone;
 import org.jarbframework.constraint.metadata.types.PropertyType;
 import org.jarbframework.constraint.metadata.types.URL;
 import org.jarbframework.utils.Classes;
-import org.jarbframework.utils.bean.BeanRegistry;
-import org.jarbframework.utils.bean.DefaultBeanRegistry;
 
 /**
  * Bean constraint descriptor with all default enhancers. 
@@ -43,11 +41,6 @@ public class DefaultBeanConstraintDescriptor extends BeanConstraintDescriptor {
     private static final String JODA_TIME_PACKAGE = "org.joda.time";
 
     public DefaultBeanConstraintDescriptor(BeanMetadataRepository beanMetadataRepository) {
-        this(new DefaultBeanRegistry(), beanMetadataRepository);
-    }
-
-    public DefaultBeanConstraintDescriptor(BeanRegistry beanRegistry, BeanMetadataRepository beanMetadataRepository) {
-        super(beanRegistry);
         registerHandlers(beanMetadataRepository);
     }
     

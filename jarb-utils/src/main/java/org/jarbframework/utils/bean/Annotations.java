@@ -25,17 +25,6 @@ public class Annotations {
     }
 
     /**
-     * Find a specific annotation on the class declaration.
-     * 
-     * @param beanClass bean that should contain the annotation
-     * @param annotationType type of annotation that should be looked for
-     * @return desired annotation, as declared on the class, if any
-     */
-    public static <T extends Annotation> T findAnnotation(Class<?> beanClass, Class<T> annotationType) {
-        return AnnotationUtils.findAnnotation(beanClass, annotationType);
-    }
-
-    /**
      * Check if a specific annotation is declared on the class.
      * 
      * @param beanClass bean that should contain the annotation
@@ -43,25 +32,7 @@ public class Annotations {
      * @return {@code true} if an annotation could be found, else {@code false}
      */
     public static boolean hasAnnotation(Class<?> beanClass, Class<? extends Annotation> annotationType) {
-        return findAnnotation(beanClass, annotationType) != null;
-    }
-
-    /**
-     * Find a specific annotation on the property declaration. Note that we only
-     * expect one matching annotation to be found, otherwise an exception is thrown.
-     * 
-     * @param propertyReference property that should contain the annotation
-     * @param annotationType type of annotation that should be looked for
-     * @return desired annotation, as declared on the property, if any
-     */
-    public static <T extends Annotation> T findAnnotation(PropertyReference propertyReference, Class<T> annotationType) {
-        Collection<T> annotations = getAnnotations(propertyReference, annotationType);
-        if (annotations.isEmpty()) {
-            return null;
-        } else {
-            state(annotations.size() == 1, "Found more than one matching annotation.");
-            return annotations.iterator().next();
-        }
+        return AnnotationUtils.findAnnotation(beanClass, annotationType) != null;
     }
 
     /**
@@ -114,6 +85,16 @@ public class Annotations {
      */
     public static boolean hasAnnotation(PropertyReference propertyReference, Class<? extends Annotation> annotationType) {
         return findAnnotation(propertyReference, annotationType) != null;
+    }
+
+    private static <T extends Annotation> T findAnnotation(PropertyReference propertyReference, Class<T> annotationType) {
+        Collection<T> annotations = getAnnotations(propertyReference, annotationType);
+        if (annotations.isEmpty()) {
+            return null;
+        } else {
+            state(annotations.size() == 1, "Found more than one matching annotation.");
+            return annotations.iterator().next();
+        }
     }
 
 }

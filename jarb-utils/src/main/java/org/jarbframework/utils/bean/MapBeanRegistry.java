@@ -12,10 +12,10 @@ import java.util.Map;
  * @author Jeroen van Schagen
  * @since Apr 14, 2015
  */
-public class DefaultBeanRegistry implements BeanRegistry {
+public class MapBeanRegistry implements BeanRegistry {
     
     private final Map<String, Class<?>> bindings = new HashMap<String, Class<?>>();
-    
+
     /**
      * {@inheritDoc}
      */
@@ -25,11 +25,15 @@ public class DefaultBeanRegistry implements BeanRegistry {
         if (bindings.containsKey(lowerCasedBeanType)) {
             return bindings.get(lowerCasedBeanType);
         } else {
-            try {
-                return Class.forName(beanType);
-            } catch (ClassNotFoundException cnfe) {
-                throw new IllegalArgumentException("Could not find bean of type: '" + beanType + "', ensure the type is registered or a full class name is provided.", cnfe);
-            }
+            return getClassForName(beanType);
+        }
+    }
+
+    private Class<?> getClassForName(String beanType) {
+        try {
+            return Class.forName(beanType);
+        } catch (ClassNotFoundException cnfe) {
+            throw new IllegalArgumentException("Could not find bean of type: '" + beanType + "', ensure the type is registered or a full class name is provided.", cnfe);
         }
     }
     

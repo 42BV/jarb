@@ -10,7 +10,6 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.persistence.EntityManagerFactory;
-import javax.persistence.metamodel.EntityType;
 import javax.sql.DataSource;
 
 import org.jarbframework.constraint.metadata.BeanConstraintDescriptor;
@@ -24,8 +23,7 @@ import org.jarbframework.constraint.violation.factory.DatabaseConstraintExceptio
 import org.jarbframework.constraint.violation.resolver.ConfigurableViolationResolver;
 import org.jarbframework.constraint.violation.resolver.DatabaseConstraintViolationResolver;
 import org.jarbframework.utils.StringUtils;
-import org.jarbframework.utils.bean.BeanRegistry;
-import org.jarbframework.utils.bean.DefaultBeanRegistry;
+import org.jarbframework.utils.bean.JpaBeanRegistry;
 import org.jarbframework.utils.orm.hibernate.HibernateUtils;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -122,34 +120,20 @@ public class DatabaseConstraintsConfiguration implements ImportAware, Initializi
             return new BeanMetadataRepositoryFactoryBean(dataSource).getObject();
         }
     }
-    
-    @Bean
-    @Lazy
-    public BeanRegistry beanRegistry() {
-        DefaultBeanRegistry registry = new DefaultBeanRegistry();
-        if (entityManagerFactory != null) {
-            registerAllEntityTypes(registry);
-        }
-        return registry;
-    }
-
-    private void registerAllEntityTypes(DefaultBeanRegistry registry) {
-        Set<EntityType<?>> entities = entityManagerFactory.getMetamodel().getEntities();
-        for (EntityType<?> entity : entities) {
-            registry.register(entity.getBindableJavaType());
-        }
-    }
 
     @Bean
     @Lazy
     public BeanConstraintDescriptor beanConstraintDescriptor() throws Exception {
-        BeanConstraintDescriptor beanConstraintDescriptor = new DefaultBeanConstraintDescriptor(beanRegistry(), beanMetadataRepository());
+        BeanConstraintDescriptor beanConstraintDescriptor = new DefaultBeanConstraintDescriptor(beanMetadataRepository());
+        if (entityManagerFactory != null) {
+            beanConstraintDescriptor.setBeanRegistry(new JpaBeanRegistry(entityManagerFactory));
+        }
         for (DatabaseConstraintsConfigurer configurer : configurers) {
             configurer.configureConstraintDescriptor(beanConstraintDescriptor);
         }
         return beanConstraintDescriptor;
     }
-    
+
     //
     // Attributes from @EnableDatabaseConstraints
     //
