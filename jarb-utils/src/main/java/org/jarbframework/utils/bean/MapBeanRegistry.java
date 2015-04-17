@@ -4,7 +4,9 @@
 package org.jarbframework.utils.bean;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Default implementation of bean registry.
@@ -15,6 +17,14 @@ import java.util.Map;
 public class MapBeanRegistry implements BeanRegistry {
     
     private final Map<String, Class<?>> bindings = new HashMap<String, Class<?>>();
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Set<Class<?>> getAll() {
+        return new HashSet<Class<?>>(bindings.values());
+    }
 
     /**
      * {@inheritDoc}

@@ -3,6 +3,8 @@
  */
 package org.jarbframework.constraint.metadata;
 
+import java.util.List;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,6 +25,12 @@ public class BeanConstraintDescriptorController {
     
     public BeanConstraintDescriptorController(BeanConstraintDescriptor beanConstraintDescriptor) {
         this.beanConstraintDescriptor = beanConstraintDescriptor;
+    }
+    
+    @ResponseBody
+    @RequestMapping(method = RequestMethod.GET)
+    public List<BeanConstraintDescription> describeAll() {
+        return beanConstraintDescriptor.describeAll();
     }
 
     @ResponseBody

@@ -3,6 +3,8 @@
  */
 package org.jarbframework.utils.bean;
 
+import java.util.Set;
+
 /**
  * Retrieves the bean class based on a type name.
  *
@@ -18,5 +20,12 @@ public interface BeanRegistry {
      * @return the bean class
      */
     Class<?> getBeanClass(String beanType);
+    
+    /**
+     * Retrieves all bean classes.
+     * 
+     * @return the bean classes
+     */
+    Set<Class<?>> getAll();
     
 }

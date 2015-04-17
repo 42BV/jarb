@@ -20,9 +20,28 @@ import org.springframework.beans.BeanUtils;
  */
 public class BeanConstraintDescriptor {
 
+    /**
+     * Enhances the property descriptions.
+     */
     private final List<PropertyConstraintEnhancer> enhancers = new ArrayList<PropertyConstraintEnhancer>();
 
+    /**
+     * Registry of all supported beans.
+     */
     private BeanRegistry beanRegistry = new MapBeanRegistry();
+
+    /**
+     * Generate all beans constraint meta data.
+     * 
+     * @return the beans constraint meta data
+     */
+    public List<BeanConstraintDescription> describeAll() {
+        List<BeanConstraintDescription> descriptions = new ArrayList<BeanConstraintDescription>();
+        for (Class<?> beanClass : beanRegistry.getAll()) {
+            descriptions.add(describeBean(beanClass));
+        }
+        return descriptions;
+    }
 
     /**
      * Generate bean constraint meta data.
