@@ -10,16 +10,20 @@ postsApp.controller('PostCtrl', function($scope, $http, $timeout) {
 	});
 
 	$scope.create = function() {
-		$http.post('/posts', $scope.newPost).success(function(response) {
-			$scope.message = response.message;
-			if (response.success) {
-				$scope.posts.push(response.post);
-				$scope.newPost = {};
-			}
-			$timeout(function() {
-				$scope.message = "";
-			}, 3000);
+		$http.post('/posts', $scope.newPost).success(function(post) {
+			$scope.posts.push(post);
+			$scope.newPost = {};
+			showMessage("Post was placed");
+		}).error(function(data) {
+			showMessage(data.error.message);
 		});
 	};
+
+	var showMessage = function(message) {
+		$scope.message = message;
+		$timeout(function() {
+			$scope.message = "";
+		}, 3000);
+	}
 
 });

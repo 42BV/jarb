@@ -65,7 +65,7 @@ public class PopulateDatabaseJavaConfigTest {
                                 .add(SqlDatabasePopulator.fromSql(dataSource, "INSERT INTO persons (id, name) VALUES (2, 'fred') ;"))
                             .current()
                                 .add(new SqlDatabasePopulator(dataSource, new ClassPathResource("unknown.sql")).ifExists())
-                            .done()
+                            .and()
                         .destroyer()
                             .build();
         }

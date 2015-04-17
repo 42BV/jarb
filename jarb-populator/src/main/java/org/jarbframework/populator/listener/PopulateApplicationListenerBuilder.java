@@ -137,7 +137,7 @@ public class PopulateApplicationListenerBuilder {
          * 
          * @return this builder, for chaining
          */
-        public PopulateApplicationListenerBuilder done() {
+        public PopulateApplicationListenerBuilder and() {
             handle(addToChain());
             return PopulateApplicationListenerBuilder.this;
         }
@@ -148,7 +148,7 @@ public class PopulateApplicationListenerBuilder {
          * @return the listener
          */
         public PopulateApplicationListener build() {
-            done();
+            and();
             return PopulateApplicationListenerBuilder.this.build();
         }
 

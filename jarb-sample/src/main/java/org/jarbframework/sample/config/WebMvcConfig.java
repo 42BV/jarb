@@ -18,6 +18,8 @@ import org.springframework.http.converter.json.MappingJackson2HttpMessageConvert
 import org.springframework.stereotype.Controller;
 import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
@@ -25,9 +27,8 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @EnableWebMvc
-@Configuration
 @ComponentScan(basePackages = "org.jarbframework.sample", 
-               includeFilters = { @Filter(Controller.class) },
+               includeFilters = { @Filter(RestController.class), @Filter(Controller.class), @Filter(ControllerAdvice.class) },
                excludeFilters = { @Filter(Service.class), @Filter(Repository.class), @Filter(Configuration.class) })
 public class WebMvcConfig extends WebMvcConfigurerAdapter {
 

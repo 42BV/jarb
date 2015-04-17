@@ -16,7 +16,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
-public class PostControllerTest extends ControllerTest {
+public class PostControllerTest extends AbstractControllerTest {
     
     @Mock
     private PostRepository postRepository;
@@ -43,22 +43,15 @@ public class PostControllerTest extends ControllerTest {
 
     @Test
     public void testPost() throws Exception {
-        this.webClient.perform(MockMvcRequestBuilders.post("/posts").contentType(MediaType.APPLICATION_JSON).content("{\"title\":\"Test\"}"))
-                .andDo(MockMvcResultHandlers.print())
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.success").value(true))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.message").value("Post was created succesfully!"));
-    }
-    
-    @Test
-    public void testPostAlreadyExists() throws Exception {
-        Mockito.when(postRepository.save(Mockito.<Post> any())).thenThrow(new PostTitleAlreadyExistsException());
+        Post post = new Post();
+        post.setMessage("My message");
         
+        Mockito.when(postRepository.save(Mockito.any(Post.class))).thenReturn(post);
+
         this.webClient.perform(MockMvcRequestBuilders.post("/posts").contentType(MediaType.APPLICATION_JSON).content("{\"title\":\"Test\"}"))
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.success").value(false))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.message").value("Post title 'Test' already exists"));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message").value("My message"));
     }
 
 }

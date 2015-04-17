@@ -69,18 +69,18 @@ public class PostingRepositoryTest {
         post.setTitle("unique title");
         post.setMessage("my message");
         post = postRepository.save(post);
-
+        
         Post postWithSameTitle = new Post();
         postWithSameTitle.setAuthor("jeroen@42.nl");
         postWithSameTitle.setTitle("unique title");
         postWithSameTitle.setMessage("my message");
-
+        
         try {
             postRepository.save(postWithSameTitle);
             fail("Expected a post already exists exception");
         } catch (PostTitleAlreadyExistsException e) {
             // We recieve a nice exception message
-            assertEquals("Unique key 'uk_posts_title' was violated.", e.getMessage());
+            assertEquals("Post title already exists.", e.getMessage());
             // Violation information is available
             assertEquals("uk_posts_title", e.getViolation().getConstraintName());
             // The origional stack trace is still available

@@ -39,12 +39,15 @@ import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
+import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.annotation.RestController;
 
 @Configuration
 @EnableTransactionManagement
 @EnableJpaRepositories(basePackages = "org.jarbframework.sample")
 @EnableDatabaseConstraints(basePackages = "org.jarbframework.sample")
-@ComponentScan(basePackages = "org.jarbframework.sample", excludeFilters = { @Filter(Controller.class), @Filter(Configuration.class) })
+@ComponentScan(basePackages = "org.jarbframework.sample", 
+               excludeFilters = { @Filter(RestController.class), @Filter(Controller.class), @Filter(ControllerAdvice.class) })
 public class ApplicationConfig extends DatabaseConstraintsConfigurer {
     
     @Bean
@@ -112,7 +115,7 @@ public class ApplicationConfig extends DatabaseConstraintsConfigurer {
                             .initializer()
                                 .add(new SqlDatabasePopulator(dataSource, new ClassPathResource("import.sql")))
                                 .add(postPopulator())
-                                .done()
+                                .and()
                             .destroyer()
                                 .add(new SqlDatabasePopulator(dataSource, new ClassPathResource("clean.sql")))
                                 .build();

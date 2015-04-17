@@ -11,12 +11,13 @@ import org.springframework.format.support.FormattingConversionService;
 import org.springframework.stereotype.Controller;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * @author Bas de Vos
  */
 @RunWith(MockitoJUnitRunner.class)
-public abstract class ControllerTest {
+public abstract class AbstractControllerTest {
 
     private final WebMvcConfig webConfig = new WebMvcConfig();
 
@@ -32,7 +33,7 @@ public abstract class ControllerTest {
      * @param controller - the controller under test.
      */
     protected void initWebClient(Object controller) {
-        Asserts.state(controller.getClass().getAnnotation(Controller.class) != null, "Given controller must be annotated with @Controller");
+        Asserts.state(isController(controller), "Should be an annotated controller.");
 
         this.webClient = MockMvcBuilders.standaloneSetup(controller)
                             .setMessageConverters(webConfig.mappingJacksonHttpMessageConverter())
@@ -40,4 +41,9 @@ public abstract class ControllerTest {
                                 .build();
     }
     
+    private boolean isController(Object controller) {
+        Class<? extends Object> controllerClass = controller.getClass();
+        return controllerClass.getAnnotation(Controller.class) != null || controllerClass.getAnnotation(RestController.class) != null;
+    }
+
 }
