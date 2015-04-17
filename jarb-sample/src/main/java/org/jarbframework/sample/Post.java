@@ -73,7 +73,7 @@ public class Post {
         }
         boolean equals = false;
         if (obj instanceof Post) {
-            equals = title.equals(((Post) obj).title);
+            equals = (title != null ? title : "").equals(((Post) obj).title);
         }
         return equals;
     }
@@ -83,7 +83,7 @@ public class Post {
      */
     @Override
     public int hashCode() {
-        return title.hashCode();
+        return title != null ? title.hashCode() : 0;
     }
 
 }

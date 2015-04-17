@@ -1,20 +1,17 @@
-package org.jarbframework.sample;
+package org.jarbframework.sample.config;
 
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
-import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
-import org.springframework.validation.FieldError;
-import org.springframework.web.HttpRequestMethodNotSupportedException;
-import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.ModelAndView;
@@ -41,38 +38,14 @@ public class ExceptionControllerAdvice {
      * @param ex the exception
      * @return the field errors as JSON
      */
-    @ExceptionHandler({ MethodArgumentNotValidException.class })
-    public ModelAndView handleFieldErrors(HttpServletResponse response, MethodArgumentNotValidException ex) {
+    @ExceptionHandler({ ConstraintViolationException.class })
+    public ModelAndView handleFieldErrors(HttpServletResponse response, ConstraintViolationException ex) {
         response.setStatus(HttpStatus.UNPROCESSABLE_ENTITY.value());
         List<FieldErrorModel> fields = new ArrayList<FieldErrorModel>();
-        for (FieldError error : ex.getBindingResult().getFieldErrors()) {
-            fields.add(new FieldErrorModel(error));
+        for (ConstraintViolation<?> violation : ex.getConstraintViolations()) {
+            fields.add(new FieldErrorModel(violation));
         }
         return new ModelAndView(new MappingJackson2JsonView(), FIELDS_NAME, fields);
-    }
-
-    /**
-     * Handles the exception when a request method is not supported.
-     * 
-     * @param response the response
-     * @return an empty response in JSON
-     */
-    @ExceptionHandler({ HttpRequestMethodNotSupportedException.class })
-    public ModelAndView handleRequestMethodNotSupported(HttpServletResponse response, HttpRequestMethodNotSupportedException ex) {
-        response.setStatus(NOT_FOUND.value());
-        return new ModelAndView(new MappingJackson2JsonView(), ERROR_NAME, new ExceptionModel(ex));
-    }
-
-    /**
-     * Handles the exception when a required parameter is missing.
-     * 
-     * @param response the response
-     * @return the result JSON
-     */
-    @ExceptionHandler({ MissingServletRequestParameterException.class })
-    public ModelAndView handleBadRequest(HttpServletResponse response, MissingServletRequestParameterException ex) {
-        response.setStatus(HttpStatus.BAD_REQUEST.value());
-        return new ModelAndView(new MappingJackson2JsonView(), ERROR_NAME, new ExceptionModel(ex));
     }
 
     /**
@@ -99,24 +72,31 @@ public class ExceptionControllerAdvice {
      */
     public static final class FieldErrorModel {
 
-        private final String field;
+        private final Class<?> rootBeanClass;
 
-        private final String code;
-
+        private final String propertyPath;
+        
+        private final Object invalidValue;
+        
         private final String message;
 
-        private FieldErrorModel(FieldError error) {
-            this.field = error.getField();
-            this.code = error.getCode();
-            this.message = error.getDefaultMessage();
+        private FieldErrorModel(ConstraintViolation<?> violation) {
+            this.rootBeanClass = violation.getRootBeanClass();
+            this.propertyPath = violation.getPropertyPath().toString();
+            this.invalidValue = violation.getInvalidValue();
+            this.message = violation.getMessage();
         }
 
-        public String getField() {
-            return field;
+        public Class<?> getRootBeanClass() {
+            return rootBeanClass;
         }
-
-        public String getCode() {
-            return code;
+        
+        public String getPropertyPath() {
+            return propertyPath;
+        }
+        
+        public Object getInvalidValue() {
+            return invalidValue;
         }
 
         public String getMessage() {

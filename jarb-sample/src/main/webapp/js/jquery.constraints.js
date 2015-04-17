@@ -20,7 +20,7 @@
 
 		$.getJSON(url, function(data) {
 			$.each(data.properties, function(name, property) {
-				var input = container.find('input[name=' + name + ']');
+				var input = container.find('input#' + name);
 				var label = container.find('label[for=' + name + "]");
 
 				if (property.required) {
