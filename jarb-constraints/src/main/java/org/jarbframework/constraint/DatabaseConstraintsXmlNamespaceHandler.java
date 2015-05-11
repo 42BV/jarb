@@ -4,6 +4,7 @@ import org.jarbframework.constraint.metadata.DefaultBeanConstraintDescriptor;
 import org.jarbframework.constraint.metadata.database.BeanMetadataRepositoryFactoryBean;
 import org.jarbframework.constraint.violation.DatabaseConstraintExceptionTranslatorFactoryBean;
 import org.jarbframework.constraint.violation.TranslateAdviceAddingBeanPostProcessor;
+import org.jarbframework.utils.Classes;
 import org.springframework.aop.aspectj.AspectJExpressionPointcut;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
@@ -28,7 +29,15 @@ public class DatabaseConstraintsXmlNamespaceHandler extends NamespaceHandlerSupp
     private static final String BASE_PACKAGE = "base-package";
     private static final String ENTITY_MANAGER_FACTORY = "entity-manager-factory";
     private static final String DEFAULT_EXCEPTION_FACTORY = "default-exception-factory";
+    
+    // Beans references
+    
+    private static final String ENTITY_MANAGER_FACTORY_REF = "entityManagerFactory";
+    private static final String DATA_SOURCE_REF = "dataSource";
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void init() {
         registerBeanDefinitionParser("enable-constraints", new EnableConstraintBeanDefinitionParser());
@@ -36,63 +45,64 @@ public class DatabaseConstraintsXmlNamespaceHandler extends NamespaceHandlerSupp
     
     private static class EnableConstraintBeanDefinitionParser implements BeanDefinitionParser {
         
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public BeanDefinition parse(Element element, ParserContext parserContext) {
-            // Meta-data descriptors
             String beanMetadataRepositoryName = buildAndRegisterBeanMetadataRepository(element, parserContext);
             buildAndRegisterConstraintDescriptor(beanMetadataRepositoryName, element, parserContext);
-            
-            // Exception translation
             buildAndRegisterExceptionTranslatingPostProcessor(element, parserContext);
-
             return null;
         }
         
         private String buildAndRegisterBeanMetadataRepository(Element element, ParserContext parserContext) {
-            BeanDefinitionBuilder beanMetadataRepositoryBuilder = BeanDefinitionBuilder.genericBeanDefinition(BeanMetadataRepositoryFactoryBean.class);
-            if (element.hasAttribute(ENTITY_MANAGER_FACTORY)) {
-                beanMetadataRepositoryBuilder.addConstructorArgReference(element.getAttribute(ENTITY_MANAGER_FACTORY));
-            } else {
-                beanMetadataRepositoryBuilder.addConstructorArgReference(element.getAttribute(DATA_SOURCE));
-            }
-            return parserContext.getReaderContext().registerWithGeneratedName(beanMetadataRepositoryBuilder.getBeanDefinition());
+            BeanDefinitionBuilder builder = BeanDefinitionBuilder.genericBeanDefinition(BeanMetadataRepositoryFactoryBean.class);
+            builder.addConstructorArgReference(getDataSourceFactoryReference(element));
+            return parserContext.getReaderContext().registerWithGeneratedName(builder.getBeanDefinition());
         }
         
+        private String getDataSourceFactoryReference(Element element) {
+            if (element.hasAttribute(ENTITY_MANAGER_FACTORY)) {
+                return element.getAttribute(ENTITY_MANAGER_FACTORY);
+            } else if (element.hasAttribute(DATA_SOURCE)) {
+                return element.getAttribute(DATA_SOURCE);
+            } else {
+                return Classes.hasClass("javax.persistence.EntityManager") ? ENTITY_MANAGER_FACTORY_REF : DATA_SOURCE_REF;
+            }
+        }
+
         private void buildAndRegisterConstraintDescriptor(String beanMetadataRepositoryName, Element element, ParserContext parserContext) {
-            BeanDefinitionBuilder beanConstraintDescriptorBuilder = BeanDefinitionBuilder.genericBeanDefinition(DefaultBeanConstraintDescriptor.class);
-            beanConstraintDescriptorBuilder.addConstructorArgReference(beanMetadataRepositoryName);
-            parserContext.getReaderContext().registerWithGeneratedName(beanConstraintDescriptorBuilder.getBeanDefinition());
+            BeanDefinitionBuilder builder = BeanDefinitionBuilder.genericBeanDefinition(DefaultBeanConstraintDescriptor.class);
+            builder.addConstructorArgReference(beanMetadataRepositoryName);
+            parserContext.getReaderContext().registerWithGeneratedName(builder.getBeanDefinition());
         }
         
         private void buildAndRegisterExceptionTranslatingPostProcessor(Element element, ParserContext parserContext) {
-            BeanDefinitionBuilder processorBuilder = BeanDefinitionBuilder.genericBeanDefinition(TranslateAdviceAddingBeanPostProcessor.class);
-            processorBuilder.addConstructorArgValue(buildExceptionTranslator(element));
+            BeanDefinitionBuilder builder = BeanDefinitionBuilder.genericBeanDefinition(TranslateAdviceAddingBeanPostProcessor.class);
+            builder.addConstructorArgValue(buildExceptionTranslator(element));
             if (element.hasAttribute("pointcut")) {
-                processorBuilder.addConstructorArgValue(buildPointcut(element.getAttribute(POINTCUT)));
+                builder.addConstructorArgValue(buildPointcut(element.getAttribute(POINTCUT)));
             }
-            parserContext.getReaderContext().registerWithGeneratedName(processorBuilder.getBeanDefinition());
+            parserContext.getReaderContext().registerWithGeneratedName(builder.getBeanDefinition());
         }
         
         private BeanDefinition buildExceptionTranslator(Element element) {
-            BeanDefinitionBuilder translatorBuilder = BeanDefinitionBuilder.genericBeanDefinition(DatabaseConstraintExceptionTranslatorFactoryBean.class);
-            translatorBuilder.addPropertyValue("basePackage", element.getAttribute(BASE_PACKAGE));
-            if (element.hasAttribute(ENTITY_MANAGER_FACTORY)) {
-                translatorBuilder.addConstructorArgReference(element.getAttribute(ENTITY_MANAGER_FACTORY));
-            } else {
-                translatorBuilder.addConstructorArgReference(element.getAttribute(DATA_SOURCE));
-            }
+            BeanDefinitionBuilder builder = BeanDefinitionBuilder.genericBeanDefinition(DatabaseConstraintExceptionTranslatorFactoryBean.class);
+            builder.addPropertyValue("basePackage", element.getAttribute(BASE_PACKAGE));
+            builder.addConstructorArgReference(getDataSourceFactoryReference(element));
             if (element.hasAttribute(DEFAULT_EXCEPTION_FACTORY)) {
-                translatorBuilder.addPropertyReference("defaultExceptionFactory", element.getAttribute(DEFAULT_EXCEPTION_FACTORY));
+                builder.addPropertyReference("defaultExceptionFactory", element.getAttribute(DEFAULT_EXCEPTION_FACTORY));
             }
-            return translatorBuilder.getBeanDefinition();
+            return builder.getBeanDefinition();
         }
         
         private BeanDefinition buildPointcut(String expression) {
-            RootBeanDefinition beanDefinition = new RootBeanDefinition(AspectJExpressionPointcut.class);
-            beanDefinition.setScope(BeanDefinition.SCOPE_PROTOTYPE);
-            beanDefinition.setSynthetic(true);
-            beanDefinition.getPropertyValues().add("expression", expression);
-            return beanDefinition;
+            RootBeanDefinition bean = new RootBeanDefinition(AspectJExpressionPointcut.class);
+            bean.setScope(BeanDefinition.SCOPE_PROTOTYPE);
+            bean.setSynthetic(true);
+            bean.getPropertyValues().add("expression", expression);
+            return bean;
         }
         
     }

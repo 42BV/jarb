@@ -1,5 +1,6 @@
 package org.jarbframework.utils;
 
+
 /**
  * Utility class for {@link Class} instances.
  *
@@ -21,6 +22,23 @@ public class Classes {
             return (Class<T>) Class.forName(className);
         } catch (ClassNotFoundException e) {
             throw new IllegalArgumentException(e);
+        }
+    }
+    
+    /**
+     * Determine if a class has a specific method.
+     * 
+     * @param clazz the class
+     * @param methodName the method name
+     * @param parameterTypes the parameter types
+     * @return {@code true} if the method is found
+     */
+    public static boolean hasMethod(Class<?> clazz, String methodName, Class<?>... parameterTypes) {
+        try {
+            clazz.getMethod(methodName, parameterTypes);
+            return true;
+        } catch (NoSuchMethodException nsme) {
+            return false;
         }
     }
 

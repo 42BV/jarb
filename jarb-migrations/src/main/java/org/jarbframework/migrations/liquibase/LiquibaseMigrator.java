@@ -16,6 +16,7 @@ import liquibase.resource.FileSystemResourceAccessor;
 import liquibase.resource.ResourceAccessor;
 
 import org.jarbframework.migrations.DatabaseMigrator;
+import org.jarbframework.utils.Classes;
 
 /**
  * Liquibase specific implementation of {@link DatabaseMigrator}.
@@ -24,6 +25,12 @@ import org.jarbframework.migrations.DatabaseMigrator;
  */
 public class LiquibaseMigrator implements DatabaseMigrator {
     
+    private static final boolean HAS_GET_LOG;
+    
+    static {
+        HAS_GET_LOG = Classes.hasMethod(Liquibase.class, "getLog");
+    }
+
     private final ResourceAccessor resourceAccessor;
     
     private String changeLogPath = "changelog.groovy";
@@ -82,7 +89,7 @@ public class LiquibaseMigrator implements DatabaseMigrator {
     public final void migrate(Connection connection) {
         try {
             final Liquibase liquibase = buildLiquibase(connection);
-            liquibase.getLog().info("Starting liquibase migration.");
+            info("Starting liquibase migration.", liquibase);
 
             if (dropFirst) {
                 liquibase.dropAll();
@@ -91,11 +98,11 @@ public class LiquibaseMigrator implements DatabaseMigrator {
                 liquibase.clearCheckSums();
             }
             if (shouldGenerateSqlScript()) {
-                liquibase.getLog().info("Database migration will occur twice, once to generate an SQL script and afterwards to do the actual migration.");
-                liquibase.getLog().info("Generating SQL script.");
+                info("Database migration will occur twice, once to generate an SQL script and afterwards to do the actual migration.", liquibase);
+                info("Generating SQL script.", liquibase);
                 generateSqlScript(liquibase);
             }
-            liquibase.getLog().info("Performing actual database migration.");
+            info("Performing actual database migration.", liquibase);
             migrateDatabase(liquibase);
         } catch (LiquibaseException e) {
             throw new RuntimeException(e);
@@ -116,6 +123,7 @@ public class LiquibaseMigrator implements DatabaseMigrator {
 
     /**
      * Wrap our connection inside a liquibase component, which handles database connectivity.
+     * 
      * @param connection the connection to our database
      * @return new database instance, for our connection
      * @throws DatabaseException whenever the database instance could not be created
@@ -128,8 +136,16 @@ public class LiquibaseMigrator implements DatabaseMigrator {
         return database;
     }
 
+    private void info(String message, Liquibase liquibase) {
+        // Older versions of liquibase do not have a getLog() method
+        if (HAS_GET_LOG) {
+            liquibase.getLog().info(message);
+        }
+    }
+
     /**
      * Perform migration changes to database.
+     * 
      * @param liquibase provides migration functionality
      * @throws LiquibaseException whenever an error occurs during migration
      */
