@@ -1,6 +1,6 @@
 package org.jarbframework.sample.populator;
 
-import org.jarbframework.populator.DatabasePopulator;
+import org.jarbframework.init.populate.DatabasePopulator;
 import org.jarbframework.sample.model.Post;
 import org.jarbframework.sample.repository.PostRepository;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -13,6 +13,7 @@ public class HibernateUtils {
      * @param entityManagerFactory the entity manager factory
      * @return the data source
      */
+    @SuppressWarnings("deprecation")
     public static DataSource getDataSource(EntityManagerFactory entityManagerFactory) {
         try {
             SessionFactory sessionFactory = ((org.hibernate.jpa.HibernateEntityManagerFactory) entityManagerFactory).getSessionFactory();
