@@ -28,11 +28,10 @@
 	</licenses>
 
 	<modules>
+        <module>jarb-utils</module>
+        <module>jarb-init</module>
 		<module>jarb-constraints</module>
-		<module>jarb-migrations</module>
-		<module>jarb-populator</module>
 		<module>jarb-sample</module>
-		<module>jarb-utils</module>
 	</modules>
 
 	<developers>

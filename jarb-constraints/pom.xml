@@ -65,7 +65,7 @@
 		<!-- Testing -->
 		<dependency>
             <groupId>org.jarbframework</groupId>
-            <artifactId>jarb-migrations</artifactId>
+            <artifactId>jarb-init</artifactId>
             <version>${project.version}</version>
             <scope>test</scope>
         </dependency>

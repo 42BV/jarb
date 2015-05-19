@@ -17,17 +17,12 @@
 		<!-- Components being demonstrated -->
         <dependency>
             <groupId>org.jarbframework</groupId>
-            <artifactId>jarb-migrations</artifactId>
+            <artifactId>jarb-init</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.jarbframework</groupId>
             <artifactId>jarb-constraints</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.jarbframework</groupId>
-            <artifactId>jarb-populator</artifactId>
             <version>${project.version}</version>
         </dependency>
 

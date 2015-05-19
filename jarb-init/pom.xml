@@ -9,9 +9,9 @@
 		<version>2.4.2-SNAPSHOT</version>
 	</parent>
 	
-	<artifactId>jarb-migrations</artifactId>
+	<artifactId>jarb-init</artifactId>
 	<packaging>jar</packaging>
-	<description>Database migration support</description>
+	<description>Supports the setup of a database schema and filling with data.</description>
 
 	<dependencies>
 		<dependency>
