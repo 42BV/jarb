@@ -1,11 +1,11 @@
 /*
  * (C) 2014 42 bv (www.42.nl). All rights reserved.
  */
-package org.jarbframework.init.populate.clear;
+package org.jarbframework.init.populate;
 
 import javax.sql.DataSource;
 
-import org.jarbframework.init.populate.DatabasePopulator;
+import org.jarbframework.init.DatabasePopulator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.JdbcTemplate;

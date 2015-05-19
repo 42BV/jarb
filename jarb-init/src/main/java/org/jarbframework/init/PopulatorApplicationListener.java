@@ -1,8 +1,7 @@
-package org.jarbframework.init.populate.listener;
+package org.jarbframework.init;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import org.jarbframework.init.populate.DatabasePopulator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationListener;
@@ -17,19 +16,42 @@ import org.springframework.context.event.ContextRefreshedEvent;
  * @author Jeroen van Schagen
  * @since 02-11-2011
  */
-public class PopulateApplicationListener implements ApplicationListener<ApplicationContextEvent> {
+public class PopulatorApplicationListener implements ApplicationListener<ApplicationContextEvent> {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(PopulateApplicationListener.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(PopulatorApplicationListener.class);
 
     /** Describes whether the initializer has already been started. **/
     private final AtomicBoolean initialized = new AtomicBoolean();
 
     /** Executed when application context is started. **/
-    private DatabasePopulator initializer;
+    private final DatabasePopulator initializer;
     
     /** Executed when application context is stopped. **/
-    private DatabasePopulator destroyer;
+    private final DatabasePopulator destroyer;
+    
+    /**
+     * Construct a new {@link PopulatorApplicationListener}.
+     * 
+     * @param initializer the initializer
+     */
+    public PopulatorApplicationListener(DatabasePopulator initializer) {
+        this(initializer, null);
+    }
+    
+    /**
+     * Construct a new {@link PopulatorApplicationListener}.
+     * 
+     * @param initializer the initializer
+     * @param destroyer the destroyer
+     */
+    public PopulatorApplicationListener(DatabasePopulator initializer, DatabasePopulator destroyer) {
+        this.initializer = initializer;
+        this.destroyer = destroyer;
+    }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void onApplicationEvent(ApplicationContextEvent event) {
         if (event instanceof ContextRefreshedEvent && hasNotBeenInitializedYet()) {
@@ -50,13 +72,5 @@ public class PopulateApplicationListener implements ApplicationListener<Applicat
             populator.execute();
         }
     }
-    
-    public void setInitializer(DatabasePopulator initializer) {
-        this.initializer = initializer;
-    }
-    
-    public void setDestroyer(DatabasePopulator destroyer) {
-        this.destroyer = destroyer;
-    }
-    
+
 }

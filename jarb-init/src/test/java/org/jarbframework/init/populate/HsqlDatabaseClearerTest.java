@@ -1,7 +1,7 @@
 /*
  * (C) 2014 42 bv (www.42.nl). All rights reserved.
  */
-package org.jarbframework.init.populate.clear;
+package org.jarbframework.init.populate;
 
 import static org.junit.Assert.assertEquals;
 
@@ -10,8 +10,8 @@ import java.io.File;
 import javax.sql.DataSource;
 
 import org.jarbframework.init.DatabaseConfig;
+import org.jarbframework.init.populate.HsqlDatabaseClearer;
 import org.jarbframework.init.populate.SqlDirectoryDatabasePopulator;
-import org.jarbframework.init.populate.clear.HsqlDatabaseClearer;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

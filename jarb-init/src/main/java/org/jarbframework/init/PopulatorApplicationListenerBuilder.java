@@ -1,10 +1,9 @@
 /*
  * (C) 2013 42 bv (www.42.nl). All rights reserved.
  */
-package org.jarbframework.init.populate.listener;
+package org.jarbframework.init;
 
 import org.jarbframework.init.populate.AsyncDatabasePopulator;
-import org.jarbframework.init.populate.DatabasePopulator;
 import org.jarbframework.init.populate.DatabasePopulatorChain;
 
 /**
@@ -13,24 +12,26 @@ import org.jarbframework.init.populate.DatabasePopulatorChain;
  * @author Jeroen van Schagen
  * @since Feb 12, 2014
  */
-public class PopulateApplicationListenerBuilder {
+public class PopulatorApplicationListenerBuilder {
     
-    /**
-     * The listener being build.
-     */
-    private final PopulateApplicationListener listener = new PopulateApplicationListener();
+    private DatabasePopulator initializer;
+
+    private DatabasePopulator destroyer;
     
     /**
      * Configure the initializer.
      * 
-     * @return the initialize appender
+     * @return the append command
      */
     public PopulatorAppendCommand initializer() {
         return new PopulatorAppendCommand() {
             
+            /**
+             * {@inheritDoc}
+             */
             @Override
             protected void handle(DatabasePopulator initializer) {
-                listener.setInitializer(initializer);
+                PopulatorApplicationListenerBuilder.this.initializer = initializer;
             }
             
         };
@@ -39,14 +40,17 @@ public class PopulateApplicationListenerBuilder {
     /**
      * Configure the destroyer.
      * 
-     * @return the destroy appender
+     * @return the append command
      */
     public PopulatorAppendCommand destroyer() {
         return new PopulatorAppendCommand() {
             
+            /**
+             * {@inheritDoc}
+             */
             @Override
             protected void handle(DatabasePopulator destroyer) {
-                listener.setDestroyer(destroyer);
+                PopulatorApplicationListenerBuilder.this.destroyer = destroyer;
             }
             
         };
@@ -57,8 +61,8 @@ public class PopulateApplicationListenerBuilder {
      * 
      * @return the created listener
      */
-    public PopulateApplicationListener build() {
-        return listener;
+    public PopulatorApplicationListener build() {
+        return new PopulatorApplicationListener(initializer, destroyer);
     }
     
     /**
@@ -116,7 +120,6 @@ public class PopulateApplicationListenerBuilder {
         private PopulatorAppendCommand async(boolean async) {
             addToChain();
             this.async = async;
-
             return this;
         }
         
@@ -137,9 +140,9 @@ public class PopulateApplicationListenerBuilder {
          * 
          * @return this builder, for chaining
          */
-        public PopulateApplicationListenerBuilder and() {
+        public PopulatorApplicationListenerBuilder and() {
             handle(addToChain());
-            return PopulateApplicationListenerBuilder.this;
+            return PopulatorApplicationListenerBuilder.this;
         }
 
         /**
@@ -147,9 +150,9 @@ public class PopulateApplicationListenerBuilder {
          * 
          * @return the listener
          */
-        public PopulateApplicationListener build() {
+        public PopulatorApplicationListener build() {
             and();
-            return PopulateApplicationListenerBuilder.this.build();
+            return PopulatorApplicationListenerBuilder.this.build();
         }
 
         /**

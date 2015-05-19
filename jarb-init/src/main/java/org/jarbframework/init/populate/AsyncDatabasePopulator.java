@@ -3,6 +3,8 @@
  */
 package org.jarbframework.init.populate;
 
+import org.jarbframework.init.DatabasePopulator;
+
 
 /**
  * Database populator that runs asynchronously on a seperate thread.

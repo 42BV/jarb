@@ -17,10 +17,10 @@ import org.jarbframework.constraint.DatabaseConstraintsConfigurer;
 import org.jarbframework.constraint.EnableDatabaseConstraints;
 import org.jarbframework.constraint.metadata.BeanConstraintDescriptor;
 import org.jarbframework.constraint.metadata.enhance.AnnotationPropertyTypeEnhancer;
+import org.jarbframework.init.PopulatorApplicationListener;
+import org.jarbframework.init.PopulatorApplicationListenerBuilder;
 import org.jarbframework.init.migrate.liquibase.LiquibaseMigratingDatabaseBuilder;
 import org.jarbframework.init.populate.SqlDatabasePopulator;
-import org.jarbframework.init.populate.listener.PopulateApplicationListener;
-import org.jarbframework.init.populate.listener.PopulateApplicationListenerBuilder;
 import org.jarbframework.sample.populator.PostPopulator;
 import org.jarbframework.utils.orm.hibernate.ConventionNamingStrategy;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -110,8 +110,8 @@ public class ApplicationConfig extends DatabaseConstraintsConfigurer {
         private EntityManagerFactory entityManagerFactory;
         
         @Bean
-        public PopulateApplicationListener populateAppliationListener() {
-            return new PopulateApplicationListenerBuilder()
+        public PopulatorApplicationListener populateAppliationListener() {
+            return new PopulatorApplicationListenerBuilder()
                             .initializer()
                                 .add(new SqlDatabasePopulator(dataSource, new ClassPathResource("import.sql")))
                                 .add(postPopulator())

@@ -1,4 +1,4 @@
-package org.jarbframework.init.populate;
+package org.jarbframework.init;
 
 /**
  * Changes the data in our database.

@@ -8,10 +8,10 @@ import static org.junit.Assert.assertEquals;
 import javax.sql.DataSource;
 
 import org.jarbframework.init.DatabaseConfig;
+import org.jarbframework.init.PopulatorApplicationListener;
+import org.jarbframework.init.PopulatorApplicationListenerBuilder;
 import org.jarbframework.init.populate.SqlDatabasePopulator;
 import org.jarbframework.init.populate.PopulateTest.PopulateConfig;
-import org.jarbframework.init.populate.listener.PopulateApplicationListener;
-import org.jarbframework.init.populate.listener.PopulateApplicationListenerBuilder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,8 +59,8 @@ public class PopulateTest {
         private DataSource dataSource;
         
         @Bean
-        public PopulateApplicationListener populateApplicationListener() {
-            return new PopulateApplicationListenerBuilder()
+        public PopulatorApplicationListener populateApplicationListener() {
+            return new PopulatorApplicationListenerBuilder()
                         .initializer()
                             .task()
                                 .add(new SqlDatabasePopulator(dataSource, new ClassPathResource("import.sql")))
