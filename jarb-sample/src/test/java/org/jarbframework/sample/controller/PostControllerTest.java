@@ -1,12 +1,15 @@
 /*
  * (C) 2013 42 bv (www.42.nl). All rights reserved.
  */
-package org.jarbframework.sample;
+package org.jarbframework.sample.controller;
 
 import static org.hamcrest.Matchers.hasSize;
 
 import java.util.Arrays;
 
+import org.jarbframework.sample.controller.PostController;
+import org.jarbframework.sample.model.Post;
+import org.jarbframework.sample.repository.PostRepository;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;

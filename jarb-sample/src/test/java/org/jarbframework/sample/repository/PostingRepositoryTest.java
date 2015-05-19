@@ -1,4 +1,4 @@
-package org.jarbframework.sample;
+package org.jarbframework.sample.repository;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -7,7 +7,10 @@ import static org.junit.Assert.fail;
 import javax.annotation.Resource;
 import javax.validation.ConstraintViolationException;
 
-import org.jarbframework.sample.config.ApplicationConfig;
+import org.jarbframework.sample.ApplicationConfig;
+import org.jarbframework.sample.model.Post;
+import org.jarbframework.sample.model.PostTitleAlreadyExistsException;
+import org.jarbframework.sample.repository.PostRepository;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.orm.jpa.JpaSystemException;

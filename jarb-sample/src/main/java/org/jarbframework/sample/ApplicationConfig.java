@@ -1,7 +1,7 @@
 /*
  * (C) 2013 42 bv (www.42.nl). All rights reserved.
  */
-package org.jarbframework.sample.config;
+package org.jarbframework.sample;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -21,7 +21,7 @@ import org.jarbframework.migrations.liquibase.LiquibaseMigratingDatabaseBuilder;
 import org.jarbframework.populator.SqlDatabasePopulator;
 import org.jarbframework.populator.listener.PopulateApplicationListener;
 import org.jarbframework.populator.listener.PopulateApplicationListenerBuilder;
-import org.jarbframework.sample.PostPopulator;
+import org.jarbframework.sample.populator.PostPopulator;
 import org.jarbframework.utils.orm.hibernate.ConventionNamingStrategy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;

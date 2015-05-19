@@ -1,4 +1,4 @@
-package org.jarbframework.sample.config;
+package org.jarbframework.sample.controller;
 
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 

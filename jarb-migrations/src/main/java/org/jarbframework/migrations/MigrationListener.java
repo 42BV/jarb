@@ -11,6 +11,9 @@ package org.jarbframework.migrations;
  */
 public interface MigrationListener {
     
+    /**
+     * Callback invoked after migration.
+     */
     void afterMigrate();
     
 }

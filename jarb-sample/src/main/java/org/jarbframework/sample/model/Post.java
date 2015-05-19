@@ -1,4 +1,4 @@
-package org.jarbframework.sample;
+package org.jarbframework.sample.model;
 
 import java.util.Date;
 

@@ -1,5 +1,7 @@
-package org.jarbframework.sample;
+package org.jarbframework.sample.controller;
 
+import org.jarbframework.sample.model.Post;
+import org.jarbframework.sample.repository.PostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;

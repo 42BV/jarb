@@ -1,9 +1,9 @@
 /*
  * (C) 2013 42 bv (www.42.nl). All rights reserved.
  */
-package org.jarbframework.sample;
+package org.jarbframework.sample.controller;
 
-import org.jarbframework.sample.config.WebMvcConfig;
+import org.jarbframework.sample.WebMvcConfig;
 import org.jarbframework.utils.Asserts;
 import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;

@@ -102,7 +102,23 @@
             </plugin>
 		</plugins>
 	</build>
-
+       
+    <dependencyManagement>
+	    <dependencies>
+	        <!-- Migrations -->
+		    <dependency>
+	            <groupId>org.liquibase</groupId>
+	            <artifactId>liquibase-core</artifactId>
+	            <version>3.1.1</version>
+	        </dependency>
+	        <dependency>
+	            <groupId>com.mattbertolini</groupId>
+	            <artifactId>liquibase-slf4j</artifactId>
+	            <version>1.2.1</version>
+	        </dependency>
+	    </dependencies>
+    </dependencyManagement>
+    
 	<dependencies>
 		<!-- Spring integration -->
 		<dependency>
@@ -164,15 +180,13 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>net.saliman</groupId>
-            <artifactId>groovy-liquibase-dsl</artifactId>
-            <version>1.0.0</version>
+            <groupId>org.liquibase</groupId>
+            <artifactId>liquibase-core</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>com.mattbertolini</groupId>
             <artifactId>liquibase-slf4j</artifactId>
-            <version>1.2.1</version>
             <scope>test</scope>
         </dependency>
         
@@ -208,5 +222,5 @@
             <scope>test</scope>
         </dependency>
 	</dependencies>
-	
+
 </project>

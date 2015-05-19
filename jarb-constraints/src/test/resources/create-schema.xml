@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="1" author="jeroen.van.schagen@42.nl">
+        <comment>Create meta-data testing tables.</comment>
+        
+        <createTable tableName="cars">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_cars_id"/>
+            </column>
+            <column name="license_number" type="VARCHAR(6)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="price" type="DECIMAL(6,2)"/>
+            <column name="owner_id" type="BIGINT"/>
+            <column name="active" type="BOOLEAN"/>
+        </createTable>
+        
+        <addUniqueConstraint columnNames="license_number" tableName="cars" constraintName="uk_cars_license_number"/>
+        
+        <createTable tableName="persons">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_persons_id"/>
+            </column>
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="age" type="BIGINT"/>
+            <column name="street_and_number" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="city" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        
+        <addForeignKeyConstraint constraintName="fk_cars_owner" referencedTableName="persons" baseColumnNames="owner_id" baseTableName="cars" referencedColumnNames="id"/>
+    </changeSet>
+    
+    <changeSet id="2" author="jeroen.van.schagen@42.nl">
+        <comment>Create validation testing tables.</comment>
+        
+        <createTable tableName="wines">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_wines_id"/>
+            </column>
+            <column name="name" type="VARCHAR(6)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="age" type="DECIMAL(6,2)"/>
+            <column name="country_id" type="BIGINT"/>
+        </createTable>
+        
+        <createTable tableName="countries">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_countries_id"/>
+            </column>
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+</databaseChangeLog>

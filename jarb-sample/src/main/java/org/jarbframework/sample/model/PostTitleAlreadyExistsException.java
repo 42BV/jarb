@@ -1,4 +1,4 @@
-package org.jarbframework.sample;
+package org.jarbframework.sample.model;
 
 import org.jarbframework.constraint.violation.DatabaseConstraintViolation;
 import org.jarbframework.constraint.violation.UniqueKeyViolationException;

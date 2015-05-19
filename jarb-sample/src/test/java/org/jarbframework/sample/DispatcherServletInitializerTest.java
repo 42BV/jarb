@@ -1,14 +1,17 @@
 /*
  * (C) 2013 42 bv (www.42.nl). All rights reserved.
  */
-package org.jarbframework.sample.config;
+package org.jarbframework.sample;
 
+import org.jarbframework.sample.ApplicationConfig;
+import org.jarbframework.sample.DispatcherServletInitializer;
+import org.jarbframework.sample.WebMvcConfig;
 import org.junit.Assert;
 import org.junit.Test;
 
-public class ServletInitializerTest {
+public class DispatcherServletInitializerTest {
     
-    private ServletInitializer initializer = new ServletInitializer();
+    private DispatcherServletInitializer initializer = new DispatcherServletInitializer();
 
     @Test
     public void testGetRootConfigClasses() {

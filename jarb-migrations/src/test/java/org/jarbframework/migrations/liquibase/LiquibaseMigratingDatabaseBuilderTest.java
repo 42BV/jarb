@@ -21,7 +21,7 @@ public class LiquibaseMigratingDatabaseBuilderTest {
     @Test
     public void testBuildEmbeddedDatabase() {
         EmbeddedDatabase database = new LiquibaseMigratingDatabaseBuilder()
-            .setChangeLogPath("src/test/resources/changelog.groovy")
+            .setChangeLogPath("src/test/resources/changelog.xml")
             .setType(EmbeddedDatabaseType.HSQL)
                 .build();
         

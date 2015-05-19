@@ -1,6 +1,8 @@
-package org.jarbframework.sample;
+package org.jarbframework.sample.populator;
 
 import org.jarbframework.populator.DatabasePopulator;
+import org.jarbframework.sample.model.Post;
+import org.jarbframework.sample.repository.PostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class PostPopulator implements DatabasePopulator {
@@ -8,6 +10,9 @@ public class PostPopulator implements DatabasePopulator {
     @Autowired
     private PostRepository postRepository;
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void execute() {
         Post post = new Post();

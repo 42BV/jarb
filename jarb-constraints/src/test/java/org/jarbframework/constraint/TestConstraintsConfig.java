@@ -95,7 +95,7 @@ public class TestConstraintsConfig extends DatabaseConstraintsConfigurer {
     
     private static DataSource createMigratingDataSource(DataSource dataSource) {
         LiquibaseMigrator migrator = new LiquibaseMigrator("src/test/resources");
-        migrator.setChangeLogPath("create-schema.groovy");
+        migrator.setChangeLogPath("create-schema.xml");
         return new MigratingDataSource(dataSource, migrator);
     }
     

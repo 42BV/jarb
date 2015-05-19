@@ -57,11 +57,11 @@ public class MigratingDataSource extends DataSourceDelegate {
         if (!migrated) {
             doMigrate();
             migrated = true;
-            notifyListeners();
+            afterMigrate();
         }
     }
 
-    private void notifyListeners() {
+    private void afterMigrate() {
         for (MigrationListener listener : listeners) {
             listener.afterMigrate();
         }

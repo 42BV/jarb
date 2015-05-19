@@ -20,11 +20,17 @@ import org.jarbframework.utils.Classes;
 
 /**
  * Liquibase specific implementation of {@link DatabaseMigrator}.
+ * 
  * @author Jeroen van Schagen
  * @since 28-04-2011
  */
 public class LiquibaseMigrator implements DatabaseMigrator {
     
+    private static final String DEFAULT_CHANGELOG_PATH = "src/main/db/changelog.xml";
+
+    /**
+     * Backwards compatability check to see if the {@code Liquibase.getLog()} method is available.
+     */
     private static final boolean HAS_GET_LOG;
     
     static {
@@ -33,7 +39,7 @@ public class LiquibaseMigrator implements DatabaseMigrator {
 
     private final ResourceAccessor resourceAccessor;
     
-    private String changeLogPath = "changelog.groovy";
+    private String changeLogPath = "changelog.xml";
 
     private boolean dropFirst = false;
 
@@ -58,6 +64,7 @@ public class LiquibaseMigrator implements DatabaseMigrator {
 
     /**
      * Construct a new {@link LiquibaseMigrator} from a specific base path.
+     * 
      * @param basePath the base path to run from
      */
     public LiquibaseMigrator(String basePath) {
@@ -66,6 +73,7 @@ public class LiquibaseMigrator implements DatabaseMigrator {
 
     /**
      * Construct a new {@link LiquibaseMigrator} with a specific resource accessor.
+     * 
      * @param resourceAccessor the resource accessor that should be applied
      */
     public LiquibaseMigrator(ResourceAccessor resourceAccessor) {
@@ -73,12 +81,13 @@ public class LiquibaseMigrator implements DatabaseMigrator {
     }
     
     /**
-     * Construct a new {@link LiquibaseMigrator} linked to the src/main/db/changelog.groovy.
+     * Construct a new {@link LiquibaseMigrator} linked to the {@code src/main/db/changelog.xml}
+     * 
      * @return the created liquibase migrator
      */
     public static LiquibaseMigrator local() {
         LiquibaseMigrator migrator = new LiquibaseMigrator();
-        migrator.setChangeLogPath("src/main/db/changelog.groovy");
+        migrator.setChangeLogPath(DEFAULT_CHANGELOG_PATH);
         return migrator;
     }
 
@@ -159,6 +168,7 @@ public class LiquibaseMigrator implements DatabaseMigrator {
 
     /**
      * Determine if a SQL output should be written away.
+     * 
      * @return {@code true} if it should, else {@code false}
      */
     private boolean shouldGenerateSqlScript() {
@@ -167,7 +177,9 @@ public class LiquibaseMigrator implements DatabaseMigrator {
 
     /**
      * Convert the changes to SQL, and write them away.
+     * 
      * @param liquibase provides migration functionality
+     * 
      * @throws LiquibaseException 
      * @throws IOException 
      */

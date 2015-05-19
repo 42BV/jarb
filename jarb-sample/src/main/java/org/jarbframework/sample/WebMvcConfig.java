@@ -1,7 +1,7 @@
 /*
  * (C) 2013 42 bv (www.42.nl). All rights reserved.
  */
-package org.jarbframework.sample.config;
+package org.jarbframework.sample;
 
 import java.text.SimpleDateFormat;
 import java.util.List;

@@ -65,6 +65,9 @@ public class MigratingDatabaseBuilder extends EmbeddedDatabaseBuilder {
             this.embeddedDatabase = embeddedDatabase;
         }
         
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public void shutdown() {
             embeddedDatabase.shutdown();
