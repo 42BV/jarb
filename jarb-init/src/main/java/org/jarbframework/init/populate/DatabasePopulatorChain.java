@@ -3,8 +3,6 @@ package org.jarbframework.init.populate;
 import java.util.Collection;
 import java.util.LinkedList;
 
-import org.jarbframework.init.DatabasePopulator;
-
 /**
  * Chain of database populators, executes the population in sequence.
  *

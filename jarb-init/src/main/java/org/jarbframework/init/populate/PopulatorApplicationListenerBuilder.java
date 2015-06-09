@@ -1,10 +1,8 @@
 /*
  * (C) 2013 42 bv (www.42.nl). All rights reserved.
  */
-package org.jarbframework.init;
+package org.jarbframework.init.populate;
 
-import org.jarbframework.init.populate.AsyncDatabasePopulator;
-import org.jarbframework.init.populate.DatabasePopulatorChain;
 
 /**
  * Builds a database populating listener. 
@@ -23,8 +21,8 @@ public class PopulatorApplicationListenerBuilder {
      * 
      * @return the append command
      */
-    public PopulatorAppendCommand initializer() {
-        return new PopulatorAppendCommand() {
+    public DatabasePopulateAppender initializer() {
+        return new DatabasePopulateAppender() {
             
             /**
              * {@inheritDoc}
@@ -42,8 +40,8 @@ public class PopulatorApplicationListenerBuilder {
      * 
      * @return the append command
      */
-    public PopulatorAppendCommand destroyer() {
-        return new PopulatorAppendCommand() {
+    public DatabasePopulateAppender destroyer() {
+        return new DatabasePopulateAppender() {
             
             /**
              * {@inheritDoc}
@@ -71,7 +69,7 @@ public class PopulatorApplicationListenerBuilder {
      * @author Jeroen van Schagen
      * @since Feb 12, 2014
      */
-    public abstract class PopulatorAppendCommand {
+    public abstract class DatabasePopulateAppender {
         
         private DatabasePopulatorChain chain = new DatabasePopulatorChain();
         
@@ -85,28 +83,28 @@ public class PopulatorApplicationListenerBuilder {
          * @param populator the populator to add
          * @return this builder, for chaining
          */
-        public PopulatorAppendCommand add(DatabasePopulator populator) {
+        public DatabasePopulateAppender add(DatabasePopulator populator) {
             current.add(populator);
             return this;
         }
         
         /**
          * Create an asynchronous task for populating the database. To add synchronous
-         * populators again, invoke {@link PopulatorAppendCommand#current()}.
+         * populators again, invoke {@link DatabasePopulateAppender#current()}.
          * 
          * @return this builder, for chaining
          */
-        public PopulatorAppendCommand task() {
+        public DatabasePopulateAppender task() {
             return this.async(true);
         }
         
         /**
          * Mark all next populators as synchronous. To add an asynchronous
-         * populator task, invoke {@link PopulatorAppendCommand#task()}.
+         * populator task, invoke {@link DatabasePopulateAppender#task()}.
          * 
          * @return this builder, for chaining
          */
-        public PopulatorAppendCommand current() {
+        public DatabasePopulateAppender current() {
             return this.async(false);
         }
         
@@ -117,7 +115,7 @@ public class PopulatorApplicationListenerBuilder {
          * @param async {@code true} when asynchronous
          * @return this builder, for chaining
          */
-        private PopulatorAppendCommand async(boolean async) {
+        private DatabasePopulateAppender async(boolean async) {
             addToChain();
             this.async = async;
             return this;

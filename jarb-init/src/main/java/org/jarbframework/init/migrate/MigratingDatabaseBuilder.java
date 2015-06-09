@@ -6,6 +6,8 @@ package org.jarbframework.init.migrate;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.sql.DataSource;
+
 import org.jarbframework.utils.DataSourceDelegate;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabase;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
@@ -60,8 +62,8 @@ public class MigratingDatabaseBuilder extends EmbeddedDatabaseBuilder {
         
         private final EmbeddedDatabase embeddedDatabase;
         
-        private MigratingEmbeddedDatabase(MigratingDataSource migratingDataSource, EmbeddedDatabase embeddedDatabase) {
-            super(migratingDataSource);
+        private MigratingEmbeddedDatabase(DataSource dataSource, EmbeddedDatabase embeddedDatabase) {
+            super(dataSource);
             this.embeddedDatabase = embeddedDatabase;
         }
         

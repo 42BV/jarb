@@ -5,7 +5,6 @@ package org.jarbframework.init.populate;
 
 import javax.sql.DataSource;
 
-import org.jarbframework.init.DatabasePopulator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.JdbcTemplate;

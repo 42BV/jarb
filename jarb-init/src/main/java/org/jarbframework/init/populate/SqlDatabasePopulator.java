@@ -9,7 +9,6 @@ import java.sql.SQLException;
 
 import javax.sql.DataSource;
 
-import org.jarbframework.init.DatabasePopulator;
 import org.jarbframework.utils.JdbcConnectionCallback;
 import org.jarbframework.utils.JdbcUtils;
 import org.springframework.core.io.ByteArrayResource;

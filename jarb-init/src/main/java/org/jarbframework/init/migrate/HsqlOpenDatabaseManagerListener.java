@@ -15,6 +15,9 @@ public class HsqlOpenDatabaseManagerListener implements MigrationListener {
         this.url = url;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void afterMigrate() {
         org.hsqldb.util.DatabaseManagerSwing.main(new String[] { "--url", url, "--noexit" });

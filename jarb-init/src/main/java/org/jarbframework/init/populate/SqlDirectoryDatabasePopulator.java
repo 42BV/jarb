@@ -9,7 +9,6 @@ import java.util.List;
 
 import javax.sql.DataSource;
 
-import org.jarbframework.init.DatabasePopulator;
 import org.jarbframework.init.predicates.AndPredicate;
 import org.jarbframework.init.predicates.IsNotForOtherProduct;
 import org.jarbframework.init.predicates.IsSqlFile;

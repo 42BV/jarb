@@ -8,8 +8,6 @@ import static org.junit.Assert.assertEquals;
 import javax.sql.DataSource;
 
 import org.jarbframework.init.DatabaseConfig;
-import org.jarbframework.init.PopulatorApplicationListener;
-import org.jarbframework.init.PopulatorApplicationListenerBuilder;
 import org.jarbframework.init.populate.SqlDatabasePopulator;
 import org.jarbframework.init.populate.PopulateTest.PopulateConfig;
 import org.junit.Test;

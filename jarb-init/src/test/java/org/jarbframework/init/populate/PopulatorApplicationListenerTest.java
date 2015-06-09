@@ -1,12 +1,12 @@
-package org.jarbframework.init;
+package org.jarbframework.init.populate;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 
-import org.jarbframework.init.DatabasePopulator;
-import org.jarbframework.init.PopulatorApplicationListener;
+import org.jarbframework.init.populate.DatabasePopulator;
+import org.jarbframework.init.populate.PopulatorApplicationListener;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.context.ApplicationContext;

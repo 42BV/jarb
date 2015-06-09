@@ -3,7 +3,6 @@
  */
 package org.jarbframework.init.populate;
 
-import org.jarbframework.init.DatabasePopulator;
 
 
 /**
