@@ -16,9 +16,9 @@ import org.springframework.context.event.ContextRefreshedEvent;
  * @author Jeroen van Schagen
  * @since 02-11-2011
  */
-public class PopulatorApplicationListener implements ApplicationListener<ApplicationContextEvent> {
+public class PopulatingApplicationListener implements ApplicationListener<ApplicationContextEvent> {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(PopulatorApplicationListener.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(PopulatingApplicationListener.class);
 
     /** Describes whether the initializer has already been started. **/
     private final AtomicBoolean initialized = new AtomicBoolean();
@@ -30,21 +30,21 @@ public class PopulatorApplicationListener implements ApplicationListener<Applica
     private final DatabasePopulator destroyer;
     
     /**
-     * Construct a new {@link PopulatorApplicationListener}.
+     * Construct a new {@link PopulatingApplicationListener}.
      * 
      * @param initializer the initializer
      */
-    public PopulatorApplicationListener(DatabasePopulator initializer) {
+    public PopulatingApplicationListener(DatabasePopulator initializer) {
         this(initializer, null);
     }
     
     /**
-     * Construct a new {@link PopulatorApplicationListener}.
+     * Construct a new {@link PopulatingApplicationListener}.
      * 
      * @param initializer the initializer
      * @param destroyer the destroyer
      */
-    public PopulatorApplicationListener(DatabasePopulator initializer, DatabasePopulator destroyer) {
+    public PopulatingApplicationListener(DatabasePopulator initializer, DatabasePopulator destroyer) {
         this.initializer = initializer;
         this.destroyer = destroyer;
     }

@@ -6,7 +6,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 import org.jarbframework.init.populate.DatabasePopulator;
-import org.jarbframework.init.populate.PopulatorApplicationListener;
+import org.jarbframework.init.populate.PopulatingApplicationListener;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.context.ApplicationContext;
@@ -15,7 +15,7 @@ import org.springframework.context.event.ContextRefreshedEvent;
 
 public class PopulatorApplicationListenerTest {
 
-    private PopulatorApplicationListener applicationListener;
+    private PopulatingApplicationListener applicationListener;
 
     private DatabasePopulator initializer;
     
@@ -28,7 +28,7 @@ public class PopulatorApplicationListenerTest {
     	initializer = mock(DatabasePopulator.class);
     	destroyer = mock(DatabasePopulator.class);
     	
-        applicationListener = new PopulatorApplicationListener(initializer, destroyer);
+        applicationListener = new PopulatingApplicationListener(initializer, destroyer);
         applicationContext = mock(ApplicationContext.class);
     }
 
@@ -51,7 +51,7 @@ public class PopulatorApplicationListenerTest {
 
     @Test
     public void testSkipWhenNoUpdater() {
-        applicationListener = new PopulatorApplicationListener(initializer);
+        applicationListener = new PopulatingApplicationListener(initializer);
         applicationListener.onApplicationEvent(new ContextClosedEvent(applicationContext));
     }
 

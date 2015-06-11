@@ -57,15 +57,15 @@ public class PopulateTest {
         private DataSource dataSource;
         
         @Bean
-        public PopulatorApplicationListener populateApplicationListener() {
-            return new PopulatorApplicationListenerBuilder()
+        public PopulatingApplicationListener populateApplicationListener() {
+            return new PopulatingApplicationListenerBuilder()
                         .initializer()
                             .task()
                                 .add(new SqlDatabasePopulator(dataSource, new ClassPathResource("import.sql")))
                                 .add(SqlDatabasePopulator.fromSql(dataSource, "INSERT INTO persons (id, name) VALUES (2, 'fred') ;"))
                             .current()
                                 .add(new SqlDatabasePopulator(dataSource, new ClassPathResource("unknown.sql")).ifExists())
-                            .and()
+                            .done()
                         .destroyer()
                             .build();
         }

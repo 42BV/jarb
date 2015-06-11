@@ -10,7 +10,7 @@ package org.jarbframework.init.populate;
  * @author Jeroen van Schagen
  * @since Feb 12, 2014
  */
-public class PopulatorApplicationListenerBuilder {
+public class PopulatingApplicationListenerBuilder {
     
     private DatabasePopulator initializer;
 
@@ -29,7 +29,7 @@ public class PopulatorApplicationListenerBuilder {
              */
             @Override
             protected void handle(DatabasePopulator initializer) {
-                PopulatorApplicationListenerBuilder.this.initializer = initializer;
+                PopulatingApplicationListenerBuilder.this.initializer = initializer;
             }
             
         };
@@ -48,7 +48,7 @@ public class PopulatorApplicationListenerBuilder {
              */
             @Override
             protected void handle(DatabasePopulator destroyer) {
-                PopulatorApplicationListenerBuilder.this.destroyer = destroyer;
+                PopulatingApplicationListenerBuilder.this.destroyer = destroyer;
             }
             
         };
@@ -59,8 +59,8 @@ public class PopulatorApplicationListenerBuilder {
      * 
      * @return the created listener
      */
-    public PopulatorApplicationListener build() {
-        return new PopulatorApplicationListener(initializer, destroyer);
+    public PopulatingApplicationListener build() {
+        return new PopulatingApplicationListener(initializer, destroyer);
     }
     
     /**
@@ -138,9 +138,9 @@ public class PopulatorApplicationListenerBuilder {
          * 
          * @return this builder, for chaining
          */
-        public PopulatorApplicationListenerBuilder and() {
+        public PopulatingApplicationListenerBuilder done() {
             handle(addToChain());
-            return PopulatorApplicationListenerBuilder.this;
+            return PopulatingApplicationListenerBuilder.this;
         }
 
         /**
@@ -148,9 +148,8 @@ public class PopulatorApplicationListenerBuilder {
          * 
          * @return the listener
          */
-        public PopulatorApplicationListener build() {
-            and();
-            return PopulatorApplicationListenerBuilder.this.build();
+        public PopulatingApplicationListener build() {
+            return done().build();
         }
 
         /**
