@@ -1,4 +1,4 @@
-package org.jarbframework.utils.orm.hibernate;
+package org.jarbframework.utils.orm.hibernate.dialect;
 
 import java.sql.Types;
 

@@ -67,7 +67,8 @@ public class ConventionNamingStrategy extends ImprovedNamingStrategy {
         char current = buffer.charAt(index);
         char next = buffer.charAt(index + 1);
         
-        return (Character.isLowerCase(previous) || Character.isDigit(previous)) && Character.isUpperCase(current)
+        return (Character.isLowerCase(previous) || Character.isDigit(previous)) 
+                && Character.isUpperCase(current)
                 && (Character.isLowerCase(next) || Character.isDigit(next));
     }
 

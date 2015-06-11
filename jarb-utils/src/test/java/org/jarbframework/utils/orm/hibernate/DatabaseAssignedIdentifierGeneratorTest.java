@@ -5,6 +5,7 @@ import static org.mockito.Mockito.when;
 
 import org.hibernate.HibernateException;
 import org.hibernate.id.PostInsertIdentityPersister;
+import org.jarbframework.utils.orm.hibernate.dialect.ImprovedHsqlDialect;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;

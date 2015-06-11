@@ -11,8 +11,8 @@ import org.jarbframework.constraint.violation.factory.DatabaseConstraintExceptio
 import org.jarbframework.constraint.violation.factory.DefaultConstraintExceptionFactory;
 import org.jarbframework.constraint.violation.resolver.ConfigurableViolationResolver;
 import org.jarbframework.constraint.violation.resolver.DatabaseConstraintViolationResolver;
+import org.jarbframework.utils.SingletonFactoryBean;
 import org.jarbframework.utils.orm.hibernate.HibernateUtils;
-import org.jarbframework.utils.spring.SingletonFactoryBean;
 
 /**
  * Create an exception translator based on a certain package and data source.

@@ -3,6 +3,7 @@
  */
 package org.jarbframework.utils.spring;
 
+import org.jarbframework.utils.SingletonFactoryBean;
 import org.jarbframework.utils.sample.SomeClass;
 import org.junit.Assert;
 import org.junit.Before;

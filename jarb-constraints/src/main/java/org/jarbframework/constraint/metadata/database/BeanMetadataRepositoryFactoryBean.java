@@ -6,11 +6,11 @@ package org.jarbframework.constraint.metadata.database;
 import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 
+import org.jarbframework.utils.SingletonFactoryBean;
 import org.jarbframework.utils.orm.JdbcSchemaMapper;
 import org.jarbframework.utils.orm.SchemaMapper;
 import org.jarbframework.utils.orm.hibernate.HibernateJpaSchemaMapper;
 import org.jarbframework.utils.orm.hibernate.HibernateUtils;
-import org.jarbframework.utils.spring.SingletonFactoryBean;
 
 public class BeanMetadataRepositoryFactoryBean extends SingletonFactoryBean<BeanMetadataRepository> {
     

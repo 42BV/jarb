@@ -10,7 +10,7 @@ import javax.sql.DataSource;
 
 import org.hibernate.jpa.HibernatePersistenceProvider;
 import org.jarbframework.utils.orm.hibernate.ConventionNamingStrategy;
-import org.jarbframework.utils.orm.hibernate.ImprovedHsqlDialect;
+import org.jarbframework.utils.orm.hibernate.dialect.ImprovedHsqlDialect;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

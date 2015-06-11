@@ -5,6 +5,7 @@ import static org.junit.Assert.assertTrue;
 import java.sql.Types;
 
 import org.hibernate.dialect.Dialect;
+import org.jarbframework.utils.orm.hibernate.dialect.ImprovedHsqlDialect;
 import org.junit.Test;
 
 public class ImprovedHsqlDialectTest {
