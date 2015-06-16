@@ -22,7 +22,6 @@ import org.jarbframework.constraint.violation.factory.ConfigurableConstraintExce
 import org.jarbframework.constraint.violation.factory.DatabaseConstraintExceptionFactory;
 import org.jarbframework.constraint.violation.resolver.ConfigurableViolationResolver;
 import org.jarbframework.constraint.violation.resolver.DatabaseConstraintViolationResolver;
-import org.jarbframework.utils.StringUtils;
 import org.jarbframework.utils.bean.JpaBeanRegistry;
 import org.jarbframework.utils.orm.hibernate.HibernateUtils;
 import org.springframework.beans.factory.InitializingBean;
@@ -161,13 +160,8 @@ public class DatabaseConstraintsConfiguration implements ImportAware, Initializi
         this.basePackages = new HashSet<String>();
         this.basePackages.addAll(Arrays.asList(basePackages));
         for (Class<?> baseClass : baseClasses) {
-            String basePackage = getPackage(baseClass);
-            this.basePackages.add(basePackage);
+            this.basePackages.add(baseClass.getPackage().getName());
         }
-    }
-    
-    private String getPackage(Class<?> baseClass) {
-        return StringUtils.substringBeforeLast(baseClass.getName(), ".");
     }
 
 }
