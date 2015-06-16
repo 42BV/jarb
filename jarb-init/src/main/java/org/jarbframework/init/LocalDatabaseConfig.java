@@ -3,15 +3,24 @@
  */
 package org.jarbframework.init;
 
+import java.io.File;
+import java.io.IOException;
+
 import javax.sql.DataSource;
 
 import org.jarbframework.init.migrate.DatabaseMigrator;
 import org.jarbframework.init.migrate.MigratingDatabaseBuilder;
 import org.jarbframework.init.migrate.liquibase.LiquibaseMigrator;
+import org.jarbframework.init.populate.DatabasePopulator;
 import org.jarbframework.init.populate.PopulatingApplicationListener;
 import org.jarbframework.init.populate.PopulatingApplicationListenerBuilder;
 import org.jarbframework.init.populate.PopulatingApplicationListenerBuilder.DatabasePopulateAppender;
+import org.jarbframework.init.populate.SqlDatabasePopulator;
+import org.jarbframework.init.populate.SqlDirectoryDatabasePopulator;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
 
 /**
  * Template for creating a local database configuration. 
@@ -21,6 +30,9 @@ import org.springframework.context.annotation.Bean;
  */
 public abstract class LocalDatabaseConfig {
     
+    @Autowired
+    private ResourceLoader resourceLoader;
+
     /**
      * Create our local (embedded) data source.
      * 
@@ -86,6 +98,30 @@ public abstract class LocalDatabaseConfig {
      * @param destroyer the populator appender
      */
     protected void destroyer(DatabasePopulateAppender destroyer) {
+    }
+    
+    /**
+     * Create a new SQL based database populator. You can provide either
+     * a single file or a directory. When a directory is provided we will
+     * sequentially load all .sql files in that directory, except for
+     * scripts dependant on another database product e.g. 
+     * <code>001_import@psql.sql</code> when on HSQLDB.
+     * 
+     * @param location the location of SQL file or directory
+     * @return the database populator
+     */
+    protected DatabasePopulator sql(String location) {
+        Resource resource = resourceLoader.getResource(location);
+        try {
+            File file = resource.getFile();
+            if (file.isDirectory()) {
+                return new SqlDirectoryDatabasePopulator(dataSource(), file);
+            } else {
+                return new SqlDatabasePopulator(dataSource(), resource);
+            }
+        } catch (IOException ioe) {
+            throw new IllegalStateException("Could not create SQL database populator for: " + location, ioe);
+        }
     }
 
 }

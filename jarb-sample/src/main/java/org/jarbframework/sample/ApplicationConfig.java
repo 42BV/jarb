@@ -17,7 +17,6 @@ import org.jarbframework.constraint.metadata.BeanConstraintDescriptor;
 import org.jarbframework.constraint.metadata.enhance.AnnotationPropertyTypeEnhancer;
 import org.jarbframework.init.LocalHsqlDatabaseConfig;
 import org.jarbframework.init.populate.PopulatingApplicationListenerBuilder.DatabasePopulateAppender;
-import org.jarbframework.init.populate.SqlDatabasePopulator;
 import org.jarbframework.sample.populator.PostPopulator;
 import org.jarbframework.utils.orm.hibernate.ConventionNamingStrategy;
 import org.jarbframework.utils.orm.hibernate.dialect.ImprovedHsqlDialect;
@@ -28,7 +27,6 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.ComponentScan.Filter;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ResourceBundleMessageSource;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
@@ -104,7 +102,7 @@ public class ApplicationConfig extends DatabaseConstraintsConfigurer {
          */
         @Override
         protected void initializer(DatabasePopulateAppender initializer) {
-            initializer.add(new SqlDatabasePopulator(dataSource(), new ClassPathResource("import.sql")));
+            initializer.add(sql("classpath:import.sql"));
             initializer.add(postPopulator());
         }
 
@@ -113,7 +111,7 @@ public class ApplicationConfig extends DatabaseConstraintsConfigurer {
          */
         @Override
         protected void destroyer(DatabasePopulateAppender destroyer) {
-            destroyer.add(new SqlDatabasePopulator(dataSource(), new ClassPathResource("clean.sql")));
+            destroyer.add(sql("clean.sql"));
         }
 
         @Bean
