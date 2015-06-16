@@ -43,6 +43,16 @@ public class MysqlViolationResolverTest {
     }
 
     @Test
+    public void testForeignKey() {
+        DatabaseConstraintViolation violation = resolver.resolve("Cannot add or update a child row: a foreign key constraint fails (`flutweets`.`refs`, CONSTRAINT `refs_ibfk_1` FOREIGN KEY (`id`) REFERENCES `tweets` (`id`))");
+        assertEquals(DatabaseConstraintType.FOREIGN_KEY, violation.getConstraintType());
+        assertEquals("refs_ibfk_1", violation.getConstraintName());
+        assertEquals("id", violation.getColumnName());
+        assertEquals("tweets", violation.getReferencingTableName());
+        assertEquals("id", violation.getReferencingColumnName());
+    }
+    
+    @Test
     public void testOther() {
         assertNull(resolver.resolve("unknown"));
     }

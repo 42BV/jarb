@@ -1,5 +1,6 @@
 package org.jarbframework.constraint.violation.resolver.vendor;
 
+import static org.jarbframework.constraint.violation.DatabaseConstraintType.FOREIGN_KEY;
 import static org.jarbframework.constraint.violation.DatabaseConstraintType.INVALID_TYPE;
 import static org.jarbframework.constraint.violation.DatabaseConstraintType.LENGTH_EXCEEDED;
 import static org.jarbframework.constraint.violation.DatabaseConstraintType.NOT_NULL;
@@ -24,6 +25,7 @@ public class MysqlViolationResolver extends PatternViolationResolver implements 
         register(new UniqueKeyPattern());
         register(new LengthPattern());
         register(new InvalidTypePattern());
+        register(new ForeignKeyPattern());
     }
 
     @Override
@@ -82,6 +84,25 @@ public class MysqlViolationResolver extends PatternViolationResolver implements 
                     .expectedValueType(variables.get(1))
                     .value(variables.get(2))
                     .column(variables.get(3))
+                        .build();
+        }
+        
+    }
+    
+    private static class ForeignKeyPattern extends ViolationPattern {
+        
+        public ForeignKeyPattern() {
+            super(
+                    "Cannot add or update a child row: a foreign key constraint fails \\(`(.+)`.`(.+)`, CONSTRAINT `(.+)` FOREIGN KEY \\(`(.+)`\\) REFERENCES `(.+)` \\(`(.+)`\\)\\)");
+        }
+        
+        @Override
+        public DatabaseConstraintViolation build(VariableAccessor variables) {
+            return builder(FOREIGN_KEY)
+                    .constraint(variables.get(3))
+                    .column(variables.get(4))
+                    .referencingTable(variables.get(5))
+                    .referencingColumn(variables.get(6))
                         .build();
         }
         
