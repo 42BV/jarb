@@ -1,10 +1,11 @@
-package org.jarbframework.utils;
+package org.jarbframework.utils.jdbc;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 
 import javax.sql.DataSource;
 
+import org.jarbframework.utils.jdbc.AutoCommitDataSourceWrapper;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;

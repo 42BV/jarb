@@ -1,10 +1,12 @@
-package org.jarbframework.utils;
+package org.jarbframework.utils.jdbc;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
 import javax.sql.DataSource;
+
+import org.jarbframework.utils.Classes;
 
 /**
  * Java Database Connectivity (JDBC) utility class.

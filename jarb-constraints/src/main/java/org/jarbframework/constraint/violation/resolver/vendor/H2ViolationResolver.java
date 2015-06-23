@@ -9,7 +9,9 @@ import static org.jarbframework.constraint.violation.DatabaseConstraintViolation
 
 import org.jarbframework.constraint.violation.DatabaseConstraintViolation;
 import org.jarbframework.constraint.violation.resolver.PatternViolationResolver;
-import org.jarbframework.utils.DatabaseProduct;
+import org.jarbframework.utils.jdbc.DatabaseProduct;
+import org.jarbframework.utils.jdbc.DatabaseProductSpecific;
+import org.jarbframework.utils.jdbc.DatabaseProductType;
 
 /**
  * Hypersonic 2 based constraint violation resolver.
@@ -31,7 +33,7 @@ public class H2ViolationResolver extends PatternViolationResolver implements Dat
 
     @Override
     public boolean supports(DatabaseProduct product) {
-        return "H2".equals(product.getName());
+        return DatabaseProductType.H2.equals(product.getType());
     }
 
     private static class NotNullPattern extends ViolationPattern {

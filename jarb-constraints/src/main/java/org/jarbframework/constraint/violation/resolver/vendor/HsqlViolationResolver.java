@@ -9,7 +9,9 @@ import static org.jarbframework.constraint.violation.DatabaseConstraintViolation
 
 import org.jarbframework.constraint.violation.DatabaseConstraintViolation;
 import org.jarbframework.constraint.violation.resolver.PatternViolationResolver;
-import org.jarbframework.utils.DatabaseProduct;
+import org.jarbframework.utils.jdbc.DatabaseProduct;
+import org.jarbframework.utils.jdbc.DatabaseProductSpecific;
+import org.jarbframework.utils.jdbc.DatabaseProductType;
 
 /**
  * Hypersonic SQL based constraint violation resolver.
@@ -29,7 +31,7 @@ public class HsqlViolationResolver extends PatternViolationResolver implements D
     
     @Override
     public boolean supports(DatabaseProduct product) {
-        return "HSQL Database Engine".equals(product.getName());
+        return DatabaseProductType.HSQL.equals(product.getType());
     }
 
     private static class NotNullPattern extends ViolationPattern {

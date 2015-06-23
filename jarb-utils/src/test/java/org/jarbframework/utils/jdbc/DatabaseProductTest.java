@@ -1,10 +1,12 @@
 /*
  * (C) 2013 42 bv (www.42.nl). All rights reserved.
  */
-package org.jarbframework.utils;
+package org.jarbframework.utils.jdbc;
 
 import javax.sql.DataSource;
 
+import org.jarbframework.utils.DataSourceConfig;
+import org.jarbframework.utils.jdbc.DatabaseProduct;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;

@@ -7,9 +7,9 @@ import java.sql.SQLException;
 
 import javax.sql.DataSource;
 
-import org.jarbframework.utils.JdbcConnectionCallback;
-import org.jarbframework.utils.JdbcUtils;
 import org.jarbframework.utils.StringUtils;
+import org.jarbframework.utils.jdbc.JdbcConnectionCallback;
+import org.jarbframework.utils.jdbc.JdbcUtils;
 import org.jarbframework.utils.orm.ColumnReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

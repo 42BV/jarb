@@ -9,8 +9,9 @@ import static org.jarbframework.constraint.violation.DatabaseConstraintViolation
 
 import org.jarbframework.constraint.violation.DatabaseConstraintViolation;
 import org.jarbframework.constraint.violation.resolver.PatternViolationResolver;
-import org.jarbframework.utils.DatabaseProduct;
-import org.jarbframework.utils.StringUtils;
+import org.jarbframework.utils.jdbc.DatabaseProduct;
+import org.jarbframework.utils.jdbc.DatabaseProductSpecific;
+import org.jarbframework.utils.jdbc.DatabaseProductType;
 
 /**
  * MySQL based constraint violation resolver.
@@ -30,7 +31,7 @@ public class MysqlViolationResolver extends PatternViolationResolver implements 
 
     @Override
     public boolean supports(DatabaseProduct product) {
-        return StringUtils.startsWithIgnoreCase(product.getName(), "mysql");
+        return DatabaseProductType.MYSQL.equals(product.getType());
     }
 
     private static class NotNullPattern extends ViolationPattern {

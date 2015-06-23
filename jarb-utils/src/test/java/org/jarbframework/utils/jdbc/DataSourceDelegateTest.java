@@ -1,4 +1,4 @@
-package org.jarbframework.utils;
+package org.jarbframework.utils.jdbc;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -10,7 +10,7 @@ import java.sql.SQLException;
 
 import javax.sql.DataSource;
 
-import org.jarbframework.utils.DataSourceDelegate;
+import org.jarbframework.utils.jdbc.DataSourceDelegate;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;

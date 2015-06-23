@@ -12,7 +12,7 @@ import org.jarbframework.constraint.violation.resolver.vendor.MysqlViolationReso
 import org.jarbframework.constraint.violation.resolver.vendor.OracleViolationResolver;
 import org.jarbframework.constraint.violation.resolver.vendor.PostgresViolationResolver;
 import org.jarbframework.utils.ClassScanner;
-import org.jarbframework.utils.DatabaseProduct;
+import org.jarbframework.utils.jdbc.DatabaseProduct;
 import org.springframework.beans.BeanUtils;
 
 /**

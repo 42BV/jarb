@@ -1,7 +1,7 @@
 package org.jarbframework.init.migrate;
 
-import static org.jarbframework.utils.JdbcUtils.closeQuietly;
-import static org.jarbframework.utils.JdbcUtils.commitSafely;
+import static org.jarbframework.utils.jdbc.JdbcUtils.closeQuietly;
+import static org.jarbframework.utils.jdbc.JdbcUtils.commitSafely;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -11,7 +11,7 @@ import java.util.Set;
 import javax.sql.DataSource;
 
 import org.jarbframework.utils.Asserts;
-import org.jarbframework.utils.DataSourceDelegate;
+import org.jarbframework.utils.jdbc.DataSourceDelegate;
 
 /**
  * Data source that triggers database migrations during construction.

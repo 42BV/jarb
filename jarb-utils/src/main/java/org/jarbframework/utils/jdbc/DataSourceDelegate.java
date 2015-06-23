@@ -1,4 +1,4 @@
-package org.jarbframework.utils;
+package org.jarbframework.utils.jdbc;
 
 import java.io.PrintWriter;
 import java.lang.reflect.Method;

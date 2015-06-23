@@ -7,9 +7,9 @@ import java.io.File;
 
 import javax.sql.DataSource;
 
-import org.jarbframework.utils.DatabaseProduct;
 import org.jarbframework.utils.Predicate;
 import org.jarbframework.utils.StringUtils;
+import org.jarbframework.utils.jdbc.DatabaseProduct;
 
 /**
  * Determines if a file name has a product suffix.
@@ -37,7 +37,7 @@ public class IsNotForOtherProduct implements Predicate<File> {
     public boolean apply(File input) {
         String baseResourcePath = StringUtils.substringBeforeLast(input.getName(), ".");
         String resourceProductName = StringUtils.substringAfterLast(baseResourcePath, "@");
-        return StringUtils.isBlank(resourceProductName) || product.getSimpleName().equalsIgnoreCase(resourceProductName);
+        return StringUtils.isBlank(resourceProductName) || product.getShortName().equalsIgnoreCase(resourceProductName);
     }
     
 }

@@ -9,8 +9,8 @@ import java.sql.SQLException;
 
 import javax.sql.DataSource;
 
-import org.jarbframework.utils.JdbcConnectionCallback;
-import org.jarbframework.utils.JdbcUtils;
+import org.jarbframework.utils.jdbc.JdbcConnectionCallback;
+import org.jarbframework.utils.jdbc.JdbcUtils;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.InputStreamResource;

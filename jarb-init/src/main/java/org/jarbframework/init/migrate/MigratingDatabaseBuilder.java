@@ -8,7 +8,7 @@ import java.util.Set;
 
 import javax.sql.DataSource;
 
-import org.jarbframework.utils.DataSourceDelegate;
+import org.jarbframework.utils.jdbc.DataSourceDelegate;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabase;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 
