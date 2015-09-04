@@ -1,2 +1,2 @@
 How to deploy to local repository:
-mvn source:jar javadoc:jar deploy -DaltDeploymentRepository=repository.42.nl::default::https://repository.42.nl/content/repositories/thirdparty
+mvn source:jar javadoc:jar deploy -Dmaven.javadoc.skip=true -DaltDeploymentRepository=repository.42.nl::default::https://repository.42.nl/content/repositories/thirdparty
