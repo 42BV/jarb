@@ -13,7 +13,7 @@ import org.aopalliance.intercept.MethodInvocation;
 import org.hibernate.SessionFactory;
 import org.hibernate.StatelessSession;
 import org.hibernate.engine.spi.SessionImplementor;
-import org.hibernate.engine.transaction.spi.TransactionContext;
+import org.hibernate.internal.StatelessSessionImpl;
 import org.hibernate.jpa.HibernateEntityManagerFactory;
 import org.jarbframework.utils.Asserts;
 import org.springframework.aop.framework.ProxyFactory;
@@ -107,7 +107,11 @@ public class StatelessSessionFactoryBean implements FactoryBean<FlushableStatele
         }
 
         private static void flush(StatelessSession session) {
-            ((TransactionContext) session).managedFlush();
+            if (session instanceof FlushableStatelessSession) {
+                ((FlushableStatelessSession) session).flush();
+            } else if (session instanceof StatelessSessionImpl) {
+                ((StatelessSessionImpl) session).flush();
+            }
         }
 
         private StatelessSession getCurrentSession() {
@@ -130,7 +134,7 @@ public class StatelessSessionFactoryBean implements FactoryBean<FlushableStatele
         private Connection getPhysicalConnection() {
             EntityManager entityManager = EntityManagerFactoryUtils.getTransactionalEntityManager(entityManagerFactory);
             SessionImplementor sessionImplementor = (SessionImplementor) entityManager.getDelegate();
-            return sessionImplementor.getTransactionCoordinator().getJdbcCoordinator().getLogicalConnection().getConnection();
+            return sessionImplementor.getJdbcCoordinator().getLogicalConnection().getPhysicalConnection();
         }
 
         private void bindWithTransaction(StatelessSession statelessSession) {

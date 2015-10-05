@@ -141,3 +141,10 @@ Components
  * populator-excel (excel driven database populator)
  * utils (common utility library, used by other components)
  * sample (demonstrates all above described functionality in a simple project)
+ 
+Release notes
+-------------
+ * Version 3.0.0
+    - Java version below 1.8 not supported anymore
+    - Hibernate version below 5.0 not supported anymore
+ 

@@ -3,12 +3,8 @@ package org.jarbframework.utils.orm.hibernate;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import mockit.Expectations;
-import mockit.Mocked;
-import mockit.NonStrictExpectations;
-import mockit.Verifications;
 
-import org.hibernate.SessionFactory;
+import org.hibernate.engine.spi.SessionFactoryImplementor;
 import org.hibernate.internal.StatelessSessionImpl;
 import org.hibernate.jpa.HibernateEntityManagerFactory;
 import org.jarbframework.utils.orm.hibernate.StatelessSessionFactoryBean.StatelessSessionSynchronization;
@@ -17,13 +13,18 @@ import org.junit.Before;
 import org.junit.Test;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 
+import mockit.Expectations;
+import mockit.Mocked;
+import mockit.NonStrictExpectations;
+import mockit.Verifications;
+
 public class StatelessSessionFactoryBeanTest {
     
     @Mocked
     private HibernateEntityManagerFactory entityManagerFactory;
 
     @Mocked
-    private SessionFactory sessionFactory;
+    private SessionFactoryImplementor sessionFactory;
 
     private StatelessSessionFactoryBean sessionFactoryBean;
 
@@ -68,7 +69,7 @@ public class StatelessSessionFactoryBeanTest {
         synchronization.beforeCommit(false);
 
         new Verifications() {{
-            statelessSession.managedFlush();
+                statelessSession.flush();
             times = 1;
         }};        
     }
@@ -79,7 +80,7 @@ public class StatelessSessionFactoryBeanTest {
         synchronization.beforeCommit(true);
 
         new Verifications() {{
-            statelessSession.managedFlush();
+                statelessSession.flush();
             times = 0;
         }}; 
     }
@@ -98,7 +99,7 @@ public class StatelessSessionFactoryBeanTest {
         sessionFactoryBean.getObject().flush();
 
         new Verifications() {{
-            statelessSession.managedFlush();
+                statelessSession.flush();
             times = 1;
         }}; 
     }

@@ -11,12 +11,13 @@
   
     <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
         <property name="dataSource" ref="dataSource" />
-        <property name="persistenceProviderClass" value="org.hibernate.ejb.HibernatePersistence" />
+        <property name="persistenceProviderClass" value="org.hibernate.jpa.HibernatePersistenceProvider" />
         <property name="packagesToScan" value="org.jarbframework.constraint.domain" />
         <property name="jpaPropertyMap">
             <map>
                 <entry key="hibernate.dialect" value-ref="hibernateDialect"/>
-                <entry key="hibernate.ejb.naming_strategy" value="org.jarbframework.utils.orm.hibernate.ConventionNamingStrategy"/>
+                <entry key="hibernate.implicit_naming_strategy" value="org.jarbframework.utils.orm.hibernate.ConventionImplicitNamingStrategy"/>
+                <entry key="hibernate.physical_naming_strategy" value="org.jarbframework.utils.orm.hibernate.ConventionPhysicalNamingStrategy"/>
                 <entry key="javax.persistence.validation.factory" value-ref="validator"/>
             </map>
         </property>

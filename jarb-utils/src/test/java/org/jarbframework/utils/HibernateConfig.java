@@ -9,7 +9,8 @@ import java.util.Map;
 import javax.sql.DataSource;
 
 import org.hibernate.jpa.HibernatePersistenceProvider;
-import org.jarbframework.utils.orm.hibernate.ConventionNamingStrategy;
+import org.jarbframework.utils.orm.hibernate.ConventionImplicitNamingStrategy;
+import org.jarbframework.utils.orm.hibernate.ConventionPhysicalNamingStrategy;
 import org.jarbframework.utils.orm.hibernate.dialect.ImprovedHsqlDialect;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -38,7 +39,8 @@ public class HibernateConfig {
         entityManagerFactoryBean.setPackagesToScan("org.jarbframework.utils.domain");
         
         Map<String, Object> jpaProperties = new HashMap<String, Object>();
-        jpaProperties.put("hibernate.ejb.naming_strategy", ConventionNamingStrategy.class.getName());
+        jpaProperties.put("hibernate.implicit_naming_strategy", ConventionImplicitNamingStrategy.class.getName());
+        jpaProperties.put("hibernate.physical_naming_strategy", ConventionPhysicalNamingStrategy.class.getName());
         jpaProperties.put("hibernate.dialect", ImprovedHsqlDialect.class.getName());
         jpaProperties.put("hibernate.hbm2ddl.auto", "validate");
         

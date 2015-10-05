@@ -13,7 +13,8 @@ import org.hibernate.dialect.HSQLDialect;
 import org.hibernate.jpa.HibernatePersistenceProvider;
 import org.jarbframework.init.migrate.MigratingDataSource;
 import org.jarbframework.init.migrate.liquibase.LiquibaseMigrator;
-import org.jarbframework.utils.orm.hibernate.ConventionNamingStrategy;
+import org.jarbframework.utils.orm.hibernate.ConventionImplicitNamingStrategy;
+import org.jarbframework.utils.orm.hibernate.ConventionPhysicalNamingStrategy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.MessageSource;
@@ -47,7 +48,8 @@ public class TestConstraintsConfig extends DatabaseConstraintsConfigurer {
         entityManagerFactoryBean.setPackagesToScan("org.jarbframework.constraint");
         
         Map<String, Object> jpaProperties = new HashMap<String, Object>();
-        jpaProperties.put("hibernate.ejb.naming_strategy", ConventionNamingStrategy.class.getName());
+        jpaProperties.put("hibernate.implicit_naming_strategy", ConventionImplicitNamingStrategy.class.getName());
+        jpaProperties.put("hibernate.physical_naming_strategy", ConventionPhysicalNamingStrategy.class.getName());
         jpaProperties.put("hibernate.dialect", hibernateDialect);
         jpaProperties.put("javax.persistence.validation.factory", validator());
         

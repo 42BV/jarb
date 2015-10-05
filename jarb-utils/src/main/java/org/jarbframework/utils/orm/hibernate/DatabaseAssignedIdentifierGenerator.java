@@ -66,7 +66,7 @@ public class DatabaseAssignedIdentifierGenerator extends AbstractPostInsertGener
 
         @Override
         protected PreparedStatement prepare(String insertSQL, SessionImplementor session) throws SQLException {
-            return session.getTransactionCoordinator().getJdbcCoordinator().getStatementPreparer().prepareStatement(insertSQL, new String[] { keyColumnName });
+            return session.getJdbcCoordinator().getStatementPreparer().prepareStatement(insertSQL, new String[] { keyColumnName });
         }
 
         @Override

@@ -18,7 +18,8 @@ import org.jarbframework.constraint.metadata.enhance.AnnotationPropertyTypeEnhan
 import org.jarbframework.init.LocalHsqlDatabaseConfig;
 import org.jarbframework.init.populate.PopulatingApplicationListenerBuilder.DatabasePopulateAppender;
 import org.jarbframework.sample.populator.PostPopulator;
-import org.jarbframework.utils.orm.hibernate.ConventionNamingStrategy;
+import org.jarbframework.utils.orm.hibernate.ConventionImplicitNamingStrategy;
+import org.jarbframework.utils.orm.hibernate.ConventionPhysicalNamingStrategy;
 import org.jarbframework.utils.orm.hibernate.dialect.ImprovedHsqlDialect;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
@@ -55,7 +56,8 @@ public class ApplicationConfig extends DatabaseConstraintsConfigurer {
         entityManagerFactoryBean.setPackagesToScan("org.jarbframework.sample");
         
         Map<String, Object> jpaProperties = new HashMap<String, Object>();
-        jpaProperties.put("hibernate.ejb.naming_strategy", ConventionNamingStrategy.class.getName());
+        jpaProperties.put("hibernate.implicit_naming_strategy", ConventionImplicitNamingStrategy.class.getName());
+        jpaProperties.put("hibernate.physical_naming_strategy", ConventionPhysicalNamingStrategy.class.getName());
         jpaProperties.put("hibernate.dialect", ImprovedHsqlDialect.class.getName());
         jpaProperties.put("hibernate.hbm2ddl.auto", "validate");
         jpaProperties.put("hibernate.jdbc.use_get_generated_keys", true);
