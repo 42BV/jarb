@@ -52,8 +52,11 @@ public class JdbcColumnMetadataRepository implements ColumnMetadataRepository {
                 
                 logger.debug("Querying column metadata for table: {}, column: {}.", tableName, columnName);
                 ResultSet resultSet = databaseMetaData.getColumns(catalog, schema, tableName, columnName);
-                
-                return mapToColumnMetadata(columnReference, resultSet);
+                try {
+                    return mapToColumnMetadata(columnReference, resultSet);
+                } finally {
+                    resultSet.close(); // Always close result set, this prevents unclosed cursors in pools
+                }
             }
             
         });
