@@ -19,16 +19,20 @@ public class BeanMetadataRepositoryFactoryBean extends SingletonFactoryBean<Bean
     private final SchemaMapper schemaMapper;
     
     public BeanMetadataRepositoryFactoryBean(EntityManagerFactory entityManagerFactory) {
-        DataSource dataSource = HibernateUtils.getDataSource(entityManagerFactory);
-        columnMetadataRepository = new JdbcColumnMetadataRepository(dataSource);
-        schemaMapper = new HibernateJpaSchemaMapper(entityManagerFactory);
+        this(new JdbcColumnMetadataRepository(HibernateUtils.getDataSource(entityManagerFactory)),
+             new HibernateJpaSchemaMapper(entityManagerFactory));
     }
     
     public BeanMetadataRepositoryFactoryBean(DataSource dataSource) {
-        columnMetadataRepository = new JdbcColumnMetadataRepository(dataSource);
-        schemaMapper = new JdbcSchemaMapper();
+        this(new JdbcColumnMetadataRepository(dataSource), new JdbcSchemaMapper());
     }
 
+    public BeanMetadataRepositoryFactoryBean(ColumnMetadataRepository columnMetadataRepository,
+                                                         SchemaMapper schemaMapper) {
+        this.columnMetadataRepository = columnMetadataRepository;
+        this.schemaMapper = schemaMapper;
+    }
+    
     @Override
     protected BeanMetadataRepository createObject() throws Exception {
         BeanMetadataRepository beanMetadataRepository = new SimpleBeanMetadataRepository(columnMetadataRepository, schemaMapper);
