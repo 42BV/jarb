@@ -16,7 +16,7 @@ import org.springframework.beans.PropertyAccessor;
  * method could be found we access the field directly.
  *
  * @author Jeroen van Schagen
- * @date Aug 16, 2011
+ * @since Aug 16, 2011
  */
 public final class FlexibleBeanWrapper {
 	
