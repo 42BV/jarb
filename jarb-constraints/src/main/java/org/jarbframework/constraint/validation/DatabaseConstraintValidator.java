@@ -50,8 +50,10 @@ public class DatabaseConstraintValidator {
 
     /**
      * Construct a new {@link DatabaseConstraintValidator}.
+     * @param DatabaseConstraintValidator DatabaseConstraintValidator
+     * @param messageInterpolator messageInterpolator
      */
-    public DatabaseConstraintValidator(BeanMetadataRepository beanMetadataRepository, MessageInterpolator messageInterpolator) {
+    public DatabaseConstraintValidator(BeanMetadataRepository DatabaseConstraintValidator, MessageInterpolator messageInterpolator) {
         validationSteps = new ArrayList<DatabaseConstraintValidationStep>();
         validationSteps.add(new NotNullConstraintValidationStep());
         validationSteps.add(new LengthConstraintValidationStep());
@@ -65,6 +67,8 @@ public class DatabaseConstraintValidator {
      * Determine if a bean follows all column constraints defined in the database.
      * 
      * @param bean the bean that should be validated
+     * @param entityClass class of the entity
+     * @param propertyName property to look for
      * @param validatorContext used to create constraint violations
      * @return whether the bean is valid, or not
      */

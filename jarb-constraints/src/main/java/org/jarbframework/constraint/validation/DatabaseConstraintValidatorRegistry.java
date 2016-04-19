@@ -29,7 +29,7 @@ public class DatabaseConstraintValidatorRegistry {
      * we will create one on demand.
      * 
      * @param applicationContext the application context
-     * @param validatorName the preferred validator name, can be null
+     * @param annotation the DatabaseConstrained annotation used
      * @return the validator to be used
      */
     public static DatabaseConstraintValidator getInstance(ApplicationContext applicationContext, DatabaseConstrained annotation) {

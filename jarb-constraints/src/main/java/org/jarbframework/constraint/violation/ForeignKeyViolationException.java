@@ -6,7 +6,7 @@ import static org.jarbframework.constraint.violation.DatabaseConstraintType.FORE
  * Thrown whenever a foreign key constraint has been violated.
  *
  * @author Jeroen van Schagen
- * @date Aug 5, 2011
+ * @since Aug 5, 2011
  */
 public class ForeignKeyViolationException extends DatabaseConstraintViolationException {
     

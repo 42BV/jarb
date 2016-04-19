@@ -111,7 +111,7 @@ public final class DatabaseConstraintViolation {
     /**
      * Component that simplifies building a database constraint violation.
      * @author Jeroen van Schagen
-     * @date Aug 5, 2011
+     * @since Aug 5, 2011
      */
     public static final class Builder {
         

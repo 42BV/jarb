@@ -12,8 +12,8 @@ public class Classes {
     /**
      * Retrieve a class by name, whenever not found a runtime exception
      * will be thrown.
-     * 
      * @param className the class name
+     * @param <T> class type of instance
      * @return the class with that name
      */
     @SuppressWarnings("unchecked")

@@ -4,7 +4,7 @@ package org.jarbframework.utils;
 /**
  * Performs precondition checks on the code.
  * @author Jeroen van Schagen
- * @date Aug 29, 2011
+ * @since Aug 29, 2011
  */
 public final class Asserts {
 
@@ -23,6 +23,7 @@ public final class Asserts {
      * Assert that an object is not {@code null}.
      * @param object the object to check
      * @param message the error message shown whenever our state is not satisfied
+     * @param <T> class type of instance
      * @return provided object, used for chaining
      */
     public static <T> T notNull(T object, String message) {

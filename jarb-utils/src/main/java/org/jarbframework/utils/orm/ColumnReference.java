@@ -6,7 +6,7 @@ import static org.jarbframework.utils.Asserts.hasText;
  * References a column in the database.
  *
  * @author Jeroen van Schagen
- * @date Aug 29, 2011
+ * @since Aug 29, 2011
  */
 public class ColumnReference {
 

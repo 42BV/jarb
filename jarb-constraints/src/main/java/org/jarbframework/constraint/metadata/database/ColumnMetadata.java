@@ -84,7 +84,6 @@ public class ColumnMetadata {
     /**
      * Column values can be generated if the column has a default value it can use, or
      * an auto increment has been specified.
-     * @param columnMetadata provides column information
      * @return {@code true} if the column value can be generated, else {@code false}
      */
     public boolean isGeneratable() {
