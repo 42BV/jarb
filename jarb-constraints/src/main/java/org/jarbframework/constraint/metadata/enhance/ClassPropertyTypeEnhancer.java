@@ -10,7 +10,7 @@ import org.jarbframework.constraint.metadata.PropertyConstraintDescription;
  * type is used inside the property declaration.
  *
  * @author Jeroen van Schagen
- * @date Sep 7, 2011
+ * @since Sep 7, 2011
  */
 public class ClassPropertyTypeEnhancer implements PropertyConstraintEnhancer {
     

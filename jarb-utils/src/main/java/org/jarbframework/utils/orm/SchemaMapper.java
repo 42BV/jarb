@@ -6,7 +6,7 @@ import org.jarbframework.utils.bean.PropertyReference;
  * Maps bean (properties) to database tables and columns.
  *
  * @author Jeroen van Schagen
- * @date Aug 16, 2011
+ * @since Aug 16, 2011
  */
 public interface SchemaMapper {
 
@@ -14,7 +14,6 @@ public interface SchemaMapper {
      * Retrieve the table name of an entity class.
      * @param beanClass type of entity
      * @return name of the table
-     * @throws NotAnEntityException whenever the specified bean class could not be recognized as entity
      */
     String getTableName(Class<?> beanClass);
 
@@ -22,7 +21,6 @@ public interface SchemaMapper {
      * Retrieve the column that a property maps to, if any.
      * @param propertyReference reference to the property
      * @return column reference, if any
-     * @throws NotAnEntityException whenever the specified bean class could not be recognized as entity
      */
     ColumnReference getColumnReference(PropertyReference propertyReference);
 

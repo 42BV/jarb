@@ -51,7 +51,6 @@ public class ExceptionControllerAdvice {
     /**
      * Handles all other exceptions. Causing the exception to be logged and returns a description.
      * 
-     * @param request the request
      * @param response the response
      * @param handler the handler method
      * @param ex the exception

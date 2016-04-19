@@ -13,7 +13,7 @@ import org.springframework.util.ReflectionUtils;
 
 /**
  * Delegate implementation of {@link DataSource}. Delegates all method invocation to
- * a delegate data source instance, modifiable by {@link #setDelegate(DataSource)}.
+ * a delegate data source instance, configured in our constructor.
  * 
  * @author Jeroen van Schagen
  * @since 28-04-2011

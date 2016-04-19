@@ -4,7 +4,7 @@ package org.jarbframework.utils;
 /**
  * Performs precondition checks on the code.
  * @author Jeroen van Schagen
- * @date Aug 29, 2011
+ * @since Aug 29, 2011
  */
 public final class Asserts {
 
@@ -21,6 +21,7 @@ public final class Asserts {
 
     /**
      * Assert that an object is not {@code null}.
+     * @param <T> the type of object, used to type safe return the same object
      * @param object the object to check
      * @param message the error message shown whenever our state is not satisfied
      * @return provided object, used for chaining

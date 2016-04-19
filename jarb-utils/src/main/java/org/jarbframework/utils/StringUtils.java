@@ -83,10 +83,10 @@ public class StringUtils {
      * <p>
      * 
      * <code>
-     *  MySillyName => my_silly_name<br>
-     *  My1Name => my_1_name<br>
-     *  MyName => my_name<br>
-     *  Hello => hello
+     *  MySillyName =&gt; my_silly_name<br>
+     *  My1Name =&gt; my_1_name<br>
+     *  MyName =&gt; my_name<br>
+     *  Hello =&gt; hello
      * </code>
      * 
      * @param name the name to lower case

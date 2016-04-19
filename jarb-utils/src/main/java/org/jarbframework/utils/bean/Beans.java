@@ -13,7 +13,7 @@ import org.springframework.util.ReflectionUtils.FieldCallback;
  * Provides support when dealing with bean properties.
  *
  * @author Jeroen van Schagen
- * @date Aug 29, 2011
+ * @since Aug 29, 2011
  */
 public final class Beans {
 

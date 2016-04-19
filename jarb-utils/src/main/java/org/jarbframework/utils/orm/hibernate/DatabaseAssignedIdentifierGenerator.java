@@ -19,10 +19,10 @@ import org.hibernate.type.Type;
 /**
  * A generator with immediate retrieval through JDBC3 {@link java.sql.Connection#prepareStatement(String, String[]) getGeneratedKeys}.
  * The value of the identity column must be set from a "before insert trigger"
- * <p/>
+ * <p></p>
  * This generator only known to work with newer Oracle drivers compiled for
  * JDK 1.4 (JDBC3). The minimum version is 10.2.0.1
- * <p/>
+ * <p></p>
  * Note: Due to a bug in Oracle drivers, SQL comments on these insert statements
  * are completely disabled.
  *

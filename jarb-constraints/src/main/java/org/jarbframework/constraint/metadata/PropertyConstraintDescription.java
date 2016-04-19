@@ -13,8 +13,6 @@ import org.jarbframework.utils.bean.PropertyReference;
  * 
  * @author Jeroen van Schagen
  * @since 8-6-2011
- *
- * @param <T> type of property
  */
 public class PropertyConstraintDescription {
 
@@ -178,7 +176,7 @@ public class PropertyConstraintDescription {
      * Add the max boundary to the current constraints. When a max
      * boundary already exists, we will take the lowest.
      * 
-     * @param min the min value to add
+     * @param max the max value to add
      */
     public void addMax(long max) {
         if (this.max == null || ((Number) this.max).longValue() > max) {

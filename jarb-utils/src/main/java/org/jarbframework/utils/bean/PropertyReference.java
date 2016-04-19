@@ -10,7 +10,7 @@ import org.jarbframework.utils.StringUtils;
  * References a bean property.
  *
  * @author Jeroen van Schagen
- * @date Aug 29, 2011
+ * @since Aug 29, 2011
  */
 public class PropertyReference {
 

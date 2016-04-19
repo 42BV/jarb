@@ -7,7 +7,7 @@ import java.sql.SQLException;
  * Callback interface invoked for the JDBC connection.
  *
  * @author Jeroen van Schagen
- * @date Sep 8, 2011
+ * @since Sep 8, 2011
  *
  * @param <T> type of operation result
  */

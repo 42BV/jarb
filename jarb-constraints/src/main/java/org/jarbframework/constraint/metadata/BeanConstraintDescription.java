@@ -9,8 +9,6 @@ import java.util.Map;
  * 
  * @author Jeroen van Schagen
  * @since 31-05-2011
- *
- * @param <T> type of bean being described
  */
 public class BeanConstraintDescription {
 

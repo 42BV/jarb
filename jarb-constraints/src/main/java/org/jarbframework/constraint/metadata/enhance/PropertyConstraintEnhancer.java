@@ -12,7 +12,6 @@ public interface PropertyConstraintEnhancer {
 
     /**
      * Enhance a property constraint description object.
-     * @param <T> type of property being described
      * @param description describes the constraints of a property
      */
     void enhance(PropertyConstraintDescription description);
