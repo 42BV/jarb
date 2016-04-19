@@ -13,7 +13,7 @@ import org.jarbframework.utils.bean.Annotations;
  * annotation is present inside the property declaration.
  *
  * @author Jeroen van Schagen
- * @date Sep 7, 2011
+ * @since Sep 7, 2011
  */
 public class AnnotationPropertyTypeEnhancer implements PropertyConstraintEnhancer {
     

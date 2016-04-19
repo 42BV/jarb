@@ -14,7 +14,7 @@ import java.lang.annotation.Target;
  * implemented by a default value, trigger or auto-incremental type.
  *
  * @author Jeroen van Schagen
- * @date Aug 16, 2011
+ * @since Aug 16, 2011
  */
 @Documented
 @Target({ FIELD, METHOD })

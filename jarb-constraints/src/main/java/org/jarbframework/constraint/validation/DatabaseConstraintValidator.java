@@ -65,6 +65,8 @@ public class DatabaseConstraintValidator {
      * Determine if a bean follows all column constraints defined in the database.
      * 
      * @param bean the bean that should be validated
+     * @param entityClass the entity class
+     * @param propertyName the property name
      * @param validatorContext used to create constraint violations
      * @return whether the bean is valid, or not
      */

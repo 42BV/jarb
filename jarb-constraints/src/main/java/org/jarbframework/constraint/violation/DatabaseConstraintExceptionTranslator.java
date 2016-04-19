@@ -42,6 +42,7 @@ public class DatabaseConstraintExceptionTranslator {
 
     /**
      * Attempt to translate an exception into a constraint violation exception.
+     * @param throwable the original exception
      * @return a constraint violation exception, or {@code null} if no translation could be done
      */
     public Throwable translate(Throwable throwable) {

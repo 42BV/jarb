@@ -16,7 +16,7 @@ import org.springframework.stereotype.Repository;
 
 /**
  * Makes the application aware of database constaints:
- * <p>
+ * <p></p>
  * <ul>
  *  <li>Enabling bean validation based on the database schema.</li>
  *  <li>Translating JDBC exceptions into clear database violations.</li>
