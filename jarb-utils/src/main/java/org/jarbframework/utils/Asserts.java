@@ -24,6 +24,7 @@ public final class Asserts {
      * @param <T> the type of object, used to type safe return the same object
      * @param object the object to check
      * @param message the error message shown whenever our state is not satisfied
+     * @param <T> class type of instance
      * @return provided object, used for chaining
      */
     public static <T> T notNull(T object, String message) {
