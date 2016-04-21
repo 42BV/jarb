@@ -13,8 +13,8 @@ public class Classes {
      * Retrieve a class by name, whenever not found a runtime exception
      * will be thrown.
      * 
-     * @param <T> the type of class, used to type safe return the same class
      * @param className the class name
+     * @param <T> the type of class, used to type safe return the same class
      * @return the class with that name
      */
     @SuppressWarnings("unchecked")

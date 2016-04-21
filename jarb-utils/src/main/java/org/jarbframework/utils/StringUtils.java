@@ -77,10 +77,8 @@ public class StringUtils {
     }
     
     /**
-     * Convert a camel cased name into lower cases, separating
-     * each previous upper case with a '_'. For example:
-     * 
-     * <p>
+     * <p>Convert a camel cased name into lower cases, separating
+     * each previous upper case with a '_'. For example:</p>
      * 
      * <code>
      *  MySillyName =&gt; my_silly_name<br>

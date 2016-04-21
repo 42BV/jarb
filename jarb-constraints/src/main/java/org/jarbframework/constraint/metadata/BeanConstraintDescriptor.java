@@ -46,7 +46,7 @@ public class BeanConstraintDescriptor {
     /**
      * Generate bean constraint meta data.
      * 
-     * @param beanType type of the bean
+     * @param beanType class of the bean
      * @return bean constraint meta data
      */
     public BeanConstraintDescription describeBean(String beanType) {

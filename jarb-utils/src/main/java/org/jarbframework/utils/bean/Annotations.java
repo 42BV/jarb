@@ -39,7 +39,7 @@ public class Annotations {
      * Find a specific annotation on the property declaration.
      * @param propertyReference property that should contain the annotation
      * @param annotationType type of annotation that should be looked for
-     * @param <T> type of annotation
+     * @param <T> annotation type of instance
      * @return desired annotation, as declared on the property, if any
      */
     public static <T extends Annotation> Collection<T> getAnnotations(PropertyReference propertyReference, Class<T> annotationType) {

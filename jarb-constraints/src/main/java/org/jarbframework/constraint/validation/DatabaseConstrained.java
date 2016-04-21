@@ -21,19 +21,19 @@ public @interface DatabaseConstrained {
      * Identifier of the DatabaseConstraintValidator bean that should be used
      * for constraint validation. When left blank we attempt to autowire the validator
      * from our context, or build a new default validator instance.
-     * @return the identifier of our validator
+     * @return identifier of the DatabaseConstraintValidator bean
      */
     String id() default "";
     
     /**
      * Identifier of the ValidatorFactory bean that should be used for message interpolation.
-     * @return the identifier of our validator factory
+     * @return identifier for the validator factory
      */
     String factory() default "";
     
     /**
      * Identifier BeanMetadataRepository bean that should be used for column metadata retrieval.
-     * @return the identifier of our bean metadata repository
+     * @return identifier for the BeanMetadataRepository bean
      */
     String beanMetadataRepository() default "";
 
@@ -42,7 +42,7 @@ public @interface DatabaseConstrained {
      * needed when the annotated object is not an entity itself.
      * <br><br>
      * For example: {@code Person.class} when validating the address of a person.
-     * @return the entity class
+     * @return reference to the entity class
      */
     Class<?> entityClass() default Object.class;
     
@@ -51,7 +51,7 @@ public @interface DatabaseConstrained {
      * needed when the annotated object is not an entity itself.
      * <br><br>
      * For example: {@code address} when validating the address of a person.
-     * @return the property name
+     * @return path to the annotated object
      */
     String propertyName() default "";
 
