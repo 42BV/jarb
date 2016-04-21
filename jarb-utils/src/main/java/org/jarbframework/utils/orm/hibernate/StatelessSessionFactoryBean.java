@@ -68,6 +68,7 @@ public class StatelessSessionFactoryBean implements FactoryBean<FlushableStatele
     /**
      * Use this to override the {@link SessionFactory} obtained from the {@link EntityManagerFactory}.
      * Please note that the connection will still be used from the {@link EntityManager}.
+     * @param sessionFactory the session factory
      */
     public void setSessionFactory(SessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;

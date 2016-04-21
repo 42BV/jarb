@@ -59,7 +59,6 @@ public class DatabaseConstraintValidator {
         validationSteps.add(new LengthConstraintValidationStep());
         validationSteps.add(new FractionLengthConstraintValidationStep());
         
-        this.beanMetadataRepository = beanMetadataRepository;
         messageBuilder = new ViolationMessageBuilder(messageInterpolator);
     }
 

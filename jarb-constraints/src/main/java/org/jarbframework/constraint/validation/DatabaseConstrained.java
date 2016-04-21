@@ -21,7 +21,7 @@ public @interface DatabaseConstrained {
      * Identifier of the DatabaseConstraintValidator bean that should be used
      * for constraint validation. When left blank we attempt to autowire the validator
      * from our context, or build a new default validator instance.
-     * @return identifier of the DatabaseConstraintValidator bean 
+     * @return identifier of the DatabaseConstraintValidator bean
      */
     String id() default "";
     
