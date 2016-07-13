@@ -6,6 +6,8 @@ package org.jarbframework.init.populate;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.TreeSet;
+import java.util.stream.Collectors;
 
 import javax.sql.DataSource;
 
@@ -55,8 +57,8 @@ public class SqlDirectoryDatabasePopulator implements DatabasePopulator {
     }
     
     private List<File> getFilesInDirectory(File directory) {
-        List<File> files = new ArrayList<File>();
-        for (File file : directory.listFiles()) {
+        List<File> files = new ArrayList<>();
+        for (File file : getSortedSubfiles(directory)) {
             if (file.isDirectory()) {
                 files.addAll(getFilesInDirectory(file));
             } else if (isAllowed(file)) {
@@ -66,6 +68,14 @@ public class SqlDirectoryDatabasePopulator implements DatabasePopulator {
         return files;
     }
     
+    private List<File> getSortedSubfiles(File directory) {
+        TreeSet<String> found = new TreeSet<>();
+        for (File subfile : directory.listFiles()) {
+            found.add(subfile.getAbsolutePath());
+        }
+        return found.stream().map(name -> new File(name)).collect(Collectors.toList());
+    }
+
     private boolean isAllowed(File file) {
         if (predicate == null) {
             return true;
