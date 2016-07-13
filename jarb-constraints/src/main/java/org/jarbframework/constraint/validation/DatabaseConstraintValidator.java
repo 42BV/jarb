@@ -43,23 +43,24 @@ public class DatabaseConstraintValidator {
     private final List<DatabaseConstraintValidationStep> validationSteps;
 
     /** Retrieves the column meta-data that we use for validation **/
-    private BeanMetadataRepository beanMetadataRepository;
+    private final BeanMetadataRepository beanMetadataRepository;
     
     /** Used to build violation messages **/
-    private ViolationMessageBuilder messageBuilder;
+    private final ViolationMessageBuilder messageBuilder;
 
     /**
      * Construct a new {@link DatabaseConstraintValidator}.
      * @param DatabaseConstraintValidator DatabaseConstraintValidator
      * @param messageInterpolator messageInterpolator
      */
-    public DatabaseConstraintValidator(BeanMetadataRepository DatabaseConstraintValidator, MessageInterpolator messageInterpolator) {
-        validationSteps = new ArrayList<DatabaseConstraintValidationStep>();
+    public DatabaseConstraintValidator(BeanMetadataRepository beanMetadataRepository, MessageInterpolator messageInterpolator) {
+        validationSteps = new ArrayList<>();
         validationSteps.add(new NotNullConstraintValidationStep());
         validationSteps.add(new LengthConstraintValidationStep());
         validationSteps.add(new FractionLengthConstraintValidationStep());
         
-        messageBuilder = new ViolationMessageBuilder(messageInterpolator);
+        this.beanMetadataRepository = beanMetadataRepository;
+        this.messageBuilder = new ViolationMessageBuilder(messageInterpolator);
     }
 
     /**
