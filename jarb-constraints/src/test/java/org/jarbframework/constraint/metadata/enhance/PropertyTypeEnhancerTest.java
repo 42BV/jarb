@@ -25,7 +25,7 @@ public class PropertyTypeEnhancerTest {
     
     @Test
     public void testCustomAnnotation() {
-        PropertyTypeEnhancer enhancer = new PropertyTypeEnhancer(Currency.class);
+        PropertyTypeEnhancer enhancer = new PropertyTypeEnhancer();
         PropertyReference reference = new PropertyReference(PropertyTypeBean.class, "myCurrencyValue");
         PropertyConstraintDescription description = new PropertyConstraintDescription(reference, String.class);
         enhancer.enhance(description);

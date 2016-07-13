@@ -3,6 +3,8 @@
  */
 package org.jarbframework.constraint.metadata;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 import org.jarbframework.constraint.metadata.database.BeanMetadataRepository;
@@ -11,6 +13,7 @@ import org.jarbframework.constraint.metadata.enhance.ClassPropertyTypeEnhancer;
 import org.jarbframework.constraint.metadata.enhance.DatabaseGeneratedPropertyConstraintEnhancer;
 import org.jarbframework.constraint.metadata.enhance.DatabasePropertyConstraintEnhancer;
 import org.jarbframework.constraint.metadata.enhance.DigitsPropertyConstraintEnhancer;
+import org.jarbframework.constraint.metadata.enhance.EnumPropertyTypeEnhancer;
 import org.jarbframework.constraint.metadata.enhance.LengthPropertyConstraintEnhancer;
 import org.jarbframework.constraint.metadata.enhance.MinMaxNumberAnnotationPropertyEnhancer;
 import org.jarbframework.constraint.metadata.enhance.MinMaxNumberPropertyEnhancer;
@@ -18,14 +21,6 @@ import org.jarbframework.constraint.metadata.enhance.NotEmptyPropertyConstraintE
 import org.jarbframework.constraint.metadata.enhance.NotNullPropertyConstraintEnhancer;
 import org.jarbframework.constraint.metadata.enhance.PatternPropertyConstraintEnhancer;
 import org.jarbframework.constraint.metadata.enhance.PropertyTypeEnhancer;
-import org.jarbframework.constraint.metadata.types.Color;
-import org.jarbframework.constraint.metadata.types.Currency;
-import org.jarbframework.constraint.metadata.types.Email;
-import org.jarbframework.constraint.metadata.types.Password;
-import org.jarbframework.constraint.metadata.types.Percentage;
-import org.jarbframework.constraint.metadata.types.Phone;
-import org.jarbframework.constraint.metadata.types.PropertyType;
-import org.jarbframework.constraint.metadata.types.URL;
 import org.jarbframework.utils.Classes;
 
 /**
@@ -62,17 +57,22 @@ public class DefaultBeanConstraintDescriptor extends BeanConstraintDescriptor {
 
     private void registerDefaultEnhancers() {
         register(new ClassPropertyTypeEnhancer(String.class, "text"));
+        register(new ClassPropertyTypeEnhancer(char.class, "text"));
         register(new ClassPropertyTypeEnhancer(Date.class, "date"));
+        register(new ClassPropertyTypeEnhancer(LocalDate.class, "date"));
+        register(new ClassPropertyTypeEnhancer(LocalDateTime.class, "datetime"));
         register(new ClassPropertyTypeEnhancer(Number.class, "number"));
+        register(new ClassPropertyTypeEnhancer(byte.class, "number"));
+        register(new ClassPropertyTypeEnhancer(short.class, "number"));
+        register(new ClassPropertyTypeEnhancer(int.class, "number"));
+        register(new ClassPropertyTypeEnhancer(long.class, "number"));
+        register(new ClassPropertyTypeEnhancer(float.class, "number"));
+        register(new ClassPropertyTypeEnhancer(double.class, "number"));
+        register(new ClassPropertyTypeEnhancer(Boolean.class, "boolean"));
+        register(new ClassPropertyTypeEnhancer(boolean.class, "boolean"));
 
-        register(new PropertyTypeEnhancer(PropertyType.class));
-        register(new PropertyTypeEnhancer(Color.class));
-        register(new PropertyTypeEnhancer(Currency.class));
-        register(new PropertyTypeEnhancer(Email.class));
-        register(new PropertyTypeEnhancer(Password.class));
-        register(new PropertyTypeEnhancer(Percentage.class));
-        register(new PropertyTypeEnhancer(Phone.class));
-        register(new PropertyTypeEnhancer(URL.class));
+        register(new PropertyTypeEnhancer());
+        register(new EnumPropertyTypeEnhancer());
         
         register(new MinMaxNumberPropertyEnhancer(Byte.class, Byte.MIN_VALUE, Byte.MAX_VALUE));
         register(new MinMaxNumberPropertyEnhancer(Short.class, Short.MIN_VALUE, Short.MAX_VALUE));

@@ -52,6 +52,7 @@
             </column>
             <column name="age" type="DECIMAL(6,2)"/>
             <column name="country_id" type="BIGINT"/>
+            <column name="primitive" type="INTEGER"/>
         </createTable>
         
         <createTable tableName="countries">

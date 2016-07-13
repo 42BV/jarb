@@ -26,6 +26,8 @@ public class Wine extends DefaultEntity {
     
     private transient String unmappedProperty;
     
+    private int primitive;
+
     @Length(min = 5)
     public String getName() {
         return name;
@@ -57,6 +59,14 @@ public class Wine extends DefaultEntity {
     
     public void setUnmappedProperty(String unmappedProperty) {
         this.unmappedProperty = unmappedProperty;
+    }
+    
+    public int getPrimitive() {
+        return primitive;
+    }
+    
+    public void setPrimitive(int primitive) {
+        this.primitive = primitive;
     }
     
 }
