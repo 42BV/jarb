@@ -12,7 +12,7 @@
 	<groupId>org.jarbframework</groupId>
 	<artifactId>jarb-parent</artifactId>
 	<packaging>pom</packaging>
-	<version>2.0.1-SNAPSHOT</version>
+	<version>3.1.0</version>
 	
     <name>Java Repository Bridge</name>
 	<description>Provides support for databases</description>
