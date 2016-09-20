@@ -50,14 +50,15 @@ public class DatabaseConstraintValidator {
 
     /**
      * Construct a new {@link DatabaseConstraintValidator}.
-     * @param DatabaseConstraintValidator DatabaseConstraintValidator
+     * @param beanMetadataRepository beanMetadataRepository
      * @param messageInterpolator messageInterpolator
      */
-    public DatabaseConstraintValidator(BeanMetadataRepository DatabaseConstraintValidator, MessageInterpolator messageInterpolator) {
+    public DatabaseConstraintValidator(BeanMetadataRepository beanMetadataRepository, MessageInterpolator messageInterpolator) {
         validationSteps = new ArrayList<DatabaseConstraintValidationStep>();
         validationSteps.add(new NotNullConstraintValidationStep());
         validationSteps.add(new LengthConstraintValidationStep());
         validationSteps.add(new FractionLengthConstraintValidationStep());
+        this.beanMetadataRepository = beanMetadataRepository;
         
         messageBuilder = new ViolationMessageBuilder(messageInterpolator);
     }
