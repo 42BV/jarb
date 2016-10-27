@@ -23,7 +23,7 @@ public class ConfigurableConstraintExceptionFactoryTest {
 
     @Test
     public void testCustomException() {
-        exceptionFactory.register(violation.getConstraintName(), EXACT, CarAlreadyExistsException.class);
+        exceptionFactory.register(new String[]{violation.getConstraintName()}, EXACT, CarAlreadyExistsException.class);
         Throwable exception = exceptionFactory.buildException(violation, null);
         assertTrue(exception instanceof CarAlreadyExistsException);
     }
