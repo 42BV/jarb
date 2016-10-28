@@ -14,7 +14,7 @@ public class NameMatchingPredicateTest {
 	
 	@Before
 	public void setUp() {
-		nameMatchingPredicate = new NameMatchingPredicate("uk_person_name", NameMatchingStrategy.EXACT);
+		nameMatchingPredicate = new NameMatchingPredicate(new String[]{"uk_person_name"}, NameMatchingStrategy.EXACT);
 	}
 
 	@Test

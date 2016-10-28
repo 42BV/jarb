@@ -60,24 +60,24 @@ public class ConfigurableConstraintExceptionFactory implements DatabaseConstrain
 
     /**
      * Register a custom exception for a constraint.
-     * @param constraintName name of the constraint
+     * @param constraintNames name of the constraint
      * @param matchingStrategy strategy used for matching
      * @param exceptionClass class of the exception (factory)
      * @return this factory instance, for chaining
      */
-    public ConfigurableConstraintExceptionFactory register(String constraintName, NameMatchingStrategy matchingStrategy, Class<?> exceptionClass) {
-        return register(constraintName, matchingStrategy, new ReflectionConstraintExceptionFactory(exceptionClass));
+    public ConfigurableConstraintExceptionFactory register(String[] constraintNames, NameMatchingStrategy matchingStrategy, Class<?> exceptionClass) {
+        return register(constraintNames, matchingStrategy, new ReflectionConstraintExceptionFactory(exceptionClass));
     }
     
     /**
      * Register a custom exception factory for a constraint.
-     * @param constraintName name of the constraint
+     * @param constraintNames name of the constraint
      * @param matchingStrategy strategy used for matching
      * @param exceptionFactory creates the exception
      * @return this factory instance, for chaining
      */
-    public ConfigurableConstraintExceptionFactory register(String constraintName, NameMatchingStrategy matchingStrategy, DatabaseConstraintExceptionFactory exceptionFactory) {
-        return register(new NameMatchingPredicate(constraintName, matchingStrategy), exceptionFactory);
+    public ConfigurableConstraintExceptionFactory register(String[] constraintNames, NameMatchingStrategy matchingStrategy, DatabaseConstraintExceptionFactory exceptionFactory) {
+        return register(new NameMatchingPredicate(constraintNames, matchingStrategy), exceptionFactory);
     }
 
     /**

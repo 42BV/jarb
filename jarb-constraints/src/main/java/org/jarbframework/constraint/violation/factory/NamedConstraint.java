@@ -19,8 +19,8 @@ public @interface NamedConstraint {
      * Name of the constraint <b>required</b>.
      * @return constraint name
      */
-    String value();
-    
+    String[] value();
+
     /**
      * Strategy used to match the name.
      * @return matching strategy
