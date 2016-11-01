@@ -34,7 +34,8 @@ public class NameMatchingPredicate implements ViolationPredicate {
     	
         String actualName = violation.getConstraintName();
         if (StringUtils.isNotBlank(actualName)) {
-            matches = Arrays.stream(expectedNames).anyMatch(expected -> expected.matches(actualName));
+            matches = Arrays.stream(expectedNames).anyMatch(expected ->
+                    matchingStrategy.matches(expected, actualName));
         }
         
         return matches;
