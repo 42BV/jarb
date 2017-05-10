@@ -74,8 +74,40 @@ public class BeanConstraintServiceTest {
         assertTrue(service.describeAll().isEmpty());
         
         service.registerAllWithAnnotation(TestConstraintsConfig.class, Entity.class);
-        
-        assertFalse(service.describeAll().isEmpty());
+
+        Map<String, Map<String, PropertyConstraintDescription>> constraints  = service.describeAll();
+        assertFalse(constraints.isEmpty());
+
+        // Testing the Person
+        Map<String, PropertyConstraintDescription> person = constraints.get("Person");
+
+        PropertyConstraintDescription name = person.get("name");
+        assertEquals(255, name.getMaximumLength().longValue());
+        assertTrue(name.isRequired());
+
+        PropertyConstraintDescription city = person.get("contact.address.city");
+        assertEquals(255, city.getMaximumLength().longValue());
+        assertTrue(city.isRequired());
+
+        PropertyConstraintDescription streetAndNumber = person.get("contact.address.streetAndNumber");
+        assertEquals(255, streetAndNumber.getMaximumLength().longValue());
+        assertTrue(streetAndNumber.isRequired());
+
+        // Testing the Car
+        Map<String, PropertyConstraintDescription> car = constraints.get("Car");
+
+        PropertyConstraintDescription licenseNumber = car.get("licenseNumber");
+        assertEquals(6, licenseNumber.getMaximumLength().longValue());
+        assertTrue(licenseNumber.isRequired());
+
+        PropertyConstraintDescription price = car.get("price");
+        assertEquals(6, price.getMaximumLength().longValue());
+        assertFalse(price.isRequired());
+        assertEquals(2, price.getFractionLength().longValue());
+        assertEquals(10, price.getRadix().longValue());
+
+        PropertyConstraintDescription active = car.get("active");
+        assertFalse(active.isRequired());
     }
 
     @Configuration
