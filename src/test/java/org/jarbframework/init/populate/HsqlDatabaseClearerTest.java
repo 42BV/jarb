@@ -9,7 +9,7 @@ import java.io.File;
 
 import javax.sql.DataSource;
 
-import org.jarbframework.init.DatabaseConfig;
+import org.jarbframework.init.InitTestConfig;
 import org.jarbframework.init.populate.HsqlDatabaseClearer;
 import org.jarbframework.init.populate.SqlDirectoryDatabasePopulator;
 import org.junit.Before;
@@ -27,7 +27,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
  * @since Apr 14, 2015
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = DatabaseConfig.class)
+@ContextConfiguration(classes = InitTestConfig.class)
 public class HsqlDatabaseClearerTest {
 
     @Autowired

@@ -41,6 +41,10 @@ public class SqlDatabasePopulator implements DatabasePopulator {
     public SqlDatabasePopulator(DataSource dataSource, File file) {
         this(dataSource, new FileSystemResource(file));
     }
+    
+    public SqlDatabasePopulator(DataSource dataSource, String path) {
+        this(dataSource, new File(path));
+    }
 
     public SqlDatabasePopulator(DataSource dataSource, Resource resource) {
         this.dataSource = notNull(dataSource, "Data source cannot be null.");

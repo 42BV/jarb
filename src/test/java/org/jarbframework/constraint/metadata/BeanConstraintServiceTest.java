@@ -11,7 +11,7 @@ import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 
 import org.jarbframework.constraint.DatabaseConstraintsConfigurer;
-import org.jarbframework.constraint.TestConstraintsConfig;
+import org.jarbframework.constraint.ConstraintsTestConfig;
 import org.jarbframework.constraint.domain.Country;
 import org.jarbframework.constraint.domain.Wine;
 import org.jarbframework.constraint.metadata.BeanConstraintServiceTest.CustomConstraintsConfig;
@@ -27,7 +27,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ActiveProfiles("hsqldb")
-@ContextConfiguration(classes = { TestConstraintsConfig.class, CustomConstraintsConfig.class })
+@ContextConfiguration(classes = { ConstraintsTestConfig.class, CustomConstraintsConfig.class })
 public class BeanConstraintServiceTest {
 
     @Autowired
@@ -73,7 +73,7 @@ public class BeanConstraintServiceTest {
     public void testDescribeAll() {
         assertTrue(service.describeAll().isEmpty());
         
-        service.registerAllWithAnnotation(TestConstraintsConfig.class, Entity.class);
+        service.registerAllWithAnnotation(ConstraintsTestConfig.class, Entity.class);
 
         Map<String, Map<String, PropertyConstraintDescription>> constraints  = service.describeAll();
         assertFalse(constraints.isEmpty());

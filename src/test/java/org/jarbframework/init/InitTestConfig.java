@@ -14,7 +14,7 @@ import org.springframework.jdbc.datasource.DriverManagerDataSource;
  * @since Apr 10, 2015
  */
 @Configuration
-public class DatabaseConfig {
+public class InitTestConfig {
     
     @Bean
     public DriverManagerDataSource dataSource() {

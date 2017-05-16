@@ -30,8 +30,8 @@ import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
 @Configuration
-@EnableDatabaseConstraints(basePackageClasses = TestConstraintsConfig.class)
-public class TestConstraintsConfig extends DatabaseConstraintsConfigurer {
+@EnableDatabaseConstraints(basePackageClasses = ConstraintsTestConfig.class)
+public class ConstraintsTestConfig extends DatabaseConstraintsConfigurer {
     
     @Autowired
     private DataSource dataSource;

@@ -5,7 +5,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import org.jarbframework.constraint.TestConstraintsConfig;
+import org.jarbframework.constraint.ConstraintsTestConfig;
 import org.jarbframework.constraint.domain.Wine;
 import org.jarbframework.constraint.metadata.PropertyConstraintDescription;
 import org.jarbframework.constraint.metadata.database.BeanMetadataRepository;
@@ -20,7 +20,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ActiveProfiles("hsqldb")
-@ContextConfiguration(classes = TestConstraintsConfig.class)
+@ContextConfiguration(classes = ConstraintsTestConfig.class)
 public class DatabasePropertyConstraintEnhancerTest {
     
     private DatabasePropertyConstraintEnhancer enhancer;

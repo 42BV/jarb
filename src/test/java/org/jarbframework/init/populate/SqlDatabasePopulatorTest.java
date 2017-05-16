@@ -5,7 +5,7 @@ import static org.junit.Assert.fail;
 
 import javax.sql.DataSource;
 
-import org.jarbframework.init.DatabaseConfig;
+import org.jarbframework.init.InitTestConfig;
 import org.jarbframework.init.populate.SqlDatabasePopulator;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -15,7 +15,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = DatabaseConfig.class)
+@ContextConfiguration(classes = InitTestConfig.class)
 public class SqlDatabasePopulatorTest {
 
     @Autowired

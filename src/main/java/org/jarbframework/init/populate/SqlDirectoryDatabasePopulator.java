@@ -4,18 +4,15 @@
 package org.jarbframework.init.populate;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.TreeSet;
-import java.util.stream.Collectors;
+import java.util.function.Predicate;
 
 import javax.sql.DataSource;
 
-import org.jarbframework.init.predicates.AndPredicate;
-import org.jarbframework.init.predicates.IsNotForOtherProduct;
-import org.jarbframework.init.predicates.IsSqlFile;
 import org.jarbframework.utils.Asserts;
-import org.jarbframework.utils.Predicate;
+import org.jarbframework.utils.predicates.AndPredicate;
+import org.jarbframework.utils.predicates.IsNotForOtherProduct;
+import org.jarbframework.utils.predicates.IsSqlFile;
 
 /**
  * Populator that runs all files in a directory.
@@ -32,7 +29,7 @@ public class SqlDirectoryDatabasePopulator implements DatabasePopulator {
     private final Predicate<File> predicate;
 
     public SqlDirectoryDatabasePopulator(DataSource dataSource, File baseDir) {
-        this(dataSource, baseDir, new AndPredicate<File>(new IsSqlFile(), new IsNotForOtherProduct(dataSource)));
+        this(dataSource, baseDir, new AndPredicate<>(new IsSqlFile(), new IsNotForOtherProduct(dataSource)));
     }
 
     public SqlDirectoryDatabasePopulator(DataSource dataSource, File baseDir, Predicate<File> predicate) {
@@ -50,37 +47,38 @@ public class SqlDirectoryDatabasePopulator implements DatabasePopulator {
      */
     @Override
     public void execute() {
-        List<File> files = getFilesInDirectory(baseDir);
-        for (File file : files) {
-            new SqlDatabasePopulator(dataSource, file).execute();
+        TreeSet<String> paths = getFilePaths(baseDir);
+        for (String path : paths) {
+            new SqlDatabasePopulator(dataSource, path).execute();
         }
     }
     
-    private List<File> getFilesInDirectory(File directory) {
-        List<File> files = new ArrayList<>();
-        for (File file : getSortedSubfiles(directory)) {
+    private TreeSet<String> getFilePaths(File directory) {
+        TreeSet<String> paths = new TreeSet<>();
+        for (String path : getSortedSubfiles(directory)) {
+            File file = new File(path);
             if (file.isDirectory()) {
-                files.addAll(getFilesInDirectory(file));
-            } else if (isAllowed(file)) {
-                files.add(file);
+                paths.addAll(getFilePaths(file));
+            } else if (isIncluded(file)) {
+                paths.add(path);
             }
         }
-        return files;
+        return paths;
     }
     
-    private List<File> getSortedSubfiles(File directory) {
+    private TreeSet<String> getSortedSubfiles(File directory) {
         TreeSet<String> found = new TreeSet<>();
         for (File subfile : directory.listFiles()) {
             found.add(subfile.getAbsolutePath());
         }
-        return found.stream().map(name -> new File(name)).collect(Collectors.toList());
+        return found;
     }
 
-    private boolean isAllowed(File file) {
+    private boolean isIncluded(File file) {
         if (predicate == null) {
             return true;
         }
-        return predicate.apply(file);
+        return predicate.test(file);
     }
 
 }

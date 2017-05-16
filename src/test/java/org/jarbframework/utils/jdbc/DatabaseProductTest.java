@@ -5,7 +5,7 @@ package org.jarbframework.utils.jdbc;
 
 import javax.sql.DataSource;
 
-import org.jarbframework.utils.DataSourceConfig;
+import org.jarbframework.utils.UtilsTestConfig;
 import org.jarbframework.utils.jdbc.DatabaseProduct;
 import org.junit.Assert;
 import org.junit.Test;
@@ -21,7 +21,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
  * @since Mar 13, 2014
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = DataSourceConfig.class)
+@ContextConfiguration(classes = UtilsTestConfig.class)
 public class DatabaseProductTest {
     
     @Autowired

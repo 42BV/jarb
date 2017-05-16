@@ -7,7 +7,7 @@ import static org.junit.Assert.assertEquals;
 
 import javax.sql.DataSource;
 
-import org.jarbframework.init.DatabaseConfig;
+import org.jarbframework.init.InitTestConfig;
 import org.jarbframework.init.populate.SqlDatabasePopulator;
 import org.jarbframework.init.populate.PopulateTest.PopulateConfig;
 import org.junit.Test;
@@ -50,7 +50,7 @@ public class PopulateTest {
     }
 
     @Configuration
-    @Import(DatabaseConfig.class)
+    @Import(InitTestConfig.class)
     public static class PopulateConfig {
 
         @Autowired

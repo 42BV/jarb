@@ -1,11 +1,10 @@
 /*
  * (C) 2014 42 bv (www.42.nl). All rights reserved.
  */
-package org.jarbframework.init.predicates;
+package org.jarbframework.utils.predicates;
 
 import java.io.File;
-
-import org.jarbframework.utils.Predicate;
+import java.util.function.Predicate;
 
 /**
  * Checks if a file ends with SQL.
@@ -21,7 +20,7 @@ public class IsSqlFile implements Predicate<File> {
      * {@inheritDoc}
      */
     @Override
-    public boolean apply(File input) {
+    public boolean test(File input) {
         return input.getName().toLowerCase().endsWith(SQL_SUFFIX);
     }
     

@@ -17,7 +17,7 @@ import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
  * @since Mar 13, 2014
  */
 @Configuration
-public class DataSourceConfig {
+public class UtilsTestConfig {
     
     @Bean
     public DataSource dataSource() {

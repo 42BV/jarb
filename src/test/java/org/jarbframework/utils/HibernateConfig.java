@@ -25,7 +25,7 @@ import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
  * @since Jul 8, 2014
  */
 @Configuration
-@Import(DataSourceConfig.class)
+@Import(UtilsTestConfig.class)
 public class HibernateConfig {
     
     @Autowired

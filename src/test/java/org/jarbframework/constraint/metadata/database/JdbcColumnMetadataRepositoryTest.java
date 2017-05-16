@@ -7,7 +7,7 @@ import static org.junit.Assert.assertTrue;
 
 import javax.sql.DataSource;
 
-import org.jarbframework.constraint.TestConstraintsConfig;
+import org.jarbframework.constraint.ConstraintsTestConfig;
 import org.jarbframework.utils.orm.ColumnReference;
 import org.junit.Before;
 import org.junit.Test;
@@ -19,7 +19,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ActiveProfiles("hsqldb")
-@ContextConfiguration(classes = TestConstraintsConfig.class)
+@ContextConfiguration(classes = ConstraintsTestConfig.class)
 public class JdbcColumnMetadataRepositoryTest {
 
     @Autowired

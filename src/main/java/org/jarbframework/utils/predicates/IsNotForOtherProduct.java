@@ -1,13 +1,13 @@
 /*
  * (C) 2014 42 bv (www.42.nl). All rights reserved.
  */
-package org.jarbframework.init.predicates;
+package org.jarbframework.utils.predicates;
 
 import java.io.File;
+import java.util.function.Predicate;
 
 import javax.sql.DataSource;
 
-import org.jarbframework.utils.Predicate;
 import org.jarbframework.utils.StringUtils;
 import org.jarbframework.utils.jdbc.DatabaseProduct;
 
@@ -34,7 +34,7 @@ public class IsNotForOtherProduct implements Predicate<File> {
      * {@inheritDoc}
      */
     @Override
-    public boolean apply(File input) {
+    public boolean test(File input) {
         String baseResourcePath = StringUtils.substringBeforeLast(input.getName(), ".");
         String resourceProductName = StringUtils.substringAfterLast(baseResourcePath, "@");
         return StringUtils.isBlank(resourceProductName) || product.getShortName().equalsIgnoreCase(resourceProductName);

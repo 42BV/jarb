@@ -6,7 +6,7 @@ import java.io.File;
 
 import javax.sql.DataSource;
 
-import org.jarbframework.init.DatabaseConfig;
+import org.jarbframework.init.InitTestConfig;
 import org.jarbframework.init.populate.SqlDirectoryDatabasePopulator;
 import org.junit.Before;
 import org.junit.Test;
@@ -17,7 +17,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = DatabaseConfig.class)
+@ContextConfiguration(classes = InitTestConfig.class)
 public class SqlDirectoryDatabasePopulatorTest {
 
     @Autowired
