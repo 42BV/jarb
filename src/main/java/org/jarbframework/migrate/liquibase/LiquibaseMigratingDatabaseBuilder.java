@@ -1,9 +1,9 @@
 /*
  * (C) 2013 42 bv (www.42.nl). All rights reserved.
  */
-package org.jarbframework.init.migrate.liquibase;
+package org.jarbframework.migrate.liquibase;
 
-import org.jarbframework.init.migrate.MigratingDatabaseBuilder;
+import org.jarbframework.migrate.MigratingDatabaseBuilder;
 
 /**
  * Embedded database builder that also migrates the schema.

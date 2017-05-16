@@ -37,7 +37,7 @@
         </property>
     </bean>
         
-    <bean id="migrator" class="org.jarbframework.init.migrate.liquibase.LiquibaseMigrator">
+    <bean id="migrator" class="org.jarbframework.migrate.liquibase.LiquibaseMigrator">
         <property name="changeLogPath" value="src/test/resources/create-schema.xml"/>
     </bean>
     
@@ -55,7 +55,7 @@
     		</constructor-arg>
     	</bean>
     
-        <bean id="dataSource" class="org.jarbframework.init.migrate.MigratingDataSource">
+        <bean id="dataSource" class="org.jarbframework.migrate.MigratingDataSource">
 	        <constructor-arg>
 	            <bean class="org.springframework.jdbc.datasource.DriverManagerDataSource">
 	                <property name="driverClassName" value="org.hsqldb.jdbcDriver"/>
@@ -76,7 +76,7 @@
     		</constructor-arg>
     	</bean>
     
-        <bean id="dataSource" class="org.jarbframework.init.migrate.MigratingDataSource">
+        <bean id="dataSource" class="org.jarbframework.migrate.MigratingDataSource">
             <constructor-arg>
                 <bean class="org.springframework.jdbc.datasource.DriverManagerDataSource">
                     <property name="driverClassName" value="org.h2.Driver"/>

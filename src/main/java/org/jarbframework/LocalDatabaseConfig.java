@@ -1,22 +1,22 @@
 /*
  * (C) 2014 42 bv (www.42.nl). All rights reserved.
  */
-package org.jarbframework.init;
+package org.jarbframework;
 
 import java.io.File;
 import java.io.IOException;
 
 import javax.sql.DataSource;
 
-import org.jarbframework.init.migrate.DatabaseMigrator;
-import org.jarbframework.init.migrate.MigratingDatabaseBuilder;
-import org.jarbframework.init.migrate.liquibase.LiquibaseMigrator;
-import org.jarbframework.init.populate.DatabasePopulator;
-import org.jarbframework.init.populate.PopulatingApplicationListener;
-import org.jarbframework.init.populate.PopulatingApplicationListenerBuilder;
-import org.jarbframework.init.populate.PopulatingApplicationListenerBuilder.DatabasePopulateAppender;
-import org.jarbframework.init.populate.SqlDatabasePopulator;
-import org.jarbframework.init.populate.SqlDirectoryDatabasePopulator;
+import org.jarbframework.migrate.DatabaseMigrator;
+import org.jarbframework.migrate.MigratingDatabaseBuilder;
+import org.jarbframework.migrate.liquibase.LiquibaseMigrator;
+import org.jarbframework.populate.DatabasePopulator;
+import org.jarbframework.populate.PopulatingApplicationListener;
+import org.jarbframework.populate.PopulatingApplicationListenerBuilder;
+import org.jarbframework.populate.SqlDatabasePopulator;
+import org.jarbframework.populate.SqlDirectoryDatabasePopulator;
+import org.jarbframework.populate.PopulatingApplicationListenerBuilder.DatabasePopulateAppender;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.io.Resource;

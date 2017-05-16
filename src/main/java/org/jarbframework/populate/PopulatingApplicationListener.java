@@ -1,4 +1,4 @@
-package org.jarbframework.init.populate;
+package org.jarbframework.populate;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 

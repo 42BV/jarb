@@ -5,7 +5,7 @@ package org.jarbframework.init.migrate.liquibase;
 
 import static org.junit.Assert.assertEquals;
 
-import org.jarbframework.init.migrate.liquibase.LiquibaseMigratingDatabaseBuilder;
+import org.jarbframework.migrate.liquibase.LiquibaseMigratingDatabaseBuilder;
 import org.junit.Test;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabase;

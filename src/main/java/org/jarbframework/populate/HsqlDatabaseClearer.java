@@ -1,7 +1,7 @@
 /*
  * (C) 2014 42 bv (www.42.nl). All rights reserved.
  */
-package org.jarbframework.init.populate;
+package org.jarbframework.populate;
 
 import javax.sql.DataSource;
 

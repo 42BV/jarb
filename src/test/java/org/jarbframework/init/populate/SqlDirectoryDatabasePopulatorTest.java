@@ -7,7 +7,7 @@ import java.io.File;
 import javax.sql.DataSource;
 
 import org.jarbframework.init.InitTestConfig;
-import org.jarbframework.init.populate.SqlDirectoryDatabasePopulator;
+import org.jarbframework.populate.SqlDirectoryDatabasePopulator;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

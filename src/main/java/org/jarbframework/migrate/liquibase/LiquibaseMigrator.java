@@ -1,4 +1,4 @@
-package org.jarbframework.init.migrate.liquibase;
+package org.jarbframework.migrate.liquibase;
 
 import java.io.FileWriter;
 import java.io.IOException;
@@ -15,7 +15,7 @@ import liquibase.exception.LiquibaseException;
 import liquibase.resource.FileSystemResourceAccessor;
 import liquibase.resource.ResourceAccessor;
 
-import org.jarbframework.init.migrate.DatabaseMigrator;
+import org.jarbframework.migrate.DatabaseMigrator;
 import org.jarbframework.utils.Classes;
 
 /**

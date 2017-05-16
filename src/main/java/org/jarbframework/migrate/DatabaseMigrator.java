@@ -1,4 +1,4 @@
-package org.jarbframework.init.migrate;
+package org.jarbframework.migrate;
 
 import java.sql.Connection;
 

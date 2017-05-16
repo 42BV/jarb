@@ -11,8 +11,8 @@ import javax.validation.ValidatorFactory;
 
 import org.hibernate.dialect.HSQLDialect;
 import org.hibernate.jpa.HibernatePersistenceProvider;
-import org.jarbframework.init.migrate.MigratingDataSource;
-import org.jarbframework.init.migrate.liquibase.LiquibaseMigrator;
+import org.jarbframework.migrate.MigratingDataSource;
+import org.jarbframework.migrate.liquibase.LiquibaseMigrator;
 import org.jarbframework.utils.orm.hibernate.ConventionImplicitNamingStrategy;
 import org.jarbframework.utils.orm.hibernate.ConventionPhysicalNamingStrategy;
 import org.springframework.beans.factory.annotation.Autowired;

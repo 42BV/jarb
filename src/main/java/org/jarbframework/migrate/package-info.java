@@ -2,4 +2,4 @@
  * Enables database migration in your spring configuration. Note that
  * this package becomes irrelevant when using spring boot.
  */
-package org.jarbframework.init.migrate;
+package org.jarbframework.migrate;

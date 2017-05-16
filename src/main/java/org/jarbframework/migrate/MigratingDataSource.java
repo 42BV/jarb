@@ -1,4 +1,4 @@
-package org.jarbframework.init.migrate;
+package org.jarbframework.migrate;
 
 import static org.jarbframework.utils.jdbc.JdbcUtils.closeQuietly;
 import static org.jarbframework.utils.jdbc.JdbcUtils.commitSafely;

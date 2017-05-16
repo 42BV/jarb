@@ -5,8 +5,8 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 
-import org.jarbframework.init.populate.DatabasePopulator;
-import org.jarbframework.init.populate.PopulatingApplicationListener;
+import org.jarbframework.populate.DatabasePopulator;
+import org.jarbframework.populate.PopulatingApplicationListener;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.context.ApplicationContext;
