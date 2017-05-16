@@ -6,6 +6,8 @@ import java.beans.PropertyDescriptor;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.Embeddable;
+
 import org.jarbframework.constraint.metadata.enhance.PropertyConstraintEnhancer;
 import org.jarbframework.utils.bean.BeanRegistry;
 import org.jarbframework.utils.bean.MapBeanRegistry;
@@ -63,8 +65,14 @@ public class BeanConstraintDescriptor {
     public BeanConstraintDescription describeBean(Class<?> beanClass) {
         BeanConstraintDescription beanDescription = new BeanConstraintDescription(beanClass);
         for (PropertyDescriptor propertyDescriptor : BeanUtils.getPropertyDescriptors(beanClass)) {
-            if (propertyDescriptor.getPropertyType() != null) {
-                beanDescription.addProperty(describeProperty(beanClass, propertyDescriptor));
+            Class<?> klass = propertyDescriptor.getPropertyType();
+
+            if (klass != null) {
+                if (klass.isAnnotationPresent(Embeddable.class)) {
+                    describeEmbeddable(beanDescription, beanClass, klass, propertyDescriptor.getName());
+                } else {
+                    beanDescription.addProperty(describeProperty(beanClass, propertyDescriptor, propertyDescriptor.getName()));
+                }
             }
         }
         return beanDescription;
@@ -75,10 +83,11 @@ public class BeanConstraintDescriptor {
      * 
      * @param beanClass type of bean that contains the property
      * @param descriptor plain property description from java
+     * @param path the path to the property from the beanClass.
      * @return property constraint description
      */
-    private PropertyConstraintDescription describeProperty(Class<?> beanClass, PropertyDescriptor descriptor) {
-        PropertyConstraintDescription description = doDescribeProperty(beanClass, descriptor);
+    private PropertyConstraintDescription describeProperty(Class<?> beanClass, PropertyDescriptor descriptor, String path) {
+        PropertyConstraintDescription description = doDescribeProperty(beanClass, descriptor, path);
         for (PropertyConstraintEnhancer enhancer : enhancers) {
             enhancer.enhance(description);
         }
@@ -90,11 +99,35 @@ public class BeanConstraintDescriptor {
      * 
      * @param beanClass type of bean that contains the property
      * @param descriptor plain property description from java
+     * @param path the path to the property from the beanClass.
      * @return new property constraint description
      */
-    private PropertyConstraintDescription doDescribeProperty(Class<?> beanClass, PropertyDescriptor descriptor) {
-        PropertyReference reference = new PropertyReference(beanClass, descriptor.getName());
+    private PropertyConstraintDescription doDescribeProperty(Class<?> beanClass, PropertyDescriptor descriptor, String path) {
+        PropertyReference reference = new PropertyReference(beanClass, path);
         return new PropertyConstraintDescription(reference, descriptor.getPropertyType());
+    }
+
+    /**
+     * Take an embedable and walk through each property and add it to the beanDescription.
+     *
+     * @param beanDescription Constains the current descriptions for the bean.
+     * @param beanClass The Bean which is described
+     * @param embeddable The Embeddable which fields needs to be added to the beanDescription.
+     * @param path The current path from the bean to the embeddable field.
+     */
+    private void describeEmbeddable(BeanConstraintDescription beanDescription, Class<?> beanClass , Class<?> embeddable, String path) {
+        for (PropertyDescriptor propertyDescriptor : BeanUtils.getPropertyDescriptors(embeddable)) {
+            Class<?> klass = propertyDescriptor.getPropertyType();
+
+            if (klass != null) {
+                if (klass.isAnnotationPresent(Embeddable.class)) {
+                    describeEmbeddable(beanDescription, beanClass, klass, path + "." + propertyDescriptor.getName());
+                } else {
+                    String fullPath = path + "." + propertyDescriptor.getName();
+                    beanDescription.addProperty(describeProperty(beanClass, propertyDescriptor, fullPath));
+                }
+            }
+        }
     }
 
     /**

@@ -39,7 +39,7 @@ public class BeanConstraintService {
         Map<String, Map<String, PropertyConstraintDescription>> descriptions = new HashMap<>();
         for (Class<?> entityClass : entityClasses) {
             Map<String, PropertyConstraintDescription> properties = describe(entityClass);
-            descriptions.put(getEntityName(entityClass), properties);
+            descriptions.put(entityClass.getSimpleName(), properties);
         }
         return descriptions;
     }
@@ -56,9 +56,6 @@ public class BeanConstraintService {
         return properties;
     }
 
-    protected String getEntityName(Class<?> entityClass) {
-        return entityClass.getName();
-    }
 
     public void registerClass(Class<?> entityClass) {
         entityClasses.add(entityClass);
