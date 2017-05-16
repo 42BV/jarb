@@ -39,9 +39,13 @@ public class BeanConstraintService {
         Map<String, Map<String, PropertyConstraintDescription>> descriptions = new HashMap<>();
         for (Class<?> entityClass : entityClasses) {
             Map<String, PropertyConstraintDescription> properties = describe(entityClass);
-            descriptions.put(entityClass.getSimpleName(), properties);
+            descriptions.put(getEntityName(entityClass), properties);
         }
         return descriptions;
+    }
+
+    protected String getEntityName(Class<?> entityClass) {
+        return entityClass.getSimpleName();
     }
     
     /**
