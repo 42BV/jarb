@@ -6,8 +6,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import javax.persistence.Entity;
-
 import org.jarbframework.utils.ClassScanner;
 
 /**
@@ -17,7 +15,7 @@ public class BeanConstraintService {
 
     private final Set<String> ignoredProperties = new HashSet<>();
     
-    private final Set<Class<?>> entityClasses = new HashSet<>();
+    private final Set<Class<?>> beanTypes = new HashSet<>();
 
     private final BeanConstraintDescriptor beanConstraintDescriptor;
     
@@ -37,15 +35,15 @@ public class BeanConstraintService {
      */
     public Map<String, Map<String, PropertyConstraintDescription>> describeAll() {
         Map<String, Map<String, PropertyConstraintDescription>> descriptions = new HashMap<>();
-        for (Class<?> entityClass : entityClasses) {
-            Map<String, PropertyConstraintDescription> properties = describe(entityClass);
-            descriptions.put(getEntityName(entityClass), properties);
+        for (Class<?> beanType : beanTypes) {
+            Map<String, PropertyConstraintDescription> properties = describe(beanType);
+            descriptions.put(getTypeName(beanType), properties);
         }
         return descriptions;
     }
 
-    protected String getEntityName(Class<?> entityClass) {
-        return entityClass.getSimpleName();
+    protected String getTypeName(Class<?> beanType) {
+        return beanType.getSimpleName();
     }
     
     /**
@@ -60,23 +58,38 @@ public class BeanConstraintService {
         return properties;
     }
 
-
-    public void registerClass(Class<?> entityClass) {
-        entityClasses.add(entityClass);
+    /**
+     * Registers a class.
+     * @param beanType the bean type
+     */
+    public void registerClass(Class<?> beanType) {
+        beanTypes.add(beanType);
     }
     
+    /**
+     * Registers all classes in a package with an annotation.
+     * @param basePackageClass the base package class
+     * @param annotationClass the annotation type
+     */
     public void registerAllWithAnnotation(Class<?> basePackageClass, Class<? extends Annotation> annotationClass) {
         String basePackage = basePackageClass.getPackage().getName();
         registerAllWithAnnotation(basePackage, annotationClass);
     }
     
+    /**
+     * Registers all classes in a package with an annotation.
+     * @param basePackage the base package
+     * @param annotationClass the annotation type
+     */
     public void registerAllWithAnnotation(String basePackage, Class<? extends Annotation> annotationClass) {
-        Set<Class<?>> entityClasses = ClassScanner.getAllWithAnnotation(basePackage, Entity.class);
-        for (Class<?> entityClass : entityClasses) {
-            registerClass(entityClass);
-        }
+        Set<Class<?>> beanTypes = ClassScanner.getAllWithAnnotation(basePackage, annotationClass);
+        beanTypes.forEach(beanType -> registerClass(beanType));
     }
 
+    /**
+     * Retrieves all ignored properties.
+     * @return the ignored properties
+     */
     public Set<String> getIgnoredProperties() {
         return ignoredProperties;
     }

@@ -19,11 +19,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
  */
 @Controller
 @RequestMapping("/constraint")
-public class BeanConstraintDescriptorController {
+public class BeanConstraintController {
     
     private final BeanConstraintDescriptor beanConstraintDescriptor;
     
-    public BeanConstraintDescriptorController(BeanConstraintDescriptor beanConstraintDescriptor) {
+    public BeanConstraintController(BeanConstraintDescriptor beanConstraintDescriptor) {
         this.beanConstraintDescriptor = beanConstraintDescriptor;
     }
     
