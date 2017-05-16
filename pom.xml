@@ -31,7 +31,6 @@
         <module>jarb-utils</module>
         <module>jarb-init</module>
 		<module>jarb-constraints</module>
-		<module>jarb-sample</module>
 	</modules>
 
 	<developers>

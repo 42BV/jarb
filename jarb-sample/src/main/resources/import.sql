@@ -1,1 +1,0 @@
-INSERT INTO posts (posted_on, author, title, message) VALUES (NOW(), 'jeroen@42.nl', 'inserted via sql', 'some message');
