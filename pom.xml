@@ -10,7 +10,7 @@
 	</parent>
 
 	<groupId>org.jarbframework</groupId>
-	<artifactId>jarb-parent</artifactId>
+	<artifactId>jarb</artifactId>
 	<packaging>jar</packaging>
 	<version>4.0.0-SNAPSHOT</version>
 	
@@ -94,23 +94,7 @@
             </plugin>
 		</plugins>
 	</build>
-       
-    <dependencyManagement>
-	    <dependencies>
-	        <!-- Migrations -->
-		    <dependency>
-	            <groupId>org.liquibase</groupId>
-	            <artifactId>liquibase-core</artifactId>
-	            <version>3.1.1</version>
-	        </dependency>
-	        <dependency>
-	            <groupId>com.mattbertolini</groupId>
-	            <artifactId>liquibase-slf4j</artifactId>
-	            <version>1.2.1</version>
-	        </dependency>
-	    </dependencies>
-    </dependencyManagement>
-    
+
 	<dependencies>
 		<!-- Spring integration -->
 		<dependency>
@@ -180,11 +164,13 @@
         <dependency>
             <groupId>org.liquibase</groupId>
             <artifactId>liquibase-core</artifactId>
+            <version>3.1.1</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.mattbertolini</groupId>
             <artifactId>liquibase-slf4j</artifactId>
+            <version>1.2.1</version>
             <scope>provided</scope>
         </dependency>
         
