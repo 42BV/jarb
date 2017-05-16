@@ -23,6 +23,7 @@ public class LiquibaseMigratingDatabaseBuilderTest {
     public void testBuildEmbeddedDatabase() {
         EmbeddedDatabase database = new LiquibaseMigratingDatabaseBuilder()
             .setChangeLogPath("src/test/resources/changelog.xml")
+            .setName("jarb-init-embedded")
             .setType(EmbeddedDatabaseType.HSQL)
                 .build();
         

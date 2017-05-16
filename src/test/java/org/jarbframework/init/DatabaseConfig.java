@@ -20,7 +20,7 @@ public class DatabaseConfig {
     public DriverManagerDataSource dataSource() {
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
         dataSource.setDriverClassName("org.hsqldb.jdbcDriver");
-        dataSource.setUrl("jdbc:hsqldb:mem:jarb");
+        dataSource.setUrl("jdbc:hsqldb:mem:jarb-init");
         dataSource.setUsername("sa");
         return dataSource;
     }

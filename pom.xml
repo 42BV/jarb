@@ -11,8 +11,8 @@
 
 	<groupId>org.jarbframework</groupId>
 	<artifactId>jarb-parent</artifactId>
-	<packaging>pom</packaging>
-	<version>3.1.4-SNAPSHOT</version>
+	<packaging>jar</packaging>
+	<version>4.0.0-SNAPSHOT</version>
 	
     <name>Java Repository Bridge</name>
 	<description>Provides support for databases</description>
@@ -27,13 +27,7 @@
 		</license>
 	</licenses>
 
-	<modules>
-        <module>jarb-utils</module>
-        <module>jarb-init</module>
-		<module>jarb-constraints</module>
-	</modules>
-
-	<developers>
+    <developers>
 		<developer>
 			<name>Jeroen van Schagen</name>
 			<email>jeroen.van.schagen@42.nl</email>
@@ -125,7 +119,75 @@
 			<version>${spring.version}</version>
 			<scope>provided</scope>
 		</dependency>
-	
+	       <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-orm</artifactId>
+            <version>${spring.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-jdbc</artifactId>
+            <version>${spring.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-webmvc</artifactId>
+            <version>${spring.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        
+        <!-- Joda time integration -->
+        <dependency>
+            <groupId>joda-time</groupId>
+            <artifactId>joda-time</artifactId>
+            <version>2.3</version>
+            <scope>provided</scope>
+        </dependency>
+        
+        <!-- Hibernate JPA -->
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-entitymanager</artifactId>
+            <version>${hibernate.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-validator</artifactId>
+            <version>${hibernate.validator.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>javax.el</groupId>
+            <artifactId>el-api</artifactId>
+            <version>2.2</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>javassist</groupId>
+            <artifactId>javassist</artifactId>
+            <version>3.12.0.GA</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.web</groupId>
+            <artifactId>el-impl</artifactId>
+            <version>2.2</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.liquibase</groupId>
+            <artifactId>liquibase-core</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.mattbertolini</groupId>
+            <artifactId>liquibase-slf4j</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        
 		<!-- Logging -->
 		<dependency>
 			<groupId>org.slf4j</groupId>
@@ -177,47 +239,37 @@
             <version>${spring.version}</version>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>org.liquibase</groupId>
-            <artifactId>liquibase-core</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.mattbertolini</groupId>
-            <artifactId>liquibase-slf4j</artifactId>
-            <scope>test</scope>
-        </dependency>
         
 		<!-- Supported database drivers -->
         <dependency>
             <groupId>org.hsqldb</groupId>
             <artifactId>hsqldb</artifactId>
             <version>${hsqldb.version}</version>
-            <scope>test</scope>
+            <scope>provided</scope>
         </dependency>
         <dependency>
 	        <groupId>com.h2database</groupId>
 	        <artifactId>h2</artifactId>
 	        <version>1.3.171</version>
-	        <scope>test</scope>
+	        <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>postgresql</groupId>
             <artifactId>postgresql</artifactId>
             <version>9.0-801.jdbc4</version>
-            <scope>test</scope>
+            <scope>provided</scope>
         </dependency>
 		<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
 			<version>5.1.9</version>
-			<scope>test</scope>
+			<scope>provided</scope>
 		</dependency>
         <dependency>
             <groupId>com.oracle</groupId>
             <artifactId>ojdbc6</artifactId>
             <version>11.2.0.3</version>
-            <scope>test</scope>
+            <scope>provided</scope>
         </dependency>
 	</dependencies>
 
