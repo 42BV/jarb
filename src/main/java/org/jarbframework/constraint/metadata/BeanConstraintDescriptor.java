@@ -3,6 +3,7 @@ package org.jarbframework.constraint.metadata;
 import static org.jarbframework.utils.Asserts.notNull;
 
 import java.beans.PropertyDescriptor;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,6 +14,7 @@ import org.jarbframework.utils.bean.BeanRegistry;
 import org.jarbframework.utils.bean.MapBeanRegistry;
 import org.jarbframework.utils.bean.PropertyReference;
 import org.springframework.beans.BeanUtils;
+import org.springframework.util.ReflectionUtils;
 
 /**
  * Generates bean constraint metadata.
@@ -65,11 +67,10 @@ public class BeanConstraintDescriptor {
     public BeanConstraintDescription describeBean(Class<?> beanClass) {
         BeanConstraintDescription beanDescription = new BeanConstraintDescription(beanClass);
         for (PropertyDescriptor propertyDescriptor : BeanUtils.getPropertyDescriptors(beanClass)) {
-            Class<?> klass = propertyDescriptor.getPropertyType();
-
-            if (klass != null) {
-                if (klass.isAnnotationPresent(Embeddable.class)) {
-                    describeEmbeddable(beanDescription, beanClass, klass, propertyDescriptor.getName());
+            Field field = ReflectionUtils.findField(beanClass, propertyDescriptor.getName());
+            if (field != null) {
+                if (field.getType().isAnnotationPresent(Embeddable.class)) {
+                    describeEmbeddable(beanDescription, beanClass, field.getType(), propertyDescriptor.getName());
                 } else {
                     beanDescription.addProperty(describeProperty(beanClass, propertyDescriptor, propertyDescriptor.getName()));
                 }

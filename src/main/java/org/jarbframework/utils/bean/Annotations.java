@@ -49,7 +49,7 @@ public class Annotations {
         Field field = findField(finalReference);
         Method getter = findReadMethod(finalReference);
 
-        Set<Annotation> annotations = new HashSet<Annotation>();
+        Set<Annotation> annotations = new HashSet<>();
         annotations.addAll(Arrays.asList(getAnnotations(field)));
         annotations.addAll(Arrays.asList(getAnnotations(getter)));
         return annotations;
