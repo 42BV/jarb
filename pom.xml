@@ -12,7 +12,7 @@
 	<groupId>org.jarbframework</groupId>
 	<artifactId>jarb</artifactId>
 	<packaging>jar</packaging>
-	<version>4.0.2-SNAPSHOT</version>
+	<version>4.0.2</version>
 	
     <name>Java Repository Bridge</name>
 	<description>Provides support for databases</description>
