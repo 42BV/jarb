@@ -1,87 +1,88 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
-	<modelVersion>4.0.0</modelVersion>
+    <modelVersion>4.0.0</modelVersion>
 
-	<parent>
-		<groupId>org.sonatype.oss</groupId>
-		<artifactId>oss-parent</artifactId>
-		<version>9</version>
-	</parent>
+    <parent>
+        <groupId>org.sonatype.oss</groupId>
+        <artifactId>oss-parent</artifactId>
+        <version>9</version>
+    </parent>
 
-	<groupId>org.jarbframework</groupId>
-	<artifactId>jarb</artifactId>
-	<packaging>jar</packaging>
-	<version>4.0.3-SNAPSHOT</version>
-	
+    <groupId>org.jarbframework</groupId>
+    <artifactId>jarb</artifactId>
+    <packaging>jar</packaging>
+    <version>4.0.3-SNAPSHOT</version>
+
     <name>Java Repository Bridge</name>
-	<description>Provides support for databases</description>
-	<url>http://www.jarbframework.org</url>
-	<inceptionYear>2011</inceptionYear>
-	
-	<licenses>
-		<license>
-		    <name>Apache 2</name>
-		    <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
-		    <distribution>repo</distribution>
-		</license>
-	</licenses>
+    <description>Provides support for databases</description>
+    <url>http://www.jarbframework.org</url>
+    <inceptionYear>2011</inceptionYear>
+
+    <licenses>
+        <license>
+            <name>Apache 2</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
 
     <developers>
-		<developer>
-			<name>Jeroen van Schagen</name>
-			<email>jeroen.van.schagen@42.nl</email>
-		</developer>
-	</developers>
+        <developer>
+            <name>Jeroen van Schagen</name>
+            <email>jeroen.van.schagen@42.nl</email>
+        </developer>
+    </developers>
 
-	<scm>
-		<connection>scm:git:https://github.com/42BV/jarb.git</connection>
-		<developerConnection>scm:git:https://github.com/42BV/jarb.git</developerConnection>
-		<url>https://github.com/42BV/jarb</url>
-		<tag>HEAD</tag>
-	</scm>
+    <scm>
+        <connection>scm:git:https://github.com/42BV/jarb.git</connection>
+        <developerConnection>scm:git:https://github.com/42BV/jarb.git</developerConnection>
+        <url>https://github.com/42BV/jarb</url>
+        <tag>HEAD</tag>
+    </scm>
 
-	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		
-		<!-- Java version -->
-		<jdk.version>1.8</jdk.version>
-		
-		<!-- Dependency versions -->
-		<spring.version>4.2.1.RELEASE</spring.version>
-        <hibernate.version>5.0.2.Final</hibernate.version>
-        <hibernate.validator.version>5.2.2.Final</hibernate.validator.version>
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+        <!-- Java version -->
+        <jdk.version>1.8</jdk.version>
+
+        <!-- Dependency versions -->
+        <spring.version>5.0.7.RELEASE</spring.version>
+        <hibernate.version>5.3.1.Final</hibernate.version>
+        <hibernate.validator.version>6.0.10.Final</hibernate.validator.version>
         <hamcrest.version>1.3</hamcrest.version>
-		<slf4j.version>1.7.5</slf4j.version>
-		<hsqldb.version>2.3.2</hsqldb.version>
-		
+        <slf4j.version>1.7.5</slf4j.version>
+        <hsqldb.version>2.4.1</hsqldb.version>
+
         <clover.version>3.1.4</clover.version>
         <!-- Sonar properties -->
         <sonar.clover.version>${clover.version}</sonar.clover.version>
         <sonar.java.version>${jdk.version}</sonar.java.version>
-	</properties>
+    </properties>
 
-	<build>
-		<pluginManagement>
-			<plugins>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-compiler-plugin</artifactId>
-					<configuration>
-						<source>${jdk.version}</source>
-						<target>${jdk.version}</target>
-		        		<encoding>${project.build.sourceEncoding}</encoding>
-					</configuration>
-				</plugin>
-				<!-- When deploying activate the "sonatype-oss-release" profile -->
-          		<plugin>
-              		<groupId>org.apache.maven.plugins</groupId>
-              		<artifactId>maven-deploy-plugin</artifactId>
-              		<version>2.6</version>
-          		</plugin>
-			</plugins>
-		</pluginManagement>
-		<plugins>
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <configuration>
+                        <source>${jdk.version}</source>
+                        <target>${jdk.version}</target>
+                        <encoding>${project.build.sourceEncoding}</encoding>
+                    </configuration>
+                </plugin>
+                <!-- When deploying activate the "sonatype-oss-release" profile -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-deploy-plugin</artifactId>
+                    <version>2.6</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+        <plugins>
             <plugin>
                 <groupId>com.atlassian.maven.plugins</groupId>
                 <artifactId>maven-clover2-plugin</artifactId>
@@ -92,18 +93,18 @@
                     <jdk>${jdk.version}</jdk>
                 </configuration>
             </plugin>
-		</plugins>
-	</build>
+        </plugins>
+    </build>
 
-	<dependencies>
-		<!-- Spring integration -->
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-context</artifactId>
-			<version>${spring.version}</version>
-			<scope>provided</scope>
-		</dependency>
-	       <dependency>
+    <dependencies>
+        <!-- Spring integration -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+            <version>${spring.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-orm</artifactId>
             <version>${spring.version}</version>
@@ -121,7 +122,7 @@
             <version>${spring.version}</version>
             <scope>provided</scope>
         </dependency>
-        
+
         <!-- Joda time integration -->
         <dependency>
             <groupId>joda-time</groupId>
@@ -129,7 +130,7 @@
             <version>2.3</version>
             <scope>provided</scope>
         </dependency>
-        
+
         <!-- Hibernate JPA -->
         <dependency>
             <groupId>org.hibernate</groupId>
@@ -145,9 +146,8 @@
         </dependency>
         <dependency>
             <groupId>javax.el</groupId>
-            <artifactId>el-api</artifactId>
-            <version>2.2</version>
-            <scope>provided</scope>
+            <artifactId>javax.el-api</artifactId>
+            <version>3.0.0</version>
         </dependency>
         <dependency>
             <groupId>javassist</groupId>
@@ -173,28 +173,28 @@
             <version>1.2.1</version>
             <scope>provided</scope>
         </dependency>
-        
-		<!-- Logging -->
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-api</artifactId>
-			<version>${slf4j.version}</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-log4j12</artifactId>
-			<version>${slf4j.version}</version>
-			<scope>provided</scope>
-		</dependency>
 
-		<!-- Testing -->
-	    <dependency>
-	        <groupId>org.jmockit</groupId>
-	        <artifactId>jmockit</artifactId>
-	        <version>1.16</version>
-	        <scope>test</scope>
-	    </dependency>
+        <!-- Logging -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${slf4j.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
+            <version>${slf4j.version}</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- Testing -->
+        <dependency>
+            <groupId>org.jmockit</groupId>
+            <artifactId>jmockit</artifactId>
+            <version>1.16</version>
+            <scope>test</scope>
+        </dependency>
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
@@ -212,21 +212,21 @@
             <artifactId>hamcrest-library</artifactId>
             <version>${hamcrest.version}</version>
             <scope>test</scope>
-        </dependency>     
+        </dependency>
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
             <version>1.10.19</version>
             <scope>test</scope>
         </dependency>
-		<dependency>
+        <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-test</artifactId>
             <version>${spring.version}</version>
             <scope>test</scope>
         </dependency>
-        
-		<!-- Supported database drivers -->
+
+        <!-- Supported database drivers -->
         <dependency>
             <groupId>org.hsqldb</groupId>
             <artifactId>hsqldb</artifactId>
@@ -234,10 +234,10 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-	        <groupId>com.h2database</groupId>
-	        <artifactId>h2</artifactId>
-	        <version>1.3.171</version>
-	        <scope>provided</scope>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <version>1.3.171</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>postgresql</groupId>
@@ -245,18 +245,18 @@
             <version>9.0-801.jdbc4</version>
             <scope>provided</scope>
         </dependency>
-		<dependency>
-			<groupId>mysql</groupId>
-			<artifactId>mysql-connector-java</artifactId>
-			<version>5.1.9</version>
-			<scope>provided</scope>
-		</dependency>
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>5.1.9</version>
+            <scope>provided</scope>
+        </dependency>
         <dependency>
             <groupId>com.oracle</groupId>
             <artifactId>ojdbc6</artifactId>
             <version>11.2.0.3</version>
             <scope>provided</scope>
         </dependency>
-	</dependencies>
+    </dependencies>
 
 </project>
