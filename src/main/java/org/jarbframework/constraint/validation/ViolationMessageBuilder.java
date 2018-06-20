@@ -15,6 +15,7 @@ import javax.validation.ConstraintValidator;
 import javax.validation.MessageInterpolator;
 import javax.validation.Payload;
 import javax.validation.metadata.ConstraintDescriptor;
+import javax.validation.metadata.ValidateUnwrappedValue;
 
 /**
  * Constructs constraint violation messages with enhanced flexibility. Message variables
@@ -65,7 +66,7 @@ class ViolationMessageBuilder {
          */
         private ViolationMessageTemplate(String templateName) {
             this.templateName = templateName;
-            attributes = new HashMap<String, Object>();
+            attributes = new HashMap<>();
         }
 
         /**
@@ -187,6 +188,16 @@ class ViolationMessageBuilder {
         
         @Override
         public ConstraintTarget getValidationAppliesTo() {
+            return null;
+        }
+
+        @Override
+        public ValidateUnwrappedValue getValueUnwrapping() {
+            return ValidateUnwrappedValue.SKIP;
+        }
+
+        @Override
+        public <U> U unwrap(Class<U> aClass) {
             return null;
         }
 

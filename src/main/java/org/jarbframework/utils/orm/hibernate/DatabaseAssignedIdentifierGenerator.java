@@ -1,12 +1,8 @@
 package org.jarbframework.utils.orm.hibernate;
 
-import java.io.Serializable;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-
 import org.hibernate.HibernateException;
 import org.hibernate.dialect.Dialect;
-import org.hibernate.engine.spi.SessionImplementor;
+import org.hibernate.engine.spi.SharedSessionContractImplementor;
 import org.hibernate.id.AbstractPostInsertGenerator;
 import org.hibernate.id.IdentifierGeneratorHelper;
 import org.hibernate.id.PostInsertIdentityPersister;
@@ -15,6 +11,10 @@ import org.hibernate.id.insert.AbstractReturningDelegate;
 import org.hibernate.id.insert.IdentifierGeneratingInsert;
 import org.hibernate.id.insert.InsertGeneratedIdentifierDelegate;
 import org.hibernate.type.Type;
+
+import java.io.Serializable;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 
 /**
  * <p>A generator with immediate retrieval through JDBC3 {@link java.sql.Connection#prepareStatement(String, String[]) getGeneratedKeys}.
@@ -45,7 +45,7 @@ public class DatabaseAssignedIdentifierGenerator extends AbstractPostInsertGener
 
         private final Type keyType;
 
-        public Delegate(PostInsertIdentityPersister persister, Dialect dialect) {
+        private Delegate(PostInsertIdentityPersister persister, Dialect dialect) {
             super(persister);
             
             this.dialect = dialect;
@@ -65,14 +65,14 @@ public class DatabaseAssignedIdentifierGenerator extends AbstractPostInsertGener
         }
 
         @Override
-        protected PreparedStatement prepare(String insertSQL, SessionImplementor session) throws SQLException {
+        protected PreparedStatement prepare(String insertSQL, SharedSessionContractImplementor session) {
             return session.getJdbcCoordinator().getStatementPreparer().prepareStatement(insertSQL, new String[] { keyColumnName });
         }
 
         @Override
-        protected Serializable executeAndExtract(PreparedStatement insert, SessionImplementor session) throws SQLException {
+        protected Serializable executeAndExtract(PreparedStatement insert, SharedSessionContractImplementor session) throws SQLException {
             insert.execute();
-            return IdentifierGeneratorHelper.getGeneratedIdentity(insert.getGeneratedKeys(), keyColumnName, keyType);
+            return IdentifierGeneratorHelper.getGeneratedIdentity(insert.getGeneratedKeys(), keyColumnName, keyType, dialect);
         }
 
     }

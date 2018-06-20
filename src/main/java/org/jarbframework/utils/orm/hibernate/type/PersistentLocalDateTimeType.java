@@ -3,16 +3,12 @@
  */
 package org.jarbframework.utils.orm.hibernate.type;
 
-import java.io.Serializable;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Timestamp;
-import java.sql.Types;
-import java.time.LocalDateTime;
-
 import org.hibernate.HibernateException;
-import org.hibernate.engine.spi.SessionImplementor;
+import org.hibernate.engine.spi.SharedSessionContractImplementor;
+
+import java.io.Serializable;
+import java.sql.*;
+import java.time.LocalDateTime;
 
 /**
  * 
@@ -42,7 +38,7 @@ public class PersistentLocalDateTimeType extends UserTypeSupport implements Seri
      * {@inheritDoc}
      */
     @Override
-    public Object nullSafeGet(ResultSet rs, String[] names, SessionImplementor session, Object owner) throws HibernateException, SQLException {
+    public Object nullSafeGet(ResultSet rs, String[] names, SharedSessionContractImplementor session, Object owner) throws HibernateException, SQLException {
         Timestamp timestamp = rs.getTimestamp(names[0]);
         return timestamp != null ? timestamp.toLocalDateTime() : null;
     }
@@ -51,7 +47,7 @@ public class PersistentLocalDateTimeType extends UserTypeSupport implements Seri
      * {@inheritDoc}
      */
     @Override
-    public void nullSafeSet(PreparedStatement st, Object value, int index, SessionImplementor session) throws HibernateException, SQLException {
+    public void nullSafeSet(PreparedStatement st, Object value, int index, SharedSessionContractImplementor session) throws HibernateException, SQLException {
         LocalDateTime time = (LocalDateTime) value;
         if (time != null) {
             st.setTimestamp(index, Timestamp.valueOf(time));
