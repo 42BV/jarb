@@ -50,7 +50,7 @@ public class DatabaseConstraintValidator {
 
     /**
      * Construct a new {@link DatabaseConstraintValidator}.
-     * @param DatabaseConstraintValidator DatabaseConstraintValidator
+     * @param beanMetadataRepository beanMetadataRepository
      * @param messageInterpolator messageInterpolator
      */
     public DatabaseConstraintValidator(BeanMetadataRepository beanMetadataRepository, MessageInterpolator messageInterpolator) {
