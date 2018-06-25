@@ -3,6 +3,10 @@
  */
 package org.jarbframework.utils.orm.hibernate.type;
 
+import org.hibernate.HibernateException;
+import org.hibernate.engine.spi.SharedSessionContractImplementor;
+import org.springframework.util.StringUtils;
+
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -10,10 +14,6 @@ import java.sql.Types;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
-
-import org.hibernate.HibernateException;
-import org.hibernate.engine.spi.SessionImplementor;
-import org.springframework.util.StringUtils;
 
 /**
  * Stores a collection of long identifiers as a string.
@@ -43,7 +43,7 @@ public class CommaSeparatedIdsType extends UserTypeSupport {
      * {@inheritDoc}
      */
     @Override
-    public Object nullSafeGet(ResultSet rs, String[] names, SessionImplementor session, Object owner) throws HibernateException, SQLException {
+    public Object nullSafeGet(ResultSet rs, String[] names, SharedSessionContractImplementor session, Object owner) throws HibernateException, SQLException {
         String values = rs.getString(names[0]);
         Set<Long> result = new HashSet<Long>();
         for (String value : StringUtils.commaDelimitedListToSet(values)) {
@@ -56,7 +56,7 @@ public class CommaSeparatedIdsType extends UserTypeSupport {
      * {@inheritDoc}
      */
     @Override
-    public void nullSafeSet(PreparedStatement st, Object value, int index, SessionImplementor session) throws HibernateException, SQLException {
+    public void nullSafeSet(PreparedStatement st, Object value, int index, SharedSessionContractImplementor session) throws HibernateException, SQLException {
         if (value != null) {
             Collection<?> collection = (Collection<?>) value;
             String argument = StringUtils.collectionToDelimitedString(collection, ",");
