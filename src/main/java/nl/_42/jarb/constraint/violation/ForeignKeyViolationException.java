@@ -1,0 +1,56 @@
+package nl._42.jarb.constraint.violation;
+
+import static nl._42.jarb.constraint.violation.DatabaseConstraintType.FOREIGN_KEY;
+
+/**
+ * Thrown whenever a foreign key constraint has been violated.
+ *
+ * @author Jeroen van Schagen
+ * @since Aug 5, 2011
+ */
+public class ForeignKeyViolationException extends DatabaseConstraintViolationException {
+    
+    /**
+     * Construct a new {@link ForeignKeyViolationException}.
+     */
+    public ForeignKeyViolationException() {
+        this(new DatabaseConstraintViolation(FOREIGN_KEY));
+    }
+
+    /**
+     * Construct a new {@link ForeignKeyViolationException}.
+     * @param violation constraint violation that triggered this exception
+     */
+    public ForeignKeyViolationException(DatabaseConstraintViolation violation) {
+        this(violation, (Throwable) null);
+    }
+
+    /**
+     * Construct a new {@link ForeignKeyViolationException}.
+     * @param violation constraint violation that triggered this exception
+     * @param message exception message that should be shown
+     */
+    public ForeignKeyViolationException(DatabaseConstraintViolation violation, String message) {
+        this(violation, message, null);
+    }
+
+    /**
+     * Construct a new {@link ForeignKeyViolationException}.
+     * @param violation constraint violation that triggered this exception
+     * @param cause the cause of this constraint violation exception, can be {@code null}
+     */
+    public ForeignKeyViolationException(DatabaseConstraintViolation violation, Throwable cause) {
+        this(violation, "Foreign key '" + violation.getConstraintName() + "' was violated.", cause);
+    }
+
+    /**
+     * Construct a new {@link ForeignKeyViolationException}.
+     * @param violation constraint violation that triggered this exception
+     * @param message exception message that should be shown
+     * @param cause the cause of this constraint violation exception, can be {@code null}
+     */
+    public ForeignKeyViolationException(DatabaseConstraintViolation violation, String message, Throwable cause) {
+        super(violation, message, cause);
+    }
+
+}

@@ -1,0 +1,19 @@
+/*
+ * (C) 2013 42 bv (www.42.nl). All rights reserved.
+ */
+package nl._42.jarb.migrate;
+
+/**
+ * Listener invoked after migration.
+ * 
+ * @author Jeroen van Schagen
+ * @since Apr 10, 2014
+ */
+public interface MigrationListener {
+    
+    /**
+     * Callback invoked after migration.
+     */
+    void afterMigrate();
+    
+}

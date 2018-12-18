@@ -1,1 +1,1 @@
-http\://www.jarbframework.org/schema/constraints=org.jarbframework.constraint.DatabaseConstraintsXmlNamespaceHandler
+http\://www.jarbframework.org/schema/constraints=nl._42.jarb.constraint.DatabaseConstraintsXmlNamespaceHandler

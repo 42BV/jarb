@@ -12,12 +12,12 @@
     <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
         <property name="dataSource" ref="dataSource" />
         <property name="persistenceProviderClass" value="org.hibernate.jpa.HibernatePersistenceProvider" />
-        <property name="packagesToScan" value="org.jarbframework.constraint.domain" />
+        <property name="packagesToScan" value="nl._42.jarb.constraint.domain" />
         <property name="jpaPropertyMap">
             <map>
                 <entry key="hibernate.dialect" value-ref="hibernateDialect"/>
-                <entry key="hibernate.implicit_naming_strategy" value="org.jarbframework.utils.orm.hibernate.ConventionImplicitNamingStrategy"/>
-                <entry key="hibernate.physical_naming_strategy" value="org.jarbframework.utils.orm.hibernate.ConventionPhysicalNamingStrategy"/>
+                <entry key="hibernate.implicit_naming_strategy" value="nl._42.jarb.utils.orm.hibernate.ConventionImplicitNamingStrategy"/>
+                <entry key="hibernate.physical_naming_strategy" value="nl._42.jarb.utils.orm.hibernate.ConventionPhysicalNamingStrategy"/>
                 <entry key="javax.persistence.validation.factory" value-ref="validator"/>
             </map>
         </property>
@@ -27,7 +27,7 @@
         <property name="entityManagerFactory" ref="entityManagerFactory"/>
     </bean>
     
-    <constraints:enable-constraints entity-manager-factory="entityManagerFactory" base-package="org.jarbframework.constraint.domain"/>
+    <constraints:enable-constraints entity-manager-factory="entityManagerFactory" base-package="nl._42.jarb.constraint.domain"/>
     
     <bean id="validator" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean">
         <property name="validationMessageSource">
@@ -37,7 +37,7 @@
         </property>
     </bean>
         
-    <bean id="migrator" class="org.jarbframework.migrate.liquibase.LiquibaseMigrator">
+    <bean id="migrator" class="nl._42.jarb.migrate.liquibase.LiquibaseMigrator">
         <constructor-arg name="resourceAccessor" ref="classloaderAccessor" />
         <property name="changeLogPath" value="create-schema.xml"/>
     </bean>
@@ -45,7 +45,7 @@
     <bean id="classloaderAccessor" class="liquibase.resource.ClassLoaderResourceAccessor" />
 
     <!-- Repository used for testing -->
-    <bean class="org.jarbframework.constraint.domain.JpaCarRepository"/>
+    <bean class="nl._42.jarb.constraint.domain.JpaCarRepository"/>
     
     <!-- Vendor specific database sources -->
     <!-- Should only enable one profile at a time -->
@@ -58,7 +58,7 @@
     		</constructor-arg>
     	</bean>
     
-        <bean id="dataSource" class="org.jarbframework.migrate.MigratingDataSource">
+        <bean id="dataSource" class="nl._42.jarb.migrate.MigratingDataSource">
 	        <constructor-arg>
 	            <bean class="org.springframework.jdbc.datasource.DriverManagerDataSource">
 	                <property name="driverClassName" value="org.hsqldb.jdbcDriver"/>
@@ -79,7 +79,7 @@
     		</constructor-arg>
     	</bean>
     
-        <bean id="dataSource" class="org.jarbframework.migrate.MigratingDataSource">
+        <bean id="dataSource" class="nl._42.jarb.migrate.MigratingDataSource">
             <constructor-arg>
                 <bean class="org.springframework.jdbc.datasource.DriverManagerDataSource">
                     <property name="driverClassName" value="org.h2.Driver"/>

@@ -79,12 +79,12 @@ Configuration
 
 The XML configuration is as follows:	
 
-	<constraints:enable-constraints data-source="dataSource" base-package="org.jarbframework.sample"/>
-	<constraints:enable-constraints entity-manager-factory="entityManagerFactory" base-package="org.jarbframework.sample"/>
+	<constraints:enable-constraints data-source="dataSource" base-package="nl._42.jarb.sample"/>
+	<constraints:enable-constraints entity-manager-factory="entityManagerFactory" base-package="nl._42.jarb.sample"/>
 
 We also support Java configuration:
 
-	@EnableDatabaseConstraints(basePackage = "org.jarbframework.sample")
+	@EnableDatabaseConstraints(basePackage = "nl._42.jarb.sample")
 
 Database migrations (schema)
 ----------------------------
@@ -113,7 +113,7 @@ Below we demonstrate how to run an insert script at startup:
 
     <populator:populate initializer="populator"/>
     
-    <bean id="populator" class="org.jarbframework.populator.SqlDatabasePopulator">
+    <bean id="populator" class="nl._42.jarb.populator.SqlDatabasePopulator">
         <constructor-arg ref="dataSource"/>
         <constructor-arg value="classpath:import.sql"/>
     </bean>
