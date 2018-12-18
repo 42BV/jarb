@@ -15,14 +15,16 @@ import org.springframework.transaction.support.TransactionSynchronizationManager
 
 import mockit.Expectations;
 import mockit.Mocked;
-import mockit.NonStrictExpectations;
 import mockit.Verifications;
 
 public class StatelessSessionFactoryBeanTest {
     
     @Mocked
     private HibernateEntityManagerFactory entityManagerFactory;
-
+    @Mocked
+    private StatelessSessionImpl statelessSession;
+    @Mocked
+    private TransactionSynchronizationManager transactionSynchronizationManager;
     @Mocked
     private SessionFactoryImplementor sessionFactory;
 
@@ -64,30 +66,31 @@ public class StatelessSessionFactoryBeanTest {
     }
 
     @Test
-    public void testSynchronizationFlush(@Mocked final StatelessSessionImpl statelessSession) {
+    public void testSynchronizationFlush() {
         StatelessSessionSynchronization synchronization = new StatelessSessionSynchronization(null, statelessSession);
         synchronization.beforeCommit(false);
 
         new Verifications() {{
-                statelessSession.flush();
+            statelessSession.flush();
             times = 1;
         }};        
     }
 
     @Test
-    public void testSynchronizationFlushReadOnly(@Mocked final StatelessSessionImpl statelessSession) {
+    public void testSynchronizationFlushReadOnly() {
         StatelessSessionSynchronization synchronization = new StatelessSessionSynchronization(null, statelessSession);
         synchronization.beforeCommit(true);
 
         new Verifications() {{
-                statelessSession.flush();
+            statelessSession.flush();
             times = 0;
         }}; 
     }
 
     @Test
-    public void testIsFlushCalled(@Mocked final StatelessSessionImpl statelessSession, @Mocked final TransactionSynchronizationManager transactionSynchronizationManager) {
-        new NonStrictExpectations() {{
+    public void testIsFlushCalled() {
+        new Expectations() {{
+            minTimes = 0;
             TransactionSynchronizationManager.isActualTransactionActive();
             result = true;
             
@@ -99,7 +102,7 @@ public class StatelessSessionFactoryBeanTest {
         sessionFactoryBean.getObject().flush();
 
         new Verifications() {{
-                statelessSession.flush();
+            statelessSession.flush();
             times = 1;
         }}; 
     }
