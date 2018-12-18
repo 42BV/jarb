@@ -38,9 +38,12 @@
     </bean>
         
     <bean id="migrator" class="org.jarbframework.migrate.liquibase.LiquibaseMigrator">
-        <property name="changeLogPath" value="src/test/resources/create-schema.xml"/>
+        <constructor-arg name="resourceAccessor" ref="classloaderAccessor" />
+        <property name="changeLogPath" value="create-schema.xml"/>
     </bean>
-    
+
+    <bean id="classloaderAccessor" class="liquibase.resource.ClassLoaderResourceAccessor" />
+
     <!-- Repository used for testing -->
     <bean class="org.jarbframework.constraint.domain.JpaCarRepository"/>
     

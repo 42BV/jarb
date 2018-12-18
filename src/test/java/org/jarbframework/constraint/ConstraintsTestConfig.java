@@ -9,6 +9,8 @@ import java.util.Map;
 import javax.sql.DataSource;
 import javax.validation.ValidatorFactory;
 
+import liquibase.resource.ClassLoaderResourceAccessor;
+
 import org.hibernate.dialect.HSQLDialect;
 import org.hibernate.jpa.HibernatePersistenceProvider;
 import org.jarbframework.migrate.MigratingDataSource;
@@ -96,7 +98,7 @@ public class ConstraintsTestConfig extends DatabaseConstraintsConfigurer {
     }
     
     private static DataSource createMigratingDataSource(DataSource dataSource) {
-        LiquibaseMigrator migrator = new LiquibaseMigrator("src/test/resources");
+        LiquibaseMigrator migrator = new LiquibaseMigrator(new ClassLoaderResourceAccessor());
         migrator.setChangeLogPath("create-schema.xml");
         return new MigratingDataSource(dataSource, migrator);
     }

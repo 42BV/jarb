@@ -5,7 +5,10 @@ package org.jarbframework.init.migrate.liquibase;
 
 import static org.junit.Assert.assertEquals;
 
+import liquibase.resource.ClassLoaderResourceAccessor;
+
 import org.jarbframework.migrate.liquibase.LiquibaseMigratingDatabaseBuilder;
+import org.jarbframework.migrate.liquibase.LiquibaseMigrator;
 import org.junit.Test;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabase;
@@ -21,8 +24,8 @@ public class LiquibaseMigratingDatabaseBuilderTest {
     
     @Test
     public void testBuildEmbeddedDatabase() {
-        EmbeddedDatabase database = new LiquibaseMigratingDatabaseBuilder()
-            .setChangeLogPath("src/test/resources/changelog.xml")
+        EmbeddedDatabase database = new LiquibaseMigratingDatabaseBuilder(new LiquibaseMigrator(new ClassLoaderResourceAccessor()))
+            .setChangeLogPath("changelog.xml")
             .setName("jarb-init-embedded")
             .setType(EmbeddedDatabaseType.HSQL)
                 .build();
