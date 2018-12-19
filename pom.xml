@@ -12,7 +12,7 @@
     <groupId>nl.42</groupId>
     <artifactId>jarb</artifactId>
     <packaging>jar</packaging>
-    <version>4.0.3.SPRING5-SNAPSHOT</version>
+    <version>5.0.0.JAVA.11</version>
 
     <name>Java Repository Bridge</name>
     <description>Provides support for databases</description>
@@ -89,6 +89,17 @@
             </plugins>
         </pluginManagement>
         <plugins>
+            <plugin>
+                <groupId>org.sonatype.plugins</groupId>
+                <artifactId>nexus-staging-maven-plugin</artifactId>
+                <version>1.6.7</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <serverId>sonatype-nexus-staging</serverId>
+                    <nexusUrl>https://oss.sonatype.org/</nexusUrl>
+                    <autoReleaseAfterClose>false</autoReleaseAfterClose>
+                </configuration>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
