@@ -45,7 +45,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <!-- Java version -->
-        <jdk.version>11</jdk.version>
+        <jdk.version>1.8</jdk.version>
 
         <!-- Dependency versions -->
         <spring.version>5.1.3.RELEASE</spring.version>
