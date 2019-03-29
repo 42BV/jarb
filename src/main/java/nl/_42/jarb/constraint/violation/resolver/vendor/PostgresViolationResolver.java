@@ -1,6 +1,7 @@
 package nl._42.jarb.constraint.violation.resolver.vendor;
 
 import static nl._42.jarb.constraint.violation.DatabaseConstraintType.CHECK_FAILED;
+import static nl._42.jarb.constraint.violation.DatabaseConstraintType.EXCLUSION;
 import static nl._42.jarb.constraint.violation.DatabaseConstraintType.FOREIGN_KEY;
 import static nl._42.jarb.constraint.violation.DatabaseConstraintType.INVALID_TYPE;
 import static nl._42.jarb.constraint.violation.DatabaseConstraintType.LENGTH_EXCEEDED;
@@ -30,6 +31,7 @@ public class PostgresViolationResolver extends PatternViolationResolver implemen
         register(new ForeignKeyStillReferencedPattern());
         register(new LengthPattern());
         register(new InvalidTypePattern());
+        register(new ExclusionPattern());
     }
 
     @Override
@@ -150,4 +152,20 @@ public class PostgresViolationResolver extends PatternViolationResolver implemen
 
     }
 
+    private class ExclusionPattern extends ViolationPattern {
+
+        public ExclusionPattern() {
+            super("ERROR: conflicting key value violates exclusion constraint \"(.+)\"\\s+"
+                    + "Detail: Key \\((.+)\\)=\\((.+)\\) conflicts with existing key \\((.+)\\)=\\((.+)\\).");
+        }
+
+        public DatabaseConstraintViolation build(VariableAccessor variables) {
+            return builder(EXCLUSION)
+                    .constraint(variables.get(1))
+                    .column(variables.get(2))
+                    .value(variables.get(3))
+                    .referencingColumn(variables.get(4))
+                    .build();
+        }
+    }
 }

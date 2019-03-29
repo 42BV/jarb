@@ -36,6 +36,10 @@ public enum DatabaseConstraintType {
     /**
      * Check constraint was not satisfied.
      */
-    CHECK_FAILED;
+    CHECK_FAILED,
 
+    /**
+     * Exclusion constraint was not satisfied.
+     */
+    EXCLUSION
 }

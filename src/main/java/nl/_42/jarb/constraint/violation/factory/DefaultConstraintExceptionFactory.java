@@ -3,6 +3,7 @@ package nl._42.jarb.constraint.violation.factory;
 import nl._42.jarb.constraint.violation.CheckFailedException;
 import nl._42.jarb.constraint.violation.DatabaseConstraintViolation;
 import nl._42.jarb.constraint.violation.DatabaseConstraintViolationException;
+import nl._42.jarb.constraint.violation.ExclusionException;
 import nl._42.jarb.constraint.violation.ForeignKeyViolationException;
 import nl._42.jarb.constraint.violation.InvalidTypeException;
 import nl._42.jarb.constraint.violation.LengthExceededException;
@@ -30,6 +31,7 @@ public class DefaultConstraintExceptionFactory implements DatabaseConstraintExce
             case LENGTH_EXCEEDED:   return new LengthExceededException(violation, cause);
             case NOT_NULL:          return new NotNullViolationException(violation, cause);
             case UNIQUE_KEY:        return new UniqueKeyViolationException(violation, cause);
+            case EXCLUSION:         return new ExclusionException(violation, cause);
             default:                return new DatabaseConstraintViolationException(violation, cause);
         }
     }
