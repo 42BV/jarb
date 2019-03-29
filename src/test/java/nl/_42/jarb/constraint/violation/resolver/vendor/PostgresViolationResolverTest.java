@@ -25,6 +25,18 @@ public class PostgresViolationResolverTest {
     }
 
     @Test
+    public void testExclusion() {
+        DatabaseConstraintViolation violation = resolver
+                .resolve("ERROR: conflicting key value violates exclusion constraint \"ex_gebruiker_gebruikersnaam_for_non_deleted_gebruikers\"\n"
+                        + "  Detail: Key (gebruikersnaam)=(piet) conflicts with existing key (gebruikersnaam)=(piet).");
+        Assert.assertEquals(DatabaseConstraintType.EXCLUSION, violation.getConstraintType());
+        assertEquals("ex_gebruiker_gebruikersnaam_for_non_deleted_gebruikers", violation.getConstraintName());
+        assertEquals("gebruikersnaam", violation.getColumnName());
+        assertEquals("gebruikersnaam", violation.getReferencingColumnName());
+        assertEquals("piet", violation.getValue());
+    }
+
+    @Test
     public void testNotNull() {
         DatabaseConstraintViolation violation = resolver.resolve("ERROR: null value in column \"name\" violates not-null constraint");
         assertEquals(DatabaseConstraintType.NOT_NULL, violation.getConstraintType());
