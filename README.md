@@ -7,17 +7,23 @@ http://www.jarbframework.org
 
 Features
 --------
- * Database constraints
-  * Automate database schema validation with JSR303
-  * Translate JDBC driver exceptions into constraint exceptions
-   + Full access to constraint violation information
-   + Map custom exceptions to named constraints
-  * Describe bean constraint metadata, with front-end example
- * Populate database on application startup
+- Bean validation on database schema
+    - Specify rules once in database
+    - Publish constraints via REST
+    - Honor constraints on frontend
+- Translate JDBC driver specific exceptions into global constraint exceptions
+    - Common exceptions regardless of driver
+    - Access to constraint violation information
+    - Map named constraint violations to project specific exceptions
+- Populate database on application startup
+    - SQL (file, directory)
+    - Java based
+    - Asyncronous
 
 Developers
 ----------
- * Jeroen van Schagen (jeroen@42.nl)
+- Jeroen van Schagen (jeroen@42.nl)
+- Sander Benschop (sander@42.nl)
  
 License
 -------
