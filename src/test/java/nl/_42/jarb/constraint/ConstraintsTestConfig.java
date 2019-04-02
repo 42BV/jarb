@@ -3,24 +3,11 @@
  */
 package nl._42.jarb.constraint;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.sql.DataSource;
-import javax.validation.ValidatorFactory;
-
-import liquibase.resource.ClassLoaderResourceAccessor;
-import nl._42.jarb.migrate.MigratingDataSource;
-import nl._42.jarb.migrate.liquibase.LiquibaseMigrator;
+import liquibase.integration.spring.SpringLiquibase;
 import nl._42.jarb.utils.orm.hibernate.ConventionImplicitNamingStrategy;
 import nl._42.jarb.utils.orm.hibernate.ConventionPhysicalNamingStrategy;
-
 import org.hibernate.dialect.HSQLDialect;
 import org.hibernate.jpa.HibernatePersistenceProvider;
-import nl._42.jarb.migrate.MigratingDataSource;
-import nl._42.jarb.migrate.liquibase.LiquibaseMigrator;
-import nl._42.jarb.utils.orm.hibernate.ConventionImplicitNamingStrategy;
-import nl._42.jarb.utils.orm.hibernate.ConventionPhysicalNamingStrategy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.MessageSource;
@@ -28,12 +15,16 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.context.support.ResourceBundleMessageSource;
-import org.springframework.jdbc.datasource.embedded.EmbeddedDatabase;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
+
+import javax.sql.DataSource;
+import javax.validation.ValidatorFactory;
+import java.util.HashMap;
+import java.util.Map;
 
 @Configuration
 @EnableDatabaseConstraints(basePackageClasses = ConstraintsTestConfig.class)
@@ -90,21 +81,22 @@ public class ConstraintsTestConfig extends DatabaseConstraintsConfigurer {
         
         @Bean
         public DataSource dataSource() {
-            EmbeddedDatabase embeddedDataSource = new EmbeddedDatabaseBuilder().setType(EmbeddedDatabaseType.HSQL).build();
-            return createMigratingDataSource(embeddedDataSource);
+            return new EmbeddedDatabaseBuilder().setType(EmbeddedDatabaseType.HSQL).build();
         }
         
         @Bean
         public String hibernateDialect() {
             return HSQLDialect.class.getName();
         }
-        
+
+        @Bean
+        public SpringLiquibase liquibase(DataSource dataSource) {
+            SpringLiquibase liquibase = new SpringLiquibase();
+            liquibase.setDataSource(dataSource);
+            liquibase.setChangeLog("classpath:create-schema.xml");
+            return liquibase;
+        }
+
     }
-    
-    private static DataSource createMigratingDataSource(DataSource dataSource) {
-        LiquibaseMigrator migrator = new LiquibaseMigrator(new ClassLoaderResourceAccessor());
-        migrator.setChangeLogPath("create-schema.xml");
-        return new MigratingDataSource(dataSource, migrator);
-    }
-    
+
 }
