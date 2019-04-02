@@ -13,11 +13,7 @@ Features
    + Full access to constraint violation information
    + Map custom exceptions to named constraints
   * Describe bean constraint metadata, with front-end example
- * Database initialization
-  * Automate database migrations on application startup
-  * Populate database on application startup
-   + SQL
-   + Excel
+ * Populate database on application startup
 
 Developers
 ----------
@@ -25,7 +21,7 @@ Developers
  
 License
 -------
- Copyright 2011-2014 42BV (http://www.42.nl)
+ Copyright 2011-2019 42BV (http://www.42.nl)
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -77,48 +73,21 @@ It is even possible to map custom exceptions on named constraints.
 Configuration
 -------------
 
-The XML configuration is as follows:	
+The configuration is as follows:	
+
+	@EnableDatabaseConstraints(basePackage = "nl._42.jarb.sample")
+
+We also support XML configuration:
 
 	<constraints:enable-constraints data-source="dataSource" base-package="nl._42.jarb.sample"/>
 	<constraints:enable-constraints entity-manager-factory="entityManagerFactory" base-package="nl._42.jarb.sample"/>
 
-We also support Java configuration:
-
-	@EnableDatabaseConstraints(basePackage = "nl._42.jarb.sample")
-
-Database migrations (schema)
-----------------------------
-By wrapping the data source in a migrating data source, the data base will
-automatically be migrated to the latest version during application startup.
-
-In the below example we use Liquibase to perform database migrations, by
-default it will look for a 'src/main/db/changelog.groovy' file.
-
-
-	<migrations:migrate data-source="dataSource" path="src/main/db/changelog.groovy"/>
-
-Or an embedded database:
-
-    @Bean
-    public DataSource dataSource() {
-        return new EmbeddedMigratingDatabaseBuilder().setType(EmbeddedDatabaseType.HSQL).build();
-    }
-
-Database populating
+Data insertion
 -------------------
 Whenever we require data to be inserted during application startup, the
 database updater interface can be used. 
 
 Below we demonstrate how to run an insert script at startup:
-
-    <populator:populate initializer="populator"/>
-    
-    <bean id="populator" class="nl._42.jarb.populator.SqlDatabasePopulator">
-        <constructor-arg ref="dataSource"/>
-        <constructor-arg value="classpath:import.sql"/>
-    </bean>
-
-For Java configurations we provide a builder:
 
     @Bean
     public PopulateApplicationListener populateAppliationListener() {
@@ -133,18 +102,23 @@ For Java configurations we provide a builder:
                    .build();
     }
 
+For XML configurations we provide a namespace:
+
+    <populator:populate initializer="populator"/>
+    
+    <bean id="populator" class="nl._42.jarb.populator.SqlDatabasePopulator">
+        <constructor-arg ref="dataSource"/>
+        <constructor-arg value="classpath:import.sql"/>
+    </bean>
+
 Components
 ----------
  * constraints (simplifies the managing of (database) constraints by preventing and translating JDBC exceptions)
- * migrations (automated database migrations on application startup, with Liquibase implementation)
  * populator (populate the database with data on startup, SQL script implementation and building blocks)
- * populator-excel (excel driven database populator)
  * utils (common utility library, used by other components)
- * sample (demonstrates all above described functionality in a simple project)
  
 Release notes
 -------------
  * Version 3.0.0
     - Java version below 1.8 not supported anymore
     - Hibernate version below 5.0 not supported anymore
- 
