@@ -48,7 +48,6 @@ public class DefaultBeanConstraintDescriptor extends BeanConstraintDescriptor {
     
     private static final String JAVAX_VALIDATION_PACKAGE = "javax.validation";
     private static final String HIBERNATE_VALIDATION_PACKAGE = "org.hibernate.validator";
-    private static final String JODA_TIME_PACKAGE = "org.joda.time";
 
     public DefaultBeanConstraintDescriptor(BeanMetadataRepository beanMetadataRepository) {
         registerHandlers(beanMetadataRepository);
@@ -61,9 +60,6 @@ public class DefaultBeanConstraintDescriptor extends BeanConstraintDescriptor {
         }
         if (Classes.hasPackage(HIBERNATE_VALIDATION_PACKAGE)) {
             registerHibernateValidationEnhancers();
-        }
-        if (Classes.hasClass(JODA_TIME_PACKAGE)) {
-            registerJodaTimeEnhancers();
         }
         if (beanMetadataRepository != null) {
             registerDatabaseEnhancers(beanMetadataRepository);
@@ -109,12 +105,6 @@ public class DefaultBeanConstraintDescriptor extends BeanConstraintDescriptor {
         register(new AnnotationPropertyTypeEnhancer(org.hibernate.validator.constraints.Email.class, "email"));
         register(new AnnotationPropertyTypeEnhancer(org.hibernate.validator.constraints.CreditCardNumber.class, "credid_card"));
         register(new AnnotationPropertyTypeEnhancer(org.hibernate.validator.constraints.URL.class, "url"));
-    }
-
-    private void registerJodaTimeEnhancers() {
-        register(new ClassPropertyTypeEnhancer(org.joda.time.DateTime.class, "date-time"));
-        register(new ClassPropertyTypeEnhancer(org.joda.time.LocalDate.class, "date"));
-        register(new ClassPropertyTypeEnhancer(org.joda.time.LocalDateTime.class, "date-time-local"));
     }
 
     private void registerDatabaseEnhancers(BeanMetadataRepository beanMetadataRepository) {

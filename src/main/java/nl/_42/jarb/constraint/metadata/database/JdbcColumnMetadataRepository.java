@@ -1,18 +1,15 @@
 package nl._42.jarb.constraint.metadata.database;
 
-import java.sql.Connection;
-import java.sql.DatabaseMetaData;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-
-import javax.sql.DataSource;
-
 import nl._42.jarb.utils.StringUtils;
-import nl._42.jarb.utils.jdbc.JdbcConnectionCallback;
 import nl._42.jarb.utils.jdbc.JdbcUtils;
 import nl._42.jarb.utils.orm.ColumnReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.sql.DataSource;
+import java.sql.DatabaseMetaData;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 /**
  * Retrieves column meta data using JDBC.
@@ -38,25 +35,22 @@ public class JdbcColumnMetadataRepository implements ColumnMetadataRepository {
 
     @Override
     public ColumnMetadata getMetadata(final ColumnReference columnReference) {
-        return JdbcUtils.doWithConnection(dataSource, new JdbcConnectionCallback<ColumnMetadata>() {
-           
-            @Override
-            public ColumnMetadata doWork(Connection connection) throws SQLException {
-                DatabaseMetaData databaseMetaData = connection.getMetaData();
-                if (identifierCaser == null) {
-                    identifierCaser = new DatabaseIdentifierCaser(databaseMetaData);
-                }
-                
-                String tableName = identifierCaser.apply(columnReference.getTableName());
-                String columnName = identifierCaser.apply(columnReference.getColumnName());
-                
-                logger.debug("Querying column metadata for table: {}, column: {}.", tableName, columnName);
-                ResultSet resultSet = databaseMetaData.getColumns(catalog, schema, tableName, columnName);
-                try {
-                    return mapToColumnMetadata(columnReference, resultSet);
-                } finally {
-                    resultSet.close(); // Always close result set, this prevents unclosed cursors in pools
-                }
+        return JdbcUtils.doWithConnection(dataSource, connection -> {
+
+            DatabaseMetaData databaseMetaData = connection.getMetaData();
+            if (identifierCaser == null) {
+                identifierCaser = new DatabaseIdentifierCaser(databaseMetaData);
+            }
+
+            String tableName = identifierCaser.apply(columnReference.getTableName());
+            String columnName = identifierCaser.apply(columnReference.getColumnName());
+
+            logger.debug("Querying column metadata for table: {}, column: {}.", tableName, columnName);
+            ResultSet resultSet = databaseMetaData.getColumns(catalog, schema, tableName, columnName);
+            try {
+                return mapToColumnMetadata(columnReference, resultSet);
+            } finally {
+                resultSet.close(); // Always close result set, this prevents unclosed cursors in pools
             }
             
         });

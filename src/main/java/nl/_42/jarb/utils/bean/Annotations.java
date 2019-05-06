@@ -1,6 +1,8 @@
 package nl._42.jarb.utils.bean;
 
-import static nl._42.jarb.utils.Asserts.state;
+import org.springframework.beans.BeanUtils;
+import org.springframework.core.annotation.AnnotationUtils;
+import org.springframework.util.ReflectionUtils;
 
 import java.beans.PropertyDescriptor;
 import java.lang.annotation.Annotation;
@@ -11,10 +13,6 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.springframework.beans.BeanUtils;
-import org.springframework.core.annotation.AnnotationUtils;
-import org.springframework.util.ReflectionUtils;
-
 /**
  * Searches for annotations in class and property declarations. 
  * 
@@ -24,17 +22,6 @@ import org.springframework.util.ReflectionUtils;
 public class Annotations {
 
     private Annotations() {
-    }
-
-    /**
-     * Check if a specific annotation is declared on the class.
-     * 
-     * @param beanClass bean that should contain the annotation
-     * @param annotationType type of annotations that should be looked for
-     * @return {@code true} if an annotation could be found, else {@code false}
-     */
-    public static boolean hasAnnotation(Class<?> beanClass, Class<? extends Annotation> annotationType) {
-        return AnnotationUtils.findAnnotation(beanClass, annotationType) != null;
     }
 
     /**
@@ -51,16 +38,6 @@ public class Annotations {
         annotations.addAll(Arrays.asList(getAnnotations(field)));
         annotations.addAll(Arrays.asList(getAnnotations(getter)));
         return annotations;
-    }
-    
-    public static <T extends Annotation> T findAnnotation(PropertyReference propertyReference, Class<T> annotationType) {
-        Collection<T> annotations = getAnnotations(propertyReference, annotationType);
-        if (annotations.isEmpty()) {
-            return null;
-        } else {
-            state(annotations.size() == 1, "Found more than one @" + annotationType + " on property: " + propertyReference);
-            return annotations.iterator().next();
-        }
     }
 
     /**

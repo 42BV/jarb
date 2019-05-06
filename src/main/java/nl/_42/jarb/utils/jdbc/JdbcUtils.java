@@ -1,12 +1,8 @@
 package nl._42.jarb.utils.jdbc;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-
 import javax.sql.DataSource;
-
-import nl._42.jarb.utils.Classes;
+import java.sql.Connection;
+import java.sql.SQLException;
 
 /**
  * Java Database Connectivity (JDBC) utility class.
@@ -18,23 +14,6 @@ public final class JdbcUtils {
     /** Utility class, do not instantiate. */
     private JdbcUtils() {
     }
-    
-    public static <T> T doWithConnection(String driverClassName, String url, String userName, String password, JdbcConnectionCallback<T> callback) {
-        Connection connection = null;
-        try {
-            connection = createConnection(driverClassName, url, userName, password);
-            return callback.doWork(connection);
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        } finally {
-            closeQuietly(connection);   
-        }
-    }
-
-    private static Connection createConnection(String driverClassName, String url, String userName, String password) throws SQLException {
-        Classes.forName(driverClassName); // Register appropriate JDBC driver
-        return DriverManager.getConnection(url, userName, password);
-    }
 
     /**
      * Open a data source connection and provide callback functionality on that connection.
@@ -45,7 +24,7 @@ public final class JdbcUtils {
      * @param callback the callback functionality being invoked
      * @return result of the callback, if any
      */
-    public static <T> T doWithConnection(DataSource dataSource, JdbcConnectionCallback<T> callback) {
+    public static <T> T doWithConnection(DataSource dataSource, Callback<T> callback) {
         Connection connection = null;
         try {
             connection = dataSource.getConnection();
@@ -57,12 +36,7 @@ public final class JdbcUtils {
         }
     }
 
-    /**
-     * Close the connection, whenever it isn't {@code null}, and wrap any SQL exceptions into a runtime exception.
-     * 
-     * @param connection our connection to close
-     */
-    public static void closeQuietly(Connection connection) {
+    private static void closeQuietly(Connection connection) {
         try {
             if (connection != null) {
                 connection.close();
@@ -73,18 +47,20 @@ public final class JdbcUtils {
     }
 
     /**
-     * Commits the connection whenver auto commit has been disabled.
-     * 
-     * @param connection our connection to commit
+     * JDBC connection callback
+     * @param <T> the result type
      */
-    public static void commitSafely(Connection connection) {
-        try {
-            if (! connection.getAutoCommit()) {
-                connection.commit();
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+    @FunctionalInterface
+    public interface Callback<T> {
+
+        /**
+         * Work with active JDBC connection.
+         * @param connection the connection
+         * @return the result
+         * @throws SQLException whenever something goes wrong
+         */
+        T doWork(Connection connection) throws SQLException;
+
     }
 
 }

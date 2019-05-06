@@ -1,21 +1,18 @@
 package nl._42.jarb.populate;
 
-import static nl._42.jarb.utils.Asserts.notNull;
-
-import java.io.File;
-import java.io.InputStream;
-import java.sql.Connection;
-import java.sql.SQLException;
-
-import javax.sql.DataSource;
-
-import nl._42.jarb.utils.jdbc.JdbcConnectionCallback;
 import nl._42.jarb.utils.jdbc.JdbcUtils;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
+
+import javax.sql.DataSource;
+import java.io.File;
+import java.io.InputStream;
+
+import static java.lang.String.format;
+import static nl._42.jarb.utils.Asserts.notNull;
 
 /**
  * Update the database by executing an SQL resource.
@@ -69,17 +66,13 @@ public class SqlDatabasePopulator implements DatabasePopulator {
             final ResourceDatabasePopulator populator = new ResourceDatabasePopulator();
             populator.addScript(resource);
             
-            JdbcUtils.doWithConnection(dataSource, new JdbcConnectionCallback<Void>() {
-                
-                @Override
-                public Void doWork(Connection connection) throws SQLException {
-                    populator.populate(connection);
-                    return null;
-                }
-                
+            JdbcUtils.doWithConnection(dataSource, connection -> {
+                populator.populate(connection);
+                return null;
             });
         } else if (failIfNotExists) {
-            throw new IllegalStateException("Resource '" + resource.getFilename() + "' does not exist.");
+            throw new IllegalStateException(
+              format("Resource '%s' does not exist.", resource.getFilename()));
         }
     }
 

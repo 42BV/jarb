@@ -7,6 +7,7 @@ import static nl._42.jarb.constraint.violation.DatabaseConstraintType.NOT_NULL;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
+import nl._42.jarb.constraint.ConstraintsTestConfig;
 import nl._42.jarb.constraint.violation.DatabaseConstraintType;
 import nl._42.jarb.constraint.violation.DatabaseConstraintViolation;
 import nl._42.jarb.constraint.violation.ForeignKeyViolationException;
@@ -40,7 +41,7 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Transactional
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { "classpath:application-context.xml" })
+@ContextConfiguration(classes = ConstraintsTestConfig.class)
 public abstract class AbstractExceptionTranslationTest {
 
     @Autowired

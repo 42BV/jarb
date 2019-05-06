@@ -170,14 +170,6 @@
             <scope>provided</scope>
         </dependency>
 
-        <!-- Joda time integration -->
-        <dependency>
-            <groupId>joda-time</groupId>
-            <artifactId>joda-time</artifactId>
-            <version>2.10.1</version>
-            <scope>provided</scope>
-        </dependency>
-
         <!-- Hibernate JPA -->
         <dependency>
             <groupId>org.hibernate</groupId>

@@ -4,14 +4,17 @@
 package nl._42.jarb.constraint;
 
 import liquibase.integration.spring.SpringLiquibase;
+import nl._42.jarb.constraint.domain.Car;
 import nl._42.jarb.utils.orm.hibernate.ConventionImplicitNamingStrategy;
 import nl._42.jarb.utils.orm.hibernate.ConventionPhysicalNamingStrategy;
+import org.hibernate.dialect.H2Dialect;
 import org.hibernate.dialect.HSQLDialect;
 import org.hibernate.jpa.HibernatePersistenceProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.context.support.ResourceBundleMessageSource;
@@ -27,6 +30,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Configuration
+@ComponentScan(basePackageClasses = Car.class)
 @EnableDatabaseConstraints(basePackageClasses = ConstraintsTestConfig.class)
 public class ConstraintsTestConfig extends DatabaseConstraintsConfigurer {
     
@@ -75,6 +79,30 @@ public class ConstraintsTestConfig extends DatabaseConstraintsConfigurer {
         return transactionManager;
     }
 
+    @Bean
+    public SpringLiquibase liquibase(DataSource dataSource) {
+        SpringLiquibase liquibase = new SpringLiquibase();
+        liquibase.setDataSource(dataSource);
+        liquibase.setChangeLog("classpath:create-schema.xml");
+        return liquibase;
+    }
+
+    @Configuration
+    @Profile("h2")
+    public static class H2Config {
+
+        @Bean
+        public DataSource dataSource() {
+            return new EmbeddedDatabaseBuilder().setType(EmbeddedDatabaseType.H2).build();
+        }
+
+        @Bean
+        public String hibernateDialect() {
+            return H2Dialect.class.getName();
+        }
+
+    }
+
     @Configuration
     @Profile("hsqldb")
     public static class HsqlDbConfig {
@@ -87,14 +115,6 @@ public class ConstraintsTestConfig extends DatabaseConstraintsConfigurer {
         @Bean
         public String hibernateDialect() {
             return HSQLDialect.class.getName();
-        }
-
-        @Bean
-        public SpringLiquibase liquibase(DataSource dataSource) {
-            SpringLiquibase liquibase = new SpringLiquibase();
-            liquibase.setDataSource(dataSource);
-            liquibase.setChangeLog("classpath:create-schema.xml");
-            return liquibase;
         }
 
     }

@@ -1,24 +1,12 @@
 package nl._42.jarb.constraint.metadata;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-
-import java.util.Map;
-
-import javax.persistence.Entity;
-import javax.persistence.ManyToOne;
-
-import nl._42.jarb.constraint.DatabaseConstraintsConfigurer;
-import nl._42.jarb.constraint.metadata.enhance.AnnotationPropertyTypeEnhancer;
-
-import nl._42.jarb.constraint.DatabaseConstraintsConfigurer;
 import nl._42.jarb.constraint.ConstraintsTestConfig;
+import nl._42.jarb.constraint.DatabaseConstraintsConfigurer;
 import nl._42.jarb.constraint.domain.Country;
 import nl._42.jarb.constraint.domain.Wine;
 import nl._42.jarb.constraint.metadata.BeanConstraintServiceTest.CustomConstraintsConfig;
 import nl._42.jarb.constraint.metadata.enhance.AnnotationPropertyTypeEnhancer;
+import nl._42.jarb.constraint.metadata.factory.EntityFactory;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -28,6 +16,14 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import javax.persistence.ManyToOne;
+import java.util.Map;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
 @RunWith(SpringJUnit4ClassRunner.class)
 @ActiveProfiles("hsqldb")
 @ContextConfiguration(classes = { ConstraintsTestConfig.class, CustomConstraintsConfig.class })
@@ -35,6 +31,9 @@ public class BeanConstraintServiceTest {
 
     @Autowired
     private BeanConstraintDescriptor descriptor;
+
+    @Autowired
+    private EntityFactory entityFactory;
 
     private BeanConstraintService service;
     
@@ -44,7 +43,7 @@ public class BeanConstraintServiceTest {
     }
 
     @Test
-    public void testDefaultEnhancers() throws Exception {
+    public void testDefaultEnhancers() {
         Map<String, PropertyConstraintDescription> wineDescription = service.describe(Wine.class);
         
         // Retrieved by introspection
@@ -76,7 +75,7 @@ public class BeanConstraintServiceTest {
     public void testDescribeAll() {
         assertTrue(service.describeAll().isEmpty());
         
-        service.registerAllWithAnnotation(ConstraintsTestConfig.class, Entity.class);
+        service.registerClasses(entityFactory);
 
         Map<String, Map<String, PropertyConstraintDescription>> constraints  = service.describeAll();
         assertFalse(constraints.isEmpty());

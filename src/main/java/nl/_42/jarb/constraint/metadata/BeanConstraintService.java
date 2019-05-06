@@ -1,12 +1,11 @@
 package nl._42.jarb.constraint.metadata;
 
-import java.lang.annotation.Annotation;
+import nl._42.jarb.constraint.metadata.factory.EntityFactory;
+
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-
-import nl._42.jarb.utils.ClassScanner;
 
 /**
  * Created by maarten.hus on 22/05/15.
@@ -17,7 +16,7 @@ public class BeanConstraintService {
     
     private final Set<Class<?>> beanTypes = new HashSet<>();
 
-    private final BeanConstraintDescriptor beanConstraintDescriptor;
+    private final BeanConstraintDescriptor descriptor;
     
     {
         ignoredProperties.add("new");
@@ -25,8 +24,8 @@ public class BeanConstraintService {
         ignoredProperties.add("class");
     }
 
-    public BeanConstraintService(BeanConstraintDescriptor beanConstraintDescriptor) {
-        this.beanConstraintDescriptor = beanConstraintDescriptor;
+    public BeanConstraintService(BeanConstraintDescriptor descriptor) {
+        this.descriptor = descriptor;
     }
 
     /**
@@ -45,16 +44,30 @@ public class BeanConstraintService {
     protected String getTypeName(Class<?> beanType) {
         return beanType.getSimpleName();
     }
-    
+
+    /**
+     * Describes a certain entity.
+     * @param entityType the entity type
+     * @return the description
+     */
+    public Map<String, PropertyConstraintDescription> describe(String entityType) {
+        BeanConstraintDescription description = descriptor.describeBean(entityType);
+        return describe(description);
+    }
+
     /**
      * Describes a certain entity.
      * @param entityClass the entity class
      * @return the description
      */
     public Map<String, PropertyConstraintDescription> describe(Class<?> entityClass) {
-        BeanConstraintDescription description = beanConstraintDescriptor.describeBean(entityClass);
+        BeanConstraintDescription description = descriptor.describeBean(entityClass);
+        return describe(description);
+    }
+
+    private Map<String, PropertyConstraintDescription> describe(BeanConstraintDescription description) {
         Map<String, PropertyConstraintDescription> properties = new HashMap<>(description.getProperties());
-        ignoredProperties.stream().forEach(properties::remove);
+        getIgnoredProperties().stream().forEach(properties::remove);
         return properties;
     }
 
@@ -65,25 +78,14 @@ public class BeanConstraintService {
     public void registerClass(Class<?> beanType) {
         beanTypes.add(beanType);
     }
-    
+
     /**
-     * Registers all classes in a package with an annotation.
-     * @param basePackageClass the base package class
-     * @param annotationClass the annotation type
+     * Register all entity classes known in our factory.
+     * @param factory the entity factory
      */
-    public void registerAllWithAnnotation(Class<?> basePackageClass, Class<? extends Annotation> annotationClass) {
-        String basePackage = basePackageClass.getPackage().getName();
-        registerAllWithAnnotation(basePackage, annotationClass);
-    }
-    
-    /**
-     * Registers all classes in a package with an annotation.
-     * @param basePackage the base package
-     * @param annotationClass the annotation type
-     */
-    public void registerAllWithAnnotation(String basePackage, Class<? extends Annotation> annotationClass) {
-        Set<Class<?>> beanTypes = ClassScanner.getAllWithAnnotation(basePackage, annotationClass);
-        beanTypes.forEach(beanType -> registerClass(beanType));
+    public void registerClasses(EntityFactory factory) {
+        Set<Class<?>> entityClasses = factory.getEntityClasses();
+        entityClasses.forEach(this::registerClass);
     }
 
     /**

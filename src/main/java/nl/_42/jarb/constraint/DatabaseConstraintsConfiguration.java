@@ -3,30 +3,13 @@
  */
 package nl._42.jarb.constraint;
 
-import java.lang.annotation.Annotation;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-
-import javax.persistence.EntityManagerFactory;
-import javax.sql.DataSource;
-
 import nl._42.jarb.constraint.metadata.BeanConstraintDescriptor;
+import nl._42.jarb.constraint.metadata.BeanConstraintService;
 import nl._42.jarb.constraint.metadata.DefaultBeanConstraintDescriptor;
 import nl._42.jarb.constraint.metadata.database.BeanMetadataRepository;
 import nl._42.jarb.constraint.metadata.database.BeanMetadataRepositoryFactoryBean;
-import nl._42.jarb.constraint.violation.DatabaseConstraintExceptionTranslator;
-import nl._42.jarb.constraint.violation.TranslateAdviceAddingBeanPostProcessor;
-import nl._42.jarb.constraint.violation.factory.ConfigurableConstraintExceptionFactory;
-import nl._42.jarb.constraint.violation.factory.DatabaseConstraintExceptionFactory;
-import nl._42.jarb.constraint.violation.resolver.ConfigurableViolationResolver;
-import nl._42.jarb.constraint.violation.resolver.DatabaseConstraintViolationResolver;
-
-import nl._42.jarb.constraint.metadata.BeanConstraintDescriptor;
-import nl._42.jarb.constraint.metadata.DefaultBeanConstraintDescriptor;
-import nl._42.jarb.constraint.metadata.database.BeanMetadataRepository;
-import nl._42.jarb.constraint.metadata.database.BeanMetadataRepositoryFactoryBean;
+import nl._42.jarb.constraint.metadata.factory.EntityFactory;
+import nl._42.jarb.constraint.metadata.factory.JpaEntityFactory;
 import nl._42.jarb.constraint.violation.DatabaseConstraintExceptionTranslator;
 import nl._42.jarb.constraint.violation.TranslateAdviceAddingBeanPostProcessor;
 import nl._42.jarb.constraint.violation.factory.ConfigurableConstraintExceptionFactory;
@@ -43,6 +26,15 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.ImportAware;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.core.type.AnnotationMetadata;
+
+import javax.persistence.EntityManagerFactory;
+import javax.sql.DataSource;
+import java.lang.annotation.Annotation;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Configuration that constructs all beans for handling database constraints.
@@ -66,7 +58,7 @@ public class DatabaseConstraintsConfiguration implements ImportAware, Initializi
     private Map<String, Object> attributes;
     
     @Autowired(required = false)
-    private Set<DatabaseConstraintsConfigurer> configurers = new HashSet<DatabaseConstraintsConfigurer>();
+    private Set<DatabaseConstraintsConfigurer> configurers = new HashSet<>();
 
     private Set<String> basePackages;
 
@@ -76,6 +68,9 @@ public class DatabaseConstraintsConfiguration implements ImportAware, Initializi
     private EntityManagerFactory entityManagerFactory;
     
     private DataSource dataSource;
+
+
+
     
     //
     // Exception translation
@@ -83,18 +78,18 @@ public class DatabaseConstraintsConfiguration implements ImportAware, Initializi
     
     @Bean
     @Lazy
-    public DatabaseConstraintExceptionTranslator exceptionTranslator() throws Exception {
+    public DatabaseConstraintExceptionTranslator exceptionTranslator() {
         return new DatabaseConstraintExceptionTranslator(violationResolver(), exceptionFactory());
     }
     
     @Bean
     @Lazy
     public DatabaseConstraintViolationResolver violationResolver() {
-        ConfigurableViolationResolver violationResolver = new ConfigurableViolationResolver(dataSource, basePackages);
+        ConfigurableViolationResolver resolver = new ConfigurableViolationResolver(dataSource);
         for (DatabaseConstraintsConfigurer configurer : configurers) {
-            configurer.configureViolationResolver(violationResolver);
+            configurer.configureViolationResolver(resolver);
         }
-        return violationResolver;
+        return resolver;
     }
     
     @Bean
@@ -112,7 +107,7 @@ public class DatabaseConstraintsConfiguration implements ImportAware, Initializi
     
     @Bean
     @SuppressWarnings("unchecked")
-    public TranslateAdviceAddingBeanPostProcessor translateAdviceAddingBeanPostProcessor() throws Exception {
+    public TranslateAdviceAddingBeanPostProcessor translateAdviceAddingBeanPostProcessor() {
         Class<? extends Annotation> annotation = (Class<? extends Annotation>) attributes.get(PROXY_ANNOTATION_REF);
         return new TranslateAdviceAddingBeanPostProcessor(exceptionTranslator(), annotation);
     }
@@ -120,6 +115,16 @@ public class DatabaseConstraintsConfiguration implements ImportAware, Initializi
     //
     // Bean metadata descriptions
     //
+
+    @Bean
+    @Lazy
+    public EntityFactory entityFactory() {
+        if (entityManagerFactory != null) {
+            return new JpaEntityFactory(entityManagerFactory);
+        } else {
+            return () -> Collections.emptySet();
+        }
+    }
 
     @Bean
     @Lazy
@@ -144,6 +149,14 @@ public class DatabaseConstraintsConfiguration implements ImportAware, Initializi
         return beanConstraintDescriptor;
     }
 
+    @Bean
+    @Lazy
+    public BeanConstraintService beanConstraintService(BeanConstraintDescriptor descriptor, EntityFactory factory) {
+        BeanConstraintService constraintService = new BeanConstraintService(descriptor);
+        constraintService.registerClasses(factory);
+        return constraintService;
+    }
+
     //
     // Attributes from @EnableDatabaseConstraints
     //
@@ -154,7 +167,7 @@ public class DatabaseConstraintsConfiguration implements ImportAware, Initializi
     }
 
     @Override
-    public void afterPropertiesSet() throws Exception {
+    public void afterPropertiesSet() {
         String entityManagerFactoryName = (String) attributes.get(ENTITY_MANAGER_FACTORY_REF);
         String dataSourceName = (String) attributes.get(DATA_SOURCE_REF);
         
@@ -168,7 +181,7 @@ public class DatabaseConstraintsConfiguration implements ImportAware, Initializi
         String[] basePackages = (String[]) attributes.get(BASE_PACKAGES_REF);
         Class<?>[] baseClasses = (Class<?>[]) attributes.get(BASE_CLASSES_REF);
 
-        this.basePackages = new HashSet<String>();
+        this.basePackages = new HashSet<>();
         this.basePackages.addAll(Arrays.asList(basePackages));
         for (Class<?> baseClass : baseClasses) {
             this.basePackages.add(baseClass.getPackage().getName());

@@ -1,7 +1,5 @@
 package nl._42.jarb.constraint.domain;
 
-
-
 /**
  * Holds user instances.
  * @author Jeroen van Schagen

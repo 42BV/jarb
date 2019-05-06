@@ -21,7 +21,7 @@ public enum DatabaseProductType {
 
     private final String name;
 
-    private DatabaseProductType(String name) {
+    DatabaseProductType(String name) {
         this.name = name;
     }
 

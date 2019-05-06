@@ -1,14 +1,9 @@
 package nl._42.jarb.utils.jdbc;
 
-import static nl._42.jarb.utils.jdbc.JdbcUtils.doWithConnection;
-
-import java.sql.Connection;
-import java.sql.DatabaseMetaData;
-import java.sql.SQLException;
+import nl._42.jarb.utils.StringUtils;
 
 import javax.sql.DataSource;
-
-import nl._42.jarb.utils.StringUtils;
+import java.sql.DatabaseMetaData;
 
 /**
  * Describes the product name and version of a specific database.
@@ -67,15 +62,12 @@ public final class DatabaseProduct {
      * @return the database product
      */
     public static DatabaseProduct fromDataSource(DataSource dataSource) {
-        return JdbcUtils.doWithConnection(dataSource, new JdbcConnectionCallback<DatabaseProduct>() {
+        return JdbcUtils.doWithConnection(dataSource, connection -> {
 
-            @Override
-            public DatabaseProduct doWork(Connection connection) throws SQLException {
-                DatabaseMetaData metaData = connection.getMetaData();
-                String productName = metaData.getDatabaseProductName();
-                String productVersion = metaData.getDatabaseProductVersion();
-                return new DatabaseProduct(productName, productVersion);
-            }
+            DatabaseMetaData metaData = connection.getMetaData();
+            String productName = metaData.getDatabaseProductName();
+            String productVersion = metaData.getDatabaseProductVersion();
+            return new DatabaseProduct(productName, productVersion);
 
         });
     }

@@ -23,7 +23,7 @@ public class MapBeanRegistry implements BeanRegistry {
      */
     @Override
     public Set<Class<?>> getAll() {
-        return new HashSet<Class<?>>(bindings.values());
+        return new HashSet<>(bindings.values());
     }
 
     /**
