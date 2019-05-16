@@ -22,14 +22,7 @@ public final class Beans {
 
     public static Set<String> getFieldNames(Class<?> beanClass) {
         final Set<String> fieldNames = new HashSet<String>();
-        ReflectionUtils.doWithFields(beanClass, new FieldCallback() {
-        	
-            @Override
-            public void doWith(Field field) throws IllegalAccessException {
-                fieldNames.add(field.getName());
-            }
-            
-        });
+        ReflectionUtils.doWithFields(beanClass, field -> fieldNames.add(field.getName()));
         return fieldNames;
     }
 

@@ -1,4 +1,4 @@
-package nl._42.jarb.utils.predicates;
+package nl._42.jarb.populate.predicates;
 
 import java.util.function.Predicate;
 

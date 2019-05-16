@@ -1,7 +1,7 @@
 /*
  * (C) 2014 42 bv (www.42.nl). All rights reserved.
  */
-package nl._42.jarb.utils.predicates;
+package nl._42.jarb.populate.predicates;
 
 import java.io.File;
 import java.util.function.Predicate;

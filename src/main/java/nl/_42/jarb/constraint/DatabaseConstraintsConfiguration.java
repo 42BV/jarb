@@ -7,7 +7,10 @@ import nl._42.jarb.constraint.metadata.BeanConstraintDescriptor;
 import nl._42.jarb.constraint.metadata.BeanConstraintService;
 import nl._42.jarb.constraint.metadata.DefaultBeanConstraintDescriptor;
 import nl._42.jarb.constraint.metadata.database.BeanMetadataRepository;
-import nl._42.jarb.constraint.metadata.database.BeanMetadataRepositoryFactoryBean;
+import nl._42.jarb.constraint.metadata.database.CachingBeanMetadataRepository;
+import nl._42.jarb.constraint.metadata.database.ColumnMetadataRepository;
+import nl._42.jarb.constraint.metadata.database.JdbcColumnMetadataRepository;
+import nl._42.jarb.constraint.metadata.database.SimpleBeanMetadataRepository;
 import nl._42.jarb.constraint.metadata.factory.EntityFactory;
 import nl._42.jarb.constraint.metadata.factory.JpaEntityFactory;
 import nl._42.jarb.constraint.violation.DatabaseConstraintExceptionTranslator;
@@ -17,6 +20,9 @@ import nl._42.jarb.constraint.violation.factory.DatabaseConstraintExceptionFacto
 import nl._42.jarb.constraint.violation.resolver.ConfigurableViolationResolver;
 import nl._42.jarb.constraint.violation.resolver.DatabaseConstraintViolationResolver;
 import nl._42.jarb.utils.bean.JpaBeanRegistry;
+import nl._42.jarb.utils.orm.JdbcSchemaMapper;
+import nl._42.jarb.utils.orm.SchemaMapper;
+import nl._42.jarb.utils.orm.hibernate.HibernateJpaSchemaMapper;
 import nl._42.jarb.utils.orm.hibernate.HibernateUtils;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -68,9 +74,6 @@ public class DatabaseConstraintsConfiguration implements ImportAware, Initializi
     private EntityManagerFactory entityManagerFactory;
     
     private DataSource dataSource;
-
-
-
     
     //
     // Exception translation
@@ -118,27 +121,30 @@ public class DatabaseConstraintsConfiguration implements ImportAware, Initializi
 
     @Bean
     @Lazy
-    public EntityFactory entityFactory() {
+    public BeanMetadataRepository beanMetadataRepository() {
+        BeanMetadataRepository beanMetadataRepository = new SimpleBeanMetadataRepository(columnMetadataRepository(), schemaMapper());
+        return new CachingBeanMetadataRepository(beanMetadataRepository);
+    }
+
+    private ColumnMetadataRepository columnMetadataRepository() {
         if (entityManagerFactory != null) {
-            return new JpaEntityFactory(entityManagerFactory);
+            return new JdbcColumnMetadataRepository(HibernateUtils.getDataSource(entityManagerFactory));
         } else {
-            return () -> Collections.emptySet();
+            return new JdbcColumnMetadataRepository(dataSource);
+        }
+    }
+
+    private SchemaMapper schemaMapper() {
+        if (entityManagerFactory != null) {
+            return new HibernateJpaSchemaMapper(entityManagerFactory);
+        } else {
+            return new JdbcSchemaMapper();
         }
     }
 
     @Bean
     @Lazy
-    public BeanMetadataRepository beanMetadataRepository() throws Exception {
-        if (entityManagerFactory != null) {
-            return new BeanMetadataRepositoryFactoryBean(entityManagerFactory).getObject();
-        } else {
-            return new BeanMetadataRepositoryFactoryBean(dataSource).getObject();
-        }
-    }
-
-    @Bean
-    @Lazy
-    public BeanConstraintDescriptor beanConstraintDescriptor() throws Exception {
+    public BeanConstraintDescriptor beanConstraintDescriptor() {
         BeanConstraintDescriptor beanConstraintDescriptor = new DefaultBeanConstraintDescriptor(beanMetadataRepository());
         if (entityManagerFactory != null) {
             beanConstraintDescriptor.setBeanRegistry(new JpaBeanRegistry(entityManagerFactory));
@@ -155,6 +161,16 @@ public class DatabaseConstraintsConfiguration implements ImportAware, Initializi
         BeanConstraintService constraintService = new BeanConstraintService(descriptor);
         constraintService.registerClasses(factory);
         return constraintService;
+    }
+
+    @Bean
+    @Lazy
+    public EntityFactory entityFactory() {
+        if (entityManagerFactory != null) {
+            return new JpaEntityFactory(entityManagerFactory);
+        } else {
+            return () -> Collections.emptySet();
+        }
     }
 
     //

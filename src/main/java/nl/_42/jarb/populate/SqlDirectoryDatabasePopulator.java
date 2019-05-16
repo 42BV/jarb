@@ -10,9 +10,9 @@ import java.util.function.Predicate;
 import javax.sql.DataSource;
 
 import nl._42.jarb.utils.Asserts;
-import nl._42.jarb.utils.predicates.AndPredicate;
-import nl._42.jarb.utils.predicates.IsNotForOtherProduct;
-import nl._42.jarb.utils.predicates.IsSqlFile;
+import nl._42.jarb.populate.predicates.AndPredicate;
+import nl._42.jarb.populate.predicates.IsNotForOtherProduct;
+import nl._42.jarb.populate.predicates.IsSqlFile;
 
 /**
  * Populator that runs all files in a directory.
