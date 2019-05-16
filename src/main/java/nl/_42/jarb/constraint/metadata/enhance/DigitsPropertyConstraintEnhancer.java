@@ -19,12 +19,15 @@ public class DigitsPropertyConstraintEnhancer implements PropertyConstraintEnhan
     public void enhance(PropertyConstraintDescription description) {
         Collection<javax.validation.constraints.Digits> annotations = 
                 Annotations.getAnnotations(description.toReference(), javax.validation.constraints.Digits.class);
+
         Integer maximumLength = description.getMaximumLength();
         Integer fractionLength = description.getFractionLength();
+
         for (Digits annotation : annotations) {
             maximumLength = lowest(maximumLength, annotation.integer());
             fractionLength = lowest(fractionLength, annotation.fraction());
         }
+
         description.setMaximumLength(maximumLength);
         description.setFractionLength(fractionLength);
     }

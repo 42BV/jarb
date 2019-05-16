@@ -3,10 +3,6 @@
  */
 package nl._42.jarb.constraint.metadata;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.Date;
-
 import nl._42.jarb.constraint.metadata.database.BeanMetadataRepository;
 import nl._42.jarb.constraint.metadata.enhance.AnnotationPropertyTypeEnhancer;
 import nl._42.jarb.constraint.metadata.enhance.ClassPropertyTypeEnhancer;
@@ -15,28 +11,19 @@ import nl._42.jarb.constraint.metadata.enhance.DatabasePropertyConstraintEnhance
 import nl._42.jarb.constraint.metadata.enhance.DigitsPropertyConstraintEnhancer;
 import nl._42.jarb.constraint.metadata.enhance.EnumPropertyTypeEnhancer;
 import nl._42.jarb.constraint.metadata.enhance.LengthPropertyConstraintEnhancer;
-import nl._42.jarb.constraint.metadata.enhance.MinMaxNumberAnnotationPropertyEnhancer;
+import nl._42.jarb.constraint.metadata.enhance.MaxPropertyConstraintEnhancer;
 import nl._42.jarb.constraint.metadata.enhance.MinMaxNumberPropertyEnhancer;
-import nl._42.jarb.constraint.metadata.enhance.NotEmptyPropertyConstraintEnhancer;
-import nl._42.jarb.constraint.metadata.enhance.NotNullPropertyConstraintEnhancer;
-import nl._42.jarb.constraint.metadata.enhance.PatternPropertyConstraintEnhancer;
-import nl._42.jarb.constraint.metadata.enhance.PropertyTypeEnhancer;
-
-import nl._42.jarb.constraint.metadata.database.BeanMetadataRepository;
-import nl._42.jarb.constraint.metadata.enhance.AnnotationPropertyTypeEnhancer;
-import nl._42.jarb.constraint.metadata.enhance.ClassPropertyTypeEnhancer;
-import nl._42.jarb.constraint.metadata.enhance.DatabaseGeneratedPropertyConstraintEnhancer;
-import nl._42.jarb.constraint.metadata.enhance.DatabasePropertyConstraintEnhancer;
-import nl._42.jarb.constraint.metadata.enhance.DigitsPropertyConstraintEnhancer;
-import nl._42.jarb.constraint.metadata.enhance.EnumPropertyTypeEnhancer;
-import nl._42.jarb.constraint.metadata.enhance.LengthPropertyConstraintEnhancer;
-import nl._42.jarb.constraint.metadata.enhance.MinMaxNumberAnnotationPropertyEnhancer;
-import nl._42.jarb.constraint.metadata.enhance.MinMaxNumberPropertyEnhancer;
+import nl._42.jarb.constraint.metadata.enhance.MinPropertyConstraintEnhancer;
 import nl._42.jarb.constraint.metadata.enhance.NotEmptyPropertyConstraintEnhancer;
 import nl._42.jarb.constraint.metadata.enhance.NotNullPropertyConstraintEnhancer;
 import nl._42.jarb.constraint.metadata.enhance.PatternPropertyConstraintEnhancer;
 import nl._42.jarb.constraint.metadata.enhance.PropertyTypeEnhancer;
 import nl._42.jarb.utils.Classes;
+
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Date;
 
 /**
  * Bean constraint descriptor with all default enhancers. 
@@ -46,7 +33,7 @@ import nl._42.jarb.utils.Classes;
  */
 public class DefaultBeanConstraintDescriptor extends BeanConstraintDescriptor {
     
-    private static final String JAVAX_VALIDATION_PACKAGE = "javax.validation";
+    private static final String JAVAX_VALIDATION_PACKAGE     = "javax.validation";
     private static final String HIBERNATE_VALIDATION_PACKAGE = "org.hibernate.validator";
 
     public DefaultBeanConstraintDescriptor(BeanMetadataRepository beanMetadataRepository) {
@@ -55,12 +42,15 @@ public class DefaultBeanConstraintDescriptor extends BeanConstraintDescriptor {
     
     private void registerHandlers(BeanMetadataRepository beanMetadataRepository) {
         registerDefaultEnhancers();
+
         if (Classes.hasPackage(JAVAX_VALIDATION_PACKAGE)) {
             registerJavaxValidationEnhancers();
         }
+
         if (Classes.hasPackage(HIBERNATE_VALIDATION_PACKAGE)) {
             registerHibernateValidationEnhancers();
         }
+
         if (beanMetadataRepository != null) {
             registerDatabaseEnhancers(beanMetadataRepository);
         }
@@ -95,12 +85,67 @@ public class DefaultBeanConstraintDescriptor extends BeanConstraintDescriptor {
         register(new NotNullPropertyConstraintEnhancer());
         register(new PatternPropertyConstraintEnhancer());
         register(new DigitsPropertyConstraintEnhancer());
-        register(new MinMaxNumberAnnotationPropertyEnhancer());
+
+        register(new MinPropertyConstraintEnhancer<>(
+            javax.validation.constraints.Min.class,
+            (annotation) -> annotation.value()
+        ));
+
+        register(new MinPropertyConstraintEnhancer<>(
+            javax.validation.constraints.DecimalMin.class,
+            (annotation) -> new BigDecimal(annotation.value())
+        ));
+
+        register(new MinPropertyConstraintEnhancer<>(
+            javax.validation.constraints.Positive.class,
+            (annotation) -> 0
+        ));
+
+        register(new MinPropertyConstraintEnhancer<>(
+            javax.validation.constraints.PositiveOrZero.class,
+            (annotation) -> 0
+        ));
+
+        register(new MaxPropertyConstraintEnhancer<>(
+            javax.validation.constraints.Max.class,
+            (annotation) -> annotation.value()
+        ));
+
+        register(new MaxPropertyConstraintEnhancer<>(
+            javax.validation.constraints.DecimalMax.class,
+            (annotation) -> new BigDecimal(annotation.value())
+        ));
+
+        register(new MaxPropertyConstraintEnhancer<>(
+            javax.validation.constraints.Negative.class,
+            (annotation) -> 0
+        ));
+
+        register(new MaxPropertyConstraintEnhancer<>(
+            javax.validation.constraints.NegativeOrZero.class,
+            (annotation) -> 0
+        ));
+
+        register(new LengthPropertyConstraintEnhancer<>(
+            javax.validation.constraints.Size.class,
+            (annotation) -> annotation.min(),
+            (annotation) -> annotation.max()
+        ));
+
+        register(new NotEmptyPropertyConstraintEnhancer(javax.validation.constraints.NotEmpty.class));
+        register(new NotEmptyPropertyConstraintEnhancer(javax.validation.constraints.NotBlank.class));
+
+        register(new AnnotationPropertyTypeEnhancer(javax.validation.constraints.Email.class, "email"));
     }
 
     private void registerHibernateValidationEnhancers() {
-        register(new LengthPropertyConstraintEnhancer());
-        register(new NotEmptyPropertyConstraintEnhancer());
+        register(new LengthPropertyConstraintEnhancer<>(
+            org.hibernate.validator.constraints.Length.class,
+            (annotation) -> annotation.min(),
+            (annotation) -> annotation.max()
+        ));
+
+        register(new NotEmptyPropertyConstraintEnhancer(org.hibernate.validator.constraints.NotEmpty.class));
 
         register(new AnnotationPropertyTypeEnhancer(org.hibernate.validator.constraints.Email.class, "email"));
         register(new AnnotationPropertyTypeEnhancer(org.hibernate.validator.constraints.CreditCardNumber.class, "credid_card"));

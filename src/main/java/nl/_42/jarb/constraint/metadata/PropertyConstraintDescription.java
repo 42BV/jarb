@@ -1,12 +1,12 @@
 package nl._42.jarb.constraint.metadata;
 
-import static java.util.Collections.unmodifiableSet;
-import static nl._42.jarb.utils.Asserts.notNull;
+import nl._42.jarb.utils.bean.PropertyReference;
 
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-import nl._42.jarb.utils.bean.PropertyReference;
+import static java.util.Collections.unmodifiableSet;
+import static nl._42.jarb.utils.Asserts.notNull;
 
 /**
  * Describes a bean property.
@@ -34,9 +34,9 @@ public class PropertyConstraintDescription {
     
     private String pattern;
     
-    private Object min;
+    private Number min;
     
-    private Object max;
+    private Number max;
 
     /**
      * Construct a new {@link PropertyConstraintDescription}.
@@ -140,19 +140,19 @@ public class PropertyConstraintDescription {
         this.pattern = pattern;
     }
     
-    public Object getMin() {
+    public Number getMin() {
         return min;
     }
     
-    public void setMin(Object min) {
+    public void setMin(Number min) {
         this.min = min;
     }
     
-    public Object getMax() {
+    public Number getMax() {
         return max;
     }
     
-    public void setMax(Object max) {
+    public void setMax(Number max) {
         this.max = max;
     }
     
@@ -166,10 +166,18 @@ public class PropertyConstraintDescription {
      * 
      * @param min the min value to add
      */
-    public void addMin(long min) {
-        if (this.min == null || ((Number) this.min).longValue() < min) {
-            this.min = Long.valueOf(min);
+    public void addMin(Number min) {
+        if (this.min == null || isHigher(this.min, min)) {
+            this.min = min;
         }
+    }
+
+    private boolean isHigher(Number current, Number other) {
+        if (other == null) {
+            return false;
+        }
+
+        return other.doubleValue() > current.doubleValue();
     }
     
     /**
@@ -178,9 +186,9 @@ public class PropertyConstraintDescription {
      * 
      * @param max the max value to add
      */
-    public void addMax(long max) {
-        if (this.max == null || ((Number) this.max).longValue() > max) {
-            this.max = Long.valueOf(max);
+    public void addMax(Number max) {
+        if (this.max == null || isHigher(max, this.max)) {
+            this.max = max;
         }
     }
 

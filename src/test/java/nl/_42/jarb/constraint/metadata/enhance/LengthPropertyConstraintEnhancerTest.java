@@ -1,16 +1,14 @@
 package nl._42.jarb.constraint.metadata.enhance;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-
-import nl._42.jarb.constraint.metadata.PropertyConstraintDescription;
-import nl._42.jarb.utils.bean.PropertyReference;
-
 import nl._42.jarb.constraint.domain.Wine;
 import nl._42.jarb.constraint.metadata.PropertyConstraintDescription;
 import nl._42.jarb.utils.bean.PropertyReference;
+import org.hibernate.validator.constraints.Length;
 import org.junit.Before;
 import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 public class LengthPropertyConstraintEnhancerTest {
     
@@ -20,7 +18,7 @@ public class LengthPropertyConstraintEnhancerTest {
 
     @Before
     public void setUp() {
-        enhancer = new LengthPropertyConstraintEnhancer();
+        enhancer = new LengthPropertyConstraintEnhancer<>(Length.class, Length::min, Length::max);
         
         PropertyReference nameReference = new PropertyReference(Wine.class, "name");
         description = new PropertyConstraintDescription(nameReference, String.class);

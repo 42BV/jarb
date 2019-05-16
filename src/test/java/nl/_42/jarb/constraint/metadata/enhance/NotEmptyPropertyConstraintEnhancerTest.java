@@ -1,16 +1,15 @@
 package nl._42.jarb.constraint.metadata.enhance;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-
-import nl._42.jarb.constraint.metadata.PropertyConstraintDescription;
-import nl._42.jarb.utils.bean.PropertyReference;
-
 import nl._42.jarb.constraint.domain.Wine;
 import nl._42.jarb.constraint.metadata.PropertyConstraintDescription;
 import nl._42.jarb.utils.bean.PropertyReference;
 import org.junit.Before;
 import org.junit.Test;
+
+import javax.validation.constraints.NotEmpty;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 public class NotEmptyPropertyConstraintEnhancerTest {
     
@@ -20,7 +19,7 @@ public class NotEmptyPropertyConstraintEnhancerTest {
 
     @Before
     public void setUp() {
-        enhancer = new NotEmptyPropertyConstraintEnhancer();
+        enhancer = new NotEmptyPropertyConstraintEnhancer(NotEmpty.class);
         
         PropertyReference nameReference = new PropertyReference(Wine.class, "name");
         description = new PropertyConstraintDescription(nameReference, String.class);

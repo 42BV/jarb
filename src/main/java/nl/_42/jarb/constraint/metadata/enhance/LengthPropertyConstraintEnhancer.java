@@ -1,9 +1,11 @@
 package nl._42.jarb.constraint.metadata.enhance;
 
-import java.util.Collection;
-
 import nl._42.jarb.constraint.metadata.PropertyConstraintDescription;
 import nl._42.jarb.utils.bean.Annotations;
+
+import java.lang.annotation.Annotation;
+import java.util.Collection;
+import java.util.function.Function;
 
 /**
  * Enhance the property constraint descriptor with @Length information.
@@ -11,19 +13,32 @@ import nl._42.jarb.utils.bean.Annotations;
  * @author Jeroen van Schagen
  * @since 31-05-2011
  */
-public class LengthPropertyConstraintEnhancer implements PropertyConstraintEnhancer {
+public class LengthPropertyConstraintEnhancer<A extends Annotation> implements PropertyConstraintEnhancer {
+
+    private final Class<A> annotationType;
+
+    private final Function<A, Integer> minimum;
+    private final Function<A, Integer> maximum;
+
+    public LengthPropertyConstraintEnhancer(Class<A> annotationType, Function<A, Integer> minimum, Function<A, Integer> maximum) {
+        this.annotationType = annotationType;
+        this.minimum = minimum;
+        this.maximum = maximum;
+    }
 
     @Override
     public void enhance(PropertyConstraintDescription description) {
-        Collection<org.hibernate.validator.constraints.Length> annotations = 
-                Annotations.getAnnotations(description.toReference(), org.hibernate.validator.constraints.Length.class);
+        Collection<A> annotations = Annotations.getAnnotations(description.toReference(), annotationType);
+
         Integer minimumLength = description.getMinimumLength();
         Integer maximumLength = description.getMaximumLength();
-        for (org.hibernate.validator.constraints.Length annotation : annotations) {
+
+        for (A annotation : annotations) {
             // Store the highest minimum and lowest maximum length, as this will cause both restrictions to pass
-            minimumLength = highest(minimumLength, annotation.min());
-            maximumLength = lowest(maximumLength, annotation.max());
+            minimumLength = highest(minimumLength, minimum.apply(annotation));
+            maximumLength = lowest(maximumLength, maximum.apply(annotation));
         }
+
         description.setMinimumLength(minimumLength);
         description.setMaximumLength(maximumLength);
     }
