@@ -82,68 +82,30 @@ public class DefaultBeanConstraintDescriptor extends BeanConstraintDescriptor {
     }
 
     private void registerJavaxValidationEnhancers() {
+        register(new LengthPropertyConstraintEnhancer<>(javax.validation.constraints.Size.class, (x) -> x.min(), (x) -> x.max()));
+
         register(new NotNullPropertyConstraintEnhancer());
+        register(new NotEmptyPropertyConstraintEnhancer(javax.validation.constraints.NotEmpty.class));
+        register(new NotEmptyPropertyConstraintEnhancer(javax.validation.constraints.NotBlank.class));
+
         register(new PatternPropertyConstraintEnhancer());
         register(new DigitsPropertyConstraintEnhancer());
 
-        register(new MinPropertyConstraintEnhancer<>(
-            javax.validation.constraints.Min.class,
-            (annotation) -> annotation.value()
-        ));
+        register(new MinPropertyConstraintEnhancer<>(javax.validation.constraints.Min.class, (x) -> x.value()));
+        register(new MinPropertyConstraintEnhancer<>(javax.validation.constraints.DecimalMin.class, (x) -> new BigDecimal(x.value())));
+        register(new MinPropertyConstraintEnhancer<>(javax.validation.constraints.Positive.class, (x) -> 0));
+        register(new MinPropertyConstraintEnhancer<>(javax.validation.constraints.PositiveOrZero.class, (x) -> 0));
 
-        register(new MinPropertyConstraintEnhancer<>(
-            javax.validation.constraints.DecimalMin.class,
-            (annotation) -> new BigDecimal(annotation.value())
-        ));
-
-        register(new MinPropertyConstraintEnhancer<>(
-            javax.validation.constraints.Positive.class,
-            (annotation) -> 0
-        ));
-
-        register(new MinPropertyConstraintEnhancer<>(
-            javax.validation.constraints.PositiveOrZero.class,
-            (annotation) -> 0
-        ));
-
-        register(new MaxPropertyConstraintEnhancer<>(
-            javax.validation.constraints.Max.class,
-            (annotation) -> annotation.value()
-        ));
-
-        register(new MaxPropertyConstraintEnhancer<>(
-            javax.validation.constraints.DecimalMax.class,
-            (annotation) -> new BigDecimal(annotation.value())
-        ));
-
-        register(new MaxPropertyConstraintEnhancer<>(
-            javax.validation.constraints.Negative.class,
-            (annotation) -> 0
-        ));
-
-        register(new MaxPropertyConstraintEnhancer<>(
-            javax.validation.constraints.NegativeOrZero.class,
-            (annotation) -> 0
-        ));
-
-        register(new LengthPropertyConstraintEnhancer<>(
-            javax.validation.constraints.Size.class,
-            (annotation) -> annotation.min(),
-            (annotation) -> annotation.max()
-        ));
-
-        register(new NotEmptyPropertyConstraintEnhancer(javax.validation.constraints.NotEmpty.class));
-        register(new NotEmptyPropertyConstraintEnhancer(javax.validation.constraints.NotBlank.class));
+        register(new MaxPropertyConstraintEnhancer<>(javax.validation.constraints.Max.class, (x) -> x.value()));
+        register(new MaxPropertyConstraintEnhancer<>(javax.validation.constraints.DecimalMax.class, (x) -> new BigDecimal(x.value())));
+        register(new MaxPropertyConstraintEnhancer<>(javax.validation.constraints.Negative.class, (x) -> 0));
+        register(new MaxPropertyConstraintEnhancer<>(javax.validation.constraints.NegativeOrZero.class, (x) -> 0));
 
         register(new AnnotationPropertyTypeEnhancer(javax.validation.constraints.Email.class, "email"));
     }
 
     private void registerHibernateValidationEnhancers() {
-        register(new LengthPropertyConstraintEnhancer<>(
-            org.hibernate.validator.constraints.Length.class,
-            (annotation) -> annotation.min(),
-            (annotation) -> annotation.max()
-        ));
+        register(new LengthPropertyConstraintEnhancer<>(org.hibernate.validator.constraints.Length.class, (x) -> x.min(), (x) -> x.max()));
 
         register(new NotEmptyPropertyConstraintEnhancer(org.hibernate.validator.constraints.NotEmpty.class));
 
