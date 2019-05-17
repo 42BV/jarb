@@ -1,10 +1,10 @@
 package nl._42.jarb.utils.bean;
 
-import static nl._42.jarb.utils.Asserts.hasText;
-import static nl._42.jarb.utils.Asserts.notNull;
-
 import nl._42.jarb.utils.Asserts;
 import nl._42.jarb.utils.StringUtils;
+
+import static nl._42.jarb.utils.Asserts.hasText;
+import static nl._42.jarb.utils.Asserts.notNull;
 
 /**
  * References a bean property.
@@ -33,16 +33,6 @@ public class PropertyReference {
 
     public PropertyReference(PropertyReference parent, String propertyName) {
         this(parent.getBeanClass(), parent.getPropertyName() + PROPERTY_SEPARATOR + propertyName);
-    }
-
-    /**
-     * Reference a property deeper in the hierarchy.
-     * 
-     * @param propertyName the property name, relative from our current reference
-     * @return the new property reference
-     */
-    public PropertyReference deeper(String propertyName) {
-        return new PropertyReference(this, propertyName);
     }
 
     /**
@@ -81,6 +71,10 @@ public class PropertyReference {
         return propertyName.contains(PROPERTY_SEPARATOR);
     }
 
+    public String getBase() {
+        return StringUtils.substringBefore(propertyName, PROPERTY_SEPARATOR);
+    }
+
     /**
      * Retrieve the parent reference.
      * 
@@ -109,6 +103,7 @@ public class PropertyReference {
         if (!(obj instanceof PropertyReference)) {
             return false;
         }
+
         PropertyReference other = (PropertyReference) obj;
         return other.getBeanClass().equals(beanClass) && other.getPropertyName().equals(propertyName);
     }

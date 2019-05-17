@@ -1,15 +1,5 @@
 package nl._42.jarb.constraint.validation;
 
-import static nl._42.jarb.utils.StringUtils.isNotBlank;
-
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.validation.ConstraintValidatorContext;
-import javax.validation.MessageInterpolator;
-
 import nl._42.jarb.constraint.metadata.database.BeanMetadataRepository;
 import nl._42.jarb.constraint.metadata.database.ColumnMetadata;
 import nl._42.jarb.utils.bean.Beans;
@@ -17,6 +7,15 @@ import nl._42.jarb.utils.bean.FlexibleBeanWrapper;
 import nl._42.jarb.utils.bean.PropertyReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.validation.ConstraintValidatorContext;
+import javax.validation.MessageInterpolator;
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
+import java.util.ArrayList;
+import java.util.List;
+
+import static nl._42.jarb.utils.StringUtils.isNotBlank;
 
 /**
  * Validates the property values of a bean satisfy our database constraints.
@@ -85,16 +84,17 @@ public class DatabaseConstraintValidator {
         }
     }
 
-    private void validateProperty(FlexibleBeanWrapper beanWrapper, PropertyReference propertyReference, BasePath basePath, DatabaseValidationContext validation) {
-        Field field = Beans.findPropertyField(propertyReference);
+    private void validateProperty(FlexibleBeanWrapper beanWrapper, PropertyReference property, BasePath basePath, DatabaseValidationContext validation) {
+        Field field = Beans.findPropertyField(property);
+
         if (isValidatable(field)) {
-            Class<?> propertyClass = field.getType();
-            if (beanMetadataRepository.isEmbeddable(propertyClass)) {
-                for (String propertyName : Beans.getFieldNames(propertyClass)) {
-                    validateProperty(beanWrapper, new PropertyReference(propertyReference, propertyName), basePath, validation);
+            Class<?> propertyType = field.getType();
+            if (beanMetadataRepository.isEmbeddable(propertyType)) {
+                for (String propertyName : Beans.getFieldNames(propertyType)) {
+                    validateProperty(beanWrapper, new PropertyReference(property, propertyName), basePath, validation);
                 }
             } else {
-                validateSimpleProperty(beanWrapper, propertyReference, basePath, validation);
+                validateSimpleProperty(beanWrapper, property, propertyType, basePath, validation);
             }
         }
     }
@@ -103,16 +103,17 @@ public class DatabaseConstraintValidator {
         return !Modifier.isStatic(field.getModifiers()) && field.getAnnotation(IgnoreDatabaseConstraints.class) == null;
     }
 
-    private void validateSimpleProperty(FlexibleBeanWrapper beanWrapper, PropertyReference propertyReference, BasePath basePath, DatabaseValidationContext validation) {
-        PropertyReference wrappedPropertyReference = basePath.apply(propertyReference);
-        ColumnMetadata columnMetadata = beanMetadataRepository.getColumnMetadata(wrappedPropertyReference);
+    private void validateSimpleProperty(FlexibleBeanWrapper bean, PropertyReference property, Class<?> propertyType, BasePath basePath, DatabaseValidationContext validation) {
+        PropertyReference wrapped = basePath.apply(property);
+
+        ColumnMetadata columnMetadata = beanMetadataRepository.getColumnMetadata(wrapped);
         if (columnMetadata != null) {
-            Object propertyValue = beanWrapper.getPropertyValue(propertyReference.getPropertyName());
+            Object propertyValue = bean.getPropertyValue(property.getPropertyName());
             for (DatabaseConstraintValidationStep validationStep : validationSteps) {
-                validationStep.validate(propertyValue, propertyReference, columnMetadata, validation);
+                validationStep.validate(propertyValue, propertyType, property, columnMetadata, validation);
             }
         } else {
-            logger.debug("Skipped validation because no meta-data could be found for property '{}'.", wrappedPropertyReference);
+            logger.debug("Skipped validation because no meta-data could be found for property '{}'.", wrapped);
         }
     }
     

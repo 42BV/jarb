@@ -12,17 +12,9 @@ import java.util.Set;
  */
 public class BeanConstraintService {
 
-    private final Set<String> ignoredProperties = new HashSet<>();
-    
     private final Set<Class<?>> beanTypes = new HashSet<>();
 
     private final BeanConstraintDescriptor descriptor;
-    
-    {
-        ignoredProperties.add("new");
-        ignoredProperties.add("id");
-        ignoredProperties.add("class");
-    }
 
     public BeanConstraintService(BeanConstraintDescriptor descriptor) {
         this.descriptor = descriptor;
@@ -66,9 +58,7 @@ public class BeanConstraintService {
     }
 
     private Map<String, PropertyConstraintDescription> describe(BeanConstraintDescription description) {
-        Map<String, PropertyConstraintDescription> properties = new HashMap<>(description.getProperties());
-        getIgnoredProperties().stream().forEach(properties::remove);
-        return properties;
+        return new HashMap<>(description.getProperties());
     }
 
     /**
@@ -86,14 +76,6 @@ public class BeanConstraintService {
     public void registerClasses(EntityFactory factory) {
         Set<Class<?>> entityClasses = factory.getEntityClasses();
         entityClasses.forEach(this::registerClass);
-    }
-
-    /**
-     * Retrieves all ignored properties.
-     * @return the ignored properties
-     */
-    public Set<String> getIgnoredProperties() {
-        return ignoredProperties;
     }
 
 }

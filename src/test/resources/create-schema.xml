@@ -8,31 +8,70 @@
         <comment>Create meta-data testing tables.</comment>
         
         <createTable tableName="cars">
-            <column name="id" type="BIGINT" autoIncrement="true">
+            <column name="id" type="bigint" autoIncrement="true">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="pk_cars_id"/>
             </column>
-            <column name="license_number" type="VARCHAR(6)">
+            <column name="license_number" type="varchar(6)">
                 <constraints nullable="false"/>
             </column>
-            <column name="price" type="DECIMAL(6,2)"/>
-            <column name="owner_id" type="BIGINT"/>
-            <column name="active" type="BOOLEAN"/>
+            <column name="price" type="decimal(6,2)"/>
+            <column name="owner_id" type="bigint"/>
+            <column name="active" type="boolean"/>
         </createTable>
         
         <addUniqueConstraint columnNames="license_number" tableName="cars" constraintName="uk_cars_license_number"/>
-        
+
+        <createTable tableName="cars_inspections">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_cars_inspections_id"/>
+            </column>
+            <column name="cars_id" type="bigint">
+                <constraints nullable="false" foreignKeyName="fk_cars_inspections_cars_id" references="cars(id)"/>
+            </column>
+            <column name="date" type="date">
+                <constraints nullable="false"/>
+            </column>
+            <column name="remarks" type="varchar(256)"/>
+        </createTable>
+
+        <createIndex tableName="cars_inspections" indexName="ix_cars_inspections_cars_id">
+            <column name="cars_id"/>
+        </createIndex>
+
+        <createTable tableName="cars_components">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_cars_components_id"/>
+            </column>
+            <column name="cars_id" type="bigint">
+                <constraints nullable="false" foreignKeyName="fk_cars_components_cars_id" references="cars(id)"/>
+            </column>
+            <column name="type" type="varchar(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="name" type="varchar(256)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="price" type="decimal(6,2)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createIndex tableName="cars_components" indexName="ix_cars_components_cars_id">
+            <column name="cars_id"/>
+        </createIndex>
+
         <createTable tableName="persons">
-            <column name="id" type="BIGINT" autoIncrement="true">
+            <column name="id" type="bigint" autoIncrement="true">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="pk_persons_id"/>
             </column>
-            <column name="name" type="VARCHAR(255)">
+            <column name="name" type="varchar(200)">
                 <constraints nullable="false"/>
             </column>
-            <column name="age" type="BIGINT"/>
-            <column name="street_and_number" type="VARCHAR(255)">
+            <column name="age" type="bigint"/>
+            <column name="street_and_number" type="varchar(256)">
                 <constraints nullable="false"/>
             </column>
-            <column name="city" type="VARCHAR(255)">
+            <column name="city" type="varchar(100)">
                 <constraints nullable="false"/>
             </column>
         </createTable>
@@ -44,22 +83,22 @@
         <comment>Create validation testing tables.</comment>
         
         <createTable tableName="wines">
-            <column name="id" type="BIGINT" autoIncrement="true">
+            <column name="id" type="bigint" autoIncrement="true">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="pk_wines_id"/>
             </column>
-            <column name="name" type="VARCHAR(6)">
+            <column name="name" type="varchar(6)">
                 <constraints nullable="false"/>
             </column>
-            <column name="age" type="DECIMAL(6,2)"/>
-            <column name="country_id" type="BIGINT"/>
-            <column name="primitive" type="INTEGER"/>
+            <column name="age" type="decimal(6,2)"/>
+            <column name="country_id" type="bigint"/>
+            <column name="primitive" type="integer"/>
         </createTable>
         
         <createTable tableName="countries">
-            <column name="id" type="BIGINT" autoIncrement="true">
+            <column name="id" type="bigint" autoIncrement="true">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="pk_countries_id"/>
             </column>
-            <column name="name" type="VARCHAR(255)">
+            <column name="name" type="varchar(256)">
                 <constraints nullable="false"/>
             </column>
         </createTable>

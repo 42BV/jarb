@@ -10,7 +10,7 @@ public class FractionLengthConstraintValidationStep implements DatabaseConstrain
     private static final String FRACTION_LENGTH_TEMPLATE = "{org.jarb.validation.DatabaseConstraint.FractionLength.message}";
 
     @Override
-    public void validate(Object value, PropertyReference reference, ColumnMetadata metadata, DatabaseValidationContext context) {
+    public void validate(Object value, Class<?> valueType, PropertyReference reference, ColumnMetadata metadata, DatabaseValidationContext context) {
         if (isFractionLengthExceeded(value, metadata)) {
             context.buildViolationWithTemplate(reference, FRACTION_LENGTH_TEMPLATE)
                     .attribute("max", metadata.getFractionLength())

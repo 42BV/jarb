@@ -2,7 +2,10 @@ package nl._42.jarb.constraint.metadata;
 
 import nl._42.jarb.constraint.ConstraintsTestConfig;
 import nl._42.jarb.constraint.DatabaseConstraintsConfigurer;
+import nl._42.jarb.constraint.domain.AwesomeCar;
+import nl._42.jarb.constraint.domain.Car;
 import nl._42.jarb.constraint.domain.Country;
+import nl._42.jarb.constraint.domain.Person;
 import nl._42.jarb.constraint.domain.Wine;
 import nl._42.jarb.constraint.metadata.BeanConstraintServiceTest.CustomConstraintsConfig;
 import nl._42.jarb.constraint.metadata.enhance.AnnotationPropertyTypeEnhancer;
@@ -10,6 +13,7 @@ import nl._42.jarb.constraint.metadata.factory.EntityFactory;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.internal.util.collections.Sets;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.test.context.ActiveProfiles;
@@ -43,7 +47,19 @@ public class BeanConstraintServiceTest {
     }
 
     @Test
-    public void testDefaultEnhancers() {
+    public void describe_all() {
+        assertTrue(service.describeAll().isEmpty());
+
+        service.registerClasses(entityFactory);
+
+        Map<String, Map<String, PropertyConstraintDescription>> constraints = service.describeAll();
+        assertFalse(constraints.isEmpty());
+
+        assertEquals(Sets.newSet("Wine", "AwesomeCar", "Car", "Country", "Person"), constraints.keySet());
+    }
+
+    @Test
+    public void describe_default() {
         Map<String, PropertyConstraintDescription> wineDescription = service.describe(Wine.class);
         
         // Retrieved by introspection
@@ -65,51 +81,78 @@ public class BeanConstraintServiceTest {
     }
 
     @Test
-    public void testCustomEnhancer() {
+    public void describe_custom() {
         Map<String, PropertyConstraintDescription> wineDescription = service.describe(Wine.class);
         
         assertTrue(wineDescription.get("country").getTypes().contains("reference"));
     }
-    
+
     @Test
-    public void testDescribeAll() {
-        assertTrue(service.describeAll().isEmpty());
-        
-        service.registerClasses(entityFactory);
-
-        Map<String, Map<String, PropertyConstraintDescription>> constraints  = service.describeAll();
-        assertFalse(constraints.isEmpty());
-
-        // Testing the Person
-        Map<String, PropertyConstraintDescription> person = constraints.get("Person");
-
-        PropertyConstraintDescription name = person.get("name");
-        assertEquals(255, name.getMaximumLength().longValue());
-        assertTrue(name.isRequired());
-
-        PropertyConstraintDescription city = person.get("contact.address.city");
-        assertEquals(255, city.getMaximumLength().longValue());
-        assertTrue(city.isRequired());
-
-        PropertyConstraintDescription streetAndNumber = person.get("contact.address.streetAndNumber");
-        assertEquals(255, streetAndNumber.getMaximumLength().longValue());
-        assertTrue(streetAndNumber.isRequired());
-
+    public void describe_bean() {
         // Testing the Car
-        Map<String, PropertyConstraintDescription> car = constraints.get("Car");
+        Map<String, PropertyConstraintDescription> properties = service.describe(Car.class);
 
-        PropertyConstraintDescription licenseNumber = car.get("licenseNumber");
+        PropertyConstraintDescription licenseNumber = properties.get("licenseNumber");
         assertEquals(6, licenseNumber.getMaximumLength().longValue());
         assertTrue(licenseNumber.isRequired());
 
-        PropertyConstraintDescription price = car.get("price");
+        PropertyConstraintDescription price = properties.get("price");
         assertEquals(6, price.getMaximumLength().longValue());
         assertFalse(price.isRequired());
         assertEquals(2, price.getFractionLength().longValue());
         assertEquals(10, price.getRadix().longValue());
 
-        PropertyConstraintDescription active = car.get("active");
+        PropertyConstraintDescription active = properties.get("active");
         assertFalse(active.isRequired());
+    }
+
+    @Test
+    public void describe_embeddable() {
+        Map<String, PropertyConstraintDescription> properties = service.describe(Person.class);
+
+        PropertyConstraintDescription name = properties.get("name");
+        assertEquals(200, name.getMaximumLength().longValue());
+        assertTrue(name.isRequired());
+
+        PropertyConstraintDescription contact = properties.get("contact");
+        assertNull(contact);
+
+        PropertyConstraintDescription city = properties.get("contact.address.city");
+        assertEquals(100, city.getMaximumLength().longValue());
+        assertTrue(city.isRequired());
+
+        PropertyConstraintDescription streetAndNumber = properties.get("contact.address.streetAndNumber");
+        assertEquals(256, streetAndNumber.getMaximumLength().longValue());
+        assertTrue(streetAndNumber.isRequired());
+    }
+
+    @Test
+    public void describe_embeddable_collection() {
+        Map<String, PropertyConstraintDescription> properties = service.describe(AwesomeCar.class);
+
+        PropertyConstraintDescription inspections = properties.get("inspections");
+        assertNull(inspections);
+
+        PropertyConstraintDescription date = properties.get("inspections.date");
+        assertEquals(Sets.newSet("date"), date.getTypes());
+        assertTrue(date.isRequired());
+
+        PropertyConstraintDescription remarks = properties.get("inspections.remarks");
+        assertFalse(remarks.isRequired());
+    }
+
+    @Test
+    public void describe_embeddable_map() {
+        Map<String, PropertyConstraintDescription> properties = service.describe(AwesomeCar.class);
+
+        PropertyConstraintDescription type = properties.get("components");
+        assertTrue(type.isRequired());
+
+        PropertyConstraintDescription name = properties.get("components.name");
+        assertTrue(name.isRequired());
+
+        PropertyConstraintDescription price = properties.get("components.price");
+        assertTrue(price.isRequired());
     }
 
     @Configuration

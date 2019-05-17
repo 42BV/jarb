@@ -24,6 +24,8 @@ import nl._42.jarb.utils.orm.JdbcSchemaMapper;
 import nl._42.jarb.utils.orm.SchemaMapper;
 import nl._42.jarb.utils.orm.hibernate.HibernateJpaSchemaMapper;
 import nl._42.jarb.utils.orm.hibernate.HibernateUtils;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -33,6 +35,7 @@ import org.springframework.context.annotation.ImportAware;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.core.type.AnnotationMetadata;
 
+import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 import java.lang.annotation.Annotation;
@@ -136,10 +139,16 @@ public class DatabaseConstraintsConfiguration implements ImportAware, Initializi
 
     private SchemaMapper schemaMapper() {
         if (entityManagerFactory != null) {
-            return new HibernateJpaSchemaMapper(entityManagerFactory);
+            SessionFactory sessionFactory = getSessionFactory(entityManagerFactory);
+            return new HibernateJpaSchemaMapper(sessionFactory);
         } else {
             return new JdbcSchemaMapper();
         }
+    }
+
+    private static SessionFactory getSessionFactory(EntityManagerFactory entityManagerFactory) {
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        return ((Session) entityManager.getDelegate()).getSessionFactory();
     }
 
     @Bean

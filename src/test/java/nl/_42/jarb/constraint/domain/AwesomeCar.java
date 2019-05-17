@@ -1,15 +1,23 @@
 package nl._42.jarb.constraint.domain;
 
+import javax.persistence.CollectionTable;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.MapKeyClass;
+import javax.persistence.MapKeyColumn;
+import javax.persistence.MapKeyEnumerated;
 import javax.persistence.Table;
 
 import nl._42.jarb.constraint.validation.DatabaseConstrained;
 import nl._42.jarb.constraint.validation.IgnoreDatabaseConstraints;
 
-import nl._42.jarb.constraint.validation.DatabaseConstrained;
-import nl._42.jarb.constraint.validation.IgnoreDatabaseConstraints;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Entity
 @Table(name = "cars")
@@ -21,7 +29,6 @@ public class AwesomeCar extends DefaultEntity {
     private Double price;
 
     @ManyToOne
-    @JoinColumn(name = "owner_id")
     private Person owner;
     
     private String active;
@@ -30,6 +37,17 @@ public class AwesomeCar extends DefaultEntity {
     
     @IgnoreDatabaseConstraints
     private transient String ignoredProperty;
+
+    @ElementCollection
+    @CollectionTable(name = "cars_inspections", joinColumns = @JoinColumn(name = "cars_id"))
+    private List<Inspection> inspections = new ArrayList<>();
+
+    @ElementCollection
+    @CollectionTable(name = "cars_components", joinColumns = @JoinColumn(name = "cars_id"))
+    @MapKeyColumn(name = "type")
+    @MapKeyClass(ComponentType.class)
+    @MapKeyEnumerated(EnumType.STRING)
+    private Map<ComponentType, Component> components = new HashMap<>();
 
     AwesomeCar() {
     }
@@ -84,6 +102,22 @@ public class AwesomeCar extends DefaultEntity {
     
     public void setIgnoredProperty(String ignoredProperty) {
         this.ignoredProperty = ignoredProperty;
+    }
+
+    public List<Inspection> getInspections() {
+        return inspections;
+    }
+
+    public void setInspections(List<Inspection> inspections) {
+        this.inspections = inspections;
+    }
+
+    public Map<ComponentType, Component> getComponents() {
+        return components;
+    }
+
+    public void setComponents(Map<ComponentType, Component> components) {
+        this.components = components;
     }
 
 }

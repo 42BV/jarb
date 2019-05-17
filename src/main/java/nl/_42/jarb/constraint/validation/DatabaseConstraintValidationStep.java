@@ -12,11 +12,12 @@ public interface DatabaseConstraintValidationStep {
 
     /**
      * Validates a property value on database column constraints.
-     * @param propertyValue the property value to validate
-     * @param propertyRef reference to the property
+     * @param value the property value to validate
+     * @param valueType the property type
+     * @param reference reference to the property
      * @param columnMetadata metadata of the column referenced by our property
      * @param validation the validation result in which violations are stored
      */
-    void validate(Object propertyValue, PropertyReference propertyRef, ColumnMetadata columnMetadata, DatabaseValidationContext validation);
+    void validate(Object value, Class<?> valueType, PropertyReference reference, ColumnMetadata columnMetadata, DatabaseValidationContext validation);
 
 }

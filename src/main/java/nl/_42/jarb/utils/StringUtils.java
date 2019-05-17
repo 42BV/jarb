@@ -55,7 +55,7 @@ public class StringUtils {
         if (index == INDEX_NOT_FOUND) {
             return EMPTY;
         }
-        return text.substring(index + 1, text.length());
+        return text.substring(index + 1);
     }
     
     private static int indexOf(String text, String separator) {

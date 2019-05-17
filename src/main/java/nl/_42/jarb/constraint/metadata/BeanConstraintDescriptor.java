@@ -1,22 +1,26 @@
 package nl._42.jarb.constraint.metadata;
 
-import static nl._42.jarb.utils.Asserts.notNull;
-
-import java.beans.PropertyDescriptor;
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.persistence.Embeddable;
-
 import nl._42.jarb.constraint.metadata.enhance.PropertyConstraintEnhancer;
-
-import nl._42.jarb.constraint.metadata.enhance.PropertyConstraintEnhancer;
+import nl._42.jarb.utils.StringUtils;
 import nl._42.jarb.utils.bean.BeanRegistry;
 import nl._42.jarb.utils.bean.MapBeanRegistry;
 import nl._42.jarb.utils.bean.PropertyReference;
 import org.springframework.beans.BeanUtils;
 import org.springframework.util.ReflectionUtils;
+
+import javax.persistence.Embeddable;
+import java.beans.PropertyDescriptor;
+import java.lang.reflect.Field;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import static nl._42.jarb.utils.Asserts.notNull;
 
 /**
  * Generates bean constraint metadata.
@@ -27,26 +31,24 @@ import org.springframework.util.ReflectionUtils;
 public class BeanConstraintDescriptor {
 
     /**
+     * Properties to ignore.
+     */
+    private final Set<String> ignoredProperties = new HashSet<>();
+
+    /**
      * Enhances the property descriptions.
      */
-    private final List<PropertyConstraintEnhancer> enhancers = new ArrayList<PropertyConstraintEnhancer>();
+    private final List<PropertyConstraintEnhancer> enhancers = new ArrayList<>();
 
     /**
      * Registry of all supported beans.
      */
     private BeanRegistry beanRegistry = new MapBeanRegistry();
 
-    /**
-     * Generate all beans constraint meta data.
-     * 
-     * @return the beans constraint meta data
-     */
-    public List<BeanConstraintDescription> describeAll() {
-        List<BeanConstraintDescription> descriptions = new ArrayList<BeanConstraintDescription>();
-        for (Class<?> beanClass : beanRegistry.getAll()) {
-            descriptions.add(describeBean(beanClass));
-        }
-        return descriptions;
+    {
+        ignoredProperties.add("new");
+        ignoredProperties.add("id");
+        ignoredProperties.add("class");
     }
 
     /**
@@ -67,70 +69,78 @@ public class BeanConstraintDescriptor {
      * @return bean constraint meta data
      */
     public BeanConstraintDescription describeBean(Class<?> beanClass) {
-        BeanConstraintDescription beanDescription = new BeanConstraintDescription(beanClass);
-        for (PropertyDescriptor propertyDescriptor : BeanUtils.getPropertyDescriptors(beanClass)) {
-            Field field = ReflectionUtils.findField(beanClass, propertyDescriptor.getName());
+        BeanConstraintDescription bean = new BeanConstraintDescription(beanClass);
+
+        for (PropertyDescriptor property : BeanUtils.getPropertyDescriptors(beanClass)) {
+            Field field = ReflectionUtils.findField(beanClass, property.getName());
+
             if (field != null) {
-                if (field.getType().isAnnotationPresent(Embeddable.class)) {
-                    describeEmbeddable(beanDescription, beanClass, field.getType(), propertyDescriptor.getName());
+                Class<?> propertyType = field.getType();
+
+                if (Collection.class.isAssignableFrom(propertyType)) {
+                    Class<?> valueType = (Class<?>) getGenericTypes(field)[0];
+                    describeProperty(bean, property, valueType);
+                } else if (Map.class.isAssignableFrom(propertyType)) {
+                    Class<?> keyType = (Class<?>) getGenericTypes(field)[0];
+                    Class<?> valueType = (Class<?>) getGenericTypes(field)[1];
+                    describeProperty(bean, property, keyType);
+                    describeProperty(bean, property, valueType);
                 } else {
-                    beanDescription.addProperty(describeProperty(beanClass, propertyDescriptor, propertyDescriptor.getName()));
+                    describeProperty(bean, property, propertyType);
                 }
             }
         }
-        return beanDescription;
+
+        return bean;
     }
 
-    /**
-     * Describe the constraints of a specific property.
-     * 
-     * @param beanClass type of bean that contains the property
-     * @param descriptor plain property description from java
-     * @param path the path to the property from the beanClass.
-     * @return property constraint description
-     */
-    private PropertyConstraintDescription describeProperty(Class<?> beanClass, PropertyDescriptor descriptor, String path) {
-        PropertyConstraintDescription description = doDescribeProperty(beanClass, descriptor, path);
+    private Type[] getGenericTypes(Field field) {
+        ParameterizedType parameterizedType = (ParameterizedType) field.getGenericType();
+        return parameterizedType.getActualTypeArguments();
+    }
+
+    private void describeProperty(BeanConstraintDescription bean, PropertyDescriptor descriptor, Class<?> propertyType) {
+        PropertyReference property = new PropertyReference(bean.getJavaType(), descriptor.getName());
+        describeProperty(bean, property, propertyType);
+    }
+
+    private void describeProperty(BeanConstraintDescription bean, PropertyReference property, Class<?> propertyType) {
+        if (isIgnored(property)) {
+            return; // Skipped
+        }
+
+        if (propertyType.isAnnotationPresent(Embeddable.class)) {
+            describeEmbeddable(bean, propertyType, property);
+        } else {
+            PropertyConstraintDescription description = describeProperty(property, propertyType);
+            bean.addProperty(description);
+        }
+    }
+
+    private boolean isIgnored(PropertyReference property) {
+        return StringUtils.isBlank(property.getPropertyName()) ||
+               ignoredProperties.contains(property.getSimpleName());
+    }
+
+    private void describeEmbeddable(BeanConstraintDescription bean, Class<?> embeddableType, PropertyReference property) {
+        for (PropertyDescriptor descriptor : BeanUtils.getPropertyDescriptors(embeddableType)) {
+            Class<?> propertyType = descriptor.getPropertyType();
+
+            if (propertyType != null) {
+                PropertyReference nested = new PropertyReference(property, descriptor.getName());
+                describeProperty(bean, nested, propertyType);
+            }
+        }
+    }
+
+    private PropertyConstraintDescription describeProperty(PropertyReference property, Class<?> propertyType) {
+        PropertyConstraintDescription description = new PropertyConstraintDescription(property, propertyType);
+
         for (PropertyConstraintEnhancer enhancer : enhancers) {
             enhancer.enhance(description);
         }
+
         return description;
-    }
-
-    /**
-     * Construct a new {@link PropertyConstraintDescription} for some property.
-     * 
-     * @param beanClass type of bean that contains the property
-     * @param descriptor plain property description from java
-     * @param path the path to the property from the beanClass.
-     * @return new property constraint description
-     */
-    private PropertyConstraintDescription doDescribeProperty(Class<?> beanClass, PropertyDescriptor descriptor, String path) {
-        PropertyReference reference = new PropertyReference(beanClass, path);
-        return new PropertyConstraintDescription(reference, descriptor.getPropertyType());
-    }
-
-    /**
-     * Take an embedable and walk through each property and add it to the beanDescription.
-     *
-     * @param beanDescription Constains the current descriptions for the bean.
-     * @param beanClass The Bean which is described
-     * @param embeddable The Embeddable which fields needs to be added to the beanDescription.
-     * @param path The current path from the bean to the embeddable field.
-     */
-    private void describeEmbeddable(BeanConstraintDescription beanDescription, Class<?> beanClass , Class<?> embeddable, String path) {
-        for (PropertyDescriptor propertyDescriptor : BeanUtils.getPropertyDescriptors(embeddable)) {
-            Class<?> klass = propertyDescriptor.getPropertyType();
-
-            if (klass != null) {
-                if (klass.isAnnotationPresent(Embeddable.class)) {
-                    describeEmbeddable(beanDescription, beanClass, klass, path + "." + propertyDescriptor.getName());
-                } else {
-                    String fullPath = path + "." + propertyDescriptor.getName();
-                    beanDescription.addProperty(describeProperty(beanClass, propertyDescriptor, fullPath));
-                }
-            }
-        }
     }
 
     /**
@@ -147,6 +157,10 @@ public class BeanConstraintDescriptor {
     
     public void setBeanRegistry(BeanRegistry beanRegistry) {
         this.beanRegistry = beanRegistry;
+    }
+
+    public void addIgnoreProperty(String propertyName) {
+        this.ignoredProperties.add(propertyName);
     }
 
 }
