@@ -1,20 +1,6 @@
 package nl._42.jarb.constraint.violation.integration;
 
-import static nl._42.jarb.constraint.violation.DatabaseConstraintType.FOREIGN_KEY;
-import static nl._42.jarb.constraint.violation.DatabaseConstraintType.INVALID_TYPE;
-import static nl._42.jarb.constraint.violation.DatabaseConstraintType.LENGTH_EXCEEDED;
-import static nl._42.jarb.constraint.violation.DatabaseConstraintType.NOT_NULL;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
-
 import nl._42.jarb.constraint.ConstraintsTestConfig;
-import nl._42.jarb.constraint.violation.DatabaseConstraintType;
-import nl._42.jarb.constraint.violation.DatabaseConstraintViolation;
-import nl._42.jarb.constraint.violation.ForeignKeyViolationException;
-import nl._42.jarb.constraint.violation.InvalidTypeException;
-import nl._42.jarb.constraint.violation.LengthExceededException;
-import nl._42.jarb.constraint.violation.NotNullViolationException;
-
 import nl._42.jarb.constraint.domain.Car;
 import nl._42.jarb.constraint.domain.CarAlreadyExistsException;
 import nl._42.jarb.constraint.domain.CarInactiveException;
@@ -32,6 +18,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 /**
  * Test that exceptions are translated into constraint violation exceptions.

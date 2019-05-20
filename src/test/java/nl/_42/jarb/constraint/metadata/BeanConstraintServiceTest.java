@@ -156,7 +156,7 @@ public class BeanConstraintServiceTest {
     }
 
     @Configuration
-    public static class CustomConstraintsConfig extends DatabaseConstraintsConfigurer {
+    public static class CustomConstraintsConfig implements DatabaseConstraintsConfigurer {
         
         @Override
         public void configureConstraintDescriptor(BeanConstraintDescriptor descriptor) {

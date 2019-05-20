@@ -1,10 +1,8 @@
 package nl._42.jarb.constraint.violation;
 
-import static nl._42.jarb.constraint.violation.DatabaseConstraintViolation.builder;
-import static nl._42.jarb.constraint.violation.DatabaseConstraintType.UNIQUE_KEY;
-import static org.junit.Assert.assertEquals;
-
 import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
 
 public class UniqueKeyViolationExceptionTest {
     

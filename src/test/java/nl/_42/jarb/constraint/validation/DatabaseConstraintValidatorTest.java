@@ -1,5 +1,6 @@
 package nl._42.jarb.constraint.validation;
 
+import nl._42.jarb.constraint.ConstraintsTestConfig;
 import nl._42.jarb.constraint.domain.Address;
 import nl._42.jarb.constraint.domain.AwesomeCar;
 import nl._42.jarb.constraint.domain.ChangeAddressCommand;
@@ -10,6 +11,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import javax.validation.ConstraintViolation;
@@ -23,9 +25,9 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
-@RunWith(SpringJUnit4ClassRunner.class)
 @ActiveProfiles("hsqldb")
-@Ignore("Tests are failing right before the release build to Sonatype OSS")
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(classes = ConstraintsTestConfig.class)
 public class DatabaseConstraintValidatorTest {
 
     @Autowired

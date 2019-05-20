@@ -32,7 +32,7 @@ import java.util.Map;
 @Configuration
 @ComponentScan(basePackageClasses = Car.class)
 @EnableDatabaseConstraints(basePackageClasses = ConstraintsTestConfig.class)
-public class ConstraintsTestConfig extends DatabaseConstraintsConfigurer {
+public class ConstraintsTestConfig implements DatabaseConstraintsConfigurer {
     
     @Autowired
     private DataSource dataSource;

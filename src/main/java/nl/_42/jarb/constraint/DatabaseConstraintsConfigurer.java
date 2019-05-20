@@ -4,6 +4,7 @@
 package nl._42.jarb.constraint;
 
 import nl._42.jarb.constraint.metadata.BeanConstraintDescriptor;
+import nl._42.jarb.constraint.validation.DatabaseConstraintValidator;
 import nl._42.jarb.constraint.violation.factory.ConfigurableConstraintExceptionFactory;
 import nl._42.jarb.constraint.violation.resolver.ConfigurableViolationResolver;
 
@@ -17,14 +18,23 @@ import nl._42.jarb.constraint.violation.resolver.ConfigurableViolationResolver;
  * @author Jeroen van Schagen
  * @since Feb 12, 2014
  */
-public abstract class DatabaseConstraintsConfigurer {
+public interface DatabaseConstraintsConfigurer {
+
+    /**
+     * Configures the validation steps.
+     *
+     * @param validator the validator
+     */
+    default void configureValidator(DatabaseConstraintValidator validator) {
+        // No operation
+    }
     
     /**
      * Configures the violation resolver.
      * 
      * @param resolver the violation resolver
      */
-    public void configureViolationResolver(ConfigurableViolationResolver resolver) {
+    default void configureViolationResolver(ConfigurableViolationResolver resolver) {
         // No operation
     }
 
@@ -33,7 +43,7 @@ public abstract class DatabaseConstraintsConfigurer {
      * 
      * @param factory the exception factory
      */
-    public void configureExceptionFactory(ConfigurableConstraintExceptionFactory factory) {
+    default void configureExceptionFactory(ConfigurableConstraintExceptionFactory factory) {
         // No operation
     }
 
@@ -42,7 +52,7 @@ public abstract class DatabaseConstraintsConfigurer {
      * 
      * @param descriptor the constraint descriptor
      */
-    public void configureConstraintDescriptor(BeanConstraintDescriptor descriptor) {
+    default void configureConstraintDescriptor(BeanConstraintDescriptor descriptor) {
         // No operation
     }
 

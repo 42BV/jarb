@@ -116,6 +116,10 @@ public class DatabaseConstraintValidator {
             logger.debug("Skipped validation because no meta-data could be found for property '{}'.", wrapped);
         }
     }
+
+    public void addValidationStep(DatabaseConstraintValidationStep validationStep) {
+        validationSteps.add(validationStep);
+    }
     
     private static final class BasePath {
         

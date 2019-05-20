@@ -1,10 +1,9 @@
 package nl._42.jarb.constraint.violation;
 
-import static nl._42.jarb.constraint.violation.DatabaseConstraintType.CHECK_FAILED;
+import org.junit.Test;
+
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-
-import org.junit.Test;
 
 public class DatabaseConstraintViolationTest {
 

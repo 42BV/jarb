@@ -13,6 +13,7 @@ import nl._42.jarb.constraint.metadata.database.JdbcColumnMetadataRepository;
 import nl._42.jarb.constraint.metadata.database.SimpleBeanMetadataRepository;
 import nl._42.jarb.constraint.metadata.factory.EntityFactory;
 import nl._42.jarb.constraint.metadata.factory.JpaEntityFactory;
+import nl._42.jarb.constraint.validation.DatabaseConstraintValidator;
 import nl._42.jarb.constraint.violation.DatabaseConstraintExceptionTranslator;
 import nl._42.jarb.constraint.violation.TranslateAdviceAddingBeanPostProcessor;
 import nl._42.jarb.constraint.violation.factory.ConfigurableConstraintExceptionFactory;
@@ -26,6 +27,7 @@ import nl._42.jarb.utils.orm.hibernate.HibernateJpaSchemaMapper;
 import nl._42.jarb.utils.orm.hibernate.HibernateUtils;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.validator.messageinterpolation.ResourceBundleMessageInterpolator;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -38,6 +40,8 @@ import org.springframework.core.type.AnnotationMetadata;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
+import javax.validation.MessageInterpolator;
+import javax.validation.ValidatorFactory;
 import java.lang.annotation.Annotation;
 import java.util.Arrays;
 import java.util.Collections;
@@ -53,16 +57,12 @@ import java.util.Set;
  */
 @Configuration
 public class DatabaseConstraintsConfiguration implements ImportAware, InitializingBean {
-    
-    // Meta-data constants
 
-    private static final String BASE_PACKAGES_REF = "basePackages";
-    private static final String BASE_CLASSES_REF = "basePackageClasses";
-
-    private static final String DATA_SOURCE_REF = "dataSource";
+    private static final String BASE_PACKAGES_REF          = "basePackages";
+    private static final String BASE_CLASSES_REF           = "basePackageClasses";
+    private static final String DATA_SOURCE_REF            = "dataSource";
     private static final String ENTITY_MANAGER_FACTORY_REF = "entityManagerFactory";
-
-    private static final String PROXY_ANNOTATION_REF = "proxyAnnotation";
+    private static final String PROXY_ANNOTATION_REF       = "proxyAnnotation";
 
     private Map<String, Object> attributes;
     
@@ -77,7 +77,32 @@ public class DatabaseConstraintsConfiguration implements ImportAware, Initializi
     private EntityManagerFactory entityManagerFactory;
     
     private DataSource dataSource;
-    
+
+    //
+    // Constraint validation
+    //
+
+    @Bean
+    @Lazy
+    @Autowired(required = false)
+    public DatabaseConstraintValidator databaseConstraintValidator(ValidatorFactory validatorFactory) {
+        MessageInterpolator messageInterpolator = getMessageInterpolator(validatorFactory);
+
+        DatabaseConstraintValidator validator = new DatabaseConstraintValidator(beanMetadataRepository(), messageInterpolator);
+        for (DatabaseConstraintsConfigurer configurer : configurers) {
+            configurer.configureValidator(validator);
+        }
+        return validator;
+    }
+
+    private MessageInterpolator getMessageInterpolator(ValidatorFactory validatorFactory) {
+        if (validatorFactory == null) {
+            return new ResourceBundleMessageInterpolator();
+        }
+
+        return validatorFactory.getMessageInterpolator();
+    }
+
     //
     // Exception translation
     //
