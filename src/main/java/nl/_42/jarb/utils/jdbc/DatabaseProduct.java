@@ -69,7 +69,7 @@ public final class DatabaseProduct {
             String productVersion = metaData.getDatabaseProductVersion();
             return new DatabaseProduct(productName, productVersion);
 
-        });
+        }, false);
     }
     
 }

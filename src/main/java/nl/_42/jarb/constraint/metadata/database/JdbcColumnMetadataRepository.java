@@ -53,7 +53,7 @@ public class JdbcColumnMetadataRepository implements ColumnMetadataRepository {
                 resultSet.close(); // Always close result set, this prevents unclosed cursors in pools
             }
             
-        });
+        }, false);
     }
 
     /**

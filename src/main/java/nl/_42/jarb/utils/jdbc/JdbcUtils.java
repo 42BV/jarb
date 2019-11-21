@@ -4,12 +4,17 @@ import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * Java Database Connectivity (JDBC) utility class.
  * @author Jeroen van Schagen
  * @since 08-05-2011
  */
 public final class JdbcUtils {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(JdbcUtils.class);
 
     /** Utility class, do not instantiate. */
     private JdbcUtils() {
@@ -24,25 +29,44 @@ public final class JdbcUtils {
      * @param callback the callback functionality being invoked
      * @return result of the callback, if any
      */
-    public static <T> T doWithConnection(DataSource dataSource, Callback<T> callback) {
+    public static <T> T doWithConnection(DataSource dataSource, Callback<T> callback, boolean commit) {
         Connection connection = null;
+        boolean autoCommit = true;
         try {
             connection = dataSource.getConnection();
-            return callback.doWork(connection);
+            autoCommit = connection.getAutoCommit();
+            T result = callback.doWork(connection);
+            if (!autoCommit && commit) {
+                connection.commit();
+            }
+            return result;
         } catch (SQLException e) {
+            if (!autoCommit && commit) {
+                rollback(connection);
+            }
             throw new RuntimeException(e);
         } finally {
-            closeQuietly(connection);
+            close(connection);
         }
     }
 
-    private static void closeQuietly(Connection connection) {
+    private static void close(Connection connection) {
         try {
             if (connection != null) {
                 connection.close();
             }
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            LOGGER.error("Cannot close connection", e);
+        }
+    }
+
+    private static void rollback(Connection connection) {
+        if (connection != null) {
+            try {
+                connection.rollback();
+            } catch (SQLException ex) {
+                LOGGER.error("Cannot rollback transation", ex);
+            }
         }
     }
 

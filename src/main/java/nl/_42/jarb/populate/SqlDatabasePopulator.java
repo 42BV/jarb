@@ -67,15 +67,9 @@ public class SqlDatabasePopulator implements DatabasePopulator {
             populator.addScript(resource);
             
             JdbcUtils.doWithConnection(dataSource, connection -> {
-                boolean autoCommit  = connection.getAutoCommit();
-                try {
-                    connection.setAutoCommit(true);
-                    populator.populate(connection);
-                } finally {
-                    connection.setAutoCommit(autoCommit);
-                }
+                populator.populate(connection);
                 return null;
-            });
+            }, true);
         } else if (failIfNotExists) {
             throw new IllegalStateException(
               format("Resource '%s' does not exist.", resource.getFilename()));
