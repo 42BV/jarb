@@ -67,7 +67,13 @@ public class SqlDatabasePopulator implements DatabasePopulator {
             populator.addScript(resource);
             
             JdbcUtils.doWithConnection(dataSource, connection -> {
-                populator.populate(connection);
+                boolean autoCommit  = connection.getAutoCommit();
+                try {
+                    connection.setAutoCommit(true);
+                    populator.populate(connection);
+                } finally {
+                    connection.setAutoCommit(autoCommit);
+                }
                 return null;
             });
         } else if (failIfNotExists) {
