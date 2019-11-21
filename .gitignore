@@ -11,3 +11,4 @@ target
 .idea
 jarb-populator-excel/src/test/resources/excel/generated
 *.iml
+.java-version

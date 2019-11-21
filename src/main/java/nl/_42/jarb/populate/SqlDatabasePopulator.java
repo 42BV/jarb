@@ -69,7 +69,7 @@ public class SqlDatabasePopulator implements DatabasePopulator {
             JdbcUtils.doWithConnection(dataSource, connection -> {
                 populator.populate(connection);
                 return null;
-            });
+            }, true);
         } else if (failIfNotExists) {
             throw new IllegalStateException(
               format("Resource '%s' does not exist.", resource.getFilename()));
