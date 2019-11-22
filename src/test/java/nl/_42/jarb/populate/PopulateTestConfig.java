@@ -1,20 +1,14 @@
 /*
  * (C) 2014 42 bv (www.42.nl). All rights reserved.
  */
-package nl._42.jarb.init;
+package nl._42.jarb.populate;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
-/**
- * 
- *
- * @author jeroen
- * @since Apr 10, 2015
- */
 @Configuration
-public class InitTestConfig {
+public class PopulateTestConfig {
     
     @Bean
     public DriverManagerDataSource dataSource() {

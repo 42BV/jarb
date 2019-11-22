@@ -1,11 +1,10 @@
 package nl._42.jarb.populate;
 
-import nl._42.jarb.utils.jdbc.JdbcUtils;
+import nl._42.jarb.utils.jdbc.SqlRunner;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
-import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
 
 import javax.sql.DataSource;
 import java.io.File;
@@ -63,16 +62,9 @@ public class SqlDatabasePopulator implements DatabasePopulator {
     @Override
     public void execute() {
         if (resource.exists()) {
-            final ResourceDatabasePopulator populator = new ResourceDatabasePopulator();
-            populator.addScript(resource);
-            
-            JdbcUtils.doWithConnection(dataSource, connection -> {
-                populator.populate(connection);
-                return null;
-            }, true);
+            SqlRunner.load(dataSource, resource).execute();
         } else if (failIfNotExists) {
-            throw new IllegalStateException(
-              format("Resource '%s' does not exist.", resource.getFilename()));
+            throw new IllegalStateException(format("Resource '%s' does not exist.", resource.getFilename()));
         }
     }
 

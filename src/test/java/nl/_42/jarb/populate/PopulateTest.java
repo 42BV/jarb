@@ -1,22 +1,13 @@
 /*
  * (C) 2013 42 bv (www.42.nl). All rights reserved.
  */
-package nl._42.jarb.init.populate;
+package nl._42.jarb.populate;
 
 import static org.junit.Assert.assertEquals;
 
 import javax.sql.DataSource;
 
-import nl._42.jarb.init.InitTestConfig;
-import nl._42.jarb.populate.PopulatingApplicationListener;
-import nl._42.jarb.populate.PopulatingApplicationListenerBuilder;
-import nl._42.jarb.populate.SqlDatabasePopulator;
-
-import nl._42.jarb.init.InitTestConfig;
-import nl._42.jarb.init.populate.PopulateTest.PopulateConfig;
-import nl._42.jarb.populate.PopulatingApplicationListener;
-import nl._42.jarb.populate.PopulatingApplicationListenerBuilder;
-import nl._42.jarb.populate.SqlDatabasePopulator;
+import nl._42.jarb.populate.PopulateTest.PopulateConfig;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,7 +48,7 @@ public class PopulateTest {
     }
 
     @Configuration
-    @Import(InitTestConfig.class)
+    @Import(PopulateTestConfig.class)
     public static class PopulateConfig {
 
         @Autowired
