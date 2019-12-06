@@ -88,7 +88,7 @@ public class StatelessSessionFactoryBean implements FactoryBean<FlushableStatele
         }
 
         @Override
-        public Object invoke(MethodInvocation invocation) throws Throwable {
+        public Object invoke(MethodInvocation invocation) {
             StatelessSession session = getCurrentSession();
             return doInvoke(invocation, session);
         }

@@ -1,42 +1,37 @@
 package nl._42.jarb.utils.orm.hibernate;
 
+import org.hibernate.engine.spi.SessionFactoryImplementor;
+import org.hibernate.internal.StatelessSessionImpl;
+import org.hibernate.jpa.HibernateEntityManagerFactory;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.junit.MockitoJUnitRunner;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import org.hibernate.engine.spi.SessionFactoryImplementor;
-import org.hibernate.internal.StatelessSessionImpl;
-import org.hibernate.jpa.HibernateEntityManagerFactory;
-import nl._42.jarb.utils.orm.hibernate.StatelessSessionFactoryBean.StatelessSessionSynchronization;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.springframework.transaction.support.TransactionSynchronizationManager;
-
-import mockit.Expectations;
-import mockit.Mocked;
-import mockit.Verifications;
-
+@RunWith(MockitoJUnitRunner.class)
 public class StatelessSessionFactoryBeanTest {
     
-    @Mocked
+    @Mock
     private HibernateEntityManagerFactory entityManagerFactory;
-    @Mocked
+
+    @Mock
     private StatelessSessionImpl statelessSession;
-    @Mocked
-    private TransactionSynchronizationManager transactionSynchronizationManager;
-    @Mocked
+
+    @Mock
     private SessionFactoryImplementor sessionFactory;
 
     private StatelessSessionFactoryBean sessionFactoryBean;
 
     @Before
     public void setUp() {
-        new Expectations() {{
-            entityManagerFactory.getSessionFactory();
-            result = sessionFactory;
-        }};
-
+        Mockito.when(entityManagerFactory.getSessionFactory()).thenReturn(sessionFactory);
         sessionFactoryBean = new StatelessSessionFactoryBean(entityManagerFactory);
     }
 
@@ -70,10 +65,7 @@ public class StatelessSessionFactoryBeanTest {
         StatelessSessionFactoryBean.StatelessSessionSynchronization synchronization = new StatelessSessionFactoryBean.StatelessSessionSynchronization(null, statelessSession);
         synchronization.beforeCommit(false);
 
-        new Verifications() {{
-            statelessSession.flush();
-            times = 1;
-        }};        
+        Mockito.verify(statelessSession).flush();
     }
 
     @Test
@@ -81,30 +73,7 @@ public class StatelessSessionFactoryBeanTest {
         StatelessSessionFactoryBean.StatelessSessionSynchronization synchronization = new StatelessSessionFactoryBean.StatelessSessionSynchronization(null, statelessSession);
         synchronization.beforeCommit(true);
 
-        new Verifications() {{
-            statelessSession.flush();
-            times = 0;
-        }}; 
-    }
-
-    @Test
-    public void testIsFlushCalled() {
-        new Expectations() {{
-            minTimes = 0;
-            TransactionSynchronizationManager.isActualTransactionActive();
-            result = true;
-            
-            TransactionSynchronizationManager.getResource(sessionFactory);
-            result = statelessSession;
-        }};
-
-        sessionFactoryBean.setSessionFactory(sessionFactory);
-        sessionFactoryBean.getObject().flush();
-
-        new Verifications() {{
-            statelessSession.flush();
-            times = 1;
-        }}; 
+        Mockito.verifyZeroInteractions(statelessSession);
     }
 
 }
