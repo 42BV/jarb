@@ -52,7 +52,7 @@ public class Annotations {
         Field field = findField(finalReference);
         Method getter = findReadMethod(finalReference);
 
-        Set<T> annotations = new HashSet<T>();
+        Set<T> annotations = new HashSet<>();
         addIfNotNull(annotations, findAnnotation(field, annotationType));
         addIfNotNull(annotations, findAnnotation(getter, annotationType));
         return annotations;

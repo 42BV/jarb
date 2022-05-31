@@ -1,5 +1,8 @@
 package nl._42.jarb.constraint.domain;
 
+import nl._42.jarb.constraint.validation.DatabaseConstrained;
+import nl._42.jarb.constraint.validation.IgnoreDatabaseConstraints;
+
 import javax.persistence.CollectionTable;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
@@ -10,10 +13,7 @@ import javax.persistence.MapKeyClass;
 import javax.persistence.MapKeyColumn;
 import javax.persistence.MapKeyEnumerated;
 import javax.persistence.Table;
-
-import nl._42.jarb.constraint.validation.DatabaseConstrained;
-import nl._42.jarb.constraint.validation.IgnoreDatabaseConstraints;
-
+import javax.validation.constraints.Size;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -38,6 +38,7 @@ public class AwesomeCar extends DefaultEntity {
     @IgnoreDatabaseConstraints
     private transient String ignoredProperty;
 
+    @Size
     @ElementCollection
     @CollectionTable(name = "cars_inspections", joinColumns = @JoinColumn(name = "cars_id"))
     private List<Inspection> inspections = new ArrayList<>();
