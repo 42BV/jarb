@@ -86,6 +86,19 @@
                     <artifactId>maven-deploy-plugin</artifactId>
                     <version>2.6</version>
                 </plugin>
+                <plugin>
+                    <groupId>org.owasp</groupId>
+                    <artifactId>dependency-check-maven</artifactId>
+                    <version>7.1.2</version>
+                    <configuration>
+                        <failBuildOnAnyVulnerability>true</failBuildOnAnyVulnerability>
+                        <skipProvidedScope>true</skipProvidedScope>
+                        <skipTestScope>true</skipTestScope>
+                        <skipRuntimeScope>true</skipRuntimeScope>
+                        <assemblyAnalyzerEnabled>false</assemblyAnalyzerEnabled>
+                        <suppressionFile>owasp-suppressions.xml</suppressionFile>
+                    </configuration>
+                </plugin>
             </plugins>
         </pluginManagement>
         <plugins>
@@ -292,9 +305,9 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>com.oracle</groupId>
+            <groupId>com.oracle.database.jdbc</groupId>
             <artifactId>ojdbc6</artifactId>
-            <version>11.2.0.3</version>
+            <version>11.2.0.4</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>
