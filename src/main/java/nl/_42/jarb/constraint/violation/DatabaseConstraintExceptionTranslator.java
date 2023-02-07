@@ -1,14 +1,12 @@
 package nl._42.jarb.constraint.violation;
 
+import nl._42.jarb.constraint.violation.factory.DatabaseConstraintExceptionFactory;
+import nl._42.jarb.constraint.violation.factory.DefaultConstraintExceptionFactory;
+import nl._42.jarb.constraint.violation.resolver.DatabaseConstraintViolationResolver;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import static nl._42.jarb.utils.Asserts.notNull;
-
-import nl._42.jarb.constraint.violation.factory.DatabaseConstraintExceptionFactory;
-import nl._42.jarb.constraint.violation.factory.DefaultConstraintExceptionFactory;
-import nl._42.jarb.constraint.violation.resolver.DatabaseConstraintViolationResolver;
-
-import nl._42.jarb.constraint.violation.factory.DatabaseConstraintExceptionFactory;
-import nl._42.jarb.constraint.violation.factory.DefaultConstraintExceptionFactory;
-import nl._42.jarb.constraint.violation.resolver.DatabaseConstraintViolationResolver;
 
 /**
  * Possibly translates database exceptions into, a more clear,
@@ -19,7 +17,9 @@ import nl._42.jarb.constraint.violation.resolver.DatabaseConstraintViolationReso
  * @since 17-05-2011
  */
 public class DatabaseConstraintExceptionTranslator {
-	
+
+    private final Logger logger = LoggerFactory.getLogger(getClass());
+
     /** Resolves the constraint violation from an exception. **/
     private final DatabaseConstraintViolationResolver violationResolver;
     
@@ -50,12 +50,17 @@ public class DatabaseConstraintExceptionTranslator {
      * @return a constraint violation exception, or {@code null} if no translation could be done
      */
     public Throwable translate(Throwable throwable) {
-        Throwable translation = null;
-        DatabaseConstraintViolation violation = violationResolver.resolve(throwable);
-        if (violation != null) {
-            translation = exceptionFactory.buildException(violation, throwable);
+        try {
+            Throwable translation = null;
+            DatabaseConstraintViolation violation = violationResolver.resolve(throwable);
+            if (violation != null) {
+                translation = exceptionFactory.buildException(violation, throwable);
+            }
+            return translation;
+        } catch (RuntimeException rte) {
+            logger.error("Could not translate exception", rte);
+            return null; // Translation failed, use original exception
         }
-        return translation;
     }
 
 }

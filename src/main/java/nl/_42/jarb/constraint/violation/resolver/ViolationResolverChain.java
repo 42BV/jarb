@@ -1,15 +1,16 @@
 package nl._42.jarb.constraint.violation.resolver;
 
-import static nl._42.jarb.utils.Asserts.notNull;
-
-import java.util.Collection;
-import java.util.LinkedList;
-
 import nl._42.jarb.constraint.violation.DatabaseConstraintViolation;
 import nl._42.jarb.utils.jdbc.DatabaseProduct;
 import nl._42.jarb.utils.jdbc.DatabaseProductSpecific;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+
+import static nl._42.jarb.utils.Asserts.notNull;
 
 /**
  * Chain of responsibility for constraint violation resolvers. Whenever a violation
@@ -24,24 +25,29 @@ public class ViolationResolverChain implements DatabaseConstraintViolationResolv
     
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
-    private final Collection<DatabaseConstraintViolationResolver> resolvers;
+    private final List<DatabaseConstraintViolationResolver> resolvers;
 
     public ViolationResolverChain() {
-        resolvers = new LinkedList<DatabaseConstraintViolationResolver>();
+        resolvers = new ArrayList<>();
     }
 
     @Override
     public DatabaseConstraintViolation resolve(Throwable throwable) {
-        for (DatabaseConstraintViolationResolver resolver : resolvers) {
-            logger.debug("Attempting to resolve violation with: {}", resolver);
-            DatabaseConstraintViolation violation = resolver.resolve(throwable);
-            if (violation != null) {
-                logger.debug("Violation was resolved by: {}", resolver);
-                return violation;
-            }
+        return resolvers.stream()
+            .filter(Objects::nonNull)
+            .map(resolver -> resolve(throwable, resolver))
+            .filter(Objects::nonNull)
+            .findFirst()
+            .orElse(null);
+    }
+
+    private DatabaseConstraintViolation resolve(Throwable throwable, DatabaseConstraintViolationResolver resolver) {
+        logger.debug("Attempting to resolve violation with: {}", resolver);
+        DatabaseConstraintViolation violation = resolver.resolve(throwable);
+        if (violation != null) {
+            logger.debug("Violation was resolved by: {}", resolver);
         }
-        
-        return null;
+        return violation;
     }
 
     /**
