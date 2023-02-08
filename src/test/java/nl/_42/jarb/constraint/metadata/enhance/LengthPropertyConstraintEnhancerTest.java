@@ -4,11 +4,12 @@ import nl._42.jarb.constraint.domain.Wine;
 import nl._42.jarb.constraint.metadata.PropertyConstraintDescription;
 import nl._42.jarb.utils.bean.PropertyReference;
 import org.hibernate.validator.constraints.Length;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 public class LengthPropertyConstraintEnhancerTest {
     
@@ -16,7 +17,7 @@ public class LengthPropertyConstraintEnhancerTest {
 
     private PropertyConstraintDescription description;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         enhancer = new LengthPropertyConstraintEnhancer<>(Length.class, Length::min, Length::max);
         
@@ -47,11 +48,13 @@ public class LengthPropertyConstraintEnhancerTest {
      * length retrieved from our @Length information, an exception should be thrown.
      * Minimum length can never be greater than the maximum length.
      */
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void testMergeConflict() {
         description.setMaximumLength(2);
 
-        enhancer.enhance(description);
+        Assertions.assertThrows(IllegalStateException.class, () ->
+            enhancer.enhance(description)
+        );
     }
 
     /**

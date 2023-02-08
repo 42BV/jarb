@@ -1,15 +1,11 @@
 package nl._42.jarb.constraint.violation.resolver.vendor;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-
 import nl._42.jarb.constraint.violation.DatabaseConstraintType;
 import nl._42.jarb.constraint.violation.DatabaseConstraintViolation;
+import org.junit.jupiter.api.Test;
 
-import nl._42.jarb.constraint.violation.DatabaseConstraintType;
-import nl._42.jarb.constraint.violation.DatabaseConstraintViolation;
-import org.junit.Assert;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 public class PostgresViolationResolverTest {
 
@@ -19,7 +15,7 @@ public class PostgresViolationResolverTest {
     public void testCheck() {
         DatabaseConstraintViolation violation = resolver
                 .resolve("ERROR: new row for relation \"employees\" violates check constraint \"ck_employees_salary_min\"");
-        Assert.assertEquals(DatabaseConstraintType.CHECK_FAILED, violation.getConstraintType());
+        assertEquals(DatabaseConstraintType.CHECK_FAILED, violation.getConstraintType());
         assertEquals("employees", violation.getTableName());
         assertEquals("ck_employees_salary_min", violation.getConstraintName());
     }
@@ -29,7 +25,7 @@ public class PostgresViolationResolverTest {
         DatabaseConstraintViolation violation = resolver
                 .resolve("ERROR: conflicting key value violates exclusion constraint \"ex_gebruiker_gebruikersnaam_for_non_deleted_gebruikers\"\n"
                         + "  Detail: Key (gebruikersnaam)=(piet) conflicts with existing key (gebruikersnaam)=(piet).");
-        Assert.assertEquals(DatabaseConstraintType.EXCLUSION, violation.getConstraintType());
+        assertEquals(DatabaseConstraintType.EXCLUSION, violation.getConstraintType());
         assertEquals("ex_gebruiker_gebruikersnaam_for_non_deleted_gebruikers", violation.getConstraintName());
         assertEquals("gebruikersnaam", violation.getColumnName());
         assertEquals("gebruikersnaam", violation.getReferencingColumnName());

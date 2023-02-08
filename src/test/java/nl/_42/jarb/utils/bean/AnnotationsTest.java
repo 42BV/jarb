@@ -1,11 +1,11 @@
 package nl._42.jarb.utils.bean;
 
-import static org.junit.Assert.assertTrue;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Id;
+import org.junit.jupiter.api.Test;
 
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class AnnotationsTest {
 
@@ -23,6 +23,9 @@ public class AnnotationsTest {
 
     @Entity
     public static class ClassWithAnnotatedProperties {
+
+        @Id
+        private Long id;
 
         @Column(name = "hidden")
         private String hiddenProperty;

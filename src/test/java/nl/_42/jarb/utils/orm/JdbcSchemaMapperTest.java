@@ -4,10 +4,10 @@
 package nl._42.jarb.utils.orm;
 
 import nl._42.jarb.utils.bean.PropertyReference;
+import org.junit.jupiter.api.Test;
 
-import nl._42.jarb.utils.bean.PropertyReference;
-import org.junit.Assert;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 public class JdbcSchemaMapperTest {
     
@@ -17,13 +17,13 @@ public class JdbcSchemaMapperTest {
     public void testMap() {
         PropertyReference property = new PropertyReference(MyMappingBean.class, "myProperty");
         ColumnReference column = mapper.getColumnReference(property);
-        Assert.assertEquals("my_mapping_bean", column.getTableName());
-        Assert.assertEquals("my_property", column.getColumnName());
+        assertEquals("my_mapping_bean", column.getTableName());
+        assertEquals("my_property", column.getColumnName());
     }
     
     @Test
     public void testIsEmbeddable() {
-        Assert.assertFalse(mapper.isEmbeddable(MyMappingBean.class));
+        assertFalse(mapper.isEmbeddable(MyMappingBean.class));
     }
     
     protected static class MyMappingBean {

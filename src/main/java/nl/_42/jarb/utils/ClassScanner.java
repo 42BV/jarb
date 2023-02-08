@@ -3,15 +3,15 @@
  */
 package nl._42.jarb.utils;
 
-import java.lang.annotation.Annotation;
-import java.util.HashSet;
-import java.util.Set;
-
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider;
 import org.springframework.core.type.filter.AnnotationTypeFilter;
 import org.springframework.core.type.filter.AssignableTypeFilter;
 import org.springframework.core.type.filter.TypeFilter;
+
+import java.lang.annotation.Annotation;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Used for scanning classes.
@@ -47,7 +47,7 @@ public class ClassScanner {
         ClassPathScanningCandidateComponentProvider componentProvider = new ClassPathScanningCandidateComponentProvider(false);
         componentProvider.addIncludeFilter(filter);
         Set<BeanDefinition> beanDefinitions = componentProvider.findCandidateComponents(basePackage);
-        Set<Class<?>> beanClasses = new HashSet<Class<?>>(beanDefinitions.size());
+        Set<Class<?>> beanClasses = new HashSet<>(beanDefinitions.size());
         for (BeanDefinition beanDefinition : beanDefinitions) {
             Class<?> beanClass = Classes.forName(beanDefinition.getBeanClassName());
             beanClasses.add(beanClass);

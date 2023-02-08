@@ -1,20 +1,17 @@
 package nl._42.jarb.init.populate;
 
+import nl._42.jarb.populate.DatabasePopulator;
+import nl._42.jarb.populate.PopulatingApplicationListener;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.event.ContextClosedEvent;
+import org.springframework.context.event.ContextRefreshedEvent;
+
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
-
-import nl._42.jarb.populate.DatabasePopulator;
-import nl._42.jarb.populate.PopulatingApplicationListener;
-
-import nl._42.jarb.populate.DatabasePopulator;
-import nl._42.jarb.populate.PopulatingApplicationListener;
-import org.junit.Before;
-import org.junit.Test;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.event.ContextClosedEvent;
-import org.springframework.context.event.ContextRefreshedEvent;
 
 public class PopulatorApplicationListenerTest {
 
@@ -26,7 +23,7 @@ public class PopulatorApplicationListenerTest {
 
     private ApplicationContext applicationContext;
 
-    @Before
+    @BeforeEach
     public void setUp() {
     	initializer = mock(DatabasePopulator.class);
     	destroyer = mock(DatabasePopulator.class);

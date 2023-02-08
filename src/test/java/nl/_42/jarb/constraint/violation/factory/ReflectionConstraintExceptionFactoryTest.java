@@ -1,19 +1,17 @@
 package nl._42.jarb.constraint.violation.factory;
 
-import static nl._42.jarb.constraint.violation.DatabaseConstraintType.UNIQUE_KEY;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import nl._42.jarb.constraint.domain.CarAlreadyExistsException;
+import nl._42.jarb.constraint.domain.CarAlreadyExistsExceptionFactory;
+import nl._42.jarb.constraint.violation.DatabaseConstraintType;
+import nl._42.jarb.constraint.violation.DatabaseConstraintViolation;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 import java.sql.SQLException;
 
-import nl._42.jarb.constraint.violation.DatabaseConstraintType;
-import nl._42.jarb.constraint.violation.DatabaseConstraintViolation;
-
-import nl._42.jarb.constraint.domain.CarAlreadyExistsException;
-import nl._42.jarb.constraint.domain.CarAlreadyExistsExceptionFactory;
-import nl._42.jarb.constraint.violation.DatabaseConstraintViolation;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ReflectionConstraintExceptionFactoryTest {
     
@@ -73,9 +71,11 @@ public class ReflectionConstraintExceptionFactoryTest {
     /**
      * Whenever an exception has no supported constructors at all, we throw a runtime exception.
      */
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void testNoMatchingConstructor() {
-        new ReflectionConstraintExceptionFactory(UnsupportedArgException.class);
+        Assertions.assertThrows(IllegalStateException.class, () ->
+            new ReflectionConstraintExceptionFactory(UnsupportedArgException.class)
+        );
     }
 
     public static class NoArgException extends RuntimeException {

@@ -1,12 +1,10 @@
 package nl._42.jarb.constraint.violation.factory.mapping;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
 import nl._42.jarb.constraint.violation.factory.NameMatchingStrategy;
+import org.junit.jupiter.api.Test;
 
-import nl._42.jarb.constraint.violation.factory.NameMatchingStrategy;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class NameMatchingStrategyTest {
 

@@ -1,17 +1,14 @@
 package nl._42.jarb.constraint.metadata.enhance;
 
-import static org.hamcrest.Matchers.contains;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-
 import nl._42.jarb.constraint.metadata.PropertyConstraintDescription;
 import nl._42.jarb.utils.bean.PropertyReference;
-
 import org.hibernate.validator.constraints.Email;
-import nl._42.jarb.constraint.metadata.PropertyConstraintDescription;
-import nl._42.jarb.utils.bean.PropertyReference;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.contains;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class AnnotationPropertyTypeEnhancerTest {
     
@@ -19,7 +16,7 @@ public class AnnotationPropertyTypeEnhancerTest {
 
     private PropertyConstraintDescription description;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         enhancer = new AnnotationPropertyTypeEnhancer(Email.class, "email");
         description = new PropertyConstraintDescription(new PropertyReference(User.class, "email"), String.class);

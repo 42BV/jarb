@@ -11,16 +11,13 @@ import nl._42.jarb.constraint.violation.ForeignKeyViolationException;
 import nl._42.jarb.constraint.violation.InvalidTypeException;
 import nl._42.jarb.constraint.violation.LengthExceededException;
 import nl._42.jarb.constraint.violation.NotNullViolationException;
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * Test that exceptions are translated into constraint violation exceptions.
@@ -29,8 +26,7 @@ import static org.junit.Assert.fail;
  * @since 17-05-2011
  */
 @Transactional
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = ConstraintsTestConfig.class)
+@SpringBootTest(classes = ConstraintsTestConfig.class)
 public abstract class AbstractExceptionTranslationTest {
 
     @Autowired
@@ -42,10 +38,10 @@ public abstract class AbstractExceptionTranslationTest {
         
         try {
             carRepository.save(new Car("123456"));
-            fail("Expected a CarAlreadyExistsException.");
+            Assertions.fail("Expected a CarAlreadyExistsException.");
         } catch (CarAlreadyExistsException caee) {
             DatabaseConstraintViolation violation = caee.getViolation();
-            Assert.assertEquals(DatabaseConstraintType.UNIQUE_KEY, violation.getConstraintType());
+            assertEquals(DatabaseConstraintType.UNIQUE_KEY, violation.getConstraintType());
             assertEquals("uk_cars_license_number", violation.getConstraintName());
         }
     }
@@ -54,10 +50,10 @@ public abstract class AbstractExceptionTranslationTest {
     public void testNotNull() {
         try {
             carRepository.save(new Car(null));
-            fail("Expected a NotNullViolationException.");
+            Assertions.fail("Expected a NotNullViolationException.");
         } catch (NotNullViolationException nnve) {
             DatabaseConstraintViolation violation = nnve.getViolation();
-            Assert.assertEquals(DatabaseConstraintType.NOT_NULL, violation.getConstraintType());
+            assertEquals(DatabaseConstraintType.NOT_NULL, violation.getConstraintType());
         }
     }
     
@@ -67,10 +63,10 @@ public abstract class AbstractExceptionTranslationTest {
     	car.setOwnerId(Long.valueOf(-1));
     	try {
             carRepository.save(car);
-            fail("Expected a InvalidTypeException.");
+            Assertions.fail("Expected a InvalidTypeException.");
         } catch (ForeignKeyViolationException fkve) {
             DatabaseConstraintViolation violation = fkve.getViolation();
-            Assert.assertEquals(DatabaseConstraintType.FOREIGN_KEY, violation.getConstraintType());
+            assertEquals(DatabaseConstraintType.FOREIGN_KEY, violation.getConstraintType());
         }
     }
     
@@ -78,10 +74,10 @@ public abstract class AbstractExceptionTranslationTest {
     public void testLengthExceeded() {
     	try {
             carRepository.save(new Car("1234567"));
-            fail("Expected a LengthExceededException.");
+            Assertions.fail("Expected a LengthExceededException.");
         } catch (LengthExceededException lee) {
             DatabaseConstraintViolation violation = lee.getViolation();
-            Assert.assertEquals(DatabaseConstraintType.LENGTH_EXCEEDED, violation.getConstraintType());
+            assertEquals(DatabaseConstraintType.LENGTH_EXCEEDED, violation.getConstraintType());
         }
     }
     
@@ -91,21 +87,25 @@ public abstract class AbstractExceptionTranslationTest {
     	car.setActive("Not a boolean");
     	try {
             carRepository.save(car);
-            fail("Expected a InvalidTypeException.");
+            Assertions.fail("Expected a InvalidTypeException.");
         } catch (InvalidTypeException ite) {
             DatabaseConstraintViolation violation = ite.getViolation();
-            Assert.assertEquals(DatabaseConstraintType.INVALID_TYPE, violation.getConstraintType());
+            assertEquals(DatabaseConstraintType.INVALID_TYPE, violation.getConstraintType());
         }
     }
 
-    @Test(expected = CarInactiveException.class)
-    public void testCheckedException() throws CarInactiveException {
-        carRepository.throwCheckedException();
+    @Test
+    public void testCheckedException() {
+        Assertions.assertThrows(CarInactiveException.class, () ->
+            carRepository.throwCheckedException()
+        );
     }
 
-    @Test(expected = UnsupportedOperationException.class)
+    @Test
     public void testUnknownRuntimeException() {
-        carRepository.throwUnsupportedOperationException();
+        Assertions.assertThrows(UnsupportedOperationException.class, () ->
+            carRepository.throwUnsupportedOperationException()
+        );
     }
 
 }

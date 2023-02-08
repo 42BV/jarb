@@ -4,14 +4,10 @@
 package nl._42.jarb.constraint.metadata.enhance;
 
 import javax.validation.constraints.Pattern;
-
 import nl._42.jarb.constraint.metadata.PropertyConstraintDescription;
 import nl._42.jarb.utils.bean.PropertyReference;
-
-import nl._42.jarb.constraint.metadata.PropertyConstraintDescription;
-import nl._42.jarb.utils.bean.PropertyReference;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 public class PatternPropertyConstraintEnhancerTest {
     
@@ -23,8 +19,8 @@ public class PatternPropertyConstraintEnhancerTest {
         PropertyConstraintDescription description = new PropertyConstraintDescription(reference, String.class);
 
         enhancer.enhance(description);
-        
-        Assert.assertEquals("test", description.getPattern());
+
+        Assertions.assertEquals("test", description.getPattern());
     }
     
     @Test
@@ -33,8 +29,8 @@ public class PatternPropertyConstraintEnhancerTest {
         PropertyConstraintDescription description = new PropertyConstraintDescription(reference, String.class);
         
         enhancer.enhance(description);
-        
-        Assert.assertNull(description.getPattern());
+
+        Assertions.assertNull(description.getPattern());
     }
     
     public static class MyPatternBean {

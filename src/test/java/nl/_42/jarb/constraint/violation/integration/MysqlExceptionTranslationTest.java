@@ -1,9 +1,9 @@
 package nl._42.jarb.constraint.violation.integration;
 
-import org.junit.Ignore;
+import org.junit.jupiter.api.Disabled;
 import org.springframework.test.context.ActiveProfiles;
 
-@Ignore
+@Disabled
 @ActiveProfiles("mysql")
 public class MysqlExceptionTranslationTest extends AbstractExceptionTranslationTest {
 
