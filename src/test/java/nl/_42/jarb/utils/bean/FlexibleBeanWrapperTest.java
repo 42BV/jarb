@@ -1,17 +1,18 @@
 package nl._42.jarb.utils.bean;
 
-import static org.junit.Assert.assertEquals;
-
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.NotReadablePropertyException;
 import org.springframework.beans.NotWritablePropertyException;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class FlexibleBeanWrapperTest {
 
     private FlexibleBeanWrapper beanWrapper;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         beanWrapper = new FlexibleBeanWrapper(new SomeBean());
     }
@@ -40,14 +41,18 @@ public class FlexibleBeanWrapperTest {
         assertEquals("test(from setter)", ((SomeBean) beanWrapper.getWrappedBean()).writableProperty);
     }
 
-    @Test(expected = NotReadablePropertyException.class)
+    @Test
     public void testGetNonExistingProperty() {
-        beanWrapper.getPropertyValue("unknownProperty");
+        Assertions.assertThrows(NotReadablePropertyException.class, () ->
+            beanWrapper.getPropertyValue("unknownProperty")
+        );
     }
 
-    @Test(expected = NotWritablePropertyException.class)
+    @Test
     public void testSetNonExistingProperty() {
-        beanWrapper.setPropertyValue("unknownProperty", "value");
+        Assertions.assertThrows(NotWritablePropertyException.class, () ->
+            beanWrapper.setPropertyValue("unknownProperty", "value")
+        );
     }
 
     public static class SomeBean {

@@ -1,18 +1,13 @@
 package nl._42.jarb.constraint.violation.factory;
 
-import static nl._42.jarb.constraint.violation.DatabaseConstraintType.UNIQUE_KEY;
-import static nl._42.jarb.constraint.violation.factory.NameMatchingStrategy.EXACT;
-import static org.junit.Assert.assertTrue;
-
+import nl._42.jarb.constraint.domain.CarAlreadyExistsException;
 import nl._42.jarb.constraint.violation.DatabaseConstraintType;
 import nl._42.jarb.constraint.violation.DatabaseConstraintViolation;
 import nl._42.jarb.constraint.violation.UniqueKeyViolationException;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-import nl._42.jarb.constraint.domain.CarAlreadyExistsException;
-import nl._42.jarb.constraint.violation.DatabaseConstraintViolation;
-import nl._42.jarb.constraint.violation.UniqueKeyViolationException;
-import org.junit.Before;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ConfigurableConstraintExceptionFactoryTest {
     
@@ -20,7 +15,7 @@ public class ConfigurableConstraintExceptionFactoryTest {
 
     private ConfigurableConstraintExceptionFactory exceptionFactory;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         exceptionFactory = new ConfigurableConstraintExceptionFactory();
     }

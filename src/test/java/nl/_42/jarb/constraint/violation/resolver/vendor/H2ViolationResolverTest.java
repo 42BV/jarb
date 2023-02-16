@@ -1,10 +1,8 @@
 package nl._42.jarb.constraint.violation.resolver.vendor;
 
 import nl._42.jarb.constraint.violation.DatabaseConstraintViolation;
-
-import nl._42.jarb.constraint.violation.DatabaseConstraintViolation;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 public class H2ViolationResolverTest {
 
@@ -16,10 +14,10 @@ public class H2ViolationResolverTest {
                                "insert into cars (id, active, license_number, price) values (default, ?, ?, ?) [23502-171]";
         
         DatabaseConstraintViolation violation = resolver.resolve(message);
-        Assert.assertNotNull("Could not resolve violation.", violation);
-        Assert.assertEquals("license_number", violation.getColumnName());
-        Assert.assertEquals("insert into cars (id, active, license_number, price) values (default, ?, ?, ?)", violation.getStatement());
-        Assert.assertEquals("23502-171", violation.getNumber());
+        Assertions.assertNotNull(violation);
+        Assertions.assertEquals("license_number", violation.getColumnName());
+        Assertions.assertEquals("insert into cars (id, active, license_number, price) values (default, ?, ?, ?)", violation.getStatement());
+        Assertions.assertEquals("23502-171", violation.getNumber());
     }
 
     @Test
@@ -28,12 +26,12 @@ public class H2ViolationResolverTest {
                                "insert into cars (id, active, license_number, price) values (default, ?, ?, ?) [23505-171]";
         
         DatabaseConstraintViolation violation = resolver.resolve(message);
-        Assert.assertNotNull("Could not resolve violation.", violation);
-        Assert.assertEquals("uk_cars_license_number", violation.getConstraintName());
-        Assert.assertEquals("cars", violation.getTableName());
-        Assert.assertEquals("license_number", violation.getColumnName());
-        Assert.assertEquals("insert into cars (id, active, license_number, price) values (default, ?, ?, ?)", violation.getStatement());
-        Assert.assertEquals("23505-171", violation.getNumber());
+        Assertions.assertNotNull(violation);
+        Assertions.assertEquals("uk_cars_license_number", violation.getConstraintName());
+        Assertions.assertEquals("cars", violation.getTableName());
+        Assertions.assertEquals("license_number", violation.getColumnName());
+        Assertions.assertEquals("insert into cars (id, active, license_number, price) values (default, ?, ?, ?)", violation.getStatement());
+        Assertions.assertEquals("23505-171", violation.getNumber());
     }
 
     @Test
@@ -42,15 +40,15 @@ public class H2ViolationResolverTest {
                                "insert into cars (id, active, license_number, owner_id, price) values (default, ?, ?, ?, ?) [23506-171]";
         
         DatabaseConstraintViolation violation = resolver.resolve(message);
-        Assert.assertNotNull("Could not resolve violation.", violation);
-        Assert.assertEquals("fk_cars_owner", violation.getConstraintName());
-        Assert.assertEquals("cars", violation.getTableName());
-        Assert.assertEquals("owner_id", violation.getColumnName());
-        Assert.assertEquals("persons", violation.getReferencingTableName());
-        Assert.assertEquals("id", violation.getReferencingColumnName());
-        Assert.assertEquals("-1", violation.getValue());
-        Assert.assertEquals("insert into cars (id, active, license_number, owner_id, price) values (default, ?, ?, ?, ?)", violation.getStatement());
-        Assert.assertEquals("23506-171", violation.getNumber());
+        Assertions.assertNotNull(violation);
+        Assertions.assertEquals("fk_cars_owner", violation.getConstraintName());
+        Assertions.assertEquals("cars", violation.getTableName());
+        Assertions.assertEquals("owner_id", violation.getColumnName());
+        Assertions.assertEquals("persons", violation.getReferencingTableName());
+        Assertions.assertEquals("id", violation.getReferencingColumnName());
+        Assertions.assertEquals("-1", violation.getValue());
+        Assertions.assertEquals("insert into cars (id, active, license_number, owner_id, price) values (default, ?, ?, ?, ?)", violation.getStatement());
+        Assertions.assertEquals("23506-171", violation.getNumber());
     }
 
     @Test
@@ -59,12 +57,12 @@ public class H2ViolationResolverTest {
                                "insert into cars (id, active, license_number, price) values (default, ?, ?, ?) [22001-171]";
         
         DatabaseConstraintViolation violation = resolver.resolve(message);
-        Assert.assertNotNull("Could not resolve violation.", violation);
-        Assert.assertEquals("license_number", violation.getColumnName());
-        Assert.assertEquals("varchar", violation.getValueType());
-        Assert.assertEquals(Long.valueOf(6), violation.getMaximumLength());
-        Assert.assertEquals("insert into cars (id, active, license_number, price) values (default, ?, ?, ?)", violation.getStatement());
-        Assert.assertEquals("22001-171", violation.getNumber());
+        Assertions.assertNotNull(violation);
+        Assertions.assertEquals("license_number", violation.getColumnName());
+        Assertions.assertEquals("varchar", violation.getValueType());
+        Assertions.assertEquals(Long.valueOf(6), violation.getMaximumLength());
+        Assertions.assertEquals("insert into cars (id, active, license_number, price) values (default, ?, ?, ?)", violation.getStatement());
+        Assertions.assertEquals("22001-171", violation.getNumber());
     }
 
     @Test
@@ -73,12 +71,12 @@ public class H2ViolationResolverTest {
         		"insert into cars (id, active, license_number, owner_id, price) values (default, ?, ?, ?, ?) -- (, ?1, ?2, ?3, ?4) [22018-171]";
 
         DatabaseConstraintViolation violation = resolver.resolve(message);
-        Assert.assertNotNull("Could not resolve violation.", violation);
-        Assert.assertEquals("cars", violation.getTableName());
-        Assert.assertEquals("active", violation.getColumnName());
-        Assert.assertEquals("boolean", violation.getExpectedValueType());
-        Assert.assertEquals("insert into cars (id, active, license_number, owner_id, price) values (default, ?, ?, ?, ?) -- (, ?1, ?2, ?3, ?4)", violation.getStatement());
-        Assert.assertEquals("22018-171", violation.getNumber());
+        Assertions.assertNotNull(violation);
+        Assertions.assertEquals("cars", violation.getTableName());
+        Assertions.assertEquals("active", violation.getColumnName());
+        Assertions.assertEquals("boolean", violation.getExpectedValueType());
+        Assertions.assertEquals("insert into cars (id, active, license_number, owner_id, price) values (default, ?, ?, ?, ?) -- (, ?1, ?2, ?3, ?4)", violation.getStatement());
+        Assertions.assertEquals("22018-171", violation.getNumber());
     }
     
 }

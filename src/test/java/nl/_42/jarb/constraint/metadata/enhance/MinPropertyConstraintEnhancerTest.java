@@ -1,14 +1,13 @@
 package nl._42.jarb.constraint.metadata.enhance;
 
+import javax.validation.constraints.Min;
 import nl._42.jarb.constraint.metadata.PropertyConstraintDescription;
 import nl._42.jarb.utils.bean.PropertyReference;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-import javax.validation.constraints.Min;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 public class MinPropertyConstraintEnhancerTest {
     
@@ -16,7 +15,7 @@ public class MinPropertyConstraintEnhancerTest {
 
     private PropertyConstraintDescription description;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         enhancer = new MinPropertyConstraintEnhancer<>(Min.class, Min::value);
         description = new PropertyConstraintDescription(new PropertyReference(User.class, "age"), Long.class);

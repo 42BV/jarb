@@ -1,15 +1,11 @@
 package nl._42.jarb.constraint.violation.resolver.vendor;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-
 import nl._42.jarb.constraint.violation.DatabaseConstraintType;
 import nl._42.jarb.constraint.violation.DatabaseConstraintViolation;
+import org.junit.jupiter.api.Test;
 
-import nl._42.jarb.constraint.violation.DatabaseConstraintType;
-import nl._42.jarb.constraint.violation.DatabaseConstraintViolation;
-import org.junit.Assert;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 public class MysqlViolationResolverTest {
     
@@ -18,7 +14,7 @@ public class MysqlViolationResolverTest {
     @Test
     public void testNotNull() {
         DatabaseConstraintViolation violation = resolver.resolve("Column 'name' cannot be null");
-        Assert.assertEquals(DatabaseConstraintType.NOT_NULL, violation.getConstraintType());
+        assertEquals(DatabaseConstraintType.NOT_NULL, violation.getConstraintType());
         assertEquals("name", violation.getColumnName());
     }
 

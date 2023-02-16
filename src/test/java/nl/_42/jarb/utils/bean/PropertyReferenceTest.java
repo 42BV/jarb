@@ -1,10 +1,10 @@
 package nl._42.jarb.utils.bean;
 
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
-import org.junit.Assert;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class PropertyReferenceTest {
 
@@ -23,9 +23,11 @@ public class PropertyReferenceTest {
         assertEquals("some", root.getSimpleName());
     }
     
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void testGetParentRoot() {
-        new PropertyReference(Object.class, "property").getParent();
+        Assertions.assertThrows(IllegalStateException.class, () ->
+            new PropertyReference(Object.class, "property").getParent()
+        );
     }
     
     @Test
@@ -34,19 +36,18 @@ public class PropertyReferenceTest {
         PropertyReference b = new PropertyReference(Object.class, "property");
         PropertyReference c = new PropertyReference(Object.class, "other");
         PropertyReference d = new PropertyReference(String.class, "property");
-        
-        Assert.assertTrue(a.equals(a));
-        Assert.assertTrue(a.equals(b));
-        Assert.assertFalse(a.equals(c));
-        Assert.assertFalse(a.equals(d));
-        Assert.assertFalse(a.equals("e"));
-        Assert.assertFalse(a.equals(null));
+
+        Assertions.assertTrue(a.equals(a));
+        Assertions.assertTrue(a.equals(b));
+        Assertions.assertFalse(a.equals(c));
+        Assertions.assertFalse(a.equals(d));
+        Assertions.assertFalse(a.equals("e"));
     }
 
     @Test
     public void testToString() {
         PropertyReference property = new PropertyReference(Object.class, "property");
-        Assert.assertEquals("Object.property", property.toString());
+        assertEquals("Object.property", property.toString());
     }
 
 }

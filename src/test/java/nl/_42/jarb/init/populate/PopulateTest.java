@@ -3,33 +3,25 @@
  */
 package nl._42.jarb.init.populate;
 
-import static org.junit.Assert.assertEquals;
-
-import javax.sql.DataSource;
-
-import nl._42.jarb.init.InitTestConfig;
-import nl._42.jarb.populate.PopulatingApplicationListener;
-import nl._42.jarb.populate.PopulatingApplicationListenerBuilder;
-import nl._42.jarb.populate.SqlDatabasePopulator;
-
 import nl._42.jarb.init.InitTestConfig;
 import nl._42.jarb.init.populate.PopulateTest.PopulateConfig;
 import nl._42.jarb.populate.PopulatingApplicationListener;
 import nl._42.jarb.populate.PopulatingApplicationListenerBuilder;
 import nl._42.jarb.populate.SqlDatabasePopulator;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = PopulateConfig.class)
+import javax.sql.DataSource;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+@SpringBootTest(classes = PopulateConfig.class)
 public class PopulateTest {
     
     @Autowired

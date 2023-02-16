@@ -1,15 +1,12 @@
 package nl._42.jarb.constraint.metadata.enhance;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-
 import nl._42.jarb.constraint.metadata.PropertyConstraintDescription;
 import nl._42.jarb.utils.bean.PropertyReference;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-import nl._42.jarb.constraint.metadata.PropertyConstraintDescription;
-import nl._42.jarb.utils.bean.PropertyReference;
-import org.junit.Before;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 public class MinMaxNumberPropertyEnhancerTest {
     
@@ -17,7 +14,7 @@ public class MinMaxNumberPropertyEnhancerTest {
 
     private PropertyConstraintDescription description;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         enhancer = new MinMaxNumberPropertyEnhancer(Long.class, -42, 42);
         description = new PropertyConstraintDescription(new PropertyReference(User.class, "age"), Long.class);

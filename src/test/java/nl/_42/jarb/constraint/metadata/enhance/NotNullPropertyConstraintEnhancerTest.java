@@ -1,16 +1,13 @@
 package nl._42.jarb.constraint.metadata.enhance;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
-import nl._42.jarb.constraint.metadata.PropertyConstraintDescription;
-import nl._42.jarb.utils.bean.PropertyReference;
-
 import nl._42.jarb.constraint.domain.Wine;
 import nl._42.jarb.constraint.metadata.PropertyConstraintDescription;
 import nl._42.jarb.utils.bean.PropertyReference;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class NotNullPropertyConstraintEnhancerTest {
     
@@ -18,7 +15,7 @@ public class NotNullPropertyConstraintEnhancerTest {
 
     private PropertyConstraintDescription description;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         enhancer = new NotNullPropertyConstraintEnhancer();
         PropertyReference nameReference = new PropertyReference(Wine.class, "name");

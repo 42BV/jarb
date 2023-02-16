@@ -1,20 +1,11 @@
 package nl._42.jarb.constraint.violation.resolver.vendor;
 
-import static nl._42.jarb.constraint.violation.DatabaseConstraintType.CHECK_FAILED;
-import static nl._42.jarb.constraint.violation.DatabaseConstraintType.FOREIGN_KEY;
-import static nl._42.jarb.constraint.violation.DatabaseConstraintType.INVALID_TYPE;
-import static nl._42.jarb.constraint.violation.DatabaseConstraintType.LENGTH_EXCEEDED;
-import static nl._42.jarb.constraint.violation.DatabaseConstraintType.NOT_NULL;
-import static nl._42.jarb.constraint.violation.DatabaseConstraintType.UNIQUE_KEY;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-
 import nl._42.jarb.constraint.violation.DatabaseConstraintType;
 import nl._42.jarb.constraint.violation.DatabaseConstraintViolation;
+import org.junit.jupiter.api.Test;
 
-import nl._42.jarb.constraint.violation.DatabaseConstraintViolation;
-import org.junit.Assert;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 public class OracleViolationResolverTest {
     
@@ -25,7 +16,7 @@ public class OracleViolationResolverTest {
         final String message = "ORA-02290: check constraint (HIBERNATE.CK_EMPLOYEES_SALARY_MIN) violated\n";
         
         DatabaseConstraintViolation violation = resolver.resolve(message);
-        Assert.assertEquals(DatabaseConstraintType.CHECK_FAILED, violation.getConstraintType());
+        assertEquals(DatabaseConstraintType.CHECK_FAILED, violation.getConstraintType());
         assertEquals("ORA-02290", violation.getNumber());
         assertEquals("CK_EMPLOYEES_SALARY_MIN", violation.getConstraintName());
     }
@@ -35,7 +26,7 @@ public class OracleViolationResolverTest {
         final String message = "ORA-01400: cannot insert NULL into (\"HIBERNATE\".\"PROJECTS\".\"NAME\")\n";
         
         DatabaseConstraintViolation violation = resolver.resolve(message);
-        Assert.assertEquals(DatabaseConstraintType.NOT_NULL, violation.getConstraintType());
+        assertEquals(DatabaseConstraintType.NOT_NULL, violation.getConstraintType());
         assertEquals("ORA-01400", violation.getNumber());
         assertEquals("PROJECTS", violation.getTableName());
         assertEquals("NAME", violation.getColumnName());
@@ -46,7 +37,7 @@ public class OracleViolationResolverTest {
         final String message = "ORA-00001: unique constraint (S01_PCAT3.UK_COMMODITY_GROUPS_CODE) violated\n";
         
         DatabaseConstraintViolation violation = resolver.resolve(message);
-        Assert.assertEquals(DatabaseConstraintType.UNIQUE_KEY, violation.getConstraintType());
+        assertEquals(DatabaseConstraintType.UNIQUE_KEY, violation.getConstraintType());
         assertEquals("ORA-00001", violation.getNumber());
         assertEquals("UK_COMMODITY_GROUPS_CODE", violation.getConstraintName());
     }
@@ -56,7 +47,7 @@ public class OracleViolationResolverTest {
         final String message = "ORA-02292: integrity constraint (S01_PCAT3.FK_COMMODITIES_COMM_GRP_ID) violated - child record found\n";
         
         DatabaseConstraintViolation violation = resolver.resolve(message);
-        Assert.assertEquals(DatabaseConstraintType.FOREIGN_KEY, violation.getConstraintType());
+        assertEquals(DatabaseConstraintType.FOREIGN_KEY, violation.getConstraintType());
         assertEquals("ORA-02292", violation.getNumber());
         assertEquals("FK_COMMODITIES_COMM_GRP_ID", violation.getConstraintName());
     }
@@ -66,7 +57,7 @@ public class OracleViolationResolverTest {
         final String message = "ORA-12899: value too large for column \"HIBERNATE\".\"CUSTOMERS\".\"FIRST_NAME\" (actual: 72, maximum: 50)\n";
         
         DatabaseConstraintViolation violation = resolver.resolve(message);
-        Assert.assertEquals(DatabaseConstraintType.LENGTH_EXCEEDED, violation.getConstraintType());
+        assertEquals(DatabaseConstraintType.LENGTH_EXCEEDED, violation.getConstraintType());
         assertEquals("ORA-12899", violation.getNumber());
         assertEquals("CUSTOMERS", violation.getTableName());
         assertEquals("FIRST_NAME", violation.getColumnName());
@@ -78,7 +69,7 @@ public class OracleViolationResolverTest {
         final String message = "ORA-01722: invalid number\n";
         
         DatabaseConstraintViolation violation = resolver.resolve(message);
-        Assert.assertEquals(DatabaseConstraintType.INVALID_TYPE, violation.getConstraintType());
+        assertEquals(DatabaseConstraintType.INVALID_TYPE, violation.getConstraintType());
         assertEquals("ORA-01722", violation.getNumber());
         assertEquals("number", violation.getExpectedValueType());
     }

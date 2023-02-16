@@ -1,28 +1,22 @@
 package nl._42.jarb.constraint.metadata.database;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import nl._42.jarb.constraint.ConstraintsTestConfig;
+import nl._42.jarb.utils.orm.ColumnReference;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 
 import javax.sql.DataSource;
 
-import nl._42.jarb.utils.orm.ColumnReference;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import nl._42.jarb.constraint.ConstraintsTestConfig;
-import nl._42.jarb.utils.orm.ColumnReference;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-
-@RunWith(SpringJUnit4ClassRunner.class)
 @ActiveProfiles("hsqldb")
-@ContextConfiguration(classes = ConstraintsTestConfig.class)
+@SpringBootTest(classes = ConstraintsTestConfig.class)
 public class JdbcColumnMetadataRepositoryTest {
 
     @Autowired
@@ -30,7 +24,7 @@ public class JdbcColumnMetadataRepositoryTest {
 
     private JdbcColumnMetadataRepository jdbcMetadataRepository;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         jdbcMetadataRepository = new JdbcColumnMetadataRepository(dataSource);
     }
@@ -43,7 +37,7 @@ public class JdbcColumnMetadataRepositoryTest {
         ColumnReference reference = new ColumnReference("cars", "license_number");
         
         ColumnMetadata metadata = jdbcMetadataRepository.getMetadata(reference);
-        Assert.assertEquals(reference, metadata.getColumnReference());
+        assertEquals(reference, metadata.getColumnReference());
         assertTrue(metadata.isRequired());
         assertFalse(metadata.isAutoIncrement());
         assertEquals(Integer.valueOf(6), metadata.getMaximumLength());
@@ -58,7 +52,7 @@ public class JdbcColumnMetadataRepositoryTest {
         ColumnReference reference = new ColumnReference("\"CARS\"", "\"LICENSE_NUMBER\"");
         
         ColumnMetadata metadata = jdbcMetadataRepository.getMetadata(reference);
-        Assert.assertEquals(reference, metadata.getColumnReference());
+        assertEquals(reference, metadata.getColumnReference());
         assertTrue(metadata.isRequired());
         assertFalse(metadata.isAutoIncrement());
         assertEquals(Integer.valueOf(6), metadata.getMaximumLength());

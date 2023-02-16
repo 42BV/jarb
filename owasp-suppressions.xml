@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<suppressions xmlns="https://jeremylong.github.io/DependencyCheck/dependency-suppression.1.3.xsd">
+    <suppress>
+        <notes>Check if these should be removed when updating spring-boot</notes>
+        <cve>CVE-2016-1000027</cve>
+        <cve>CVE-2022-42003</cve>
+        <cve>CVE-2020-5408</cve>
+        <cve>CVE-2022-38752</cve>
+        <cve>CVE-2022-31690</cve>
+        <cve>CVE-2022-31692</cve>
+    </suppress>
+</suppressions>

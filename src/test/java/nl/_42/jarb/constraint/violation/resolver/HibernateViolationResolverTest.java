@@ -1,20 +1,18 @@
 package nl._42.jarb.constraint.violation.resolver;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-
 import nl._42.jarb.constraint.violation.DatabaseConstraintViolation;
-
 import org.hibernate.exception.ConstraintViolationException;
-import nl._42.jarb.constraint.violation.DatabaseConstraintViolation;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 public class HibernateViolationResolverTest {
 
     private HibernateViolationResolver resolver;
     
-    @Before
+    @BeforeEach
     public void setUp() {
         resolver = new HibernateViolationResolver();
     }

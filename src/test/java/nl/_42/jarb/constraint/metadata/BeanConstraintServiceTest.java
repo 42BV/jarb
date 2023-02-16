@@ -1,5 +1,6 @@
 package nl._42.jarb.constraint.metadata;
 
+import javax.persistence.ManyToOne;
 import nl._42.jarb.constraint.ConstraintsTestConfig;
 import nl._42.jarb.constraint.DatabaseConstraintsConfigurer;
 import nl._42.jarb.constraint.domain.AwesomeCar;
@@ -10,27 +11,23 @@ import nl._42.jarb.constraint.domain.Wine;
 import nl._42.jarb.constraint.metadata.BeanConstraintServiceTest.CustomConstraintsConfig;
 import nl._42.jarb.constraint.metadata.enhance.AnnotationPropertyTypeEnhancer;
 import nl._42.jarb.constraint.metadata.factory.EntityFactory;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.internal.util.collections.Sets;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import javax.persistence.ManyToOne;
 import java.util.Map;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@RunWith(SpringJUnit4ClassRunner.class)
 @ActiveProfiles("hsqldb")
-@ContextConfiguration(classes = { ConstraintsTestConfig.class, CustomConstraintsConfig.class })
+@SpringBootTest(classes = { ConstraintsTestConfig.class, CustomConstraintsConfig.class })
 public class BeanConstraintServiceTest {
 
     @Autowired
@@ -41,7 +38,7 @@ public class BeanConstraintServiceTest {
 
     private BeanConstraintService service;
     
-    @Before
+    @BeforeEach
     public void setUp() {
         service = new BeanConstraintService(descriptor);
     }

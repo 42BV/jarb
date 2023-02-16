@@ -3,24 +3,18 @@
  */
 package nl._42.jarb.utils;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.sql.DataSource;
-
 import nl._42.jarb.utils.orm.hibernate.ConventionImplicitNamingStrategy;
 import nl._42.jarb.utils.orm.hibernate.ConventionPhysicalNamingStrategy;
-import nl._42.jarb.utils.orm.hibernate.dialect.ImprovedHsqlDialect;
-
 import org.hibernate.jpa.HibernatePersistenceProvider;
-import nl._42.jarb.utils.orm.hibernate.ConventionImplicitNamingStrategy;
-import nl._42.jarb.utils.orm.hibernate.ConventionPhysicalNamingStrategy;
-import nl._42.jarb.utils.orm.hibernate.dialect.ImprovedHsqlDialect;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
+
+import javax.sql.DataSource;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Simple configuration with Hibernate.
@@ -45,7 +39,6 @@ public class HibernateConfig {
         Map<String, Object> jpaProperties = new HashMap<String, Object>();
         jpaProperties.put("hibernate.implicit_naming_strategy", ConventionImplicitNamingStrategy.class.getName());
         jpaProperties.put("hibernate.physical_naming_strategy", ConventionPhysicalNamingStrategy.class.getName());
-        jpaProperties.put("hibernate.dialect", ImprovedHsqlDialect.class.getName());
         jpaProperties.put("hibernate.hbm2ddl.auto", "validate");
         
         entityManagerFactoryBean.setJpaPropertyMap(jpaProperties);

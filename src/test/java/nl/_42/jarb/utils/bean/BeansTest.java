@@ -3,10 +3,10 @@
  */
 package nl._42.jarb.utils.bean;
 
-import java.util.Set;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
-import org.junit.Assert;
-import org.junit.Test;
+import java.util.Set;
 
 public class BeansTest {
     
@@ -16,7 +16,7 @@ public class BeansTest {
     @Test
     public void testGetFields() {
         Set<String> fields = Beans.getFieldNames(BeansTest.class);
-        Assert.assertTrue(fields.contains("someField"));
+        Assertions.assertTrue(fields.contains("someField"));
     }
 
 }

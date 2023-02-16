@@ -6,8 +6,6 @@ import javax.persistence.Table;
 
 import nl._42.jarb.constraint.validation.DatabaseConstrained;
 
-import nl._42.jarb.constraint.validation.DatabaseConstrained;
-
 @Entity
 @Table(name = "persons")
 @DatabaseConstrained

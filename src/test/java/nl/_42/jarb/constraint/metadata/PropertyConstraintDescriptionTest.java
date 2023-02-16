@@ -1,13 +1,12 @@
 package nl._42.jarb.constraint.metadata;
 
-import static org.junit.Assert.assertEquals;
-
-import nl._42.jarb.utils.bean.PropertyReference;
-
 import nl._42.jarb.constraint.domain.Wine;
 import nl._42.jarb.utils.bean.PropertyReference;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * Test that setters validate the provided values.
@@ -19,7 +18,7 @@ public class PropertyConstraintDescriptionTest {
     
     private PropertyConstraintDescription description;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         PropertyReference reference = new PropertyReference(Wine.class, "name");
         description = new PropertyConstraintDescription(reference, String.class);
@@ -34,20 +33,20 @@ public class PropertyConstraintDescriptionTest {
         assertEquals(Integer.valueOf(42), description.getMaximumLength());
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void testNegativeMinimumLength() {
-        description.setMinimumLength(-1);
+        Assertions.assertThrows(IllegalStateException.class, () -> description.setMinimumLength(-1));
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void testNegativeMaximumLength() {
-        description.setMaximumLength(-1);
+        Assertions.assertThrows(IllegalStateException.class, () -> description.setMaximumLength(-1));
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void testMinimLengthGreaterThanMaximum() {
         description.setMaximumLength(24);
-        description.setMinimumLength(42);
+        Assertions.assertThrows(IllegalStateException.class, () -> description.setMinimumLength(42));
     }
 
     @Test
@@ -57,9 +56,9 @@ public class PropertyConstraintDescriptionTest {
         assertEquals(Integer.valueOf(4), description.getFractionLength());
     }
 
-    @Test(expected = IllegalStateException.class)
-    public void testnegativeFractionLength() {
-        description.setFractionLength(-1);
+    @Test
+    public void testNegativeFractionLength() {
+        Assertions.assertThrows(IllegalStateException.class, () -> description.setFractionLength(-1));
     }
 
 }

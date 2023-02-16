@@ -1,25 +1,19 @@
 package nl._42.jarb.init.populate;
 
-import static org.junit.Assert.assertEquals;
-
-import java.io.File;
-
-import javax.sql.DataSource;
-
-import nl._42.jarb.populate.SqlDirectoryDatabasePopulator;
-
 import nl._42.jarb.init.InitTestConfig;
 import nl._42.jarb.populate.SqlDirectoryDatabasePopulator;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = InitTestConfig.class)
+import javax.sql.DataSource;
+import java.io.File;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+@SpringBootTest(classes = InitTestConfig.class)
 public class SqlDirectoryDatabasePopulatorTest {
 
     @Autowired
@@ -27,7 +21,7 @@ public class SqlDirectoryDatabasePopulatorTest {
     
     private SqlDirectoryDatabasePopulator populator;
     
-    @Before
+    @BeforeEach
     public void setUp() {
         populator = new SqlDirectoryDatabasePopulator(dataSource, new File("src/test/resources/imports"));
     }

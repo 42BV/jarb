@@ -3,16 +3,13 @@
  */
 package nl._42.jarb.utils.jdbc;
 
-import javax.sql.DataSource;
-
 import nl._42.jarb.utils.UtilsTestConfig;
-import nl._42.jarb.utils.jdbc.DatabaseProduct;
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.boot.test.context.SpringBootTest;
+
+import javax.sql.DataSource;
 
 /**
  * Ensures that the database product can correctly be recognized.
@@ -20,8 +17,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
  * @author Jeroen van Schagen
  * @since Mar 13, 2014
  */
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = UtilsTestConfig.class)
+@SpringBootTest(classes = UtilsTestConfig.class)
 public class DatabaseProductTest {
     
     @Autowired
@@ -30,8 +26,8 @@ public class DatabaseProductTest {
     @Test
     public void testFromDataSource() {
         DatabaseProduct product = DatabaseProduct.fromDataSource(dataSource);
-        Assert.assertEquals("HSQL Database Engine", product.getName());
-        Assert.assertEquals("2.4.1", product.getVersion());
+        Assertions.assertEquals("HSQL Database Engine", product.getName());
+        Assertions.assertEquals("2.4.1", product.getVersion());
     }
 
 }

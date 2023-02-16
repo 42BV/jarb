@@ -1,30 +1,23 @@
 package nl._42.jarb.constraint.metadata.enhance;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-
-import nl._42.jarb.constraint.metadata.PropertyConstraintDescription;
-import nl._42.jarb.constraint.metadata.database.BeanMetadataRepository;
-import nl._42.jarb.utils.bean.PropertyReference;
-
 import nl._42.jarb.constraint.ConstraintsTestConfig;
 import nl._42.jarb.constraint.domain.Wine;
 import nl._42.jarb.constraint.metadata.PropertyConstraintDescription;
 import nl._42.jarb.constraint.metadata.database.BeanMetadataRepository;
 import nl._42.jarb.utils.bean.PropertyReference;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-@RunWith(SpringJUnit4ClassRunner.class)
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 @ActiveProfiles("hsqldb")
-@ContextConfiguration(classes = ConstraintsTestConfig.class)
+@SpringBootTest(classes = ConstraintsTestConfig.class)
 public class DatabasePropertyConstraintEnhancerTest {
     
     private DatabasePropertyConstraintEnhancer enhancer;
@@ -32,7 +25,7 @@ public class DatabasePropertyConstraintEnhancerTest {
     @Autowired
     private BeanMetadataRepository beanMetadataRepository;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         enhancer = new DatabasePropertyConstraintEnhancer(beanMetadataRepository);
     }

@@ -4,18 +4,13 @@
 package nl._42.jarb.constraint.metadata.enhance;
 
 import javax.persistence.Column;
-
 import nl._42.jarb.constraint.metadata.PropertyConstraintDescription;
 import nl._42.jarb.constraint.metadata.types.Currency;
 import nl._42.jarb.constraint.metadata.types.PropertyType;
 import nl._42.jarb.utils.bean.PropertyReference;
+import org.junit.jupiter.api.Test;
 
-import nl._42.jarb.constraint.metadata.PropertyConstraintDescription;
-import nl._42.jarb.constraint.metadata.types.Currency;
-import nl._42.jarb.constraint.metadata.types.PropertyType;
-import nl._42.jarb.utils.bean.PropertyReference;
-import org.junit.Assert;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class PropertyTypeEnhancerTest {
     
@@ -25,7 +20,7 @@ public class PropertyTypeEnhancerTest {
         PropertyReference reference = new PropertyReference(PropertyTypeBean.class, "myCustomValue");
         PropertyConstraintDescription description = new PropertyConstraintDescription(reference, String.class);
         enhancer.enhance(description);
-        Assert.assertTrue(description.getTypes().contains("custom"));
+        assertTrue(description.getTypes().contains("custom"));
     }
     
     @Test
@@ -34,7 +29,7 @@ public class PropertyTypeEnhancerTest {
         PropertyReference reference = new PropertyReference(PropertyTypeBean.class, "myCurrencyValue");
         PropertyConstraintDescription description = new PropertyConstraintDescription(reference, String.class);
         enhancer.enhance(description);
-        Assert.assertTrue(description.getTypes().contains("currency"));
+        assertTrue(description.getTypes().contains("currency"));
     }
     
     @Test
@@ -43,7 +38,7 @@ public class PropertyTypeEnhancerTest {
         PropertyReference reference = new PropertyReference(PropertyTypeBean.class, "myOtherValue");
         PropertyConstraintDescription description = new PropertyConstraintDescription(reference, String.class);
         enhancer.enhance(description);
-        Assert.assertTrue(description.getTypes().isEmpty());
+        assertTrue(description.getTypes().isEmpty());
     }
     
     protected static class PropertyTypeBean {

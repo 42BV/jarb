@@ -1,7 +1,7 @@
 package nl._42.jarb.utils;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 public class ClassesTest {
     
@@ -10,24 +10,26 @@ public class ClassesTest {
 
     @Test
     public void testForName() {
-        Assert.assertEquals(Classes.class, Classes.forName(Classes.class.getName()));
+        Assertions.assertEquals(Classes.class, Classes.forName(Classes.class.getName()));
     }
     
-    @Test(expected = RuntimeException.class)
+    @Test
     public void testForNameNotOnClasspath() {
-        Classes.forName(UNKNOWN_CLASS_NAME);
+        Assertions.assertThrows(RuntimeException.class, () ->
+            Classes.forName(UNKNOWN_CLASS_NAME)
+        );
     }
     
     @Test
     public void testOnClasspath() {
-        Assert.assertTrue(Classes.hasClass(Classes.class.getName()));
-        Assert.assertFalse(Classes.hasClass(UNKNOWN_CLASS_NAME));
+        Assertions.assertTrue(Classes.hasClass(Classes.class.getName()));
+        Assertions.assertFalse(Classes.hasClass(UNKNOWN_CLASS_NAME));
     }
     
     @Test
     public void testHasPackage() {
-        Assert.assertTrue(Classes.hasPackage(Classes.class.getPackage().getName()));
-        Assert.assertFalse(Classes.hasPackage(UNKNOWN_PACKAGE_NAME));
+        Assertions.assertTrue(Classes.hasPackage(Classes.class.getPackage().getName()));
+        Assertions.assertFalse(Classes.hasPackage(UNKNOWN_PACKAGE_NAME));
     }
 
 }
