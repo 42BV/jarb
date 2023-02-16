@@ -1,28 +1,28 @@
 package nl._42.jarb.utils.orm.hibernate;
 
+import jakarta.persistence.Embeddable;
+import jakarta.persistence.EntityManagerFactory;
 import nl._42.jarb.utils.bean.PropertyReference;
 import nl._42.jarb.utils.orm.ColumnReference;
 import nl._42.jarb.utils.orm.SchemaMapper;
-import org.hibernate.HibernateException;
 import org.hibernate.MappingException;
-import org.hibernate.SessionFactory;
-import org.hibernate.persister.collection.BasicCollectionPersister;
+import org.hibernate.metamodel.mapping.AttributeMapping;
+import org.hibernate.metamodel.mapping.EntityMappingType;
+import org.hibernate.metamodel.mapping.ManagedMappingType;
+import org.hibernate.metamodel.mapping.internal.BasicAttributeMapping;
+import org.hibernate.metamodel.mapping.internal.EmbeddedAttributeMapping;
+import org.hibernate.metamodel.mapping.internal.EmbeddedCollectionPart;
+import org.hibernate.metamodel.model.domain.NavigableRole;
+import org.hibernate.metamodel.spi.RuntimeMetamodelsImplementor;
 import org.hibernate.persister.entity.AbstractEntityPersister;
-import org.hibernate.persister.walking.spi.AssociationAttributeDefinition;
-import org.hibernate.persister.walking.spi.CollectionDefinition;
-import org.hibernate.tuple.NonIdentifierAttribute;
-import org.hibernate.type.ComponentType;
-import org.hibernate.type.MapType;
-import org.hibernate.type.Type;
+import org.hibernate.tuple.Attribute;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.persistence.Embeddable;
+import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
 
-import static java.lang.String.format;
-import static org.hibernate.persister.walking.spi.AssociationAttributeDefinition.AssociationNature.COLLECTION;
 import static org.springframework.core.annotation.AnnotationUtils.findAnnotation;
 
 /**
@@ -34,128 +34,91 @@ import static org.springframework.core.annotation.AnnotationUtils.findAnnotation
 public class HibernateJpaSchemaMapper implements SchemaMapper {
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
-    
-    private final SessionFactory sessionFactory;
-    
-    public HibernateJpaSchemaMapper(SessionFactory sessionFactory) {
-        this.sessionFactory = sessionFactory;
+
+    private final RuntimeMetamodelsImplementor metamodels;
+
+    public HibernateJpaSchemaMapper(EntityManagerFactory entityManagerFactory) {
+        this.metamodels = HibernateUtils.getSessionFactory(entityManagerFactory).getRuntimeMetamodels();
     }
 
-    @Override
-    public String getTableName(Class<?> beanClass) {
-        String tableName = null;
-
-        AbstractEntityPersister metadata = safelyFindClassMetadata(beanClass);
-        if (metadata != null) {
-            tableName = metadata.getTableName();
-        }
-
-        return tableName;
-    }
-
-    private AbstractEntityPersister safelyFindClassMetadata(Class<?> beanClass) {
-        AbstractEntityPersister metadata = null;
-
-        try {
-            metadata = (AbstractEntityPersister) sessionFactory.getClassMetadata(beanClass);
-        } catch (HibernateException e) {
-            logger.debug("Could not retrieve class metadata.", e);
-        }
-
-        return metadata;
-    }
-    
     @Override
     public ColumnReference getColumnReference(PropertyReference property) {
         ColumnReference column = null;
 
         try {
-            AbstractEntityPersister classMetadata = safelyFindClassMetadata(property.getBeanClass());
-            if (classMetadata != null) {
-                column = getColumnName(property, classMetadata);
+            EntityMappingType type = metamodels.getEntityMappingType(property.getBeanClass());
+            if (type instanceof AbstractEntityPersister model) {
+                column = getColumnName(model, property);
             }
-        } catch (MappingException e) {
+        } catch (AssertionError | RuntimeException e) {
             logger.debug("Could not map property.", e);
         }
 
         return column;
     }
 
-    private ColumnReference getColumnName(PropertyReference property, AbstractEntityPersister metadata) {
-        NonIdentifierAttribute attribute = getAttribute(metadata, property.getBase());
+    private ColumnReference getColumnName(AbstractEntityPersister model, PropertyReference property) {
+        if (!property.isNestedProperty()) {
+            return getPropertyColumnName(model, property.getPropertyName());
+        }
 
-        if (isCollection(attribute)) {
-            return getCollectionColumnName(property.getSimpleName(), (AssociationAttributeDefinition) attribute);
+        Attribute attribute = getAttribute(model, property);
+        if (attribute.getType().isCollectionType()) {
+            return getCollectionColumnName(model, property);
         } else {
-            return getPropertyColumnName(property.getPropertyName(), metadata);
+            return getComponentColumnName(model, property);
         }
     }
 
-    private boolean isCollection(NonIdentifierAttribute attribute) {
-        boolean result = false;
-        if (attribute instanceof AssociationAttributeDefinition) {
-            AssociationAttributeDefinition association = (AssociationAttributeDefinition) attribute;
-            if (Objects.equals(association.getAssociationNature(), COLLECTION)) {
-                result = association.toCollectionDefinition().getCollectionPersister() instanceof BasicCollectionPersister;
-            }
-        }
-        return result;
+    private ColumnReference getPropertyColumnName(AbstractEntityPersister model, String propertyName) {
+        String propertyTableName = model.getPropertyTableName(propertyName);
+        String tableName = Objects.toString(propertyTableName, model.getTableName());
+
+        String[] columnNames = model.getPropertyColumnNames(propertyName);
+        return new ColumnReference(tableName, columnNames[0]);
     }
 
-    private ColumnReference getCollectionColumnName(String propertyName, AssociationAttributeDefinition attribute) {
-        CollectionDefinition definition = attribute.toCollectionDefinition();
-        BasicCollectionPersister persist = (BasicCollectionPersister) definition.getCollectionPersister();
+    private Attribute getAttribute(AbstractEntityPersister model, PropertyReference property) {
+        Attribute[] properties = model.getEntityMetamodel().getProperties();
 
-        Type type;
-        String[] columnNames;
-
-        if (definition.getCollectionType() instanceof MapType && Objects.equals(propertyName, attribute.getName())) {
-            type = persist.getIndexType();
-            columnNames = persist.getIndexColumnNames();
-        } else {
-            type = persist.getElementType();
-            columnNames = persist.getElementColumnNames();
-        }
-
-        String tableName = persist.getTableName();
-        String columnName = getColumnName(propertyName, type, columnNames);
-
-        return new ColumnReference(tableName, columnName);
-    }
-
-    private String getColumnName(String propertyName, Type type, String[] columnNames) {
-        if (type instanceof ComponentType) {
-            int index = ((ComponentType) type).getPropertyIndex(propertyName);
-            return columnNames[index];
-        } else {
-            if (columnNames.length != 1) {
-                throw new MappingException("Expected exactly one column name");
-            }
-            return columnNames[0];
-        }
-    }
-
-    private NonIdentifierAttribute getAttribute(AbstractEntityPersister metadata, String name) {
-        NonIdentifierAttribute[] properties = metadata.getEntityMetamodel().getProperties();
-
-        return Stream.of(properties).filter(attribute ->
-            attribute.getName().equals(name)
-        ).findFirst().orElse(null);
-    }
-
-    private ColumnReference getPropertyColumnName(String propertyName, AbstractEntityPersister metadata) {
-        String propertyTableName = metadata.getPropertyTableName(propertyName);
-
-        String tableName = Objects.toString(propertyTableName, metadata.getTableName());
-        String[] columnNames = metadata.getPropertyColumnNames(propertyName);
-
-        if (columnNames.length == 1) {
-            return new ColumnReference(tableName, columnNames[0]);
-        } else {
-            throw new MappingException(
-                    format("Property '%s' is mapped to multiple columns.", propertyName)
+        String name = property.getBase();
+        return Stream.of(properties)
+            .filter(attribute -> attribute.getName().equals(name))
+            .findFirst()
+            .orElseThrow(() ->
+                new MappingException(String.format("Could not find property %s", name))
             );
+    }
+
+    private ColumnReference getCollectionColumnName(AbstractEntityPersister model, PropertyReference property) {
+        NavigableRole role = new NavigableRole(model.getNavigableRole(), property.getParent().getPropertyName()).appendContainer("{element}");
+        EmbeddedCollectionPart embedded = (EmbeddedCollectionPart) metamodels.getEmbedded(role);
+        AttributeMapping mapping = getAttributeMapping(embedded.getEmbeddableTypeDescriptor(), property.getSimpleName());
+        return getColumnName(mapping);
+    }
+
+    private ColumnReference getComponentColumnName(AbstractEntityPersister model, PropertyReference property) {
+        NavigableRole role = new NavigableRole(model.getNavigableRole(), property.getParent().getPropertyName());
+        EmbeddedAttributeMapping embedded = (EmbeddedAttributeMapping) metamodels.getEmbedded(role);
+        AttributeMapping mapping = getAttributeMapping(embedded.getMappedType(), property.getSimpleName());
+        return getColumnName(mapping);
+    }
+
+    private AttributeMapping getAttributeMapping(ManagedMappingType type, String name) {
+        List<AttributeMapping> mappings = type.getAttributeMappings();
+        return mappings.stream()
+            .filter(mapping -> mapping.getAttributeName().equals(name))
+            .findFirst()
+            .orElseThrow(() ->
+                new MappingException(String.format("Could not find property %s", name))
+            );
+    }
+
+    private ColumnReference getColumnName(AttributeMapping mapping) {
+        if (mapping instanceof BasicAttributeMapping basic) {
+            return new ColumnReference(basic.getContainingTableExpression(), basic.getSelectionExpression());
         }
+        return null;
     }
 
     @Override
@@ -164,4 +127,3 @@ public class HibernateJpaSchemaMapper implements SchemaMapper {
     }
 
 }
-

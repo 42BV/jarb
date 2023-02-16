@@ -1,6 +1,6 @@
 package nl._42.jarb.constraint.domain;
 
-import javax.persistence.Embeddable;
+import jakarta.persistence.Embeddable;
 import java.time.LocalDate;
 
 @Embeddable

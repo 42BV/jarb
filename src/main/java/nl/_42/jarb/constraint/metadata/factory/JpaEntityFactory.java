@@ -1,7 +1,7 @@
 package nl._42.jarb.constraint.metadata.factory;
 
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.metamodel.Metamodel;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.metamodel.Metamodel;
 import java.util.Set;
 import java.util.stream.Collectors;
 

@@ -41,11 +41,6 @@ public class StringUtils {
         return text.substring(0, index);
     }
 
-    public static String substringAfter(String text, String separator) {
-        int index = indexOf(text, separator);
-        return substringAfter(text, index);
-    }
-    
     public static String substringAfterLast(String text, String separator) {
         int index = lastIndexOf(text, separator);
         return substringAfter(text, index);

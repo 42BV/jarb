@@ -1,25 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <databaseChangeLog
-        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xsi:schemaLocation="
+        http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
 
-    <changeSet id="1" author="jeroen.van.schagen@42.nl">
-        <comment>Create testing tables.</comment>
-        
-        <createTable tableName="persons">
-            <column name="id" type="BIGINT" autoIncrement="true">
-                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_persons_id"/>
-            </column>
-            <column name="name" type="VARCHAR(255)" defaultValue="jan"/>
-        </createTable>
-    </changeSet>
-    
-    <changeSet id="2" author="jeroen.van.schagen@42.nl">
-        <comment>Alter testing tables.</comment>
-        
-        <dropDefaultValue tableName="persons" columnName="name"/>
-        <addDefaultValue columnName="name" tableName="persons" defaultValue="henk"/>
-    </changeSet>
-         
+    <includeAll path="changelogs" />
+
 </databaseChangeLog>

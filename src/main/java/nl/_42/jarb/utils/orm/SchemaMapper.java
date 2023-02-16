@@ -13,13 +13,6 @@ import nl._42.jarb.utils.bean.PropertyReference;
 public interface SchemaMapper {
 
     /**
-     * Retrieve the table name of an entity class.
-     * @param beanClass type of entity
-     * @return name of the table
-     */
-    String getTableName(Class<?> beanClass);
-
-    /**
      * Retrieve the column that a property maps to, if any.
      * @param propertyReference reference to the property
      * @return column reference, if any

@@ -1,6 +1,6 @@
 package nl._42.jarb.constraint.metadata.enhance;
 
-import javax.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotEmpty;
 import nl._42.jarb.constraint.domain.Wine;
 import nl._42.jarb.constraint.metadata.PropertyConstraintDescription;
 import nl._42.jarb.utils.bean.PropertyReference;

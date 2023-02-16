@@ -5,8 +5,8 @@ package nl._42.jarb.utils.bean;
 
 import java.util.Set;
 
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.metamodel.EntityType;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.metamodel.EntityType;
 
 /**
  * JPA based map bean registry.

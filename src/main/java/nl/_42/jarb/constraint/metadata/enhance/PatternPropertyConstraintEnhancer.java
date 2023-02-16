@@ -18,8 +18,8 @@ public class PatternPropertyConstraintEnhancer implements PropertyConstraintEnha
     
     @Override
     public void enhance(PropertyConstraintDescription description) {
-        Collection<javax.validation.constraints.Pattern> annotations = 
-                Annotations.getAnnotations(description.toReference(), javax.validation.constraints.Pattern.class);
+        Collection<jakarta.validation.constraints.Pattern> annotations =
+                Annotations.getAnnotations(description.toReference(), jakarta.validation.constraints.Pattern.class);
         if (!annotations.isEmpty()) {
             description.setPattern(annotations.iterator().next().regexp());
         }

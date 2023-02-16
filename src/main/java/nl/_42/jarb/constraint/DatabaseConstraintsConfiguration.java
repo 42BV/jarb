@@ -3,6 +3,9 @@
  */
 package nl._42.jarb.constraint;
 
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.validation.MessageInterpolator;
+import jakarta.validation.ValidatorFactory;
 import nl._42.jarb.constraint.metadata.BeanConstraintDescriptor;
 import nl._42.jarb.constraint.metadata.BeanConstraintService;
 import nl._42.jarb.constraint.metadata.DefaultBeanConstraintDescriptor;
@@ -25,8 +28,6 @@ import nl._42.jarb.utils.orm.JdbcSchemaMapper;
 import nl._42.jarb.utils.orm.SchemaMapper;
 import nl._42.jarb.utils.orm.hibernate.HibernateJpaSchemaMapper;
 import nl._42.jarb.utils.orm.hibernate.HibernateUtils;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 import org.hibernate.validator.messageinterpolation.ResourceBundleMessageInterpolator;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,11 +38,7 @@ import org.springframework.context.annotation.ImportAware;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.core.type.AnnotationMetadata;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
-import javax.validation.MessageInterpolator;
-import javax.validation.ValidatorFactory;
 import java.lang.annotation.Annotation;
 import java.util.Arrays;
 import java.util.Collections;
@@ -164,16 +161,10 @@ public class DatabaseConstraintsConfiguration implements ImportAware, Initializi
 
     private SchemaMapper schemaMapper() {
         if (entityManagerFactory != null) {
-            SessionFactory sessionFactory = getSessionFactory(entityManagerFactory);
-            return new HibernateJpaSchemaMapper(sessionFactory);
+            return new HibernateJpaSchemaMapper(entityManagerFactory);
         } else {
             return new JdbcSchemaMapper();
         }
-    }
-
-    private static SessionFactory getSessionFactory(EntityManagerFactory entityManagerFactory) {
-        EntityManager entityManager = entityManagerFactory.createEntityManager();
-        return ((Session) entityManager.getDelegate()).getSessionFactory();
     }
 
     @Bean

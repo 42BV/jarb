@@ -1,7 +1,7 @@
 package nl._42.jarb.constraint.validation;
 
-import javax.validation.ConstraintViolation;
-import javax.validation.Validator;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.Validator;
 import nl._42.jarb.constraint.ConstraintsTestConfig;
 import nl._42.jarb.constraint.domain.Address;
 import nl._42.jarb.constraint.domain.AwesomeCar;

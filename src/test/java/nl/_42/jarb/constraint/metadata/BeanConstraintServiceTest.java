@@ -1,6 +1,6 @@
 package nl._42.jarb.constraint.metadata;
 
-import javax.persistence.ManyToOne;
+import jakarta.persistence.ManyToOne;
 import nl._42.jarb.constraint.ConstraintsTestConfig;
 import nl._42.jarb.constraint.DatabaseConstraintsConfigurer;
 import nl._42.jarb.constraint.domain.AwesomeCar;
@@ -90,14 +90,14 @@ public class BeanConstraintServiceTest {
         Map<String, PropertyConstraintDescription> properties = service.describe(Car.class);
 
         PropertyConstraintDescription licenseNumber = properties.get("licenseNumber");
-        assertEquals(6, licenseNumber.getMaximumLength().longValue());
+        assertEquals(Integer.valueOf(6), licenseNumber.getMaximumLength());
         assertTrue(licenseNumber.isRequired());
 
         PropertyConstraintDescription price = properties.get("price");
-        assertEquals(6, price.getMaximumLength().longValue());
+        assertEquals(Integer.valueOf(6), price.getMaximumLength());
         assertFalse(price.isRequired());
-        assertEquals(2, price.getFractionLength().longValue());
-        assertEquals(10, price.getRadix().longValue());
+        assertEquals(Integer.valueOf(2), price.getFractionLength());
+        assertEquals(Integer.valueOf(10), price.getRadix());
 
         PropertyConstraintDescription active = properties.get("active");
         assertFalse(active.isRequired());
@@ -108,18 +108,18 @@ public class BeanConstraintServiceTest {
         Map<String, PropertyConstraintDescription> properties = service.describe(Person.class);
 
         PropertyConstraintDescription name = properties.get("name");
-        assertEquals(200, name.getMaximumLength().longValue());
+        assertEquals(Integer.valueOf(200), name.getMaximumLength());
         assertTrue(name.isRequired());
 
         PropertyConstraintDescription contact = properties.get("contact");
         assertNull(contact);
 
         PropertyConstraintDescription city = properties.get("contact.address.city");
-        assertEquals(100, city.getMaximumLength().longValue());
+        assertEquals(Integer.valueOf(100), city.getMaximumLength());
         assertTrue(city.isRequired());
 
         PropertyConstraintDescription streetAndNumber = properties.get("contact.address.streetAndNumber");
-        assertEquals(256, streetAndNumber.getMaximumLength().longValue());
+        assertEquals(Integer.valueOf(256), streetAndNumber.getMaximumLength());
         assertTrue(streetAndNumber.isRequired());
     }
 
@@ -143,7 +143,7 @@ public class BeanConstraintServiceTest {
         Map<String, PropertyConstraintDescription> properties = service.describe(AwesomeCar.class);
 
         PropertyConstraintDescription type = properties.get("components");
-        assertTrue(type.isRequired());
+        assertFalse(type.isRequired());
 
         PropertyConstraintDescription name = properties.get("components.name");
         assertTrue(name.isRequired());

@@ -1,10 +1,10 @@
 package nl._42.jarb.utils.orm.hibernate;
 
-import javax.persistence.EntityManagerFactory;
-import javax.sql.DataSource;
-
+import jakarta.persistence.EntityManagerFactory;
 import org.hibernate.engine.jdbc.connections.spi.ConnectionProvider;
-import org.hibernate.engine.spi.SessionFactoryImplementor;
+import org.hibernate.internal.SessionFactoryImpl;
+
+import javax.sql.DataSource;
 
 public class HibernateUtils {
 
@@ -15,11 +15,16 @@ public class HibernateUtils {
      * @return the data source
      */
     public static DataSource getDataSource(EntityManagerFactory entityManagerFactory) {
-        try {
-            SessionFactoryImplementor sessionFactory = ((org.hibernate.jpa.HibernateEntityManagerFactory) entityManagerFactory).getSessionFactory();
-            return sessionFactory.getServiceRegistry().getService(ConnectionProvider.class).unwrap(DataSource.class);
-        } catch (RuntimeException rte) {
-            throw new IllegalStateException("Could not extract data source from entity manager factory.", rte);
+        SessionFactoryImpl factory = getSessionFactory(entityManagerFactory);
+        return factory.getServiceRegistry().getService(ConnectionProvider.class).unwrap(DataSource.class);
+    }
+
+    public static SessionFactoryImpl getSessionFactory(EntityManagerFactory entityManagerFactory) {
+        Object unwrapped = entityManagerFactory.unwrap(null);
+        if (unwrapped instanceof SessionFactoryImpl sessionFactory) {
+            return sessionFactory;
+        } else {
+            throw new IllegalStateException("Could not extract data source from entity manager factory.");
         }
     }
 

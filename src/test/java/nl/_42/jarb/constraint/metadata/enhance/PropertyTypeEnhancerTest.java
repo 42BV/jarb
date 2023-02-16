@@ -3,7 +3,7 @@
  */
 package nl._42.jarb.constraint.metadata.enhance;
 
-import javax.persistence.Column;
+import jakarta.persistence.Column;
 import nl._42.jarb.constraint.metadata.PropertyConstraintDescription;
 import nl._42.jarb.constraint.metadata.types.Currency;
 import nl._42.jarb.constraint.metadata.types.PropertyType;

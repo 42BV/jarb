@@ -1,7 +1,7 @@
 package nl._42.jarb.constraint.domain;
 
-import javax.persistence.Column;
-import javax.persistence.Embeddable;
+import jakarta.persistence.Column;
+import jakarta.persistence.Embeddable;
 
 @Embeddable
 public class Address {

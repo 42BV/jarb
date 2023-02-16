@@ -8,7 +8,7 @@ import nl._42.jarb.utils.bean.PropertyReference;
 import org.springframework.beans.BeanUtils;
 import org.springframework.util.ReflectionUtils;
 
-import javax.persistence.Embeddable;
+import jakarta.persistence.Embeddable;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;

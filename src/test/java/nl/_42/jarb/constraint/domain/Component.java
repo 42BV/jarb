@@ -1,7 +1,7 @@
 package nl._42.jarb.constraint.domain;
 
-import javax.persistence.Embeddable;
-import javax.validation.constraints.Positive;
+import jakarta.persistence.Embeddable;
+import jakarta.validation.constraints.Positive;
 import java.math.BigDecimal;
 
 @Embeddable

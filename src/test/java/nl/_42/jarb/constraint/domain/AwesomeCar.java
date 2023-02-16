@@ -1,16 +1,15 @@
 package nl._42.jarb.constraint.domain;
 
-import javax.persistence.CollectionTable;
-import javax.persistence.ElementCollection;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.MapKeyClass;
-import javax.persistence.MapKeyColumn;
-import javax.persistence.MapKeyEnumerated;
-import javax.persistence.Table;
-
+import jakarta.persistence.CollectionTable;
+import jakarta.persistence.ElementCollection;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.MapKeyClass;
+import jakarta.persistence.MapKeyColumn;
+import jakarta.persistence.MapKeyEnumerated;
+import jakarta.persistence.Table;
 import nl._42.jarb.constraint.validation.DatabaseConstrained;
 import nl._42.jarb.constraint.validation.IgnoreDatabaseConstraints;
 
