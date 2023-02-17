@@ -3,6 +3,7 @@
  */
 package nl._42.jarb.constraint;
 
+import jakarta.validation.ValidatorFactory;
 import liquibase.integration.spring.SpringLiquibase;
 import nl._42.jarb.constraint.domain.Car;
 import nl._42.jarb.utils.orm.hibernate.ConventionImplicitNamingStrategy;
@@ -25,7 +26,6 @@ import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
 import javax.sql.DataSource;
-import javax.validation.ValidatorFactory;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -52,7 +52,7 @@ public class ConstraintsTestConfig implements DatabaseConstraintsConfigurer {
         jpaProperties.put("hibernate.implicit_naming_strategy", ConventionImplicitNamingStrategy.class.getName());
         jpaProperties.put("hibernate.physical_naming_strategy", ConventionPhysicalNamingStrategy.class.getName());
         jpaProperties.put("hibernate.dialect", hibernateDialect);
-        jpaProperties.put("javax.persistence.validation.factory", validator());
+        jpaProperties.put("jakarta.persistence.validation.factory", validator());
         
         entityManagerFactoryBean.setJpaPropertyMap(jpaProperties);
         return entityManagerFactoryBean;
@@ -83,7 +83,7 @@ public class ConstraintsTestConfig implements DatabaseConstraintsConfigurer {
     public SpringLiquibase liquibase(DataSource dataSource) {
         SpringLiquibase liquibase = new SpringLiquibase();
         liquibase.setDataSource(dataSource);
-        liquibase.setChangeLog("classpath:create-schema.xml");
+        liquibase.setChangeLog("classpath:changelog.xml");
         return liquibase;
     }
 

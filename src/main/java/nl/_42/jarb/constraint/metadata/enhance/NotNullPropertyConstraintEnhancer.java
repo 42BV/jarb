@@ -13,7 +13,7 @@ public class NotNullPropertyConstraintEnhancer implements PropertyConstraintEnha
 
     @Override
     public void enhance(PropertyConstraintDescription description) {
-        if (Annotations.hasAnnotation(description.toReference(), javax.validation.constraints.NotNull.class)) {
+        if (Annotations.hasAnnotation(description.toReference(), jakarta.validation.constraints.NotNull.class)) {
             description.setRequired(true);
         }
     }

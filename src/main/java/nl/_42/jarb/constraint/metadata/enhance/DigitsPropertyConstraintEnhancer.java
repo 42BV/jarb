@@ -2,7 +2,7 @@ package nl._42.jarb.constraint.metadata.enhance;
 
 import java.util.Collection;
 
-import javax.validation.constraints.Digits;
+import jakarta.validation.constraints.Digits;
 
 import nl._42.jarb.constraint.metadata.PropertyConstraintDescription;
 import nl._42.jarb.utils.bean.Annotations;
@@ -17,8 +17,8 @@ public class DigitsPropertyConstraintEnhancer implements PropertyConstraintEnhan
 
     @Override
     public void enhance(PropertyConstraintDescription description) {
-        Collection<javax.validation.constraints.Digits> annotations = 
-                Annotations.getAnnotations(description.toReference(), javax.validation.constraints.Digits.class);
+        Collection<jakarta.validation.constraints.Digits> annotations =
+                Annotations.getAnnotations(description.toReference(), jakarta.validation.constraints.Digits.class);
 
         Integer maximumLength = description.getMaximumLength();
         Integer fractionLength = description.getFractionLength();

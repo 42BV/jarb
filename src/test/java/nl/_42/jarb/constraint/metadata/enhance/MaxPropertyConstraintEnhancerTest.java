@@ -1,6 +1,6 @@
 package nl._42.jarb.constraint.metadata.enhance;
 
-import javax.validation.constraints.Max;
+import jakarta.validation.constraints.Max;
 import nl._42.jarb.constraint.metadata.PropertyConstraintDescription;
 import nl._42.jarb.utils.bean.PropertyReference;
 import org.junit.jupiter.api.BeforeEach;

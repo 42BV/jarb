@@ -2,8 +2,8 @@ package nl._42.jarb.constraint.validation;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import javax.validation.ConstraintValidator;
-import javax.validation.ConstraintValidatorContext;
+import jakarta.validation.ConstraintValidator;
+import jakarta.validation.ConstraintValidatorContext;
 
 /**
  * Adapts the {@link DatabaseConstraintValidator} to the JSR303 interface.

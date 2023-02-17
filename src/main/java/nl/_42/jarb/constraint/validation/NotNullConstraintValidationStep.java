@@ -10,7 +10,7 @@ import java.util.Map;
 
 public class NotNullConstraintValidationStep implements DatabaseConstraintValidationStep {
 
-    private static final String NOT_NULL_VIOLATION_TEMPLATE = "{javax.validation.constraints.NotNull.message}";
+    private static final String NOT_NULL_VIOLATION_TEMPLATE = "{jakarta.validation.constraints.NotNull.message}";
 
     @Override
     public void validate(Object value, Class<?> valueType, PropertyReference reference, ColumnMetadata metadata, DatabaseValidationContext context) {

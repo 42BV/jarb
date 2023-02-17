@@ -8,8 +8,8 @@ import nl._42.jarb.utils.bean.PropertyReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.validation.ConstraintValidatorContext;
-import javax.validation.MessageInterpolator;
+import jakarta.validation.ConstraintValidatorContext;
+import jakarta.validation.MessageInterpolator;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;

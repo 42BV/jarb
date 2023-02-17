@@ -1,8 +1,8 @@
 package nl._42.jarb.constraint.validation;
 
-import javax.validation.ConstraintValidatorContext;
-import javax.validation.ConstraintValidatorContext.ConstraintViolationBuilder;
-import javax.validation.ConstraintValidatorContext.ConstraintViolationBuilder.NodeBuilderCustomizableContext;
+import jakarta.validation.ConstraintValidatorContext;
+import jakarta.validation.ConstraintValidatorContext.ConstraintViolationBuilder;
+import jakarta.validation.ConstraintValidatorContext.ConstraintViolationBuilder.NodeBuilderCustomizableContext;
 
 import nl._42.jarb.constraint.validation.ViolationMessageBuilder.ViolationMessageTemplate;
 import nl._42.jarb.utils.bean.PropertyReference;

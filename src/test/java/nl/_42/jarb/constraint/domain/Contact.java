@@ -1,7 +1,7 @@
 package nl._42.jarb.constraint.domain;
 
-import javax.persistence.Embeddable;
-import javax.persistence.Embedded;
+import jakarta.persistence.Embeddable;
+import jakarta.persistence.Embedded;
 
 @Embeddable
 public class Contact {

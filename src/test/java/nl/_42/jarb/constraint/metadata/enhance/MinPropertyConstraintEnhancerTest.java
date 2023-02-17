@@ -1,6 +1,6 @@
 package nl._42.jarb.constraint.metadata.enhance;
 
-import javax.validation.constraints.Min;
+import jakarta.validation.constraints.Min;
 import nl._42.jarb.constraint.metadata.PropertyConstraintDescription;
 import nl._42.jarb.utils.bean.PropertyReference;
 import org.junit.jupiter.api.BeforeEach;

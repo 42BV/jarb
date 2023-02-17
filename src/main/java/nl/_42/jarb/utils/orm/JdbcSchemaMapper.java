@@ -15,17 +15,16 @@ import nl._42.jarb.utils.bean.PropertyReference;
  * @since Mar 4, 2014
  */
 public class JdbcSchemaMapper implements SchemaMapper {
-    
-    @Override
-    public String getTableName(Class<?> beanClass) {
-        return StringUtils.lowerCaseWithUnderscores(beanClass.getSimpleName());
-    }
 
     @Override
-    public ColumnReference getColumnReference(PropertyReference propertyReference) {
-        String tableName = getTableName(propertyReference.getBeanClass());
-        String columnName = StringUtils.lowerCaseWithUnderscores(propertyReference.getPropertyName());
+    public ColumnReference getColumnReference(PropertyReference property) {
+        String tableName = getTableName(property.getBeanClass());
+        String columnName = StringUtils.lowerCaseWithUnderscores(property.getPropertyName());
         return new ColumnReference(tableName, columnName);
+    }
+
+    private String getTableName(Class<?> beanClass) {
+        return StringUtils.lowerCaseWithUnderscores(beanClass.getSimpleName());
     }
 
     @Override
