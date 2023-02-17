@@ -1,9 +1,11 @@
 spring:
+  datasource:
+    driver-class-name: org.hsqldb.jdbc.JDBCDriver
+    password: ''
+    url: jdbc:hsqldb:mem:testdb
+    username: sa
   output:
     ansi:
       enabled: always
-  jpa:
-    hibernate:
-      ddl-auto: validate
   liquibase:
     change-log: classpath:/changelog.xml

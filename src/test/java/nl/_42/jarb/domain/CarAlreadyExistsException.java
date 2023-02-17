@@ -1,4 +1,4 @@
-package nl._42.jarb.constraint.domain;
+package nl._42.jarb.domain;
 
 import nl._42.jarb.constraint.violation.DatabaseConstraintViolation;
 import nl._42.jarb.constraint.violation.UniqueKeyViolationException;

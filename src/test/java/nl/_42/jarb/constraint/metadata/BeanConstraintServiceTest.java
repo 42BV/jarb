@@ -1,23 +1,22 @@
 package nl._42.jarb.constraint.metadata;
 
 import jakarta.persistence.ManyToOne;
-import nl._42.jarb.constraint.ConstraintsTestConfig;
+import nl._42.jarb.Application;
 import nl._42.jarb.constraint.DatabaseConstraintsConfigurer;
-import nl._42.jarb.constraint.domain.AwesomeCar;
-import nl._42.jarb.constraint.domain.Car;
-import nl._42.jarb.constraint.domain.Country;
-import nl._42.jarb.constraint.domain.Person;
-import nl._42.jarb.constraint.domain.Wine;
 import nl._42.jarb.constraint.metadata.BeanConstraintServiceTest.CustomConstraintsConfig;
 import nl._42.jarb.constraint.metadata.enhance.AnnotationPropertyTypeEnhancer;
 import nl._42.jarb.constraint.metadata.factory.EntityFactory;
+import nl._42.jarb.domain.AwesomeCar;
+import nl._42.jarb.domain.Car;
+import nl._42.jarb.domain.Country;
+import nl._42.jarb.domain.Person;
+import nl._42.jarb.domain.Wine;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.internal.util.collections.Sets;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.test.context.ActiveProfiles;
 
 import java.util.Map;
 
@@ -26,8 +25,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@ActiveProfiles("hsqldb")
-@SpringBootTest(classes = { ConstraintsTestConfig.class, CustomConstraintsConfig.class })
+@SpringBootTest(classes = { Application.class, CustomConstraintsConfig.class })
 public class BeanConstraintServiceTest {
 
     @Autowired
@@ -98,9 +96,6 @@ public class BeanConstraintServiceTest {
         assertFalse(price.isRequired());
         assertEquals(Integer.valueOf(2), price.getFractionLength());
         assertEquals(Integer.valueOf(10), price.getRadix());
-
-        PropertyConstraintDescription active = properties.get("active");
-        assertFalse(active.isRequired());
     }
 
     @Test

@@ -1,2 +1,2 @@
-DROP TABLE IF EXISTS persons;
-CREATE TABLE persons (id integer PRIMARY KEY, name varchar(255));
+DROP TABLE IF EXISTS users;
+CREATE TABLE users (id integer PRIMARY KEY, name varchar(255));

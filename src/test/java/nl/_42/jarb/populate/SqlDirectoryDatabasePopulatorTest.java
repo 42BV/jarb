@@ -1,7 +1,6 @@
-package nl._42.jarb.init.populate;
+package nl._42.jarb.populate;
 
-import nl._42.jarb.init.InitTestConfig;
-import nl._42.jarb.populate.SqlDirectoryDatabasePopulator;
+import nl._42.jarb.Application;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +12,7 @@ import java.io.File;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@SpringBootTest(classes = InitTestConfig.class)
+@SpringBootTest(classes = Application.class)
 public class SqlDirectoryDatabasePopulatorTest {
 
     @Autowired
@@ -32,9 +31,9 @@ public class SqlDirectoryDatabasePopulatorTest {
 
         JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
         
-        assertEquals(Long.valueOf(2), jdbcTemplate.queryForObject("SELECT COUNT(1) FROM persons", Long.class));
-        assertEquals("eddie", jdbcTemplate.queryForObject("SELECT name FROM persons WHERE id = 1", String.class));
-        assertEquals("fred", jdbcTemplate.queryForObject("SELECT name FROM persons WHERE id = 2", String.class));
+        assertEquals(Long.valueOf(2), jdbcTemplate.queryForObject("SELECT COUNT(1) FROM users", Long.class));
+        assertEquals("eddie", jdbcTemplate.queryForObject("SELECT name FROM users WHERE id = 1", String.class));
+        assertEquals("fred", jdbcTemplate.queryForObject("SELECT name FROM users WHERE id = 2", String.class));
     }
 
 }

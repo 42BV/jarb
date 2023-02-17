@@ -34,9 +34,11 @@ public class PostgresViolationResolverTest {
 
     @Test
     public void testNotNull() {
-        DatabaseConstraintViolation violation = resolver.resolve("ERROR: null value in column \"name\" violates not-null constraint");
+        DatabaseConstraintViolation violation = resolver.resolve("ERROR: null value in column \"license_number\" of relation \"cars\" violates not-null constraint\n"
+                + "  Detail: Failing row contains (1, null, null, null, null).");
         assertEquals(DatabaseConstraintType.NOT_NULL, violation.getConstraintType());
-        assertEquals("name", violation.getColumnName());
+        assertEquals("license_number", violation.getColumnName());
+        assertEquals("cars", violation.getTableName());
     }
 
     @Test

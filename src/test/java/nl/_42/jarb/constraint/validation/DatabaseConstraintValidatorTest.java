@@ -2,16 +2,15 @@ package nl._42.jarb.constraint.validation;
 
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validator;
-import nl._42.jarb.constraint.ConstraintsTestConfig;
-import nl._42.jarb.constraint.domain.Address;
-import nl._42.jarb.constraint.domain.AwesomeCar;
-import nl._42.jarb.constraint.domain.ChangeAddressCommand;
-import nl._42.jarb.constraint.domain.Contact;
-import nl._42.jarb.constraint.domain.Person;
+import nl._42.jarb.Application;
+import nl._42.jarb.domain.Address;
+import nl._42.jarb.domain.AwesomeCar;
+import nl._42.jarb.domain.ChangeAddressCommand;
+import nl._42.jarb.domain.Contact;
+import nl._42.jarb.domain.Person;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
 
 import java.util.Set;
 
@@ -22,8 +21,7 @@ import static org.hamcrest.Matchers.hasProperty;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.util.AssertionErrors.assertTrue;
 
-@ActiveProfiles("hsqldb")
-@SpringBootTest(classes = ConstraintsTestConfig.class)
+@SpringBootTest(classes = Application.class)
 public class DatabaseConstraintValidatorTest {
 
     @Autowired

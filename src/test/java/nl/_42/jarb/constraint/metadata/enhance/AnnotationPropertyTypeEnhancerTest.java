@@ -1,8 +1,8 @@
 package nl._42.jarb.constraint.metadata.enhance;
 
+import jakarta.validation.constraints.Email;
 import nl._42.jarb.constraint.metadata.PropertyConstraintDescription;
 import nl._42.jarb.utils.bean.PropertyReference;
-import org.hibernate.validator.constraints.Email;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

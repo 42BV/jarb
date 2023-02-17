@@ -1,12 +1,11 @@
 package nl._42.jarb.constraint.metadata.database;
 
-import nl._42.jarb.constraint.ConstraintsTestConfig;
+import nl._42.jarb.Application;
 import nl._42.jarb.utils.orm.ColumnReference;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
 
 import javax.sql.DataSource;
 
@@ -15,8 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@ActiveProfiles("hsqldb")
-@SpringBootTest(classes = ConstraintsTestConfig.class)
+@SpringBootTest(classes = Application.class)
 public class JdbcColumnMetadataRepositoryTest {
 
     @Autowired

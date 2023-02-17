@@ -1,19 +1,17 @@
 package nl._42.jarb.constraint.violation.resolver.vendor;
 
+import nl._42.jarb.constraint.violation.DatabaseConstraintViolation;
+import nl._42.jarb.constraint.violation.resolver.PatternViolationResolver;
+import nl._42.jarb.utils.jdbc.DatabaseProduct;
+import nl._42.jarb.utils.jdbc.DatabaseProductSpecific;
+import nl._42.jarb.utils.jdbc.DatabaseProductType;
+
 import static nl._42.jarb.constraint.violation.DatabaseConstraintType.FOREIGN_KEY;
 import static nl._42.jarb.constraint.violation.DatabaseConstraintType.INVALID_TYPE;
 import static nl._42.jarb.constraint.violation.DatabaseConstraintType.LENGTH_EXCEEDED;
 import static nl._42.jarb.constraint.violation.DatabaseConstraintType.NOT_NULL;
 import static nl._42.jarb.constraint.violation.DatabaseConstraintType.UNIQUE_KEY;
 import static nl._42.jarb.constraint.violation.DatabaseConstraintViolation.builder;
-
-import nl._42.jarb.constraint.violation.resolver.PatternViolationResolver;
-
-import nl._42.jarb.constraint.violation.DatabaseConstraintViolation;
-import nl._42.jarb.constraint.violation.resolver.PatternViolationResolver;
-import nl._42.jarb.utils.jdbc.DatabaseProduct;
-import nl._42.jarb.utils.jdbc.DatabaseProductSpecific;
-import nl._42.jarb.utils.jdbc.DatabaseProductType;
 
 /**
  * Hypersonic SQL based constraint violation resolver.
@@ -39,7 +37,7 @@ public class HsqlViolationResolver extends PatternViolationResolver implements D
     private static class NotNullPattern extends ViolationPattern {
         
         public NotNullPattern() {
-            super("integrity constraint violation: NOT NULL check constraint; (.+) table: (.+) column: (.+)");
+            super("integrity constraint violation: NOT NULL check constraint ; (.+) table: (.+) column: (.+)");
         }
         
         @Override
@@ -56,7 +54,7 @@ public class HsqlViolationResolver extends PatternViolationResolver implements D
     private static class UniqueKeyPattern extends ViolationPattern {
         
         public UniqueKeyPattern() {
-            super("integrity constraint violation: unique constraint or index violation; (.+) table: (.+)");
+            super("integrity constraint violation: unique constraint or index violation ; (.+) table: (.+)");
         }
         
         @Override
@@ -72,7 +70,7 @@ public class HsqlViolationResolver extends PatternViolationResolver implements D
     private static class ForeignKeyPattern extends ViolationPattern {
         
         public ForeignKeyPattern() {
-            super("integrity constraint violation: foreign key no \\w+; (.+) table: (.+)");
+            super("integrity constraint violation: foreign key no \\w+ ; (.+) table: (.+) value: (.+)");
         }
 
         @Override
@@ -80,6 +78,7 @@ public class HsqlViolationResolver extends PatternViolationResolver implements D
             return builder(FOREIGN_KEY)
                     .constraint(variables.get(1).toLowerCase())
                     .table(variables.get(2).toLowerCase())
+                    .value(variables.get(3).toLowerCase())
                         .build();
         }
 

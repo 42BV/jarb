@@ -1,19 +1,17 @@
 package nl._42.jarb.constraint.violation.resolver.vendor;
 
+import nl._42.jarb.constraint.violation.DatabaseConstraintViolation;
+import nl._42.jarb.constraint.violation.resolver.PatternViolationResolver;
+import nl._42.jarb.utils.jdbc.DatabaseProduct;
+import nl._42.jarb.utils.jdbc.DatabaseProductSpecific;
+import nl._42.jarb.utils.jdbc.DatabaseProductType;
+
 import static nl._42.jarb.constraint.violation.DatabaseConstraintType.FOREIGN_KEY;
 import static nl._42.jarb.constraint.violation.DatabaseConstraintType.INVALID_TYPE;
 import static nl._42.jarb.constraint.violation.DatabaseConstraintType.LENGTH_EXCEEDED;
 import static nl._42.jarb.constraint.violation.DatabaseConstraintType.NOT_NULL;
 import static nl._42.jarb.constraint.violation.DatabaseConstraintType.UNIQUE_KEY;
 import static nl._42.jarb.constraint.violation.DatabaseConstraintViolation.builder;
-
-import nl._42.jarb.constraint.violation.resolver.PatternViolationResolver;
-
-import nl._42.jarb.constraint.violation.DatabaseConstraintViolation;
-import nl._42.jarb.constraint.violation.resolver.PatternViolationResolver;
-import nl._42.jarb.utils.jdbc.DatabaseProduct;
-import nl._42.jarb.utils.jdbc.DatabaseProductSpecific;
-import nl._42.jarb.utils.jdbc.DatabaseProductType;
 
 /**
  * Hypersonic 2 based constraint violation resolver.
@@ -58,17 +56,17 @@ public class H2ViolationResolver extends PatternViolationResolver implements Dat
     private static class UniqueKeyPattern extends ViolationPattern {
         
         public UniqueKeyPattern() {
-            super("Unique index or primary key violation: \"(\\w+)_INDEX_\\d+ ON (.+)\\.(.+)\\((.+)\\)\";" + REGEX_SUFFIX);
+            super("Unique index or primary key violation: \"(.+)\\.(\\w+)_INDEX_\\d+ ON (.+)\\.(.+)\\((.+) NULLS FIRST\\) VALUES \\((.+)\\)\";" + REGEX_SUFFIX);
         }
         
         @Override
         public DatabaseConstraintViolation build(VariableAccessor variables) {
             return builder(UNIQUE_KEY)
-                    .constraint(variables.get(1).toLowerCase())
-                    .table(variables.get(3).toLowerCase())
-                    .column(variables.get(4).toLowerCase())
-                    .statement(variables.get(5).trim())
-                    .number(variables.get(6).trim())
+                    .constraint(variables.get(2).toLowerCase())
+                    .table(variables.get(4).toLowerCase())
+                    .column(variables.get(5).toLowerCase())
+                    .statement(variables.get(7).trim())
+                    .number(variables.get(8).trim())
                         .build();
         }
         

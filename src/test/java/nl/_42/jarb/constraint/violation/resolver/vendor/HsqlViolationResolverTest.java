@@ -13,27 +13,28 @@ public class HsqlViolationResolverTest {
 
     @Test
     public void testNotNull() {
-        DatabaseConstraintViolation violation = resolver.resolve("integrity constraint violation: NOT NULL check constraint; SYS_CT_10041 table: CARS column: NAME");
+        DatabaseConstraintViolation violation = resolver.resolve("integrity constraint violation: NOT NULL check constraint ; SYS_CT_10156 table: CARS column: LICENSE_NUMBER");
         assertEquals(DatabaseConstraintType.NOT_NULL, violation.getConstraintType());
-        assertEquals("sys_ct_10041", violation.getConstraintName());
+        assertEquals("sys_ct_10156", violation.getConstraintName());
         assertEquals("cars", violation.getTableName());
-        assertEquals("name", violation.getColumnName());
+        assertEquals("license_number", violation.getColumnName());
     }
 
     @Test
     public void testUnique() {
-        DatabaseConstraintViolation violation = resolver.resolve("integrity constraint violation: unique constraint or index violation; UK_CARS_LICENSE table: CARS");
+        DatabaseConstraintViolation violation = resolver.resolve("integrity constraint violation: unique constraint or index violation ; UK_CARS_LICENSE_NUMBER table: CARS");
         assertEquals(DatabaseConstraintType.UNIQUE_KEY, violation.getConstraintType());
-        assertEquals("uk_cars_license", violation.getConstraintName());
+        assertEquals("uk_cars_license_number", violation.getConstraintName());
         assertEquals("cars", violation.getTableName());
     }
 
     @Test
     public void testForeignKey() {
-        DatabaseConstraintViolation violation = resolver.resolve("integrity constraint violation: foreign key no parent; FK_CARS_OWNER table: CARS");
+        DatabaseConstraintViolation violation = resolver.resolve("integrity constraint violation: foreign key no parent ; FK_CARS_OWNER table: CARS value: -1");
         assertEquals(DatabaseConstraintType.FOREIGN_KEY, violation.getConstraintType());
         assertEquals("fk_cars_owner", violation.getConstraintName());
         assertEquals("cars", violation.getTableName());
+        assertEquals("-1", violation.getValue());
     }
 
     @Test

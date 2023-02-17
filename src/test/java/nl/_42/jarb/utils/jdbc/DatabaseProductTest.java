@@ -27,7 +27,7 @@ public class DatabaseProductTest {
     public void testFromDataSource() {
         DatabaseProduct product = DatabaseProduct.fromDataSource(dataSource);
         Assertions.assertEquals("HSQL Database Engine", product.getName());
-        Assertions.assertEquals("2.4.1", product.getVersion());
+        Assertions.assertEquals("2.7.1", product.getVersion());
     }
 
 }
