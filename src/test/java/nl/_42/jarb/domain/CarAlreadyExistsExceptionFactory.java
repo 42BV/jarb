@@ -1,8 +1,4 @@
-package nl._42.jarb.constraint.domain;
-
-import nl._42.jarb.constraint.violation.DatabaseConstraintViolation;
-import nl._42.jarb.constraint.violation.DatabaseConstraintViolationException;
-import nl._42.jarb.constraint.violation.factory.DatabaseConstraintExceptionFactory;
+package nl._42.jarb.domain;
 
 import nl._42.jarb.constraint.violation.DatabaseConstraintViolation;
 import nl._42.jarb.constraint.violation.DatabaseConstraintViolationException;

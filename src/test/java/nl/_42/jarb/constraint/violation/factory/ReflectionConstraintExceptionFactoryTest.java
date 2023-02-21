@@ -1,7 +1,7 @@
 package nl._42.jarb.constraint.violation.factory;
 
-import nl._42.jarb.constraint.domain.CarAlreadyExistsException;
-import nl._42.jarb.constraint.domain.CarAlreadyExistsExceptionFactory;
+import nl._42.jarb.domain.CarAlreadyExistsException;
+import nl._42.jarb.domain.CarAlreadyExistsExceptionFactory;
 import nl._42.jarb.constraint.violation.DatabaseConstraintType;
 import nl._42.jarb.constraint.violation.DatabaseConstraintViolation;
 import org.junit.jupiter.api.Assertions;

@@ -1,4 +1,4 @@
-package nl._42.jarb.init.populate;
+package nl._42.jarb.populate;
 
 import nl._42.jarb.populate.DatabasePopulator;
 import nl._42.jarb.populate.PopulatingApplicationListener;

@@ -1,7 +1,6 @@
-package nl._42.jarb.init.populate;
+package nl._42.jarb.populate;
 
-import nl._42.jarb.init.InitTestConfig;
-import nl._42.jarb.populate.SqlDatabasePopulator;
+import nl._42.jarb.Application;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +11,7 @@ import javax.sql.DataSource;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@SpringBootTest(classes = InitTestConfig.class)
+@SpringBootTest(classes = Application.class)
 public class SqlDatabasePopulatorTest {
 
     @Autowired

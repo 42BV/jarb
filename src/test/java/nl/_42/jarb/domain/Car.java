@@ -1,4 +1,4 @@
-package nl._42.jarb.constraint.domain;
+package nl._42.jarb.domain;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -12,18 +12,16 @@ public class Car extends DefaultEntity {
 
     private Double price;
 
-    private String active;
-    
     @Column(name = "owner_id")
     private Long ownerId;
 
-    Car() {
+    public Car() {
     }
     
     public Car(String licenseNumber) {
         this.licenseNumber = licenseNumber;
     }
-    
+
     public String getLicenseNumber() {
         return licenseNumber;
     }
@@ -40,18 +38,10 @@ public class Car extends DefaultEntity {
         this.price = price;
     }
 
-    public String getActive() {
-        return active;
-    }
-    
-    public void setActive(String active) {
-        this.active = active;
-    }
-    
     public Long getOwnerId() {
         return ownerId;
     }
-    
+
     public void setOwnerId(Long ownerId) {
         this.ownerId = ownerId;
     }

@@ -1,4 +1,4 @@
-package nl._42.jarb.constraint.domain;
+package nl._42.jarb.domain;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;

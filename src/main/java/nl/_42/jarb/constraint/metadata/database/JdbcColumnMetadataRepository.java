@@ -74,7 +74,7 @@ public class JdbcColumnMetadataRepository implements ColumnMetadataRepository {
             }
 			
             Integer fractionLength = getValueAsInteger(resultSet, "DECIMAL_DIGITS");
-            if (fractionLength != null) {
+            if (fractionLength != null && fractionLength > 0) {
     			columnMetadata.setFractionLength(Math.max(fractionLength, 0));
             }
 			

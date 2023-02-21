@@ -1,6 +1,6 @@
 package nl._42.jarb.constraint.violation.factory;
 
-import nl._42.jarb.constraint.domain.CarAlreadyExistsException;
+import nl._42.jarb.domain.CarAlreadyExistsException;
 import nl._42.jarb.constraint.violation.DatabaseConstraintType;
 import nl._42.jarb.constraint.violation.DatabaseConstraintViolation;
 import nl._42.jarb.constraint.violation.UniqueKeyViolationException;

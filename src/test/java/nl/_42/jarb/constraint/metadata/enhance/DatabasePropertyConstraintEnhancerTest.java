@@ -1,23 +1,21 @@
 package nl._42.jarb.constraint.metadata.enhance;
 
-import nl._42.jarb.constraint.ConstraintsTestConfig;
-import nl._42.jarb.constraint.domain.Wine;
+import nl._42.jarb.Application;
 import nl._42.jarb.constraint.metadata.PropertyConstraintDescription;
 import nl._42.jarb.constraint.metadata.database.BeanMetadataRepository;
+import nl._42.jarb.domain.Wine;
 import nl._42.jarb.utils.bean.PropertyReference;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@ActiveProfiles("hsqldb")
-@SpringBootTest(classes = ConstraintsTestConfig.class)
+@SpringBootTest(classes = Application.class)
 public class DatabasePropertyConstraintEnhancerTest {
     
     private DatabasePropertyConstraintEnhancer enhancer;

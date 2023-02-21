@@ -1,13 +1,10 @@
 /*
  * (C) 2013 42 bv (www.42.nl). All rights reserved.
  */
-package nl._42.jarb.init.populate;
+package nl._42.jarb.populate;
 
-import nl._42.jarb.init.InitTestConfig;
-import nl._42.jarb.init.populate.PopulateTest.PopulateConfig;
-import nl._42.jarb.populate.PopulatingApplicationListener;
-import nl._42.jarb.populate.PopulatingApplicationListenerBuilder;
-import nl._42.jarb.populate.SqlDatabasePopulator;
+import nl._42.jarb.Application;
+import nl._42.jarb.populate.PopulateTest.PopulateConfig;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -35,8 +32,8 @@ public class PopulateTest {
         int attempts = 5;
         while (true) {
             try {
-                assertEquals("eddie", template.queryForObject("SELECT name FROM persons WHERE id = 1", String.class));
-                assertEquals("fred", template.queryForObject("SELECT name FROM persons WHERE id = 2", String.class));
+                assertEquals("eddie", template.queryForObject("SELECT name FROM users WHERE id = 1", String.class));
+                assertEquals("fred", template.queryForObject("SELECT name FROM users WHERE id = 2", String.class));
                 break; // Test successfull, break loop
             } catch (RuntimeException rte) {
                 if (--attempts > 0) {
@@ -49,7 +46,7 @@ public class PopulateTest {
     }
 
     @Configuration
-    @Import(InitTestConfig.class)
+    @Import(Application.class)
     public static class PopulateConfig {
 
         @Autowired
@@ -58,15 +55,15 @@ public class PopulateTest {
         @Bean
         public PopulatingApplicationListener populateApplicationListener() {
             return new PopulatingApplicationListenerBuilder()
-                        .initializer()
-                            .task()
-                                .add(new SqlDatabasePopulator(dataSource, new ClassPathResource("import.sql")))
-                                .add(SqlDatabasePopulator.fromSql(dataSource, "INSERT INTO persons (id, name) VALUES (2, 'fred') ;"))
-                            .current()
-                                .add(new SqlDatabasePopulator(dataSource, new ClassPathResource("unknown.sql")).ifExists())
-                            .done()
-                        .destroyer()
-                            .build();
+                .initializer()
+                    .task()
+                        .add(new SqlDatabasePopulator(dataSource, new ClassPathResource("import.sql")))
+                        .add(SqlDatabasePopulator.fromSql(dataSource, "INSERT INTO users (id, name) VALUES (2, 'fred') ;"))
+                    .current()
+                        .add(new SqlDatabasePopulator(dataSource, new ClassPathResource("unknown.sql")).ifExists())
+                    .done()
+                .destroyer()
+                    .build();
         }
 
     }

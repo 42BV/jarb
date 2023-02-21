@@ -10,8 +10,8 @@ public class H2ViolationResolverTest {
     
     @Test
     public void testNotNull() {
-        final String message = "NULL not allowed for column \"LICENSE_NUMBER\"; SQL statement:\n" +
-                               "insert into cars (id, active, license_number, price) values (default, ?, ?, ?) [23502-171]";
+        final String message = "NULL not allowed for column \"LICENSE_NUMBER\"; SQL statement:\n"
+                + "insert into cars (id, active, license_number, price) values (default, ?, ?, ?) [23502-171]";
         
         DatabaseConstraintViolation violation = resolver.resolve(message);
         Assertions.assertNotNull(violation);
@@ -22,22 +22,22 @@ public class H2ViolationResolverTest {
 
     @Test
     public void testUniqueKey() {
-        final String message = "Unique index or primary key violation: \"UK_CARS_LICENSE_NUMBER_INDEX_1 ON PUBLIC.CARS(LICENSE_NUMBER)\"; SQL statement:\n" +
-                               "insert into cars (id, active, license_number, price) values (default, ?, ?, ?) [23505-171]";
+        final String message = "Unique index or primary key violation: \"PUBLIC.UK_CARS_LICENSE_NUMBER_INDEX_1 ON PUBLIC.CARS(LICENSE_NUMBER NULLS FIRST) VALUES ( /* 2 */ '123456' )\"; SQL statement:\n"
+                + "insert into cars (id, license_number, owner_id, price) values (default, ?, ?, ?) [23505-214]";
         
         DatabaseConstraintViolation violation = resolver.resolve(message);
         Assertions.assertNotNull(violation);
         Assertions.assertEquals("uk_cars_license_number", violation.getConstraintName());
         Assertions.assertEquals("cars", violation.getTableName());
         Assertions.assertEquals("license_number", violation.getColumnName());
-        Assertions.assertEquals("insert into cars (id, active, license_number, price) values (default, ?, ?, ?)", violation.getStatement());
-        Assertions.assertEquals("23505-171", violation.getNumber());
+        Assertions.assertEquals("insert into cars (id, license_number, owner_id, price) values (default, ?, ?, ?)", violation.getStatement());
+        Assertions.assertEquals("23505-214", violation.getNumber());
     }
 
     @Test
     public void testForeignKey() {
-        final String message = "Referential integrity constraint violation: \"FK_CARS_OWNER: PUBLIC.CARS FOREIGN KEY(OWNER_ID) REFERENCES PUBLIC.PERSONS(ID) (-1)\"; SQL statement:\n" +
-                               "insert into cars (id, active, license_number, owner_id, price) values (default, ?, ?, ?, ?) [23506-171]";
+        final String message = "Referential integrity constraint violation: \"FK_CARS_OWNER: PUBLIC.CARS FOREIGN KEY(OWNER_ID) REFERENCES PUBLIC.PERSONS(ID) (-1)\"; SQL statement:\n"
+                + "insert into cars (id, active, license_number, owner_id, price) values (default, ?, ?, ?, ?) [23506-171]";
         
         DatabaseConstraintViolation violation = resolver.resolve(message);
         Assertions.assertNotNull(violation);
@@ -53,8 +53,8 @@ public class H2ViolationResolverTest {
 
     @Test
     public void testLengthExceeded() {
-        final String message = "Value too long for column \"LICENSE_NUMBER VARCHAR(6) NOT NULL\": \"'1234567' (7)\"; SQL statement:\n" +
-                               "insert into cars (id, active, license_number, price) values (default, ?, ?, ?) [22001-171]";
+        final String message = "Value too long for column \"LICENSE_NUMBER VARCHAR(6) NOT NULL\": \"'1234567' (7)\"; SQL statement:\n"
+                + "insert into cars (id, active, license_number, price) values (default, ?, ?, ?) [22001-171]";
         
         DatabaseConstraintViolation violation = resolver.resolve(message);
         Assertions.assertNotNull(violation);

@@ -25,10 +25,8 @@ public class HibernateViolationResolverTest {
     }
     
     @Test
-    public void testIgnoreOtherThrowables() {
+    public void testIgnoreOtherThrowable() {
         assertNull(resolver.resolve(new RuntimeException()));
     }
- 
-    // TODO: Figure out how to test with the exception not on our classpath
-    
+
 }

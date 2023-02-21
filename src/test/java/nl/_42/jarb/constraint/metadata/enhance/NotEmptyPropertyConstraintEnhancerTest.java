@@ -1,7 +1,7 @@
 package nl._42.jarb.constraint.metadata.enhance;
 
 import jakarta.validation.constraints.NotEmpty;
-import nl._42.jarb.constraint.domain.Wine;
+import nl._42.jarb.domain.Wine;
 import nl._42.jarb.constraint.metadata.PropertyConstraintDescription;
 import nl._42.jarb.utils.bean.PropertyReference;
 import org.junit.jupiter.api.BeforeEach;

@@ -1,5 +1,11 @@
 package nl._42.jarb.constraint.violation.resolver.vendor;
 
+import nl._42.jarb.constraint.violation.DatabaseConstraintViolation;
+import nl._42.jarb.constraint.violation.resolver.PatternViolationResolver;
+import nl._42.jarb.utils.jdbc.DatabaseProduct;
+import nl._42.jarb.utils.jdbc.DatabaseProductSpecific;
+import nl._42.jarb.utils.jdbc.DatabaseProductType;
+
 import static nl._42.jarb.constraint.violation.DatabaseConstraintType.CHECK_FAILED;
 import static nl._42.jarb.constraint.violation.DatabaseConstraintType.EXCLUSION;
 import static nl._42.jarb.constraint.violation.DatabaseConstraintType.FOREIGN_KEY;
@@ -8,12 +14,6 @@ import static nl._42.jarb.constraint.violation.DatabaseConstraintType.LENGTH_EXC
 import static nl._42.jarb.constraint.violation.DatabaseConstraintType.NOT_NULL;
 import static nl._42.jarb.constraint.violation.DatabaseConstraintType.UNIQUE_KEY;
 import static nl._42.jarb.constraint.violation.DatabaseConstraintViolation.builder;
-
-import nl._42.jarb.constraint.violation.DatabaseConstraintViolation;
-import nl._42.jarb.constraint.violation.resolver.PatternViolationResolver;
-import nl._42.jarb.utils.jdbc.DatabaseProduct;
-import nl._42.jarb.utils.jdbc.DatabaseProductSpecific;
-import nl._42.jarb.utils.jdbc.DatabaseProductType;
 
 /**
  * PostgreSQL based constraint violation resolver.
@@ -58,12 +58,13 @@ public class PostgresViolationResolver extends PatternViolationResolver implemen
     private static class NotNullPattern extends ViolationPattern {
         
         public NotNullPattern() {
-            super("ERROR: null value in column \"(.+)\" violates not-null constraint");
+            super("ERROR: null value in column \"(.+)\" of relation \"(.+)\" violates not-null constraint\\s+"
+                    + "Detail: Failing row contains (.+).");
         }
         
         @Override
         public DatabaseConstraintViolation build(VariableAccessor variables) {
-            return builder(NOT_NULL).column(variables.get(1)).build();
+            return builder(NOT_NULL).column(variables.get(1)).table(variables.get(2)).build();
         }
         
     }

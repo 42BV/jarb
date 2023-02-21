@@ -1,6 +1,6 @@
 package nl._42.jarb.constraint.metadata;
 
-import nl._42.jarb.constraint.domain.Wine;
+import nl._42.jarb.domain.Wine;
 import nl._42.jarb.utils.bean.PropertyReference;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
