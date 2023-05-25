@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Update
+- Updated to Spring Boot 3
+- Updated to Hibernate Core 6.2.2.Final
+
 ## [5.3.0] - 20-05-2019
 - Support @ElementCollection collection/map JPA mappings in bean meta-model
 - Support javax validation annotations:

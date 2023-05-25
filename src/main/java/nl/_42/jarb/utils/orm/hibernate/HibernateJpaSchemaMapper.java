@@ -15,13 +15,10 @@ import org.hibernate.metamodel.mapping.internal.EmbeddedCollectionPart;
 import org.hibernate.metamodel.model.domain.NavigableRole;
 import org.hibernate.metamodel.spi.RuntimeMetamodelsImplementor;
 import org.hibernate.persister.entity.AbstractEntityPersister;
-import org.hibernate.tuple.Attribute;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.List;
 import java.util.Objects;
-import java.util.stream.Stream;
 
 import static org.springframework.core.annotation.AnnotationUtils.findAnnotation;
 
@@ -62,8 +59,8 @@ public class HibernateJpaSchemaMapper implements SchemaMapper {
             return getPropertyColumnName(model, property.getPropertyName());
         }
 
-        Attribute attribute = getAttribute(model, property);
-        if (attribute.getType().isCollectionType()) {
+        AttributeMapping attribute = getAttribute(model, property);
+        if (attribute.isPluralAttributeMapping()) {
             return getCollectionColumnName(model, property);
         } else {
             return getComponentColumnName(model, property);
@@ -78,16 +75,14 @@ public class HibernateJpaSchemaMapper implements SchemaMapper {
         return new ColumnReference(tableName, columnNames[0]);
     }
 
-    private Attribute getAttribute(AbstractEntityPersister model, PropertyReference property) {
-        Attribute[] properties = model.getEntityMetamodel().getProperties();
+    private AttributeMapping getAttribute(AbstractEntityPersister model, PropertyReference property) {
+        var attribute = model.findAttributeMapping(property.getBase());
 
-        String name = property.getBase();
-        return Stream.of(properties)
-            .filter(attribute -> attribute.getName().equals(name))
-            .findFirst()
-            .orElseThrow(() ->
-                new MappingException(String.format("Could not find property %s", name))
-            );
+        if (attribute == null) {
+            throw new MappingException(String.format("Could not find property %s", property.getBase()));
+        }
+
+        return attribute;
     }
 
     private ColumnReference getCollectionColumnName(AbstractEntityPersister model, PropertyReference property) {
@@ -105,13 +100,11 @@ public class HibernateJpaSchemaMapper implements SchemaMapper {
     }
 
     private AttributeMapping getAttributeMapping(ManagedMappingType type, String name) {
-        List<AttributeMapping> mappings = type.getAttributeMappings();
-        return mappings.stream()
-            .filter(mapping -> mapping.getAttributeName().equals(name))
-            .findFirst()
-            .orElseThrow(() ->
-                new MappingException(String.format("Could not find property %s", name))
-            );
+        var mapping = type.findAttributeMapping(name);
+        if (mapping == null) {
+            throw new MappingException(String.format("Could not find property %s", name));
+        }
+        return mapping;
     }
 
     private ColumnReference getColumnName(AttributeMapping mapping) {
@@ -125,5 +118,4 @@ public class HibernateJpaSchemaMapper implements SchemaMapper {
     public boolean isEmbeddable(Class<?> beanClass) {
         return findAnnotation(beanClass, Embeddable.class) != null;
     }
-
 }

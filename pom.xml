@@ -48,7 +48,7 @@
         <java.version>17</java.version>
 
         <!-- Dependency versions -->
-        <spring-boot.version>3.0.2</spring-boot.version>
+        <spring-boot.version>3.1.0</spring-boot.version>
         <testcontainers.version>1.17.3</testcontainers.version>
     </properties>
 
@@ -215,8 +215,8 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
+            <groupId>com.mysql</groupId>
+            <artifactId>mysql-connector-j</artifactId>
             <scope>provided</scope>
         </dependency>
         <dependency>
