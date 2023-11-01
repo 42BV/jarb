@@ -12,7 +12,7 @@ public abstract class DefaultEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
-    public final Long getId() {
+    public Long getId() {
         return id;
     }
     

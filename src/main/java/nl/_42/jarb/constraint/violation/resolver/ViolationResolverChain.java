@@ -23,12 +23,16 @@ import static nl._42.jarb.utils.Asserts.notNull;
  */
 public class ViolationResolverChain implements DatabaseConstraintViolationResolver {
     
-    private final Logger logger = LoggerFactory.getLogger(getClass());
+    private final Logger logger = LoggerFactory.getLogger(ViolationResolverChain.class);
 
     private final List<DatabaseConstraintViolationResolver> resolvers;
 
     public ViolationResolverChain() {
-        resolvers = new ArrayList<>();
+        this(List.of());
+    }
+
+    private ViolationResolverChain(List<DatabaseConstraintViolationResolver> resolvers) {
+        this.resolvers = resolvers;
     }
 
     @Override
@@ -56,9 +60,12 @@ public class ViolationResolverChain implements DatabaseConstraintViolationResolv
      * @return {@code this} instance, enabling the use of method chaining
      */
     public ViolationResolverChain add(DatabaseConstraintViolationResolver resolver) {
-        resolvers.add(notNull(resolver, "Cannot add a null resolver to the chain."));
+        notNull(resolver, "Cannot add a null resolver to the chain.");
         logger.debug("Registered resolver {} to chain.", resolver);
-        return this;
+
+        var extended = new ArrayList<>(resolvers);
+        extended.add(resolver);
+        return new ViolationResolverChain(extended);
     }
     
     /**
@@ -69,15 +76,15 @@ public class ViolationResolverChain implements DatabaseConstraintViolationResolv
      */
     public ViolationResolverChain addIfSupported(DatabaseConstraintViolationResolver resolver, DatabaseProduct databaseProduct) {
     	if (isSupported(resolver, databaseProduct)) {
-            add(resolver);
+            return add(resolver);
         }
     	return this;
     }
     
-    private boolean isSupported(DatabaseConstraintViolationResolver resolver, DatabaseProduct databaseProduct) {
+    private boolean isSupported(DatabaseConstraintViolationResolver resolver, DatabaseProduct product) {
         boolean supported = true;
-        if (resolver instanceof DatabaseProductSpecific) {
-            supported = ((DatabaseProductSpecific) resolver).supports(databaseProduct);
+        if (resolver instanceof DatabaseProductSpecific specific) {
+            supported = specific.supports(product);
         }
         return supported;
     }

@@ -17,33 +17,23 @@ import javax.sql.DataSource;
  * @author Jeroen van Schagen
  */
 public class ConfigurableViolationResolver extends LazyInitViolationResolver {
-	
-    private final ViolationResolverChain resolvers = new ViolationResolverChain();
 
 	private final DataSource dataSource;
 
-	public ConfigurableViolationResolver(DataSource dataSource) {
+    public ConfigurableViolationResolver(DataSource dataSource) {
         this.dataSource = dataSource;
 	}
 
 	@Override
 	protected DatabaseConstraintViolationResolver init() {
-        final DatabaseProduct product = DatabaseProduct.fromDataSource(dataSource);
-        registerDefaults(product);
-        return resolvers;
-	}
-
-    public void register(DatabaseConstraintViolationResolver resolver) {
-        resolvers.add(resolver);
-    }
-
-    private void registerDefaults(DatabaseProduct product) {
-        resolvers.addIfSupported(new H2ViolationResolver(), product);
-        resolvers.addIfSupported(new HsqlViolationResolver(), product);
-        resolvers.addIfSupported(new MysqlViolationResolver(), product);
-        resolvers.addIfSupported(new OracleViolationResolver(), product);
-        resolvers.addIfSupported(new PostgresViolationResolver(), product);
-        resolvers.add(new HibernateViolationResolver());
+        DatabaseProduct product = DatabaseProduct.fromDataSource(dataSource);
+        return new ViolationResolverChain()
+            .addIfSupported(new H2ViolationResolver(), product)
+            .addIfSupported(new HsqlViolationResolver(), product)
+            .addIfSupported(new MysqlViolationResolver(), product)
+            .addIfSupported(new OracleViolationResolver(), product)
+            .addIfSupported(new PostgresViolationResolver(), product)
+            .add(new HibernateViolationResolver());
 	}
 
 }
