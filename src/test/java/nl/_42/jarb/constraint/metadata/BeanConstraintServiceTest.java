@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Configuration;
 
+import java.math.BigDecimal;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -59,7 +60,7 @@ public class BeanConstraintServiceTest {
         
         // Retrieved by introspection
         assertNull(wineDescription.get("id"));
-        assertEquals(Double.class, wineDescription.get("price").getJavaType());
+        assertEquals(BigDecimal.class, wineDescription.get("price").getJavaType());
         assertEquals(Country.class, wineDescription.get("country").getJavaType());
         assertEquals(int.class, wineDescription.get("primitive").getJavaType());
         assertNull(wineDescription.get("class"));

@@ -104,4 +104,32 @@
         </createTable>
     </changeSet>
 
+    <changeSet id="3" author="jeroen.van.schagen@42.nl" dbms="postgresql">
+        <comment>Function check for postgres</comment>
+
+        <sql splitStatements="false">
+            CREATE OR REPLACE FUNCTION fn_validate_cars()
+                RETURNS trigger
+                LANGUAGE plpgsql AS $func$
+            BEGIN
+                IF EXISTS (
+                    select id from cars where price = 0
+                )
+                THEN
+                    RAISE EXCEPTION 'Cars are never free';
+                ELSE
+                    RETURN NEW;
+                END IF;
+            END
+            $func$;
+        </sql>
+
+        <sql splitStatements="false">
+            CREATE TRIGGER trg_cars_insert_update
+                AFTER INSERT OR UPDATE ON cars
+                FOR EACH ROW
+            EXECUTE PROCEDURE fn_validate_cars();
+        </sql>
+    </changeSet>
+
 </databaseChangeLog>

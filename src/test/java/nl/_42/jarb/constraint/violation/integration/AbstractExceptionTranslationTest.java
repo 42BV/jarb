@@ -29,7 +29,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 public abstract class AbstractExceptionTranslationTest {
 
     @Autowired
-    private CarRepository carRepository;
+    protected CarRepository carRepository;
 
     @Test
     public void testUniqueKey() {

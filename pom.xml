@@ -48,7 +48,7 @@
         <java.version>17</java.version>
 
         <!-- Dependency versions -->
-        <spring-boot.version>3.1.0</spring-boot.version>
+        <spring-boot.version>3.1.5</spring-boot.version>
         <testcontainers.version>1.17.3</testcontainers.version>
     </properties>
 

@@ -2,7 +2,9 @@ package nl._42.jarb.constraint.violation.resolver.vendor;
 
 import nl._42.jarb.constraint.violation.DatabaseConstraintType;
 import nl._42.jarb.constraint.violation.DatabaseConstraintViolation;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.springframework.orm.jpa.JpaSystemException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -102,4 +104,17 @@ public class PostgresViolationResolverTest {
 
         assertNull(resolver.resolve("unknown"));
     }
+
+    @Test
+    public void testFunction() {
+        JpaSystemException exception = new JpaSystemException(
+            new IllegalStateException("ERROR: My error message\n  Where: PL/pgSQL function fn_validate_table() line 42 at RAISE")
+        );
+
+        DatabaseConstraintViolation violation = resolver.resolve(exception);
+        Assertions.assertEquals("My error message", violation.getValue());
+        Assertions.assertEquals("fn_validate_table", violation.getConstraintName());
+        Assertions.assertEquals(DatabaseConstraintType.CHECK_FAILED, violation.getConstraintType());
+    }
+
 }
