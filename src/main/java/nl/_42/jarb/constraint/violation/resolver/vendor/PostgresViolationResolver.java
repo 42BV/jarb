@@ -32,6 +32,7 @@ public class PostgresViolationResolver extends PatternViolationResolver implemen
         register(new LengthPattern());
         register(new InvalidTypePattern());
         register(new ExclusionPattern());
+        register(new FunctionPattern());
     }
 
     @Override
@@ -169,4 +170,21 @@ public class PostgresViolationResolver extends PatternViolationResolver implemen
                     .build();
         }
     }
+
+    private static class FunctionPattern extends ViolationPattern {
+
+        public FunctionPattern() {
+            super("ERROR: (.+)\n  Where: PL/pgSQL function (.+)\\(\\) line \\d+ at RAISE");
+        }
+
+        @Override
+        public DatabaseConstraintViolation build(VariableAccessor variables) {
+            return builder(CHECK_FAILED)
+                .value(variables.get(1))
+                .constraint(variables.get(2))
+                .build();
+        }
+
+    }
+
 }

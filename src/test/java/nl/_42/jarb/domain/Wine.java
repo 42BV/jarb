@@ -1,13 +1,14 @@
 package nl._42.jarb.domain;
 
-import org.hibernate.validator.constraints.Length;
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
+import org.hibernate.validator.constraints.Length;
+
+import java.math.BigDecimal;
 
 @Entity
 @Table(name = "wines")
@@ -19,7 +20,7 @@ public class Wine extends DefaultEntity {
     private String name;
     
     @Digits(integer = 5, fraction = 2)
-    private Double price;
+    private BigDecimal price;
     
     @ManyToOne
     private Country country;
@@ -37,11 +38,11 @@ public class Wine extends DefaultEntity {
     }
     
     @Digits(integer = 6, fraction = 1)
-    public Double getPrice() {
+    public BigDecimal getPrice() {
         return price;
     }
     
-    public void setPrice(Double price) {
+    public void setPrice(BigDecimal price) {
         this.price = price;
     }
     
