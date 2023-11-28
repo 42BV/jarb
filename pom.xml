@@ -12,7 +12,7 @@
     <groupId>nl.42</groupId>
     <artifactId>jarb</artifactId>
     <packaging>jar</packaging>
-    <version>6.2.2-SNAPSHOT</version>
+    <version>6.3.0</version>
 
     <name>Java Repository Bridge</name>
     <description>Provides support for databases</description>
@@ -38,7 +38,7 @@
         <url>https://github.com/42BV/jarb</url>
         <connection>scm:git:git@github.com:42BV/jarb.git</connection>
         <developerConnection>scm:git:git@github.com:42BV/jarb.git</developerConnection>
-        <tag>HEAD</tag>
+        <tag>6.3.0</tag>
     </scm>
 
     <properties>
