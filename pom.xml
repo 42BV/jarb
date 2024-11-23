@@ -45,11 +45,11 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <!-- Java version -->
-        <java.version>17</java.version>
+        <java.version>21</java.version>
 
         <!-- Dependency versions -->
-        <spring-boot.version>3.1.5</spring-boot.version>
-        <testcontainers.version>1.17.3</testcontainers.version>
+        <spring-boot.version>3.4.0</spring-boot.version>
+        <testcontainers.version>1.20.4</testcontainers.version>
     </properties>
 
     <build>

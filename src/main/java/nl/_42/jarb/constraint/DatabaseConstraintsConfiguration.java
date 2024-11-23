@@ -81,7 +81,6 @@ public class DatabaseConstraintsConfiguration implements ImportAware, Initializi
 
     @Bean
     @Lazy
-    @Autowired(required = false)
     public DatabaseConstraintValidator databaseConstraintValidator(ValidatorFactory validatorFactory) {
         MessageInterpolator messageInterpolator = getMessageInterpolator(validatorFactory);
 
