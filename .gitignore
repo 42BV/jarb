@@ -12,3 +12,4 @@ target
 jarb-populator-excel/src/test/resources/excel/generated
 *.iml
 .java-version
+pom.xml.versionsBackup
