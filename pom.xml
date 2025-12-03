@@ -5,7 +5,7 @@
     <groupId>nl.42</groupId>
     <artifactId>jarb</artifactId>
     <packaging>jar</packaging>
-    <version>7.0.1-SNAPSHOT</version>
+    <version>8.0.1-SNAPSHOT</version>
 
     <name>Java Repository Bridge</name>
     <description>Provides support for databases</description>
