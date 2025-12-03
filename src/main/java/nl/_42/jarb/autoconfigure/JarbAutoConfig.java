@@ -1,11 +1,10 @@
 package nl._42.jarb.autoconfigure;
 
-import nl._42.jarb.constraint.DatabaseConstraintsConfiguration;
 import nl._42.jarb.constraint.metadata.BeanConstraintController;
 import nl._42.jarb.constraint.metadata.BeanConstraintService;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.boot.autoconfigure.orm.jpa.HibernatePropertiesCustomizer;
+import org.springframework.boot.hibernate.autoconfigure.HibernatePropertiesCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;

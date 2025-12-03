@@ -3,6 +3,13 @@
  */
 package nl._42.jarb.constraint.metadata;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Date;
+
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotEmpty;
 import nl._42.jarb.constraint.metadata.database.BeanMetadataRepository;
 import nl._42.jarb.constraint.metadata.enhance.AnnotationPropertyTypeEnhancer;
 import nl._42.jarb.constraint.metadata.enhance.ClassPropertyTypeEnhancer;
@@ -19,11 +26,6 @@ import nl._42.jarb.constraint.metadata.enhance.NotNullPropertyConstraintEnhancer
 import nl._42.jarb.constraint.metadata.enhance.PatternPropertyConstraintEnhancer;
 import nl._42.jarb.constraint.metadata.enhance.PropertyTypeEnhancer;
 import nl._42.jarb.utils.Classes;
-
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.Date;
 
 /**
  * Bean constraint descriptor with all default enhancers. 
@@ -106,8 +108,8 @@ public class DefaultBeanConstraintDescriptor extends BeanConstraintDescriptor {
 
     private void registerHibernateValidationEnhancers() {
         register(new LengthPropertyConstraintEnhancer<>(org.hibernate.validator.constraints.Length.class, (x) -> x.min(), (x) -> x.max()));
-        register(new NotEmptyPropertyConstraintEnhancer(org.hibernate.validator.constraints.NotEmpty.class));
-        register(new AnnotationPropertyTypeEnhancer(org.hibernate.validator.constraints.Email.class, "email"));
+        register(new NotEmptyPropertyConstraintEnhancer(NotEmpty.class));
+        register(new AnnotationPropertyTypeEnhancer(Email.class, "email"));
         register(new AnnotationPropertyTypeEnhancer(org.hibernate.validator.constraints.CreditCardNumber.class, "credid_card"));
         register(new AnnotationPropertyTypeEnhancer(org.hibernate.validator.constraints.URL.class, "url"));
     }
