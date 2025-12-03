@@ -122,9 +122,3 @@ Components
  * constraints (simplifies the managing of (database) constraints by preventing and translating JDBC exceptions)
  * populator (populate the database with data on startup, SQL script implementation and building blocks)
  * utils (common utility library, used by other components)
- 
-Release notes
--------------
- * Version 3.0.0
-    - Java version below 1.8 not supported anymore
-    - Hibernate version below 5.0 not supported anymore
