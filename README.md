@@ -1,3 +1,9 @@
+[![Java CI with Maven](https://github.com/42BV/jarb/actions/workflows/maven.yml/badge.svg)](https://github.com/42BV/jarb/actions/workflows/maven.yml)
+[![codecov](https://codecov.io/gh/42BV/jarb/graph/badge.svg?token=WXpm6Dfj6r)](https://codecov.io/gh/42BV/jarb)
+[![Maven Central](https://img.shields.io/maven-central/v/nl.42/jarb.svg?color=green)](https://central.sonatype.com/artifact/nl.42/jarb)
+[![Javadocs](https://www.javadoc.io/badge/nl.42/jarb.svg)](https://www.javadoc.io/doc/nl.42/jarb)
+[![Apache 2](http://img.shields.io/badge/license-Apache%202-blue.svg)](http://www.apache.org/licenses/LICENSE-2.0)
+
 Java Repository Bridge (JaRB)
 =============================
 
