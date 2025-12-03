@@ -3,6 +3,9 @@
  */
 package nl._42.jarb.constraint.metadata;
 
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.Size;
 import nl._42.jarb.constraint.metadata.database.BeanMetadataRepository;
 import nl._42.jarb.constraint.metadata.enhance.AnnotationPropertyTypeEnhancer;
 import nl._42.jarb.constraint.metadata.enhance.ClassPropertyTypeEnhancer;
@@ -19,6 +22,7 @@ import nl._42.jarb.constraint.metadata.enhance.NotNullPropertyConstraintEnhancer
 import nl._42.jarb.constraint.metadata.enhance.PatternPropertyConstraintEnhancer;
 import nl._42.jarb.constraint.metadata.enhance.PropertyTypeEnhancer;
 import nl._42.jarb.utils.Classes;
+import org.hibernate.validator.constraints.Length;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -82,7 +86,7 @@ public class DefaultBeanConstraintDescriptor extends BeanConstraintDescriptor {
     }
 
     private void registerJavaxValidationEnhancers() {
-        register(new LengthPropertyConstraintEnhancer<>(jakarta.validation.constraints.Size.class, (x) -> x.min(), (x) -> x.max()));
+        register(new LengthPropertyConstraintEnhancer<>(jakarta.validation.constraints.Size.class, Size::min, Size::max));
 
         register(new NotNullPropertyConstraintEnhancer());
         register(new NotEmptyPropertyConstraintEnhancer(jakarta.validation.constraints.NotEmpty.class));
@@ -91,12 +95,12 @@ public class DefaultBeanConstraintDescriptor extends BeanConstraintDescriptor {
         register(new PatternPropertyConstraintEnhancer());
         register(new DigitsPropertyConstraintEnhancer());
 
-        register(new MinPropertyConstraintEnhancer<>(jakarta.validation.constraints.Min.class, (x) -> x.value()));
+        register(new MinPropertyConstraintEnhancer<>(jakarta.validation.constraints.Min.class, Min::value));
         register(new MinPropertyConstraintEnhancer<>(jakarta.validation.constraints.DecimalMin.class, (x) -> new BigDecimal(x.value())));
         register(new MinPropertyConstraintEnhancer<>(jakarta.validation.constraints.Positive.class, (x) -> 0));
         register(new MinPropertyConstraintEnhancer<>(jakarta.validation.constraints.PositiveOrZero.class, (x) -> 0));
 
-        register(new MaxPropertyConstraintEnhancer<>(jakarta.validation.constraints.Max.class, (x) -> x.value()));
+        register(new MaxPropertyConstraintEnhancer<>(jakarta.validation.constraints.Max.class, Max::value));
         register(new MaxPropertyConstraintEnhancer<>(jakarta.validation.constraints.DecimalMax.class, (x) -> new BigDecimal(x.value())));
         register(new MaxPropertyConstraintEnhancer<>(jakarta.validation.constraints.Negative.class, (x) -> 0));
         register(new MaxPropertyConstraintEnhancer<>(jakarta.validation.constraints.NegativeOrZero.class, (x) -> 0));
@@ -105,9 +109,7 @@ public class DefaultBeanConstraintDescriptor extends BeanConstraintDescriptor {
     }
 
     private void registerHibernateValidationEnhancers() {
-        register(new LengthPropertyConstraintEnhancer<>(org.hibernate.validator.constraints.Length.class, (x) -> x.min(), (x) -> x.max()));
-        register(new NotEmptyPropertyConstraintEnhancer(org.hibernate.validator.constraints.NotEmpty.class));
-        register(new AnnotationPropertyTypeEnhancer(org.hibernate.validator.constraints.Email.class, "email"));
+        register(new LengthPropertyConstraintEnhancer<>(org.hibernate.validator.constraints.Length.class, Length::min, Length::max));
         register(new AnnotationPropertyTypeEnhancer(org.hibernate.validator.constraints.CreditCardNumber.class, "credid_card"));
         register(new AnnotationPropertyTypeEnhancer(org.hibernate.validator.constraints.URL.class, "url"));
     }

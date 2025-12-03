@@ -36,9 +36,10 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.release>21</maven.compiler.release>
+        <maven.compiler.source>21</maven.compiler.source>
+        <maven.compiler.target>21</maven.compiler.target>
 
-        <spring-boot.version>3.5.4</spring-boot.version>
+        <spring-boot.version>4.0.0</spring-boot.version>
 
         <dependency-check-maven.version>12.1.9</dependency-check-maven.version>
         <jacoco-maven-plugin.version>0.8.14</jacoco-maven-plugin.version>
@@ -121,16 +122,19 @@
         <dependency>
             <groupId>org.testcontainers</groupId>
             <artifactId>postgresql</artifactId>
+            <version>1.21.3</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.testcontainers</groupId>
             <artifactId>mysql</artifactId>
+            <version>1.21.3</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.testcontainers</groupId>
             <artifactId>oracle-xe</artifactId>
+            <version>1.21.3</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
