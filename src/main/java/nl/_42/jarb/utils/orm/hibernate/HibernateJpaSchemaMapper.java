@@ -9,12 +9,15 @@ import org.hibernate.MappingException;
 import org.hibernate.metamodel.mapping.AttributeMapping;
 import org.hibernate.metamodel.mapping.EntityMappingType;
 import org.hibernate.metamodel.mapping.ManagedMappingType;
+import org.hibernate.metamodel.mapping.PluralAttributeMapping;
 import org.hibernate.metamodel.mapping.internal.BasicAttributeMapping;
 import org.hibernate.metamodel.mapping.internal.EmbeddedAttributeMapping;
 import org.hibernate.metamodel.mapping.internal.EmbeddedCollectionPart;
 import org.hibernate.metamodel.model.domain.NavigableRole;
 import org.hibernate.metamodel.spi.RuntimeMetamodelsImplementor;
+import org.hibernate.persister.collection.CollectionPersister;
 import org.hibernate.persister.entity.AbstractEntityPersister;
+import org.hibernate.persister.entity.SingleTableEntityPersister;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -60,19 +63,18 @@ public class HibernateJpaSchemaMapper implements SchemaMapper {
         }
 
         AttributeMapping attribute = getAttribute(model, property);
-        if (attribute.isPluralAttributeMapping()) {
-            return getCollectionColumnName(model, property);
+        if (attribute.isPluralAttributeMapping() && attribute instanceof PluralAttributeMapping collection) {
+            return getCollectionColumnName(collection, property);
         } else {
-            return getComponentColumnName(model, property);
+            return getComponentColumnName(attribute, property);
         }
     }
 
     private ColumnReference getPropertyColumnName(AbstractEntityPersister model, String propertyName) {
-        String propertyTableName = model.getPropertyTableName(propertyName);
-        String tableName = Objects.toString(propertyTableName, model.getTableName());
-
-        String[] columnNames = model.getPropertyColumnNames(propertyName);
-        return new ColumnReference(tableName, columnNames[0]);
+        String columnName = model.getPropertyColumnNames(propertyName)[0];
+        String columnTableName = model.getTableNameForColumn(columnName);
+        String tableName = Objects.toString(columnTableName, model.getTableName());
+        return new ColumnReference(tableName, columnName);
     }
 
     private AttributeMapping getAttribute(AbstractEntityPersister model, PropertyReference property) {
@@ -85,18 +87,16 @@ public class HibernateJpaSchemaMapper implements SchemaMapper {
         return attribute;
     }
 
-    private ColumnReference getCollectionColumnName(AbstractEntityPersister model, PropertyReference property) {
-        NavigableRole role = new NavigableRole(model.getNavigableRole(), property.getParent().getPropertyName()).appendContainer("{element}");
-        EmbeddedCollectionPart embedded = (EmbeddedCollectionPart) metamodels.getEmbedded(role);
+    private ColumnReference getCollectionColumnName(PluralAttributeMapping attribute, PropertyReference property) {
+        EmbeddedCollectionPart embedded = (EmbeddedCollectionPart) attribute.getElementDescriptor();
         AttributeMapping mapping = getAttributeMapping(embedded.getEmbeddableTypeDescriptor(), property.getSimpleName());
         return getColumnName(mapping);
     }
 
-    private ColumnReference getComponentColumnName(AbstractEntityPersister model, PropertyReference property) {
-        NavigableRole role = new NavigableRole(model.getNavigableRole(), property.getParent().getPropertyName());
-        EmbeddedAttributeMapping embedded = (EmbeddedAttributeMapping) metamodels.getEmbedded(role);
-        AttributeMapping mapping = getAttributeMapping(embedded.getMappedType(), property.getSimpleName());
-        return getColumnName(mapping);
+    private ColumnReference getComponentColumnName(AttributeMapping attribute, PropertyReference property) {
+        SingleTableEntityPersister type = (SingleTableEntityPersister) attribute.getDeclaringType();
+        var columns = type.getPropertyColumnNames(property.getPropertyName());
+        return new ColumnReference(type.getTableName(), columns[0]);
     }
 
     private AttributeMapping getAttributeMapping(ManagedMappingType type, String name) {
