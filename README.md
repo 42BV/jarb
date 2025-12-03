@@ -1,4 +1,5 @@
 [![Java CI with Maven](https://github.com/42BV/jarb/actions/workflows/maven.yml/badge.svg)](https://github.com/42BV/jarb/actions/workflows/maven.yml)
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/97f8511219fe4fcbbeded9996166a126)](https://app.codacy.com/gh/42BV/jarb/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade)
 [![codecov](https://codecov.io/gh/42BV/jarb/graph/badge.svg?token=WXpm6Dfj6r)](https://codecov.io/gh/42BV/jarb)
 [![Maven Central](https://img.shields.io/maven-central/v/nl.42/jarb.svg?color=green)](https://central.sonatype.com/artifact/nl.42/jarb)
 [![Javadocs](https://www.javadoc.io/badge/nl.42/jarb.svg)](https://www.javadoc.io/doc/nl.42/jarb)
