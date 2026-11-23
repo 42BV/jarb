@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Fixed
+- `JarbAutoConfig` no longer breaks applications that have JARB on the classpath without
+  `@EnableDatabaseConstraints` or without `spring-boot-starter-validation` ([#79](https://github.com/42BV/jarb/issues/79))
+
 ## [8.0.0] - 2025-12-03
 
 ### Update
